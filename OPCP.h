@@ -1,8 +1,3 @@
-/*
-  Agenda.h - Library for reflectometer sensor.
-  Created by Giovanni Blu Mitolo, November 13, 2014.
-  Released into the public domain.
-*/
 
 #ifndef OPCP_h
 #define OPCP_h
@@ -11,16 +6,26 @@
 #include "digitalWriteFast.h"
 #endif
 
-#define REQ  255
 #define ACK  6
 #define NAK  21
 #define FAIL 0x100 
 #define BUSY 666
 
+// 2.777kb/s bit_width 32 - bit_spacer 72 - acceptance 32
+
+// STANDARD MODE:
+// Theorical 3.1kb/s | Practical 2.18kb/s | Accuracy: 99.94%
+// bit_width 28 - bit_spacer 68 - acceptance 16
+
+// FAST MODE: 
+// Theorical 3.8kb/s | Practical 2.05kb/s | Accuracy: 90%
+// bit_width 24 - bit_spacer 44 - acceptance 16
+
 #define max_package_length 255
-#define bit_width 32
-#define bit_spacer 72
-#define acceptance 32
+#define bit_width 24
+#define bit_spacer 68 
+#define acceptance 16
+#define read_delay 0
 
 class OPCP {
 

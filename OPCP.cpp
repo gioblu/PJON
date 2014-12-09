@@ -7,6 +7,11 @@
 OPCP::OPCP(int input_pin, byte device_id) {
 	_input_pin = input_pin;
 	_device_id = device_id;
+  _read_delay = 9;
+}
+
+void OPCP::set_read_delay(int delay) {
+  _read_delay = delay;
 }
 
 void OPCP::send_bit(byte VALUE, int duration) {
@@ -17,9 +22,11 @@ void OPCP::send_bit(byte VALUE, int duration) {
 void OPCP::send_byte(byte b) {                     
   pinModeFast(_input_pin, OUTPUT);
   this->send_bit(HIGH, bit_spacer);                    
-  this->send_bit(LOW, bit_width);                      
-  for(int i = 7; i >= 0; i--)
-    this->send_bit(bitRead(b, i), bit_width);
+  this->send_bit(LOW, bit_width);      
+
+  for(byte mask = 0x01; mask; mask <<= 1)
+    this->send_bit(b & mask, bit_width);
+
 }
 
 int OPCP::send_string(byte ID, const char *string) {
@@ -62,31 +69,30 @@ int OPCP::send_command(byte ID, byte command_type, unsigned int value) {
   return this->send_string(ID, bytes_to_send);
 }
 
-int OPCP::receive_bit() {                            
-  unsigned long time = micros();  
-  
-  if(read_delay > 0)
-    delayMicroseconds(read_delay);                
-  
-  int bit_value = digitalReadFast(_input_pin);       
-  delayMicroseconds(bit_width - (micros() - time));   
-  return bit_value;                      
+int OPCP::receive_bit() {                   
+  delayMicroseconds((bit_width / 2) - _read_delay);
+  int bit_value = digitalReadFast(_input_pin);        
+  delayMicroseconds(bit_width / 2);
+  return bit_value;
 }
 
 byte OPCP::receive_byte() {                          
   byte byte_value = B00000000;                                                           
   
-  for (int i = 7; i >= 0; i--)
-    byte_value += this->receive_bit() << i;  
+  delayMicroseconds(bit_width / 2);
+  for (int i = 0; i < 8; i++) {
+    byte_value += digitalReadFast(_input_pin) << i;
+    delayMicroseconds(bit_width);  
+  }
   
   return byte_value;                                                              
 }
 
 boolean OPCP::can_start() {
   pinModeFast(_input_pin, INPUT);
-  this->send_bit(0, 10);
+  this->send_bit(0, 8);
   
-  if(this->receive_byte() == 0)
+  if(!this->receive_byte())
     return true;
   
   return false;
@@ -97,12 +103,10 @@ int OPCP::start() {
   digitalWriteFast(_input_pin, LOW);
   
   unsigned long time = micros(); 
-  
   while (digitalReadFast(_input_pin) == HIGH && micros() - time <= bit_spacer);
-  
   time = micros() - time;                    
   
-  if(time > acceptance && this->receive_bit() == LOW)
+  if(time > acceptance && !this->receive_bit())
     return (int)this->receive_byte();  
   
   return FAIL;
@@ -115,7 +119,7 @@ int OPCP::receive() {
   for (int i = 0; i < package_length; i++) {
     received_bytes[i] = this->start();
     if (received_bytes[i] == FAIL)
-      return NAK;
+      return FAIL;
     
     if(i == 0 && received_bytes[i] != _device_id)
       return BUSY;
@@ -132,7 +136,7 @@ int OPCP::receive() {
     this->send_byte(ACK); 
     digitalWriteFast(_input_pin, LOW); 
     return ACK; 
-    
+
   } else { 
   
     this->send_byte(NAK); 

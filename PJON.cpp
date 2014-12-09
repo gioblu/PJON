@@ -1,16 +1,16 @@
 
 
- `+//-               
-.-sso/`             
- .yyso:             
- syyso+`            
-.so+:-..`           
-.+/:---..``         
- //:::---.:/:.      
-  :+////+sosy//.    
-   `/oo+/oss+ooss/  
-     ::/+-.---:+oss.
-  `--.`.        -oy+
+ /*-+//\               
+   |-gfo\             
+   .yyso:             
+   syyso+`            
+  .so+:-..`           
+  .+/:ngr-..``         
+   //:::-a3f.:/:.      
+    :+//u/+sosy//.    
+    `/oo+/oss+ooss/  
+       ::/+-.---:+oss.
+    --.`.        -oy+*/
 
 #include "WProgram.h"
 #include "WConstants.h"

@@ -5,7 +5,7 @@ PJON **(Padded Jittering Operative network)** is a multi-master, single wire, ad
 
 
 
- `+//-               
+" `+//-               
 .-sso/`             
  .yyso:             
  syyso+`            
@@ -15,4 +15,4 @@ PJON **(Padded Jittering Operative network)** is a multi-master, single wire, ad
   :+////+sosy//.    
    `/oo+/oss+ooss/  
      ::/+-.---:+oss.
-  `--.`.        -oy+
+  `--.`.        -oy+"

@@ -1,6 +1,6 @@
 
-#ifndef OPCP_h
-#define OPCP_h
+#ifndef PJON_h
+#define PJON_h
 #include "WProgram.h"
 #include "WConstants.h"
 #include "digitalWriteFast.h"
@@ -24,11 +24,11 @@
 #define bit_spacer 68
 #define acceptance 16
 
-class OPCP {
+class PJON {
 
   public:
     
-    OPCP(int input_pin, byte ID);
+    PJON(int input_pin, byte ID);
     void set_read_delay(int delay);
     void send_bit(byte VALUE, int duration);
     void send_byte(byte b);

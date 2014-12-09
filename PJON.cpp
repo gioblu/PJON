@@ -2,24 +2,24 @@
 #include "WProgram.h"
 #include "WConstants.h"
 #include "digitalWriteFast.h"
-#include "OPCP.h"
+#include "PJON.h"
 
-OPCP::OPCP(int input_pin, byte device_id) {
-	_input_pin = input_pin;
-	_device_id = device_id;
+PJON::PJON(int input_pin, byte device_id) {
+  _input_pin = input_pin;
+  _device_id = device_id;
   _read_delay = 9;
 }
 
-void OPCP::set_read_delay(int delay) {
+void PJON::set_read_delay(int delay) {
   _read_delay = delay;
 }
 
-void OPCP::send_bit(byte VALUE, int duration) {
+void PJON::send_bit(byte VALUE, int duration) {
   digitalWriteFast(_input_pin, VALUE);         
   delayMicroseconds(duration);              
 }
 
-void OPCP::send_byte(byte b) {                     
+void PJON::send_byte(byte b) {                     
   pinModeFast(_input_pin, OUTPUT);
   this->send_bit(HIGH, bit_spacer);                    
   this->send_bit(LOW, bit_width);      
@@ -29,7 +29,7 @@ void OPCP::send_byte(byte b) {
 
 }
 
-int OPCP::send_string(byte ID, const char *string) {
+int PJON::send_string(byte ID, const char *string) {
   int package_length = strlen(string) + 3;
   byte CRC = 0;
 
@@ -64,19 +64,19 @@ int OPCP::send_string(byte ID, const char *string) {
   return FAIL;  
 };
 
-int OPCP::send_command(byte ID, byte command_type, unsigned int value) {
+int PJON::send_command(byte ID, byte command_type, unsigned int value) {
   char bytes_to_send[3] = { command_type, value >> 8, value & 0xFF };
   return this->send_string(ID, bytes_to_send);
 }
 
-int OPCP::receive_bit() {                   
+int PJON::receive_bit() {                   
   delayMicroseconds((bit_width / 2) - _read_delay);
   int bit_value = digitalReadFast(_input_pin);        
   delayMicroseconds(bit_width / 2);
   return bit_value;
 }
 
-byte OPCP::receive_byte() {                          
+byte PJON::receive_byte() {                          
   byte byte_value = B00000000;                                                           
   
   delayMicroseconds(bit_width / 2);
@@ -88,7 +88,7 @@ byte OPCP::receive_byte() {
   return byte_value;                                                              
 }
 
-boolean OPCP::can_start() {
+boolean PJON::can_start() {
   pinModeFast(_input_pin, INPUT);
   this->send_bit(0, 8);
   
@@ -98,7 +98,7 @@ boolean OPCP::can_start() {
   return false;
 }
 
-int OPCP::start() {
+int PJON::start() {
   pinModeFast(_input_pin, INPUT);
   digitalWriteFast(_input_pin, LOW);
   
@@ -112,7 +112,7 @@ int OPCP::start() {
   return FAIL;
 }  
 
-int OPCP::receive() { 
+int PJON::receive() { 
   int package_length = max_package_length;
   byte CRC = 0;
   

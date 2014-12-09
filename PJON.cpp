@@ -1,17 +1,17 @@
 
 
- /*-+//\               
+ /*-O//\               
    |-gfo\             
-   .yyso:             
-   syyso+`            
-  .so+:-..`           
-  .+/:ngr-..``         
-   //:::-a3f.:/:.      
-    :+//u/+sosy//.    
-    `/oo+/oss+ooss/  
-       ::/+-.---:+oss.
-    --.`.        -oy+*/
-
+   |yyso:\             
+   |yyso+`\            
+  /so+:-..`\           
+  |+/:ngr-..`\         
+   |/:%&-a3f.:/\      
+    \+//u/+sosy//\    
+     \oo+/oss+ooss\  
+       \:/+-.§°-:+oss\
+       `|.|        -oy\\
+       ->-*/
 #include "WProgram.h"
 #include "WConstants.h"
 #include "digitalWriteFast.h"

@@ -7,8 +7,5 @@ Communication is checked by a one byte Cyclic Redundancy Check or CRC and sender
 
 This architecture gives you really high communication reliability and acceptable speed for the vast majority of embedded projects. PJON can be efficiently used from home automation to automotive applications.
 
-**PJON Slow mode**
-Absolute bandwidth: 3.0 kb/s | Practical bandwidth: 2.38 kb/s | Accuracy: 99.25%
-
-**PJON Standard mode**
-Absolute bandwidth: 3.44 kb/b | Practical bandwidth: 2.71 kb/s | Accuracy: 95.0%
+* **PJON Slow mode** Absolute bandwidth: 3.0 kb/s | Practical bandwidth: 2.38 kb/s | Accuracy: 99.25%
+* **PJON Standard mode** Absolute bandwidth: 3.44 kb/b | Practical bandwidth: 2.71 kb/s | Accuracy: 95.0%

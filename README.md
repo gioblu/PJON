@@ -9,5 +9,6 @@ This architecture gives you really high communication reliability and acceptable
 
 **PJON Slow mode**
 Absolute bandwidth: 3.0 kb/s | Practical bandwidth: 2.38 kb/s | Accuracy: 99.25%
+
 **PJON Standard mode**
 Absolute bandwidth: 3.44 kb/b | Practical bandwidth: 2.71 kb/s | Accuracy: 95.0%

@@ -1,35 +1,55 @@
 
+ /*-O//\       __     __
+   |-gfo\     |__| | |  | |\ |
+   |!y°o:\    |  __| |__| | \|
+   |y"s§+`\
+  /so+:-..`\
+  |+/:ngr-*.`\
+   |/:%&-a3f.:/\
+    \+//u/+gosv//\
+     \o+&/osw+odss\\
+       \:/+-.§°-:+oss\
+       `|.|       \oy\\
+       ->-<
+       -||*/
+
 #ifndef PJON_h
 #define PJON_h
 #include "WProgram.h"
 #include "WConstants.h"
-#include "digitalWriteFast.h"
+#include "includes/digitalWriteFast.h"
 #endif
 
-#define ACK  6
-#define NAK  21
-#define FAIL 0x100 
-#define BUSY 666
-
-// PJON Standard mode
-// Absolute bandwidth 3.0 kb/s | Practical bandwidth 2.4 kb/s | Accuracy: 99.65%
+// PJON Slow mode
+// Absolute bandwidth 3.0 kb/s | Practical bandwidth 2.38 kb/s | Accuracy: 99.25%
 // bit_width 20 - bit_spacer 68 - acceptance 16 - read_delay 9
 
+// PJON Medium mode
+// Absolute bandwidth 3.44 kb/b | Practical bandwidth 2.71 kb/s | Accuracy: 95.0%
+// bit_width 18 - bit_spacer 36 - acceptance 16 - read_delay 7
+
 // PJON Fast mode
-// Absolute bandwidth 3.25 kb/b | Practical bandwidth 2.55 kb/s | Accuracy: 94.5%
-// bit_width 18 - bit_spacer 36 - acceptance 16 - read_delay 8
+// Absolute bandwidth 3.40 kb/b | Practical bandwidth 2.7 kb/s | Accuracy: 89.9%
+// bit_width 17 - bit_spacer 36 - acceptance 17 - read_delay 5
 
 #define max_package_length 255
 #define bit_width 20
 #define bit_spacer 68
 #define acceptance 16
+#define read_delay 9
+
+#define ACK  6
+#define NAK  21
+#define FAIL 0x100
+#define BUSY 666
 
 class PJON {
 
   public:
-    
+
     PJON(int input_pin, byte ID);
-    void set_read_delay(int delay);
+    void collision_avoidance(boolean state);
+
     void send_bit(byte VALUE, int duration);
     void send_byte(byte b);
     int send_string(byte ID, const char *string);
@@ -40,13 +60,13 @@ class PJON {
     boolean can_start();
     int start();
     int receive();
-    
-    byte received_bytes[max_package_length];    
+
+    byte received_bytes[max_package_length];
 
   private:
-
     byte _device_id;
     int _input_pin;
     int _read_delay;
 
+    boolean _collision_avoidance;
 };

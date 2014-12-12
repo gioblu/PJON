@@ -1,9 +1,9 @@
 
- /*-O//\       __     __
-   |-gfo\     |__| | |  | |\ |
-   |!y°o:\    |  __| |__| | \|
-   |y"s§+`\
-  /so+:-..`\
+ /*-O//\         __     __
+   |-gfo\       |__| | |  | |\ |
+   |!y°o:\      |  __| |__| | \|
+   |y"s§+`\     Giovanni Blu Mitolo 2011 - 2014
+  /so+:-..`\    gioscarab@gmail.com
   |+/:ngr-*.`\
    |/:%&-a3f.:/\
     \+//u/+gosv//\
@@ -25,7 +25,7 @@
 // bit_width 20 - bit_spacer 68 - acceptance 16 - read_delay 9
 
 // PJON Medium mode
-// Absolute bandwidth 3.44 kb/b | Practical bandwidth 2.71 kb/s | Accuracy: 95.0%
+// Absolute bandwidth 3.51 kb/b | Practical bandwidth 2.75 kb/s | Accuracy: 96.6%
 // bit_width 18 - bit_spacer 36 - acceptance 16 - read_delay 7
 
 // PJON Fast mode
@@ -33,10 +33,10 @@
 // bit_width 17 - bit_spacer 36 - acceptance 17 - read_delay 5
 
 #define max_package_length 255
-#define bit_width 20
-#define bit_spacer 68
+#define bit_width 18
+#define bit_spacer 36
 #define acceptance 16
-#define read_delay 9
+#define read_delay 7
 
 #define ACK  6
 #define NAK  21
@@ -48,7 +48,8 @@ class PJON {
   public:
 
     PJON(int input_pin, byte ID);
-    void collision_avoidance(boolean state);
+    void set_collision_avoidance(boolean state);
+    void set_acknowledge(boolean state);
 
     void send_bit(byte VALUE, int duration);
     void send_byte(byte b);
@@ -61,12 +62,13 @@ class PJON {
     int start();
     int receive();
 
-    byte received_bytes[max_package_length];
+    byte data[max_package_length];
 
   private:
     byte _device_id;
     int _input_pin;
     int _read_delay;
 
+    boolean _acknowledge;
     boolean _collision_avoidance;
 };

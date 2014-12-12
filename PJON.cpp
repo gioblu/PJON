@@ -1,9 +1,9 @@
 
- /*-O//\       __     __
-   |-gfo\     |__| | |  | |\ |
-   |!y°o:\    |  __| |__| | \|
-   |y"s§+`\
-  /so+:-..`\
+ /*-O//\         __     __
+   |-gfo\       |__| | |  | |\ |
+   |!y°o:\      |  __| |__| | \|
+   |y"s§+`\     Giovanni Blu Mitolo 2011 - 2014
+  /so+:-..`\    gioscarab@gmail.com
   |+/:ngr-*.`\
    |/:%&-a3f.:/\
     \+//u/+gosv//\
@@ -23,8 +23,12 @@ PJON::PJON(int input_pin, byte device_id) {
   _device_id = device_id;
 }
 
-void PJON::collision_avoidance(boolean state) {
+void PJON::set_collision_avoidance(boolean state) {
   _collision_avoidance = state;
+}
+
+void PJON::set_acknowledge(boolean state) {
+  _acknowledge = state;
 }
 
 void PJON::send_bit(byte VALUE, int duration) {
@@ -61,6 +65,8 @@ int PJON::send_string(byte ID, const char *string) {
 
   this->send_byte(CRC);
   digitalWriteFast(_input_pin, LOW);
+
+  if(!_acknowledge) return ACK;
   unsigned long time = micros();
   int response = FAIL;
 
@@ -70,6 +76,7 @@ int PJON::send_string(byte ID, const char *string) {
   if(response == NAK) return NAK;
   if(response == ACK) return ACK;
   return FAIL;
+
 };
 
 int PJON::send_command(byte ID, byte command_type, unsigned int value) {
@@ -100,7 +107,8 @@ boolean PJON::can_start() {
   pinModeFast(_input_pin, INPUT);
   this->send_bit(0, 8);
 
-  if(!this->receive_byte()) return true;
+  if(!this->receive_byte())
+    return true;
 
   return false;
 }
@@ -124,21 +132,30 @@ int PJON::receive() {
   byte CRC = 0;
 
   for (int i = 0; i < package_length; i++) {
-    received_bytes[i] = this->start();
-    if (received_bytes[i] == FAIL)
+
+    data[i] = this->start();
+
+    if (data[i] == FAIL)
       return FAIL;
 
-    if(i == 0 && received_bytes[i] != _device_id)
+    if(i == 0 && data[i] != _device_id)
       return BUSY;
 
     if(i == 1)
-      package_length = received_bytes[i];
+      package_length = data[i];
 
     if (i < package_length - 1)
-      CRC ^= received_bytes[i];
+      CRC ^= data[i];
+
   }
 
-  if (received_bytes[package_length - 1] == CRC) {
+  if(!_acknowledge)
+    if(data[package_length - 1] == CRC)
+      return ACK;
+    else
+      return NAK;
+
+  if (data[package_length - 1] == CRC) {
 
     this->send_byte(ACK);
     digitalWriteFast(_input_pin, LOW);

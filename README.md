@@ -1,4 +1,11 @@
 PJON 
 ====
 
-PJON **(Padded Jittering Operative network)** is a multi-master, single wire, addressed and checked communication protocol for Arduino. Every connected device has an ID (one byte address) and can communicate with any other device on the network with package correctness acknowledge. Every package sent is checked by a one byte Cyclic Redundancy Check and is addresses to a particular device, for this reason is practically impossible to miss a package (if the receiver will not receive the sender will know) or to receive uncorrect data.
+PJON **(Padded Jittering Operative network)** is a multi-master, single wire, addressed and checked communication protocol for Arduino. Every Connected device has an ID (one byte address) and is able to communicate with any other device on the network. 
+Communication is checked by a one byte Cyclic Redundancy Check or CRC and sender wait for ackowledge by receiver.
+
+
+This architecture gives you really high communication reliability and acceptable speed for the vast majority of embedded projects. PJON can be efficiently used from home automation to automotive applications.
+
+* **Slow mode** Absolute bandwidth: **3.0kb/s** | Practical bandwidth: **2.38kb/s** | Accuracy: **99.25%**
+* **Standard mode** Absolute bandwidth: **3.44kb/s** | Practical bandwidth: **2.71kb/s** | Accuracy: **95.0%**

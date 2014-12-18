@@ -28,10 +28,16 @@ Absolute bandwidth 3.51 kb/b | Practical bandwidth 2.75 kb/s | Accuracy: 96.6%
 bit_width 18 - bit_spacer 36 - acceptance 16 - read_delay 7 */
 
 #ifndef PJON_h
-#define PJON_h
-#include "WProgram.h"
-#include "WConstants.h"
-#include "includes/digitalWriteFast.h"
+  #define PJON_h
+
+  #if defined(ARDUINO) && (ARDUINO >= 100)
+    #include "Arduino.h"
+    #include "includes/digitalWriteFast.h"
+  #else
+    #include "WProgram.h"
+    #include "WConstants.h"
+    #include "includes/digitalWriteFast.h"
+  #endif
 #endif
 
 // PJON Fast mode
@@ -63,7 +69,8 @@ class PJON {
     void set_acknowledge(boolean state);
     void set_encryption(boolean state);
 
-    void crypt(char *data);
+    void crypt(char *data, boolean initialization_vector = false, boolean side = false);
+    byte generate_IV(int string_length);
 
     void send_bit(byte VALUE, int duration);
     void send_byte(byte b);

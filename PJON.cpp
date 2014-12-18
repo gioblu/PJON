@@ -27,9 +27,6 @@ PJON Medium mode
 Absolute bandwidth 3.51 kb/b | Practical bandwidth 2.75 kb/s | Accuracy: 96.6%
 bit_width 18 - bit_spacer 36 - acceptance 16 - read_delay 7 */
 
-#include "WProgram.h"
-#include "WConstants.h"
-#include "includes/digitalWriteFast.h"
 #include "PJON.h"
 
 /* Initiate PJON passing pin number and the selected device id */
@@ -59,27 +56,45 @@ void PJON::set_encryption(boolean state) {
 }
 
 /* Encrypt string with a custom made private key algorithm */
-void PJON::crypt(char *data) {
- int i, j = 0;
+void PJON::crypt(char *data, boolean initialization_vector, boolean side) {
+  int i, j = 0;
+  int string_length = strlen(data);
 
- for (i = 0; i < encryption_strength; i++)
-  _s_box[i] = i;
+  if(initialization_vector && side)
+    for(i = 0; i < string_length; i++)
+      data[i] = data[i] ^ data[string_length - 1];
 
- for (i = 0; i < encryption_strength; i++) {
-  j = (j + _s_box[i] + encryption_key[ i % strlen(encryption_key)]) % encryption_strength;
-  swap(_s_box[i], _s_box[j]);
- }
+  for (i = 0; i < encryption_strength; i++)
+    _s_box[i] = i;
 
- i = j = 0;
- for (int k = 0; k < strlen(data); k++) {
-  i = (i + 1) % encryption_strength;
-  j = (j + _s_box[i]) % encryption_strength;
-  swap(_s_box[i], _s_box[j]);
-  hash[k] = (data[k] ^ _s_box[ (_s_box[i] + _s_box[j]) % encryption_strength]) ^ encryption_key[3];
-  hash[k] = hash[k] ^ ((encryption_key[0] + i + encryption_key[1] + k + encryption_key[2]) % 255);
- }
+  for (i = 0; i < encryption_strength; i++) {
+    j = (j + _s_box[i] + encryption_key[ i % strlen(encryption_key)]) % encryption_strength;
+    swap(_s_box[i], _s_box[j]);
+  }
 
- hash[strlen(data) + 1] = '\0';
+  i = j = 0;
+  for (int k = 0; k < string_length; k++) {
+    i = (i + 1) % encryption_strength;
+    j = (j + _s_box[i]) % encryption_strength;
+    swap(_s_box[i], _s_box[j]);
+    hash[k] = data[k] ^ _s_box[ (_s_box[i] + _s_box[j]) % encryption_strength];
+  }
+
+  if(initialization_vector && !side) {
+    hash[string_length] = this->generate_IV(string_length);
+    for(i = 0; i < string_length; i++)
+      hash[i] = hash[i] ^ hash[string_length];
+  }
+
+  hash[string_length + 1] = '\0';
+}
+
+byte PJON::generate_IV(int string_length) {
+  byte IV = random(0, 255);
+  for(int i = 0; i < string_length; i++)
+    if(hash[i] == IV)
+      return this->generate_IV(string_length);
+  return IV;
 }
 
 /* Send a bit to the pin */
@@ -101,14 +116,14 @@ void PJON::send_byte(byte b) {
 /* Send a string to the pin */
 int PJON::send_string(byte ID, char *string) {
 
-  int package_length = strlen(string) + 3;
+  int package_length = strlen(string) + 4;
   byte CRC = 0;
 
   if(_collision_avoidance && !this->can_start())
       return BUSY;
 
   if(_encryption)
-    this->crypt(string);
+    this->crypt(string, true, 0);
 
   this->send_byte(ID);
   CRC ^= ID;
@@ -219,7 +234,7 @@ int PJON::receive() {
       for(int i = 0; i < package_length - 1; i++)
         if(i > 1) data[i - 2] = data[i];
 
-      this->crypt((char*)data);
+      this->crypt((char*)data, true, 1);
     }
     return ACK;
 

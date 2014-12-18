@@ -29,13 +29,14 @@ bit_width 18 - bit_spacer 36 - acceptance 16 - read_delay 7 */
 
 #include "PJON.h"
 
-/* Initiate PJON passing pin number and the selected device id */
+/* Initiate PJON passing pin number and the selected device_id */
 PJON::PJON(int input_pin, byte device_id) {
   _input_pin = input_pin;
   _device_id = device_id;
 }
 
-/* Avoid to transmit over other transmitting devices:
+/* Set collision detection:
+ If true Avoids to transmit over other transmitting devices:
  Every device to speak together without transmissions collision.
  On top of this can be developed a multimaster network of Arduino boards
  that arbitrally decides to communicate (slight reduction of bandwidth) */
@@ -43,14 +44,15 @@ void PJON::set_collision_avoidance(boolean state) {
   _collision_avoidance = state;
 }
 
-/* Sender waits for a feedback by receiver after transmission:
- After the string is sent, receiver answer with an ACK if
+/* Set acknowledge state:
+ If true sender waits for a feedback by receiver after transmission:
+ After the string is sent, receiver answers with an ACK if
  CRC is ok or NAK if wrong (slight reduction of bandwidth) */
 void PJON::set_acknowledge(boolean state) {
   _acknowledge = state;
 }
 
-/* Encrypt transmitted data */
+/* Set Encryption state to transmitted data */
 void PJON::set_encryption(boolean state) {
   _encryption = state;
 }
@@ -97,13 +99,25 @@ byte PJON::generate_IV(int string_length) {
   return IV;
 }
 
-/* Send a bit to the pin */
+/* Send a bit to the pin
+ digitalWriteFast is used instead of standard digitalWrite
+ function to optimize transmission time */
 void PJON::send_bit(byte VALUE, int duration) {
   digitalWriteFast(_input_pin, VALUE);
   delayMicroseconds(duration);
 }
 
-/* Send a byte to the pin */
+/* Send a byte to the pin
+
+    Init            Byte
+ |--------|-----------------------|
+ |_____    __       __    __.__   |
+ |     |  |  |     |  |  |     |  |
+ |1    |0 |1 |0  0 |1 |0 |1  1 |0 |
+ |     |__|  |__.__|  |__|     |__|
+
+ Init is a long 1 with a bit_spacer duration
+ (in general longer then a bit) then comes the raw byte */
 void PJON::send_byte(byte b) {
   pinModeFast(_input_pin, OUTPUT);
   this->send_bit(HIGH, bit_spacer);
@@ -153,13 +167,19 @@ int PJON::send_string(byte ID, char *string) {
 
 };
 
-/* Send a command to the pin */
+/* Send a command to the pin:
+ Command is formatted in a string and sent as it is */
 int PJON::send_command(byte ID, byte command_type, unsigned int value) {
   char bytes_to_send[3] = { command_type, value >> 8, value & 0xFF };
   return this->send_string(ID, bytes_to_send);
 }
 
-/* Receive a bit from the pin */
+/* Receive a bit from the pin:
+ This function is used only in byte syncronization.
+ read_delay has to be tuned to correctly send and
+ receive transmissions because this variable it
+ shifts in which portion of the bit reading will be
+ executed by the next receive_byte function */
 int PJON::receive_bit() {
   delayMicroseconds((bit_width / 2) - read_delay);
   int bit_value = digitalReadFast(_input_pin);
@@ -179,7 +199,9 @@ byte PJON::receive_byte() {
   return byte_value;
 }
 
-/* Check if the channel if free for transmission */
+/* Check if the channel if free for transmission:
+ If an entire byte received contains no 1 it means
+ that there is no active transmission */
 boolean PJON::can_start() {
   pinModeFast(_input_pin, INPUT);
   this->send_bit(0, 8);
@@ -189,7 +211,9 @@ boolean PJON::can_start() {
   return false;
 }
 
-/* Check if a byte is coming from the pin */
+/* Check if a byte is coming from the pin:
+ If there is a 1 and is longer then acceptance
+ and after that comes a 0 probably a byte is coming */
 int PJON::start() {
   pinModeFast(_input_pin, INPUT);
   digitalWriteFast(_input_pin, LOW);
@@ -246,4 +270,3 @@ int PJON::receive() {
     return NAK;
   }
 }
-

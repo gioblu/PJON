@@ -5,7 +5,7 @@
    |y"s§+`\     Giovanni Blu Mitolo 2012 - 2014
   /so+:-..`\    gioscarab@gmail.com
   |+/:ngr-*.`\
-   |/:%&-a3f.:/\     PJON is a communication protocol and a network that connects up to 255
+   |/:%&-a3f.:/\     PJON is a device communications bus system that connects up to 255
     \+//u/+gosv//\    arduino boards with a single digital pin to the same wire and communicates
      \o+&/osw+odss\\   up to 4Kb/s with acknowledge, collision detection, CRC and encpryption.
        \:/+-.§°-:+oss\
@@ -13,19 +13,25 @@
         > <
        -| |-
 
-ADDRESS: Is possible assign up to 255 different adresses
-CRC: XOR Cyclic Redundancy Check to ensure almost errorless data communication
+ADDRESS: Is possible to assign up to 255 different adresses
+CRC: XOR Cyclic Redundancy Check ensures almost errorless data communication
 ACKNOLEDGE: Packet delivery is ensured by an acknowledge byte sent by receiver
-COLLISION DETECTION: Transmissions collision avoidance analyzing network bus before starting
+COLLISION DETECTION: collision avoidance is ensured analyzing network bus before starting
 ENCRYPTION: Private key encryption + initialization vector to ensure almost random data stream
-
-PJON Slow mode
-Absolute bandwidth 3.0 kb/s | Practical bandwidth 2.38 kb/s | Accuracy: 99.25%
-bit_width 20 - bit_spacer 68 - acceptance 16 - read_delay 9
-
-PJON Medium mode
-Absolute bandwidth 3.51 kb/b | Practical bandwidth 2.75 kb/s | Accuracy: 96.6%
-bit_width 18 - bit_spacer 36 - acceptance 16 - read_delay 7 */
+  _________________________________________________________________________________
+ |PJON Standard mode                                                               |
+ |---------------------------------------------------------------------------------|
+ |Absolute bandwidth 3.0 kb/s  | Practical bandwidth 2.38 kb/s | Accuracy: 99.25%  |
+ |---------------------------------------------------------------------------------|
+ |bit_width 20 | bit_spacer 68 | acceptance 16 | read_delay 9  |                   |
+ |_____________|_______________|_______________|_______________|___________________|
+  _________________________________________________________________________________
+ |PJON Fast mode                                                                   |
+ |---------------------------------------------------------------------------------|
+ |Absolute bandwidth 3.51 kb/s  | Practical bandwidth 2.75 kb/s | Accuracy: 99.25% |
+ |---------------------------------------------------------------------------------|
+ |bit_width 18 | bit_spacer 36 | acceptance 16 | read_delay 7  |                   |
+ |_____________|_______________|_______________|_______________|___________________| */
 
 #ifndef PJON_h
   #define PJON_h

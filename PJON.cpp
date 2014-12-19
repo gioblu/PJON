@@ -5,7 +5,7 @@
    |y"s§+`\     Giovanni Blu Mitolo 2012 - 2014
   /so+:-..`\    gioscarab@gmail.com
   |+/:ngr-*.`\
-   |/:%&-a3f.:/\     PJON is a communication protocol and a network that connects up to 255
+   |/:%&-a3f.:/\     PJON is a device communications bus system that connects up to 255
     \+//u/+gosv//\    arduino boards with a single digital pin to the same wire and communicates
      \o+&/osw+odss\\   up to 4Kb/s with acknowledge, collision detection, CRC and encpryption.
        \:/+-.§°-:+oss\
@@ -13,50 +13,65 @@
         > <
        -| |-
 
-ADDRESS: Is possible assign up to 255 different adresses
-CRC: XOR Cyclic Redundancy Check to ensure almost errorless data communication
+ADDRESS: Is possible to assign up to 255 different adresses
+CRC: XOR Cyclic Redundancy Check ensures almost errorless data communication
 ACKNOLEDGE: Packet delivery is ensured by an acknowledge byte sent by receiver
-COLLISION DETECTION: Transmissions collision avoidance analyzing network bus before starting
+COLLISION DETECTION: collision avoidance is ensured analyzing network bus before starting
 ENCRYPTION: Private key encryption + initialization vector to ensure almost random data stream
-
-PJON Slow mode
-Absolute bandwidth 3.0 kb/s | Practical bandwidth 2.38 kb/s | Accuracy: 99.25%
-bit_width 20 - bit_spacer 68 - acceptance 16 - read_delay 9
-
-PJON Medium mode
-Absolute bandwidth 3.51 kb/b | Practical bandwidth 2.75 kb/s | Accuracy: 96.6%
-bit_width 18 - bit_spacer 36 - acceptance 16 - read_delay 7 */
+  _________________________________________________________________________________
+ |PJON Standard mode                                                               |
+ |---------------------------------------------------------------------------------|
+ |Absolute bandwidth 3.0 kb/s  | Practical bandwidth 2.38 kb/s | Accuracy: 99.25%  |
+ |---------------------------------------------------------------------------------|
+ |bit_width 20 | bit_spacer 68 | acceptance 16 | read_delay 9  |                   |
+ |_____________|_______________|_______________|_______________|___________________|
+  _________________________________________________________________________________
+ |PJON Fast mode                                                                   |
+ |---------------------------------------------------------------------------------|
+ |Absolute bandwidth 3.51 kb/s  | Practical bandwidth 2.75 kb/s | Accuracy: 99.25% |
+ |---------------------------------------------------------------------------------|
+ |bit_width 18 | bit_spacer 36 | acceptance 16 | read_delay 7  |                   |
+ |_____________|_______________|_______________|_______________|___________________| */
 
 #include "PJON.h"
 
 /* Initiate PJON passing pin number and the selected device_id */
+
 PJON::PJON(int input_pin, uint8_t device_id) {
   _input_pin = input_pin;
   _device_id = device_id;
 }
 
+
 /* Set collision detection:
  If true Avoids to transmit over other transmitting devices:
  on top of this can be developed a multimaster network of Arduino boards
  that arbitrally decides to communicate (slight reduction of bandwidth) */
+
 void PJON::set_collision_avoidance(boolean state) {
   _collision_avoidance = state;
 }
+
 
 /* Set acknowledge state:
  If true sender waits for a feedback by receiver after transmission:
  After the string is sent, receiver answers with an ACK if
  CRC is ok or NAK if wrong (slight reduction of bandwidth) */
+
 void PJON::set_acknowledge(boolean state) {
   _acknowledge = state;
 }
 
+
 /* Set Encryption state to transmitted data */
+
 void PJON::set_encryption(boolean state) {
   _encryption = state;
 }
 
+
 /* Encrypt string with a custom made private key algorithm */
+
 void PJON::crypt(char *data, boolean initialization_vector, boolean side) {
   uint8_t i, j = 0;
   uint8_t string_length = strlen(data);
@@ -99,25 +114,29 @@ uint8_t PJON::generate_IV(uint8_t string_length) {
   return IV;
 }
 
+
 /* Send a bit to the pin
  digitalWriteFast is used instead of standard digitalWrite
  function to optimize transmission time */
+
 void PJON::send_bit(uint8_t VALUE, int duration) {
   digitalWriteFast(_input_pin, VALUE);
   delayMicroseconds(duration);
 }
 
-/* Send a byte to the pin:
 
-    Init            Byte
+/* Send a byte to the pin:
+  ________ _______________________
+ |  Init  |         Byte          |
  |--------|-----------------------|
- |_____    __       __    __.__   |
+ |_____   |__       __    __ __   |
  |     |  |  |     |  |  |     |  |
  |1    |0 |1 |0  0 |1 |0 |1  1 |0 |
- |     |__|  |__.__|  |__|     |__|
+ |_____|__|__|__ __|__|__|_____|__|
 
  Init is a long 1 with a bit_spacer duration
  and comes before the raw byte */
+
 void PJON::send_byte(uint8_t b) {
   pinModeFast(_input_pin, OUTPUT);
   this->send_bit(HIGH, bit_spacer);
@@ -127,7 +146,22 @@ void PJON::send_byte(uint8_t b) {
     this->send_bit(b & mask, bit_width);
 }
 
-/* Send a string to the pin */
+
+/* Send a string to the pin:
+ An Example of how the string "HI" is formatted and sent:
+  ____    _________________________________________       _____
+ | CA |  | ID | LENGTH | byte0 | byte1  | IV | CRC |     | ACK |
+ |----|->|----|--------|-------|--------|----|-----|-> <-|-----|
+ |    |  | 12 |   6    |   H   |   I    | 43 | 134 |     |     |
+ |____|  |____|________|_______|________|____|_____|     |_____|
+
+ CA: Check if bus is busy if collision_avoidance activated    - 1 byte
+ ID: Receiver ID                                              - 1 byte
+ LENGTH: Length of the string (max 255 characters)            - 1 byte
+ IV: Initialization vector, present if encryption activated   - 1 byte
+ CRC: Cyclic redundancy check                                 - 1 byte
+ ACK: Acknowledge sent from receiver if acknowledge activated - 1 byte */
+
 int PJON::send_string(uint8_t ID, char *string) {
 
   uint8_t package_length = strlen(string) + 4;
@@ -167,12 +201,15 @@ int PJON::send_string(uint8_t ID, char *string) {
 
 };
 
+
 /* Send a command to the pin:
  Command is formatted in a string and sent as it is */
+
 int PJON::send_command(byte ID, byte command_type, unsigned int value) {
   char bytes_to_send[3] = { command_type, value >> 8, value & 0xFF };
   return this->send_string(ID, bytes_to_send);
 }
+
 
 /* Receive a bit from the pin:
  This function is used only in byte syncronization.
@@ -180,6 +217,7 @@ int PJON::send_command(byte ID, byte command_type, unsigned int value) {
  receive transmissions because this variable it
  shifts in which portion of the bit reading will be
  executed by the next receive_byte function */
+
 uint8_t PJON::receive_bit() {
   delayMicroseconds((bit_width / 2) - read_delay);
   uint8_t bit_value = digitalReadFast(_input_pin);
@@ -187,7 +225,9 @@ uint8_t PJON::receive_bit() {
   return bit_value;
 }
 
+
 /* Receive a byte from the pin */
+
 uint8_t PJON::receive_byte() {
   uint8_t byte_value = B00000000;
   delayMicroseconds(bit_width / 2);
@@ -198,9 +238,11 @@ uint8_t PJON::receive_byte() {
   return byte_value;
 }
 
+
 /* Check if the channel if free for transmission:
  If an entire byte received contains no 1 it means
  that there is no active transmission */
+
 boolean PJON::can_start() {
   pinModeFast(_input_pin, INPUT);
   this->send_bit(0, 8);
@@ -210,9 +252,11 @@ boolean PJON::can_start() {
   return false;
 }
 
+
 /* Check if a byte is coming from the pin:
  If there is a 1 and is longer then acceptance
  and after that comes a 0 probably a byte is coming */
+
 int PJON::start() {
   pinModeFast(_input_pin, INPUT);
   digitalWriteFast(_input_pin, LOW);
@@ -227,7 +271,9 @@ int PJON::start() {
   return FAIL;
 }
 
-/* Receive a string from the pin */
+
+/* Receive a string from the pin: */
+
 int PJON::receive() {
   int package_length = max_package_length;
   uint8_t CRC = 0;

@@ -64,7 +64,7 @@ void PJON::crypt(char *data, boolean initialization_vector, boolean side) {
 
   if(initialization_vector && side)
     for(i = 0; i < string_length; i++)
-      data[i] = data[i] ^ data[string_length - 1];
+      data[i] ^= data[string_length - 1];
 
   for (i = 0; i < encryption_strength; i++)
     _s_box[i] = i;
@@ -85,7 +85,7 @@ void PJON::crypt(char *data, boolean initialization_vector, boolean side) {
   if(initialization_vector && !side) {
     hash[string_length] = this->generate_IV(string_length);
     for(i = 0; i < string_length; i++)
-      hash[i] = hash[i] ^ hash[string_length];
+      hash[i] ^= hash[string_length];
   }
 
   hash[string_length + 1] = '\0';
@@ -117,7 +117,7 @@ void PJON::send_bit(uint8_t VALUE, int duration) {
  |     |__|  |__.__|  |__|     |__|
 
  Init is a long 1 with a bit_spacer duration
- (in general longer then a bit) then comes the raw byte */
+ and comes before the raw byte */
 void PJON::send_byte(uint8_t b) {
   pinModeFast(_input_pin, OUTPUT);
   this->send_bit(HIGH, bit_spacer);

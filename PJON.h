@@ -44,7 +44,7 @@ bit_width 18 - bit_spacer 36 - acceptance 16 - read_delay 7 */
 // Absolute bandwidth 3.40 kb/b | Practical bandwidth 2.7 kb/s | Accuracy: 89.9%
 // bit_width 17 - bit_spacer 36 - acceptance 17 - read_delay 5
 
-#define max_package_length 256
+#define max_package_length 100
 #define bit_width 18
 #define bit_spacer 36
 #define acceptance 16

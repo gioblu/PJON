@@ -5,19 +5,19 @@
    |y"s§+`\     Giovanni Blu Mitolo 2012 - 2014
   /so+:-..`\    gioscarab@gmail.com
   |+/:ngr-*.`\
-   |/:%&-a3f.:/\     Simple library to send data from an Arduino board
-    \+//u/+gosv//\    to another one up to 4Kb/s with no trouble and
-     \o+&/osw+odss\\   on a single wire (plus GND obviously :P)
+   |/:%&-a3f.:/\     PJON is a communication protocol and a network that connects up to 255
+    \+//u/+gosv//\    arduino boards with a single digital pin to the same wire and communicates
+     \o+&/osw+odss\\   up to 4Kb/s with acknowledge, collision detection, CRC and encpryption.
        \:/+-.§°-:+oss\
-        | |       \oy\\
-        > <               Pull down resistor on the bus is generally used to reduce interference
+        | |       \oy\\   Pull down resistor on the bus is generally used to reduce interference
+        > <
        -| |-
 
-ADDRESS: A byte is dedicated to the id of the board, so 255 different ids are selectable
-ACKNOLEDGE: Feedback to communication (receiver answer to sender ACK or NACK)
-COLLISION DETECTION: Transmissions collision avoidance
-CRC: XOR Cyclic Redundancy Check to ensure correct data communication
-ENCRYPTION: Custom private key encryption algorithm
+ADDRESS: Is possible assign up to 255 different adresses
+CRC: XOR Cyclic Redundancy Check to ensure almost errorless data communication
+ACKNOLEDGE: Packet delivery is ensured by an acknowledge byte sent by receiver
+COLLISION DETECTION: Transmissions collision avoidance analyzing network bus before starting
+ENCRYPTION: Private key encryption + initialization vector to ensure almost random data stream
 
 PJON Slow mode
 Absolute bandwidth 3.0 kb/s | Practical bandwidth 2.38 kb/s | Accuracy: 99.25%
@@ -30,15 +30,14 @@ bit_width 18 - bit_spacer 36 - acceptance 16 - read_delay 7 */
 #include "PJON.h"
 
 /* Initiate PJON passing pin number and the selected device_id */
-PJON::PJON(int input_pin, byte device_id) {
+PJON::PJON(int input_pin, uint8_t device_id) {
   _input_pin = input_pin;
   _device_id = device_id;
 }
 
 /* Set collision detection:
  If true Avoids to transmit over other transmitting devices:
- Every device to speak together without transmissions collision.
- On top of this can be developed a multimaster network of Arduino boards
+ on top of this can be developed a multimaster network of Arduino boards
  that arbitrally decides to communicate (slight reduction of bandwidth) */
 void PJON::set_collision_avoidance(boolean state) {
   _collision_avoidance = state;
@@ -59,8 +58,9 @@ void PJON::set_encryption(boolean state) {
 
 /* Encrypt string with a custom made private key algorithm */
 void PJON::crypt(char *data, boolean initialization_vector, boolean side) {
-  int i, j = 0;
-  int string_length = strlen(data);
+  uint8_t i, j = 0;
+  uint8_t string_length = strlen(data);
+  uint8_t encryption_key_length = strlen(encryption_key);
 
   if(initialization_vector && side)
     for(i = 0; i < string_length; i++)
@@ -70,7 +70,7 @@ void PJON::crypt(char *data, boolean initialization_vector, boolean side) {
     _s_box[i] = i;
 
   for (i = 0; i < encryption_strength; i++) {
-    j = (j + _s_box[i] + encryption_key[ i % strlen(encryption_key)]) % encryption_strength;
+    j = (j + _s_box[i] + encryption_key[i % encryption_key_length]) % encryption_strength;
     swap(_s_box[i], _s_box[j]);
   }
 
@@ -91,9 +91,9 @@ void PJON::crypt(char *data, boolean initialization_vector, boolean side) {
   hash[string_length + 1] = '\0';
 }
 
-byte PJON::generate_IV(int string_length) {
-  byte IV = random(0, 255);
-  for(int i = 0; i < string_length; i++)
+uint8_t PJON::generate_IV(uint8_t string_length) {
+  uint8_t IV = (micros() % 254) + 1;
+  for(uint8_t i = 0; i < string_length; i++)
     if(hash[i] == IV)
       return this->generate_IV(string_length);
   return IV;
@@ -102,12 +102,12 @@ byte PJON::generate_IV(int string_length) {
 /* Send a bit to the pin
  digitalWriteFast is used instead of standard digitalWrite
  function to optimize transmission time */
-void PJON::send_bit(byte VALUE, int duration) {
+void PJON::send_bit(uint8_t VALUE, int duration) {
   digitalWriteFast(_input_pin, VALUE);
   delayMicroseconds(duration);
 }
 
-/* Send a byte to the pin
+/* Send a byte to the pin:
 
     Init            Byte
  |--------|-----------------------|
@@ -118,20 +118,20 @@ void PJON::send_bit(byte VALUE, int duration) {
 
  Init is a long 1 with a bit_spacer duration
  (in general longer then a bit) then comes the raw byte */
-void PJON::send_byte(byte b) {
+void PJON::send_byte(uint8_t b) {
   pinModeFast(_input_pin, OUTPUT);
   this->send_bit(HIGH, bit_spacer);
   this->send_bit(LOW, bit_width);
 
-  for(byte mask = 0x01; mask; mask <<= 1)
+  for(uint8_t mask = 0x01; mask; mask <<= 1)
     this->send_bit(b & mask, bit_width);
 }
 
 /* Send a string to the pin */
-int PJON::send_string(byte ID, char *string) {
+int PJON::send_string(uint8_t ID, char *string) {
 
-  int package_length = strlen(string) + 4;
-  byte CRC = 0;
+  uint8_t package_length = strlen(string) + 4;
+  uint8_t CRC = 0;
 
   if(_collision_avoidance && !this->can_start())
       return BUSY;
@@ -180,22 +180,21 @@ int PJON::send_command(byte ID, byte command_type, unsigned int value) {
  receive transmissions because this variable it
  shifts in which portion of the bit reading will be
  executed by the next receive_byte function */
-int PJON::receive_bit() {
+uint8_t PJON::receive_bit() {
   delayMicroseconds((bit_width / 2) - read_delay);
-  int bit_value = digitalReadFast(_input_pin);
+  uint8_t bit_value = digitalReadFast(_input_pin);
   delayMicroseconds(bit_width / 2);
   return bit_value;
 }
 
 /* Receive a byte from the pin */
-byte PJON::receive_byte() {
-  byte byte_value = B00000000;
+uint8_t PJON::receive_byte() {
+  uint8_t byte_value = B00000000;
   delayMicroseconds(bit_width / 2);
-  for (int i = 0; i < 8; i++) {
+  for (uint8_t i = 0; i < 8; i++) {
     byte_value += digitalReadFast(_input_pin) << i;
     delayMicroseconds(bit_width);
   }
-
   return byte_value;
 }
 
@@ -231,9 +230,9 @@ int PJON::start() {
 /* Receive a string from the pin */
 int PJON::receive() {
   int package_length = max_package_length;
-  byte CRC = 0;
+  uint8_t CRC = 0;
 
-  for (int i = 0; i < package_length; i++) {
+  for (uint8_t i = 0; i < package_length; i++) {
     data[i] = this->start();
 
     if (data[i] == FAIL)

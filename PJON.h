@@ -5,19 +5,19 @@
    |y"s§+`\     Giovanni Blu Mitolo 2012 - 2014
   /so+:-..`\    gioscarab@gmail.com
   |+/:ngr-*.`\
-   |/:%&-a3f.:/\     Simple library to send data from an Arduino board
-    \+//u/+gosv//\    to another one up to 4Kb/s with no trouble and
-     \o+&/osw+odss\\   on a single wire (plus GND obviously :P)
+   |/:%&-a3f.:/\     PJON is a communication protocol and a network that connects up to 255
+    \+//u/+gosv//\    arduino boards with a single digital pin to the same wire and communicates
+     \o+&/osw+odss\\   up to 4Kb/s with acknowledge, collision detection, CRC and encpryption.
        \:/+-.§°-:+oss\
-        | |       \oy\\
-        > <               Pull down resistor on the bus is generally used to reduce interference
+        | |       \oy\\   Pull down resistor on the bus is generally used to reduce interference
+        > <
        -| |-
 
-ADDRESS: A byte is dedicated to the id of the board, so 255 different ids are selectable
-ACKNOLEDGE: Feedback on communication (receiver answer to sender ACK or NACK)
-COLLISION DETECTION: Transmissions collision avoidance
-CRC: XOR CRC ensure correct data communication
-ENCRYPTION: Custom private key encryption algorithm
+ADDRESS: Is possible assign up to 255 different adresses
+CRC: XOR Cyclic Redundancy Check to ensure almost errorless data communication
+ACKNOLEDGE: Packet delivery is ensured by an acknowledge byte sent by receiver
+COLLISION DETECTION: Transmissions collision avoidance analyzing network bus before starting
+ENCRYPTION: Private key encryption + initialization vector to ensure almost random data stream
 
 PJON Slow mode
 Absolute bandwidth 3.0 kb/s | Practical bandwidth 2.38 kb/s | Accuracy: 99.25%
@@ -64,36 +64,36 @@ class PJON {
 
   public:
 
-    PJON(int input_pin, byte ID);
+    PJON(int input_pin, uint8_t ID);
     void set_collision_avoidance(boolean state);
     void set_acknowledge(boolean state);
     void set_encryption(boolean state);
 
     void crypt(char *data, boolean initialization_vector = false, boolean side = false);
-    byte generate_IV(int string_length);
+    uint8_t generate_IV(uint8_t string_length);
 
-    void send_bit(byte VALUE, int duration);
-    void send_byte(byte b);
+    void send_bit(uint8_t VALUE, int duration);
+    void send_byte(uint8_t b);
 
-    int send_string(byte ID, char *string);
-    int send_command(byte ID, byte command_type, unsigned int value);
+    int send_string(uint8_t ID, char *string);
+    int send_command(uint8_t ID, uint8_t command_type, unsigned int value);
 
-    int receive_bit();
-    byte receive_byte();
+    uint8_t receive_bit();
+    uint8_t receive_byte();
 
     boolean can_start();
 
     int start();
     int receive();
 
-    byte data[max_package_length];
+    uint8_t data[max_package_length];
     char hash[max_package_length];
 
   private:
-    byte _device_id;
+    uint8_t _device_id;
     int _input_pin;
     int _read_delay;
-    unsigned char _s_box[16];
+    unsigned char _s_box[encryption_strength];
 
     boolean _acknowledge;
     boolean _collision_avoidance;

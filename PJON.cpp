@@ -81,10 +81,8 @@ void PJON::crypt(char *data, boolean initialization_vector, boolean side) {
     for(i = 0; i < string_length; i++)
       data[i] ^= data[string_length - 1];
 
-  for (i = 0; i < encryption_strength; i++)
-    _s_box[i] = i;
-
   for (i = 0; i < encryption_strength; i++) {
+    _s_box[i] = i;
     j = (j + _s_box[i] + encryption_key[i % encryption_key_length]) % encryption_strength;
     swap(_s_box[i], _s_box[j]);
   }

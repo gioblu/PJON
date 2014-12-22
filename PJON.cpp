@@ -6,16 +6,16 @@
   /so+:-..`\    gioscarab@gmail.com
   |+/:ngr-*.`\
    |/:%&-a3f.:/\     PJON is a device communications bus system that connects up to 255
-    \+//u/+gosv//\    arduino boards with a single digital pin to the same wire and communicates
-     \o+&/osw+odss\\   up to 5KB/s with acknowledge, collision detection, CRC and encpryption.
-       \:/+-.§°-:+oss\
-        | |       \oy\\   Pull down resistor on the bus is generally used to reduce interference
+    \+//u/+gosv//\    arduino boards over a single wire and provides up to 5KB/s data communication
+     \o+&/osw+odss\\   with acknowledge, collision detection, CRC and encpryption all done
+       \:/+-.§°-:+oss\  with micros() and delayMicroseconds(), without using interrupt or timers.
+        | |       \oy\\   Pull down resistor on the bus is generally used to reduce interference.
         > <
        -| |-
 
-ADDRESS: Is possible to assign up to 255 different adresses
+ADDRESS: 255 different adresses can be assigned
 CRC: XOR Cyclic Redundancy Check ensures almost errorless data communication
-ACKNOLEDGE: Packet delivery is ensured by an acknowledge byte sent by receiver
+ACKNOLEDGE:  Acknowledge byte sent by receiver ensures packet delivery
 COLLISION DETECTION: collision avoidance is ensured analyzing network bus before starting
 ENCRYPTION: Private key encryption + initialization vector to ensure almost random data stream
   _________________________________________________________________________________
@@ -54,7 +54,7 @@ void PJON::set_collision_avoidance(boolean state) {
 
 
 /* Set acknowledge state:
- If true sender waits for a feedback by receiver after transmission:
+ If true sender waits for feedback by receiver after transmission:
  After the string is sent, receiver answers with an ACK if
  CRC is ok or NAK if wrong (slight reduction of bandwidth) */
 
@@ -70,7 +70,7 @@ void PJON::set_encryption(boolean state) {
 }
 
 
-/* Encrypt string with a custom made private key algorithm */
+/* Encrypt string with a custom made private key algorithm + initialization vector */
 
 void PJON::crypt(char *data, boolean initialization_vector, boolean side) {
   uint8_t i, j = 0;
@@ -132,8 +132,8 @@ void PJON::send_bit(uint8_t VALUE, int duration) {
  |1    |0 |1 |0  0 |1 |0 |1  1 |0 |
  |_____|__|__|__ __|__|__|_____|__|
 
- Init is a long 1 with a bit_spacer duration
- and comes before the raw byte */
+ Init is a long 1 with a bit_spacer duration and a standard bit 0
+ after that comes before the raw byte */
 
 void PJON::send_byte(uint8_t b) {
   pinModeFast(_input_pin, OUTPUT);
@@ -153,12 +153,12 @@ void PJON::send_byte(uint8_t b) {
  |  0  |  | 12 |   6    |   H   |   I    | 43 | 134 |     |  6  |
  |_____|  |____|________|_______|________|____|_____|     |_____|
 
- C-A: if collision_avoidance activated, check if bus is busy  - 1 byte
- ID: Receiver ID                                              - 1 byte
- LENGTH: Length of the string (max 255 characters)            - 1 byte
- IV: Initialization vector, present if encryption activated   - 1 byte
- CRC: Cyclic redundancy check                                 - 1 byte
- ACK: Acknowledge sent from receiver if acknowledge activated - 1 byte */
+ C-A: Collision avoidance - receive a byte, if no 1s channel is free    - 1 byte
+ ID: Receiver ID                                                        - 1 byte
+ LENGTH: Length of the string (max 255 characters)                      - 1 byte
+ IV: Initialization vector, present if encryption activated             - 1 byte
+ CRC: Cyclic redundancy check                                           - 1 byte
+ ACK: Acknowledge sent from receiver, present if acknowledge activated  - 1 byte */
 
 int PJON::send_string(uint8_t ID, char *string) {
 

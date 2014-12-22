@@ -6,16 +6,16 @@
   /so+:-..`\    gioscarab@gmail.com
   |+/:ngr-*.`\
    |/:%&-a3f.:/\     PJON is a device communications bus system that connects up to 255
-    \+//u/+gosv//\    arduino boards with a single digital pin to the same wire and communicates
-     \o+&/osw+odss\\   up to 5KB/s with acknowledge, collision detection, CRC and encpryption.
-       \:/+-.§°-:+oss\
-        | |       \oy\\   Pull down resistor on the bus is generally used to reduce interference
+    \+//u/+gosv//\    arduino boards over a single wire and provides up to 5KB/s data communication
+     \o+&/osw+odss\\   with acknowledge, collision detection, CRC and encpryption all done
+       \:/+-.§°-:+oss\  with micros() and delayMicroseconds(), without using interrupt or timers.
+        | |       \oy\\   Pull down resistor on the bus is generally used to reduce interference.
         > <
        -| |-
 
-ADDRESS: Is possible to assign up to 255 different adresses
+ADDRESS: 255 different adresses can be assigned
 CRC: XOR Cyclic Redundancy Check ensures almost errorless data communication
-ACKNOLEDGE: Packet delivery is ensured by an acknowledge byte sent by receiver
+ACKNOLEDGE:  Acknowledge byte sent by receiver ensures packet delivery
 COLLISION DETECTION: collision avoidance is ensured analyzing network bus before starting
 ENCRYPTION: Private key encryption + initialization vector to ensure almost random data stream
   _________________________________________________________________________________

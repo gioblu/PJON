@@ -7,7 +7,7 @@
   |+/:ngr-*.`\
    |/:%&-a3f.:/\     PJON is a device communications bus system that connects up to 255
     \+//u/+gosv//\    arduino boards with a single digital pin to the same wire and communicates
-     \o+&/osw+odss\\   up to 4Kb/s with acknowledge, collision detection, CRC and encpryption.
+     \o+&/osw+odss\\   up to 5KB/s with acknowledge, collision detection, CRC and encpryption.
        \:/+-.§°-:+oss\
         | |       \oy\\   Pull down resistor on the bus is generally used to reduce interference
         > <
@@ -19,18 +19,18 @@ ACKNOLEDGE: Packet delivery is ensured by an acknowledge byte sent by receiver
 COLLISION DETECTION: collision avoidance is ensured analyzing network bus before starting
 ENCRYPTION: Private key encryption + initialization vector to ensure almost random data stream
   _________________________________________________________________________________
- |PJON Standard mode                                                               |
+ |PJON Standard mode | Transfer speed: 4.32kB/s - 32256 baud/s |                   |
  |---------------------------------------------------------------------------------|
- |Absolute bandwidth 3.0 kb/s  | Practical bandwidth 2.38 kb/s | Accuracy: 99.25%  |
+ |Absolute bandwidth 3.25 kB/s | Practical bandwidth 2.15 kB/s | Accuracy: 99.72%  |
  |---------------------------------------------------------------------------------|
- |bit_width 20 | bit_spacer 68 | acceptance 16 | read_delay 9  |                   |
+ |bit_width 20 | bit_spacer 68 | acceptance 16 | read_delay 7  |                   |
  |_____________|_______________|_______________|_______________|___________________|
   _________________________________________________________________________________
- |PJON Fast mode                                                                   |
+ |PJON Fast mode | Transfer speed: 4.95kB/s - 39600 baud/s |                       |
  |---------------------------------------------------------------------------------|
- |Absolute bandwidth 3.51 kb/s  | Practical bandwidth 2.75 kb/s | Accuracy: 99.25% |
+ |Absolute bandwidth 3.66 kB/s | Practical bandwidth 2.45 kB/s | Accuracy: 95.55%  |
  |---------------------------------------------------------------------------------|
- |bit_width 18 | bit_spacer 36 | acceptance 16 | read_delay 7  |                   |
+ |bit_width 18 | bit_spacer 40 | acceptance 18 | read_delay 7  |                   |
  |_____________|_______________|_______________|_______________|___________________| */
 
 #ifndef PJON_h
@@ -46,20 +46,17 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
   #endif
 #endif
 
-// PJON Fast mode
-// Absolute bandwidth 3.40 kb/b | Practical bandwidth 2.7 kb/s | Accuracy: 89.9%
-// bit_width 17 - bit_spacer 36 - acceptance 17 - read_delay 5
-
 #define max_package_length 100
 #define bit_width 18
-#define bit_spacer 36
-#define acceptance 16
+#define bit_spacer 40
+#define acceptance 18
 #define read_delay 7
 
 #define ACK  6
 #define NAK  21
 #define FAIL 0x100
 #define BUSY 666
+#define BROADCAST 124
 
 #define encryption_key "19id°?=(!$=<zkl"
 #define encryption_strength 2

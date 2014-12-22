@@ -7,7 +7,7 @@
   |+/:ngr-*.`\
    |/:%&-a3f.:/\     PJON is a device communications bus system that connects up to 255
     \+//u/+gosv//\    arduino boards with a single digital pin to the same wire and communicates
-     \o+&/osw+odss\\   up to 4Kb/s with acknowledge, collision detection, CRC and encpryption.
+     \o+&/osw+odss\\   up to 5KB/s with acknowledge, collision detection, CRC and encpryption.
        \:/+-.§°-:+oss\
         | |       \oy\\   Pull down resistor on the bus is generally used to reduce interference
         > <
@@ -19,18 +19,18 @@ ACKNOLEDGE: Packet delivery is ensured by an acknowledge byte sent by receiver
 COLLISION DETECTION: collision avoidance is ensured analyzing network bus before starting
 ENCRYPTION: Private key encryption + initialization vector to ensure almost random data stream
   _________________________________________________________________________________
- |PJON Standard mode                                                               |
+ |PJON Standard mode | Transfer speed: 4.32kB/s - 32256 baud/s |                   |
  |---------------------------------------------------------------------------------|
- |Absolute bandwidth 3.0 kb/s  | Practical bandwidth 2.38 kb/s | Accuracy: 99.25%  |
+ |Absolute bandwidth 3.25 kB/s | Practical bandwidth 2.15 kB/s | Accuracy: 99.72%  |
  |---------------------------------------------------------------------------------|
- |bit_width 20 | bit_spacer 68 | acceptance 16 | read_delay 9  |                   |
+ |bit_width 20 | bit_spacer 68 | acceptance 16 | read_delay 7  |                   |
  |_____________|_______________|_______________|_______________|___________________|
   _________________________________________________________________________________
- |PJON Fast mode                                                                   |
+ |PJON Fast mode | Transfer speed: 4.95kB/s - 39600 baud/s     |                   |
  |---------------------------------------------------------------------------------|
- |Absolute bandwidth 3.51 kb/s  | Practical bandwidth 2.75 kb/s | Accuracy: 99.25% |
+ |Absolute bandwidth 3.66 kB/s | Practical bandwidth 2.45 kB/s | Accuracy: 95.55%  |
  |---------------------------------------------------------------------------------|
- |bit_width 18 | bit_spacer 36 | acceptance 16 | read_delay 7  |                   |
+ |bit_width 18 | bit_spacer 40 | acceptance 18 | read_delay 7  |                   |
  |_____________|_______________|_______________|_______________|___________________| */
 
 #include "PJON.h"
@@ -147,13 +147,13 @@ void PJON::send_byte(uint8_t b) {
 
 /* Send a string to the pin:
  An Example of how the string "HI" is formatted and sent:
-  ____    _________________________________________       _____
- | CA |  | ID | LENGTH | byte0 | byte1  | IV | CRC |     | ACK |
- |----|->|----|--------|-------|--------|----|-----|-> <-|-----|
- |    |  | 12 |   6    |   H   |   I    | 43 | 134 |     |     |
- |____|  |____|________|_______|________|____|_____|     |_____|
+  _____    _________________________________________       _____
+ | C-A |  | ID | LENGTH | byte0 | byte1  | IV | CRC |     | ACK |
+ |-----|->|----|--------|-------|--------|----|-----|-> <-|-----|
+ |  0  |  | 12 |   6    |   H   |   I    | 43 | 134 |     |  6  |
+ |_____|  |____|________|_______|________|____|_____|     |_____|
 
- CA: Check if bus is busy if collision_avoidance activated    - 1 byte
+ C-A: if collision_avoidance activated, check if bus is busy  - 1 byte
  ID: Receiver ID                                              - 1 byte
  LENGTH: Length of the string (max 255 characters)            - 1 byte
  IV: Initialization vector, present if encryption activated   - 1 byte
@@ -212,8 +212,8 @@ int PJON::send_command(byte ID, byte command_type, unsigned int value) {
 /* Receive a bit from the pin:
  This function is used only in byte syncronization.
  read_delay has to be tuned to correctly send and
- receive transmissions because this variable it
- shifts in which portion of the bit reading will be
+ receive transmissions because this variable shifts
+ in which portion of the bit, reading will be
  executed by the next receive_byte function */
 
 uint8_t PJON::receive_bit() {
@@ -238,7 +238,7 @@ uint8_t PJON::receive_byte() {
 
 
 /* Check if the channel if free for transmission:
- If an entire byte received contains no 1 it means
+ If an entire byte received contains no 1s it means
  that there is no active transmission */
 
 boolean PJON::can_start() {
@@ -282,18 +282,17 @@ int PJON::receive() {
     if (data[i] == FAIL)
       return FAIL;
 
-    if(i == 0 && data[i] != _device_id)
+    if(i == 0 && data[i] != _device_id && data[i] != BROADCAST)
       return BUSY;
 
     if(i == 1)
       package_length = data[i];
 
-    if (i < package_length - 1)
-      CRC ^= data[i];
+    CRC ^= data[i];
   }
 
-  if (data[package_length - 1] == CRC) {
-    if(_acknowledge) {
+  if (!CRC) {
+    if(_acknowledge && data[0] != BROADCAST) {
       this->send_byte(ACK);
       digitalWriteFast(_input_pin, LOW);
     }
@@ -306,7 +305,7 @@ int PJON::receive() {
     return ACK;
 
   } else {
-    if(_acknowledge) {
+    if(_acknowledge && data[0] != BROADCAST) {
       this->send_byte(NAK);
       digitalWriteFast(_input_pin, LOW);
     }

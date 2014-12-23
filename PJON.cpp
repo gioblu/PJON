@@ -18,20 +18,24 @@ CRC: XOR Cyclic Redundancy Check ensures almost errorless data communication
 ACKNOLEDGE:  Acknowledge byte sent by receiver ensures packet delivery
 COLLISION DETECTION: collision avoidance is ensured analyzing network bus before starting
 ENCRYPTION: Private key encryption + initialization vector to ensure almost random data stream
-  _________________________________________________________________________________
- |PJON Standard mode | Transfer speed: 4.32kB/s - 32256 baud/s |                   |
- |---------------------------------------------------------------------------------|
- |Absolute bandwidth 3.25 kB/s | Practical bandwidth 2.15 kB/s | Accuracy: 99.72%  |
- |---------------------------------------------------------------------------------|
- |bit_width 20 | bit_spacer 68 | acceptance 16 | read_delay 7  |                   |
- |_____________|_______________|_______________|_______________|___________________|
-  _________________________________________________________________________________
- |PJON Fast mode | Transfer speed: 4.95kB/s - 39600 baud/s     |                   |
- |---------------------------------------------------------------------------------|
- |Absolute bandwidth 3.66 kB/s | Practical bandwidth 2.45 kB/s | Accuracy: 95.55%  |
- |---------------------------------------------------------------------------------|
- |bit_width 18 | bit_spacer 40 | acceptance 18 | read_delay 7  |                   |
- |_____________|_______________|_______________|_______________|___________________| */
+  __________________________________________________________________________________
+ |PJON Standard mode |                                                              |
+ |----------------------------------------------------------------------------------|
+ |bit_width 20 | bit_spacer 68 | acceptance 16 | read_delay 7                       |
+ |----------------------------------------------------------------------------------|
+ |Absolute bandwidth:  3.16-3.25 kB/s | Transfer speed: 4.32kB/s                    |
+ |Practical bandwidth: 2.15-2.45 kB/s | Baud rate: 32256 baud/s                     |
+ |Accuracy: 99.45-99.66%              |                                             |
+ |----------------------------------------------------------------------------------|
+  __________________________________________________________________________________
+ |PJON Fast mode |                                                                  |
+ |----------------------------------------------------------------------------------|
+ |bit_width 18 | bit_spacer 40 | acceptance 18 | read_delay 7                       |
+ |----------------------------------------------------------------------------------|
+ |Absolute bandwidth:  3.25-3.71 kB/s | Transfer speed: 4.95kB/s                    |
+ |Practical bandwidth: 2.48-2.85 kB/s | Baud rate: 39600 baud/s                     |
+ |Accuracy: 94.51-98.63%              |                                             |
+ |----------------------------------------------------------------------------------|  */
 
 #include "PJON.h"
 
@@ -56,7 +60,9 @@ void PJON::set_collision_avoidance(boolean state) {
 /* Set acknowledge state:
  If true sender waits for feedback by receiver after transmission:
  After the string is sent, receiver answers with an ACK if
- CRC is ok or NAK if wrong (slight reduction of bandwidth) */
+ CRC is ok or NAK if wrong (slight reduction of bandwidth)
+ If false, if you call send_string repeatedly, at least 14 or more
+ microseconds delay is necessary bewteen every send_string. */
 
 void PJON::set_acknowledge(boolean state) {
   _acknowledge = state;
@@ -243,7 +249,7 @@ uint8_t PJON::receive_byte() {
 
 boolean PJON::can_start() {
   pinModeFast(_input_pin, INPUT);
-  this->send_bit(0, 8);
+  this->send_bit(0, 2);
   if(!this->receive_byte())
     return true;
 

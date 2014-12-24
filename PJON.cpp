@@ -142,9 +142,10 @@ void PJON::send_bit(uint8_t VALUE, int duration) {
  after that comes before the raw byte */
 
 void PJON::send_byte(uint8_t b) {
-  pinModeFast(_input_pin, OUTPUT);
-  this->send_bit(HIGH, bit_spacer);
-  this->send_bit(LOW, bit_width);
+  digitalWriteFast(_input_pin, HIGH);
+  delayMicroseconds(bit_spacer);
+  digitalWriteFast(_input_pin, LOW);
+  delayMicroseconds(bit_width);
 
   for(uint8_t mask = 0x01; mask; mask <<= 1)
     this->send_bit(b & mask, bit_width);
@@ -177,6 +178,7 @@ int PJON::send_string(uint8_t ID, char *string) {
   if(_encryption)
     this->crypt(string, true, 0);
 
+  pinModeFast(_input_pin, OUTPUT);
   this->send_byte(ID);
   CRC ^= ID;
   this->send_byte(package_length);
@@ -299,6 +301,7 @@ int PJON::receive() {
 
   if (!CRC) {
     if(_acknowledge && data[0] != BROADCAST) {
+      pinModeFast(_input_pin, OUTPUT);
       this->send_byte(ACK);
       digitalWriteFast(_input_pin, LOW);
     }
@@ -312,6 +315,7 @@ int PJON::receive() {
 
   } else {
     if(_acknowledge && data[0] != BROADCAST) {
+      pinModeFast(_input_pin, OUTPUT);
       this->send_byte(NAK);
       digitalWriteFast(_input_pin, LOW);
     }

@@ -32,8 +32,8 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
  |----------------------------------------------------------------------------------|
  |bit_width 18 | bit_spacer 40 | acceptance 18 | read_delay 7                       |
  |----------------------------------------------------------------------------------|
- |Absolute bandwidth:  3.25-3.71 kB/s | Transfer speed: 4.95kB/s                    |
- |Practical bandwidth: 2.48-2.85 kB/s | Baud rate: 39600 baud/s                     |
+ |Absolute bandwidth:  3.25-3.81 kB/s | Transfer speed: 4.95kB/s                    |
+ |Practical bandwidth: 2.52-2.85 kB/s | Baud rate: 39600 baud/s                     |
  |Accuracy: 94.51-98.63%              |                                             |
  |----------------------------------------------------------------------------------|  */
 
@@ -54,7 +54,7 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
 #define bit_width 18
 #define bit_spacer 40
 #define acceptance 18
-#define read_delay 7
+#define read_delay 8
 
 #define ACK  6
 #define NAK  21

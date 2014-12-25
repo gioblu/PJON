@@ -23,14 +23,14 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
  |----------------------------------------------------------------------------------|
  |bit_width 20 | bit_spacer 68 | acceptance 16 | read_delay 7                       |
  |----------------------------------------------------------------------------------|
- |Absolute bandwidth:  3.16-3.25 kB/s | Transfer speed: 4.32kB/s                    |
- |Practical bandwidth: 2.15-2.45 kB/s | Baud rate: 32256 baud/s                     |
- |Accuracy: 99.45-99.66%              |                                             |
+ |Absolute bandwidth:  3.16-3.28 kB/s | Transfer speed: 4.32kB/s                    |
+ |Practical bandwidth: 2.19-2.45 kB/s | Baud rate: 32256 baud/s                     |
+ |Accuracy: 99.45-99.95%              |                                             |
  |----------------------------------------------------------------------------------|
   __________________________________________________________________________________
  |PJON Fast mode |                                                                  |
  |----------------------------------------------------------------------------------|
- |bit_width 18 | bit_spacer 40 | acceptance 18 | read_delay 7                       |
+ |bit_width 18 | bit_spacer 40 | acceptance 18 | read_delay 8                       |
  |----------------------------------------------------------------------------------|
  |Absolute bandwidth:  3.25-3.81 kB/s | Transfer speed: 4.95kB/s                    |
  |Practical bandwidth: 2.52-2.85 kB/s | Baud rate: 39600 baud/s                     |
@@ -90,7 +90,7 @@ class PJON {
 
     boolean can_start();
 
-    int start();
+    int syncronize();
     int receive();
 
     uint8_t data[max_package_length];

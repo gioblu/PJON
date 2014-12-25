@@ -23,17 +23,17 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
  |----------------------------------------------------------------------------------|
  |bit_width 20 | bit_spacer 68 | acceptance 16 | read_delay 7                       |
  |----------------------------------------------------------------------------------|
- |Absolute bandwidth:  3.16-3.25 kB/s | Transfer speed: 4.32kB/s                    |
- |Practical bandwidth: 2.15-2.45 kB/s | Baud rate: 32256 baud/s                     |
- |Accuracy: 99.45-99.66%              |                                             |
+ |Absolute bandwidth:  3.16-3.28 kB/s | Transfer speed: 4.32kB/s                    |
+ |Practical bandwidth: 2.19-2.45 kB/s | Baud rate: 32256 baud/s                     |
+ |Accuracy: 99.45-99.95%              |                                             |
  |----------------------------------------------------------------------------------|
   __________________________________________________________________________________
  |PJON Fast mode |                                                                  |
  |----------------------------------------------------------------------------------|
- |bit_width 18 | bit_spacer 40 | acceptance 18 | read_delay 7                       |
+ |bit_width 18 | bit_spacer 40 | acceptance 18 | read_delay 8                       |
  |----------------------------------------------------------------------------------|
- |Absolute bandwidth:  3.25-3.71 kB/s | Transfer speed: 4.95kB/s                    |
- |Practical bandwidth: 2.48-2.85 kB/s | Baud rate: 39600 baud/s                     |
+ |Absolute bandwidth:  3.25-3.81 kB/s | Transfer speed: 4.95kB/s                    |
+ |Practical bandwidth: 2.52-2.85 kB/s | Baud rate: 39600 baud/s                     |
  |Accuracy: 94.51-98.63%              |                                             |
  |----------------------------------------------------------------------------------|  */
 
@@ -199,7 +199,7 @@ int PJON::send_string(uint8_t ID, char *string) {
   int response = FAIL;
 
   while(response == FAIL && micros() - time <= bit_spacer + bit_width)
-    response = this->start();
+    response = this->syncronize();
 
   if(response == NAK) return NAK;
   if(response == ACK) return ACK;
@@ -263,7 +263,7 @@ boolean PJON::can_start() {
  If there is a 1 and is longer then acceptance
  and after that comes a 0 probably a byte is coming */
 
-int PJON::start() {
+int PJON::syncronize() {
   pinModeFast(_input_pin, INPUT);
   digitalWriteFast(_input_pin, LOW);
 
@@ -285,7 +285,7 @@ int PJON::receive() {
   uint8_t CRC = 0;
 
   for (uint8_t i = 0; i < package_length; i++) {
-    data[i] = this->start();
+    data[i] = this->syncronize();
 
     if (data[i] == FAIL)
       return FAIL;

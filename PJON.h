@@ -83,6 +83,8 @@ class PJON {
     void send_byte(uint8_t b);
 
     int send_string(uint8_t ID, char *string);
+    int send_string(uint8_t ID, char *string, int count);
+
     int send_command(uint8_t ID, uint8_t command_type, unsigned int value);
 
     uint8_t receive_bit();
@@ -92,6 +94,7 @@ class PJON {
 
     int syncronize();
     int receive();
+    int receive(int count);
 
     uint8_t data[max_package_length];
     char hash[max_package_length];

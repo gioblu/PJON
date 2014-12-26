@@ -207,6 +207,14 @@ int PJON::send_string(uint8_t ID, char *string) {
 
 };
 
+int PJON::send_string(uint8_t ID, char *string, int count) {
+  int response;
+  for(int i = 0; i < count || response == ACK; i++)
+    response = this->send_string(ID, string);
+
+  return response;
+}
+
 
 /* Send a command to the pin:
  Command is formatted in a string and sent as it is */
@@ -278,7 +286,7 @@ int PJON::syncronize() {
 }
 
 
-/* Receive a string from the pin: */
+/* Try to receive a string from the pin: */
 
 int PJON::receive() {
   int package_length = max_package_length;
@@ -321,4 +329,15 @@ int PJON::receive() {
     }
     return NAK;
   }
+}
+
+
+/* Try to receive a string from the pin repeatedly: */
+
+int PJON::receive(int count) {
+  int response;
+  for(int i = 0; i < count || response == ACK; i++)
+    this-receive();
+
+  return response;
 }

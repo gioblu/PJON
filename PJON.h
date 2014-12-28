@@ -87,14 +87,14 @@ class PJON {
 
     int send_command(uint8_t ID, uint8_t command_type, unsigned int value);
 
-    uint8_t receive_bit();
-    uint8_t receive_byte();
+    uint8_t syncronization_bit();
+    uint8_t read_byte();
 
     boolean can_start();
 
-    int syncronize();
+    int receive_byte();
     int receive();
-    int receive(int count);
+    int receive(unsigned long duration);
 
     uint8_t data[max_package_length];
     char hash[max_package_length];

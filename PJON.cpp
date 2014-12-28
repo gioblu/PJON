@@ -76,6 +76,22 @@ void PJON::set_encryption(boolean state) {
 }
 
 
+/* Check if the channel if free for transmission:
+ If an entire byte received contains no 1s it means
+ that there is no active transmission */
+
+boolean PJON::can_start() {
+  pinModeFast(_input_pin, INPUT);
+  this->send_bit(0, 2);
+  if(!this->read_byte())
+    return true;
+
+  return false;
+}
+
+/* Transmitter side functions ---------------------------------------------------------------------------- */
+
+
 /* Encrypt string with a custom made private key algorithm + initialization vector */
 
 void PJON::crypt(char *data, boolean initialization_vector, boolean side) {
@@ -199,7 +215,7 @@ int PJON::send_string(uint8_t ID, char *string) {
   int response = FAIL;
 
   while(response == FAIL && micros() - time <= bit_spacer + bit_width)
-    response = this->syncronize();
+    response = this->receive_byte();
 
   if(response == NAK) return NAK;
   if(response == ACK) return ACK;
@@ -224,15 +240,16 @@ int PJON::send_command(byte ID, byte command_type, unsigned int value) {
   return this->send_string(ID, bytes_to_send);
 }
 
+/* Receiver side functions ------------------------------------------------------------------------ */
 
-/* Receive a bit from the pin:
+/* Syncronize with transmitter:
  This function is used only in byte syncronization.
  read_delay has to be tuned to correctly send and
  receive transmissions because this variable shifts
  in which portion of the bit, reading will be
- executed by the next receive_byte function */
+ executed by the next read_byte function */
 
-uint8_t PJON::receive_bit() {
+uint8_t PJON::syncronization_bit() {
   delayMicroseconds((bit_width / 2) - read_delay);
   uint8_t bit_value = digitalReadFast(_input_pin);
   delayMicroseconds(bit_width / 2);
@@ -240,9 +257,28 @@ uint8_t PJON::receive_bit() {
 }
 
 
-/* Receive a byte from the pin */
+/* Check if a byte is coming from the pin:
+ If there is a 1 and is longer then acceptance
+ and after that comes a 0 probably a byte is coming */
 
-uint8_t PJON::receive_byte() {
+int PJON::receive_byte() {
+  pinModeFast(_input_pin, INPUT);
+  digitalWriteFast(_input_pin, LOW);
+
+  unsigned long time = micros();
+  while (digitalReadFast(_input_pin) && micros() - time <= bit_spacer);
+  time = micros() - time;
+
+  if(time > acceptance && !this->syncronization_bit())
+    return (int)this->read_byte();
+
+  return FAIL;
+}
+
+
+/* Read a byte from the pin */
+
+uint8_t PJON::read_byte() {
   uint8_t byte_value = B00000000;
   delayMicroseconds(bit_width / 2);
   for (uint8_t i = 0; i < 8; i++) {
@@ -253,39 +289,6 @@ uint8_t PJON::receive_byte() {
 }
 
 
-/* Check if the channel if free for transmission:
- If an entire byte received contains no 1s it means
- that there is no active transmission */
-
-boolean PJON::can_start() {
-  pinModeFast(_input_pin, INPUT);
-  this->send_bit(0, 2);
-  if(!this->receive_byte())
-    return true;
-
-  return false;
-}
-
-
-/* Check if a byte is coming from the pin:
- If there is a 1 and is longer then acceptance
- and after that comes a 0 probably a byte is coming */
-
-int PJON::syncronize() {
-  pinModeFast(_input_pin, INPUT);
-  digitalWriteFast(_input_pin, LOW);
-
-  unsigned long time = micros();
-  while (digitalReadFast(_input_pin) && micros() - time <= bit_spacer);
-  time = micros() - time;
-
-  if(time > acceptance && !this->receive_bit())
-    return (int)this->receive_byte();
-
-  return FAIL;
-}
-
-
 /* Try to receive a string from the pin: */
 
 int PJON::receive() {
@@ -293,7 +296,7 @@ int PJON::receive() {
   uint8_t CRC = 0;
 
   for (uint8_t i = 0; i < package_length; i++) {
-    data[i] = this->syncronize();
+    data[i] = this->receive_byte();
 
     if (data[i] == FAIL)
       return FAIL;
@@ -332,12 +335,23 @@ int PJON::receive() {
 }
 
 
-/* Try to receive a string from the pin repeatedly: */
+/* Try to receive a string from the pin repeatedly:
+receive() is executed in cycle with a for because is
+not possible to use micros() as condition (too long to be executed).
+micros() is then used in while as condition approximately every
+10 milliseconds (3706 value in for determines duration) */
 
-int PJON::receive(int count) {
+int PJON::receive(unsigned long duration) {
   int response;
-  for(int i = 0; i < count || response == ACK; i++)
-    this-receive();
-
+  unsigned long time = micros();
+  while(micros() - time <= duration) {
+    for(unsigned long i = 0; i < 3706; i++) {
+      response = this->receive();
+      if(response == ACK) { 
+        //this->process_message();
+        break;
+      }
+    }
+  }
   return response;
 }

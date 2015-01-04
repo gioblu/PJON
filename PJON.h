@@ -61,11 +61,32 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
 #define FAIL 0x100
 #define BUSY 666
 #define BROADCAST 124
+#define TO_BE_SENT 74
+#define CMD 88
 
 #define encryption_key "19id°?=(!$=<zkl"
 #define encryption_strength 2
 
 #define swap(a,b) do { int t = _s_box[a]; _s_box[a] = _s_box[b]; _s_box[b] = t; } while(0)
+
+#define max_reactions 20
+#define max_packets 20
+
+struct packet {
+  uint8_t device_id;
+  char *content;
+  int state;
+  unsigned long registration;
+  unsigned long timing;
+};
+
+struct reaction {
+  void (*execution)(void);
+  char command_type;
+  boolean active;
+  boolean once;
+  boolean empty;
+};
 
 class PJON {
 
@@ -76,7 +97,11 @@ class PJON {
     void set_acknowledge(boolean state);
     void set_encryption(boolean state);
 
-    void crypt(char *data, boolean initialization_vector = false, boolean side = false);
+    void update();
+    int send(uint8_t ID, char *packet, unsigned long timing = 0);
+    void remove(int packet_id);
+
+    void crypt(char *content, boolean initialization_vector = false, boolean side = false);
     uint8_t generate_IV(uint8_t string_length);
 
     void send_bit(uint8_t VALUE, int duration);
@@ -85,7 +110,8 @@ class PJON {
     int send_string(uint8_t ID, char *string);
     int send_string(uint8_t ID, char *string, int count);
 
-    int send_command(uint8_t ID, uint8_t command_type, unsigned int value);
+    int send_command(uint8_t ID, uint8_t command_type, unsigned int value, unsigned long timing = 0);
+    int send_command(uint8_t ID, uint8_t command_type, uint8_t value, unsigned long timing = 0);
 
     uint8_t syncronization_bit();
     uint8_t read_byte();
@@ -96,8 +122,17 @@ class PJON {
     int receive();
     int receive(unsigned long duration);
 
+    void activate_reaction(uint8_t id);
+    void deactivate_reaction(uint8_t id);
+    uint8_t insert_reaction(char command_type, void (*task)(void), boolean once);
+    void remove_reaction(uint8_t id);
+    void process_reaction();
+    boolean compare_reaction(char command_type);
+
     uint8_t data[max_package_length];
     char hash[max_package_length];
+    packet packets[max_packets];
+    reaction reactions[max_reactions];
 
   private:
     uint8_t _device_id;

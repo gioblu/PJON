@@ -1,6 +1,8 @@
 PJON 
-====
-
+==== 
+**Slow mode** Absolute bandwidth: **3.0kb/s** | Practical bandwidth: **2.38kb/s** | Accuracy: **99.25%**
+**Standard mode** Absolute bandwidth: **3.44kb/s** | Practical bandwidth: **2.71kb/s** | Accuracy: **95.0%**
+ 
 PJON **(Padded Jittering Operative Network)** is a multi-master, single wire, addressed and checked communication protocol and is designed to be an alternative to i2c, 1Wire, Serial and the other Arduino compatible protocols. 
 
 Practically this library let you connect up to 255 Arduino together using only one common wire and obviously ground if not common. Every board is programmed with its own ID and can be reached by every other connected device. 
@@ -13,5 +15,4 @@ This single wire simplicity let you experiment fastly and with creativity. For e
 
 I am not still free from work and so I don't have now the time to write a proper documentation but I sware they will appear in this summer vacation.
 
-* **Slow mode** Absolute bandwidth: **3.0kb/s** | Practical bandwidth: **2.38kb/s** | Accuracy: **99.25%**
-* **Standard mode** Absolute bandwidth: **3.44kb/s** | Practical bandwidth: **2.71kb/s** | Accuracy: **95.0%**
+

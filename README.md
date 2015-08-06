@@ -9,7 +9,7 @@ PJON contains also a packet manager / scheduler to track and retrasmit failed se
 
 This architecture gives you really high communication reliability and acceptable speed for the vast majority of embedded projects. PJON can be efficiently used from home automation to automotive applications.
 
-This single wire simplicity let you experiment fastly and with creativity. For example one of the first tests I advice to do with PJON is to let two arduinos communicate through your body touching with the left hand the port of the first and with the right the port of the other arduino. It's stunning to see more then 90% of accuracy for this digital doing all that path inside a biological body. This opens the mind to possible creative solutions; generally the average reaction is like: "lets use the car frame to let all the digital embedded systems to communicate together" and so on...
+This single wire simplicity let you experiment fastly and with creativity. For example one of the first tests I advice to do with PJON is to let two arduinos communicate through your body touching with the left hand the port of the first and with the right the port of the other arduino. It's stunning to see more then 90% of accuracy for this digital communication doing all that path inside a biological body. This opens the mind to possible creative solutions; generally the average reaction is like: "lets use the car frame to let all the digital embedded systems to communicate together" and so on...
 
 I am not still free from work and so I don't have now the time to write a proper documentation but I sware they will appear in this summer vacation.
 

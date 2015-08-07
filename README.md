@@ -97,7 +97,7 @@ void setup() {
 
 void check_temperature() {
  // inside network.data array you find the message value 
- if(network.data[somwhere you need] > 24)
+ if(network.data[somewhere you need] > some value)
   start_the_ac();
 };
 

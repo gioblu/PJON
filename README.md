@@ -28,8 +28,8 @@ After this is necessary to define wich type of communication we need. For exampl
 ```cpp
   // Master Slave capable setup
   void setup() {
-   network.set_collision_avoidance(true);
-   network.set_acknowledge(true);
+   network.set_collision_avoidance(false);
+   network.set_acknowledge(false);
   }; 
   
   // Multimaster capable setup

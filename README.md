@@ -115,7 +115,7 @@ if(response == ACK)
 if(response == NAK)
  Serial.println("Received not correct");
 if(response == BUSY)
- Serial.pritnln("Received packet for another device);
+ Serial.pritnln("Received packet for another device");
 if(response == FAIL)
  Serial.println("No data");
 ```

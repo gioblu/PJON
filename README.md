@@ -75,7 +75,7 @@ network.remove(one_second_delay_test);
 The state of your packet can be -1 that means is still in pending state, if NULL the packet was correctly sent and deleted. if you want to know the state of your packet:
 
 ```cpp
-int state = network.packets[one_second_test];
+int state = network.packets[one_second_test].state;
 ```
 
 You can also send a command with a predefined symbol to the sender that will trigger a predefined function:
@@ -106,16 +106,24 @@ void loop() {
 };
 ```
 
-To correctly receive data is necessary to call at least once per loop cycle the receive() function. Its important to consider that this is not an interrupt driven system and so all the time Arduino will pass in delay or executing something a certain amount of packets will be potentially lost unheard by the busy receiver. In this case structure intelligently your loop cicly to avoid huge blind timeframes:
+To correctly receive data is necessary to call at least once per loop cycle the receive() function. Its important to consider that this is not an interrupt driven system and so all the time Arduino will pass in delay or executing something a certain amount of packets will be potentially lost unheard by the busy receiver. In this case structure intelligently your loop cicly to avoid huge blind timeframes. The receive function returns a response that contains the result of the reception:
 
 ```cpp
-network.receive();
+int response = network.receive();
+if(response == ACK)
+ Serial.println("Correctly received");
+if(response == NAK)
+ Serial.println("Received not correct");
+if(response == BUSY)
+ Serial.pritnln("Received packet for another device);
+if(response == FAIL)
+ Serial.println("No data");
 ```
 
 If you want to dedicate exusively a determined amount of time only to receive data from the PJON bus use:
 
 ```cpp
-network.receive(1000000);
+int response = network.receive(1000000);
 // Receive for one second
 ```
 

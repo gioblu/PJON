@@ -57,7 +57,7 @@ To let the network work correctly you need to call the update() function at leas
 To send a string to another device connected to the bus simply call send() function passing the ID you want to contact and the string you want to send:
 
 ```cpp
-network.send(100, "Ciao, this is a test!");
+int test = network.send(100, "Ciao, this is a test!");
 ```
 
 if you need to send a value repeatedly simply add after the first parameter the interval in microseconds you want between every sending:
@@ -72,6 +72,12 @@ If you want to remove this repeated task simply:
 network.remove(one_second_delay_test);
 ```
 
+The state of your packet can be -1 that means is still in pending state, if NULL the packet was correctly sent and deleted. if you want to know the state of your packet:
+
+```cpp
+int state = network.packets[one_second_test];
+```
+
 You can also send a command with a predefined symbol to the sender that will trigger a predefined function:
 
 ```cpp
@@ -81,6 +87,24 @@ int temperature_send = network.send_command(100, "T", temperature, 60000000);
 ```
 
 ## Receive data
+
+If you defined in another board a command that the receiver board you are programming should receive you can define a reaction to that command that will trigger a function that will be called as soon as the command will be received:
+
+```cpp
+void setup() {
+ netowrk.insert_reaction("T", check_temperature);
+};
+
+void check_temperature() {
+ // inside network.data array you find the message value 
+ if(network.data[somwhere you need] > 24)
+  start_the_ac();
+};
+
+void loop() {
+ netowrk.receive();
+};
+```
 
 To correctly receive data is necessary to call at least once per loop cycle the receive() function. Its important to consider that this is not an interrupt driven system and so all the time Arduino will pass in delay or executing something a certain amount of packets will be potentially lost unheard by the busy receiver. In this case structure intelligently your loop cicly to avoid huge blind timeframes:
 
@@ -94,5 +118,4 @@ If you want to dedicate exusively a determined amount of time only to receive da
 network.receive(1000000);
 // Receive for one second
 ```
-
 

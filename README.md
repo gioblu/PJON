@@ -15,7 +15,9 @@ This single wire simplicity let you experiment fastly and with creativity. For e
 
 ## How to start
 
-Lets start instantiating the PJON object that in the example is called network. To initialize a network based on PJON you need only to define the communication pin (any free digital pin on your board) and a unique ID:
+The first step is the physical layer. Lets wire the two arduinos. Simply find a piece of wire and select a digital pin you want to use on both where to connect the wire. After this you should have both arduino boards connected by a piece of wire on the same port.
+
+Lets start coding,  instantiate the PJON object that in the example is called network. To initialize a network based on PJON you need only to define the communication pin (any free digital pin on your board) and a unique ID:
 
 ```cpp  
   PJON network(12, 123); 

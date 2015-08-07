@@ -17,7 +17,7 @@ This single wire simplicity let you experiment fastly and with creativity. For e
 
 The first step is the physical layer. Lets wire the two arduinos. Simply find a piece of wire and select a digital pin you want to use on both where to connect the wire. After this you should have both arduino boards connected by a piece of wire on the same port.
 
-Lets start coding,  instantiate the PJON object that in the example is called network. To initialize a network based on PJON you need only to define the communication pin (any free digital pin on your board) and a unique ID:
+Lets start coding,  instantiate the PJON object that in the example is called network. To initialize a network based on PJON you need only to define the communication pin (any free digital pin on your board) and a unique ID (0 - 254):
 
 ```cpp  
   PJON network(12, 123); 
@@ -26,13 +26,13 @@ Lets start coding,  instantiate the PJON object that in the example is called ne
 After this is necessary to define wich type of communication we need. For example if you only need to send a value from a "slave" arduino to another one cyclically, you will probably not need collision_avoidance (to check if someone is speaking before starting a communication) and acknowledge or ACK (when a sender waits the receiver acknowledge of correct data receive after CRC check of data integrity). Disabling this two functionalities let you spare loop time and so speed up communication. In the opposite case, if you have two or more boards communicating bidirectionally as my automated home scenario, you will need to have a system able to speak over the channel when is free to avoid to corrupt some other communication going on and also to have every board sure that the message sent arrived correct to the receiver. There are some setters that let you configure the network as you need:
 
 ```cpp
-  // Multimaster capable setup
+  // Master Slave capable setup
   void setup() {
    network.set_collision_avoidance(true);
    network.set_acknowledge(true);
   }; 
   
-  // Master Slave capable setup
+  // Multimaster capable setup
   void setup() {
    network.set_collision_avoidance(true);
    network.set_acknowledge(true);

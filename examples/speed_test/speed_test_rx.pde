@@ -13,13 +13,13 @@ void setup() {
 };
 
 void loop() {
-	Serial.println("Starting 10 seconds communication speed test...");
- 	long time = millis();
+  Serial.println("Starting 10 seconds communication speed test...");
+  long time = millis();
   int response = 0; 
   while(millis() - time < 10000) {
     response = network.receive();
     if(response == ACK)
-     test++;
+      test++;
     if(response == NAK)
       mistakes++;
   }
@@ -38,7 +38,7 @@ void loop() {
   Serial.println();
   Serial.println();
   if(mistakes > test / 4 || test == 0)
-  	Serial.println("Check you wiring, maybe you need a pull down resistor or you are using a mistaken timing configuration according to your IDE, Check PJON.h. If you are using arduino Mega the behaviour is not predictable and PJON is not still tested with it.");
+    Serial.println("Check you wiring, maybe you need a pull down resistor or you are using a mistaken timing configuration according to your IDE, Check PJON.h. If you are using arduino Mega the behaviour is not predictable and PJON is not still tested with it.");
 
   test = 0; 
   mistakes = 0;

@@ -17,25 +17,7 @@ ADDRESS: 255 different adresses can be assigned
 CRC: XOR Cyclic Redundancy Check ensures almost errorless data communication
 ACKNOLEDGE:  Acknowledge byte sent by receiver ensures packet delivery
 COLLISION DETECTION: collision avoidance is ensured analyzing network bus before starting
-ENCRYPTION: Private key encryption + initialization vector to ensure almost random data stream
-  __________________________________________________________________________________
- |PJON Standard mode | Tested on Arduino duemilanove - UNO - Arduino nano           |
- |----------------------------------------------------------------------------------|
- |bit_width 20 | bit_spacer 68 | acceptance 16 | read_delay 7                       |
- |----------------------------------------------------------------------------------|
- |Absolute bandwidth:  3.16-3.28 kB/s | Transfer speed: 4.32kB/s                    |
- |Practical bandwidth: 2.19-2.45 kB/s | Baud rate: 32256 baud/s                     |
- |Accuracy: 99.45-99.95%              |                                             |
- |----------------------------------------------------------------------------------|
-  __________________________________________________________________________________
- |PJON Fast mode | Tested on Arduino duemilanove - UNO - Arduino nano               |
- |----------------------------------------------------------------------------------|
- |bit_width 18 | bit_spacer 40 | acceptance 18 | read_delay 8                       |
- |----------------------------------------------------------------------------------|
- |Absolute bandwidth:  3.25-3.81 kB/s | Transfer speed: 4.95kB/s                    |
- |Practical bandwidth: 2.52-2.85 kB/s | Baud rate: 39600 baud/s                     |
- |Accuracy: 94.51-98.63%              |                                             |
- |----------------------------------------------------------------------------------|  */
+ENCRYPTION: Private key encryption + initialization vector to ensure almost random data stream */
 
 #include "PJON.h"
 

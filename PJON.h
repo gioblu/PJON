@@ -21,8 +21,8 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
   __________________________________________________________________________________
  |PJON Standard mode | SPEED SETUP CHANGES ACCORGING TO YOUR IDE VERSION!           |
  |----------------------------------------------------------------------------------|
- |Arduino 0.x -> bit_width 20 | bit_spacer 68 | acceptance 16 | read_delay 7        |
- |Arduino 1.x -> bit_width 20 | bit_spacer 68 | acceptance  8 | read_delay 5        |
+ |Arduino 00x   -> bit_width 20 | bit_spacer 68 | acceptance 16 | read_delay 7      |
+ |Arduino 1.6.x -> bit_width 20 | bit_spacer 68 | acceptance  8 | read_delay 5      |
  |----------------------------------------------------------------------------------|
  |Absolute bandwidth:  3.16-3.28 kB/s | Transfer speed: 4.32kB/s                    |
  |Practical bandwidth: 2.19-2.45 kB/s | Baud rate: 32256 baud/s                     |
@@ -31,8 +31,8 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
   __________________________________________________________________________________
  |PJON Fast mode | SPEED SETUP CHANGES ACCORGING TO YOUR IDE VERSION!               |
  |----------------------------------------------------------------------------------|
- |Arduino 0.x -> bit_width 18 | bit_spacer 40 | acceptance 18 | read_delay 8        |
- |Arduino 1.x -> bit_width 18 | bit_spacer 40 | acceptance  8 | read_delay 5        |
+ |Arduino 00x   -> bit_width 18 | bit_spacer 40 | acceptance 18 | read_delay 8      |
+ |Arduino 1.6.x -> bit_width 18 | bit_spacer 40 | acceptance  8 | read_delay 5      |
  |----------------------------------------------------------------------------------|
  |Absolute bandwidth:  3.25-3.81 kB/s | Transfer speed: 4.95kB/s                    |
  |Practical bandwidth: 2.52-2.85 kB/s | Baud rate: 39600 baud/s                     |

@@ -43,18 +43,22 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
   #if defined(ARDUINO) && (ARDUINO >= 100)
     #include "Arduino.h"
     #include "includes/digitalWriteFast.h"
+    #define bit_width 18
+    #define bit_spacer 40
+    #define acceptance 10
+    #define read_delay 5
   #else
     #include "WProgram.h"
     #include "WConstants.h"
     #include "includes/digitalWriteFast.h"
+    #define bit_width 18
+    #define bit_spacer 40
+    #define acceptance 18
+    #define read_delay 8
   #endif
 #endif
 
 #define max_package_length 100
-#define bit_width 18
-#define bit_spacer 40
-#define acceptance 18
-#define read_delay 8
 
 #define ACK  6
 #define NAK  21

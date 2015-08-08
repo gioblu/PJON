@@ -1,29 +1,24 @@
 #include <PJON.h>
 float test;
 float mistakes;
-boolean debug = false;
 
 PJON network(A0, 44);
 
 void setup() {
  Serial.begin(115200);
  network.set_acknowledge(true);
- network.set_encryption(true);
-}
+ network.set_collision_avoidance(true);
+ network.set_encryption(false);
+};
 
 void loop() {
-  network.receive();
-  /*
-  if(!debug)
-    network.receive();
-  else {
-    long time = millis();
+   long time = millis();
     int response = 0; 
     while(millis() - time < 10000) {
       response = network.receive();
-      if(response == 6)
+      if(response == ACK)
        test++;
-      if(response == 21)
+      if(response == NAK)
         mistakes++;
     }
       
@@ -36,13 +31,7 @@ void loop() {
     Serial.print(" |Mistakes ");
     Serial.print(mistakes);
     Serial.print(" |Accuracy: ");
-    Serial.print(100 - (100 / (test / mistakes)));
+    Serial.println(100 - (100 / (test / mistakes)));
     test = 0; 
     mistakes = 0;
-    
-    Serial.print(" - ");
-    for(int i = 0; i < 10; i++) 
-      Serial.print(network.hash[i]);
-    Serial.println();    
-  }*/
-}
+};

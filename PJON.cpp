@@ -247,15 +247,16 @@ int PJON::send_string(uint8_t ID, char *string, int count) {
  CRC: Cyclic redundancy check                                                  - 1 byte
  ACK: Acknowledge sent from receiver, present if acknowledge activated         - 1 byte */
 
-int PJON::send_command(byte ID, byte command_type, uint8_t value, unsigned long timing) {
-  char bytes_to_send[3] = { CMD, command_type, value };
-  return this->send(ID, bytes_to_send, timing);
-}
-
-int PJON::send_command(byte ID, byte command_type, unsigned int value, unsigned long timing) {
+int PJON::send_command(byte ID, char command_type, unsigned int value, unsigned long timing) {
   char bytes_to_send[4] = { CMD, command_type, value >> 8, value & 0xFF };
   return this->send(ID, bytes_to_send, timing);
 }
+
+int PJON::send_short_command(byte ID, char command_type, unsigned long timing) {
+  char bytes_to_send[2] = { CMD, command_type };
+  return this->send(ID, bytes_to_send, timing);
+}
+
 
 
 /* Insert a packet in the send list:
@@ -470,7 +471,7 @@ boolean PJON::compare_reaction(char command_type) {
     if(hash[1] != command_type)
       return false;
   else
-    if(data[4] != command_type)
+    if(data[3] != command_type)
       return false;
 
   return true;

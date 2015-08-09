@@ -248,12 +248,12 @@ int PJON::send_string(uint8_t ID, char *string, int count) {
  ACK: Acknowledge sent from receiver, present if acknowledge activated         - 1 byte */
 
 int PJON::send_command(byte ID, char command_type, unsigned int value, unsigned long timing) {
-  char bytes_to_send[4] = { CMD, command_type, value >> 8, value & 0xFF };
+  char bytes_to_send[4] = { 'X', command_type, value >> 8, value & 0xFF };
   return this->send(ID, bytes_to_send, timing);
 }
 
 int PJON::send_short_command(byte ID, char command_type, unsigned long timing) {
-  char bytes_to_send[2] = { CMD, command_type };
+  char bytes_to_send[2] = { 'X', command_type };
   return this->send(ID, bytes_to_send, timing);
 }
 

@@ -84,12 +84,10 @@ int state = network.packets[one_second_test].state;
 You can also send a command with a predefined symbol to the sender that will trigger a predefined function:
 
 ```cpp
-int temperature = analogRead(A0);
-int temperature_send = network.send(100, "XB", 1000000);
-// Send for example X that is the command character and B user defined blink symbol
-
-// I am struggling to let the functions send_short_command and send_command to work
-// to have something like network.send_short_command(44, "B", 1000000);
+void loop() {
+ int blink_send = network.send_short_command(100, 'B');
+ delay(1000);
+}
 ```
 
 ## Receive data

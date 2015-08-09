@@ -85,8 +85,11 @@ You can also send a command with a predefined symbol to the sender that will tri
 
 ```cpp
 int temperature = analogRead(A0);
-int temperature_send = network.send_command(100, 'T', temperature, 60000000);
-// Send for example T24 every 60 seconds
+int temperature_send = network.send(100, "XB", 1000000);
+// Send for example X that is the command character and B user defined blink symbol
+
+// I am struggling to let the functions send_short_command and send_command to work
+// to have something like network.send_short_command(44, "B", 1000000);
 ```
 
 ## Receive data
@@ -95,13 +98,13 @@ If you defined in another board a command that the receiver board you are progra
 
 ```cpp
 void setup() {
- netowrk.insert_reaction('T', check_temperature);
+ netowrk.insert_reaction('B', led_blink);
 };
 
-void check_temperature() {
- // inside network.data array you find the message value 
- if(network.data[somewhere you need] > some value)
-  start_the_ac();
+void led_blink() {
+ digitalWrite(13, HIGH);
+ delay(30);
+ digitalWrite(13, LOW);
 };
 
 void loop() {

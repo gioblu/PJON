@@ -85,7 +85,7 @@ You can also send a command with a predefined symbol to the sender that will tri
 
 ```cpp
 int temperature = analogRead(A0);
-int temperature_send = network.send_command(100, "T", temperature, 60000000);
+int temperature_send = network.send_command(100, 'T', temperature, 60000000);
 // Send for example T24 every 60 seconds
 ```
 
@@ -95,7 +95,7 @@ If you defined in another board a command that the receiver board you are progra
 
 ```cpp
 void setup() {
- netowrk.insert_reaction("T", check_temperature);
+ netowrk.insert_reaction('T', check_temperature);
 };
 
 void check_temperature() {

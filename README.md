@@ -105,7 +105,7 @@ void check_temperature() {
 };
 
 void loop() {
- netowrk.receive();
+ netowrk.receive(1000);
 };
 ```
 

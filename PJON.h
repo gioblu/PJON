@@ -122,8 +122,8 @@ class PJON {
     int send_string(uint8_t ID, char *string);
     int send_string(uint8_t ID, char *string, int count);
 
-    int send_command(uint8_t ID, char command_type, unsigned int value, unsigned long timing = 0);
-    int send_short_command(byte ID, char command_type, unsigned long timing);
+    int send_command(uint8_t ID, char command_type, unsigned int value, int count = 0);
+    int send_short_command(byte ID, char command_type, int count);
 
     uint8_t syncronization_bit();
     uint8_t read_byte();

@@ -220,8 +220,10 @@ int PJON::send_string(uint8_t ID, char *string) {
 
 int PJON::send_string(uint8_t ID, char *string, int count) {
   int response;
-  for(int i = 0; i < count && response != ACK; i++)
+  for(int i = 0; i < count && response != ACK; i++) {
     response = this->send_string(ID, string);
+    delayMicroseconds(14);
+  }
 
   return response;
 }
@@ -247,14 +249,14 @@ int PJON::send_string(uint8_t ID, char *string, int count) {
  CRC: Cyclic redundancy check                                                  - 1 byte
  ACK: Acknowledge sent from receiver, present if acknowledge activated         - 1 byte */
 
-int PJON::send_command(byte ID, char command_type, unsigned int value, unsigned long timing) {
+int PJON::send_command(byte ID, char command_type, unsigned int value, int count) {
   char bytes_to_send[4] = { CMD, command_type, value >> 8, value & 0xFF };
-  return this->send(ID, bytes_to_send, timing);
+  return this->send_string(ID, bytes_to_send, count);
 }
 
-int PJON::send_short_command(byte ID, char command_type, unsigned long timing) {
+int PJON::send_short_command(byte ID, char command_type, int count) {
   char bytes_to_send[2] = { CMD, command_type };
-  return this->send(ID, bytes_to_send, timing);
+  return this->send_string(ID, bytes_to_send, count);
 }
 
 

@@ -132,5 +132,6 @@ int response = network.receive(1000000);
 ```
 
 Here is a working example of the blink_test you can find in the examples directory:
+
 [![Alt text for your video](http://img.youtube.com/vi/JesqJ9_WJJs/0.jpg)](http://www.youtube.com/watch?v=JesqJ9_WJJs)
 

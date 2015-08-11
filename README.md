@@ -78,7 +78,7 @@ network.remove(one_second_delay_test);
 The state of your packet can be -1 that means is still in pending state, if NULL the packet was correctly sent and deleted. if you want to know the state of your packet:
 
 ```cpp
-int state = network.packets[one_second_test].state;
+int state = network.packets[one_second_delay_test].state;
 ```
 
 You can also send a command with a predefined symbol to the sender that will trigger a predefined function:
@@ -96,7 +96,7 @@ If you defined in another board a command that the receiver board you are progra
 
 ```cpp
 void setup() {
- netowrk.insert_reaction('B', led_blink);
+ network.insert_reaction('B', led_blink);
 };
 
 void led_blink() {
@@ -106,7 +106,7 @@ void led_blink() {
 };
 
 void loop() {
- netowrk.receive(1000);
+ network.receive(1000);
 };
 ```
 

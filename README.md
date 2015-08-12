@@ -90,6 +90,14 @@ void loop() {
 }
 ```
 
+### Multicast
+
+To broadcast a message to all connected devices, use the `BROADCAST` constant as the recipient ID. Every node will receive the message but will not answer ACK to avoid communication overlap.
+
+```cpp
+int multicastTest = network.send(BROADCAST, "This is a message for all connected devices.");
+```
+
 ## Receive data
 
 If you defined in another board a command that the receiver board you are programming should receive you can define a reaction to that command that will trigger a function that will be called as soon as the command will be received:

@@ -31,7 +31,7 @@ PJON::PJON(int input_pin, uint8_t device_id) {
     reactions[i].empty = true;
 
   for(int i = 0; i < max_packets; i++) {
-    packets[i].state = NOTHING;
+    packets[i].state = NULL;
     packets[i].timing = 0;
   }
 }
@@ -268,7 +268,7 @@ int PJON::send_short_command(byte ID, char command_type, int count) {
 
 int PJON::send(uint8_t ID, char *packet, unsigned long timing) {
   for(uint8_t i = 0; i < max_packets; i++)
-    if(packets[i].state == NOTHING) {
+    if(packets[i].state == NULL) {
       packets[i].state = TO_BE_SENT;
       packets[i].content = packet;
       packets[i].device_id = ID;
@@ -289,7 +289,7 @@ int PJON::send(uint8_t ID, char *packet, unsigned long timing) {
 void PJON::update() {
   for(uint8_t i = 0; i < max_packets; i++) {
 
-    if(packets[i].state != NOTHING)
+    if(packets[i].state != NULL)
       if(!packets[i].timing || packets[i].timing && micros() - packets[i].registration > packets[i].timing) 
         packets[i].state = send_string(packets[i].device_id, packets[i].content); 
     
@@ -308,10 +308,10 @@ void PJON::update() {
 /* Remove a packet from the send list: */
 
 void PJON::remove(int packet_id) {
-  packets[packet_id].content = NOTHING;
-  packets[packet_id].state = NOTHING;
-  packets[packet_id].device_id = NOTHING;
-  packets[packet_id].registration = NOTHING;
+  packets[packet_id].content = NULL;
+  packets[packet_id].state = NULL;
+  packets[packet_id].device_id = NULL;
+  packets[packet_id].registration = NULL;
 }
 
 /* Receiver side functions ------------------------------------------------------------------------------- */
@@ -499,9 +499,9 @@ void PJON::deactivate_reaction(uint8_t id) {
  from the list */
 
 void PJON::remove_reaction(uint8_t id) {
-  reactions[id].active = NOTHING;
-  reactions[id].execution = NOTHING;
-  reactions[id].once = NOTHING;
+  reactions[id].active = NULL;
+  reactions[id].execution = NULL;
+  reactions[id].once = NULL;
   reactions[id].empty = true;
 }
 

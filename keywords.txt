@@ -1,0 +1,47 @@
+#######################################
+# Syntax Coloring Map For PJON
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+PJON	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+set_collision_avoidance	KEYWORD2
+set_acknowledge	KEYWORD2
+set_encryption	KEYWORD2
+update KEYWORD2
+send KEYWORD2
+remove	KEYWORD2
+crypt	KEYWORD2
+generate_IV	KEYWORD2
+send_bit	KEYWORD2
+send_byte	KEYWORD2
+send_string	KEYWORD2
+send_command	KEYWORD2
+send_short_command	KEYWORD2
+syncronization_bit	KEYWORD2
+read_byte	KEYWORD2
+can_start	KEYWORD2
+receive_byte	KEYWORD2
+receive	KEYWORD2
+activate_reaction	KEYWORD2
+deactivate_reaction	KEYWORD2
+insert_reaction	KEYWORD2
+remove_reaction	KEYWORD2
+process_reaction	KEYWORD2
+compare_reaction	KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+
+#######################################
+# Constants (LITERAL1)
+#######################################

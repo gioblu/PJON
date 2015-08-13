@@ -1,10 +1,4 @@
-
-#if defined(ARDUINO) && (ARDUINO >= 100)
-  #include "Arduino.h"
-#else
-  #include "WProgram.h"
-  #include <wiring.h>
-#endif
+#include "Arduino.h"
 
 #define BIT_READ(value, bit) (((value) >> (bit)) & 0x01)
 #define BIT_SET(value, bit) ((value) |= (1UL << (bit)))
@@ -114,12 +108,8 @@
 (((P) == 11) ? COM2A1 : COM2B1)))))
 #endif  //defined(__AVR_ATmega8__)
 
-
 #endif  //mega
 #endif  //#if !defined(digitalPinToPortReg)
-
-
-
 
 #define __atomicWrite__(A,P,V) \
 if ( (int)(A) < 0x40) { bitWrite(*(A), __digitalPinToBit(P), (V) );}  \
@@ -138,6 +128,7 @@ if (__builtin_constant_p(P) && __builtin_constant_p(V))   __atomicWrite__((uint8
 else  digitalWrite((P), (V));         \
 }while (0)
 #endif  //#ifndef digitalWriteFast2
+
 
 #if !defined(pinModeFast)
 #define pinModeFast(P, V) \
@@ -162,4 +153,3 @@ else pinMode((P), (V)); \
 	( BIT_READ(*digitalPinToPINReg(P), __digitalPinToBit(P))) ) : \
 	digitalRead((P))
 #endif
-

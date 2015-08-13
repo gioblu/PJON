@@ -504,4 +504,3 @@ void PJON::remove_reaction(uint8_t id) {
   reactions[id].once = NULL;
   reactions[id].empty = true;
 }
-

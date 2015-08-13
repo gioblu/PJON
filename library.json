@@ -1,0 +1,20 @@
+{
+"name": "PJON",
+"frameworks": "Arduino",
+"keywords": "1-wire, bus",
+"description": "PJON is a device communications bus system that connects up to 255 arduino boards over a single wire",
+"authors":
+[
+    {
+        "name": "Giovanni Blu Mitolo",
+        "email": "gioscarab@gmail.com",
+        "url": "http://www.gioblu.com/",
+        "maintainer": true
+    }
+],
+"repository":
+{
+    "type": "git",
+    "url": "https://github.com/gioblu/PJON"
+}
+}

@@ -78,7 +78,7 @@ network.remove(one_second_delay_test);
 The state of your packet can be -1 that means is still in pending state, if NULL the packet was correctly sent and deleted. if you want to know the state of your packet:
 
 ```cpp
-int state = network.packets[one_second_test].state;
+int state = network.packets[one_second_delay_test].state;
 ```
 
 You can also send a command with a predefined symbol to the sender that will trigger a predefined function:
@@ -90,13 +90,21 @@ void loop() {
 }
 ```
 
+### Multicast
+
+To broadcast a message to all connected devices, use the `BROADCAST` constant as the recipient ID. Every node will receive the message but will not answer ACK to avoid communication overlap.
+
+```cpp
+int multicastTest = network.send(BROADCAST, "This is a message for all connected devices.");
+```
+
 ## Receive data
 
 If you defined in another board a command that the receiver board you are programming should receive you can define a reaction to that command that will trigger a function that will be called as soon as the command will be received:
 
 ```cpp
 void setup() {
- netowrk.insert_reaction('B', led_blink);
+ network.insert_reaction('B', led_blink);
 };
 
 void led_blink() {
@@ -106,7 +114,7 @@ void led_blink() {
 };
 
 void loop() {
- netowrk.receive(1000);
+ network.receive(1000);
 };
 ```
 
@@ -130,4 +138,8 @@ If you want to dedicate exusively a determined amount of time only to receive da
 int response = network.receive(1000000);
 // Receive for one second
 ```
+
+Here is a working example of the blink_test you can find in the examples directory:
+
+[![Alt text for your video](http://img.youtube.com/vi/JesqJ9_WJJs/0.jpg)](http://www.youtube.com/watch?v=JesqJ9_WJJs)
 

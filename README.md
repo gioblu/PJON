@@ -67,7 +67,7 @@ int test = network.send(100, "Ciao, this is a test!");
 if you need to send a value repeatedly simply add after the first parameter the interval in microseconds you want between every sending:
 
 ```cpp
-int one_second_delay_test = network.send(100, "Ciao, test sent every second!", 1000000);
+int one_second_delay_test = network.send(100, "Test sent every second!", 1000000);
 ```
 
 If you want to remove this repeated task simply:

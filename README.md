@@ -5,7 +5,7 @@ PJON **(Padded Jittering Operative Network)** is a multi-master, single wire, ad
 * **Slow mode** Absolute bandwidth: **3.0kb/s** | Practical bandwidth: **2.38kb/s** | Accuracy: **99.25%**
 * **Standard mode** Absolute bandwidth: **3.44kb/s** | Practical bandwidth: **2.71kb/s** | Accuracy: **95.0%**
 
-PJON is not interrupt driven, this speed is obtained using only delayMicroseconds() and micros() as timing source.
+**PJON is not interrupt driven, this speed is obtained using only delayMicroseconds() and micros() as timing source.**
 
 This library let you connect up to 255 Arduino together using only one common wire and ground. Every board programmed with PJON and so with its own ID can be reached by every other connected device. 
 

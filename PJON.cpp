@@ -180,7 +180,7 @@ void PJON::send_byte(uint8_t b) {
 
 int PJON::send_string(uint8_t ID, char *string) {
 
-  uint8_t package_length = strlen(string) + 4;
+  uint8_t package_length = strlen(string) + (_encryption) ? 4 : 3;
   uint8_t CRC = 0;
 
   if(_collision_avoidance && !this->can_start())

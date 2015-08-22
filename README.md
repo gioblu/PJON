@@ -90,12 +90,12 @@ void loop() {
 }
 ```
 
-### Multicast
+### Broadcast
 
 To broadcast a message to all connected devices, use the `BROADCAST` constant as the recipient ID. Every node will receive the message but will not answer ACK to avoid communication overlap.
 
 ```cpp
-int multicastTest = network.send(BROADCAST, "This is a message for all connected devices.");
+int multicastTest = network.send(BROADCAST, "Message for all connected devices.");
 ```
 
 ## Receive data

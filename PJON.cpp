@@ -469,12 +469,13 @@ void PJON::process_reaction() {
 
 boolean PJON::compare_reaction(char command_type) {
 
-  if(_encryption)
+  if(_encryption) {
     if(hash[1] != command_type)
       return false;
-  else
+  } else {
     if(data[3] != command_type)
       return false;
+  }
 
   return true;
 }

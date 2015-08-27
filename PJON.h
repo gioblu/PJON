@@ -42,9 +42,11 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
 #ifndef PJON_h
   #define PJON_h
 
+  #include "includes/digitalWriteFast.h"
+
   #if defined(ARDUINO) && (ARDUINO >= 100)
     #include "Arduino.h"
-    #include "includes/digitalWriteFast.h"
+    
     // Function execution time changes according to your IDE version 
     // So here we have to set dedicated timing to 0.x version
     // STANDARD MODE - if you need more speed please follow the comments above
@@ -55,7 +57,6 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
   #else
     #include "WProgram.h"
     #include "WConstants.h"
-    #include "includes/digitalWriteFast.h"
     // Function execution time changes according to your IDE version (0.x or 1.x) 
     // So here we have to set dedicated timing to 1.x version
     // STANDARD MODE - if you need more speed please follow the comments above

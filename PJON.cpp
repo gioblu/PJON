@@ -180,14 +180,14 @@ void PJON::send_byte(uint8_t b) {
 
 int PJON::send_string(uint8_t ID, char *string) {
 
-  uint8_t package_length = strlen(string) + (_encryption) ? 4 : 3;
+  uint8_t package_length = strlen(string) + 4;
   uint8_t CRC = 0;
 
   if(_collision_avoidance && !this->can_start())
       return BUSY;
 
   if(_encryption)
-    this->crypt(string, true, 0);
+    this->crypt(string, false, 0);
 
   pinModeFast(_input_pin, OUTPUT);
   this->send_byte(ID);
@@ -394,7 +394,7 @@ int PJON::receive() {
       for(int i = 0; i < package_length - 1; i++)
         if(i > 1) data[i - 2] = data[i];
 
-      this->crypt((char*)data, true, 1);
+      this->crypt((char*)data, false, 1);
     }
     return ACK;
 

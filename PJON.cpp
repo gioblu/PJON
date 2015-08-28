@@ -180,14 +180,14 @@ void PJON::send_byte(uint8_t b) {
 
 int PJON::send_string(uint8_t ID, char *string) {
 
-  if (!*string){
-   return FAIL; //string is NULL
-  }
+  if (!*string)
+    return FAIL;
+
   uint8_t package_length = strlen(string) + 4;
   uint8_t CRC = 0;
 
   if(_collision_avoidance && !this->can_start())
-      return BUSY;
+    return BUSY;
 
   if(_encryption)
     this->crypt(string, false, 0);
@@ -199,7 +199,7 @@ int PJON::send_string(uint8_t ID, char *string) {
   CRC ^= package_length;
 
   char *string_pointer = (_encryption) ? hash : string;
-  do {// we are already sure the string has at least one char
+  do { 
     this->send_byte(*string_pointer);
     CRC ^= *string_pointer;
   } while(*(string_pointer++));
@@ -214,12 +214,12 @@ int PJON::send_string(uint8_t ID, char *string) {
   while(response == FAIL && micros() - time <= bit_spacer + bit_width)
     response = this->receive_byte();
 
-  if (response == ACK || response == NAK){
+  if (response == ACK || response == NAK)
     return response;
-  }
+  
   return FAIL;
-
 };
+
 
 int PJON::send_string(uint8_t ID, char *string, int count) {
   int response;
@@ -427,7 +427,7 @@ int PJON::receive(unsigned long duration) {
       if(response == ACK) { 
         if(data[2] == CMD)
           this->process_reaction();
-        break;
+        return response;
       }
     }
   }

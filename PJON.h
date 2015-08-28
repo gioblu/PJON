@@ -48,17 +48,17 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
     #include "Arduino.h"
     
     // Function execution time changes according to your IDE version 
-    // So here we have to set dedicated timing to 0.x version
+    // So here we have to set dedicated timing to 1.x version
     // STANDARD MODE - if you need more speed please follow the comments above
     #define bit_width 20
     #define bit_spacer 68
     #define acceptance 8
-    #define read_delay 5
+    #define read_delay 6
   #else
     #include "WProgram.h"
     #include "WConstants.h"
     // Function execution time changes according to your IDE version (0.x or 1.x) 
-    // So here we have to set dedicated timing to 1.x version
+    // So here we have to set dedicated timing to 0.x version
     // STANDARD MODE - if you need more speed please follow the comments above
     #define bit_width 20
     #define bit_spacer 68

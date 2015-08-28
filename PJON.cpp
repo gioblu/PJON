@@ -214,7 +214,10 @@ int PJON::send_string(uint8_t ID, char *string) {
   while(response == FAIL && micros() - time <= bit_spacer + bit_width)
     response = this->receive_byte();
 
-  return response;
+  if (response == ACK || response == NAK){
+    return response;
+  }
+  return FAIL;
 
 };
 

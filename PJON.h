@@ -18,26 +18,35 @@ CRC: XOR Cyclic Redundancy Check ensures almost errorless data communication
 ACKNOLEDGE:  Acknowledge byte sent by receiver ensures packet delivery
 COLLISION DETECTION: collision avoidance is ensured analyzing network bus before starting
 ENCRYPTION: Private key encryption + initialization vector to ensure almost random data stream
+  
+  0.x IDE VERSION SPEED CONFIGURATIONS:
   __________________________________________________________________________________
- |PJON Standard mode | SPEED SETUP CHANGES ACCORGING TO YOUR IDE VERSION!           |
+ |PJON Standard mode | SPEED SETUP CHANGES ACCORDING TO YOUR IDE VERSION!           |
  |----------------------------------------------------------------------------------|
- |Arduino 00x   -> bit_width 20 | bit_spacer 68 | acceptance 16 | read_delay 7      |
- |Arduino 1.6.x -> bit_width 20 | bit_spacer 68 | acceptance  8 | read_delay 5      |
+ | SLOW MODE:  bit_width 20 | bit_spacer 68 | acceptance 16 | read_delay 7          |
  |----------------------------------------------------------------------------------|
  |Absolute bandwidth:  3.16-3.28 kB/s | Transfer speed: 4.32kB/s                    |
  |Practical bandwidth: 2.19-2.45 kB/s | Baud rate: 32256 baud/s                     |
  |Accuracy: 99.45-99.95%              |                                             |
  |----------------------------------------------------------------------------------|
   __________________________________________________________________________________
- |PJON Fast mode | SPEED SETUP CHANGES ACCORGING TO YOUR IDE VERSION!               |
+ |PJON Standard mode | SPEED SETUP CHANGES ACCORDING TO YOUR IDE VERSION!           |
  |----------------------------------------------------------------------------------|
- |Arduino 00x   -> bit_width 18 | bit_spacer 40 | acceptance 18 | read_delay 8      |
- |Arduino 1.6.x -> bit_width 18 | bit_spacer 40 | acceptance  8 | read_delay 5      |
+ | FAST MODE:  bit_width 18 | bit_spacer 40 | acceptance 18 | read_delay 8          |
  |----------------------------------------------------------------------------------|
  |Absolute bandwidth:  3.25-3.81 kB/s | Transfer speed: 4.95kB/s                    |
  |Practical bandwidth: 2.52-2.85 kB/s | Baud rate: 39600 baud/s                     |
  |Accuracy: 94.51-98.63%              |                                             |
- |----------------------------------------------------------------------------------|  */
+ |----------------------------------------------------------------------------------|
+
+  1.x IDE VERSION SPEED CONFIGURATIONS:
+  __________________________________________________________________________________
+ | bit_width 20 | bit_spacer 68 | acceptance  8 | read_delay 6                      |
+ |----------------------------------------------------------------------------------|
+ |Absolute bandwidth:  3.16-3.28 kB/s | Transfer speed: 4.32kB/s                    |
+ |Practical bandwidth: 2.19-2.45 kB/s | Baud rate: 32256 baud/s                     |
+ |Accuracy: 99.45-99.95%              |                                             |
+ |----------------------------------------------------------------------------------| */
 
 #ifndef PJON_h
   #define PJON_h
@@ -49,7 +58,6 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
     
     // Function execution time changes according to your IDE version 
     // So here we have to set dedicated timing to 1.x version
-    // STANDARD MODE - if you need more speed please follow the comments above
     #define bit_width 20
     #define bit_spacer 68
     #define acceptance 8

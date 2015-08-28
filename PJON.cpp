@@ -199,15 +199,18 @@ int PJON::send_string(uint8_t ID, char *string) {
   CRC ^= package_length;
 
   char *string_pointer = (_encryption) ? hash : string;
-  do { 
+  while(*string_pointer) {
     this->send_byte(*string_pointer);
     CRC ^= *string_pointer;
-  } while(*(string_pointer++));
-
+    *string_pointer++;
+  }
+  
   this->send_byte(CRC);
   digitalWriteFast(_input_pin, LOW);
 
-  if(!_acknowledge) return ACK;
+  if(!_acknowledge)
+    return ACK;
+  
   unsigned long time = micros();
   int response = FAIL;
 

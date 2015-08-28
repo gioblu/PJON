@@ -39,6 +39,7 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
  |Accuracy: 94.51-98.63%              |                                             |
  |----------------------------------------------------------------------------------|
 
+
   1.x IDE VERSION SPEED CONFIGURATIONS:
   __________________________________________________________________________________
  | bit_width 20 | bit_spacer 68 | acceptance  8 | read_delay 6                      |
@@ -129,10 +130,9 @@ class PJON {
     void send_byte(uint8_t b);
 
     int send_string(uint8_t ID, char *string);
-    int send_string(uint8_t ID, char *string, int count);
 
-    int send_command(uint8_t ID, char command_type, unsigned int value, int count = 1);
-    int send_short_command(byte ID, char command_type, int count = 1);
+    int send_command(uint8_t ID, char command_type, unsigned int value);
+    int send_short_command(byte ID, char command_type);
 
     uint8_t syncronization_bit();
     uint8_t read_byte();

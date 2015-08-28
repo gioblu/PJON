@@ -204,7 +204,7 @@ int PJON::send_string(uint8_t ID, char *string) {
     CRC ^= *string_pointer;
     *string_pointer++;
   }
-  
+
   this->send_byte(CRC);
   digitalWriteFast(_input_pin, LOW);
 
@@ -222,18 +222,6 @@ int PJON::send_string(uint8_t ID, char *string) {
   
   return FAIL;
 };
-
-
-int PJON::send_string(uint8_t ID, char *string, int count) {
-  int response;
-  for(int i = 0; i < count && response != ACK; i++) {
-    response = this->send_string(ID, string);
-    delayMicroseconds(14);
-  }
-
-  return response;
-}
-
 
 /* Send a command to the pin:
  An Example of how a command is formatted and sent:
@@ -255,16 +243,15 @@ int PJON::send_string(uint8_t ID, char *string, int count) {
  CRC: Cyclic redundancy check                                                  - 1 byte
  ACK: Acknowledge sent from receiver, present if acknowledge activated         - 1 byte */
 
-int PJON::send_command(byte ID, char command_type, unsigned int value, int count) {
+int PJON::send_command(byte ID, char command_type, unsigned int value) {
   char bytes_to_send[4] = { CMD, command_type, value >> 8, value & 0xFF };
-  return this->send_string(ID, bytes_to_send, count);
+  return this->send_string(ID, bytes_to_send);
 }
 
-int PJON::send_short_command(byte ID, char command_type, int count) {
+int PJON::send_short_command(byte ID, char command_type) {
   char bytes_to_send[2] = { CMD, command_type };
-  return this->send_string(ID, bytes_to_send, count);
+  return this->send_string(ID, bytes_to_send);
 }
-
 
 
 /* Insert a packet in the send list:

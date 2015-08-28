@@ -180,6 +180,9 @@ void PJON::send_byte(uint8_t b) {
 
 int PJON::send_string(uint8_t ID, char *string) {
 
+  if (!*string){
+   return FAIL; //string is NULL
+  }
   uint8_t package_length = strlen(string) + 4;
   uint8_t CRC = 0;
 
@@ -196,11 +199,10 @@ int PJON::send_string(uint8_t ID, char *string) {
   CRC ^= package_length;
 
   char *string_pointer = (_encryption) ? hash : string;
-  while(*string_pointer) {
+  do {// we are already sure the string has at least one char
     this->send_byte(*string_pointer);
     CRC ^= *string_pointer;
-    *string_pointer++;
-  }
+  } while(*(string_pointer++));
 
   this->send_byte(CRC);
   digitalWriteFast(_input_pin, LOW);
@@ -212,9 +214,7 @@ int PJON::send_string(uint8_t ID, char *string) {
   while(response == FAIL && micros() - time <= bit_spacer + bit_width)
     response = this->receive_byte();
 
-  if(response == NAK) return NAK;
-  if(response == ACK) return ACK;
-  return FAIL;
+  return response;
 
 };
 

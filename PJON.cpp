@@ -199,10 +199,9 @@ int PJON::send_string(uint8_t ID, char *string) {
   CRC ^= package_length;
 
   char *string_pointer = (_encryption) ? hash : string;
-  while(*string_pointer) {
-    this->send_byte(*string_pointer);
-    CRC ^= *string_pointer;
-    *string_pointer++;
+  for(uint8_t i = 0; string_pointer[i] != NULL; i++) {
+    this->send_byte(string_pointer[i]);
+    CRC ^= string_pointer[i];
   }
 
   this->send_byte(CRC);
@@ -260,11 +259,16 @@ int PJON::send_short_command(byte ID, char command_type) {
  transmission cyclically sending the packet (use remove() function stop it) */ 
 
 int PJON::send(uint8_t ID, char *packet, unsigned long timing) {
+  uint8_t package_length = strlen(packet);
+  char *str;
+  str = (char *) malloc(package_length);
+
   for(uint8_t i = 0; i < max_packets; i++)
     if(packets[i].state == NULL) {
-      packets[i].state = TO_BE_SENT;
-      packets[i].content = packet;
+      packets[i].content = str;
       packets[i].device_id = ID;
+      packets[i].length = package_length;
+      packets[i].state = TO_BE_SENT;
       if(timing > 0) {
         packets[i].registration = micros();
         packets[i].timing = timing;
@@ -285,13 +289,13 @@ void PJON::update() {
     if(packets[i].state != NULL)
       if(!packets[i].timing || packets[i].timing && micros() - packets[i].registration > packets[i].timing) 
         packets[i].state = send_string(packets[i].device_id, packets[i].content); 
-    
+
     if(packets[i].state == ACK) {
       if(packets[i].timing == 0)
         this->remove(i);
       else {
-        packets[i].state = TO_BE_SENT;
         packets[i].registration = micros();
+        packets[i].state = TO_BE_SENT;
       }
     }
   }
@@ -300,11 +304,12 @@ void PJON::update() {
 
 /* Remove a packet from the send list: */
 
-void PJON::remove(int packet_id) {
-  packets[packet_id].content = NULL;
-  packets[packet_id].state = NULL;
-  packets[packet_id].device_id = NULL;
-  packets[packet_id].registration = NULL;
+void PJON::remove(int id) {
+  free(packets[id].content);
+  packets[id].device_id = NULL;
+  packets[id].length = NULL;
+  packets[id].state = NULL;
+  packets[id].registration = NULL;
 }
 
 /* Receiver side functions ------------------------------------------------------------------------------- */
@@ -372,7 +377,9 @@ int PJON::receive() {
       return BUSY;
 
     if(i == 1)
-      package_length = data[i];
+      if(data[i] > 0 && data[i] < max_package_length)
+        package_length = data[i];
+      else return FAIL;
 
     CRC ^= data[i];
   }

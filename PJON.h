@@ -97,8 +97,9 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
 struct packet {
   uint8_t device_id;
   char *content;
-  int state;
+  uint8_t length;
   unsigned long registration;
+  int state;
   unsigned long timing;
 };
 
@@ -121,7 +122,7 @@ class PJON {
 
     void update();
     int send(uint8_t ID, char *packet, unsigned long timing = 0);
-    void remove(int packet_id);
+    void remove(int id);
 
     void crypt(char *content, boolean initialization_vector = false, boolean side = false);
     uint8_t generate_IV(uint8_t string_length);

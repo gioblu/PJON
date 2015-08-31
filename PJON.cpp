@@ -259,9 +259,10 @@ int PJON::send_short_command(byte ID, char command_type) {
  transmission cyclically sending the packet (use remove() function stop it) */ 
 
 int PJON::send(uint8_t ID, char *packet, unsigned long timing) {
-  uint8_t package_length = strlen(packet);
+  uint8_t package_length = strlen(packet) + 1;
   char *str;
   str = (char *) malloc(package_length);
+  memcpy(str, packet, package_length);
 
   for(uint8_t i = 0; i < max_packets; i++)
     if(packets[i].state == NULL) {

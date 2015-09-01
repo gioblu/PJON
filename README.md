@@ -3,24 +3,22 @@ PJON
  
 PJON **(Padded Jittering Operative Network)** is a multi-master, single wire, addressed and checked communication protocol and is designed to be an alternative to i2c, 1Wire, Serial and the other Arduino compatible protocols. 
 
-I created this library because of two strong personal needs:
-1. Define a protocol standard (and so have a clear model of it in mind) to let communicate a network of embedded systems. 
-2. Produce a new, easy and reliable open-source communication standard for Arduino compatible systems   
-⋅⋅* Appliable to automotive applications 
-⋅⋅* Long wires, various conductive media and high interference environment safe
-⋅⋅* Supports Multi-Master configuration and up to 255 connected Arduino boards
-⋅⋅* Contains a easy packet and reaction to command manager
+I have created this library because of two strong personal needs:
 
-A lot of people asks me why I should have worked 3 years on a bunch of lines of code defining a new protocol in an environment full of alternatives produced by important multinational corporations like i2C, 1-Wire ecc ecc.  I will try to summarize why I end up writing PJON describing the problems I had trying the other solutions: 
+1. Define a protocol standard (so have a clear model of it in mind) for a network of embedded systems. 
+2. Produce a new, easy and reliable open-source communication standard for Arduino we can use joyfully :)
+
+
+A lot of people asks me why I should have worked 3 years on a bunch of lines of code defining a new protocol with an environment full of alternatives produced by important multinational corporations. I will try to summarize why I end up writing PJON describing the problems I had trying the other solutions: 
 
 ##Why not I2c?
-I2C is a bus system engineered to have short wires or better copper vias to connect devices, needs depending on the configuration from 2 to 5 wires not longer then (ground and power excluded). So no long wires and so home automation and so on. If one of the connections to the bus fails (also for a really short amount of time) one or both devices are lost freezed, so also not so practical for autonotiva applications, where, with movement and vibrations the risk of temporary wiring connection fail is always present.
+I2C is a bus system engineered to have short wires or better copper vias to connect devices, needs 2 wires (ground and power excluded). So no long wires and so no home automation applications and so on. If one of the connections to the bus fails (also for a really short amount of time) one or both devices are lost freezed, so also not so practical for autonotiva applications, where, with movement and vibrations the risk of temporary wiring connection fail is always present.
+
+##Why PJON?
+PJON contains a packet manager / scheduler to track and retrasmit failed sendings in background, and a reaction manager able to automatically call functions associated with user defined symbols and string encryption capability. Communication is checked by a one byte Cyclic Redundancy Check or CRC and sender wait for ackowledge by receiver. 
+
 
 Transfer speed: **39200 baud/s** - Absolute bandwidth: **3.0kB/s** - Practical bandwidth: **2.38kB/s**  
-
-PJON contains also a packet manager / scheduler to track and retrasmit failed sendings in background, a reaction manager able to automatically call functions associated with user defined symbols and string encryption capability. Communication is checked by a one byte Cyclic Redundancy Check or CRC and sender wait for ackowledge by receiver. 
-
-This architecture gives you really high communication reliability and acceptable speed for the vast majority of embedded projects. PJON can be efficiently used from home automation to automotive applications.
 
 This single wire simplicity let you experiment fastly and with creativity. For example one of the first tests I suggest to try with PJON is to let two arduinos communicate through your body touching with the left hand the port of the first and with the right the port of the other arduino. It's stunning to see more then 90% of accuracy for this digital communication doing all that path inside a biological body. This opens the mind to possible creative solutions; generally the average reaction is like: "lets use the car frame to let all the digital embedded systems to communicate together" and so on...
 

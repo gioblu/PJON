@@ -6,10 +6,10 @@ PJON **(Padded Jittering Operative Network)** is a multi-master, single wire, ad
 I created this library because of two strong personal needs:
 1. Define a protocol standard (and so have a clear model of it in mind) to let communicate a network of embedded systems. 
 2. Produce a new, easy and reliable open-source communication standard for Arduino compatible systems   
---* Appliable to automotive applications 
---* Long wires, various conductive media and high interference environment safe
---* Supports Multi-Master configuration and up to 255 connected Arduino boards
---* Contains a easy packet and reaction to command manager
+⋅⋅* Appliable to automotive applications 
+⋅⋅* Long wires, various conductive media and high interference environment safe
+⋅⋅* Supports Multi-Master configuration and up to 255 connected Arduino boards
+⋅⋅* Contains a easy packet and reaction to command manager
 
 A lot of people asks me why I should have worked 3 years on a bunch of lines of code defining a new protocol in an environment full of alternatives produced by important multinational corporations like i2C, 1-Wire ecc ecc.  I will try to summarize why I end up writing PJON describing the problems I had trying the other solutions: 
 

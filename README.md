@@ -2,12 +2,21 @@ PJON
 ==== 
  
 PJON **(Padded Jittering Operative Network)** is a multi-master, single wire, addressed and checked communication protocol and is designed to be an alternative to i2c, 1Wire, Serial and the other Arduino compatible protocols. 
-* **Slow mode** Absolute bandwidth: **3.0kb/s** | Practical bandwidth: **2.38kb/s** | Accuracy: **99.25%**
-* **Standard mode** Absolute bandwidth: **3.44kb/s** | Practical bandwidth: **2.71kb/s** | Accuracy: **95.0%**
 
-**PJON is not interrupt driven, speed is obtained using delayMicroseconds() and micros() as timing source.**
+I created this library because of two strong personal needs:
+1. Define a protocol standard (and so have a clear model of it in mind) to let communicate a network of embedded systems. 
+2. Produce a new, easy and reliable open-source communication standard for Arduino compatible systems   
+--* Appliable to automotive applications 
+--* Long wires, various conductive media and high interference environment safe
+--* Supports Multi-Master configuration and up to 255 connected Arduino boards
+--* Contains a easy packet and reaction to command manager
 
-This library let you connect up to 255 Arduino together using only one common wire and ground. Every board programmed with PJON and so with its own ID can be reached by every other connected device. 
+A lot of people asks me why I should have worked 3 years on a bunch of lines of code defining a new protocol in an environment full of alternatives produced by important multinational corporations like i2C, 1-Wire ecc ecc.  I will try to summarize why I end up writing PJON describing the problems I had trying the other solutions: 
+
+##Why not I2c?
+I2C is a bus system engineered to have short wires or better copper vias to connect devices, needs depending on the configuration from 2 to 5 wires not longer then (ground and power excluded). So no long wires and so home automation and so on. If one of the connections to the bus fails (also for a really short amount of time) one or both devices are lost freezed, so also not so practical for autonotiva applications, where, with movement and vibrations the risk of temporary wiring connection fail is always present.
+
+Transfer speed: **39200 baud/s** - Absolute bandwidth: **3.0kB/s** - Practical bandwidth: **2.38kB/s**  
 
 PJON contains also a packet manager / scheduler to track and retrasmit failed sendings in background, a reaction manager able to automatically call functions associated with user defined symbols and string encryption capability. Communication is checked by a one byte Cyclic Redundancy Check or CRC and sender wait for ackowledge by receiver. 
 

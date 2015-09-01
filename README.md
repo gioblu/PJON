@@ -1,22 +1,21 @@
 PJON 
 ==== 
  
-PJON **(Padded Jittering Operative Network)** is a multi-master, single wire, addressed and checked communication protocol and is designed to be an alternative to i2c, 1Wire, Serial and the other Arduino compatible protocols. 
+PJON **(Padded Jittering Operative Network)** is a multi-master, single wire communication bus system and is designed to be an alternative to i2c, 1Wire, Serial and the other Arduino compatible protocols. 
 
 I have created this library because of two strong personal needs:
 
-1. Define a protocol standard (so have a clear model of it in mind) for a network of embedded systems. 
-2. Produce a new, easy and reliable open-source communication standard for Arduino we can use joyfully :)
+1. Define a standard (so have a clear model of it in mind) for a network of embedded systems. 
+2. Produce a new and easy open-source communication standard for Arduino we can use joyfully :)
 
 
-A lot of people asks me why I should have worked 3 years on a bunch of lines of code defining a new protocol with an environment full of alternatives produced by important multinational corporations. I will try to summarize why I end up writing PJON describing the problems I had trying the other solutions: 
+A lot of people asks me why I should have worked 3 years on a bunch of lines of code defining a new protocol with an environment full of alternatives produced by important multinational corporations. I will try to summarize how I end up writing PJON describing the problems I had trying the other solutions: 
 
 ##Why not I2c?
-I2C is a bus system engineered to have short wires or better copper vias to connect devices, needs 2 wires (ground and power excluded). So no long wires and so no home automation applications and so on. If one of the connections to the bus fails (also for a really short amount of time) one or both devices are lost freezed, so also not so practical for autonotiva applications, where, with movement and vibrations the risk of temporary wiring connection fail is always present.
+I2C is a bus system engineered to have short wires or better copper vias to connect devices, needs 2 wires (ground and power excluded). So no long wires and so no home automation applications. If one of the connections to the bus fails (also for a really short amount of time) one or both devices are lost freezed, so also not so practical for autonotiva applications, where, with movement and vibrations the risk of temporary wiring connection fail is always present.
 
 ##Why PJON?
-PJON contains a packet manager / scheduler to track and retrasmit failed sendings in background, and a reaction manager able to automatically call functions associated with user defined symbols and string encryption capability. Communication is checked by a one byte Cyclic Redundancy Check or CRC and sender wait for ackowledge by receiver. 
-
+PJON contains a packet manager / scheduler to track and retrasmit failed sendings in background, and a reaction manager able to automatically call functions associated with user defined symbols and string encryption capability. Communication is checked by a one byte Cyclic Redundancy Check or CRC and Acknowledge functionality. 
 
 Transfer speed: **39200 baud/s** - Absolute bandwidth: **3.0kB/s** - Practical bandwidth: **2.38kB/s**  
 
@@ -103,7 +102,7 @@ void loop() {
 To broadcast a message to all connected devices, use the `BROADCAST` constant as the recipient ID. Every node will receive the message but will not answer ACK to avoid communication overlap.
 
 ```cpp
-int multicastTest = network.send(BROADCAST, "Message for all connected devices.");
+int broadcastTest = network.send(BROADCAST, "Message for all connected devices.");
 ```
 
 ## Receive data
@@ -129,7 +128,7 @@ void loop() {
 To correctly receive data is necessary to call at least once per loop cycle the receive() function. Its important to consider that this is not an interrupt driven system and so all the time Arduino will pass in delay or executing something a certain amount of packets will be potentially lost unheard by the busy receiver. In this case structure intelligently your loop cicly to avoid huge blind timeframes. The receive function returns a response that contains the result of the reception. If you use packet and reaction manager this is not strictly necessary but useful to know:
 
 ```cpp
-int response = network.receive();
+int response = network.receive(1000);
 if(response == ACK)
  Serial.println("Correctly received");
 if(response == NAK)

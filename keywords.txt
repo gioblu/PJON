@@ -45,3 +45,11 @@ compare_reaction	KEYWORD2
 #######################################
 # Constants (LITERAL1)
 #######################################
+
+ACK  LITERAL1
+NAK  LITERAL1
+FAIL LITERAL1
+BUSY LITERAL1
+BROADCAST LITERAL1
+TO_BE_SENT LITERAL1
+CMD LITERAL1

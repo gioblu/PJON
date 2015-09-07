@@ -1,37 +1,51 @@
 PJON 
 ==== 
  
-PJON **(Padded Jittering Operative Network)** is a multi-master, single wire communication bus system and is designed to be an alternative to i2c, 1Wire, Serial and the other Arduino compatible protocols. 
+PJON (Padded Jittering Operative Network) is a single wire, multi-master communication bus system. It is designed as an alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. 
 
-I have created this library because of two strong personal needs:
+```cpp 
+// Instantiate PJON network passing the bus PIN and the devide ID
+PJON network(A0, 44);
+ 
+// Configure both RX and TX devices in setup()
+network.set_acknowledge(true);
+network.set_collision_avoidance(true);
 
-1. Define a standard (so have a clear model of it in mind) for a network of embedded systems. 
-2. Produce a new and easy open-source communication standard for Arduino we can use joyfully :)
+// Send temperature to device ID 44
+byte temperature = 34;
+network.send(44,  (byte)temperature);
 
+// Receive the temperature on the other side
+network.receive();
+Serial.println(network.data[2]); // -> 34
+```
 
-A lot of people asks me why I should have worked 3 years on a bunch of lines of code defining a new protocol with an environment full of alternatives produced by important multinational corporations. I will try to summarize how I end up writing PJON describing the problems I had trying the other solutions: 
+PJON contains: 
+- Packet manager to track and retransmit failed packet sendings in background.
+- Reaction manager able to automatically call functions associated with user defined symbols.
+- Cyclic Redundancy Check (CRC).
+- Acknowledgement of correct packet sending. 
+- Collision avoidance (enables multi-master capability).
+- Optional encyption. 
 
-##Why not I2c?
-I2C is a bus system engineered to have short wires or better copper vias to connect devices, needs 2 wires (ground and power excluded). So no long wires and so no home automation applications. If one of the connections to the bus fails (also for a really short amount of time) one or both devices are lost freezed, so also not so practical for autonotiva applications, where, with movement and vibrations the risk of temporary wiring connection fail is always present.
+###Performance
+Absolute bandwidth: **3.0kB/s** - Practical bandwidth: **2.38kB/s** - Transfer speed: **39200 baud/s**  
 
-##Why PJON?
-PJON contains a packet manager / scheduler to track and retrasmit failed sendings in background, and a reaction manager able to automatically call functions associated with user defined symbols and string encryption capability. Communication is checked by a one byte Cyclic Redundancy Check or CRC and Acknowledge functionality. 
+This single wire simplicity enables you to experiment quickly and with creativity. For example, one of the first tests I suggest to try with PJON is to let two arduinos communicate through your body touching with the left hand the port of the first board and with the right the port of the other one. It's stunning to see more than 90% accuracy for this digital communication doing all that path inside a biological body. This opens the mind to possible creative solutions.
 
-Transfer speed: **39200 baud/s** - Absolute bandwidth: **3.0kB/s** - Practical bandwidth: **2.38kB/s**  
-
-This single wire simplicity let you experiment fastly and with creativity. For example one of the first tests I suggest to try with PJON is to let two arduinos communicate through your body touching with the left hand the port of the first and with the right the port of the other arduino. It's stunning to see more then 90% of accuracy for this digital communication doing all that path inside a biological body. This opens the mind to possible creative solutions; generally the average reaction is like: "lets use the car frame to let all the digital embedded systems to communicate together" and so on...
+###Why not I2c?
+I2C is a bus system engineered to work with short wires to connect devices and it needs at least 2 wires. No long wires can be used, this excludes home automation applications. If one of the connections to the bus fails, even briefly, one or both devices may freeze. For this reason i2c is not practical for high vibration scenarios such as automotive applications.
 
 ## How to start
+The first step is the physical layer. Lets wire the two arduinos. Simply find a piece of wire and select a digital pin you want to use on both boards where to connect the wire. After this you should have both arduino boards connected by the wire on the same pin.
 
-The first step is the physical layer. Lets wire the two arduinos. Simply find a piece of wire and select a digital pin you want to use on both where to connect the wire. After this you should have both arduino boards connected by a piece of wire on the same port.
-
-Lets start coding,  instantiate the PJON object that in the example is called network. To initialize a network based on PJON you need only to define the communication pin (any free digital pin on your board) and a unique ID (0 - 254):
+Lets start coding, instantiate the PJON object that in the example is called network. To initialize a network based on PJON you need only to define the communication pin (any free digital pin on your board) and a unique ID (0 - 255):
 
 ```cpp  
   PJON network(12, 123); 
 ```
 
-After this is necessary to define wich type of communication we need. For example if you only need to send a value from a "slave" arduino to another one cyclically, you will probably not need collision_avoidance (to check if someone is speaking before starting a communication) and acknowledge or ACK (when a sender waits the receiver acknowledge of correct data receive after CRC check of data integrity). Disabling this two functionalities let you spare loop time and so speed up communication. In the opposite case, if you have two or more boards communicating bidirectionally as my automated home scenario, you will need to have a system able to speak over the channel when is free to avoid to corrupt some other communication going on and also to have every board sure that the message sent arrived correct to the receiver. There are some setters that let you configure the network as you need:
+After this is necessary to define wich type of communication we need. For example if you only need to send a value from a "slave" arduino to another one cyclically, you will probably not need collision_avoidance (to check if someone is speaking before starting a communication) and acknowledge or ACK (when a sender waits the receiver acknowledge of correct data receive after check of data integrity). Disabling this two functionalities let you spare loop time and so speed up communication. In the opposite case, if you have two or more boards communicating bidirectionally as my automated home scenario, you will need to have a system able to speak over the channel when is free to avoid to corrupt other communication going on and also to have every board sure that the message sent arrived correct to the receiver. There are some setters that let you configure the network as you need:
 
 ```cpp
   // Master Slave capable setup
@@ -55,7 +69,6 @@ If you need to keep all the network communication inside the PJON bus secure fro
   }; 
 ```
 
-
 To let the network work correctly you need to call the update() function at least once per loop cycle. It's really important to consider that this is not an interrupt driven system, so all the time the Arduino is passing delaying time or executing other tasks is delaying the sending of all the packets are scheduled to be sent:
 
 ```cpp  
@@ -63,7 +76,6 @@ To let the network work correctly you need to call the update() function at leas
 ```
 
 ## Transmit data
-
 To send a string to another device connected to the bus simply call send() function passing the ID you want to contact and the string you want to send:
 
 ```cpp
@@ -82,23 +94,20 @@ If you want to remove this repeated task simply:
 network.remove(one_second_delay_test);
 ```
 
-The state of your packet can be -1 that means is still in pending state, if NULL the packet was correctly sent and deleted. if you want to know the state of your packet:
+The state of your packet can be 'TO_BE_SENT' that means is still in pending state, if NULL the packet was correctly sent and deleted. if you want to know the state of your packet:
 
 ```cpp
 int state = network.packets[one_second_delay_test].state;
 ```
 
-You can also send a command with a predefined symbol to the sender that will trigger a predefined function:
+You can also send a command with a symbol to the sender that will trigger a function:
 
 ```cpp
-void loop() {
- int blink_send = network.send_short_command(100, 'B');
- delay(1000);
-}
+char packet[2] = {CMD, 'B', NULL};
+int blink_send = network.send(100, packet);
 ```
 
 ### Broadcast
-
 To broadcast a message to all connected devices, use the `BROADCAST` constant as the recipient ID. Every node will receive the message but will not answer ACK to avoid communication overlap.
 
 ```cpp
@@ -106,6 +115,24 @@ int broadcastTest = network.send(BROADCAST, "Message for all connected devices."
 ```
 
 ## Receive data
+To correctly receive data is necessary to call at least once per loop cycle the receive() function passing as a parameter the maximum reception time in microseconds:
+
+```cpp
+int response = network.receive(1000);
+```
+It is important to consider that this is not an interrupt driven system and so all the time Arduino will pass in delay or executing something a certain amount of packets will be potentially lost unheard by the busy receiver. In this case structure intelligently your loop cicle to avoid huge blind timeframes. The receive function returns a response that contains the result of the reception. If you use packet and reaction manager this is not strictly necessary but useful to know:
+
+```cpp
+int response = network.receive(1000);
+if(response == ACK)
+ Serial.println("Correctly received");
+if(response == NAK)
+ Serial.println("Received not correct");
+if(response == BUSY)
+ Serial.pritnln("Received packet for another device");
+if(response == FAIL)
+ Serial.println("No data");
+```
 
 If you defined in another board a command that the receiver board you are programming should receive you can define a reaction to that command that will trigger a function that will be called as soon as the command will be received:
 
@@ -123,27 +150,6 @@ void led_blink() {
 void loop() {
  network.receive(1000);
 };
-```
-
-To correctly receive data is necessary to call at least once per loop cycle the receive() function. Its important to consider that this is not an interrupt driven system and so all the time Arduino will pass in delay or executing something a certain amount of packets will be potentially lost unheard by the busy receiver. In this case structure intelligently your loop cicly to avoid huge blind timeframes. The receive function returns a response that contains the result of the reception. If you use packet and reaction manager this is not strictly necessary but useful to know:
-
-```cpp
-int response = network.receive(1000);
-if(response == ACK)
- Serial.println("Correctly received");
-if(response == NAK)
- Serial.println("Received not correct");
-if(response == BUSY)
- Serial.pritnln("Received packet for another device");
-if(response == FAIL)
- Serial.println("No data");
-```
-
-If you want to dedicate exusively a determined amount of time only to receive data from the PJON bus use:
-
-```cpp
-int response = network.receive(1000000);
-// Receive for one second
 ```
 
 Here is a working example of the blink_test you can find in the examples directory:

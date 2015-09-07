@@ -134,7 +134,7 @@ if(response == FAIL)
  Serial.println("No data");
 ```
 
-If you need to read the packet content you can find it in `network.data` array with maximum length of `max_package_length`:
+To read the packet access to `network.data` array with max length of `max_package_length`:
 ```cpp
 for(int i = 0; i < max_package_length; i++)
   Serial.println(network.data[i]);

@@ -13,10 +13,10 @@ network.set_collision_avoidance(true);
 
 // Send temperature to device ID 44
 byte temperature = 34;
-network.send(44,  (byte)temperature);
+network.send(44,  (char)temperature);
 
 // Receive the temperature on the other side
-network.receive();
+network.receive(1000);
 Serial.println(network.data[2]); // -> 34
 ```
 

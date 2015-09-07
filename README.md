@@ -134,6 +134,12 @@ if(response == FAIL)
  Serial.println("No data");
 ```
 
+If you need to read the packet content you can find it in `network.data` array with maximum length of `max_package_length`:
+```cpp
+for(int i = 0; i < max_package_length; i++)
+  Serial.println(network.data[i]);
+```
+
 If you defined in another board a command that the receiver board you are programming should receive you can define a reaction to that command that will trigger a function that will be called as soon as the command will be received:
 
 ```cpp

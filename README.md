@@ -4,7 +4,7 @@ PJON
 PJON (Padded Jittering Operative Network) is a single wire, multi-master communication bus system. It is designed as an alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. 
 
 ```cpp 
-// Instantiate PJON network passing the bus PIN and the devide ID
+// Instantiate PJON network passing the bus PIN and the device ID
 PJON network(A0, 44);
  
 // Configure both RX and TX devices in setup()
@@ -20,7 +20,7 @@ network.receive();
 Serial.println(network.data[2]); // -> 34
 ```
 
-PJON contains: 
+####Content
 - Packet manager to track and retransmit failed packet sendings in background.
 - Reaction manager able to automatically call functions associated with user defined symbols.
 - Cyclic Redundancy Check (CRC).
@@ -28,12 +28,12 @@ PJON contains:
 - Collision avoidance (enables multi-master capability).
 - Optional encyption. 
 
-###Performance
+####Performance
 Absolute bandwidth: **3.0kB/s** - Practical bandwidth: **2.38kB/s** - Transfer speed: **39200 baud/s**  
 
 This single wire simplicity enables you to experiment quickly and with creativity. For example, one of the first tests I suggest to try with PJON is to let two arduinos communicate through your body touching with the left hand the port of the first board and with the right the port of the other one. It's stunning to see more than 90% accuracy for this digital communication doing all that path inside a biological body. This opens the mind to possible creative solutions.
 
-###Why not I2c?
+####Why not I2c?
 I2C is a bus system engineered to work with short wires to connect devices and it needs at least 2 wires. No long wires can be used, this excludes home automation applications. If one of the connections to the bus fails, even briefly, one or both devices may freeze. For this reason i2c is not practical for high vibration scenarios such as automotive applications.
 
 ## How to start
@@ -94,7 +94,7 @@ If you want to remove this repeated task simply:
 network.remove(one_second_delay_test);
 ```
 
-The state of your packet can be 'TO_BE_SENT' that means is still in pending state, if NULL the packet was correctly sent and deleted. if you want to know the state of your packet:
+The state of your packet can be `TO_BE_SENT` that means is still in pending state, if NULL the packet was correctly sent and deleted. if you want to know the state of your packet:
 
 ```cpp
 int state = network.packets[one_second_delay_test].state;
@@ -107,7 +107,7 @@ char packet[2] = {CMD, 'B', NULL};
 int blink_send = network.send(100, packet);
 ```
 
-### Broadcast
+#### Broadcast
 To broadcast a message to all connected devices, use the `BROADCAST` constant as the recipient ID. Every node will receive the message but will not answer ACK to avoid communication overlap.
 
 ```cpp

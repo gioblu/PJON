@@ -21,11 +21,13 @@ Serial.println(network.data[2]); // -> 34
 ```
 
 ####Content
-- Packet manager to track and retransmit failed packet sendings in background.
-- Reaction manager able to automatically call functions associated with user defined symbols.
+- ID functionality to enable univocal communication up to 254 devices on the same wire.  
 - Cyclic Redundancy Check (CRC).
 - Acknowledgement of correct packet sending. 
-- Collision avoidance (enables multi-master capability).
+- Collision avoidance to enable multi-master capability.
+- Broadcast functionality to contact all connected devices.
+- Packet manager to track and retransmit failed packet sendings in background.
+- Reaction manager able to automatically call functions associated with user defined symbols.
 - Optional encyption. 
 
 ####Performance

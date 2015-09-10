@@ -20,7 +20,7 @@ network.receive(1000);
 Serial.println(network.data[2]); // -> 34
 ```
 
-####Content
+####Features
 - ID functionality to enable univocal communication up to 254 devices on the same wire.  
 - Cyclic Redundancy Check (CRC).
 - Acknowledgement of correct packet sending. 

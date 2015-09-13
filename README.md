@@ -47,7 +47,7 @@ Lets start coding, instantiate the PJON object that in the example is called net
   PJON network(12, 123); 
 ```
 
-After this is necessary to define wich type of communication we need. For example if you only need to send a value from a "slave" arduino to another one cyclically, you will probably not need collision_avoidance (to check if someone is speaking before starting a communication) and acknowledge or ACK (when a sender waits the receiver acknowledge of correct data receive after check of data integrity). Disabling this two functionalities let you spare loop time and so speed up communication. In the opposite case, if you have two or more boards communicating bidirectionally as my automated home scenario, you will need to have a system able to speak over the channel when is free to avoid to corrupt other communication going on and also to have every board sure that the message sent arrived correct to the receiver. There are some setters that let you configure the network as you need:
+After this it is necessary to define which type of communication we need. For example if you only need to send a value from a "slave" arduino to another one cyclically, you will probably not need collision_avoidance (to check if someone is speaking before starting a communication) and acknowledge or ACK (when a sender waits the receiver acknowledge of correct data reception after check of data integrity). Disabling these two functionalities let you spare loop time and so speed up communication. In the opposite case, if you have two or more boards communicating bidirectionally as my automated home scenario, you will need to have a system able to speak over the channel when is free to avoid to corrupt other communication going on and also to have every board sure that the message sent arrived correct to the receiver. There are some setters that let you configure the network as you need:
 
 ```cpp
   // Master Slave capable setup
@@ -117,12 +117,12 @@ int broadcastTest = network.send(BROADCAST, "Message for all connected devices."
 ```
 
 ## Receive data
-To correctly receive data is necessary to call at least once per loop cycle the receive() function passing as a parameter the maximum reception time in microseconds:
+To correctly receive data it is necessary to call at least once per loop cycle the receive() function passing as a parameter the maximum reception time in microseconds:
 
 ```cpp
 int response = network.receive(1000);
 ```
-It is important to consider that this is not an interrupt driven system and so all the time Arduino will pass in delay or executing something a certain amount of packets will be potentially lost unheard by the busy receiver. In this case structure intelligently your loop cicle to avoid huge blind timeframes. The receive function returns a response that contains the result of the reception. If you use packet and reaction manager this is not strictly necessary but useful to know:
+It is important to consider that this is not an interrupt driven system and so all the time Arduino will pass in delay or executing something a certain amount of packets will be potentially lost unheard by the busy receiver. In this case structure intelligently your loop cycle to avoid huge blind timeframes. The receive function returns a response that contains the result of the reception. If you use packet and reaction manager this is not strictly necessary but useful to know:
 
 ```cpp
 int response = network.receive(1000);

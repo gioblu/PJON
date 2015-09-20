@@ -2,7 +2,7 @@
  /*-O//\         __     __
    |-gfo\       |__| | |  | |\ |
    |!y°o:\      |  __| |__| | \|
-   |y"s§+`\     Giovanni Blu Mitolo 2012 - 2014
+   |y"s§+`\     Giovanni Blu Mitolo 2012 - 2015
   /so+:-..`\    gioscarab@gmail.com
   |+/:ngr-*.`\
    |/:%&-a3f.:/\     PJON is a device communications bus system that connects up to 255
@@ -13,58 +13,69 @@
         > <
        -| |-
 
-ADDRESS: 255 different adresses can be assigned
+DEVICE ID: 255 different adresses can be assigned
 CRC: XOR Cyclic Redundancy Check ensures almost errorless data communication
-ACKNOLEDGE:  Acknowledge byte sent by receiver ensures packet delivery
-COLLISION DETECTION: collision avoidance is ensured analyzing network bus before starting
-ENCRYPTION: Private key encryption + initialization vector to ensure almost random data stream */
+ACKNOLEDGE: Acknowledge byte sent by receiver ensures packet delivery
+COLLISION DETECTION: Collision avoidance is ensured analyzing network bus before starting */
 
 #include "PJON.h"
 
-/* Initiate PJON passing pin number and the selected device_id */
+/* Initiate PJON passing pin number and the selected device_id 
+
+   PJON network(13, 46);
+*/
 
 PJON::PJON(int input_pin, uint8_t device_id) {
   _input_pin = input_pin;
   _device_id = device_id;
 
-  for(int i = 0; i < max_reactions; i++)
-    reactions[i].empty = true;
-
-  for(int i = 0; i < max_packets; i++) {
+  for(int i = 0; i < MAX_PACKETS; i++) {
     packets[i].state = NULL;
     packets[i].timing = 0;
   }
+
+  this->set_exception(dummy_exception_handler);
+}
+
+/* Pass as a parameter a static void function you previously defined in your code. 
+   This will be called when a correct message will be received. 
+   Inside there you can code how to react when data is received. 
+  
+   static void receiver_function(uint8_t sender_id, uint8_t length, uint8_t *payload) {
+    Serial.print(sender_id);
+    Serial.print(" ");
+
+    for(int i = 0; i < length; i++) 
+      Serial.print((char)payload[i]);
+      
+    Serial.print(" ");
+    Serial.println(length);
+  };
+
+  network.set_receiver(receiver_function);
+
+*/
+
+void PJON::set_receiver(receiver r) {
+  _receiver = r;
 }
 
 
-/* Set collision detection:
- If true Avoids to transmit over other transmitting devices:
- on top of this can be developed a multimaster network of Arduino boards
- that arbitrally decides to communicate (slight reduction of bandwidth) */
+/* Pass as a parameter a static void function you previously defined in your code.
+   This will be called when an error in communication occurs 
 
-void PJON::set_collision_avoidance(boolean state) {
-  _collision_avoidance = state;
+static void exception_handler(uint8_t motivation, uint8_t data) {
+  Serial.print(motivation);
+  Serial.print(" ");
+  Serial.println(data);
+};
+
+network.exception(exception_handler); */
+
+
+void PJON::set_exception(exception e) {
+  _exception = e;
 }
-
-
-/* Set acknowledge state:
- If true sender waits for feedback by receiver after transmission:
- After the string is sent, receiver answers with an ACK if
- CRC is ok or NAK if wrong (slight reduction of bandwidth)
- If false, if you call send_string repeatedly, at least 14 or more
- microseconds delay is necessary bewteen every send_string. */
-
-void PJON::set_acknowledge(boolean state) {
-  _acknowledge = state;
-}
-
-
-/* Set Encryption state to transmitted data */
-
-void PJON::set_encryption(boolean state) {
-  _encryption = state;
-}
-
 
 /* Check if the channel if free for transmission:
  If an entire byte received contains no 1s it means
@@ -77,54 +88,6 @@ boolean PJON::can_start() {
     return true;
 
   return false;
-}
-
-
-/* Encrypt string with a custom made private key algorithm + initialization vector ----------------------- */
-
-
-/* RC4 cpp implementation with a 1 byte initialization vector */
-
-void PJON::crypt(char *content, boolean initialization_vector, boolean side) {
-  uint8_t i, j = 0;
-  uint8_t string_length = strlen(content);
-  uint8_t encryption_key_length = strlen(encryption_key);
-
-  if(initialization_vector && side)
-    for(i = 0; i < string_length; i++)
-      content[i] ^= content[string_length - 1];
-
-  for (i = 0; i < encryption_strength; i++)
-    _s_box[i] = i;
-  
-  for (i = 0; i < encryption_strength; i++) {
-    j = (j + _s_box[i] + encryption_key[i % encryption_key_length]) % encryption_strength;
-    swap(_s_box[i], _s_box[j]);
-  }
-
-  i = j = 0;
-  for (int k = 0; k < string_length; k++) {
-    i = (i + 1) % encryption_strength;
-    j = (j + _s_box[i]) % encryption_strength;
-    swap(_s_box[i], _s_box[j]);
-    hash[k] = content[k] ^ _s_box[ (_s_box[i] + _s_box[j]) % encryption_strength];
-  }
-
-  if(initialization_vector && !side) {
-    hash[string_length] = this->generate_IV(string_length);
-    for(i = 0; i < string_length; i++)
-      hash[i] ^= hash[string_length];
-  }
-
-  hash[string_length + 1] = '\0';
-}
-
-uint8_t PJON::generate_IV(uint8_t string_length) {
-  uint8_t IV = (micros() % 254) + 1;
-  for(uint8_t i = 0; i < string_length; i++)
-    if(hash[i] == IV)
-      return this->generate_IV(string_length);
-  return IV;
 }
 
 
@@ -149,17 +112,17 @@ void PJON::send_bit(uint8_t VALUE, int duration) {
  |1    |0 |1 |0  0 |1 |0 |1  1 |0 |
  |_____|__|__|__ __|__|__|_____|__|
 
- Init is a long 1 with a bit_spacer duration and a standard bit 0
+ Init is a long 1 with a BIT_SPACER duration and a standard bit 0
  after that comes before the raw byte */
 
 void PJON::send_byte(uint8_t b) {
   digitalWriteFast(_input_pin, HIGH);
-  delayMicroseconds(bit_spacer);
+  delayMicroseconds(BIT_SPACER);
   digitalWriteFast(_input_pin, LOW);
-  delayMicroseconds(bit_width);
+  delayMicroseconds(BIT_WIDTH);
 
   for(uint8_t mask = 0x01; mask; mask <<= 1)
-    this->send_bit(b & mask, bit_width);
+    this->send_bit(b & mask, BIT_WIDTH);
 }
 
 
@@ -180,17 +143,13 @@ void PJON::send_byte(uint8_t b) {
 
 int PJON::send_string(uint8_t ID, char *string) {
 
-  if (!*string)
-    return FAIL;
+  if (!*string) return FAIL;
 
-  uint8_t package_length = strlen(string) + 4;
+  uint8_t package_length = strlen(string) + 3;
   uint8_t CRC = 0;
 
-  if(_collision_avoidance && !this->can_start())
+  if(!this->can_start())
     return BUSY;
-
-  if(_encryption)
-    this->crypt(string, false, 0);
 
   pinModeFast(_input_pin, OUTPUT);
   this->send_byte(ID);
@@ -198,22 +157,21 @@ int PJON::send_string(uint8_t ID, char *string) {
   this->send_byte(package_length);
   CRC ^= package_length;
 
-  char *string_pointer = (_encryption) ? hash : string;
-  for(uint8_t i = 0; string_pointer[i] != NULL; i++) {
-    this->send_byte(string_pointer[i]);
-    CRC ^= string_pointer[i];
+  for(uint8_t i = 0; string[i] != NULL; i++) {
+    this->send_byte(string[i]);
+    CRC ^= string[i];
   }
 
   this->send_byte(CRC);
   digitalWriteFast(_input_pin, LOW);
 
-  if(!_acknowledge)
+  if(ID == BROADCAST)
     return ACK;
   
   unsigned long time = micros();
   int response = FAIL;
 
-  while(response == FAIL && micros() - time <= bit_spacer + bit_width)
+  while(response == FAIL && micros() - time <= BIT_SPACER + BIT_WIDTH)
     response = this->receive_byte();
 
   if (response == ACK || response == NAK)
@@ -222,41 +180,13 @@ int PJON::send_string(uint8_t ID, char *string) {
   return FAIL;
 };
 
-/* Send a command to the pin:
- An Example of how a command is formatted and sent:
-  _____    __________________________________________________________       _____
- | C-A |  |  ID   | LENGTH |  CMD  |  type  |  value |  IV   |  CRC  |     | ACK |
- |-----|->|-------|--------|-------|--------|--------|-------|-------|-> <-|-----|
- |  0  |  | 0-255 |   7    |   88  |  0-255 |  0-255 | 0-255 | 0-255 |     |  6  |
- |_____|  |_______|________|_______|________|________|_______|_______|     |_____|
-
- C-A: Collision avoidance - receive a byte, if no 1s channel is free           - 1 byte
- ID: Receiver ID                                                               - 1 byte
- LENGTH: Length of the string (max 255 characters)                             - 1 byte
-
- CMD: 88 is the command symbol                                                 - 1 byte
- type: 0-255 byte value that has to be equal to its related reaction's id      - 1 byte
- value: 1 or 2 bytes dedicated to command additional data                      - 1 byte
-
- IV: Initialization vector, present if encryption activated                    - 1 byte
- CRC: Cyclic redundancy check                                                  - 1 byte
- ACK: Acknowledge sent from receiver, present if acknowledge activated         - 1 byte */
-
-int PJON::send_command(byte ID, char command_type, unsigned int value) {
-  char bytes_to_send[4] = { CMD, command_type, value >> 8, value & 0xFF };
-  return this->send_string(ID, bytes_to_send);
-}
-
-int PJON::send_short_command(byte ID, char command_type) {
-  char bytes_to_send[2] = { CMD, command_type };
-  return this->send_string(ID, bytes_to_send);
-}
-
 
 /* Insert a packet in the send list:
  The added packet will be sent in the next update() call. 
  Using the variable timing is possible to set the delay between every 
- transmission cyclically sending the packet (use remove() function stop it) */ 
+ transmission cyclically sending the packet (use remove() function stop it) 
+ 
+ int hi = network.send(99, "HI!", 1000000); // Send hi every second  */ 
 
 int PJON::send(uint8_t ID, char *packet, unsigned long timing) {
   uint8_t package_length = strlen(packet) + 1;
@@ -264,7 +194,7 @@ int PJON::send(uint8_t ID, char *packet, unsigned long timing) {
   str = (char *) malloc(package_length);
   memcpy(str, packet, package_length);
 
-  for(uint8_t i = 0; i < max_packets; i++)
+  for(uint8_t i = 0; i < MAX_PACKETS; i++)
     if(packets[i].state == NULL) {
       packets[i].content = str;
       packets[i].device_id = ID;
@@ -276,8 +206,8 @@ int PJON::send(uint8_t ID, char *packet, unsigned long timing) {
       }
       return i;
     }
-
-  return -1;
+  this->_exception(PACKETS_BUFFER_FULL, MAX_PACKETS);
+  return FAIL;
 }
 
 
@@ -285,20 +215,30 @@ int PJON::send(uint8_t ID, char *packet, unsigned long timing) {
  Check if there are packets to send, erase the correctly delivered */ 
 
 void PJON::update() {
-  for(uint8_t i = 0; i < max_packets; i++) {
+  for(uint8_t i = 0; i < MAX_PACKETS; i++) {
 
     if(packets[i].state != NULL)
-      if(!packets[i].timing || packets[i].timing && micros() - packets[i].registration > packets[i].timing) 
+      if(micros() - packets[i].registration > packets[i].timing + pow(packets[i].attempts, 3)) 
         packets[i].state = send_string(packets[i].device_id, packets[i].content); 
 
     if(packets[i].state == ACK) {
       if(packets[i].timing == 0)
         this->remove(i);
       else {
+        packets[i].attempts = 0;
         packets[i].registration = micros();
         packets[i].state = TO_BE_SENT;
       }
-    }
+    } else {
+      if(packets[i].state == FAIL) 
+        packets[i].attempts++;
+    
+      if(packets[i].attempts > MAX_ATTEMPTS) {
+        this->_exception(CONNECTION_LOST, packets[i].device_id);
+        if(packets[i].timing == 0)
+          this->remove(i);
+      }
+    } 
   }
 }
 
@@ -307,31 +247,33 @@ void PJON::update() {
 
 void PJON::remove(int id) {
   free(packets[id].content);
+  packets[id].attempts = 0;
   packets[id].device_id = NULL;
   packets[id].length = NULL;
   packets[id].state = NULL;
   packets[id].registration = NULL;
 }
 
+
 /* Receiver side functions ------------------------------------------------------------------------------- */
 
 /* Syncronize with transmitter:
  This function is used only in byte syncronization.
- read_delay has to be tuned to correctly send and
+ READ_DELAY has to be tuned to correctly send and
  receive transmissions because this variable shifts
  in which portion of the bit, reading will be
  executed by the next read_byte function */
 
 uint8_t PJON::syncronization_bit() {
-  delayMicroseconds((bit_width / 2) - read_delay);
+  delayMicroseconds((BIT_WIDTH / 2) - READ_DELAY);
   uint8_t bit_value = digitalReadFast(_input_pin);
-  delayMicroseconds(bit_width / 2);
+  delayMicroseconds(BIT_WIDTH / 2);
   return bit_value;
 }
 
 
 /* Check if a byte is coming from the pin:
- If there is a 1 and is longer then acceptance
+ If there is a 1 and is longer then ACCEPTANCE
  and after that comes a 0 probably a byte is coming */
 
 int PJON::receive_byte() {
@@ -339,10 +281,10 @@ int PJON::receive_byte() {
   digitalWriteFast(_input_pin, LOW);
 
   unsigned long time = micros();
-  while (digitalReadFast(_input_pin) && micros() - time <= bit_spacer);
+  while (digitalReadFast(_input_pin) && micros() - time <= BIT_SPACER);
   time = micros() - time;
 
-  if(time > acceptance && !this->syncronization_bit())
+  if(time > ACCEPTANCE && !this->syncronization_bit())
     return (int)this->read_byte();
 
   return FAIL;
@@ -353,10 +295,10 @@ int PJON::receive_byte() {
 
 uint8_t PJON::read_byte() {
   uint8_t byte_value = B00000000;
-  delayMicroseconds(bit_width / 2);
+  delayMicroseconds(BIT_WIDTH / 2);
   for (uint8_t i = 0; i < 8; i++) {
     byte_value += digitalReadFast(_input_pin) << i;
-    delayMicroseconds(bit_width);
+    delayMicroseconds(BIT_WIDTH);
   }
   return byte_value;
 }
@@ -365,20 +307,19 @@ uint8_t PJON::read_byte() {
 /* Try to receive a string from the pin: */
 
 int PJON::receive() {
-  int package_length = max_package_length;
+  int package_length = PACKET_MAX_LENGTH;
   uint8_t CRC = 0;
 
-  for (uint8_t i = 0; i < package_length; i++) {
+  for (uint8_t i = 0; i <= package_length; i++) {
     data[i] = this->receive_byte();
 
-    if (data[i] == FAIL)
-      return FAIL;
+    if (data[i] == FAIL) return FAIL;
 
     if(i == 0 && data[i] != _device_id && data[i] != BROADCAST)
       return BUSY;
 
     if(i == 1)
-      if(data[i] > 0 && data[i] < max_package_length)
+      if(data[i] > 0 && data[i] < PACKET_MAX_LENGTH)
         package_length = data[i];
       else return FAIL;
 
@@ -386,21 +327,15 @@ int PJON::receive() {
   }
 
   if (!CRC) {
-    if(_acknowledge && data[0] != BROADCAST) {
+    if(data[0] != BROADCAST) {
       pinModeFast(_input_pin, OUTPUT);
       this->send_byte(ACK);
       digitalWriteFast(_input_pin, LOW);
     }
-    if(_encryption) {
-      for(int i = 0; i < package_length - 1; i++)
-        if(i > 1) data[i - 2] = data[i];
-
-      this->crypt((char*)data, false, 1);
-    }
     return ACK;
 
   } else {
-    if(_acknowledge && data[0] != BROADCAST) {
+    if(data[0] != BROADCAST) {
       pinModeFast(_input_pin, OUTPUT);
       this->send_byte(NAK);
       digitalWriteFast(_input_pin, LOW);
@@ -422,88 +357,11 @@ int PJON::receive(unsigned long duration) {
   while(micros() - time <= duration) {
     for(unsigned long i = 0; i < 3706; i++) {
       response = this->receive();
-      if(response == ACK) { 
-        if(data[2] == CMD)
-          this->process_reaction();
-        return response;
+      if(response == ACK) {
+          this->_receiver(data[1] - 3, data + 2); 
+        return ACK;
       }
     }
   }
   return response;
 }
-
-/* Reaction to command functions ------------------------------------------------------------------------- */
-
-
-/* Insert a reaction to a command in the reaction's list: 
- Returns the ID of the reaction you added, this could be 
- useful in future to remove or deactivate it */
-
-uint8_t PJON::insert_reaction(char command_type, void (*task)(void), boolean once) {
-  for(uint8_t i = 0; i < max_reactions; i++)
-    if(reactions[i].empty) {
-      reactions[i].active = true;
-      reactions[i].execution = *task;
-      reactions[i].command_type = command_type;
-      reactions[i].once = once;
-      reactions[i].empty = false;
-      return i;
-    }
-  return -1;
-}
-
-
-/* Process reaction to a command:
- Find in the list of reactions if there 
- is a reaction's command that has the same
- content of the one you have now received, if
- a candidate is found, execute the related function */
-
-void PJON::process_reaction() {
-  for(uint8_t i = 0; i < max_reactions; i++)
-    if(this->compare_reaction(reactions[i].command_type))
-      reactions[i].execution();
-}
-
-/* Compare if the last received command content
- matches one of the reaction's command */ 
-
-boolean PJON::compare_reaction(char command_type) {
-
-  if(_encryption) {
-    if(hash[1] != command_type)
-      return false;
-  } else {
-    if(data[3] != command_type)
-      return false;
-  }
-
-  return true;
-}
-
-
-/* Activate a reaction you previously added: */
-
-void PJON::activate_reaction(uint8_t id) {
-  reactions[id].active = true;
-}
-
-
-/* Deactivate a reaction you previously added: */
-
-void PJON::deactivate_reaction(uint8_t id) {
-  reactions[id].active = false;
-}
-
-
-/* Remove from the reactions list a reaction you previously added: 
- Pass to the function the ID of the reaction you want to remove
- from the list */
-
-void PJON::remove_reaction(uint8_t id) {
-  reactions[id].active = NULL;
-  reactions[id].execution = NULL;
-  reactions[id].once = NULL;
-  reactions[id].empty = true;
-}
-

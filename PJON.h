@@ -23,7 +23,7 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
   __________________________________________________________________________________
  |PJON Standard mode | SPEED SETUP CHANGES ACCORDING TO YOUR IDE VERSION!           |
  |----------------------------------------------------------------------------------|
- | SLOW MODE:  bit_width 20 | bit_spacer 68 | acceptance 16 | read_delay 7          |
+ | SLOW MODE:  BIT_WIDTH 20 | BIT_SPACER 68 | ACCEPTANCE 16 | READ_DELAY 7          |
  |----------------------------------------------------------------------------------|
  |Absolute bandwidth:  3.16-3.28 kB/s | Transfer speed: 4.32kB/s                    |
  |Practical bandwidth: 2.19-2.45 kB/s | Baud rate: 32256 baud/s                     |
@@ -32,7 +32,7 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
   __________________________________________________________________________________
  |PJON Standard mode | SPEED SETUP CHANGES ACCORDING TO YOUR IDE VERSION!           |
  |----------------------------------------------------------------------------------|
- | FAST MODE:  bit_width 18 | bit_spacer 40 | acceptance 18 | read_delay 8          |
+ | FAST MODE:  BIT_WIDTH 18 | BIT_SPACER 40 | ACCEPTANCE 18 | READ_DELAY 8          |
  |----------------------------------------------------------------------------------|
  |Absolute bandwidth:  3.25-3.81 kB/s | Transfer speed: 4.95kB/s                    |
  |Practical bandwidth: 2.52-2.85 kB/s | Baud rate: 39600 baud/s                     |
@@ -42,7 +42,7 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
 
   1.x IDE VERSION SPEED CONFIGURATIONS:
   __________________________________________________________________________________
- | bit_width 20 | bit_spacer 68 | acceptance  8 | read_delay 6                      |
+ | BIT_WIDTH 20 | BIT_SPACER 68 | ACCEPTANCE  8 | READ_DELAY 6                      |
  |----------------------------------------------------------------------------------|
  |Absolute bandwidth:  3.16-3.28 kB/s | Transfer speed: 4.32kB/s                    |
  |Practical bandwidth: 2.19-2.45 kB/s | Baud rate: 32256 baud/s                     |
@@ -59,24 +59,22 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
     
     // Function execution time changes according to your IDE version 
     // So here we have to set dedicated timing to 1.x version
-    #define bit_width 20
-    #define bit_spacer 68
-    #define acceptance 8
-    #define read_delay 6
+    #define BIT_WIDTH 20
+    #define BIT_SPACER 68
+    #define ACCEPTANCE 8
+    #define READ_DELAY 6
   #else
     #include "WProgram.h"
     #include "WConstants.h"
     // Function execution time changes according to your IDE version (0.x or 1.x) 
     // So here we have to set dedicated timing to 0.x version
     // STANDARD MODE - if you need more speed please follow the comments above
-    #define bit_width 20
-    #define bit_spacer 68
-    #define acceptance 16
-    #define read_delay 7
+    #define BIT_WIDTH 20
+    #define BIT_SPACER 68
+    #define ACCEPTANCE 16
+    #define READ_DELAY 7
   #endif
 #endif
-
-#define max_package_length 100
 
 #define ACK  6
 #define NAK  21
@@ -84,17 +82,22 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
 #define BUSY 666
 #define BROADCAST 124
 #define TO_BE_SENT 74
-#define CMD 88
 
-#define encryption_key "19id°?=(!$=<zkl"
-#define encryption_strength 2
+// Exceptions
+#define CONNECTION_LOST 101
+#define PACKETS_BUFFER_FULL 102
 
-#define swap(a,b) do { int t = _s_box[a]; _s_box[a] = _s_box[b]; _s_box[b] = t; } while(0)
+// Maximum sending attempts before throwing CONNECTON_LOST exception
+#define MAX_ATTEMPTS 100 
 
-#define max_reactions 20
-#define max_packets 20
+// Packets buffer length, if full PACKET_BUFFER_FULL exception is thrown
+#define MAX_PACKETS 10
+
+// Max packet length, higher if necessary (affects memory)
+#define PACKET_MAX_LENGTH 50
 
 struct packet {
+  uint8_t attempts;
   uint8_t device_id;
   char *content;
   uint8_t length;
@@ -103,66 +106,41 @@ struct packet {
   unsigned long timing;
 };
 
-struct reaction {
-  void (*execution)(void);
-  char command_type;
-  boolean active;
-  boolean once;
-  boolean empty;
-};
+typedef void (* receiver)(uint8_t length, uint8_t *payload);
+typedef void (* exception)(uint8_t motivation, uint8_t data);
+
+static void dummy_exception_handler(uint8_t motivation, uint8_t data) {};
 
 class PJON {
 
   public:
-
     PJON(int input_pin, uint8_t ID);
-    void set_collision_avoidance(boolean state);
-    void set_acknowledge(boolean state);
-    void set_encryption(boolean state);
-
-    void update();
-    int send(uint8_t ID, char *packet, unsigned long timing = 0);
-    void remove(int id);
-
-    void crypt(char *content, boolean initialization_vector = false, boolean side = false);
-    uint8_t generate_IV(uint8_t string_length);
-
-    void send_bit(uint8_t VALUE, int duration);
-    void send_byte(uint8_t b);
-
-    int send_string(uint8_t ID, char *string);
-
-    int send_command(uint8_t ID, char command_type, unsigned int value);
-    int send_short_command(byte ID, char command_type);
-
-    uint8_t syncronization_bit();
-    uint8_t read_byte();
-
-    boolean can_start();
+    void set_receiver(receiver r);
+    void set_exception(exception e);
 
     int receive_byte();
     int receive();
     int receive(unsigned long duration);
 
-    void activate_reaction(uint8_t id);
-    void deactivate_reaction(uint8_t id);
-    uint8_t insert_reaction(char command_type, void (*task)(void), boolean once);
-    void remove_reaction(uint8_t id);
-    void process_reaction();
-    boolean compare_reaction(char command_type);
+    void send_bit(uint8_t VALUE, int duration);
+    void send_byte(uint8_t b);
+    int  send_string(uint8_t ID, char *string);
+    int  send(uint8_t ID, char *packet, unsigned long timing = 0);
+    
+    void update();
+    void remove(int id);
 
-    uint8_t data[max_package_length];
-    char hash[max_package_length];
-    packet packets[max_packets];
-    reaction reactions[max_reactions];
+    uint8_t read_byte();
+    boolean can_start();
+
+    uint8_t syncronization_bit();
+
+    uint8_t data[PACKET_MAX_LENGTH];
+    packet  packets[MAX_PACKETS];
 
   private:
-    uint8_t _device_id;
-    int _input_pin;
-    int _read_delay;
-    unsigned char _s_box[encryption_strength];
-
-    boolean _acknowledge;
-    boolean _collision_avoidance;
-    boolean _encryption;
+    uint8_t   _device_id;
+    int       _input_pin;
+    receiver  _receiver;
+    exception _exception;
 };

@@ -17,7 +17,7 @@ PJON (Padded Jittering Operative Network) is a single wire, multi-master communi
 - Transfer speed: **39200 baud/s** or **4.32kB/s** 
 - Absolute bandwidth: **2.8kB/s** 
 - Practical bandwidth: **2.38kB/s**
-- Accuracy: 99.45-99.95% 
+- Accuracy: **99.45-99.95%**
 
 Single wire simplicity let you to experiment quickly and with creativity. For example, one of the first tests I suggest to try with PJON is to let two arduinos communicate through your body touching with the left hand the port of the first board and with the right the port of the other one. It's stunning to see more than 90% accuracy for this digital communication doing all that path inside a biological body. This opens the mind to possible creative solutions.
 

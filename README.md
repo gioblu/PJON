@@ -70,13 +70,11 @@ int broadcastTest = network.send(BROADCAST, "Message for all connected devices."
 ```
 
 ## Receive data
-Now define a `static void function` that will be called if a correct message will be received. This function receives 3 parameters: the sender id, the message length and its content.
+Now define a `static void function` that will be called if a correct message will be received. This function receives 2 parameters: the message length and its content.
 
 ```cpp
-static void receiver_function(uint8_t sender_id, uint8_t length, uint8_t *payload) {
-  Serial.print("Message received from ID ")
-  Serial.print(sender_id);
-  Serial.print(" | Message content: ");
+static void receiver_function(uint8_t length, uint8_t *payload) {
+  Serial.print("Message content: ");
 
   for(int i = 0; i < length; i++) 
     Serial.print((char)payload[i]);

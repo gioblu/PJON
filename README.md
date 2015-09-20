@@ -70,7 +70,7 @@ int broadcastTest = network.send(BROADCAST, "Message for all connected devices."
 ```
 
 ## Receive data
-We will now define a static void function that will be called if a correct message will be received. This function receives 3 parameters, the sender id, the message length and its content:
+Now define a `static void function` that will be called if a correct message will be received. This function receives 3 parameters: the sender id, the message length and its content.
 
 ```cpp
 static void receiver_function(uint8_t sender_id, uint8_t length, uint8_t *payload) {
@@ -101,7 +101,7 @@ It is important to consider that this is not an interrupt driven system and so a
 
 
 ##Exception handling
-PJON is designed to inform the user if the communication link to a certain device is lost or if the packtes buffer is full. A static void function has to be defined to be the exception handler, it receives 2 parameters the first if the motivation of the exception and the second is 1 byte additional data related to the error.
+PJON is designed to inform the user if the communication link to a certain device is lost or if the packtes buffer is full. A `static void function` has to be defined as the exception handler, it receives 2 parameters the first is the motivation of the exception and the second is 1 byte additional data related to the error.
 
 ```cpp
 static void exception_handler(uint8_t motivation, uint8_t data) {

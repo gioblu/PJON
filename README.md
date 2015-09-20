@@ -34,6 +34,7 @@ Lets start coding, instantiate the `PJON` object that in the example is called n
   PJON network(12, 123); 
 ```
 
+
 To let the network work correctly you need to call the `update()` function at least once per loop cycle. It's really important to consider that this is not an interrupt driven system, so all the time the Arduino is passing delaying time or executing other tasks is delaying the sending of all the packets are scheduled to be sent:
 
 ```cpp  
@@ -89,9 +90,7 @@ After this we should inform the network to call this function when a correct mes
 network.set_receiver(receiver_function);
 ```
 
-
 To correctly receive data is necessary to call at least once per loop cycle the `receive()` function passing as a parameter the maximum reception time in microseconds:
-
 ```cpp
 int response = network.receive(1000);
 ```

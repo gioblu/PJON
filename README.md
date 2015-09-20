@@ -25,7 +25,7 @@ Single wire simplicity let you to experiment quickly and with creativity. For ex
 I2C is a bus system engineered to work with short wires to connect devices and it needs at least 2 wires. No long wires can be used, this excludes home automation applications. If one of the connections to the bus fails, even briefly, one or both devices may freeze. For this reason i2c is not practical for high vibration scenarios such as automotive applications.
 
 ####Why not 1-Wire?
-1-Wire is almost what I needed for a lot of projects but has its downsides: first it is propietary and closed source code and second, for me, the implementation is a littlebit caotic.
+1-Wire is almost what I needed for a lot of projects but has its downsides: first it is propietary and closed source code and second, for me, the implementation is a littlebit chaotic.
 
 ## How to start
 The first step is the physical layer. Lets wire the two arduinos. Simply find a piece of wire and select a digital pin you want to use on both boards where to connect the wire. After this you should have both arduino boards connected by the wire on the same pin.
@@ -70,7 +70,7 @@ int broadcastTest = network.send(BROADCAST, "Message for all connected devices."
 ```
 
 ## Receive data
-Now define a `static void function` that will be called if a correct message will be received. This function receives 2 parameters: the message length and its content.
+Now define a `static void function` that will be called if a correct message is received. This function receives 2 parameters: the message length and its content.
 
 ```cpp
 static void receiver_function(uint8_t length, uint8_t *payload) {
@@ -84,13 +84,13 @@ static void receiver_function(uint8_t length, uint8_t *payload) {
 };
 ```
 
-After this we should inform the network to call this function when a correct message will be received:
+After this we should inform the network to call this function when a correct message is received:
 
 ```cpp
 network.set_receiver(receiver_function);
 ```
 
-To correctly receive data is necessary to call at least once per loop cycle the `receive()` function passing as a parameter the maximum reception time in microseconds:
+To correctly receive data it is necessary to call at least once per loop cycle the `receive()` function passing as a parameter the maximum reception time in microseconds:
 ```cpp
 int response = network.receive(1000);
 ```

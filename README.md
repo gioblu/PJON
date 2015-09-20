@@ -14,15 +14,14 @@ PJON (Padded Jittering Operative Network) is a single wire, multi-master communi
 - Exception handling.
 
 ####Performance
-Transfer speed: **39200 baud/s or 4.32kB/s**
-Absolute bandwidth: **2.8kB/s** - Practical bandwidth: **2.38kB/s**   
+Transfer speed: **39200 baud/s or 4.32kB/s** - Absolute bandwidth: **2.8kB/s** - Practical bandwidth: **2.38kB/s**   
 
 Single wire simplicity let you to experiment quickly and with creativity. For example, one of the first tests I suggest to try with PJON is to let two arduinos communicate through your body touching with the left hand the port of the first board and with the right the port of the other one. It's stunning to see more than 90% accuracy for this digital communication doing all that path inside a biological body. This opens the mind to possible creative solutions.
 
 ####Why not I2c?
 I2C is a bus system engineered to work with short wires to connect devices and it needs at least 2 wires. No long wires can be used, this excludes home automation applications. If one of the connections to the bus fails, even briefly, one or both devices may freeze. For this reason i2c is not practical for high vibration scenarios such as automotive applications.
 
-###Why not 1-Wire?
+####Why not 1-Wire?
 1-Wire is almost what I needed for a lot of projects but has its downsides: first it is propietary and closed source code and second, for me, the implementation is a littlebit caotic.
 
 ## How to start
@@ -54,7 +53,7 @@ if you need to send a value repeatedly simply add after the first parameter the 
 int one_second_delay_test = network.send(100, "Test sent every second!", 1000000);
 ```
 
-one_second_delay_test contains the id of the packet. 
+`one_second_delay_test` contains the id of the packet. 
 If you want to remove this repeated task simply:
 
 ```cpp

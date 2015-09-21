@@ -3,6 +3,40 @@ PJON
  
 PJON (Padded Jittering Operative Network) is a single wire, multi-master communication bus system. It is designed as an alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. 
 
+```cpp  
+#include <PJON.h>     // Transmitter board code
+PJON network(12, 45); // Bus connection to pin 12, device id 45
+
+void setup() {
+  network.send(44, "B", 1000000); // Send B to device 44 every second
+}
+
+void loop() {
+  network.update();
+}
+
+/* ---------------------------------------------------------------------------- */
+
+#include <PJON.h>     // Receiver board code
+PJON network(12, 44); // Bus connection to pin 12, device id 45
+
+void setup() {
+  network.set_receiver(receiver_function); // Set the function used to receive and react to messages
+};
+
+static void receiver_function(uint8_t length, uint8_t *payload) {
+  if(payload[0] == 'B') { // If the first letter of the received message is B 
+    digitalWrite(13, HIGH);
+    delay(30);
+    digitalWrite(13, LOW);
+  }
+}
+
+void loop() {
+  network.receive(1000);
+}
+```
+
 ####Features
 - Single wire physical layer with up to 50 meters range.
 - Device id implementation to enable univocal communication up to 254 devices.  
@@ -123,8 +157,4 @@ Now inform the network to call the exception handler function in case of error:
 ```cpp
 network.set_exception(exception_handler);
 ```
-
-Here is a working example of the blink_test you can find in the examples directory:
-
-[![Alt text for your video](http://img.youtube.com/vi/JesqJ9_WJJs/0.jpg)](http://www.youtube.com/watch?v=JesqJ9_WJJs)
 

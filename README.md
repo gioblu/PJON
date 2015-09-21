@@ -71,7 +71,7 @@ Lets start coding, instantiate the `PJON` object that in the example is called n
 ```
 
 ## Transmit data
-To let the network work correctly you need to call the `update()` function at least once per loop cycle. It's really important to consider that this is not an interrupt driven system, so all the time the Arduino is passing delaying time or executing other tasks is delaying the sending of all the packets are scheduled to be sent:
+Data transmission is handled by a packet manager, the `update()` function has to be called at least once per loop cycle. Consider that this is not an interrupt driven system, all the time dedicated to delays or executing other tasks is postponing the sending of all the packets are scheduled to be sent:
 
 ```cpp  
   network.update(); 
@@ -83,14 +83,13 @@ To send a string to another device connected to the bus simply call `send()` fun
 network.send(100, "Ciao, this is a test!");
 ```
 
-if you need to send a value repeatedly simply add after the first parameter the interval in microseconds you want between every sending:
+To send a value repeatedly simply add as last parameter the interval in microseconds you want between every sending:
 
 ```cpp
 int one_second_delay_test = network.send(100, "Test sent every second!", 1000000);
 ```
 
-`one_second_delay_test` contains the id of the packet. 
-If you want to remove this repeated task simply:
+`one_second_delay_test` contains the id of the packet. If you want to remove this repeated task simply:
 
 ```cpp
 network.remove(one_second_delay_test);
@@ -117,22 +116,22 @@ static void receiver_function(uint8_t length, uint8_t *payload) {
 };
 ```
 
-After this we should inform the network to call this function when a correct message is received:
+Inform the network to call `receiver_function` when a correct message is received:
 
 ```cpp
 network.set_receiver(receiver_function);
 ```
 
-To correctly receive data it is necessary to call at least once per loop cycle the `receive()` function passing as a parameter the maximum reception time in microseconds:
+To correctly receive data call `receive()` function at least once per loop cycle passing as a parameter, the maximum reception time in microseconds:
 ```cpp
 int response = network.receive(1000);
 ```
 
-It is important to consider that this is not an interrupt driven system and so all the time Arduino will pass in delay or executing something a certain amount of packets will be potentially lost unheard by the busy receiver. In this case structure intelligently your loop cycle to avoid huge blind timeframes.
+Consider that this is not an interrupt driven system and so all the time passed in delay or executing something a certain amount of packets will be potentially lost unheard. Structure intelligently your loop cycle to avoid huge blind timeframes.
 
 
 ##Exception handling
-PJON is designed to inform the user if the communication link to a certain device is lost or if the packtes buffer is full. A `static void function` has to be defined as the exception handler, it receives 2 parameters the first is the motivation of the exception and the second is 1 byte additional data related to the error.
+PJON is designed to inform you if the communication link to a certain device is lost or if the packtes buffer is full. A `static void function` has to be defined as the exception handler, it receives 2 parameters the first is the motivation of the exception and the second is 1 byte additional data related to the error.
 
 ```cpp
 static void exception_handler(uint8_t motivation, uint8_t data) {

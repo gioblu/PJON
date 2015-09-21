@@ -10,7 +10,7 @@ void setup() {
   network.set_exception(exception_handler);
 }
 
-static void exception_handler(uint8_t data, uint8_t motivation) {
+static void exception_handler(uint8_t motivation, uint8_t data) {
   if(motivation == CONNECTION_LOST) {
     Serial.print("Connection lost with device id ");
     Serial.println(data);

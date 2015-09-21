@@ -70,14 +70,13 @@ Lets start coding, instantiate the `PJON` object that in the example is called n
   PJON network(12, 123); 
 ```
 
-
+## Transmit data
 To let the network work correctly you need to call the `update()` function at least once per loop cycle. It's really important to consider that this is not an interrupt driven system, so all the time the Arduino is passing delaying time or executing other tasks is delaying the sending of all the packets are scheduled to be sent:
 
 ```cpp  
   network.update(); 
 ```
 
-## Transmit data
 To send a string to another device connected to the bus simply call `send()` function passing the ID you want to contact and the string you want to send:
 
 ```cpp
@@ -129,7 +128,7 @@ To correctly receive data it is necessary to call at least once per loop cycle t
 int response = network.receive(1000);
 ```
 
-It is important to consider that this is not an interrupt driven system and so all the time Arduino will pass in delay or executing something a certain amount of packets will be potentially lost unheard by the busy receiver. In this case structure intelligently your loop cicle to avoid huge blind timeframes.
+It is important to consider that this is not an interrupt driven system and so all the time Arduino will pass in delay or executing something a certain amount of packets will be potentially lost unheard by the busy receiver. In this case structure intelligently your loop cycle to avoid huge blind timeframes.
 
 
 ##Exception handling

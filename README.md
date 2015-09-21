@@ -21,7 +21,7 @@ void loop() {
 PJON network(12, 44); // Bus connection to pin 12, device id 45
 
 void setup() {
-  network.set_receiver(receiver_function); // Set the function used to receive and react to messages
+  network.set_receiver(receiver_function); // Set the function used to receive messages
 };
 
 static void receiver_function(uint8_t length, uint8_t *payload) {

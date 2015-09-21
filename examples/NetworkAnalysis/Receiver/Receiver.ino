@@ -6,5 +6,13 @@ void setup() {
 };
 
 void loop() {
+  
+  /* 
+  receive() function  without parameter 
+  should not be used because is a low level 
+  function and is not aware of packets. Here is 
+  is used only to detect the maximum bandwidth.
+  */
+
   network.receive(); 
 };

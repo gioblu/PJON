@@ -3,6 +3,40 @@ PJON
  
 PJON (Padded Jittering Operative Network) is a single wire, multi-master communication bus system. It is designed as an alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. 
 
+```cpp  
+#include <PJON.h>     // Transmitter board code
+PJON network(12, 45); // Bus connection to pin 12, device id 45
+
+void setup() {
+  network.send(44, "B", 1000000); // Send B to device 44 every second
+}
+
+void loop() {
+  network.update();
+}
+
+/* ---------------------------------------------------------------------------- */
+
+#include <PJON.h>     // Receiver board code
+PJON network(12, 44); // Bus connection to pin 12, device id 45
+
+void setup() {
+  network.set_receiver(receiver_function); // Set the function used to receive messages
+};
+
+static void receiver_function(uint8_t length, uint8_t *payload) {
+  if(payload[0] == 'B') { // If the first letter of the received message is B 
+    digitalWrite(13, HIGH);
+    delay(30);
+    digitalWrite(13, LOW);
+  }
+}
+
+void loop() {
+  network.receive(1000);
+}
+```
+
 ####Features
 - Single wire physical layer with up to 50 meters range.
 - Device id implementation to enable univocal communication up to 254 devices.  
@@ -14,7 +48,7 @@ PJON (Padded Jittering Operative Network) is a single wire, multi-master communi
 - Error handling.
 
 ####Performance
-- Transfer speed: **39200 baud/s** or **4.32kB/s** 
+- Transfer speed: **32256 baud/s** or **4.32kB/s** 
 - Absolute bandwidth: **2.8kB/s** 
 - Practical bandwidth: **2.38kB/s**
 - Accuracy: **99.45-99.95%**
@@ -36,28 +70,26 @@ Lets start coding, instantiate the `PJON` object that in the example is called n
   PJON network(12, 123); 
 ```
 
-
-To let the network work correctly you need to call the `update()` function at least once per loop cycle. It's really important to consider that this is not an interrupt driven system, so all the time the Arduino is passing delaying time or executing other tasks is delaying the sending of all the packets are scheduled to be sent:
+## Transmit data
+Data transmission is handled by a packet manager, the `update()` function has to be called at least once per loop cycle. Consider that this is not an interrupt driven system, all the time dedicated to delays or executing other tasks is postponing the sending of all the packets are scheduled to be sent:
 
 ```cpp  
   network.update(); 
 ```
 
-## Transmit data
 To send a string to another device connected to the bus simply call `send()` function passing the ID you want to contact and the string you want to send:
 
 ```cpp
 network.send(100, "Ciao, this is a test!");
 ```
 
-if you need to send a value repeatedly simply add after the first parameter the interval in microseconds you want between every sending:
+To send a value repeatedly simply add as last parameter the interval in microseconds you want between every sending:
 
 ```cpp
 int one_second_delay_test = network.send(100, "Test sent every second!", 1000000);
 ```
 
-`one_second_delay_test` contains the id of the packet. 
-If you want to remove this repeated task simply:
+`one_second_delay_test` contains the id of the packet. If you want to remove this repeated task simply:
 
 ```cpp
 network.remove(one_second_delay_test);
@@ -84,18 +116,18 @@ static void receiver_function(uint8_t length, uint8_t *payload) {
 };
 ```
 
-After this we should inform the network to call this function when a correct message is received:
+Inform the network to call `receiver_function` when a correct message is received:
 
 ```cpp
 network.set_receiver(receiver_function);
 ```
 
-To correctly receive data it is necessary to call at least once per loop cycle the `receive()` function passing as a parameter the maximum reception time in microseconds:
+To correctly receive data call `receive()` function at least once per loop cycle passing as a parameter, the maximum reception time in microseconds:
 ```cpp
 int response = network.receive(1000);
 ```
 
-It is important to consider that this is not an interrupt driven system and so all the time Arduino will pass in delay or executing something a certain amount of packets will be potentially lost unheard by the busy receiver. In this case structure intelligently your loop cicle to avoid huge blind timeframes.
+Consider that this is not an interrupt driven system and so all the time passed in delay or executing something a certain amount of packets will be potentially lost unheard. Structure intelligently your loop cycle to avoid huge blind timeframes.
 
 
 ##Error handling
@@ -123,8 +155,4 @@ Now inform the network to call the error handler function in case of error:
 ```cpp
 network.set_error(error_handler);
 ```
-
-Here is a working example of the blink_test you can find in the examples directory:
-
-[![Alt text for your video](http://img.youtube.com/vi/JesqJ9_WJJs/0.jpg)](http://www.youtube.com/watch?v=JesqJ9_WJJs)
 

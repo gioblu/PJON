@@ -356,9 +356,9 @@ int PJON::receive() {
 
 int PJON::receive(unsigned long duration) {
   int response;
-  unsigned long time = micros();
+  long time = micros();
   while(micros() - time <= duration) {
-    for(unsigned long i = 0; i < 3706; i++) {
+    for(int i = 0; i < 3706; i++) {
       response = this->receive();
       if(response == ACK) {
         this->_receiver(data[1] - 3, data + 2); 

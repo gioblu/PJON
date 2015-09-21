@@ -83,14 +83,14 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
 #define BROADCAST 124
 #define TO_BE_SENT 74
 
-// Exceptions
+// Errors
 #define CONNECTION_LOST 101
 #define PACKETS_BUFFER_FULL 102
 
-// Maximum sending attempts before throwing CONNECTON_LOST exception
+// Maximum sending attempts before throwing CONNECTON_LOST error
 #define MAX_ATTEMPTS 100 
 
-// Packets buffer length, if full PACKET_BUFFER_FULL exception is thrown
+// Packets buffer length, if full PACKET_BUFFER_FULL error is thrown
 #define MAX_PACKETS 10
 
 // Max packet length, higher if necessary (affects memory)
@@ -107,16 +107,16 @@ struct packet {
 };
 
 typedef void (* receiver)(uint8_t length, uint8_t *payload);
-typedef void (* exception)(uint8_t motivation, uint8_t data);
+typedef void (* error)(uint8_t code, uint8_t data);
 
-static void dummy_exception_handler(uint8_t motivation, uint8_t data) {};
+static void dummy_error_handler(uint8_t code, uint8_t data) {};
 
 class PJON {
 
   public:
     PJON(int input_pin, uint8_t ID);
     void set_receiver(receiver r);
-    void set_exception(exception e);
+    void set_error(error e);
 
     int receive_byte();
     int receive();
@@ -142,5 +142,5 @@ class PJON {
     uint8_t   _device_id;
     int       _input_pin;
     receiver  _receiver;
-    exception _exception;
+    exception _error;
 };

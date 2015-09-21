@@ -34,7 +34,7 @@ PJON::PJON(int input_pin, uint8_t device_id) {
     packets[i].timing = 0;
   }
 
-  this->set_exception(dummy_exception_handler);
+  this->set_error(dummy_error_handler);
 }
 
 /* Pass as a parameter a static void function you previously defined in your code. 
@@ -64,17 +64,17 @@ void PJON::set_receiver(receiver r) {
 /* Pass as a parameter a static void function you previously defined in your code.
    This will be called when an error in communication occurs 
 
-static void exception_handler(uint8_t motivation, uint8_t data) {
-  Serial.print(motivation);
+static void error_handler(uint8_t code, uint8_t data) {
+  Serial.print(code);
   Serial.print(" ");
   Serial.println(data);
 };
 
-network.exception(exception_handler); */
+network.set_error(error_handler); */
 
 
-void PJON::set_exception(exception e) {
-  _exception = e;
+void PJON::set_error(error e) {
+  _error = e;
 }
 
 /* Check if the channel if free for transmission:
@@ -206,7 +206,7 @@ int PJON::send(uint8_t ID, char *packet, unsigned long timing) {
       }
       return i;
     }
-  this->_exception(PACKETS_BUFFER_FULL, MAX_PACKETS);
+  this->_error(PACKETS_BUFFER_FULL, MAX_PACKETS);
   return FAIL;
 }
 
@@ -234,7 +234,7 @@ void PJON::update() {
         packets[i].attempts++;
     
       if(packets[i].attempts > MAX_ATTEMPTS) {
-        this->_exception(CONNECTION_LOST, packets[i].device_id);
+        this->_error(CONNECTION_LOST, packets[i].device_id);
         if(packets[i].timing == 0)
           this->remove(i);
       }

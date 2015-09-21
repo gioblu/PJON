@@ -88,7 +88,7 @@ ENCRYPTION: Private key encryption + initialization vector to ensure almost rand
 #define PACKETS_BUFFER_FULL 102
 
 // Maximum sending attempts before throwing CONNECTON_LOST error
-#define MAX_ATTEMPTS 100 
+#define MAX_ATTEMPTS 250 
 
 // Packets buffer length, if full PACKET_BUFFER_FULL error is thrown
 #define MAX_PACKETS 10
@@ -142,5 +142,5 @@ class PJON {
     uint8_t   _device_id;
     int       _input_pin;
     receiver  _receiver;
-    exception _error;
+    error     _error;
 };

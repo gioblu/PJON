@@ -11,7 +11,7 @@ PJON (Padded Jittering Operative Network) is a single wire, multi-master communi
 - Collision avoidance to enable multi-master capability.
 - Broadcast functionality to contact all connected devices.
 - Packet manager to track and retransmit failed packet sendings in background.
-- Exception handling.
+- Error handling.
 
 ####Performance
 - Transfer speed: **39200 baud/s** or **4.32kB/s** 
@@ -98,17 +98,17 @@ int response = network.receive(1000);
 It is important to consider that this is not an interrupt driven system and so all the time Arduino will pass in delay or executing something a certain amount of packets will be potentially lost unheard by the busy receiver. In this case structure intelligently your loop cicle to avoid huge blind timeframes.
 
 
-##Exception handling
-PJON is designed to inform the user if the communication link to a certain device is lost or if the packtes buffer is full. A `static void function` has to be defined as the exception handler, it receives 2 parameters the first is the motivation of the exception and the second is 1 byte additional data related to the error.
+##Error handling
+PJON is designed to inform the user if the communication link to a certain device is lost or if the packtes buffer is full. A `static void function` has to be defined as the error handler, it receives 2 parameters the first is the error code and the second is 1 byte additional data related to the error.
 
 ```cpp
-static void exception_handler(uint8_t motivation, uint8_t data) {
-  if(motivation == CONNECTION_LOST) {
+static void error_handler(uint8_t code, uint8_t data) {
+  if(code == CONNECTION_LOST) {
     Serial.print("Connection with device ID ");
     Serial.print(data);
     Serial.println(" is lost.");
   }
-  if(motivation == PACKETS_BUFFER_FULL) {
+  if(code == PACKETS_BUFFER_FULL) {
     Serial.print("Packet buffer is full, has now a length of ");
     Serial.println(data);
     Serial.println("Possible wrong network configuration!");
@@ -119,9 +119,9 @@ static void exception_handler(uint8_t motivation, uint8_t data) {
 ```
 
 
-Now inform the network to call the exception handler function in case of error:
+Now inform the network to call the error handler function in case of error:
 ```cpp
-network.set_exception(exception_handler);
+network.set_error(error_handler);
 ```
 
 Here is a working example of the blink_test you can find in the examples directory:

@@ -216,32 +216,36 @@ int PJON::send(uint8_t ID, char *packet, unsigned long timing) {
 
 void PJON::update() {
   for(uint8_t i = 0; i < MAX_PACKETS; i++) {
-
     if(packets[i].state != NULL)
-      if(micros() - packets[i].registration > packets[i].timing + pow(packets[i].attempts, 3)) 
+      if(micros() - packets[i].registration > packets[i].timing + pow(packets[i].attempts, 2)) 
         packets[i].state = send_string(packets[i].device_id, packets[i].content); 
 
     if(packets[i].state == ACK) {
-      if(packets[i].timing == 0)
+      if(!packets[i].timing)
         this->remove(i);
       else {
         packets[i].attempts = 0;
         packets[i].registration = micros();
         packets[i].state = TO_BE_SENT;
       }
-    } else {
-      if(packets[i].state == FAIL) 
-        packets[i].attempts++;
-    
+    }
+
+    if(packets[i].state == FAIL) { 
+      packets[i].attempts++;
+  
       if(packets[i].attempts > MAX_ATTEMPTS) {
         this->_error(CONNECTION_LOST, packets[i].device_id);
-        if(packets[i].timing == 0)
+        if(!packets[i].timing)
           this->remove(i);
+        else {
+          packets[i].attempts = 0;
+          packets[i].registration = micros();
+          packets[i].state = TO_BE_SENT;
+        }
       }
-    } 
+    }
   }
 }
-
 
 /* Remove a packet from the send list: */
 
@@ -333,7 +337,6 @@ int PJON::receive() {
       digitalWriteFast(_input_pin, LOW);
     }
     return ACK;
-
   } else {
     if(data[0] != BROADCAST) {
       pinModeFast(_input_pin, OUTPUT);
@@ -358,7 +361,7 @@ int PJON::receive(unsigned long duration) {
     for(unsigned long i = 0; i < 3706; i++) {
       response = this->receive();
       if(response == ACK) {
-          this->_receiver(data[1] - 3, data + 2); 
+        this->_receiver(data[1] - 3, data + 2); 
         return ACK;
       }
     }

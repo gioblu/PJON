@@ -54,6 +54,13 @@ void loop() {
 - Practical bandwidth: **2.38kB/s**
 - Accuracy: **99.45-99.95%**
 
+####Compatibility
+- Arduino diecimila
+- Arduino duemilanove 
+- Arduino Uno
+- Arduino Nano
+- Arduino Mega
+
 Single wire simplicity let you to experiment quickly and with creativity. For example, one of the first tests I suggest to try with PJON is to let two arduinos communicate through your body touching with the left hand the port of the first board and with the right the port of the other one. It's stunning to see more than 90% accuracy for this digital communication doing all that path inside a biological body. This opens the mind to possible creative solutions.
 
 ####Why not I2c?

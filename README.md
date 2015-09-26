@@ -50,9 +50,8 @@ void loop() {
 
 ####Performance
 - Transfer speed: **32256 baud/s** or **4.32kB/s** 
-- Absolute bandwidth: **2.8kB/s** 
-- Practical bandwidth: **2.38kB/s**
-- Accuracy: **99.45-99.95%**
+- bandwidth: **2.7kB/s** 
+- Accuracy: **99.95%**
 
 ####Compatibility
 - Arduino Diecimila

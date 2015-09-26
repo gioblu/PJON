@@ -26,9 +26,9 @@ void loop() {
     
     //Send a "T", break the int in two bytes 
     char content[3] = {'T', temperature >> 8, temperature & 0xFF};
-
+  
     network.send(44, content, 3);
-	}
+  }
 
   network.update();
 };

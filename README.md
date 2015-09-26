@@ -83,6 +83,7 @@ To send a string to another device connected to the bus simply call `send()` fun
 ```cpp
 network.send(100, "Ciao, this is a test!", 21);
 ```
+Packet length is there to prevent unwanted buffer overflow. If sendimg arbotrary values  `NULL` terminator strategy (strlen) is not safe to detect the end of a string. 
 
 To send a value repeatedly simply add as last parameter the interval in microseconds you want between every sending:
 

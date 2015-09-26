@@ -50,7 +50,7 @@ void loop() {
 
 ####Performance
 - Transfer speed: **32256 baud/s** or **4.32kB/s** 
-- bandwidth: **2.7kB/s** 
+- Bandwidth: **2.7kB/s** 
 - Accuracy: **99.95%**
 
 ####Compatibility

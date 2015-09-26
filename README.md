@@ -8,7 +8,8 @@ PJON (Padded Jittering Operative Network) is a single wire, multi-master communi
 PJON network(12, 45); // Bus connection to pin 12, device id 45
 
 void setup() {
-  network.send(44, "B", 1, 1000000); // Send B to device 44 every second
+  network.send(44, "B", 1, 1000000); 
+  // Send to device 44, "B" content of 1 byte length every 1000000 microseconds (1 second)
 }
 
 void loop() {

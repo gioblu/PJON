@@ -1,4 +1,4 @@
-PJON 
+PJON v1.0 stable
 ==== 
  
 PJON (Padded Jittering Operative Network) is a single wire, multi-master communication bus system. It is designed as an alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. 

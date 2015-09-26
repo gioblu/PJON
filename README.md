@@ -8,7 +8,7 @@ PJON (Padded Jittering Operative Network) is a single wire, multi-master communi
 PJON network(12, 45); // Bus connection to pin 12, device id 45
 
 void setup() {
-  network.send(44, "B", 1000000); // Send B to device 44 every second
+  network.send(44, "B", 1, 1000000); // Send B to device 44 every second
 }
 
 void loop() {
@@ -77,16 +77,16 @@ Data transmission is handled by a packet manager, the `update()` function has to
   network.update(); 
 ```
 
-To send a string to another device connected to the bus simply call `send()` function passing the ID you want to contact and the string you want to send:
+To send a string to another device connected to the bus simply call `send()` function passing the ID you want to contact, the string you want to send and its length:
 
 ```cpp
-network.send(100, "Ciao, this is a test!");
+network.send(100, "Ciao, this is a test!", 21);
 ```
 
 To send a value repeatedly simply add as last parameter the interval in microseconds you want between every sending:
 
 ```cpp
-int one_second_delay_test = network.send(100, "Test sent every second!", 1000000);
+int one_second_delay_test = network.send(100, "Test sent every second!", 23, 1000000);
 ```
 
 `one_second_delay_test` contains the id of the packet. If you want to remove this repeated task simply:
@@ -98,7 +98,7 @@ network.remove(one_second_delay_test);
 To broadcast a message to all connected devices, use the `BROADCAST` constant as the recipient ID. Every node will receive the message but will not answer `ACK` to avoid communication overlap.
 
 ```cpp
-int broadcastTest = network.send(BROADCAST, "Message for all connected devices.");
+int broadcastTest = network.send(BROADCAST, "Message for all connected devices.", 34);
 ```
 
 ## Receive data

@@ -2,10 +2,9 @@
 
 float test;
 float mistakes;
-float busy;
-float fail;
 
-PJON network(A0, 44);
+// network(Arduino pin used, selected device id)
+PJON network(12, 44);
 
 void setup() {
   Serial.begin(115200);
@@ -26,10 +25,6 @@ void loop() {
       test++;
     if(response == NAK)
       mistakes++;
-    if(response == BUSY)
-      busy++;
-    if(response == FAIL)
-      fail++;
   }
     
   Serial.print("Absolute com speed: ");
@@ -46,7 +41,7 @@ void loop() {
   Serial.println();
   Serial.println();
   if(mistakes > test / 4 || test == 0)
-    Serial.println("Check wiring! Maybe you need a pull down resistor. If you are using arduino Mega the behaviour is not predictable and PJON is not still tested with it.");
+    Serial.println("Check wiring! Maybe you need a pull down resistor.");
 
   test = 0; 
   mistakes = 0;

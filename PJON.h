@@ -1,79 +1,47 @@
 
  /*-O//\         __     __
    |-gfo\       |__| | |  | |\ |
-   |!y°o:\      |  __| |__| | \|
-   |y"s§+`\     Giovanni Blu Mitolo 2012 - 2014
+   |!y°o:\      |  __| |__| | \| v1.0
+   |y"s§+`\     Giovanni Blu Mitolo 2012 - 2015
   /so+:-..`\    gioscarab@gmail.com
   |+/:ngr-*.`\
-   |/:%&-a3f.:/\     PJON is a device communications bus system that connects up to 255
-    \+//u/+gosv//\    arduino boards over a single wire and provides up to 5KB/s data communication
-     \o+&/osw+odss\\   with acknowledge, collision detection, CRC and encpryption all done
-       \:/+-.§°-:+oss\  with micros() and delayMicroseconds(), without using interrupt or timers.
-        | |       \oy\\   Pull down resistor on the bus is generally used to reduce interference.
+  |5/:%&-a3f.:;\     PJON is a device communications bus system that connects up to 255
+  \+//u/+g%{osv,,\    arduino boards over one wire up to 4.32KB/s data communication speed.
+    \=+&/osw+olds.\\   Contains acknowledge, collision detection, CRC and encpryption all done
+       \:/+-.-°-:+oss\  with micros() and delayMicroseconds(), with no use of interrupts or timers.
+        | |       \oy\\  Pull down resistor on the bus is generally used to reduce interference.
         > <
        -| |-
 
-ADDRESS: 255 different adresses can be assigned
-CRC: XOR Cyclic Redundancy Check ensures almost errorless data communication
-ACKNOLEDGE:  Acknowledge byte sent by receiver ensures packet delivery
-COLLISION DETECTION: collision avoidance is ensured analyzing network bus before starting
-ENCRYPTION: Private key encryption + initialization vector to ensure almost random data stream
-  
-  0.x IDE VERSION SPEED CONFIGURATIONS:
+DEVICE ID: 255 different adresses can be assigned.
+CRC: XOR Cyclic Redundancy Check ensures almost errorless data communication.
+ACKNOLEDGE: Acknowledge byte sent by receiver ensures packet delivery.
+COLLISION DETECTION: Collision avoidance is ensured analyzing network bus before starting .
+PACKET MANAGER: Schedules and manages packet sending and retries in exponential backoff.
+ERROR HANDLING: Easy way to catch and program a reaction to network errors. 
   __________________________________________________________________________________
- |PJON Standard mode | SPEED SETUP CHANGES ACCORDING TO YOUR IDE VERSION!           |
+ | BIT_WIDTH 20 | BIT_SPACER 60 | ACCEPTANCE  8 | READ_DELAY 6                      |
  |----------------------------------------------------------------------------------|
- | SLOW MODE:  BIT_WIDTH 20 | BIT_SPACER 68 | ACCEPTANCE 16 | READ_DELAY 7          |
- |----------------------------------------------------------------------------------|
- |Absolute bandwidth:  3.16-3.28 kB/s | Transfer speed: 4.32kB/s                    |
- |Practical bandwidth: 2.19-2.45 kB/s | Baud rate: 32256 baud/s                     |
- |Accuracy: 99.45-99.95%              |                                             |
- |----------------------------------------------------------------------------------|
-  __________________________________________________________________________________
- |PJON Standard mode | SPEED SETUP CHANGES ACCORDING TO YOUR IDE VERSION!           |
- |----------------------------------------------------------------------------------|
- | FAST MODE:  BIT_WIDTH 18 | BIT_SPACER 40 | ACCEPTANCE 18 | READ_DELAY 8          |
- |----------------------------------------------------------------------------------|
- |Absolute bandwidth:  3.25-3.81 kB/s | Transfer speed: 4.95kB/s                    |
- |Practical bandwidth: 2.52-2.85 kB/s | Baud rate: 39600 baud/s                     |
- |Accuracy: 94.51-98.63%              |                                             |
- |----------------------------------------------------------------------------------|
-
-
-  1.x IDE VERSION SPEED CONFIGURATIONS:
-  __________________________________________________________________________________
- | BIT_WIDTH 20 | BIT_SPACER 68 | ACCEPTANCE  8 | READ_DELAY 6                      |
- |----------------------------------------------------------------------------------|
- |Absolute bandwidth:  3.16-3.28 kB/s | Transfer speed: 4.32kB/s                    |
- |Practical bandwidth: 2.19-2.45 kB/s | Baud rate: 32256 baud/s                     |
- |Accuracy: 99.45-99.95%              |                                             |
- |----------------------------------------------------------------------------------| */
+ |Transfer speed: 4.32kB/s     | Absolute bandwidth:  2.65 kB/s                     |
+ |Baud rate:      32256 baud/s | Practical bandwidth: 2.05 kB/s                     |
+ |Accuracy:       99.995%      |                                                    |
+ |__________________________________________________________________________________| */
 
 #ifndef PJON_h
   #define PJON_h
 
   #include "includes/digitalWriteFast.h"
+  #include "Arduino.h"
 
-  #if defined(ARDUINO) && (ARDUINO >= 100)
-    #include "Arduino.h"
-    
-    // Function execution time changes according to your IDE version 
-    // So here we have to set dedicated timing to 1.x version
-    #define BIT_WIDTH 20
-    #define BIT_SPACER 68
-    #define ACCEPTANCE 8
-    #define READ_DELAY 6
-  #else
-    #include "WProgram.h"
-    #include "WConstants.h"
-    // Function execution time changes according to your IDE version (0.x or 1.x) 
-    // So here we have to set dedicated timing to 0.x version
-    // STANDARD MODE - if you need more speed please follow the comments above
-    #define BIT_WIDTH 20
-    #define BIT_SPACER 68
-    #define ACCEPTANCE 16
-    #define READ_DELAY 7
-  #endif
+  /* The following constants setup is quite conservative and determined only 
+     with a huge amount of time and blind testing (without oscilloscope) 
+     tweaking values and analysing results. Theese can be changed to obtain
+     faster speed. Probably you need experience, time and an oscilloscope. */ 
+  
+  #define BIT_WIDTH 20
+  #define BIT_SPACER 60
+  #define ACCEPTANCE 8
+  #define READ_DELAY 6
 #endif
 
 #define ACK  6
@@ -124,8 +92,8 @@ class PJON {
 
     void send_bit(uint8_t VALUE, int duration);
     void send_byte(uint8_t b);
-    int  send_string(uint8_t ID, char *string);
-    int  send(uint8_t ID, char *packet, unsigned long timing = 0);
+    int  send_string(uint8_t ID, char *string, uint8_t length);
+    int  send(uint8_t ID, char *packet, uint8_t length, unsigned long timing = 0);
     
     void update();
     void remove(int id);

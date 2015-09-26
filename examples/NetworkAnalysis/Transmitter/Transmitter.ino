@@ -5,6 +5,7 @@ float mistakes;
 int busy;
 int fail;
 
+// network(Arduino pin used, selected device id)
 PJON network(12, 45);
 
 int packet;
@@ -12,18 +13,10 @@ char content[] = "01234567890123456789";
 
 void setup() {
   Serial.begin(115200);
-  network.set_error(error_handler);
 
   Serial.println("PJON - Network analysis");
   Serial.println("Starting a 10 seconds communication test..");
   Serial.println();
-}
-
-static void error_handler(uint8_t code, uint8_t data) {
-  if(code == CONNECTION_LOST) {
-    Serial.print("Connection lost with device id ");
-    Serial.println(data);
-  }
 }
 
 void loop() {
@@ -35,7 +28,7 @@ void loop() {
     be able to catch every single sending result. 
     */
  
-    int response = network.send_string(44, content);
+    int response = network.send_string(44, content, 20);
     if(response == ACK)
       test++;
     if(response == NAK)

@@ -55,8 +55,8 @@ void loop() {
 - Accuracy: **99.45-99.95%**
 
 ####Compatibility
-- Arduino diecimila
-- Arduino duemilanove 
+- Arduino Diecimila
+- Arduino Duemilanove 
 - Arduino Uno
 - Arduino Nano
 - Arduino Mega

@@ -39,7 +39,7 @@ void loop() {
 ```
 
 ####Features
-- Single wire physical layer with up to 50 meters range.
+- Single wire (plus common ground) physical layer with up to 50 meters range.
 - Device id implementation to enable univocal communication up to 254 devices.  
 - Cyclic Redundancy Check (CRC).
 - Acknowledgement of correct packet sending. 
@@ -49,9 +49,9 @@ void loop() {
 - Error handling.
 
 ####Performance
-- Transfer speed: **32256 baud/s** or **4.32kB/s** 
-- Bandwidth: **2.7kB/s** 
-- Accuracy: **99.95%**
+- Transfer speed: **50000 Bd** or **4.32kB/s** 
+- Data throughput: **2.7kB/s** 
+- Accuracy: **99.995%**
 
 ####Compatibility
 - Arduino Diecimila / Duemilanove

@@ -1,7 +1,7 @@
 PJON v1.0 stable
 ==== 
  
-PJON (Padded Jittering Operative Network) is a single wire, multi-master communication bus system. It is designed as an alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. 
+PJON (Padded Jittering Operative Network) is a single wire, multi-master communication bus system. It is designed as an alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. If you are interested to know more about the PJON standard, visit the [wiki](https://github.com/gioblu/PJON/wiki). 
 
 ```cpp  
 #include <PJON.h>     // Transmitter board code
@@ -19,7 +19,7 @@ void loop() {
 /* ---------------------------------------------------------------------------- */
 
 #include <PJON.h>     // Receiver board code
-PJON network(12, 44); // Bus connection to pin 12, device id 45
+PJON network(12, 44); // Bus connection to pin 12, device id 44
 
 void setup() {
   network.set_receiver(receiver_function); // Set the function used to receive messages

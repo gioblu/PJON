@@ -18,7 +18,17 @@ CRC: XOR Cyclic Redundancy Check ensures almost errorless data communication.
 ACKNOLEDGE: Acknowledge byte sent by receiver ensures packet delivery.
 COLLISION DETECTION: Collision avoidance is ensured analyzing network bus before starting .
 PACKET MANAGER: Schedules and manages packet sending and retries in exponential backoff.
-ERROR HANDLING: Easy way to catch and program a reaction to network errors. */
+ERROR HANDLING: Easy way to catch and program a reaction to network errors. 
+
+Copyright (c) 2013-2015, Giovanni Blu Mitolo All rights reserved.
+This software is provided by the copyright holders and contributors "as is" and any express or
+implied warranties, including, but not limited to, the implied warranties of merchantability and 
+fitness for a particular purpose are disclaimed. In no event shall the copyright holder or 
+contributors be liable for any direct, indirect, incidental, special, exemplary, or consequential
+damages (including, but not limited to, procurement of substitute goods or services; loss of use,
+data, or profits; or business interruption) however caused and on any theory of liability, whether 
+in contract, strict liability, or tort (including negligence or otherwise) arising in any way out 
+of the use of this software, even if advised of the possibility of such damage. */
 
 #include "PJON.h"
 

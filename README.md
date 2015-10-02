@@ -163,6 +163,7 @@ Now inform the network to call the error handler function in case of error:
 ```cpp
 network.set_error(error_handler);
 ```
+---
 
 Copyright (c) 2013-2015, Giovanni Blu Mitolo
 All rights reserved.

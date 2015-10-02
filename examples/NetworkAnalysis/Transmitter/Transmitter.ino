@@ -41,11 +41,11 @@ void loop() {
   }
   
   Serial.print("Absolute com speed: ");
-  Serial.print( (test * 23 ) / 10 );
-  Serial.println("kB/s");
+  Serial.print( (test * 24 ) / 10 );
+  Serial.println("B/s");
   Serial.print("Practical bandwidth: ");
   Serial.print( (test * 20 ) / 10 );
-  Serial.println("kB/s");
+  Serial.println("B/s");
   Serial.print("Packets sent: ");
   Serial.println(test);
   Serial.print("Mistakes (error found with CRC) ");

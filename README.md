@@ -49,8 +49,8 @@ void loop() {
 - Error handling.
 
 ####Performance
-- Transfer speed: **50000Bd** or **4.32kB/s** 
-- Data throughput: **2.7kB/s** 
+- Transfer speed: **42372Bd** or **5.29kB/s** 
+- Data throughput: **2.68kB/s** 
 - Accuracy: **99.995%**
 
 ####Compatibility

@@ -6,28 +6,19 @@
   /so+:-..`\    gioscarab@gmail.com
   |+/:ngr-*.`\
   |5/:%&-a3f.:;\     PJON is a device communications bus system that connects up to 255
-  \+//u/+g%{osv,,\    arduino boards over one wire up to 4.32KB/s data communication speed.
+  \+//u/+g%{osv,,\    arduino boards over one wire up to 5.29kB/s data communication speed.
     \=+&/osw+olds.\\   Contains acknowledge, collision detection, CRC and encpryption all done
        \:/+-.-°-:+oss\  with micros() and delayMicroseconds(), with no use of interrupts or timers.
         | |       \oy\\  Pull down resistor on the bus is generally used to reduce interference.
         > <
-       -| |-
-
-DEVICE ID: 255 different adresses can be assigned.
-CRC: XOR Cyclic Redundancy Check ensures almost errorless data communication.
-ACKNOLEDGE: Acknowledge byte sent by receiver ensures packet delivery.
-COLLISION DETECTION: Collision avoidance is ensured analyzing network bus before starting .
-PACKET MANAGER: Schedules and manages packet sending and retries in exponential backoff.
-ERROR HANDLING: Easy way to catch and program a reaction to network errors. 
-  __________________________________________________________________________________
- | BIT_WIDTH 20 | BIT_SPACER 60 | ACCEPTANCE  8 | READ_DELAY 6                      |
+  _____-| |-________________________________________________________________________
+ | BIT_WIDTH 20 | BIT_SPACER 56 | ACCEPTANCE  20 | READ_DELAY 8                     |
  |----------------------------------------------------------------------------------|
- |Transfer speed: 4.32kB/s     | Absolute bandwidth:  2.65 kB/s                     |
- |Baud rate:      32256 baud/s | Practical bandwidth: 2.05 kB/s                     |
- |Accuracy:       99.995%      |                                                    |
+ |Transfer speed: 5.29kB/s     | Absolute bandwidth:  3.23 kB/s                     |
+ |Baud rate:      42372 baud   | Data throughput:     2.68 kB/s                     |                                |
  |__________________________________________________________________________________| 
  
-Copyright (c) 2013-2015, Giovanni Blu Mitolo All rights reserved.
+Copyright (c) 2012-2015, Giovanni Blu Mitolo All rights reserved.
 This software is provided by the copyright holders and contributors "as is" and any express or
 implied warranties, including, but not limited to, the implied warranties of merchantability and 
 fitness for a particular purpose are disclaimed. In no event shall the copyright holder or 
@@ -49,9 +40,9 @@ of the use of this software, even if advised of the possibility of such damage. 
      faster speed. Probably you need experience, time and an oscilloscope. */ 
   
   #define BIT_WIDTH 20
-  #define BIT_SPACER 60
-  #define ACCEPTANCE 8
-  #define READ_DELAY 6
+  #define BIT_SPACER 56
+  #define ACCEPTANCE 20
+  #define READ_DELAY 8
 #endif
 
 #define ACK  6

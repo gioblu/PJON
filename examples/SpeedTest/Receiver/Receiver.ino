@@ -28,10 +28,10 @@ void loop() {
   }
     
   Serial.print("Absolute com speed: ");
-  Serial.print( (test * 23 ) / 10 );
-  Serial.print(" b/s |Practical bandwidth: ");
+  Serial.print( (test * 24 ) / 10 );
+  Serial.print(" B/s |Practical bandwidth: ");
   Serial.print( (test * 20 ) / 10 );
-  Serial.print(" b/s |Packets sent: ");
+  Serial.print(" B/s |Packets sent: ");
   Serial.print(test);
   Serial.print(" |Mistakes ");
   Serial.print(mistakes);

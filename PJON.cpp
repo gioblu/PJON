@@ -6,21 +6,13 @@
   /so+:-..`\    gioscarab@gmail.com
   |+/:ngr-*.`\
   |5/:%&-a3f.:;\     PJON is a device communications bus system that connects up to 255
-  \+//u/+g%{osv,,\    arduino boards over one wire up to 4.32KB/s data communication speed.
+  \+//u/+g%{osv,,\    arduino boards over one wire up to 5.29kB/s data communication speed.
     \=+&/osw+olds.\\   Contains acknowledge, collision detection, CRC and encpryption all done
        \:/+-.-°-:+oss\  with micros() and delayMicroseconds(), with no use of interrupts or timers.
         | |       \oy\\  Pull down resistor on the bus is generally used to reduce interference.
         > <
        -| |-
-
-DEVICE ID: 255 different adresses can be assigned.
-CRC: XOR Cyclic Redundancy Check ensures almost errorless data communication.
-ACKNOLEDGE: Acknowledge byte sent by receiver ensures packet delivery.
-COLLISION DETECTION: Collision avoidance is ensured analyzing network bus before starting .
-PACKET MANAGER: Schedules and manages packet sending and retries in exponential backoff.
-ERROR HANDLING: Easy way to catch and program a reaction to network errors. 
-
-Copyright (c) 2013-2015, Giovanni Blu Mitolo All rights reserved.
+Copyright (c) 2012-2015, Giovanni Blu Mitolo All rights reserved.
 This software is provided by the copyright holders and contributors "as is" and any express or
 implied warranties, including, but not limited to, the implied warranties of merchantability and 
 fitness for a particular purpose are disclaimed. In no event shall the copyright holder or 
@@ -84,6 +76,7 @@ void PJON::set_error(error e) {
   _error = e;
 }
 
+
 /* Check if the channel if free for transmission:
  If an entire byte received contains no 1s it means
  that there is no active transmission */
@@ -130,8 +123,10 @@ void PJON::send_byte(uint8_t b) {
   digitalWriteFast(_input_pin, LOW);
   delayMicroseconds(BIT_WIDTH);
 
-  for(uint8_t mask = 0x01; mask; mask <<= 1)
-    this->send_bit(b & mask, BIT_WIDTH);
+  for(uint8_t mask = 0x01; mask; mask <<= 1) {
+    digitalWriteFast(_input_pin, b & mask);
+    delayMicroseconds(BIT_WIDTH);
+  }
 }
 
 
@@ -305,7 +300,7 @@ int PJON::receive_byte() {
   while (digitalReadFast(_input_pin) && micros() - time <= BIT_SPACER);
   time = micros() - time;
 
-  if(time > ACCEPTANCE && !this->syncronization_bit())
+  if(time >= ACCEPTANCE && !this->syncronization_bit())
     return (int)this->read_byte();
 
   return FAIL;

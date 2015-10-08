@@ -55,6 +55,7 @@ of the use of this software, even if advised of the possibility of such damage. 
 // Errors
 #define CONNECTION_LOST 101
 #define PACKETS_BUFFER_FULL 102
+#define MEMORY_FULL 103 
 
 // Maximum sending attempts before throwing CONNECTON_LOST error
 #define MAX_ATTEMPTS 250 

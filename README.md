@@ -142,6 +142,12 @@ Consider that this is not an interrupt driven system and so all the time passed 
 ##Error handling
 PJON is designed to inform the user if the communication link to a certain device is lost or if the packtes buffer is full. A `static void function` has to be defined as the error handler, it receives 2 parameters the first is the error code and the second is 1 byte additional data related to the error.
 
+Error types:
+- `CONNECTION_LOST` (value 101), `data` parameter contains lost device's id.
+- `PACKETS_BUFFER_FULL` (value 102), `data` parameter contains buffer length.
+- `MEMORY_FULL` (103), `data` parameter contains `FAIL`.
+
+
 ```cpp
 static void error_handler(uint8_t code, uint8_t data) {
   if(code == CONNECTION_LOST) {
@@ -155,6 +161,9 @@ static void error_handler(uint8_t code, uint8_t data) {
     Serial.println("Possible wrong network configuration!");
     Serial.println("For high complexity networks higher MAX_PACKETS over 10.");
     Serial.println("See in PJON.h");
+  }
+  if(code == MEMORY_FULL) {
+    Serial.println("Packet memory allocation failed. Memory is full.");
   }
 }
 ```

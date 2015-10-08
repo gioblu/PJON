@@ -193,7 +193,14 @@ int PJON::send_string(uint8_t ID, char *string, uint8_t length) {
   |___________|________|_________|_______|__________|________|______________| */ 
 
 int PJON::send(uint8_t ID, char *packet, uint8_t length, unsigned long timing) {
+
   char *str = (char *) malloc(length);
+  
+  if(str == NULL) {
+    this->_error(MEMORY_FULL, FAIL);
+    return FAIL;
+  }
+     
   memcpy(str, packet, length);
 
   for(uint8_t i = 0; i < MAX_PACKETS; i++)

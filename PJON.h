@@ -45,11 +45,11 @@ of the use of this software, even if advised of the possibility of such damage. 
   #define READ_DELAY 8
 #endif
 
-#define ACK  6
-#define NAK  21
-#define FAIL 0x100
-#define BUSY 666
-#define BROADCAST 124
+#define ACK        6
+#define NAK        21
+#define FAIL       0x100
+#define BUSY       666
+#define BROADCAST  124
 #define TO_BE_SENT 74
 
 // Errors

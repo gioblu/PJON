@@ -65,7 +65,7 @@ Single wire simplicity let you to experiment quickly and with creativity. For ex
 
 ![alt tag](http://33.media.tumblr.com/0065c3946a34191a2836c405224158c8/tumblr_inline_nvrbxkXo831s95p1z_500.gif)
 
-PJON application example by [Michael Teeuw](http://michaelteeuw.nl/post/130558526217/pjon-my-son)
+PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl/post/130558526217/pjon-my-son)
 
 ####Why not I2c?
 I2C is a bus system engineered to work with short wires to connect devices and it needs at least 2 wires. No long wires can be used, this excludes home automation applications. If one of the connections to the bus fails, even briefly, one or both devices may freeze. For this reason i2c is not practical for high vibration scenarios such as automotive applications.

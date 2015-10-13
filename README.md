@@ -61,7 +61,7 @@ void loop() {
 - Arduino Nano
 - Arduino Mega
 
-When including and using PJON, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens bacause PJON is completely software emulated with a non blocking implementation, transforming a painfull walk to the hill (find and understand absurd bugs) in a nice flight (few lines of code to get what you need) :) 
+When including and using PJON, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because PJON is completely software emulated with a non blocking implementation, transforming a painfull walk to the hill (find and understand absurd bugs) in a nice flight (few lines of code to get what you need). 
 
 Single wire simplicity let you to experiment quickly and with creativity. The first test I suggest, at your own risk, is to let two arduino boards communicate through your body touching with the left hand the digital port of the first board (5v 40ma, harmless) and with the right the port of the other one. Will be stunning to see high accuracy digital communication running inside a living biological body. This opens the mind to possible creative solutions.
 

@@ -58,6 +58,7 @@ void loop() {
 - ATmega88/168/328   8/16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
 - ATmega2560           16Mhz (Arduino Mega)
 - ATtiny45/85        8/16Mhz (Trinket, other ATtiny 85 boards)
+
 (For networks with 8 and 16Mhz devices set `COMPATIBILITY_MODE` to true in `PJON.h`)
 
 When including and using PJON, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because PJON is completely software emulated with a non blocking implementation, transforming a painfull walk to the hill in a nice flight. 

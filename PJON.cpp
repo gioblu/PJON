@@ -24,11 +24,28 @@ of the use of this software, even if advised of the possibility of such damage. 
 
 #include "PJON.h"
 
-/* Initiate PJON passing pin number and the selected device_id  */
+/* Initiate PJON passing pin number:
+   Device's id has to be set through set_id() 
+   before transmitting on the PJON network.  */
+
+PJON::PJON(int input_pin) {
+  _input_pin = input_pin;
+  this->initialize();
+}
+
+
+/* Initiate PJON passing pin number and the device's id: */
 
 PJON::PJON(int input_pin, uint8_t device_id) {
   _input_pin = input_pin;
   _device_id = device_id;
+  this->initialize();
+}
+
+
+/* Initialization tasks: */
+
+void PJON::initialize() {
   this->set_error(dummy_error_handler);
 
   for(int i = 0; i < MAX_PACKETS; i++) {
@@ -36,6 +53,13 @@ PJON::PJON(int input_pin, uint8_t device_id) {
     packets[i].timing = 0;
     packets[i].attempts = 0;
   }
+}
+
+
+/* Set the device id, passing a single byte (watch out to id collision) */
+
+void PJON::set_id(uint8_t id) {
+  _device_id = id;
 }
 
 
@@ -91,7 +115,7 @@ boolean PJON::can_start() {
 }
 
 
-/* Send a bit to the pin
+/* Send a bit to the pin:
  digitalWriteFast is used instead of standard digitalWrite
  function to optimize transmission time */
 
@@ -101,21 +125,23 @@ void PJON::send_bit(uint8_t VALUE, int duration) {
 }
 
 
-/* Send a byte to the pin:
-  ________ _______________________
- |  Init  |         Byte          |
- |--------|-----------------------|
- |_____   |__       __    __ __   |
- |     |  |  |     |  |  |     |  |
- |1    |0 |1 |0  0 |1 |0 |1  1 |0 |
- |_____|__|__|__ __|__|__|_____|__|
+/* Every byte is prepended with 2 synchronization padding bits. The first 
+   is a longer than standard logic 1 followed by a standard logic 0. 
+   __________ ___________________________
+  | SyncPad  | Byte                      |
+  |______    |___       ___     _____    |
+  | |    |   |   |     |   |   |     |   |
+  | | 1  | 0 | 1 | 0 0 | 1 | 0 | 1 1 | 0 |
+  |_|____|___|___|_____|___|___|_____|___|
+    |
+   ACCEPTANCE 
 
- PJON uses a couple of padding bits before every byte.
- This helps two devices to be syncronized back every byte
- and so have a stable and almost errorless communication link.
- The receiver, reading the initial two padding bits, before 
- recording the incoming byte, can detect (at byte level) if 
- the syncronization failed or interference destroyed the message. */
+The reception tecnique is based on finding a logic 1 as long as the 
+first padding bit within a certain threshold, synchronizing to its 
+falling edge and checking if it is followed by a logic 0. If this 
+pattern is recognised, reception starts, if not, interference, 
+synchronization loss or simply absence of communication is 
+detected at byte level. */
 
 void PJON::send_byte(uint8_t b) {
   digitalWriteFast(_input_pin, HIGH);
@@ -130,22 +156,27 @@ void PJON::send_byte(uint8_t b) {
 }
 
 
-/* Send a string to the pin:
+/* An Example of how the string "@" is formatted and sent:
 
- An Example of how the string "HI" is formatted and sent:
-  _____    ____________________________________       _____
- | C-A |  | ID | LENGTH | byte0 | byte1  | CRC |     | ACK |
- |-----|->|----|--------|-------|--------|-----|-> <-|-----|
- |  0  |  | 12 |   6    |   H   |   I    | 134 |     |  6  |
- |_____|  |____|________|_______|________|_____|     |_____|
+ ID 12            LENGTH 4         CONTENT 64       CRC 130
+ ________________ ________________ ________________ __________________
+|Sync | Byte     |Sync | Byte     |Sync | Byte     |Sync | Byte       |
+|___  |     __   |___  |      _   |___  |  _       |___  |  _      _  |
+|   | |    |  |  |   | |     | |  |   | | | |      |   | | | |    | | |
+| 1 |0|0000|11|00| 1 |0|00000|1|00| 1 |0|0|1|000000| 1 |0|0|1|0000|1|0|
+|___|_|____|__|__|___|_|_____|_|__|___|_|_|_|______|___|_|_|_|____|_|_|
 
- C-A:    Collision avoidance: receive a byte, if no 1s channel is free  - 1 byte
- ID:     Receiver ID                                                    - 1 byte
- LENGTH: Length of the string (max 255 characters)                      - 1 byte
- CRC:    Cyclic redundancy check                                        - 1 byte
- ACK:    Acknowledge sent from receiver                                 - 1 byte */
+A standard packet transmission is a bidirectional communication between 
+two devices that can be divided in 3 different phases: 
 
-int PJON::send_string(uint8_t ID, char *string, uint8_t length) {
+Channel analysis   Transmission                            Response
+    _____           _____________________________           _____
+   | C-A |         | ID | LENGTH | CONTENT | CRC |         | ACK |
+<--|-----|---------|----|--------|---------|-----|--> <----|-----|
+   |  0  |         | 12 |   4    |   64    | 130 |         |  6  |
+   |_____|         |____|________|_________|_____|         |_____|  */
+
+int PJON::send_string(uint8_t id, char *string, uint8_t length) {
   if (!*string) return FAIL;
 
   if(!this->can_start()) return BUSY;
@@ -153,8 +184,8 @@ int PJON::send_string(uint8_t ID, char *string, uint8_t length) {
   uint8_t CRC = 0;
   pinModeFast(_input_pin, OUTPUT);
 
-  this->send_byte(ID);
-  CRC ^= ID;
+  this->send_byte(id);
+  CRC ^= id;
   this->send_byte(length + 3);
   CRC ^= length + 3;
 
@@ -166,7 +197,7 @@ int PJON::send_string(uint8_t ID, char *string, uint8_t length) {
   this->send_byte(CRC);
   digitalWriteFast(_input_pin, LOW);
 
-  if(ID == BROADCAST) return ACK;
+  if(id == BROADCAST) return ACK;
   
   unsigned long time = micros();
   int response = FAIL;
@@ -183,16 +214,16 @@ int PJON::send_string(uint8_t ID, char *string, uint8_t length) {
 /* Insert a packet in the send list:
 
  The added packet will be sent in the next update() call. 
- Using the variable timing is possible to set the delay between every 
+ Using the timing parameter you can set the delay between every 
  transmission cyclically sending the packet (use remove() function stop it)
 
- int hi = network.send(99, "HI!", 1000000); // Send hi every second  
+ int hi = network.send(99, "HI!", 3, 1000000); // Send hi every second  
    _________________________________________________________________________
   |           |        |         |       |          |        |              |
   | device_id | length | content | state | attempts | timing | registration |
   |___________|________|_________|_______|__________|________|______________| */ 
 
-int PJON::send(uint8_t ID, char *packet, uint8_t length, unsigned long timing) {
+int PJON::send(uint8_t id, char *packet, uint8_t length, unsigned long timing) {
 
   char *str = (char *) malloc(length);
   
@@ -206,7 +237,7 @@ int PJON::send(uint8_t ID, char *packet, uint8_t length, unsigned long timing) {
   for(uint8_t i = 0; i < MAX_PACKETS; i++)
     if(packets[i].state == NULL) {
       packets[i].content = str;
-      packets[i].device_id = ID;
+      packets[i].device_id = id;
       packets[i].length = length;
       packets[i].state = TO_BE_SENT;
       if(timing > 0) {
@@ -222,7 +253,7 @@ int PJON::send(uint8_t ID, char *packet, uint8_t length, unsigned long timing) {
 
 
 /* Update the state of the send list and so 
-   check if there are packets to send or erase 
+   check if there are packets to be sent or to be erased 
    the correctly delivered */ 
 
 void PJON::update() {

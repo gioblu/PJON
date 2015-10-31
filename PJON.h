@@ -34,17 +34,34 @@ of the use of this software, even if advised of the possibility of such damage. 
   #include "includes/digitalWriteFast.h"
   #include "Arduino.h"
 
+  #define  COMPATIBILITY_MODE false 
+  /* Set true if you have a mixed network of 8 and 16mhz boards
+     Example: Arduino Duemilanove and ATtiny85 at 8Mhz */
+
+
   /* The following constants setup is quite conservative and determined only 
      with a huge amount of time and blind testing (without oscilloscope) 
      tweaking values and analysing results. Theese can be changed to obtain
      faster speed. Probably you need experience, time and an oscilloscope. */ 
   
-  #define BIT_WIDTH 20
-  #define BIT_SPACER 56
-  #define ACCEPTANCE 20
-  #define READ_DELAY 8
+  #if (F_CPU == 16000000 && !COMPATIBILITY_MODE)
+    #define BIT_WIDTH 20
+    #define BIT_SPACER 56
+    #define ACCEPTANCE 20
+    #define READ_DELAY 8
+  #endif
+
+  #if (F_CPU == 8000000 || COMPATIBILITY_MODE)
+    #define BIT_WIDTH 40
+    #define BIT_SPACER 112
+    #define ACCEPTANCE 40
+    #define READ_DELAY 16
+  #endif
+
 #endif
 
+
+// Protocol symbols
 #define ACK        6
 #define NAK        21
 #define FAIL       0x100
@@ -84,7 +101,12 @@ static void dummy_error_handler(uint8_t code, uint8_t data) {};
 class PJON {
 
   public:
-    PJON(int input_pin, uint8_t ID);
+    PJON(int input_pin);
+    PJON(int input_pin, uint8_t id);
+
+    void initialize();
+    
+    void set_id(uint8_t id);
     void set_receiver(receiver r);
     void set_error(error e);
 
@@ -94,8 +116,8 @@ class PJON {
 
     void send_bit(uint8_t VALUE, int duration);
     void send_byte(uint8_t b);
-    int  send_string(uint8_t ID, char *string, uint8_t length);
-    int  send(uint8_t ID, char *packet, uint8_t length, unsigned long timing = 0);
+    int  send_string(uint8_t id, char *string, uint8_t length);
+    int  send(uint8_t id, char *packet, uint8_t length, unsigned long timing = 0);
     
     void update();
     void remove(int id);

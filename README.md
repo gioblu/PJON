@@ -55,11 +55,10 @@ void loop() {
 - Accuracy: **99.995%**
 
 ####Compatibility
-- Arduino Diecimila / Duemilanove
-- Arduino Mini
-- Arduino Uno
-- Arduino Nano
-- Arduino Mega
+- ATmega88/168/328   8/16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
+- ATmega2560           16Mhz (Arduino Mega)
+- ATtiny45/85        8/16Mhz (Trinket, other ATtiny 85 boards)
+(For networks with 8 and 16Mhz devices set `COMPATIBILITY_MODE` to true in `PJON.h`)
 
 Single wire simplicity let you to experiment quickly and with creativity. For example, one of the first tests I suggest to try with PJON is to let two arduinos communicate through your body touching with the left hand the port of the first board and with the right the port of the other one. It's stunning to see more than 90% accuracy for this digital communication doing all that path inside a biological body. This opens the mind to possible creative solutions.
 
@@ -79,6 +78,11 @@ The first step is the physical layer. Lets wire the two arduinos. Simply find a 
 Lets start coding, instantiate the `PJON` object that in the example is called network. To initialize a network based on PJON you need only to define the communication pin (any free digital pin on your board) and a unique ID (0 - 255):
 
 ```cpp  
+  PJON network(12);
+  network.set_id(123); // Set id later
+
+  // or
+
   PJON network(12, 123); 
 ```
 
@@ -149,7 +153,7 @@ PJON is designed to inform the user if the communication link to a certain devic
 Error types:
 - `CONNECTION_LOST` (value 101), `data` parameter contains lost device's id.
 - `PACKETS_BUFFER_FULL` (value 102), `data` parameter contains buffer length.
-- `MEMORY_FULL` (103), `data` parameter contains `FAIL`.
+- `MEMORY_FULL` (value 103), `data` parameter contains `FAIL`.
 
 
 ```cpp

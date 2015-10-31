@@ -55,9 +55,9 @@ void loop() {
 - Accuracy: **99.995%**
 
 ####Compatibility
-- ATmega88/168/328   8/16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
-- ATmega2560           16Mhz (Arduino Mega)
-- ATtiny45/85        8/16Mhz (Trinket, other ATtiny 85 boards)
+- ATmega88/168/328 - 8/16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
+- ATmega2560 - 16Mhz (Arduino Mega)
+- ATtiny45/85 - 8/16Mhz (Trinket, other ATtiny 85 boards)
 
 (For networks with 8 and 16Mhz devices set `COMPATIBILITY_MODE` to true in `PJON.h`)
 

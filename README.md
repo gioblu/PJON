@@ -60,9 +60,11 @@ void loop() {
 - ATtiny45/85        8/16Mhz (Trinket, other ATtiny 85 boards)
 (For networks with 8 and 16Mhz devices set `COMPATIBILITY_MODE` to true in `PJON.h`)
 
-Single wire simplicity let you to experiment quickly and with creativity. For example, one of the first tests I suggest to try with PJON is to let two arduinos communicate through your body touching with the left hand the port of the first board and with the right the port of the other one. It's stunning to see more than 90% accuracy for this digital communication doing all that path inside a biological body. This opens the mind to possible creative solutions.
+When including and using PJON, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because PJON is completely software emulated with a non blocking implementation, transforming a painfull walk to the hill in a nice flight. 
 
-![alt tag](http://33.media.tumblr.com/0065c3946a34191a2836c405224158c8/tumblr_inline_nvrbxkXo831s95p1z_500.gif)
+Single wire simplicity let you to experiment quickly and with creativity. The first test I suggest, at your own risk, is to let two arduino boards communicate through your body touching with the left hand the digital port of the first board (5v 40ma, harmless) and with the right the port of the other one. Will be stunning to see high accuracy digital communication running inside a living biological body. This opens the mind to possible creative solutions.
+
+![PJON - Michael Teeuw application example](http://33.media.tumblr.com/0065c3946a34191a2836c405224158c8/tumblr_inline_nvrbxkXo831s95p1z_500.gif)
 
 PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl/post/130558526217/pjon-my-son)
 
@@ -98,7 +100,7 @@ To send a string to another device connected to the bus simply call `send()` fun
 ```cpp
 network.send(100, "Ciao, this is a test!", 21);
 ```
-Packet length is there to prevent unwanted buffer overflows. If sending arbitrary values  `NULL` terminator strategy (strlen) is not safe to detect the end of a string. 
+I know that the packet length is boring to fill but is there to prevent buffer overflow. If sending arbitrary values `NULL` terminator strategy based on `strlen()` is not safe to detect the end of a string. 
 
 To send a value repeatedly simply add as last parameter the interval in microseconds you want between every sending:
 

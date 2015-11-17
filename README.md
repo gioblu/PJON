@@ -76,7 +76,7 @@ I2C is a bus system engineered to work with short wires to connect devices and i
 1-Wire is almost what I needed for a lot of projects but has its downsides: first it is propietary and second, Arduino implementations are slow and chaotic and for this reason not reliable.
 
 ## How to start
-The first step is the physical layer. Lets wire the two arduinos. Simply find a piece of wire and select a digital pin you want to use on both boards where to connect the wire. After this you should have both arduino boards connected by the wire on the same pin.
+The first step is the physical layer: connect with a wire two boards using a digital pin on both boards. After this you should have both arduino boards connected by the wire on the same pin. The selected pins are the same only for simplicity and to avoid mistakes, PJON works fine on every Arduino digital or analog (used as digital) I/O pin. 
 
 Lets start coding, instantiate the `PJON` object that in the example is called network. To initialize a network based on PJON you need only to define the communication pin (any free digital pin on your board) and a unique ID (0 - 255):
 

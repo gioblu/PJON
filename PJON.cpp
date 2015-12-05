@@ -63,11 +63,11 @@ void PJON::set_id(uint8_t id) {
 }
 
 
-/* Pass as a parameter a static void function you previously defined in your code. 
+/* Pass as a parameter a void function you previously defined in your code. 
    This will be called when a correct message will be received. 
    Inside there you can code how to react when data is received. 
   
-   static void receiver_function(uint8_t sender_id, uint8_t length, uint8_t *payload) {
+   void receiver_function(uint8_t sender_id, uint8_t length, uint8_t *payload) {
     Serial.print(sender_id);
     Serial.print(" ");
 
@@ -85,10 +85,10 @@ void PJON::set_receiver(receiver r) {
 }
 
 
-/* Pass as a parameter a static void function you previously defined in your code.
+/* Pass as a parameter a void function you previously defined in your code.
    This will be called when an error in communication occurs 
 
-static void error_handler(uint8_t code, uint8_t data) {
+void error_handler(uint8_t code, uint8_t data) {
   Serial.print(code);
   Serial.print(" ");
   Serial.println(data);

@@ -12,7 +12,7 @@ void setup() {
   network.set_error(error_handler);
 }
 
-static void error_handler(uint8_t code, uint8_t data) {
+void error_handler(uint8_t code, uint8_t data) {
   if(code == CONNECTION_LOST) {
     Serial.print("Connection lost with device id ");
     Serial.println(data);

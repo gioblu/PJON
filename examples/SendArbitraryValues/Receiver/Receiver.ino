@@ -8,7 +8,7 @@ void setup() {
   network.set_receiver(receiver_function);
 };
 
-static void receiver_function(uint8_t length, uint8_t *payload) {
+void receiver_function(uint8_t length, uint8_t *payload) {
  if((char)payload[0] == 'T') {
     Serial.print("Temperature received: ");
     Serial.print(payload[1] << 8 | payload[2] & 0xFF);

@@ -11,7 +11,7 @@ void setup() {
   network.set_receiver(receiver_function);
 };
 
-static void receiver_function(uint8_t length, uint8_t *payload) {
+void receiver_function(uint8_t length, uint8_t *payload) {
  // Do nothing to avoid affecting speed analysis 
 }
 

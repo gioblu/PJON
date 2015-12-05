@@ -25,7 +25,7 @@ void setup() {
   network.set_receiver(receiver_function); // Set the function used to receive messages
 };
 
-static void receiver_function(uint8_t length, uint8_t *payload) {
+void receiver_function(uint8_t length, uint8_t *payload) {
   if(payload[0] == 'B') { // If the first letter of the received message is B 
     digitalWrite(13, HIGH);
     delay(30);
@@ -122,10 +122,10 @@ int broadcastTest = network.send(BROADCAST, "Message for all connected devices."
 ```
 
 ## Receive data
-Now define a `static void function` that will be called if a correct message is received. This function receives 2 parameters: the message length and its content.
+Now define a `void function` that will be called if a correct message is received. This function receives 2 parameters: the message length and its content.
 
 ```cpp
-static void receiver_function(uint8_t length, uint8_t *payload) {
+void receiver_function(uint8_t length, uint8_t *payload) {
   Serial.print("Message content: ");
 
   for(int i = 0; i < length; i++) 
@@ -151,7 +151,7 @@ Consider that this is not an interrupt driven system and so all the time passed 
 
 
 ##Error handling
-PJON is designed to inform the user if the communication link to a certain device is lost or if the packtes buffer is full. A `static void function` has to be defined as the error handler, it receives 2 parameters the first is the error code and the second is 1 byte additional data related to the error.
+PJON is designed to inform the user if the communication link to a certain device is lost or if the packtes buffer is full. A `void function` has to be defined as the error handler, it receives 2 parameters the first is the error code and the second is 1 byte additional data related to the error.
 
 Error types:
 - `CONNECTION_LOST` (value 101), `data` parameter contains lost device's id.
@@ -160,7 +160,7 @@ Error types:
 
 
 ```cpp
-static void error_handler(uint8_t code, uint8_t data) {
+void error_handler(uint8_t code, uint8_t data) {
   if(code == CONNECTION_LOST) {
     Serial.print("Connection with device ID ");
     Serial.print(data);

@@ -184,7 +184,9 @@ Now inform the network to call the error handler function in case of error:
 ```cpp
 network.set_error(error_handler);
 ```
----
+
+##License
+
 ```cpp
 /* Copyright (c) 2012-2015, Giovanni Blu Mitolo All rights reserved.
 

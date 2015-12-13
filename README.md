@@ -185,8 +185,8 @@ Now inform the network to call the error handler function in case of error:
 network.set_error(error_handler);
 ```
 ---
- 
-Copyright (c) 2012-2015, Giovanni Blu Mitolo All rights reserved.
+```cpp
+/* Copyright (c) 2012-2015, Giovanni Blu Mitolo All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -209,4 +209,5 @@ but not limited to, the implied warranties of merchantability and fitness for a 
 shall the copyright holder or contributors be liable for any direct, indirect, incidental, special, exemplary, or consequential 
 damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business 
 interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence 
-or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.
+or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage. */
+```

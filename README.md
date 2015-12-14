@@ -201,7 +201,7 @@ modification, are permitted provided that the following conditions are met:
 
 -  All advertising materials mentioning features or use of this software 
    must display the following acknowledgement:
-   This product is powered by PJON software developed by Giovanni Blu Mitolo.
+   This product includes PJON software developed by Giovanni Blu Mitolo.
 
 -  Neither the name of PJON, PJON_ASK nor the
    names of its contributors may be used to endorse or promote products

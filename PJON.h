@@ -16,8 +16,8 @@
  |----------------------------------------------------------------------------------|
  |Transfer speed: 5.29kB/s     | Absolute bandwidth:  3.23 kB/s                     |
  |Baud rate:      42372 baud   | Data throughput:     2.68 kB/s                     |                                |
- |__________________________________________________________________________________| 
- 
+ |__________________________________________________________________________________|
+
 Copyright (c) 2012-2015, Giovanni Blu Mitolo All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,7 @@ modification, are permitted provided that the following conditions are met:
    notice, this list of conditions and the following disclaimer in the
    documentation and/or other materials provided with the distribution.
 
--  All advertising materials mentioning features or use of this software 
+-  All advertising materials mentioning features or use of this software
    must display the following acknowledgement:
    This product includes PJON software developed by Giovanni Blu Mitolo.
 
@@ -37,15 +37,15 @@ modification, are permitted provided that the following conditions are met:
    names of its contributors may be used to endorse or promote products
    derived from this software without specific prior written permission.
 
-This software is provided by the copyright holders and contributors"as is" 
-and any express or implied warranties, including, but not limited to, the 
-implied warranties of merchantability and fitness for a particular purpose 
-are disclaimed. In no event shall the copyright holder or contributors be 
-liable for any direct, indirect, incidental, special, exemplary, or consequential 
-damages (including, but not limited to, procurement of substitute goods or services; 
-loss of use, data, or profits; or business interruption) however caused and on any 
-theory of liability, whether in contract, strict liability, or tort (including 
-negligence or otherwise) arising in any way out of the use of this software, even if 
+This software is provided by the copyright holders and contributors"as is"
+and any express or implied warranties, including, but not limited to, the
+implied warranties of merchantability and fitness for a particular purpose
+are disclaimed. In no event shall the copyright holder or contributors be
+liable for any direct, indirect, incidental, special, exemplary, or consequential
+damages (including, but not limited to, procurement of substitute goods or services;
+loss of use, data, or profits; or business interruption) however caused and on any
+theory of liability, whether in contract, strict liability, or tort (including
+negligence or otherwise) arising in any way out of the use of this software, even if
 advised of the possibility of such damage. */
 
 #ifndef PJON_h
@@ -54,32 +54,47 @@ advised of the possibility of such damage. */
   #include "includes/digitalWriteFast.h"
   #include "Arduino.h"
 
-  #define  COMPATIBILITY_MODE false 
   /* Set true if you have a mixed network of 8 and 16mhz boards
      Example: Arduino Duemilanove and ATtiny85 at 8Mhz */
+  #define  COMPATIBILITY_MODE false
 
-
-  /* The following constants setup is quite conservative and determined only 
-     with a huge amount of time and blind testing (without oscilloscope) 
+  /* The following constants setup are quite conservative and determined only
+     with a huge amount of time and blind testing (without oscilloscope)
      tweaking values and analysing results. Theese can be changed to obtain
-     faster speed. Probably you need experience, time and an oscilloscope. */ 
-  
-  #if (F_CPU == 16000000 && !COMPATIBILITY_MODE)
-    #define BIT_WIDTH 20
-    #define BIT_SPACER 56
-    #define ACCEPTANCE 20
-    #define READ_DELAY 8
-  #endif
+     faster speed. Probably you need experience, time and an oscilloscope. */
 
-  #if (F_CPU == 8000000 || COMPATIBILITY_MODE)
-    #define BIT_WIDTH 40
-    #define BIT_SPACER 112
-    #define ACCEPTANCE 40
-    #define READ_DELAY 16
+  #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+    #if (F_CPU == 16000000 && !COMPATIBILITY_MODE)
+      /* Mega has shorter values then Duemianove / Uno because
+      micros() produces longer delays on ATmega1280/2560 */
+      #define BIT_WIDTH 18
+      #define BIT_SPACER 54
+      #define ACCEPTANCE 18
+      #define READ_DELAY 8
+    #endif
+    #if (F_CPU == 8000000 || COMPATIBILITY_MODE)
+      /* Mega has shorter values then Duemianove / Uno because
+      micros() produces longer delays on ATmega1280/2560 */
+      #define BIT_WIDTH 36
+      #define BIT_SPACER 108
+      #define ACCEPTANCE 36
+      #define READ_DELAY 16
+    #endif
+  #else
+    #if (F_CPU == 16000000 && !COMPATIBILITY_MODE)
+      #define BIT_WIDTH 20
+      #define BIT_SPACER 56
+      #define ACCEPTANCE 20
+      #define READ_DELAY 8
+    #endif
+    #if (F_CPU == 8000000 || COMPATIBILITY_MODE)
+      #define BIT_WIDTH 40
+      #define BIT_SPACER 112
+      #define ACCEPTANCE 40
+      #define READ_DELAY 16
+    #endif
   #endif
-
 #endif
-
 
 // Protocol symbols
 #define ACK        6
@@ -92,10 +107,10 @@ advised of the possibility of such damage. */
 // Errors
 #define CONNECTION_LOST 101
 #define PACKETS_BUFFER_FULL 102
-#define MEMORY_FULL 103 
+#define MEMORY_FULL 103
 
 // Maximum sending attempts before throwing CONNECTON_LOST error
-#define MAX_ATTEMPTS 250 
+#define MAX_ATTEMPTS 250
 
 // Packets buffer length, if full PACKET_BUFFER_FULL error is thrown
 #define MAX_PACKETS 10
@@ -125,7 +140,7 @@ class PJON {
     PJON(int input_pin, uint8_t id);
 
     void initialize();
-    
+
     void set_id(uint8_t id);
     void set_receiver(receiver r);
     void set_error(error e);
@@ -138,7 +153,7 @@ class PJON {
     void send_byte(uint8_t b);
     int  send_string(uint8_t id, char *string, uint8_t length);
     int  send(uint8_t id, char *packet, uint8_t length, unsigned long timing = 0);
-    
+
     void update();
     void remove(int id);
 

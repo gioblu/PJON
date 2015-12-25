@@ -54,9 +54,16 @@ advised of the possibility of such damage. */
   #include "includes/digitalWriteFast.h"
   #include "Arduino.h"
 
-  /* Set true if you have a mixed network of 8 and 16mhz boards
-     Example: Arduino Duemilanove and ATtiny85 at 8Mhz */
-  #define  COMPATIBILITY_MODE false
+  /* COMPATIBILITY_MODE set to false will run the network with a
+     cautious speed to let all the supported architectures to
+     communicate together. 8Mhz devices will be able to communicate with
+     16 or more Mhz devices.
+
+     COMPATIBILITY_MODE set to false will run the network at full speed
+     with the best performances, but is indicated only for networks made
+     by a group of devices with the same architecture / processor
+     (for example 10 Arduino Uno) */
+  #define  COMPATIBILITY_MODE true
 
   /* The following constants setup are quite conservative and determined only
      with a huge amount of time and blind testing (without oscilloscope)
@@ -75,9 +82,9 @@ advised of the possibility of such damage. */
     #if (F_CPU == 8000000 || COMPATIBILITY_MODE)
       /* Mega has shorter values then Duemianove / Uno because
       micros() produces longer delays on ATmega1280/2560 */
-      #define BIT_WIDTH 36
-      #define BIT_SPACER 108
-      #define ACCEPTANCE 36
+      #define BIT_WIDTH 38
+      #define BIT_SPACER 110
+      #define ACCEPTANCE 38
       #define READ_DELAY 16
     #endif
   #else

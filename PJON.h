@@ -15,7 +15,7 @@
  | BIT_WIDTH 20 | BIT_SPACER 56 | ACCEPTANCE  20 | READ_DELAY 8                     |
  |----------------------------------------------------------------------------------|
  |Transfer speed: 5.29kB/s     | Absolute bandwidth:  3.23 kB/s                     |
- |Baud rate:      42372 baud   | Data throughput:     2.68 kB/s                     |                                |
+ |Baud rate:      42372 baud   | Data throughput:     2.68 kB/s                     |
  |__________________________________________________________________________________|
 
 Copyright (c) 2012-2015, Giovanni Blu Mitolo All rights reserved.

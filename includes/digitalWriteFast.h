@@ -101,7 +101,8 @@
 (((P) ==  9 || (P) == 10) ? &TCCR1A : (((P) == 11) ? &TCCR2 : 0))
 #define __digitalPinToTimerBit(P) \
 (((P) ==  9) ? COM1A1 : (((P) == 10) ? COM1B1 : COM21))
-#else  //168,328
+
+#else  // ATmega 88 - 168 - 328
 
 // 6 PWM
 #define __digitalPinToTimer(P) \

@@ -51,24 +51,38 @@ advised of the possibility of such damage. */
 #ifndef PJON_h
   #define PJON_h
 
-  #include "includes/digitalWriteFast.h"
   #include "Arduino.h"
+  #include "includes/digitalWriteFast.h"
 
-  /* COMPATIBILITY_MODE set to false will run the network with a
-     cautious speed to let all the supported architectures to
-     communicate together. 8Mhz devices will be able to communicate with
-     16 or more Mhz devices.
+  /* COMPATIBILITY_MODE set to true:
+  Run the network with a cautious speed to support all architectures.
+  8Mhz devices will be able to communicate with 16 or more Mhz devices.
+     COMPATIBILITY_MODE set to false:
+  Run the network at full speed with the best performances, but is
+  indicated only for networks made by a group of devices with the
+  same architecture / processor (for example 10 Arduino Uno) */
 
-     COMPATIBILITY_MODE set to false will run the network at full speed
-     with the best performances, but is indicated only for networks made
-     by a group of devices with the same architecture / processor
-     (for example 10 Arduino Uno) */
   #define  COMPATIBILITY_MODE true
 
   /* The following constants setup are quite conservative and determined only
      with a huge amount of time and blind testing (without oscilloscope)
      tweaking values and analysing results. Theese can be changed to obtain
      faster speed. Probably you need experience, time and an oscilloscope. */
+
+  #if defined(__AVR_ATmega88__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
+    #if (F_CPU == 16000000 && !COMPATIBILITY_MODE)
+      #define BIT_WIDTH 20
+      #define BIT_SPACER 56
+      #define ACCEPTANCE 20
+      #define READ_DELAY 8
+    #endif
+    #if (F_CPU == 8000000 || COMPATIBILITY_MODE)
+      #define BIT_WIDTH 40
+      #define BIT_SPACER 112
+      #define ACCEPTANCE 40
+      #define READ_DELAY 16
+    #endif
+  #endif
 
   #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
     #if (F_CPU == 16000000 && !COMPATIBILITY_MODE)
@@ -87,20 +101,19 @@ advised of the possibility of such damage. */
       #define ACCEPTANCE 38
       #define READ_DELAY 16
     #endif
-  #else
-    #if (F_CPU == 16000000 && !COMPATIBILITY_MODE)
-      #define BIT_WIDTH 20
-      #define BIT_SPACER 56
-      #define ACCEPTANCE 20
-      #define READ_DELAY 8
-    #endif
-    #if (F_CPU == 8000000 || COMPATIBILITY_MODE)
-      #define BIT_WIDTH 40
-      #define BIT_SPACER 112
-      #define ACCEPTANCE 40
+  #endif
+
+  #if defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
+    #if (F_CPU == 8000000 || COMPATIBILITY_MODE) // Internal clock
+      /* ATtiny has shorter values then Duemianove / Uno because
+      micros() produces longer delays on ATmega1280/2560 */
+      #define BIT_WIDTH 36
+      #define BIT_SPACER 108
+      #define ACCEPTANCE 36
       #define READ_DELAY 16
     #endif
   #endif
+
 #endif
 
 // Protocol symbols

@@ -106,7 +106,7 @@ advised of the possibility of such damage. */
   #if defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
     #if (F_CPU == 8000000 || COMPATIBILITY_MODE) // Internal clock
       /* ATtiny has shorter values then Duemianove / Uno because
-      micros() produces longer delays on ATmega1280/2560 */
+      micros() produces longer delays on ATtiny45/85 */
       #define BIT_WIDTH 36
       #define BIT_SPACER 108
       #define ACCEPTANCE 36

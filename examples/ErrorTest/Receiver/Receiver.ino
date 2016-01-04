@@ -15,7 +15,21 @@ void setup() {
 };
 
 void receiver_function(uint8_t length, uint8_t *payload) {
-  if(!started) {
+  if(length != 2) { // Undetected error in length byte
+    Serial.print("L ");
+    Serial.print(length);
+    Serial.print(" | ");
+    undetected_errors++;
+  }
+
+  if(payload[0] != 125) { // Undetected error in contant byte
+    Serial.print("125");
+    Serial.print(payload[0]);
+    Serial.print(" | ");
+    undetected_errors++;
+  }
+
+  if(!started) {  // Start counting changing byte
     started = true;
     last = payload[1];
     return;
@@ -28,9 +42,9 @@ void receiver_function(uint8_t length, uint8_t *payload) {
      Serial.println(payload[1]);
     }
   } else {
-    if(last != payload[1] - 1) {
+    if(last != payload[1] - 1) { // Undetected error in changing byte
       undetected_errors++;
-      Serial.print(last + 1);
+      Serial.print(last);
       Serial.print(" ");
       Serial.print(payload[1]);
       Serial.print(" | ");
@@ -47,20 +61,22 @@ void receiver_function(uint8_t length, uint8_t *payload) {
 
 void loop() {
   Serial.println();
-  Serial.println("PJON v1.1 - Starting 10 seconds error rate test...");
+  Serial.println("PJON v1.1 - Starting 20 seconds error rate test...");
   long time = millis();
   int response = 0;
-  while(millis() - time < 10000)
+  while(millis() - time < 20000)
     response = network.receive(1000);
 
+  Serial.println();
   Serial.print("Undetected errors: ");
   Serial.print(undetected_errors);
   Serial.print(" Transmission total count: ");
   Serial.println(count);
-  Serial.print("BER or Bit Error Rate expressed in bit/s: ");
-  Serial.println(((undetected_errors / count) * 8) / 10, 4);
+  Serial.print("BER or Bit Error Rate expressed in bytes/s: ");
+  Serial.println((undetected_errors / count) / 20, 6);
   Serial.println();
 
+  started = false;
   count = 0;
   index = 0;
   undetected_errors = 0;

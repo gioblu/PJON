@@ -91,7 +91,7 @@ void PJON::set_id(uint8_t id) {
    void receiver_function(uint8_t length, uint8_t *payload) {
     for(int i = 0; i < length; i++)
       Serial.print((char)payload[i]);
-      
+
     Serial.print(" ");
     Serial.println(length);
   };
@@ -376,7 +376,10 @@ uint8_t PJON::read_byte() {
 }
 
 
-/* Try to receive a string from the pin: */
+/* Try to receive a packet from the pin:
+   (Use this function only for debugging and benchmarking, it doesn't include
+    the paket management)
+*/
 
 int PJON::receive() {
   int package_length = PACKET_MAX_LENGTH;
@@ -405,6 +408,7 @@ int PJON::receive() {
       this->send_byte(ACK);
       digitalWriteFast(_input_pin, LOW);
     }
+    this->_receiver(data[1] - 3, data + 2);
     return ACK;
   } else {
     if(data[0] != BROADCAST) {
@@ -416,22 +420,15 @@ int PJON::receive() {
 }
 
 
-/* Try to receive a string from the pin repeatedly:
- receive() is executed in cycle with a for because is
- not possible to use micros() as condition (too long to be executed).
- micros() is then used in while as condition approximately every
- 10 milliseconds (3706 value in for determines duration) */
+/* Try to receive a packet from the pin repeatedly with a maximum duration: */
 
 int PJON::receive(unsigned long duration) {
   int response;
   long time = micros();
-  while(micros() - time <= duration)
-    for(int i = 0; i < 3706; i++) {
-      response = this->receive();
-      if(response == ACK) {
-        this->_receiver(data[1] - 3, data + 2);
-        return ACK;
-      }
-    }
+  while(!(micros() - time > duration)) {
+    response = this->receive();
+    if(response == ACK)
+      return ACK;
+  }
   return response;
 }

@@ -3,22 +3,25 @@
 PJON network(12, 45);
 
 int packet;
-char content[] = {125 , 0};
+char content[4] = {0, 0, 0, 0};
 // Content with contant and changing byte
 
 void setup() {
   Serial.begin(115200);
-  packet = network.send(44, content, 2);
+  packet = network.send(44, content, 4);
 }
 
 void loop() {
-  content[1]++;
-  if(!network.packets[packet].state) {
-    delayMicroseconds(random(1000, 2500)); // Add a random delay to simulate standard usage
-    packet = network.send(44, content, 2);
-  }
+  content[0] += 1;
+  content[1] += 1;
+  content[2] += 1;
+
+  if(!network.packets[packet].state)
+    packet = network.send(44, content, 4);
+
   network.update();
 
-  if(content[1] == 255)
-    content[1] = 0;
+  if(content[0] == 255) content[0] = 0;
+  if(content[1] == 255) content[1] = 0;
+  if(content[2] == 255) content[2] = 0;
 };

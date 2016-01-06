@@ -220,7 +220,9 @@ int PJON::send_string(uint8_t id, char *string, uint8_t length) {
   unsigned long time = micros();
   int response = FAIL;
 
-  while(response == FAIL && micros() - time <= BIT_SPACER + BIT_WIDTH)
+  /* Receive byte for an initial BIT_SPACER bit + standard bit total duration.
+     (freak condition used to avoid micros() overflow bug) */
+  while(response == FAIL && !(micros() - time >= BIT_SPACER + BIT_WIDTH))
     response = this->receive_byte();
 
   if (response == ACK || response == NAK) return response;
@@ -230,7 +232,6 @@ int PJON::send_string(uint8_t id, char *string, uint8_t length) {
 
 
 /* Insert a packet in the send list:
-
  The added packet will be sent in the next update() call.
  Using the timing parameter you can set the delay between every
  transmission cyclically sending the packet (use remove() function stop it)
@@ -270,9 +271,9 @@ int PJON::send(uint8_t id, char *packet, uint8_t length, unsigned long timing) {
 }
 
 
-/* Update the state of the send list and so
+/* Update the state of the send list:
    check if there are packets to be sent or to be erased
-   the correctly delivered */
+   if correctly delivered */
 
 void PJON::update() {
   for(uint8_t i = 0; i < MAX_PACKETS; i++) {
@@ -323,7 +324,7 @@ void PJON::remove(int id) {
  This function is used only in byte syncronization.
  READ_DELAY has to be tuned to correctly send and
  receive transmissions because this variable shifts
- in which portion of the bit, reading will be
+ in which portion of the bit, the reading will be
  executed by the next read_byte function */
 
 uint8_t PJON::syncronization_bit() {
@@ -335,7 +336,6 @@ uint8_t PJON::syncronization_bit() {
 
 
 /* Check if a byte is coming from the pin:
-
  This function is looking for padding bits before a byte.
  If value is 1 for more then ACCEPTANCE and after
  that comes a 0 probably a byte is coming:
@@ -350,12 +350,18 @@ uint8_t PJON::syncronization_bit() {
   ACCEPTANCE */
 
 int PJON::receive_byte() {
+  /* Initialize the pin and set it to LOW to reduce interference */
   pinModeFast(_input_pin, INPUT);
   digitalWriteFast(_input_pin, LOW);
   unsigned long time = micros();
-  while (digitalReadFast(_input_pin) && micros() - time <= BIT_SPACER);
+  /* Do nothing until the pin stops to be HIGH or passed more time than
+     BIT_SPACER duration (freak condition used to avoid micros() overflow bug) */
+  while (digitalReadFast(_input_pin) && !(micros() - time >= BIT_SPACER));
+  /* Save how much time passed */
   time = micros() - time;
-
+  /* is for sure less than BIT_SPACER, and if is more than ACCEPTANCE
+     (a minimum HIGH duration) and what is coming after is a LOW bit
+     probably a byte is coming so try to receive it. */
   if(time >= ACCEPTANCE && !this->syncronization_bit())
     return (int)this->read_byte();
 
@@ -425,7 +431,8 @@ int PJON::receive() {
 int PJON::receive(unsigned long duration) {
   int response;
   long time = micros();
-  while(!(micros() - time > duration)) {
+  /* (freak condition used to avoid micros() overflow bug) */
+  while(!(micros() - time >= duration)) {
     response = this->receive();
     if(response == ACK)
       return ACK;

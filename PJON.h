@@ -107,9 +107,9 @@ advised of the possibility of such damage. */
     #if (F_CPU == 8000000 || COMPATIBILITY_MODE) // Internal clock
       /* ATtiny has shorter values then Duemianove / Uno because
       micros() produces longer delays on ATtiny45/85 */
-      #define BIT_WIDTH 36
+      #define BIT_WIDTH 35
       #define BIT_SPACER 108
-      #define ACCEPTANCE 36
+      #define ACCEPTANCE 35
       #define READ_DELAY 16
     #endif
   #endif

@@ -4,6 +4,8 @@
 PJON network(12, 44);
 
 void setup() {
+  pinModeFast(13, OUTPUT);
+  digitalWriteFast(13, LOW);
   Serial.begin(9600);
   network.set_receiver(receiver_function);
 };

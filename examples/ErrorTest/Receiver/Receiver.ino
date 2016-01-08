@@ -31,6 +31,9 @@ void receiver_function(uint8_t length, uint8_t *payload) {
     Serial.print(" ");
     Serial.print(payload[1]);
     Serial.print(" | ");
+    Serial.print(payload[2]);
+    Serial.print(" | ");
+    Serial.println(payload[3]);
   }
 
   count++;

@@ -119,7 +119,7 @@ void PJON::set_error(error e) {
 }
 
 
-/* Check if the channel if free for transmission:
+/* Check if the channel is free for transmission:
  If an entire byte received contains no 1s it means
  that there is no active transmission */
 
@@ -337,7 +337,7 @@ uint8_t PJON::syncronization_bit() {
 
 /* Check if a byte is coming from the pin:
  This function is looking for padding bits before a byte.
- If value is 1 for more then ACCEPTANCE and after
+ If value is 1 for more than ACCEPTANCE and after
  that comes a 0 probably a byte is coming:
   ________
  |  Init  |
@@ -382,10 +382,7 @@ uint8_t PJON::read_byte() {
 }
 
 
-/* Try to receive a packet from the pin:
-   (Use this function only for debugging and benchmarking, it doesn't include
-    the paket management)
-*/
+/* Try to receive a packet from the pin: */
 
 int PJON::receive() {
   int package_length = PACKET_MAX_LENGTH;

@@ -86,7 +86,7 @@ advised of the possibility of such damage. */
 
   #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
     #if (F_CPU == 16000000 && !COMPATIBILITY_MODE)
-      /* Mega has shorter values then Duemianove / Uno because
+      /* Mega has shorter values than Duemianove / Uno because
       micros() produces longer delays on ATmega1280/2560 */
       #define BIT_WIDTH 18
       #define BIT_SPACER 54
@@ -94,7 +94,7 @@ advised of the possibility of such damage. */
       #define READ_DELAY 8
     #endif
     #if (F_CPU == 8000000 || COMPATIBILITY_MODE)
-      /* Mega has shorter values then Duemianove / Uno because
+      /* Mega has shorter values than Duemianove / Uno because
       micros() produces longer delays on ATmega1280/2560 */
       #define BIT_WIDTH 38
       #define BIT_SPACER 110
@@ -105,7 +105,7 @@ advised of the possibility of such damage. */
 
   #if defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
     #if (F_CPU == 8000000 || COMPATIBILITY_MODE) // Internal clock
-      /* ATtiny has shorter values then Duemianove / Uno because
+      /* ATtiny has shorter values than Duemianove / Uno because
       micros() produces longer delays on ATtiny45/85 */
       #define BIT_WIDTH 35
       #define BIT_SPACER 108

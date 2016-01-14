@@ -195,7 +195,7 @@ Channel analysis   Transmission                            Response
    |_____|         |____|________|_________|_____|         |_____|  */
 
 int PJON::send_string(uint8_t id, char *string, uint8_t length) {
-  if (!*string) return FAIL;
+  if(!*string) return FAIL;
 
   if(!this->can_start()) return BUSY;
 
@@ -225,7 +225,7 @@ int PJON::send_string(uint8_t id, char *string, uint8_t length) {
   while(response == FAIL && !(micros() - time >= BIT_SPACER + BIT_WIDTH))
     response = this->receive_byte();
 
-  if (response == ACK || response == NAK) return response;
+  if(response == ACK || response == NAK) return response;
 
   return FAIL;
 };
@@ -356,7 +356,7 @@ int PJON::receive_byte() {
   unsigned long time = micros();
   /* Do nothing until the pin stops to be HIGH or passed more time than
      BIT_SPACER duration (freak condition used to avoid micros() overflow bug) */
-  while (digitalReadFast(_input_pin) && !(micros() - time >= BIT_SPACER));
+  while(digitalReadFast(_input_pin) && !(micros() - time >= BIT_SPACER));
   /* Save how much time passed */
   time = micros() - time;
   /* is for sure less than BIT_SPACER, and if is more than ACCEPTANCE
@@ -374,7 +374,7 @@ int PJON::receive_byte() {
 uint8_t PJON::read_byte() {
   uint8_t byte_value = B00000000;
   delayMicroseconds(BIT_WIDTH / 2);
-  for (uint8_t i = 0; i < 8; i++) {
+  for(uint8_t i = 0; i < 8; i++) {
     byte_value += digitalReadFast(_input_pin) << i;
     delayMicroseconds(BIT_WIDTH);
   }
@@ -388,10 +388,10 @@ int PJON::receive() {
   int package_length = PACKET_MAX_LENGTH;
   uint8_t CRC = 0;
 
-  for (uint8_t i = 0; i <= package_length; i++) {
+  for(uint8_t i = 0; i <= package_length; i++) {
     data[i] = this->receive_byte();
 
-    if (data[i] == FAIL) return FAIL;
+    if(data[i] == FAIL) return FAIL;
 
     if(i == 0 && data[i] != _device_id && data[i] != BROADCAST)
       return BUSY;
@@ -406,7 +406,7 @@ int PJON::receive() {
 
   pinModeFast(_input_pin, OUTPUT);
 
-  if (!CRC) {
+  if(!CRC) {
     if(data[0] != BROADCAST) {
       this->send_byte(ACK);
       digitalWriteFast(_input_pin, LOW);

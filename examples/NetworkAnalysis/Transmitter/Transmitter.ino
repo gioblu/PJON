@@ -22,12 +22,12 @@ void setup() {
 void loop() {
   long time = millis();
   while(millis() - time < 10000) {
- 
+
     /*
     Here send_string low level function is used to
-    be able to catch every single sending result. 
+    be able to catch every single sending result.
     */
- 
+
     int response = network.send_string(44, content, 20);
     if(response == ACK)
       test++;
@@ -37,9 +37,8 @@ void loop() {
       busy++;
     if(response == FAIL)
       fail++;
-  	delayMicroseconds(14);
   }
-  
+
   Serial.print("Absolute com speed: ");
   Serial.print( (test * 24 ) / 10 );
   Serial.println("B/s");
@@ -58,8 +57,8 @@ void loop() {
   Serial.print(100 - (100 / (test / mistakes)));
   Serial.println(" %");
   Serial.println(" --------------------- ");
-  
-  test = 0; 
+
+  test = 0;
   mistakes = 0;
   busy = 0;
   fail = 0;

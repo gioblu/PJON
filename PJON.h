@@ -80,7 +80,7 @@ advised of the possibility of such damage. */
       #define BIT_WIDTH 40
       #define BIT_SPACER 112
       #define ACCEPTANCE 40
-      #define READ_DELAY 16
+      #define READ_DELAY 4
     #endif
   #endif
 
@@ -107,10 +107,10 @@ advised of the possibility of such damage. */
     #if (F_CPU == 8000000 || COMPATIBILITY_MODE) // Internal clock
       /* ATtiny has shorter values than Duemianove / Uno because
       micros() produces longer delays on ATtiny45/85 */
-      #define BIT_WIDTH 35
-      #define BIT_SPACER 108
+      #define BIT_WIDTH  35
+      #define BIT_SPACER 107
       #define ACCEPTANCE 35
-      #define READ_DELAY 16
+      #define READ_DELAY 15
     #endif
   #endif
 

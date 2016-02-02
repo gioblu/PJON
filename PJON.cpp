@@ -385,13 +385,14 @@ uint8_t PJON::read_byte() {
 /* Try to receive a packet from the pin: */
 
 int PJON::receive() {
+  int state;
   int package_length = PACKET_MAX_LENGTH;
   uint8_t CRC = 0;
 
-  for(uint8_t i = 0; i <= package_length; i++) {
-    data[i] = this->receive_byte();
+  for(uint8_t i = 0; i < package_length; i++) {
+    data[i] = state = this->receive_byte();
 
-    if(data[i] == FAIL) return FAIL;
+    if(state == FAIL) return FAIL;
 
     if(i == 0 && data[i] != _device_id && data[i] != BROADCAST)
       return BUSY;

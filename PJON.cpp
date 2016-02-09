@@ -2,7 +2,7 @@
  /*-O//\         __     __
    |-gfo\       |__| | |  | |\ |
    |!y°o:\      |  __| |__| | \| v1.0
-   |y"s§+`\     Giovanni Blu Mitolo 2012 - 2015
+   |y"s§+`\     Giovanni Blu Mitolo 2012 - 2016
   /so+:-..`\    gioscarab@gmail.com
   |+/:ngr-*.`\
   |5/:%&-a3f.:;\     PJON is a device communications bus system that connects up to 255
@@ -13,7 +13,7 @@
         > <
        -| |-
 
-Copyright (c) 2012-2015, Giovanni Blu Mitolo All rights reserved.
+Copyright (c) 2012-2016, Giovanni Blu Mitolo All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:

@@ -152,6 +152,7 @@ typedef void (* receiver)(uint8_t length, uint8_t *payload);
 typedef void (* error)(uint8_t code, uint8_t data);
 
 static void dummy_error_handler(uint8_t code, uint8_t data) {};
+static void dummy_receiver_handler(uint8_t length, uint8_t *payload) {};
 
 class PJON {
 
@@ -161,6 +162,7 @@ class PJON {
 
     void initialize();
 
+    uint8_t get_id();
     void set_id(uint8_t id);
     void set_receiver(receiver r);
     void set_error(error e);

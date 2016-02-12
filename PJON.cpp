@@ -68,6 +68,7 @@ PJON::PJON(int input_pin, uint8_t device_id) {
 
 void PJON::initialize() {
   this->set_error(dummy_error_handler);
+  this->set_receiver(dummy_receiver_handler);
 
   for(int i = 0; i < MAX_PACKETS; i++) {
     packets[i].state = NULL;
@@ -81,6 +82,13 @@ void PJON::initialize() {
 
 void PJON::set_id(uint8_t id) {
   _device_id = id;
+}
+
+
+/* Get the device id, returning a single byte (watch out to id collision) */
+
+uint8_t PJON::get_id() {
+  return _device_id;
 }
 
 

@@ -68,7 +68,7 @@ Single wire simplicity let you to experiment quickly and with creativity. The fi
 I2C is a bus system engineered to work with short wires to connect devices and it needs at least 2 wires, for those reasons is not feasible for home automation applications. If one of the connections to the bus fails, even briefly, one or both devices may freeze. For this reason i2c is not practical for high vibration scenarios such as automotive or robotic applications.
 
 ####Why not 1-Wire?
-1-Wire is almost what I needed for a lot of projects but has its downsides: it is propietary, in my opinion over-engineered and Arduino implementations are slow, chaotic and not reliable.
+1-Wire is almost what I needed for a lot of projects but has its downsides: it is propietary, in my opinion is over-engineered and Arduino implementations are slow, chaotic and not reliable.
 
 
 ![PJON - Michael Teeuw application example](http://33.media.tumblr.com/0065c3946a34191a2836c405224158c8/tumblr_inline_nvrbxkXo831s95p1z_500.gif)

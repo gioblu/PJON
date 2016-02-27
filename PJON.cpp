@@ -252,6 +252,11 @@ int PJON::send_string(uint8_t id, char *string, uint8_t length) {
 
 int PJON::send(uint8_t id, char *packet, uint8_t length, unsigned long timing) {
 
+  if(length >= PACKET_MAX_LENGTH) {
+    this->_error(MESSAGE_TOO_BIG, length);
+    return FAIL;
+  }
+
   char *str = (char *) malloc(length);
 
   if(str == NULL) {
@@ -406,7 +411,7 @@ int PJON::receive() {
       return BUSY;
 
     if(i == 1)
-      if(data[i] > 0 && data[i] < PACKET_MAX_LENGTH)
+      if(data[i] > 3 && data[i] < PACKET_MAX_LENGTH)
         package_length = data[i];
       else return FAIL;
 

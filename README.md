@@ -157,7 +157,7 @@ Error types:
 - `CONNECTION_LOST` (value 101), `data` parameter contains lost device's id.
 - `PACKETS_BUFFER_FULL` (value 102), `data` parameter contains buffer length.
 - `MEMORY_FULL` (value 103), `data` parameter contains `FAIL`.
-
+- `MESSAGE_TOO_LONG` (value 104), `data` parameter contains content length.
 
 ```cpp
 void error_handler(uint8_t code, uint8_t data) {
@@ -175,6 +175,10 @@ void error_handler(uint8_t code, uint8_t data) {
   }
   if(code == MEMORY_FULL) {
     Serial.println("Packet memory allocation failed. Memory is full.");
+  }
+  if(code == MESSAGE_TOO_LONG) {
+    Serial.print("Content is too long, length: ");
+    Serial.println(data, DEC);
   }
 }
 ```

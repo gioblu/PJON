@@ -75,7 +75,7 @@ I2C is a bus system engineered to work with short wires to connect devices and i
 
 PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl/post/130558526217/pjon-my-son)
 
-## How to start
+#### How to start
 The first step is the physical layer: connect with a wire two boards using a digital pin on both boards. After this you should have both arduino boards connected by the wire on the same pin. The selected pins are the same only for simplicity and to avoid mistakes, PJON works fine on every Arduino digital or analog (used as digital) I/O pin. 
 
 Lets start coding, instantiate the `PJON` object that in the example is called network. To initialize a network based on PJON you need only to define the communication pin (any free digital pin on your board) and a unique ID (0 - 255):
@@ -89,7 +89,7 @@ Lets start coding, instantiate the `PJON` object that in the example is called n
   PJON network(12, 123); 
 ```
 
-## Transmit data
+#### Transmit data
 Data transmission is handled by a packet manager, the `update()` function has to be called at least once per loop cycle. Consider that this is not an interrupt driven system, all the time dedicated to delays or executing other tasks is postponing the sending of all the packets are scheduled to be sent:
 
 ```cpp  
@@ -121,7 +121,7 @@ To broadcast a message to all connected devices, use the `BROADCAST` constant as
 int broadcastTest = network.send(BROADCAST, "Message for all connected devices.", 34);
 ```
 
-## Receive data
+#### Receive data
 Now define a `void function` that will be called if a correct message is received. This function receives 2 parameters: the message length and its content.
 
 ```cpp
@@ -150,7 +150,7 @@ int response = network.receive(1000);
 Consider that this is not an interrupt driven system and so all the time passed in delay or executing something a certain amount of packets will be potentially lost unheard. Structure intelligently your loop cycle to avoid huge blind timeframes.
 
 
-##Error handling
+####Error handling
 PJON is designed to inform the user if the communication link to a certain device is lost or if the packtes buffer is full. A `void function` has to be defined as the error handler, it receives 2 parameters the first is the error code and the second is 1 byte additional data related to the error.
 
 Error types:
@@ -189,7 +189,7 @@ Now inform the network to call the error handler function in case of error:
 network.set_error(error_handler);
 ```
 
-##License
+####License
 
 ```cpp
 /* Copyright (c) 2012-2016, Giovanni Blu Mitolo All rights reserved.

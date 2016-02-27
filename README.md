@@ -1,4 +1,4 @@
-PJON v1.1 stable
+##PJON v1.1 stable
 ==== 
  
 PJON (Padded Jittering Operative Network) is an Arduino compatible single wire, multi-master communication bus system implemented in  270 lines of C++ and Wiring (not considering comments). It is designed as an alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. If you are interested to know more about the PJON standard, visit the [Wiki](https://github.com/gioblu/PJON/wiki). If you need a wireless multimaster implementation check [PJON_ASK](https://github.com/gioblu/PJON_ASK). If you need help or something is not working visit the [Troubleshooting Wiki page](https://github.com/gioblu/PJON/wiki/Troubleshooting).
@@ -71,9 +71,12 @@ I2C is a bus system engineered to work with short wires to connect devices and i
 ####Why not 1-Wire?
 1-Wire is almost what I needed for a lot of projects but has its downsides: first it is propietary and second, Arduino implementations are slow and chaotic and for this reason not reliable.
 
+
 ![PJON - Michael Teeuw application example](http://33.media.tumblr.com/0065c3946a34191a2836c405224158c8/tumblr_inline_nvrbxkXo831s95p1z_500.gif)
 
 PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl/post/130558526217/pjon-my-son)
+
+==== 
 
 #### How to start
 The first step is the physical layer: connect with a wire two boards using a digital pin on both boards. After this you should have both arduino boards connected by the wire on the same pin. The selected pins are the same only for simplicity and to avoid mistakes, PJON works fine on every Arduino digital or analog (used as digital) I/O pin. 
@@ -88,6 +91,8 @@ Lets start coding, instantiate the `PJON` object that in the example is called n
 
   PJON network(12, 123); 
 ```
+
+==== 
 
 #### Transmit data
 Data transmission is handled by a packet manager, the `update()` function has to be called at least once per loop cycle. Consider that this is not an interrupt driven system, all the time dedicated to delays or executing other tasks is postponing the sending of all the packets are scheduled to be sent:
@@ -121,6 +126,8 @@ To broadcast a message to all connected devices, use the `BROADCAST` constant as
 int broadcastTest = network.send(BROADCAST, "Message for all connected devices.", 34);
 ```
 
+==== 
+
 #### Receive data
 Now define a `void function` that will be called if a correct message is received. This function receives 2 parameters: the message length and its content.
 
@@ -149,6 +156,7 @@ int response = network.receive(1000);
 
 Consider that this is not an interrupt driven system and so all the time passed in delay or executing something a certain amount of packets will be potentially lost unheard. Structure intelligently your loop cycle to avoid huge blind timeframes.
 
+==== 
 
 ####Error handling
 PJON is designed to inform the user if the communication link to a certain device is lost or if the packtes buffer is full. A `void function` has to be defined as the error handler, it receives 2 parameters the first is the error code and the second is 1 byte additional data related to the error.
@@ -188,6 +196,8 @@ Now inform the network to call the error handler function in case of error:
 ```cpp
 network.set_error(error_handler);
 ```
+
+==== 
 
 ####License
 

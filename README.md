@@ -58,17 +58,17 @@ void loop() {
 - ATmega2560 - 16Mhz (Arduino Mega)
 - ATtiny45/85 - 8/16Mhz (Trinket, other ATtiny 85 boards) - see [ATtiny Wiki page](https://github.com/gioblu/PJON/wiki/ATtiny-interfacing)
 
-PJON by default runs in `COMPATIBILITY_MODE` at 1.78 kB/s or 14240 baud to offer reliable communication between every supported device; some are clocked to 8Mhz and so not able to run PJON at full speed, for this reason `COMPATIBILITY_MODE` timing values are now really conservative and probably will be changed during development allowing a faster standard cross-architecture communication speed. If you have a network made of 16Mhz devices with the same architecture / processor you can set `COMPATIBILITY_MODE` to false in `PJON.h` and run your network at full speed (5.29 kB/s or 42372 baud).
+PJON by default runs in `COMPATIBILITY_MODE` at 1.78 kB/s or 14240 baud to offer reliable communication between every supported device; some are clocked to 8Mhz and so not able to run PJON at full speed,  `COMPATIBILITY_MODE` timing values are now really conservative and probably will be changed during development allowing a faster standard cross-architecture communication speed. If you have a network made of 16Mhz devices with the same architecture / processor you can set `COMPATIBILITY_MODE` to false in `PJON.h` and run your network at full speed (5.29 kB/s or 42372 baud).
 
 When including and using PJON, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because PJON is completely software emulated with a non blocking implementation, transforming a painfull walk to the hill in a nice flight. 
 
 Single wire simplicity let you to experiment quickly and with creativity. The first test I suggest, at your own risk, is to let two arduino boards communicate through your body touching with the left hand the digital port of the first board (5v 40ma, harmless) and with the right the port of the other one. Will be stunning to see high accuracy digital communication running inside a living biological body. This opens the mind to possible creative solutions.
 
 ####Why not I2c?
-I2C is a bus system engineered to work with short wires to connect devices and it needs at least 2 wires, for this reason is not feasible for home automation applications. If one of the connections to the bus fails, even briefly, one or both devices may freeze. For this reason i2c is not practical for high vibration scenarios such as automotive applications.
+I2C is a bus system engineered to work with short wires to connect devices and it needs at least 2 wires, for those reasons is not feasible for home automation applications. If one of the connections to the bus fails, even briefly, one or both devices may freeze. For this reason i2c is not practical for high vibration scenarios such as automotive or robotic applications.
 
 ####Why not 1-Wire?
-1-Wire is almost what I needed for a lot of projects but has its downsides: first it is propietary and second, Arduino implementations are slow and chaotic and for this reason not reliable.
+1-Wire is almost what I needed for a lot of projects but has its downsides: it is propietary, in my opinion over-engineered and Arduino implementations are slow, chaotic and not reliable.
 
 
 ![PJON - Michael Teeuw application example](http://33.media.tumblr.com/0065c3946a34191a2836c405224158c8/tumblr_inline_nvrbxkXo831s95p1z_500.gif)
@@ -119,7 +119,7 @@ int one_second_delay_test = network.send(100, "Test sent every second!", 23, 100
 network.remove(one_second_delay_test);
 ```
 
-To broadcast a message to all connected devices, use the `BROADCAST` constant as the recipient ID. Every node will receive the message but will not answer `ACK` to avoid communication overlap.
+To broadcast a message to all connected devices, use the `BROADCAST` constant as recipient ID. 
 
 ```cpp
 int broadcastTest = network.send(BROADCAST, "Message for all connected devices.", 34);
@@ -158,7 +158,7 @@ Consider that this is not an interrupt driven system and so all the time passed 
 ==== 
 
 ####Error handling
-PJON is designed to inform the user if the communication link to a certain device is lost or if the packtes buffer is full. A `void function` has to be defined as the error handler, it receives 2 parameters the first is the error code and the second is 1 byte additional data related to the error.
+PJON is designed to inform the user if an error is detected. A `void function` has to be defined as the error handler, it receives 2 parameters the first is the error code and the second is 1 byte additional data related to the error.
 
 Error types:
 - `CONNECTION_LOST` (value 101), `data` parameter contains lost device's id.

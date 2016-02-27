@@ -253,7 +253,7 @@ int PJON::send_string(uint8_t id, char *string, uint8_t length) {
 int PJON::send(uint8_t id, char *packet, uint8_t length, unsigned long timing) {
 
   if(length >= PACKET_MAX_LENGTH) {
-    this->_error(MESSAGE_TOO_BIG, length);
+    this->_error(CONTENT_TOO_LONG, length);
     return FAIL;
   }
 

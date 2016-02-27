@@ -65,15 +65,15 @@ When including and using PJON, you have the complete access to the microntroller
 
 Single wire simplicity let you to experiment quickly and with creativity. The first test I suggest, at your own risk, is to let two arduino boards communicate through your body touching with the left hand the digital port of the first board (5v 40ma, harmless) and with the right the port of the other one. Will be stunning to see high accuracy digital communication running inside a living biological body. This opens the mind to possible creative solutions.
 
-![PJON - Michael Teeuw application example](http://33.media.tumblr.com/0065c3946a34191a2836c405224158c8/tumblr_inline_nvrbxkXo831s95p1z_500.gif)
-
-PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl/post/130558526217/pjon-my-son)
-
 ####Why not I2c?
 I2C is a bus system engineered to work with short wires to connect devices and it needs at least 2 wires, for this reason is not feasible for home automation applications. If one of the connections to the bus fails, even briefly, one or both devices may freeze. For this reason i2c is not practical for high vibration scenarios such as automotive applications.
 
 ####Why not 1-Wire?
 1-Wire is almost what I needed for a lot of projects but has its downsides: first it is propietary and second, Arduino implementations are slow and chaotic and for this reason not reliable.
+
+![PJON - Michael Teeuw application example](http://33.media.tumblr.com/0065c3946a34191a2836c405224158c8/tumblr_inline_nvrbxkXo831s95p1z_500.gif)
+
+PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl/post/130558526217/pjon-my-son)
 
 ## How to start
 The first step is the physical layer: connect with a wire two boards using a digital pin on both boards. After this you should have both arduino boards connected by the wire on the same pin. The selected pins are the same only for simplicity and to avoid mistakes, PJON works fine on every Arduino digital or analog (used as digital) I/O pin. 

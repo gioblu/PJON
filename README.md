@@ -138,7 +138,7 @@ void receiver_function(uint8_t length, uint8_t *payload) {
     Serial.print((char)payload[i]);
   
   Serial.print(" | Message length: ");
-  Serial.println(length);
+  Serial.println(length, DEC);
 };
 ```
 
@@ -170,12 +170,12 @@ Error types:
 void error_handler(uint8_t code, uint8_t data) {
   if(code == CONNECTION_LOST) {
     Serial.print("Connection with device ID ");
-    Serial.print(data);
+    Serial.print(data, DEC);
     Serial.println(" is lost.");
   }
   if(code == PACKETS_BUFFER_FULL) {
     Serial.print("Packet buffer is full, has now a length of ");
-    Serial.println(data);
+    Serial.println(data, DEC);
     Serial.println("Possible wrong network configuration!");
     Serial.println("For high complexity networks higher MAX_PACKETS over 10.");
     Serial.println("See in PJON.h");

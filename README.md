@@ -56,7 +56,8 @@ void loop() {
 - ATmega88/168/328 8/16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
 - ATmega2560 16Mhz (Arduino Mega)
 - ATtiny45/85 8/16Mhz (Trinket, other ATtiny 85 boards), see [ATtiny Wiki page](https://github.com/gioblu/PJON/wiki/ATtiny-interfacing)
-- ESP8266 80Mhz v.1-7 "AI-THINKER AT", untested with NodeMCU and Frankenstein, see [ESP8266 Arduino](https://github.com/esp8266/Arduino)  
+- ESP8266 v.1-7 80Mhz "AI-THINKER AT" firmware, see [ESP8266 Arduino IDE](https://github.com/esp8266/Arduino)  
+- ESP8266 NodeMCU v0.9-1.0 80Mhz, see [ESP8266 Arduino IDE](https://github.com/esp8266/Arduino)  
 
 PJON by default runs in `COMPATIBILITY_MODE` at 1.78 kB/s or 14240 baud to offer reliable communication between every supported device; some are clocked to 8Mhz and so not able to run PJON at full speed,  `COMPATIBILITY_MODE` timing values are now really conservative and probably will be changed during development allowing a faster standard cross-architecture communication speed. If you have a network made of 16Mhz devices with the same architecture / processor you can set `COMPATIBILITY_MODE` to false in `PJON.h` and run your network at full speed (5.29 kB/s or 42372 baud).
 

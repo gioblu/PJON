@@ -112,6 +112,7 @@ advised of the possibility of such damage. */
       #define READ_DELAY 15
     #endif
   #endif
+
   #if defined(ESP8266)
     #if (F_CPU == 80000000L || COMPATIBILITY_MODE)
       #define BIT_WIDTH  44
@@ -139,10 +140,8 @@ advised of the possibility of such damage. */
 
 // Maximum sending attempts before throwing CONNECTON_LOST error
 #define MAX_ATTEMPTS 250
-
 // Packets buffer length, if full PACKET_BUFFER_FULL error is thrown
 #define MAX_PACKETS 10
-
 // Max packet length, higher if necessary (affects memory)
 #define PACKET_MAX_LENGTH 50
 
@@ -158,7 +157,6 @@ struct packet {
 
 typedef void (* receiver)(uint8_t length, uint8_t *payload);
 typedef void (* error)(uint8_t code, uint8_t data);
-
 static void dummy_error_handler(uint8_t code, uint8_t data) {};
 static void dummy_receiver_handler(uint8_t length, uint8_t *payload) {};
 
@@ -167,7 +165,6 @@ class PJON {
   public:
     PJON(int input_pin);
     PJON(int input_pin, uint8_t id);
-
     void initialize();
 
     uint8_t get_id();
@@ -187,10 +184,9 @@ class PJON {
     void update();
     void remove(int id);
 
+    uint8_t syncronization_bit();
     uint8_t read_byte();
     boolean can_start();
-
-    uint8_t syncronization_bit();
 
     uint8_t data[PACKET_MAX_LENGTH];
     packet  packets[MAX_PACKETS];

@@ -1,5 +1,4 @@
 ##PJON v1.1 stable
-
 PJON (Padded Jittering Operative Network) is an Arduino compatible single wire, multi-master communication bus system implemented in  270 lines of C++ and Wiring (not considering comments). It is designed as an alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. If you are interested to know more about the PJON standard, visit the [Wiki](https://github.com/gioblu/PJON/wiki). If you need a wireless multimaster implementation check [PJON_ASK](https://github.com/gioblu/PJON_ASK). If you need help or something is not working visit the [Troubleshooting Wiki page](https://github.com/gioblu/PJON/wiki/Troubleshooting).
 
 ```cpp  
@@ -49,9 +48,9 @@ void loop() {
 - Error handling.
 
 ####Performance
-- Transfer speed: **42372Bd** or **5.29kB/s**
-- Data throughput: **2.68kB/s**
-- Accuracy: **99.995%**
+- Transfer speed: 42372Bd or 5.29kB/s
+- Data throughput: 2.68kB/s
+- Accuracy: 99.995%
 
 ####Compatibility
 - ATmega88/168/328 8/16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)

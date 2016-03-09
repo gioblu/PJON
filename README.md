@@ -7,7 +7,7 @@ PJON (Padded Jittering Operative Network) is an Arduino compatible single wire, 
 PJON network(12, 45); // Bus connection to pin 12, device id 45
 
 void setup() {
-  network.send(44, "B", 1, 1000000); 
+  network.send(44, "B", 1, 1000000);
   // Send to device 44, "B" content of 1 byte length every 1000000 microseconds (1 second)
 }
 
@@ -25,7 +25,7 @@ void setup() {
 };
 
 void receiver_function(uint8_t length, uint8_t *payload) {
-  if(payload[0] == 'B') { // If the first letter of the received message is B 
+  if(payload[0] == 'B') { // If the first letter of the received message is B
     digitalWrite(13, HIGH);
     delay(30);
     digitalWrite(13, LOW);
@@ -42,25 +42,26 @@ void loop() {
 - Single wire (plus common ground) physical layer with up to 50 meters range.
 - Device id implementation to enable univocal communication up to 254 devices.  
 - Cyclic Redundancy Check (lightweight one byte XOR based CRC).
-- Acknowledgement of correct packet sending. 
+- Acknowledgement of correct packet sending.
 - Collision avoidance to enable multi-master capability.
 - Broadcast functionality to contact all connected devices.
 - Packet manager to track and retransmit failed packet sendings in background.
 - Error handling.
 
 ####Performance
-- Transfer speed: **42372Bd** or **5.29kB/s** 
-- Data throughput: **2.68kB/s** 
+- Transfer speed: **42372Bd** or **5.29kB/s**
+- Data throughput: **2.68kB/s**
 - Accuracy: **99.995%**
 
 ####Compatibility
 - ATmega88/168/328 - 8/16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
 - ATmega2560 - 16Mhz (Arduino Mega)
 - ATtiny45/85 - 8/16Mhz (Trinket, other ATtiny 85 boards) - see [ATtiny Wiki page](https://github.com/gioblu/PJON/wiki/ATtiny-interfacing)
+- ESP8266 - 80Mhz v.1-7 "AI-THINKER AT", untested with NodeMCU and Frankenstein - see [ESP8266 Arduino](https://github.com/esp8266/Arduino)  
 
 PJON by default runs in `COMPATIBILITY_MODE` at 1.78 kB/s or 14240 baud to offer reliable communication between every supported device; some are clocked to 8Mhz and so not able to run PJON at full speed,  `COMPATIBILITY_MODE` timing values are now really conservative and probably will be changed during development allowing a faster standard cross-architecture communication speed. If you have a network made of 16Mhz devices with the same architecture / processor you can set `COMPATIBILITY_MODE` to false in `PJON.h` and run your network at full speed (5.29 kB/s or 42372 baud).
 
-When including and using PJON, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because PJON is completely software emulated with a non blocking implementation, transforming a painfull walk to the hill in a nice flight. 
+When including and using PJON, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because PJON is completely software emulated with a non blocking implementation, transforming a painfull walk to the hill in a nice flight.
 
 Single wire simplicity let you to experiment quickly and with creativity. The first test I suggest, at your own risk, is to let two arduino boards communicate through your body touching with the left hand the digital port of the first board (5v 40ma, harmless) and with the right the port of the other one. Will be stunning to see high accuracy digital communication running inside a living biological body. This opens the mind to possible creative solutions.
 
@@ -75,10 +76,10 @@ I2C is a bus system engineered to work with short wires to connect devices and i
 
 PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl/post/130558526217/pjon-my-son)
 
-==== 
+====
 
 #### How to start
-The first step is the physical layer: connect with a wire two boards using a digital pin on both boards. After this you should have both arduino boards connected by the wire on the same pin. The selected pins are the same only for simplicity and to avoid mistakes, PJON works fine on every Arduino digital or analog (used as digital) I/O pin. 
+The first step is the physical layer: connect with a wire two boards using a digital pin on both boards. After this you should have both arduino boards connected by the wire on the same pin. The selected pins are the same only for simplicity and to avoid mistakes, PJON works fine on every Arduino digital or analog (used as digital) I/O pin.
 
 Lets start coding, instantiate the `PJON` object that in the example is called network. To initialize a network based on PJON you need only to define the communication pin (any free digital pin on your board) and a unique ID (0 - 255):
 
@@ -88,16 +89,16 @@ Lets start coding, instantiate the `PJON` object that in the example is called n
 
   // or
 
-  PJON network(12, 123); 
+  PJON network(12, 123);
 ```
 
-==== 
+====
 
 #### Transmit data
 Data transmission is handled by a packet manager, the `update()` function has to be called at least once per loop cycle. Consider that this is not an interrupt driven system, all the time dedicated to delays or executing other tasks is postponing the sending of all the packets are scheduled to be sent:
 
 ```cpp  
-  network.update(); 
+  network.update();
 ```
 
 To send a string to another device connected to the bus simply call `send()` function passing the ID you want to contact, the string you want to send and its length:
@@ -105,7 +106,7 @@ To send a string to another device connected to the bus simply call `send()` fun
 ```cpp
 network.send(100, "Ciao, this is a test!", 21);
 ```
-I know that the packet length is boring to fill but is there to prevent buffer overflow. If sending arbitrary values `NULL` terminator strategy based on `strlen()` is not safe to detect the end of a string. 
+I know that the packet length is boring to fill but is there to prevent buffer overflow. If sending arbitrary values `NULL` terminator strategy based on `strlen()` is not safe to detect the end of a string.
 
 To send a value repeatedly simply add as last parameter the interval in microseconds you want between every sending:
 
@@ -119,13 +120,13 @@ int one_second_delay_test = network.send(100, "Test sent every second!", 23, 100
 network.remove(one_second_delay_test);
 ```
 
-To broadcast a message to all connected devices, use the `BROADCAST` constant as recipient ID. 
+To broadcast a message to all connected devices, use the `BROADCAST` constant as recipient ID.
 
 ```cpp
 int broadcastTest = network.send(BROADCAST, "Message for all connected devices.", 34);
 ```
 
-==== 
+====
 
 #### Receive data
 Now define a `void function` that will be called if a correct message is received. This function receives 2 parameters: the message length and its content.
@@ -134,9 +135,9 @@ Now define a `void function` that will be called if a correct message is receive
 void receiver_function(uint8_t length, uint8_t *payload) {
   Serial.print("Message content: ");
 
-  for(int i = 0; i < length; i++) 
+  for(int i = 0; i < length; i++)
     Serial.print((char)payload[i]);
-  
+
   Serial.print(" | Message length: ");
   Serial.println(length, DEC);
 };
@@ -155,7 +156,7 @@ int response = network.receive(1000);
 
 Consider that this is not an interrupt driven system and so all the time passed in delay or executing something a certain amount of packets will be potentially lost unheard. Structure intelligently your loop cycle to avoid huge blind timeframes.
 
-==== 
+====
 
 ####Error handling
 PJON is designed to inform the user if an error is detected. A `void function` has to be defined as the error handler, it receives 2 parameters the first is the error code and the second is 1 byte additional data related to the error.
@@ -196,7 +197,7 @@ Now inform the network to call the error handler function in case of error:
 network.set_error(error_handler);
 ```
 
-==== 
+====
 
 ####License
 
@@ -212,7 +213,7 @@ modification, are permitted provided that the following conditions are met:
    notice, this list of conditions and the following disclaimer in the
    documentation and/or other materials provided with the distribution.
 
--  All advertising materials mentioning features or use of this software 
+-  All advertising materials mentioning features or use of this software
    must display the following acknowledgement:
    This product includes PJON software developed by Giovanni Blu Mitolo.
 
@@ -220,14 +221,14 @@ modification, are permitted provided that the following conditions are met:
    names of its contributors may be used to endorse or promote products
    derived from this software without specific prior written permission.
 
-This software is provided by the copyright holders and contributors"as is" 
-and any express or implied warranties, including, but not limited to, the 
-implied warranties of merchantability and fitness for a particular purpose 
-are disclaimed. In no event shall the copyright holder or contributors be 
-liable for any direct, indirect, incidental, special, exemplary, or consequential 
-damages (including, but not limited to, procurement of substitute goods or services; 
-loss of use, data, or profits; or business interruption) however caused and on any 
-theory of liability, whether in contract, strict liability, or tort (including 
-negligence or otherwise) arising in any way out of the use of this software, even if 
+This software is provided by the copyright holders and contributors"as is"
+and any express or implied warranties, including, but not limited to, the
+implied warranties of merchantability and fitness for a particular purpose
+are disclaimed. In no event shall the copyright holder or contributors be
+liable for any direct, indirect, incidental, special, exemplary, or consequential
+damages (including, but not limited to, procurement of substitute goods or services;
+loss of use, data, or profits; or business interruption) however caused and on any
+theory of liability, whether in contract, strict liability, or tort (including
+negligence or otherwise) arising in any way out of the use of this software, even if
 advised of the possibility of such damage. */
 ```

@@ -52,13 +52,6 @@ advised of the possibility of such damage. */
   #define PJON_h
 
   #include "Arduino.h"
-#ifdef __AVR__
-#  include "includes/digitalWriteFast.h"
-#else
-#  define digitalWriteFast digitalWrite
-#  define digitalReadFast digitalRead
-#  define pinModeFast pinMode
-#endif
 
   /* COMPATIBILITY_MODE set to true:
   Run the network with a cautious speed to support all architectures.

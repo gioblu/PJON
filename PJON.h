@@ -50,8 +50,8 @@ advised of the possibility of such damage. */
 
 #ifndef PJON_h
   #define PJON_h
-
   #include "Arduino.h"
+  #include "includes/digitalWriteFast.h"
 
   /* COMPATIBILITY_MODE set to true:
   Run the network with a cautious speed to support all architectures.
@@ -112,14 +112,14 @@ advised of the possibility of such damage. */
       #define READ_DELAY 15
     #endif
   #endif
-  #if defined(ESP8266) 
-   #if (F_CPU == 80000000L || COMPATIBILITY_MODE) 
-	  #define BIT_WIDTH  44
-	  #define BIT_SPACER 110
-	  #define ACCEPTANCE 35
-	  #define READ_DELAY 4
-   #endif  
-  #endif  
+  #if defined(ESP8266)
+    #if (F_CPU == 80000000L || COMPATIBILITY_MODE)
+      #define BIT_WIDTH  44
+      #define BIT_SPACER 110
+      #define ACCEPTANCE 35
+      #define READ_DELAY 4
+    #endif
+  #endif
 
 #endif
 

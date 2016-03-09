@@ -4,22 +4,22 @@
 
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions are met:
-   
+
     - Redistributions of source code must retain the above copyright
       notice, this list of conditions and the following disclaimer.
-      
+
     - Redistributions in binary form must reproduce the above copyright
       notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-      
+
     - All advertising materials mentioning features or use of this software
       must display the following acknowledgement:
       "This product includes digitalWriteFast software developed by Giovanni Blu Mitolo."
-      
+
     - Neither the name of PJON, PJON_ASK, digitalWriteFast nor the
       names of its contributors may be used to endorse or promote products
       derived from this software without specific prior written permission.
-   
+
    This software is provided by the copyright holders and contributors"as is"
    and any express or implied warranties, including, but not limited to, the
    implied warranties of merchantability and fitness for a particular purpose
@@ -167,42 +167,47 @@
   #endif
 #endif
 
+#ifdef __AVR__
+  #define __atomicWrite__(A,P,V) \
+    if ( (int)(A) < 0x40) { bitWrite(*(A), __digitalPinToBit(P), (V) );}  \
+    else { \
+      uint8_t register saveSreg = SREG; \
+      cli(); \
+      bitWrite(*(A), __digitalPinToBit(P), (V) ); \
+      SREG=saveSreg; \
+    }
 
-#define __atomicWrite__(A,P,V) \
-  if ( (int)(A) < 0x40) { bitWrite(*(A), __digitalPinToBit(P), (V) );}  \
-  else { \
-    uint8_t register saveSreg = SREG; \
-    cli(); \
-    bitWrite(*(A), __digitalPinToBit(P), (V) ); \
-    SREG=saveSreg; \
-  }
+  #ifndef digitalWriteFast
+    #define digitalWriteFast(P, V) \
+      do { \
+        if (__builtin_constant_p(P) && __builtin_constant_p(V))   __atomicWrite__((uint8_t*) digitalPinToPortReg(P),P,V) \
+        else  digitalWrite((P), (V)); \
+      } while (0)
+  #endif
 
-#ifndef digitalWriteFast
-  #define digitalWriteFast(P, V) \
-    do { \
-      if (__builtin_constant_p(P) && __builtin_constant_p(V))   __atomicWrite__((uint8_t*) digitalPinToPortReg(P),P,V) \
-      else  digitalWrite((P), (V)); \
+  #if !defined(pinModeFast)
+    #define pinModeFast(P, V) \
+    do { if (__builtin_constant_p(P) && __builtin_constant_p(V)) __atomicWrite__((uint8_t*) digitalPinToDDRReg(P),P,V) \
+      else pinMode((P), (V)); \
     } while (0)
-#endif  //#ifndef digitalWriteFast2
+  #endif
 
-#if !defined(pinModeFast)
-  #define pinModeFast(P, V) \
-  do { if (__builtin_constant_p(P) && __builtin_constant_p(V)) __atomicWrite__((uint8_t*) digitalPinToDDRReg(P),P,V) \
-    else pinMode((P), (V)); \
-  } while (0)
-#endif
+  #ifndef noAnalogWrite
+    #define noAnalogWrite(P) \
+    	do { if (__builtin_constant_p(P) )  __atomicWrite((uint8_t*) __digitalPinToTimer(P),P,0) \
+    		else turnOffPWM((P)); \
+      } while (0)
+  #endif
 
-#ifndef noAnalogWrite
-  #define noAnalogWrite(P) \
-  	do { if (__builtin_constant_p(P) )  __atomicWrite((uint8_t*) __digitalPinToTimer(P),P,0) \
-  		else turnOffPWM((P)); \
-    } while (0)
-#endif
-
-#ifndef digitalReadFast
-	#define digitalReadFast(P) ( (int) _digitalReadFast_((P)) )
-	#define _digitalReadFast_(P ) \
-  	(__builtin_constant_p(P) ) ? ( \
-  	( BIT_READ(*digitalPinToPINReg(P), __digitalPinToBit(P))) ) : \
-  	digitalRead((P))
+  #ifndef digitalReadFast
+  	#define digitalReadFast(P) ( (int) _digitalReadFast_((P)) )
+  	#define _digitalReadFast_(P ) \
+    	(__builtin_constant_p(P) ) ? ( \
+    	( BIT_READ(*digitalPinToPINReg(P), __digitalPinToBit(P))) ) : \
+    	digitalRead((P))
+  #endif
+#else
+  #define digitalWriteFast digitalWrite
+  #define digitalReadFast digitalRead
+  #define pinModeFast pinMode
 #endif

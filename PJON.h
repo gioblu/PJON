@@ -1,14 +1,14 @@
 
  /*-O//\         __     __
    |-gfo\       |__| | |  | |\ |
-   |!y°o:\      |  __| |__| | \| v1.0
+   |!y°o:\      |  __| |__| | \| v1.1
    |y"s§+`\     Giovanni Blu Mitolo 2012 - 2016
   /so+:-..`\    gioscarab@gmail.com
   |+/:ngr-*.`\
   |5/:%&-a3f.:;\     PJON is a device communications bus system that connects up to 255
   \+//u/+g%{osv,,\    arduino boards over one wire up to 5.29kB/s data communication speed.
-    \=+&/osw+olds.\\   Contains acknowledge, collision detection, CRC and encpryption all done
-       \:/+-.-°-:+oss\  with micros() and delayMicroseconds(), with no use of interrupts or timers.
+    \=+&/osw+olds.\\   Contains acknowledge, collision and error detection, all done with
+       \:/+-.-°-:+oss\  micros() and delayMicroseconds(), with no use of interrupts or timers.
         | |       \oy\\  Pull down resistor on the bus is generally used to reduce interference.
         > <
   _____-| |-________________________________________________________________________

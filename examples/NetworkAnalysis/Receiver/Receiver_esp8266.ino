@@ -1,5 +1,6 @@
 #include <PJON.h>
 
+// network(Arduino pin used, selected device id)
 PJON network(D1, 44);
 
 void setup() {

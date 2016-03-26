@@ -1,6 +1,6 @@
-// a 10K pull-down resistor is required
-// place it between the GND and the communications pin
-// if you are getting a report of every message in Busy bucket, add a resistor
+
+/* A 10K pull-down resistor could be required to have good communication quality.
+   If test results are showing the channel often busy, pull-down resistor is necessary. */
 
 #if defined(ESP8266)
   #include <ESP.h>
@@ -13,7 +13,6 @@ float mistakes;
 int busy;
 int fail;
 
-// network(Arduino pin used, selected device id)
 PJON network(D1, 45);
 
 int packet;
@@ -34,10 +33,8 @@ void loop() {
       ESP.wdtFeed();
     #endif
 
-    /*
-    Here send_string low level function is used to
-    be able to catch every single sending result.
-    */
+    /* Here send_string low level function is used to
+    be able to catch every single sending result. */
 
     int response = network.send_string(44, content, 20);
     if(response == ACK)

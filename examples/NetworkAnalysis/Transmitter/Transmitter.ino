@@ -23,10 +23,8 @@ void loop() {
   long time = millis();
   while(millis() - time < 10000) {
 
-    /*
-    Here send_string low level function is used to
-    be able to catch every single sending result.
-    */
+    /* Here send_string low level function is used to
+    be able to catch every single sending result. */
 
     int response = network.send_string(44, content, 20);
     if(response == ACK)

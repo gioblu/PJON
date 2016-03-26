@@ -13,6 +13,7 @@ float mistakes;
 int busy;
 int fail;
 
+// network(Arduino pin used, selected device id)
 PJON network(D1, 45);
 
 int packet;

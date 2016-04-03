@@ -1,7 +1,7 @@
 
  /*-O//\         __     __
    |-gfo\       |__| | |  | |\ |
-   |!y°o:\      |  __| |__| | \| v1.1
+   |!y°o:\      |  __| |__| | \| v1.2
    |y"s§+`\     Giovanni Blu Mitolo 2012 - 2016
   /so+:-..`\    gioscarab@gmail.com
   |+/:ngr-*.`\

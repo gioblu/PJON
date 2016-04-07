@@ -23,6 +23,8 @@ read_byte	KEYWORD2
 can_start	KEYWORD2
 receive_byte	KEYWORD2
 receive	KEYWORD2
+get_id KEYWORD2
+set_id KEYWORD2
 
 #######################################
 # Instances (KEYWORD2)
@@ -46,3 +48,4 @@ CONTENT_TOO_LONG LITERAL1
 MAX_ATTEMPTS LITERAL1
 MAX_PACKETS LITERAL1
 PACKET_MAX_LENGTH LITERAL1
+EMPTY LITERAL1

@@ -1,4 +1,4 @@
-##PJON v1.2 stable
+##PJON v2.0 beta
 PJON (Padded Jittering Operative Network) is an Arduino compatible single wire, multi-master communication bus system implemented in  270 lines of C++ and Wiring (not considering comments). It is designed as an alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. If you are interested to know more about the PJON standard, visit the [Wiki](https://github.com/gioblu/PJON/wiki). If you need a wireless multimaster implementation check [PJON_ASK](https://github.com/gioblu/PJON_ASK). If you need help or something is not working visit the [Troubleshooting Wiki page](https://github.com/gioblu/PJON/wiki/Troubleshooting).
 
 ```cpp  
@@ -40,26 +40,26 @@ void loop() {
 - Software emulated non blocking implementation (based on `micros` and `delayMicroseconds`)
 - Single wire (plus common ground) physical layer with up to 50 meters range.
 - Device id implementation to enable univocal communication up to 254 devices.  
-- Lightweight 1 byte XOR based error detection.
+- lightweight 1 byte XOR based error detection.
 - Acknowledgement of correct packet sending.
 - Collision avoidance to enable multi-master capability.
 - Broadcast functionality to contact all connected devices.
 - Packet manager to track and retransmit failed packet sendings in background.
 - Error handling.
 
-####Performance
-- Transfer speed: 42372Bd or 5.29kB/s
-- Data throughput: 2.68kB/s
-- Accuracy: 99.995%
-
 ####Compatibility
 - ATmega88/168/328 8/16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
 - ATmega2560 16Mhz (Arduino Mega)
-- ATtiny45/85 8/16Mhz (Trinket, other ATtiny 85 boards), see [wiki](https://github.com/gioblu/PJON/wiki/ATtiny-interfacing)
-- ESP8266 v.1-7 80Mhz "AI-THINKER AT" firmware, see [ESP8266 Arduino IDE](https://github.com/esp8266/Arduino) and [wiki](https://github.com/gioblu/PJON/wiki/ESP8266-interfacing)   
-- ESP8266 NodeMCU v0.9-1.0 80Mhz, see [ESP8266 Arduino IDE](https://github.com/esp8266/Arduino) and [wiki](https://github.com/gioblu/PJON/wiki/ESP8266-interfacing)    
+- ATtiny45/85 8/16Mhz (Trinket, other ATtiny 85 boards), see [ATtiny Wiki page](https://github.com/gioblu/PJON/wiki/ATtiny-interfacing)
+- SAMD (Arduino Zero)
+- ESP8266 v.1-7 80Mhz "AI-THINKER AT" firmware, see [ESP8266 Arduino IDE](https://github.com/esp8266/Arduino)  
+- ESP8266 NodeMCU v0.9-1.0 80Mhz, see [ESP8266 Arduino IDE](https://github.com/esp8266/Arduino)  
 
-PJON by default runs in `COMPATIBILITY_MODE` at 1.78 kB/s or 14240 baud to offer reliable communication between every supported device; some are clocked to 8Mhz and so not able to run PJON at full speed,  `COMPATIBILITY_MODE` timing values are now really conservative and probably will be changed during development allowing a faster standard cross-architecture communication speed. If you have a network made of 16Mhz devices with the same architecture / processor you can set `COMPATIBILITY_MODE` to false in `PJON.h` and run your network at full speed (5.29 kB/s or 42372 baud).
+####Performance
+PJON works in 3 different communication modes, `STANDARD`, `FAST` and `OVERDIVE`:
+- `STANDARD` mode runs at 16.944Bd and is full cross-architecture / promiscuous clock network compatible.
+- `FAST` mode runs at 25.157Bd and is full cross-architecture / promiscuous clock network compatible.
+- `OVERDRIVE` mode runs a specific architecture at its maximum limits (non cross-architecture compatible). Every architecture has its own limits, Arduino Duemilanove for example runs at 33.898Bd, Arduino Zero can reach 47.616Bd.
 
 When including and using PJON, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because PJON is completely software emulated with a non blocking implementation, transforming a painfull walk to the hill in a nice flight.
 
@@ -71,6 +71,8 @@ I2C is a bus system engineered to work with short wires to connect devices and i
 ####Why not 1-Wire?
 1-Wire is almost what I needed for a lot of projects but has its downsides: it is propietary, in my opinion is over-engineered and Arduino implementations are slow, chaotic and not reliable.
 
+####Why not interrupts?
+Usage of libraries in the Arduino environment is really extensive and often the user is not able to go over collisions or redefinitions. Very often a library is using hardware components of the microcontroller as timers or interrupts, colliding or interrupting others. This happens because in general Arduino boards have limited hardware resources. To have a universal and reliable communication medium in this sort of environment, software emulated bit-banging, I think, is a good, stable and reliable solution that leads to "more predictable" results than interrupt driven systems coexisting on small microcontroller without the original developer and the end user knowing about it.
 
 ![PJON - Michael Teeuw application example](http://33.media.tumblr.com/0065c3946a34191a2836c405224158c8/tumblr_inline_nvrbxkXo831s95p1z_500.gif)
 
@@ -202,7 +204,9 @@ network.set_error(error_handler);
 ####License
 
 ```cpp
-/* Copyright (c) 2012-2016, Giovanni Blu Mitolo All rights reserved.
+/*
+Released with BSD-3 License
+PJON Copyright (c) 2012-2016, Giovanni Blu Mitolo All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -212,10 +216,6 @@ modification, are permitted provided that the following conditions are met:
 -  Redistributions in binary form must reproduce the above copyright
    notice, this list of conditions and the following disclaimer in the
    documentation and/or other materials provided with the distribution.
-
--  All advertising materials mentioning features or use of this software
-   must display the following acknowledgement:
-   This product includes PJON software developed by Giovanni Blu Mitolo.
 
 -  Neither the name of PJON, PJON_ASK nor the
    names of its contributors may be used to endorse or promote products

@@ -1,85 +1,44 @@
 
  /*-O//\         __     __
    |-gfo\       |__| | |  | |\ |
-   |!y°o:\      |  __| |__| | \| v1.2
+   |!y°o:\      |  __| |__| | \| v2.0
    |y"s§+`\     Giovanni Blu Mitolo 2012 - 2016
   /so+:-..`\    gioscarab@gmail.com
   |+/:ngr-*.`\
-  |5/:%&-a3f.:;\     PJON is a device communications bus system that connects up to 255
-  \+//u/+g%{osv,,\    arduino boards over one wire up to 5.29kB/s data communication speed.
+  |5/:%&-a3f.:;\     PJON is a multimaster device communications bus system Standard able to connect
+  \+//u/+g%{osv,,\    255 arduino boards over one wire up to 5.95kB/s data communication speed.
     \=+&/osw+olds.\\   Contains acknowledge, collision and error detection, all done with
        \:/+-.-°-:+oss\  micros() and delayMicroseconds(), with no use of interrupts or timers.
-        | |       \oy\\  Pull down resistor on the bus is generally used to reduce interference.
+        | |       \oy\\  Pull down resistor is generally used to reduce interference.
         > <
-       -| |-
+  _____-| |-________________________________________________________________________
 
-Copyright (c) 2012-2016, Giovanni Blu Mitolo All rights reserved.
+  Released with BSD-3 License.
+  PJON Copyright (c) 2012-2016, Giovanni Blu Mitolo All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
+  - Redistributions of source code must retain the above copyright
+     notice, this list of conditions and the following disclaimer.
 
--  Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
+  -  Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
 
--  All advertising materials mentioning features or use of this software
-   must display the following acknowledgement:
-   This product includes PJON software developed by Giovanni Blu Mitolo.
+  -  Neither the name of PJON, PJON_ASK nor the
+     names of its contributors may be used to endorse or promote products
+     derived from this software without specific prior written permission.
 
--  Neither the name of PJON, PJON_ASK nor the
-   names of its contributors may be used to endorse or promote products
-   derived from this software without specific prior written permission.
-
-This software is provided by the copyright holders and contributors"as is"
-and any express or implied warranties, including, but not limited to, the
-implied warranties of merchantability and fitness for a particular purpose
-are disclaimed. In no event shall the copyright holder or contributors be
-liable for any direct, indirect, incidental, special, exemplary, or consequential
-damages (including, but not limited to, procurement of substitute goods or services;
-loss of use, data, or profits; or business interruption) however caused and on any
-theory of liability, whether in contract, strict liability, or tort (including
-negligence or otherwise) arising in any way out of the use of this software, even if
-advised of the possibility of such damage. */
-
-/* modified 2016-03-09 by Esben Soeltoft
-
-   - Added support for the Arduino Zero. 
-     Able to achieve the following speeds between two Arduino Zero
-       Absolute com speed: 5215.20B/s
-       Practical bandwidth: 4346.00B/s
-       Packets sent: 2173.00
-       Mistakes (error found with CRC) 0.00
-       Fail (no answer from receiver) 0
-       Busy (Channel is busy or affected by interference) 0
-       Accuracy: 100.00 %  
-   
-   - All comparison typecasted to preserve proper format between platforms. Comparisons
-     on AVR defaults to 16 bit unless typecasted, while it defaults to 32 bits on SAMD
-     This can give problems when comparison is made with timer functions such as millis(),
-     micros(), delay() and delaymicroseconds().
-     The function micros() and millis() both returns a unsigned long (uint32_t) on AVR and SAMD.
-     Delay argument is typecasted (unsigned long) or (uint32_t) on AVR, and delaymicroseconds argument 
-     is typecasted (unsigned int) or (uint16_t) on AVR, while on SAMD the delay argument is typecasted 
-     (uint32_t), and delaymicroseconds argument is typecasted (uint32_t).
-
-   - #endif belonging to #ifndef PJON_h moved to end of file
-
-   - in function receive_byte, the functioncall digitalWriteFast(_input_pin,LOW) has been removed. It
-     should not be necessary when the _input_pin is pulled low using a pulldown resistor. Having this
-     second line only slows down.
-     If the physical pulldown resistor has to be avoided, pinModeFast(_input_pin,INPUT_PULLDOWN) will
-     be the correct function call to use, as the INPUT_PULLDOWN is done through pinMode and not
-     digitalWriteFast.
-     
-   TO-DO
-   - Reduce variable size to optimize memory footprint
-
-*/
-
-
-
+  This software is provided by the copyright holders and contributors"as is"
+  and any express or implied warranties, including, but not limited to, the
+  implied warranties of merchantability and fitness for a particular purpose
+  are disclaimed. In no event shall the copyright holder or contributors be
+  liable for any direct, indirect, incidental, special, exemplary, or consequential
+  damages (including, but not limited to, procurement of substitute goods or services;
+  loss of use, data, or profits; or business interruption) however caused and on any
+  theory of liability, whether in contract, strict liability, or tort (including
+  negligence or otherwise) arising in any way out of the use of this software, even if
+  advised of the possibility of such damage. */
 
 #include "PJON.h"
 
@@ -192,7 +151,7 @@ boolean PJON::can_start() {
  digitalWriteFast is used instead of standard digitalWrite
  function to optimize transmission time */
 
-void PJON::send_bit(uint8_t VALUE, uint32_t duration) {
+void PJON::send_bit(uint8_t VALUE, uint16_t duration) {
   digitalWriteFast(_input_pin, VALUE);
   delayMicroseconds(duration);
 }
@@ -251,7 +210,6 @@ Channel analysis   Transmission                            Response
 
 uint16_t PJON::send_string(uint8_t id, char *string, uint8_t length) {
   if(!*string) return FAIL;
-
   if(!this->can_start()) return BUSY;
 
   uint8_t CRC = 0;
@@ -379,10 +337,10 @@ void PJON::update() {
 void PJON::remove(uint16_t id) {
   free(packets[id].content);
   packets[id].attempts = 0;
-  packets[id].device_id = NULL;
-  packets[id].length = NULL;
+  packets[id].device_id = 0;
+  packets[id].length = 0;
+  packets[id].registration = 0;
   packets[id].state = NULL;
-  packets[id].registration = NULL;
 }
 
 
@@ -417,14 +375,14 @@ uint8_t PJON::syncronization_bit() {
 
 uint16_t PJON::receive_byte() {
   /* Initialize the pin and set it to LOW to reduce interference */
-  pinModeFast(_input_pin, INPUT);
+  pullDownFast(_input_pin);
   uint32_t time = micros();
   /* Do nothing until the pin stops to be HIGH or passed more time than
      BIT_SPACER duration (freak condition used to avoid micros() overflow bug) */
-  while(digitalReadFast(_input_pin) && !( (uint32_t)( micros() - time >= BIT_SPACER ) ));
+  while(digitalReadFast(_input_pin) && !((uint32_t)(micros() - time) >= BIT_SPACER));
   /* Save how much time passed */
   time = micros() - time;
-  /* is for sure less than BIT_SPACER, and if is more than ACCEPTANCE
+  /* is for sure equal or less than BIT_SPACER, and if is more than ACCEPTANCE
      (a minimum HIGH duration) and what is coming after is a LOW bit
      probably a byte is coming so try to receive it. */
   if(time >= ACCEPTANCE && !this->syncronization_bit())
@@ -463,7 +421,6 @@ uint16_t PJON::receive() {
 
   for(uint8_t i = 0; i < package_length; i++) {
     data[i] = state = this->receive_byte();
-
     if(state == FAIL) return FAIL;
 
     if(i == 0 && data[i] != _device_id && data[i] != BROADCAST)
@@ -502,7 +459,7 @@ uint16_t PJON::receive(uint32_t duration) {
   uint16_t response;
   uint32_t time = micros();
   /* (freak condition used to avoid micros() overflow bug) */
-  while( !(uint32_t)( micros() - time >= duration ) ) {
+  while(!((uint32_t)(micros() - time) >= duration)) {
     response = this->receive();
     if(response == ACK)
       return ACK;

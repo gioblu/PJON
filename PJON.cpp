@@ -105,6 +105,9 @@ PJON::PJON(uint8_t input_pin, uint8_t device_id) {
 /* Initialization tasks: */
 
 void PJON::initialize() {
+  /* Initial random delay to avoid startup collision */
+  delayMicroseconds(random(0, INITIAL_MAX_DELAY));
+
   this->set_error(dummy_error_handler);
   this->set_receiver(dummy_receiver_handler);
 
@@ -268,10 +271,16 @@ uint16_t PJON::send_string(uint8_t id, char *string, uint8_t length) {
 
   /* Receive byte for an initial BIT_SPACER bit + standard bit total duration.
      (freak condition used to avoid micros() overflow bug) */
-  while(response == FAIL && !( (uint32_t) ( micros() - time >= BIT_SPACER + BIT_WIDTH )))
+  while(response == FAIL && !((uint32_t)(micros() - time) >= BIT_SPACER + BIT_WIDTH))
     response = this->receive_byte();
 
-  if(response == ACK || response == NAK) return response;
+  if(response == ACK) return response;
+
+  /* Random delay if NAK, corrupted ACK/NAK or collision */
+  if(response != FAIL)
+    delayMicroseconds(random(0, COLLISION_MAX_DELAY));
+
+  if(response == NAK) return response;
 
   return FAIL;
 };

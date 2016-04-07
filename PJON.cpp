@@ -169,16 +169,22 @@ void PJON::set_error(error e) {
 
 
 /* Check if the channel is free for transmission:
- If an entire byte received contains no 1s it means
- that there is no active transmission */
+ If receiving 10 bits no 1s are detected
+ there is no active transmission */
 
 boolean PJON::can_start() {
   pinModeFast(_input_pin, INPUT);
-  this->send_bit(0, 2);
-  if(!this->read_byte())
-    return true;
 
-  return false;
+  for(uint8_t i = 0; i < 9; i++) {
+    if(digitalReadFast(_input_pin))
+      return false;
+    delayMicroseconds(BIT_WIDTH);
+  }
+
+  if(digitalReadFast(_input_pin))
+    return false;
+
+  return true;
 }
 
 

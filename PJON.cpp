@@ -438,11 +438,18 @@ uint16_t PJON::receive_byte() {
 
 uint8_t PJON::read_byte() {
   uint8_t byte_value = B00000000;
+  /* Delay until the center of the first bit */
   delayMicroseconds(BIT_WIDTH / 2);
-  for(uint8_t i = 0; i < 8; i++) {
+  for(uint8_t i = 0; i < 7; i++) {
+    /* Read in the center of the n one */
     byte_value += digitalReadFast(_input_pin) << i;
+    /* Delay until the center of the next one */
     delayMicroseconds(BIT_WIDTH);
   }
+  /* Read in the center of the last one */
+  byte_value += digitalReadFast(_input_pin) << 7;
+  /* Delay until the end of the bit */
+  delayMicroseconds(BIT_WIDTH / 2);
   return byte_value;
 }
 

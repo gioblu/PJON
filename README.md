@@ -56,7 +56,7 @@ void loop() {
 - ESP8266 NodeMCU v0.9-1.0 80Mhz, see [ESP8266 Arduino IDE](https://github.com/esp8266/Arduino)  
 
 ####Performance
-PJON works in 3 different communication modes, `STANDARD`, `FAST` and `OVERDIVE`:
+PJON works in 3 different communication modes, `STANDARD`, `FAST` and `OVERDRIVE`:
 - `STANDARD` mode runs at 16.944Bd and is full cross-architecture / promiscuous clock network compatible.
 - `FAST` mode runs at 25.157Bd and is full cross-architecture / promiscuous clock network compatible.
 - `OVERDRIVE` mode runs a specific architecture at its maximum limits (non cross-architecture compatible). Every architecture has its own limits, Arduino Duemilanove for example runs at 33.898Bd, Arduino Zero can reach 47.616Bd.

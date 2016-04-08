@@ -13,11 +13,13 @@
     "url": "https://github.com/gioblu/PJON.git"
   },
   "examples": "examples/*/*/*.ino",
-  "version": "1.1",
+  "version": "2.0",
   "frameworks": "arduino",
   "platforms":
   [
     "atmelavr",
-    "espressif"
+    "espressif",
+    "SAMD",
+    "SAM"
   ]
 }

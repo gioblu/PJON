@@ -124,10 +124,10 @@
      Transfer speer: 47.616Bd or 5.95kB/s
      Absolute communication speed: 5.21kB/s
      Data throughput: 4.34kB/s */
-    #define BIT_WIDTH 14
-    #define BIT_SPACER 42
-    #define ACCEPTANCE 14
-    #define READ_DELAY 4
+    #define BIT_WIDTH 12
+    #define BIT_SPACER 36
+    #define ACCEPTANCE 12
+    #define READ_DELAY 1
   #endif
 #endif
 

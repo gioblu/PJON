@@ -57,9 +57,9 @@ void loop() {
 
 ####Performance
 PJON works in 3 different communication modes, `STANDARD`, `FAST` and `OVERDRIVE`:
-- `STANDARD` mode runs at 16.944Bd and is full cross-architecture / promiscuous clock network compatible.
-- `FAST` mode runs at 25.157Bd and is full cross-architecture / promiscuous clock network compatible.
-- `OVERDRIVE` mode runs a specific architecture at its maximum limits (non cross-architecture compatible). Every architecture has its own limits, Arduino Duemilanove for example runs at 33.898Bd, Arduino Zero can reach 47.616Bd.
+- `STANDARD` mode runs at 16.944Bd or 2.12kB/s full cross-architecture / promiscuous clock network compatible.
+- `FAST` mode runs at 25.157Bd or 3.15kB/s full cross-architecture / promiscuous clock network compatible.
+- `OVERDRIVE` mode runs a specific architecture at its maximum limits (non cross-architecture compatible). Every architecture has its own limits, Arduino Duemilanove for example runs at 33.898Bd, Arduino Zero can reach 48.000Bd.
 
 When including and using PJON, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because PJON is completely software emulated with a non blocking implementation, transforming a painfull walk to the hill in a nice flight.
 

@@ -121,9 +121,9 @@
 
   #if MODE == OVERDRIVE
   /* Added by Esben Soeltoft - 03/09/2016
-     Transfer speer: 47.616Bd or 5.95kB/s
-     Absolute communication speed: 5.21kB/s
-     Data throughput: 4.34kB/s */
+     Transfer speer: 48.000Bd or 6.00kB/s
+     Absolute communication speed: 6.00kB/s
+     Data throughput: 5.00kB/s */
     #define BIT_WIDTH 12
     #define BIT_SPACER 36
     #define ACCEPTANCE 12

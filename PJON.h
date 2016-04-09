@@ -46,13 +46,13 @@
   #include "includes/digitalWriteFast.h"
 
   /* STANDARD mode performance:
-     Transfer speed: 16.944Bb or 2.12kB/s
+     Transfer speed: 16.944kBb or 2.12kB/s
      Absolute  communication speed: 1.81kB/s (data length 20 of characters)
      Data throughput: 1.51kB/s (data length 20 of characters) */
   #define STANDARD  0
 
   /* FAST mode performance:
-     Transfer speed: 25.157Bd or 3.15kB/s
+     Transfer speed: 25.157kBd or 3.15kB/s
      Absolute  communication speed: 2.55kB/s (data length 20 of characters)
      Data throughput: 2.13kB/s (data length 20 of characters) */
   #define FAST      1

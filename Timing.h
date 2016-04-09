@@ -4,11 +4,11 @@
 
    All benchmarks should be executed with NetworkAnalysis and SpeedTest examples.
 
-   STANDARD mode: Transfer speed: 16.944Bb or 2.12kB/s
+   STANDARD mode: Transfer speed: 16.944kBb or 2.12kB/s
    Absolute communication speed: 1.81kB/s
    Data throughput: 1.51kB/s
 
-   FAST mode: Transfer speed: 25.157Bd or 3.15kB/s
+   FAST mode: Transfer speed: 25.157kBd or 3.15kB/s
    Absolute  communication speed: 2.55kB/s
    Data throughput: 2.13kB/s
 
@@ -44,7 +44,7 @@
       // To be implemented
     #endif
     #if F_CPU == 16000000L
-    /* Transfer speed: 33.898Bd or 4.24kB/s
+    /* Transfer speed: 33.898kBd or 4.24kB/s
        Absolute  communication speed: 3.23kB/s
        Data throughput: 2.68kB/s */
       #define BIT_WIDTH 20
@@ -121,7 +121,7 @@
 
   #if MODE == OVERDRIVE
   /* Added by Esben Soeltoft - 03/09/2016
-     Transfer speer: 48.000Bd or 6.00kB/s
+     Transfer speer: 48.000kBd or 6.00kB/s
      Absolute communication speed: 6.00kB/s
      Data throughput: 5.00kB/s */
     #define BIT_WIDTH 12

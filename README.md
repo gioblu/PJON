@@ -40,7 +40,8 @@ void loop() {
 - Software emulated non blocking implementation (based on `micros` and `delayMicroseconds`)
 - Single wire (plus common ground) physical layer with up to 50 meters range.
 - Device id implementation to enable univocal communication up to 254 devices.  
-- lightweight 1 byte XOR based error detection.
+- Optional auto-addressing with id collision avoidance.
+- Lightweight 1 byte XOR based error detection.
 - Acknowledgement of correct packet sending.
 - Collision avoidance to enable multi-master capability.
 - Broadcast functionality to contact all connected devices.

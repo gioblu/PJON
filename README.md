@@ -248,3 +248,7 @@ theory of liability, whether in contract, strict liability, or tort (including
 negligence or otherwise) arising in any way out of the use of this software, even if
 advised of the possibility of such damage. */
 ```
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/gioblu/pjon/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+

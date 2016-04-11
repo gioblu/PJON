@@ -94,6 +94,16 @@ Lets start coding, instantiate the `PJON` object that in the example is called n
   PJON network(12, 123);
 ```
 
+If you are interested auto-addressing is really easy to use:
+```cpp  
+  PJON network(12);
+  network.acquire_id();
+
+  Serial.println(network.device_id()); // Device id found with scan
+```
+All ids are scanned sending a packet containing the `ACQUIRE_ID` constant. If no answer is received from an id, it is considered free.
+If auto-addressing approach is your choice, you should never have a blind timeframe longer than 1.5 seconds (i.e. `delay(2000)`) between every `receive` function call. This constrain is imposed by the necessity of having the device able to receive incoming packets (as `ACQUIRE_ID` used to determine if a device id is free or not). If a device is executing something for too much time while not reading the bus for incoming packets, its device id could be stolen by another device. There is still no device id collision detection / correction, but respecting the described rules, collision should not happen.
+
 ====
 
 #### Transmit data
@@ -168,12 +178,13 @@ Error types:
 - `PACKETS_BUFFER_FULL` (value 102), `data` parameter contains buffer length.
 - `MEMORY_FULL` (value 103), `data` parameter contains `FAIL`.
 - `CONTENT_TOO_LONG` (value 104), `data` parameter contains content length.
+- `ID_ACQUISITION_FAIL` (value 105), `data` parameter contains actual device id.
 
 ```cpp
 void error_handler(uint8_t code, uint8_t data) {
   if(code == CONNECTION_LOST) {
     Serial.print("Connection with device ID ");
-    Serial.print(data, DEC);
+    Serial.print(data);
     Serial.println(" is lost.");
   }
   if(code == PACKETS_BUFFER_FULL) {
@@ -188,7 +199,11 @@ void error_handler(uint8_t code, uint8_t data) {
   }
   if(code == CONTENT_TOO_LONG) {
     Serial.print("Content is too long, length: ");
-    Serial.println(data, DEC);
+    Serial.println(data);
+  }
+  if(code == ID_ACQUISITION_FAIL) {
+    Serial.print("Can't acquire a free id ");
+    Serial.println(data);
   }
 }
 ```

@@ -48,6 +48,7 @@
 
 PJON::PJON(uint8_t input_pin) {
   _input_pin = input_pin;
+  _device_id = NOT_ASSIGNED;
   this->initialize();
 }
 
@@ -87,8 +88,30 @@ void PJON::set_id(uint8_t id) {
 
 /* Get the device id, returning a single byte (watch out to id collision) */
 
-uint8_t PJON::get_id() {
+uint8_t PJON::device_id() {
   return _device_id;
+}
+
+
+/* Look for a free id:
+   All ids are scanned looking for a free one. If no answer is received after
+   MAX_ATTEMPTS attempts, id is acquired and used as new id by the scanning device. */
+
+void PJON::acquire_id() {
+  uint32_t time = micros();
+  uint8_t ping_id;
+  char msg = ACQUIRE_ID;
+
+  for(uint8_t id = 1; id < 255 && (time + MAX_ID_SCAN_TIME > micros()); id++) {
+    ping_id = this->send(id, &msg, 1);
+
+    while(packets[ping_id].state != NULL)
+      this->update();
+
+    if(_device_id != NOT_ASSIGNED) return;
+  }
+
+  this->_error(ID_ACQUISITION_FAIL, FAIL);
 }
 
 
@@ -317,7 +340,12 @@ void PJON::update() {
       packets[i].attempts++;
 
       if(packets[i].attempts > MAX_ATTEMPTS) {
-        this->_error(CONNECTION_LOST, packets[i].device_id);
+        if(packets[i].content[0] == ACQUIRE_ID) {
+          _device_id = packets[i].device_id;
+          this->remove(i);
+          return;
+        } else this->_error(CONNECTION_LOST, packets[i].device_id);
+
         if(!packets[i].timing)
           this->remove(i);
         else {

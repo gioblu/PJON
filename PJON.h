@@ -68,9 +68,11 @@
 
   /* Protocol symbols */
   #define ACK           6
+  #define ACQUIRE_ID    63
   #define BROADCAST     0
   #define BUSY          666
   #define NAK           21
+  #define NOT_ASSIGNED  255
 
   /* Internal constants */
   #define FAIL          0x100
@@ -81,10 +83,11 @@
   #define PACKETS_BUFFER_FULL 102
   #define MEMORY_FULL         103
   #define CONTENT_TOO_LONG    104
+  #define ID_ACQUISITION_FAIL 105
 
   /* Constraints:
   Max attempts before throwing CONNECTON_LOST error */
-  #define MAX_ATTEMPTS        250
+  #define MAX_ATTEMPTS        125
   /* Packets buffer length, if full PACKETS_BUFFER_FULL error is thrown */
   #define MAX_PACKETS         10
   /* Max packet length, higher if necessary (and you have free memory) */
@@ -93,6 +96,8 @@
   #define INITIAL_MAX_DELAY   255000
   /* Maximum randon delay on collision */
   #define COLLISION_MAX_DELAY 16
+  /* Maximum id scan time (5 seconds) */
+  #define MAX_ID_SCAN_TIME    5000000
 
   struct packet {
     uint8_t  attempts;
@@ -115,7 +120,9 @@
       PJON(uint8_t input_pin, uint8_t id);
       void initialize();
 
-      uint8_t get_id();
+      uint8_t device_id();
+      void acquire_id();
+
       void set_id(uint8_t id);
       void set_receiver(receiver r);
       void set_error(error e);

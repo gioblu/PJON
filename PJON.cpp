@@ -246,9 +246,10 @@ uint16_t PJON::send_string(uint8_t id, char *string, uint8_t length) {
   uint32_t time = micros();
   uint16_t response = FAIL;
 
-  /* Receive byte for an initial BIT_SPACER bit + standard bit total duration.
-     (freak condition used to avoid micros() overflow bug) */
-  while(response == FAIL && !((uint32_t)(micros() - time) >= BIT_SPACER + BIT_WIDTH))
+  /* TODO - If micros() overflow occurs here (really slight chance) transmitter
+     is stuck in reception until a byte is received */
+
+  while(response == FAIL && (uint32_t)(micros() - time) <= BIT_SPACER + BIT_WIDTH)
     response = this->receive_byte();
 
   if(response == ACK) return response;
@@ -394,9 +395,8 @@ uint16_t PJON::receive_byte() {
   /* Initialize the pin and set it to LOW to reduce interference */
   pullDownFast(_input_pin);
   uint32_t time = micros();
-  /* Do nothing until the pin stops to be HIGH or passed more time than
-     BIT_SPACER duration (freak condition used to avoid micros() overflow bug) */
-  while(digitalReadFast(_input_pin) && !((uint32_t)(micros() - time) >= BIT_SPACER));
+  /* Do nothing until the pin goes LOW or passed more time than BIT_SPACER duration */
+  while(digitalReadFast(_input_pin) && (uint32_t)(micros() - time) <= BIT_SPACER);
   /* Save how much time passed */
   time = micros() - time;
   /* is for sure equal or less than BIT_SPACER, and if is more than ACCEPTANCE
@@ -475,8 +475,7 @@ uint16_t PJON::receive() {
 uint16_t PJON::receive(uint32_t duration) {
   uint16_t response;
   uint32_t time = micros();
-  /* (freak condition used to avoid micros() overflow bug) */
-  while(!((uint32_t)(micros() - time) >= duration)) {
+  while((uint32_t)(time + duration) >= micros()) {
     response = this->receive();
     if(response == ACK)
       return ACK;

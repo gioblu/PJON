@@ -131,7 +131,6 @@
       uint16_t receive();
       uint16_t receive(uint32_t duration);
 
-      void     send_bit(uint8_t VALUE, uint16_t duration);
       void     send_byte(uint8_t b);
       uint16_t send_string(uint8_t id, char *string, uint8_t length);
       uint16_t send(uint8_t id, char *packet, uint8_t length, uint32_t timing = 0);

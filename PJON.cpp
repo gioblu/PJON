@@ -170,16 +170,6 @@ boolean PJON::can_start() {
 }
 
 
-/* Send a bit to the pin:
- digitalWriteFast is used instead of standard digitalWrite
- function to optimize transmission time */
-
-void PJON::send_bit(uint8_t VALUE, uint16_t duration) {
-  digitalWriteFast(_input_pin, VALUE);
-  delayMicroseconds(duration);
-}
-
-
 /* Every byte is prepended with 2 synchronization padding bits. The first
    is a longer than standard logic 1 followed by a standard logic 0.
    __________ ___________________________

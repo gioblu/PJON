@@ -239,13 +239,11 @@ uint16_t PJON::send_string(uint8_t id, char *string, uint8_t length) {
   while(response == FAIL && (uint32_t)(micros() - time) <= BIT_SPACER + BIT_WIDTH)
     response = this->receive_byte();
 
-  if(response == ACK) return response;
-
+  if(response == ACK || response == NACK) return response;
+  
   /* Random delay if NAK, corrupted ACK/NAK or collision */
   if(response != FAIL)
     delayMicroseconds(random(0, COLLISION_MAX_DELAY));
-
-  if(response == NAK) return response;
 
   return FAIL;
 };

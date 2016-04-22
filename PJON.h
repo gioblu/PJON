@@ -1,158 +1,142 @@
 
  /*-O//\         __     __
    |-gfo\       |__| | |  | |\ |
-   |!y°o:\      |  __| |__| | \|
-   |y"s§+`\     Giovanni Blu Mitolo 2012 - 2014
+   |!y°o:\      |  __| |__| | \| v2.0
+   |y"s§+`\     Giovanni Blu Mitolo 2012 - 2016
   /so+:-..`\    gioscarab@gmail.com
   |+/:ngr-*.`\
-   |/:%&-a3f.:/\     PJON is a device communications bus system that connects up to 255
-    \+//u/+gosv//\    arduino boards over a single wire and provides up to 5KB/s data communication
-     \o+&/osw+odss\\   with acknowledge, collision detection, CRC and encpryption all done
-       \:/+-.§°-:+oss\  with micros() and delayMicroseconds(), without using interrupt or timers.
-        | |       \oy\\   Pull down resistor on the bus is generally used to reduce interference.
+  |5/:%&-a3f.:;\     PJON is a multimaster device communications bus system able to connect
+  \+//u/+g%{osv,,\    255 arduino boards over one wire up to 5.95kB/s data communication speed.
+    \=+&/osw+olds.\\   Contains acknowledge, collision and error detection, all done with
+       \:/+-.-°-:+oss\  micros() and delayMicroseconds(), with no use of interrupts or timers.
+        | |       \oy\\  Pull down resistor is generally used to reduce interference.
         > <
-       -| |-
+  _____-| |-________________________________________________________________________
 
-ADDRESS: 255 different adresses can be assigned
-CRC: XOR Cyclic Redundancy Check ensures almost errorless data communication
-ACKNOLEDGE:  Acknowledge byte sent by receiver ensures packet delivery
-COLLISION DETECTION: collision avoidance is ensured analyzing network bus before starting
-ENCRYPTION: Private key encryption + initialization vector to ensure almost random data stream
-  __________________________________________________________________________________
- |PJON Standard mode | SPEED SETUP CHANGES ACCORGING TO YOUR IDE VERSION!           |
- |----------------------------------------------------------------------------------|
- |Arduino 00x   -> bit_width 20 | bit_spacer 68 | acceptance 16 | read_delay 7      |
- |Arduino 1.6.x -> bit_width 20 | bit_spacer 68 | acceptance  8 | read_delay 5      |
- |----------------------------------------------------------------------------------|
- |Absolute bandwidth:  3.16-3.28 kB/s | Transfer speed: 4.32kB/s                    |
- |Practical bandwidth: 2.19-2.45 kB/s | Baud rate: 32256 baud/s                     |
- |Accuracy: 99.45-99.95%              |                                             |
- |----------------------------------------------------------------------------------|
-  __________________________________________________________________________________
- |PJON Fast mode | SPEED SETUP CHANGES ACCORGING TO YOUR IDE VERSION!               |
- |----------------------------------------------------------------------------------|
- |Arduino 00x   -> bit_width 18 | bit_spacer 40 | acceptance 18 | read_delay 8      |
- |Arduino 1.6.x -> bit_width 18 | bit_spacer 40 | acceptance  8 | read_delay 5      |
- |----------------------------------------------------------------------------------|
- |Absolute bandwidth:  3.25-3.81 kB/s | Transfer speed: 4.95kB/s                    |
- |Practical bandwidth: 2.52-2.85 kB/s | Baud rate: 39600 baud/s                     |
- |Accuracy: 94.51-98.63%              |                                             |
- |----------------------------------------------------------------------------------|  */
+Copyright 2012-2016 Giovanni Blu Mitolo
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
 
 #ifndef PJON_h
   #define PJON_h
+  #include "Arduino.h"
+  #include "includes/digitalWriteFast.h"
 
-  #if defined(ARDUINO) && (ARDUINO >= 100)
-    #include "Arduino.h"
-    #include "includes/digitalWriteFast.h"
-    // Function execution time changes according to your IDE version 
-    // So here we have to set dedicated timing to 0.x version
-    // STANDARD MODE - if you need more speed please follow the comments above
-    #define bit_width 20
-    #define bit_spacer 68
-    #define acceptance 8
-    #define read_delay 5
-  #else
-    #include "WProgram.h"
-    #include "WConstants.h"
-    #include "includes/digitalWriteFast.h"
-    // Function execution time changes according to your IDE version (0.x or 1.x) 
-    // So here we have to set dedicated timing to 1.x version
-    // STANDARD MODE - if you need more speed please follow the comments above
-    #define bit_width 20
-    #define bit_spacer 68
-    #define acceptance 16
-    #define read_delay 7
-  #endif
+  /* STANDARD mode performance:
+     Transfer speed: 16.944kBb or 2.12kB/s
+     Absolute  communication speed: 1.81kB/s (data length 20 of characters)
+     Data throughput: 1.51kB/s (data length 20 of characters) */
+  #define STANDARD  0
+
+  /* FAST mode performance:
+     Transfer speed: 25.157kBd or 3.15kB/s
+     Absolute  communication speed: 2.55kB/s (data length 20 of characters)
+     Data throughput: 2.13kB/s (data length 20 of characters) */
+  #define FAST      1
+
+  /* OVERDRIVE mode performance:
+     Architecture / setup dependant, see Timing.h */
+  #define OVERDRIVE 2
+
+  #define MODE STANDARD
+
+  /* Include BIT banging timing (mode / architecture / clock specific) */
+  #include "Timing.h"
+
+  /* Protocol symbols */
+  #define ACK           6
+  #define ACQUIRE_ID    63
+  #define BROADCAST     0
+  #define BUSY          666
+  #define NAK           21
+  #define NOT_ASSIGNED  255
+
+  /* Internal constants */
+  #define FAIL          0x100
+  #define TO_BE_SENT    74
+
+  /* Errors */
+  #define CONNECTION_LOST     101
+  #define PACKETS_BUFFER_FULL 102
+  #define MEMORY_FULL         103
+  #define CONTENT_TOO_LONG    104
+  #define ID_ACQUISITION_FAIL 105
+
+  /* Constraints:
+  Max attempts before throwing CONNECTON_LOST error */
+  #define MAX_ATTEMPTS        125
+  /* Packets buffer length, if full PACKETS_BUFFER_FULL error is thrown */
+  #define MAX_PACKETS         10
+  /* Max packet length, higher if necessary (and you have free memory) */
+  #define PACKET_MAX_LENGTH   50
+  /* Maximum random delay on startup */
+  #define INITIAL_MAX_DELAY   255000
+  /* Maximum randon delay on collision */
+  #define COLLISION_MAX_DELAY 16
+  /* Maximum id scan time (5 seconds) */
+  #define MAX_ID_SCAN_TIME    5000000
+
+  struct packet {
+    uint8_t  attempts;
+    uint8_t  device_id;
+    char     *content;
+    uint8_t  length;
+    uint32_t registration;
+    uint16_t state;
+    uint32_t timing;
+  };
+
+  typedef void (* receiver)(uint8_t length, uint8_t *payload);
+  typedef void (* error)(uint8_t code, uint8_t data);
+  static void dummy_error_handler(uint8_t code, uint8_t data) {};
+  static void dummy_receiver_handler(uint8_t length, uint8_t *payload) {};
+
+  class PJON {
+    public:
+      PJON(uint8_t input_pin);
+      PJON(uint8_t input_pin, uint8_t id);
+      void initialize();
+
+      uint8_t device_id();
+      void acquire_id();
+
+      void set_id(uint8_t id);
+      void set_receiver(receiver r);
+      void set_error(error e);
+
+      uint16_t receive_byte();
+      uint16_t receive();
+      uint16_t receive(uint32_t duration);
+
+      void     send_byte(uint8_t b);
+      uint16_t send_string(uint8_t id, char *string, uint8_t length);
+      uint16_t send(uint8_t id, char *packet, uint8_t length, uint32_t timing = 0);
+
+      void update();
+      void remove(uint16_t id);
+
+      boolean can_start();
+      uint8_t read_byte();
+      uint8_t syncronization_bit();
+
+      uint8_t data[PACKET_MAX_LENGTH];
+      packet  packets[MAX_PACKETS];
+
+    private:
+      uint8_t   _device_id;
+      uint8_t   _input_pin;
+      receiver  _receiver;
+      error     _error;
+  };
+
 #endif
-
-#define max_package_length 100
-
-#define ACK  6
-#define NAK  21
-#define FAIL 0x100
-#define BUSY 666
-#define BROADCAST 124
-#define TO_BE_SENT 74
-#define CMD 88
-
-#define encryption_key "19id°?=(!$=<zkl"
-#define encryption_strength 2
-
-#define swap(a,b) do { int t = _s_box[a]; _s_box[a] = _s_box[b]; _s_box[b] = t; } while(0)
-
-#define max_reactions 20
-#define max_packets 20
-
-struct packet {
-  uint8_t device_id;
-  char *content;
-  int state;
-  unsigned long registration;
-  unsigned long timing;
-};
-
-struct reaction {
-  void (*execution)(void);
-  char command_type;
-  boolean active;
-  boolean once;
-  boolean empty;
-};
-
-class PJON {
-
-  public:
-
-    PJON(int input_pin, uint8_t ID);
-    void set_collision_avoidance(boolean state);
-    void set_acknowledge(boolean state);
-    void set_encryption(boolean state);
-
-    void update();
-    int send(uint8_t ID, char *packet, unsigned long timing = 0);
-    void remove(int packet_id);
-
-    void crypt(char *content, boolean initialization_vector = false, boolean side = false);
-    uint8_t generate_IV(uint8_t string_length);
-
-    void send_bit(uint8_t VALUE, int duration);
-    void send_byte(uint8_t b);
-
-    int send_string(uint8_t ID, char *string);
-    int send_string(uint8_t ID, char *string, int count);
-
-    int send_command(uint8_t ID, char command_type, unsigned int value, int count = 1);
-    int send_short_command(byte ID, char command_type, int count = 1);
-
-    uint8_t syncronization_bit();
-    uint8_t read_byte();
-
-    boolean can_start();
-
-    int receive_byte();
-    int receive();
-    int receive(unsigned long duration);
-
-    void activate_reaction(uint8_t id);
-    void deactivate_reaction(uint8_t id);
-    uint8_t insert_reaction(char command_type, void (*task)(void), boolean once);
-    void remove_reaction(uint8_t id);
-    void process_reaction();
-    boolean compare_reaction(char command_type);
-
-    uint8_t data[max_package_length];
-    char hash[max_package_length];
-    packet packets[max_packets];
-    reaction reactions[max_reactions];
-
-  private:
-    uint8_t _device_id;
-    int _input_pin;
-    int _read_delay;
-    unsigned char _s_box[encryption_strength];
-
-    boolean _acknowledge;
-    boolean _collision_avoidance;
-    boolean _encryption;
-};

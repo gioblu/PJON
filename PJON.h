@@ -107,7 +107,6 @@ limitations under the License. */
       PJON(uint8_t input_pin, uint8_t id);
       void initialize();
 
-      uint8_t device_id();
       void acquire_id();
       uint8_t device_id();
 

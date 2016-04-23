@@ -28,4 +28,5 @@ void error_handler(uint8_t code, uint8_t data) {
 
 void loop() {
  network.update();
+ network.receive();
 }

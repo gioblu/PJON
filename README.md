@@ -1,5 +1,5 @@
 ##PJON v2.0 beta
-PJON (Padded Jittering Operative Network) is an Arduino compatible single wire, multi-master communications bus system implemented in  270 lines of C++ and Wiring (not considering comments). It is designed as an alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. If you are interested to know more about the PJON standard, visit the [Wiki](https://github.com/gioblu/PJON/wiki). If you need a wireless multimaster implementation check [PJON_ASK](https://github.com/gioblu/PJON_ASK). If you need help or something is not working visit the [Troubleshooting Wiki page](https://github.com/gioblu/PJON/wiki/Troubleshooting).
+PJON (Padded Jittering Operative Network) is an Arduino compatible single wire, multi-master communications bus system implemented in  270 lines of C++ and Wiring (not considering comments). It is designed as an alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. If you are interested to know more about the PJON standard, visit the [Wiki](https://github.com/gioblu/PJON/wiki). If you need a wireless multimaster implementation check [PJON_ASK](https://github.com/gioblu/PJON_ASK). If you need help or something is not working visit the [Troubleshooting Wiki page](https://github.com/gioblu/PJON/wiki/Troubleshooting). If you own a Saleae Logic Analyzer you can scope communication with [saleae-pjon-protocol-analyzer](https://github.com/aperepel/saleae-pjon-protocol-analyzer) crafted by Andrew Grande.
 
 ```cpp  
 #include <PJON.h>     // Transmitter board code
@@ -40,7 +40,8 @@ void loop() {
 - Software emulated non blocking implementation (based on `micros` and `delayMicroseconds`)
 - Single wire (plus common ground) physical layer with up to 50 meters range.
 - Device id implementation to enable univocal communication up to 254 devices.  
-- lightweight 1 byte XOR based error detection.
+- Optional auto-addressing with id collision avoidance.
+- Lightweight 1 byte XOR based error detection.
 - Acknowledgement of correct packet sending.
 - Collision avoidance to enable multi-master capability.
 - Broadcast functionality to contact all connected devices.
@@ -219,31 +220,17 @@ network.set_error(error_handler);
 ####License
 
 ```cpp
-/*
-Released with BSD-3 License
-PJON Copyright (c) 2012-2016, Giovanni Blu Mitolo All rights reserved.
+/* Copyright 2012-2016 Giovanni Blu Mitolo
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-- Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
--  Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
+    http://www.apache.org/licenses/LICENSE-2.0
 
--  Neither the name of PJON, PJON_ASK nor the
-   names of its contributors may be used to endorse or promote products
-   derived from this software without specific prior written permission.
-
-This software is provided by the copyright holders and contributors"as is"
-and any express or implied warranties, including, but not limited to, the
-implied warranties of merchantability and fitness for a particular purpose
-are disclaimed. In no event shall the copyright holder or contributors be
-liable for any direct, indirect, incidental, special, exemplary, or consequential
-damages (including, but not limited to, procurement of substitute goods or services;
-loss of use, data, or profits; or business interruption) however caused and on any
-theory of liability, whether in contract, strict liability, or tort (including
-negligence or otherwise) arising in any way out of the use of this software, even if
-advised of the possibility of such damage. */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
 ```

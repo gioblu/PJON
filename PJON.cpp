@@ -105,7 +105,7 @@ void PJON::acquire_id() {
   for(uint8_t id = 1; id < 255 && (time + MAX_ID_SCAN_TIME > micros()); id++) {
     ping_id = this->send(id, &msg, 1);
 
-    while(packets[ping_id].state != NULL)
+    while(packets[ping_id].state != NULL && (time + MAX_ID_SCAN_TIME > micros()))
       this->update();
 
     if(_device_id != NOT_ASSIGNED) return;

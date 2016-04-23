@@ -246,10 +246,7 @@ uint16_t PJON::send_string(uint8_t id, char *string, uint8_t length) {
   uint32_t time = micros();
   uint16_t response = FAIL;
 
-  /* TODO - If micros() overflow occurs here (really slight chance) transmitter
-     is stuck in reception until a byte is received */
-
-  while(response == FAIL && (uint32_t)(micros() - time) <= BIT_SPACER + BIT_WIDTH)
+  while(response == FAIL && (uint32_t)(time + BIT_SPACER + BIT_WIDTH) >= micros())
     response = this->receive_byte();
 
   if(response == ACK) return response;

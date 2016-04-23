@@ -30,7 +30,7 @@ limitations under the License. */
 #ifndef PJON_h
   #define PJON_h
   #include "Arduino.h"
-  #include "includes/digitalWriteFast.h"
+  #include "digitalWriteFast.h"
 
   /* STANDARD mode performance:
      Transfer speed: 16.944kBb or 2.12kB/s

@@ -41,7 +41,7 @@ void loop() {
 - Single wire (plus common ground) physical layer with up to 50 meters range.
 - Device id implementation to enable univocal communication up to 254 devices.  
 - Optional auto-addressing with id collision avoidance.
-- Lightweight 1 byte XOR based error detection.
+- CRC8 table-less cyclic redundancy check implementation.
 - Acknowledgement of correct packet sending.
 - Collision avoidance to enable multi-master capability.
 - Broadcast functionality to contact all connected devices.

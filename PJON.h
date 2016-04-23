@@ -109,6 +109,9 @@ limitations under the License. */
 
       uint8_t device_id();
       void acquire_id();
+      uint8_t device_id();
+
+      uint8_t compute_crc_8(char input_byte, uint8_t crc);
 
       void set_id(uint8_t id);
       void set_negative_acknowledge(boolean state);

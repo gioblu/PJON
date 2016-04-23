@@ -168,6 +168,18 @@ boolean PJON::can_start() {
 }
 
 
+/* Compute CRC8 with a table-less implementation: */
+
+uint8_t PJON::compute_crc_8(char input_byte, uint8_t crc) {
+  for (uint8_t i = 8; i; i--, input_byte >>= 1) {
+    uint8_t result = (crc ^ input_byte) & 0x01;
+    crc >>= 1;
+    if(result) crc ^= 0x8C;
+  }
+  return crc;
+};
+
+
 /* Every byte is prepended with 2 synchronization padding bits. The first
    is a longer than standard logic 1 followed by a standard logic 0.
    __________ ___________________________
@@ -227,13 +239,13 @@ uint16_t PJON::send_string(uint8_t id, char *string, uint8_t length) {
   pinModeFast(_input_pin, OUTPUT);
 
   this->send_byte(id);
-  CRC ^= id;
+  CRC = this->compute_crc_8(id, CRC);
   this->send_byte(length + 3);
-  CRC ^= length + 3;
+  CRC = this->compute_crc_8(length + 3, CRC);
 
   for(uint8_t i = 0; i < length; i++) {
     this->send_byte(string[i]);
-    CRC ^= string[i];
+    CRC = this->compute_crc_8(string[i], CRC);
   }
 
   this->send_byte(CRC);
@@ -445,7 +457,7 @@ uint16_t PJON::receive() {
         package_length = data[i];
       else return FAIL;
 
-    CRC ^= data[i];
+    CRC = this->compute_crc_8(data[i], CRC);
   }
 
   pinModeFast(_input_pin, OUTPUT);

@@ -310,10 +310,12 @@ uint16_t PJON::send(uint8_t id, char *packet, uint8_t length, uint32_t timing) {
 
 void PJON::update() {
   for(uint8_t i = 0; i < MAX_PACKETS; i++) {
-    if(packets[i].state != NULL)
-      if(micros() - packets[i].registration > packets[i].timing + pow(packets[i].attempts, 3))
-        packets[i].state = send_string(packets[i].device_id, packets[i].content, packets[i].length);
-      else continue;
+
+    if(packets[i].state == NULL) return;
+
+    if(micros() - packets[i].registration > packets[i].timing + pow(packets[i].attempts, 3))
+      packets[i].state = send_string(packets[i].device_id, packets[i].content, packets[i].length);
+    else continue;
 
     if(packets[i].state == ACK) {
       if(!packets[i].timing)
@@ -324,6 +326,7 @@ void PJON::update() {
         packets[i].state = TO_BE_SENT;
       }
     }
+
     if(packets[i].state == FAIL) {
       packets[i].attempts++;
 
@@ -343,6 +346,7 @@ void PJON::update() {
         }
       }
     }
+
   }
 }
 

@@ -232,7 +232,7 @@ Channel analysis   Transmission                            Response
    |_____|         |____|________|_________|_____|         |_____|  */
 
 uint16_t PJON::send_string(uint8_t id, char *string, uint8_t length) {
-  if(!*string) return FAIL;
+  if(!string) return FAIL;
   if(!this->can_start()) return BUSY;
 
   uint8_t CRC = 0;

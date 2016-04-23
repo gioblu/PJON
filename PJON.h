@@ -127,6 +127,7 @@
       void set_receiver(receiver r);
       void set_error(error e);
 
+      uint8_t  read_byte();
       uint16_t receive_byte();
       uint16_t receive();
       uint16_t receive(uint32_t duration);
@@ -139,7 +140,6 @@
       void remove(uint16_t id);
 
       boolean can_start();
-      uint8_t read_byte();
       uint8_t syncronization_bit();
 
       uint8_t data[PACKET_MAX_LENGTH];

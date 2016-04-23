@@ -79,8 +79,8 @@ limitations under the License. */
   #define MAX_PACKETS         10
   /* Max packet length, higher if necessary (and you have free memory) */
   #define PACKET_MAX_LENGTH   50
-  /* Maximum random delay on startup */
-  #define INITIAL_MAX_DELAY   255000
+  /* Maximum random delay on startup (0.5 seconds) */
+  #define INITIAL_MAX_DELAY   500000
   /* Maximum randon delay on collision */
   #define COLLISION_MAX_DELAY 16
   /* Maximum id scan time (5 seconds) */

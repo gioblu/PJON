@@ -53,6 +53,7 @@ PJON::PJON(uint8_t input_pin, uint8_t device_id) {
 
 void PJON::initialize() {
   /* Initial random delay to avoid startup collision */
+  randomSeed(analogRead(A0));
   delayMicroseconds(random(0, INITIAL_MAX_DELAY));
 
   this->set_error(dummy_error_handler);

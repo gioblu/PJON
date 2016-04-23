@@ -55,6 +55,7 @@ void PJON::initialize() {
   /* Initial random delay to avoid startup collision */
   randomSeed(analogRead(A0));
   delayMicroseconds(random(0, INITIAL_MAX_DELAY));
+  _negative_acknowledge = true;
 
   this->set_error(dummy_error_handler);
   this->set_receiver(dummy_receiver_handler);
@@ -135,6 +136,15 @@ network.set_error(error_handler); */
 
 void PJON::set_error(error e) {
   _error = e;
+}
+
+
+/* Configure if to send or not NAK back to transmitter in case of error:
+   Sending NAK when error is detected can be critical in high interference
+   scenarios. (broken id reception) */
+
+void PJON::set_negative_acknowledge(boolean state) {
+  _negative_acknowledge = state;
 }
 
 
@@ -448,7 +458,7 @@ uint16_t PJON::receive() {
     this->_receiver(data[1] - 3, data + 2);
     return ACK;
   } else {
-    if(data[0] != BROADCAST) {
+    if(data[0] != BROADCAST && _negative_acknowledge) {
       this->send_byte(NAK);
       digitalWriteFast(_input_pin, LOW);
     }

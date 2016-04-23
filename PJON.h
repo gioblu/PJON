@@ -111,6 +111,7 @@ limitations under the License. */
       void acquire_id();
 
       void set_id(uint8_t id);
+      void set_negative_acknowledge(boolean state);
       void set_receiver(receiver r);
       void set_error(error e);
 
@@ -137,6 +138,7 @@ limitations under the License. */
       uint8_t   _input_pin;
       receiver  _receiver;
       error     _error;
+      boolean   _negative_acknowledge;
   };
 
 #endif

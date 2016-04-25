@@ -105,17 +105,18 @@ limitations under the License. */
     public:
       PJON(uint8_t input_pin);
       PJON(uint8_t input_pin, uint8_t id);
-      void initialize();
+      void begin();
 
       void acquire_id();
       uint8_t device_id();
 
       uint8_t compute_crc_8(char input_byte, uint8_t crc);
 
+      void set_default();
+      void set_error(error e);
       void set_id(uint8_t id);
       void set_negative_acknowledge(boolean state);
       void set_receiver(receiver r);
-      void set_error(error e);
 
       uint8_t  read_byte();
       uint16_t receive_byte();

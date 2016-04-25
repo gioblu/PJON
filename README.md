@@ -2,25 +2,26 @@
 PJON (Padded Jittering Operative Network) is an Arduino compatible single wire, multi-master communications bus system implemented in  270 lines of C++ and Wiring (not considering comments). It is designed as an alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. If you are interested to know more about the PJON standard, visit the [Wiki](https://github.com/gioblu/PJON/wiki). If you need a wireless multimaster implementation check [PJON_ASK](https://github.com/gioblu/PJON_ASK). If you need help or something is not working visit the [Troubleshooting Wiki page](https://github.com/gioblu/PJON/wiki/Troubleshooting). If you own a Saleae Logic Analyzer you can scope communication with [saleae-pjon-protocol-analyzer](https://github.com/aperepel/saleae-pjon-protocol-analyzer) crafted by Andrew Grande.
 
 ```cpp  
-#include <PJON.h>     // Transmitter board code
-PJON network(12, 45); // Bus connection to pin 12, device id 45
+#include <PJON.h> // Transmitter board code
+PJON bus(12, 45); // Bus connection to pin 12, device id 45
 
 void setup() {
-  network.send(44, "B", 1, 1000000);
-  // Send to device 44, "B" content of 1 byte length every 1000000 microseconds (1 second)
+  bus.begin(); // Initialize PJON bus
+  bus.send(44, "B", 1, 1000000); // Send to 44 "B" of length 1 every second
 }
 
 void loop() {
-  network.update();
+  bus.update();
 }
 
 /* ---------------------------------------------------------------------------- */
 
-#include <PJON.h>     // Receiver board code
-PJON network(12, 44); // Bus connection to pin 12, device id 44
+#include <PJON.h> // Receiver board code
+PJON bus(12, 44); // Bus connection to pin 12, device id 44
 
 void setup() {
-  network.set_receiver(receiver_function); // Set the function used to receive messages
+  bus.begin(); // Initialize PJON bus
+  bus.set_receiver(receiver_function); // Set the function used to receive messages
 };
 
 void receiver_function(uint8_t length, uint8_t *payload) {
@@ -32,7 +33,7 @@ void receiver_function(uint8_t length, uint8_t *payload) {
 }
 
 void loop() {
-  network.receive(1000);
+  bus.receive(1000);
 }
 ```
 
@@ -84,23 +85,25 @@ PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl
 #### How to start
 The first step is the physical layer: connect with a wire two boards using a digital pin on both boards. After this you should have both arduino boards connected by the wire on the same pin. The selected pins are the same only for simplicity and to avoid mistakes, PJON works fine on every Arduino digital or analog (used as digital) I/O pin.
 
-Lets start coding, instantiate the `PJON` object that in the example is called network. To initialize a network based on PJON you need only to define the communication pin (any free digital pin on your board) and a unique ID (0 - 255):
+Lets start coding, instantiate the `PJON` object that in the example is called bus. To initialize a bus based on PJON you need only to define the communication pin (any free digital pin on your board) and a unique ID (0 - 255):
 
 ```cpp  
-  PJON network(12);
-  network.set_id(123); // Set id later
+  PJON bus(12);
+  bus.begin();     // initialize PJON bus
+  bus.set_id(123); // Set id later
 
   // or
 
-  PJON network(12, 123);
+  PJON bus(12, 123);
+  bus.begin();     // initialize PJON bus
 ```
 
 If you are interested auto-addressing is really easy to use:
 ```cpp  
-  PJON network(12);
-  network.acquire_id();
-
-  Serial.println(network.device_id()); // Device id found with scan
+  PJON bus(12);
+  bus.begin();     // initialize PJON bus
+  bus.acquire_id();
+  Serial.println(bus.device_id()); // Device id found with scan
 ```
 All ids are scanned sending a packet containing the `ACQUIRE_ID` constant. If no answer is received from an id, it is considered free.
 If auto-addressing approach is your choice, you should never have a blind timeframe longer than 1.5 seconds (i.e. `delay(2000)`) between every `receive` function call. This constrain is imposed by the necessity of having the device able to receive incoming packets (as `ACQUIRE_ID` used to determine if a device id is free or not). If a device is executing something for too much time while not reading the bus for incoming packets, its device id could be stolen by another device. There is still no device id collision detection / correction, but respecting the described rules, collision should not happen.

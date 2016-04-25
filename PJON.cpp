@@ -36,7 +36,7 @@ limitations under the License. */
 PJON::PJON(uint8_t input_pin) {
   _input_pin = input_pin;
   _device_id = NOT_ASSIGNED;
-  this->initialize();
+  this->set_default();
 }
 
 
@@ -45,16 +45,13 @@ PJON::PJON(uint8_t input_pin) {
 PJON::PJON(uint8_t input_pin, uint8_t device_id) {
   _input_pin = input_pin;
   _device_id = device_id;
-  this->initialize();
+  this->set_default();
 }
 
 
-/* Initialization tasks: */
+/* Set bus state default configuration: */
 
-void PJON::initialize() {
-  /* Initial random delay to avoid startup collision */
-  randomSeed(analogRead(A0));
-  delayMicroseconds(random(0, INITIAL_MAX_DELAY));
+void PJON::set_default() {
   _negative_acknowledge = true;
 
   this->set_error(dummy_error_handler);
@@ -65,6 +62,15 @@ void PJON::initialize() {
     packets[i].timing = 0;
     packets[i].attempts = 0;
   }
+}
+
+
+/* Initialization tasks: */
+
+void PJON::begin() {
+  /* Initial random delay to avoid startup collision */
+  randomSeed(analogRead(A0));
+  delay(random(0, INITIAL_MAX_DELAY));
 }
 
 

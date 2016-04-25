@@ -1,5 +1,4 @@
 #include <PJON.h>
-
 float test;
 
 // bus(Arduino pin used, selected device id)

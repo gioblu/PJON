@@ -1,13 +1,16 @@
 #include <PJON.h>
 
-// network(Arduino pin used, selected device id)
-PJON network(12, 44);
+// bus(Arduino pin used, selected device id)
+PJON bus(12, 44);
 
 void setup() {
   pinModeFast(13, OUTPUT);
-  digitalWriteFast(13, LOW);
+  digitalWriteFast(13, LOW); // Initialize LED 13 to be off
+
+  bus.begin(); // Initialize PJON bus
+  bus.set_receiver(receiver_function);
+
   Serial.begin(9600);
-  network.set_receiver(receiver_function);
 };
 
 void receiver_function(uint8_t length, uint8_t *payload) {
@@ -20,5 +23,5 @@ void receiver_function(uint8_t length, uint8_t *payload) {
 }
 
 void loop() {
-  network.receive(1000);
+  bus.receive(1000);
 };

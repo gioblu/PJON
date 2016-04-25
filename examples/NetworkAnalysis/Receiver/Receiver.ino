@@ -1,12 +1,14 @@
 #include <PJON.h>
 
-// network(Arduino pin used, selected device id)
-PJON network(12, 44);
+// bus(Arduino pin used, selected device id)
+PJON bus(12, 44);
 
 void setup() {
+  bus.begin(); // Initialize PJON bus
+
   Serial.begin(115200);
 };
 
 void loop() {
-  network.receive(); 
+  bus.receive();
 };

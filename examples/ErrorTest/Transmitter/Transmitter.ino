@@ -1,14 +1,16 @@
 #include <PJON.h>
 
-PJON network(12, 45);
+PJON bus(12, 45);
 
 int packet;
 char content[4] = {0, 0, 0, 0};
 // Content with contant and changing byte
 
 void setup() {
+  bus.begin(); // Initializa PJON bus
+  packet = bus.send(44, content, 4);
+
   Serial.begin(115200);
-  packet = network.send(44, content, 4);
 }
 
 void loop() {
@@ -16,10 +18,10 @@ void loop() {
   content[1] += 1;
   content[2] += 1;
 
-  if(!network.packets[packet].state)
-    packet = network.send(44, content, 4);
+  if(!bus.packets[packet].state)
+    packet = bus.send(44, content, 4);
 
-  network.update();
+  bus.update();
 
   if(content[0] == 255) content[0] = 0;
   if(content[1] == 255) content[1] = 0;

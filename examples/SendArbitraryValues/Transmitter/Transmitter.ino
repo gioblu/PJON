@@ -1,11 +1,13 @@
 #include <PJON.h>
 
-// network(Arduino pin used, selected device id)
-PJON network(12, 45);
+// bus(Arduino pin used, selected device id)
+PJON bus(12, 45);
 
 void setup() {
+  bus.begin(); // Initialize PJON bus
+  bus.set_error(error_handler);
+
   Serial.begin(115200);
-  network.set_error(error_handler);
 }
 
 void error_handler(uint8_t code, uint8_t data) {
@@ -22,13 +24,13 @@ void loop() {
 
   if(millis() - time > 1000) {
     time = millis();
-    int temperature = analogRead(A0); 
-    
-    //Send a "T", break the int in two bytes 
+    int temperature = analogRead(A0);
+
+    //Send a "T", break the int in two bytes
     char content[3] = {'T', temperature >> 8, temperature & 0xFF};
-  
-    network.send(44, content, 3);
+
+    bus.send(44, content, 3);
   }
 
-  network.update();
+  bus.update();
 };

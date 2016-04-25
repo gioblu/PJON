@@ -5,28 +5,29 @@ float mistakes;
 int busy;
 int fail;
 
-// network(Arduino pin used, selected device id)
-PJON network(12, 45);
+// bus(Arduino pin used, selected device id)
+PJON bus(12, 45);
 
 int packet;
 char content[] = "01234567890123456789";
 
 void setup() {
-  Serial.begin(115200);
+  bus.begin(); // Initialize PJON bus
 
+  Serial.begin(115200);
   Serial.println("PJON - Network analysis");
-  Serial.println("Starting a 10 seconds communication test..");
+  Serial.println("Starting a 1 second communication test..");
   Serial.println();
 }
 
 void loop() {
   long time = millis();
-  while(millis() - time < 10000) {
+  while(millis() - time < 1000) {
 
     /* Here send_string low level function is used to
     be able to catch every single sending result. */
 
-    int response = network.send_string(44, content, 20);
+    int response = bus.send_string(44, content, 20);
     if(response == ACK)
       test++;
     if(response == NAK)
@@ -38,10 +39,10 @@ void loop() {
   }
 
   Serial.print("Absolute com speed: ");
-  Serial.print( (test * 24 ) / 10 );
+  Serial.print(test * 24);
   Serial.println("B/s");
   Serial.print("Practical bandwidth: ");
-  Serial.print( (test * 20 ) / 10 );
+  Serial.print(test * 20);
   Serial.println("B/s");
   Serial.print("Packets sent: ");
   Serial.println(test);

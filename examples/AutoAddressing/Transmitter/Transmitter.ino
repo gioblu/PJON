@@ -1,22 +1,25 @@
 #include <PJON.h>
 
-// network(Arduino pin used, selected device id)
-PJON network(12);
+// bus(Arduino pin used, selected device id)
+PJON bus(12);
+
 int packet;
 
 void setup() {
+  bus.begin(); // Initialize PJON bus
+  bus.set_error(error_handler);
+
   Serial.begin(115200);
-  network.set_error(error_handler);
 
   unsigned long time = micros();
-  network.acquire_id();
+  bus.acquire_id();
   Serial.print(micros() - time);
 
   Serial.print(" microseconds needed - ID found: ");
-  Serial.print(network.device_id());
+  Serial.print(bus.device_id());
 
-  char actual_id = network.device_id();
-  packet = network.send(44, &actual_id, 1, 1000000);
+  char actual_id = bus.device_id();
+  packet = bus.send(44, &actual_id, 1, 1000000);
 }
 
 void error_handler(uint8_t code, uint8_t data) {
@@ -27,6 +30,6 @@ void error_handler(uint8_t code, uint8_t data) {
 }
 
 void loop() {
- network.update();
- network.receive();
+ bus.update();
+ bus.receive();
 }

@@ -1,13 +1,13 @@
 #include <PJON.h>
 
-// network(Arduino pin used, selected device id)
-PJON network(12, 45);
+// bus(Arduino pin used, selected device id)
+PJON bus(12, 45);
 
 void setup() {
-  // Send B to device 44 every second
-  network.send(44, "B", 1, 1000000);
+  bus.begin(); // Initialize PJON bus
+  bus.send(44, "B", 1, 1000000); // Send B to device 44 every second
 }
 
 void loop() {
-  network.update();
+  bus.update();
 };

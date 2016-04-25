@@ -77,8 +77,8 @@
   #if MODE == STANDARD
     #if F_CPU == 8000000L
       #define BIT_WIDTH  35
-      #define BIT_SPACER 107
-      #define ACCEPTANCE 35
+      #define BIT_SPACER 108
+      #define ACCEPTANCE 28
       #define READ_DELAY 15
     #endif
     #if F_CPU == 16000000L

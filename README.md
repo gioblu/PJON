@@ -59,8 +59,8 @@ void loop() {
 
 ####Performance
 PJON works in 3 different communication modes, `STANDARD`, `FAST` and `OVERDRIVE`:
-- `STANDARD` mode runs at 16.944kBd or 2.12kB/s full cross-architecture / promiscuous clock network compatible.
-- `FAST` mode runs at 25.157kBd or 3.15kB/s full cross-architecture / promiscuous clock network compatible.
+- `STANDARD` mode runs at 16.944kBd or 2.12kB/s full cross-architecture / promiscuous clock compatible.
+- `FAST` mode runs at 25.157kBd or 3.15kB/s full cross-architecture / promiscuous clock compatible.
 - `OVERDRIVE` mode runs a specific architecture at its maximum limits (non cross-architecture compatible). Every architecture has its own limits, Arduino Duemilanove for example runs at 33.898kBd, Arduino Zero can reach 48.000kBd.
 
 When including and using PJON, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because PJON is completely software emulated with a non blocking implementation, transforming a painfull walk to the hill in a nice flight.
@@ -114,32 +114,32 @@ If auto-addressing approach is your choice, you should never have a blind timefr
 Data transmission is handled by a packet manager, the `update()` function has to be called at least once per loop cycle. Consider that this is not an interrupt driven system, all the time dedicated to delays or executing other tasks is postponing the sending of all the packets are scheduled to be sent:
 
 ```cpp  
-  network.update();
+  bus.update();
 ```
 
 To send a string to another device connected to the bus simply call `send()` function passing the ID you want to contact, the string you want to send and its length:
 
 ```cpp
-network.send(100, "Ciao, this is a test!", 21);
+bus.send(100, "Ciao, this is a test!", 21);
 ```
 I know that the packet length is boring to fill but is there to prevent buffer overflow. If sending arbitrary values `NULL` terminator strategy based on `strlen()` is not safe to detect the end of a string.
 
 To send a value repeatedly simply add as last parameter the interval in microseconds you want between every sending:
 
 ```cpp
-int one_second_delay_test = network.send(100, "Test sent every second!", 23, 1000000);
+int one_second_delay_test = bus.send(100, "Test sent every second!", 23, 1000000);
 ```
 
 `one_second_delay_test` contains the id of the packet. If you want to remove this repeated task simply:
 
 ```cpp
-network.remove(one_second_delay_test);
+bus.remove(one_second_delay_test);
 ```
 
 To broadcast a message to all connected devices, use the `BROADCAST` constant as recipient ID.
 
 ```cpp
-int broadcastTest = network.send(BROADCAST, "Message for all connected devices.", 34);
+int broadcastTest = bus.send(BROADCAST, "Message for all connected devices.", 34);
 ```
 
 ====
@@ -159,15 +159,15 @@ void receiver_function(uint8_t length, uint8_t *payload) {
 };
 ```
 
-Inform the network to call `receiver_function` when a correct message is received:
+Inform the bus to call `receiver_function` when a correct message is received:
 
 ```cpp
-network.set_receiver(receiver_function);
+bus.set_receiver(receiver_function);
 ```
 
 To correctly receive data call `receive()` function at least once per loop cycle passing as a parameter, the maximum reception time in microseconds:
 ```cpp
-int response = network.receive(1000);
+int response = bus.receive(1000);
 ```
 
 Consider that this is not an interrupt driven system and so all the time passed in delay or executing something a certain amount of packets will be potentially lost unheard. Structure intelligently your loop cycle to avoid huge blind timeframes.
@@ -194,9 +194,8 @@ void error_handler(uint8_t code, uint8_t data) {
   if(code == PACKETS_BUFFER_FULL) {
     Serial.print("Packet buffer is full, has now a length of ");
     Serial.println(data, DEC);
-    Serial.println("Possible wrong network configuration!");
-    Serial.println("For high complexity networks higher MAX_PACKETS over 10.");
-    Serial.println("See in PJON.h");
+    Serial.println("Possible wrong bus configuration!");
+    Serial.println("higher MAX_PACKETS in PJON.h if necessary.");
   }
   if(code == MEMORY_FULL) {
     Serial.println("Packet memory allocation failed. Memory is full.");
@@ -213,9 +212,9 @@ void error_handler(uint8_t code, uint8_t data) {
 ```
 
 
-Now inform the network to call the error handler function in case of error:
+Now inform the bus to call the error handler function in case of error:
 ```cpp
-network.set_error(error_handler);
+bus.set_error(error_handler);
 ```
 
 ====

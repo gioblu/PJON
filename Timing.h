@@ -56,6 +56,29 @@
 #endif
 
 
+#if defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__)
+  /* Working nominally on pin 2 - 4 - 8 - 12 */
+  #if MODE == STANDARD
+    #define BIT_WIDTH 40
+    #define BIT_SPACER 112
+    #define ACCEPTANCE 40
+    #define READ_DELAY 8
+  #endif
+
+  #if MODE == FAST
+    /* Working nominally on pin 2 - 4 - 8 - 12 */
+    #define BIT_WIDTH 28
+    #define BIT_SPACER 66
+    #define ACCEPTANCE 28
+    #define READ_DELAY 14
+  #endif
+
+  #if MODE == OVERDRIVE
+    // To be implemented
+  #endif
+#endif
+
+
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
   #if MODE == STANDARD
     #define BIT_WIDTH 38

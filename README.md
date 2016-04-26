@@ -52,6 +52,7 @@ void loop() {
 ####Compatibility
 - ATmega88/168/328 8/16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
 - ATmega2560 16Mhz (Arduino Mega)
+- ATmega16u4/32u4 (Arduino Leonardo)
 - ATtiny45/85 8/16Mhz (Trinket, other ATtiny 85 boards), see [ATtiny Wiki page](https://github.com/gioblu/PJON/wiki/ATtiny-interfacing)
 - SAMD (Arduino Zero)
 - ESP8266 v.1-7 80Mhz "AI-THINKER AT" firmware, see [ESP8266 Arduino IDE](https://github.com/esp8266/Arduino)  

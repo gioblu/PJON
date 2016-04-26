@@ -99,7 +99,7 @@ Lets start coding, instantiate the `PJON` object that in the example is called b
   bus.begin();     // initialize PJON bus
 ```
 
-If you are interested auto-addressing is really easy to use:
+If you are interested auto-addressing is really easy to use but still experimental:
 ```cpp  
   PJON bus(12);
   bus.begin();     // initialize PJON bus

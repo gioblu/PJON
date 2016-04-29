@@ -105,33 +105,27 @@ limitations under the License. */
     public:
       PJON(uint8_t input_pin);
       PJON(uint8_t input_pin, uint8_t id);
-      void begin();
 
-      void acquire_id();
-      uint8_t device_id();
-
-      uint8_t compute_crc_8(char input_byte, uint8_t crc);
-
-      void set_default();
-      void set_error(error e);
-      void set_id(uint8_t id);
-      void set_negative_acknowledge(boolean state);
-      void set_receiver(receiver r);
-
-      uint8_t  read_byte();
-      uint16_t receive_byte();
-      uint16_t receive();
-      uint16_t receive(uint32_t duration);
-
-      void     send_byte(uint8_t b);
-      uint16_t send_string(uint8_t id, char *string, uint8_t length);
-      uint16_t send(uint8_t id, char *packet, uint8_t length, uint32_t timing = 0);
-
-      void update();
-      void remove(uint16_t id);
-
-      boolean can_start();
-      uint8_t syncronization_bit();
+      void      acquire_id();
+      void      begin();
+      boolean   can_start();
+      uint8_t   compute_crc_8(char input_byte, uint8_t crc);
+      uint8_t   device_id();
+      uint8_t   read_byte();
+      uint16_t  receive();
+      uint16_t  receive(uint32_t duration);
+      uint16_t  receive_byte();
+      void      remove(uint16_t id);
+      uint16_t  send(uint8_t id, char *packet, uint8_t length, uint32_t timing = 0);
+      void      send_byte(uint8_t b);
+      uint16_t  send_string(uint8_t id, char *string, uint8_t length);
+      void      set_default();
+      void      set_error(error e);
+      void      set_id(uint8_t id);
+      void      set_negative_acknowledge(boolean state);
+      void      set_receiver(receiver r);
+      uint8_t   syncronization_bit();
+      void      update();
 
       uint8_t data[PACKET_MAX_LENGTH];
       packet  packets[MAX_PACKETS];

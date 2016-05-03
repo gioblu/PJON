@@ -114,7 +114,7 @@ limitations under the License. */
       uint16_t  receive(uint32_t duration);
       uint16_t  receive_byte();
       void      remove(uint16_t id);
-      uint16_t  send(uint8_t id, char *packet, uint8_t length, uint32_t timing = 0);
+      uint16_t  send(uint8_t id, const char *packet, uint8_t length, uint32_t timing = 0);
       void      send_byte(uint8_t b);
       uint16_t  send_string(uint8_t id, char *string, uint8_t length);
       void      set_default();

@@ -291,7 +291,7 @@ uint16_t PJON::send_string(uint8_t id, char *string, uint8_t length) {
   | device_id | length | content | state | attempts | timing | registration |
   |___________|________|_________|_______|__________|________|______________| */
 
-uint16_t PJON::send(uint8_t id, char *packet, uint8_t length, uint32_t timing) {
+uint16_t PJON::send(uint8_t id, const char *packet, uint8_t length, uint32_t timing) {
 
   if(length >= PACKET_MAX_LENGTH) {
     this->_error(CONTENT_TOO_LONG, length);

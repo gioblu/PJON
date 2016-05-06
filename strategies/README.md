@@ -41,5 +41,5 @@ class YourStrategyName {
 }
 ```
 
-Simply add your code in the function declaration shown above and instantiate PJON using the strategy type you
+Simply add your code in the functions declaration shown above and instantiate PJON using the strategy type you
 have created: `PJON<YourStrategyName> bus();`.

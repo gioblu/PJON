@@ -28,7 +28,7 @@ void send_byte(uint8_t b, uint8_t pin) {
 ```
 
 ####How to define a new strategy
-To define your new strategy you have only to create a new folder in strategies
+To define your new strategy you have only to create a new folder named for example `YourStrategyName` in `strategies`
 directory and write the necessary file `YourStrategyName.h`:
 
 ```cpp

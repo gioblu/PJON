@@ -118,7 +118,7 @@ limitations under the License. */
         for(uint8_t id = 1; id < 255 && (time + MAX_ID_SCAN_TIME > micros()); id++) {
           ping_id = send(id, &msg, 1);
 
-          while(packets[ping_id].state != NULL && (time + MAX_ID_SCAN_TIME > micros()))
+          while(packets[ping_id].state != 0 && (time + MAX_ID_SCAN_TIME > micros()))
             update();
 
           if(_device_id != NOT_ASSIGNED) return;
@@ -168,11 +168,11 @@ limitations under the License. */
           if(i == 0 && data[i] != _device_id && data[i] != BROADCAST)
             return BUSY;
 
-          if(i == 1)
+          if(i == 1) {
             if(data[i] > 3 && data[i] < PACKET_MAX_LENGTH)
               package_length = data[i];
             else return FAIL;
-
+          }
           CRC = compute_crc_8(data[i], CRC);
         }
         if(!CRC) {
@@ -216,7 +216,7 @@ limitations under the License. */
         packets[id].device_id = 0;
         packets[id].length = 0;
         packets[id].registration = 0;
-        packets[id].state = NULL;
+        packets[id].state = 0;
       };
 
 
@@ -233,7 +233,7 @@ limitations under the License. */
       | device_id | length | content | state | attempts | timing | registration |
       |___________|________|_________|_______|__________|________|______________| */
 
-      uint16_t send(uint8_t id, char *packet, uint8_t length, uint32_t timing = 0) {
+      uint16_t send(uint8_t id, const char *packet, uint8_t length, uint32_t timing = 0) {
         if(length >= PACKET_MAX_LENGTH) {
           _error(CONTENT_TOO_LONG, length);
           return FAIL;
@@ -242,14 +242,14 @@ limitations under the License. */
         char *str = (char *) malloc(length);
 
         if(str == NULL) {
-          _error(MEMORY_FULL, FAIL);
+          _error(MEMORY_FULL, 0);
           return FAIL;
         }
 
         memcpy(str, packet, length);
 
         for(uint8_t i = 0; i < MAX_PACKETS; i++)
-          if(packets[i].state == NULL) {
+          if(packets[i].state == 0) {
             packets[i].content = str;
             packets[i].device_id = id;
             packets[i].length = length;
@@ -329,7 +329,7 @@ limitations under the License. */
         set_receiver(dummy_receiver_handler);
 
         for(int i = 0; i < MAX_PACKETS; i++) {
-          packets[i].state = NULL;
+          packets[i].state = 0;
           packets[i].timing = 0;
           packets[i].attempts = 0;
         }
@@ -412,7 +412,7 @@ limitations under the License. */
 
       void update() {
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
-          if(packets[i].state == NULL) return;
+          if(packets[i].state == 0) return;
           if(micros() - packets[i].registration > packets[i].timing + pow(packets[i].attempts, 3))
             packets[i].state = send_string(packets[i].device_id, packets[i].content, packets[i].length);
           else continue;

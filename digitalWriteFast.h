@@ -22,13 +22,6 @@
 #ifndef __DIGITALWRITEFAST_H_INCLUDED__
   #define __DIGITALWRITEFAST_H_INCLUDED__
 
-  #if defined(ARDUINO) && (ARDUINO >= 100)
-    #include "Arduino.h"
-  #else
-    #include "WProgram.h"
-    #include <wiring.h>
-  #endif
-
   #define BIT_READ(value, bit) (((value) >> (bit)) & 0x01)
   #define BIT_SET(value, bit) ((value) |= (1UL << (bit)))
   #define BIT_CLEAR(value, bit) ((value) &= ~(1UL << (bit)))

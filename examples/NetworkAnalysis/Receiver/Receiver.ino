@@ -1,10 +1,11 @@
 #include <PJON.h>
 
-// bus(Arduino pin used, selected device id)
-PJON bus(12, 44);
+// <Strategy name> bus(selected device id)
+PJON<SoftwareBitBang> bus(44);
 
 void setup() {
-  bus.begin(); // Initialize PJON bus
+  bus.set_pin(12);
+  bus.begin();
 
   Serial.begin(115200);
 };

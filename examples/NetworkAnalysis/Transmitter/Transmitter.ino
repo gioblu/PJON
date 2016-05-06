@@ -5,14 +5,15 @@ float mistakes;
 int busy;
 int fail;
 
-// bus(Arduino pin used, selected device id)
-PJON bus(12, 45);
+// <Strategy name> bus(selected device id)
+PJON<SoftwareBitBang> bus(45);
 
 int packet;
 char content[] = "01234567890123456789";
 
 void setup() {
-  bus.begin(); // Initialize PJON bus
+  bus.set_pin(12);
+  bus.begin();
 
   Serial.begin(115200);
   Serial.println("PJON - Network analysis");

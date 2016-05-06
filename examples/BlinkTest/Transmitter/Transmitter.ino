@@ -1,10 +1,11 @@
 #include <PJON.h>
 
-// bus(Arduino pin used, selected device id)
-PJON bus(12, 45);
+// <Strategy name> bus(selected device id)
+PJON<SoftwareBitBang> bus(45);
 
 void setup() {
-  bus.begin(); // Initialize PJON bus
+  bus.set_pin(12);
+  bus.begin();
   bus.send(44, "B", 1, 1000000); // Send B to device 44 every second
 }
 

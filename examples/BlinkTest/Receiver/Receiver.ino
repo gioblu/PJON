@@ -1,13 +1,14 @@
 #include <PJON.h>
 
-// bus(Arduino pin used, selected device id)
-PJON bus(12, 44);
+// <Strategy name> bus(selected device id)
+PJON<SoftwareBitBang> bus(44);
 
 void setup() {
   pinModeFast(13, OUTPUT);
   digitalWriteFast(13, LOW); // Initialize LED 13 to be off
 
-  bus.begin(); // Initialize PJON bus
+  bus.set_pin(12);
+  bus.begin();
   bus.set_receiver(receiver_function);
 
   Serial.begin(9600);

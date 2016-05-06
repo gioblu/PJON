@@ -3,10 +3,11 @@
 float undetected_errors;
 float count;
 
-// bus(Arduino pin used, selected device id)
-PJON bus(12, 44);
+// <Strategy name> bus(selected device id)
+PJON<SoftwareBitBang> bus(44);
 
 void setup() {
+  bus.set_pin(12);
   bus.begin();
   bus.set_receiver(receiver_function);
 

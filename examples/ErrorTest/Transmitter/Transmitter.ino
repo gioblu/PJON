@@ -1,13 +1,16 @@
 #include <PJON.h>
 
-PJON bus(12, 45);
+// <Strategy name> bus(selected device id)
+PJON<SoftwareBitBang> bus(45);
 
 int packet;
 char content[4] = {0, 0, 0, 0};
 // Content with contant and changing byte
 
 void setup() {
-  bus.begin(); // Initializa PJON bus
+  bus.set_pin(12);
+  bus.begin();
+
   packet = bus.send(44, content, 4);
 
   Serial.begin(115200);

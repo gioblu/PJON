@@ -1,13 +1,15 @@
 #include <PJON.h>
 
-// bus(Arduino pin used, selected device id)
-PJON bus(12, 45);
+// <Strategy name> bus(selected device id)
+PJON<SoftwareBitBang> bus(45);
 
 int packet;
 char content[] = "01234567890123456789";
 
 void setup() {
-  bus.begin(); // Initialize PJON bus
+  bus.set_pin(12);
+  bus.begin();
+
   bus.set_error(error_handler);
 
   packet = bus.send(44, content, 20);

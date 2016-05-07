@@ -80,7 +80,6 @@ class OverSampling {
       for(uint8_t i = 0; i < 8; i++) {
         unsigned long time = micros();
         float value = 0.5;
-        /* (freak condition used to avoid micros() overflow bug) */
         while((uint32_t)(time + _OS_BIT_WIDTH) > micros())
           value = ((value * 0.999) + (digitalReadFast(pin) * 0.001));
         byte_value += (value > 0.5) << i;

@@ -1,6 +1,6 @@
 {
   "name": "PJON",
-  "description": "PJON is an open-source, multi-master, mult-media device communications bus system framework",
+  "description": "PJON is an open-source, multi-master, multi-media device communications bus system framework",
   "keywords": "communication, bus, protocol",
   "authors":
   {

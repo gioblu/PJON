@@ -162,7 +162,7 @@ limitations under the License. */
         uint8_t CRC = 0;
 
         for(uint8_t i = 0; i < package_length; i++) {
-          data[i] = state = Strategy::receive_byte(_input_pin);
+          data[i] = state = Strategy::receive_byte(_input_pin, _output_pin);
           if(state == FAIL) return FAIL;
 
           if(i == 0 && data[i] != _device_id && data[i] != BROADCAST)
@@ -178,7 +178,7 @@ limitations under the License. */
         if(!CRC) {
           if(data[0] != BROADCAST && _mode != SIMPLEX) {
             pinModeFast(_output_pin, OUTPUT);
-            Strategy::send_byte(ACK, _output_pin);
+            Strategy::send_byte(ACK, _input_pin, _output_pin);
             digitalWriteFast(_output_pin, LOW);
           }
           _receiver(data[1] - 3, data + 2);
@@ -186,7 +186,7 @@ limitations under the License. */
         } else {
           if(data[0] != BROADCAST && _negative_acknowledge && _mode != SIMPLEX) {
             pinModeFast(_output_pin, OUTPUT);
-            Strategy::send_byte(NAK, _output_pin);
+            Strategy::send_byte(NAK, _input_pin, _output_pin);
             digitalWriteFast(_output_pin, LOW);
           }
           return NAK;
@@ -286,27 +286,27 @@ limitations under the License. */
 
       uint16_t send_string(uint8_t id, char *string, uint8_t length) {
         if(!string) return FAIL;
-        if(_mode != SIMPLEX && !Strategy::can_start(_input_pin)) return BUSY;
+        if(_mode != SIMPLEX && !Strategy::can_start(_input_pin, _output_pin)) return BUSY;
 
         uint8_t CRC = 0;
         pinModeFast(_output_pin, OUTPUT);
 
-        Strategy::send_byte(id, _output_pin);
+        Strategy::send_byte(id, _input_pin, _output_pin);
         CRC = compute_crc_8(id, CRC);
-        Strategy::send_byte(length + 3, _output_pin);
+        Strategy::send_byte(length + 3, _input_pin, _output_pin);
         CRC = compute_crc_8(length + 3, CRC);
 
         for(uint8_t i = 0; i < length; i++) {
-          Strategy::send_byte(string[i], _output_pin);
+          Strategy::send_byte(string[i], _input_pin, _output_pin);
           CRC = compute_crc_8(string[i], CRC);
         }
 
-        Strategy::send_byte(CRC, _output_pin);
+        Strategy::send_byte(CRC, _input_pin, _output_pin);
         digitalWriteFast(_input_pin, LOW);
 
         if(id == BROADCAST || _mode == SIMPLEX) return ACK;
 
-        uint16_t response = Strategy::get_response(_input_pin);
+        uint16_t response = Strategy::get_response(_input_pin, _output_pin);
 
         if(response == ACK) return ACK;
 

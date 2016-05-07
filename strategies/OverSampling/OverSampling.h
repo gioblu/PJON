@@ -29,14 +29,14 @@ class OverSampling {
     there is no active transmission */
 
     static inline __attribute__((always_inline))
-    boolean can_start(uint8_t pin) {
-      pinModeFast(pin, INPUT);
+    boolean can_start(uint8_t input_pin, uint8_t output_pin) {
+      pinModeFast(input_pin, INPUT);
       for(uint8_t i = 0; i < 9; i++) {
-        if(digitalReadFast(pin))
+        if(digitalReadFast(input_pin))
           return false;
         delayMicroseconds(_OS_BIT_WIDTH);
       }
-      if(digitalReadFast(pin)) return false;
+      if(digitalReadFast(input_pin)) return false;
       return true;
     }
 
@@ -60,13 +60,13 @@ class OverSampling {
     detected at byte level. */
 
     static inline __attribute__((always_inline))
-    void send_byte(uint8_t b, uint8_t pin) {
-      digitalWriteFast(pin, HIGH);
+    void send_byte(uint8_t b, uint8_t input_pin, uint8_t output_pin) {
+      digitalWriteFast(output_pin, HIGH);
       delayMicroseconds(_OS_BIT_SPACER);
-      digitalWriteFast(pin, LOW);
+      digitalWriteFast(output_pin, LOW);
       delayMicroseconds(_OS_BIT_WIDTH);
       for(uint8_t mask = 0x01; mask; mask <<= 1) {
-        digitalWriteFast(pin, b & mask);
+        digitalWriteFast(output_pin, b & mask);
         delayMicroseconds(_OS_BIT_WIDTH);
       }
     }
@@ -104,13 +104,13 @@ class OverSampling {
       ACCEPTANCE */
 
     static inline __attribute__((always_inline))
-    uint16_t receive_byte(uint8_t pin) {
+    uint16_t receive_byte(uint8_t input_pin, uint8_t output_pin) {
       float value = 0.5;
       unsigned long time = micros();
       /* Update pin value until the pin stops to be HIGH or passed more time than
-         BIT_SPACER duration (freak condition used to avoid micros() overflow bug) */
-      while(((uint32_t)(time + _OS_BIT_SPACER) > micros()) && digitalReadFast(pin))
-        value = (value * 0.999)  + (digitalReadFast(pin) * 0.001);
+         BIT_SPACER duration */
+      while(((uint32_t)(time + _OS_BIT_SPACER) > micros()) && digitalReadFast(input_pin))
+        value = (value * 0.999)  + (digitalReadFast(input_pin) * 0.001);
       /* Save how much time passed */
       time = micros();
       /* If pin value is in average more than 0.5, is a 1, and if is more than
@@ -119,8 +119,8 @@ class OverSampling {
       if(value > 0.5) {
         value = 0.5;
         while((uint32_t)(time + _OS_BIT_WIDTH) > micros())
-          value = (value * 0.999)  + (digitalReadFast(pin) * 0.001);
-        if(value < 0.5) return read_byte(pin);
+          value = (value * 0.999)  + (digitalReadFast(input_pin) * 0.001);
+        if(value < 0.5) return read_byte(input_pin);
       }
       return FAIL;
     }
@@ -129,11 +129,11 @@ class OverSampling {
     /* Get byte response from receiver */
 
     static inline __attribute__((always_inline))
-    uint16_t get_response(uint8_t pin) {
+    uint16_t get_response(uint8_t input_pin, uint8_t output_pin) {
       uint16_t response = FAIL;
       uint32_t time = micros();
       while(response == FAIL && (uint32_t)(time + _OS_BIT_SPACER + _OS_BIT_WIDTH) >= micros())
-        response = receive_byte(pin);
+        response = receive_byte(input_pin, output_pin);
       return response;
     }
 };

@@ -76,7 +76,7 @@ STANDARD mode performance:
 #define _SWBB_OVERDRIVE 2
 
 /* Set here the mode you want to use - default STANDARD */
-#define _SWBB_MODE STANDARD
+#define _SWBB_MODE _SWBB_STANDARD
 
 #include "Timing.h"
 
@@ -88,14 +88,14 @@ class SoftwareBitBang {
     there is no active transmission */
 
     static inline __attribute__((always_inline))
-    boolean can_start(uint8_t pin) {
-      pinModeFast(pin, INPUT);
+    boolean can_start(uint8_t input_pin, uint8_t output_pin) {
+      pinModeFast(input_pin, INPUT);
       for(uint8_t i = 0; i < 9; i++) {
-        if(digitalReadFast(pin))
+        if(digitalReadFast(input_pin))
           return false;
         delayMicroseconds(SWBB_BIT_WIDTH);
       }
-      if(digitalReadFast(pin)) return false;
+      if(digitalReadFast(input_pin)) return false;
       return true;
     }
 
@@ -119,13 +119,13 @@ class SoftwareBitBang {
     detected at byte level. */
 
     static inline __attribute__((always_inline))
-    void send_byte(uint8_t b, uint8_t pin) {
-      digitalWriteFast(pin, HIGH);
+    void send_byte(uint8_t b, uint8_t input_pin, uint8_t output_pin) {
+      digitalWriteFast(output_pin, HIGH);
       delayMicroseconds(SWBB_BIT_SPACER);
-      digitalWriteFast(pin, LOW);
+      digitalWriteFast(output_pin, LOW);
       delayMicroseconds(SWBB_BIT_WIDTH);
       for(uint8_t mask = 0x01; mask; mask <<= 1) {
-        digitalWriteFast(pin, b & mask);
+        digitalWriteFast(output_pin, b & mask);
         delayMicroseconds(SWBB_BIT_WIDTH);
       }
     }
@@ -183,19 +183,19 @@ class SoftwareBitBang {
       ACCEPTANCE */
 
     static inline __attribute__((always_inline))
-    uint16_t receive_byte(uint8_t pin) {
+    uint16_t receive_byte(uint8_t input_pin, uint8_t output_pin) {
       /* Initialize the pin and set it to LOW to reduce interference */
-      pullDownFast(pin);
+      pullDownFast(input_pin);
       uint32_t time = micros();
       /* Do nothing until the pin goes LOW or passed more time than SWBB_BIT_SPACER duration */
-      while(digitalReadFast(pin) && (uint32_t)(micros() - time) <= SWBB_BIT_SPACER);
+      while(digitalReadFast(input_pin) && (uint32_t)(micros() - time) <= SWBB_BIT_SPACER);
       /* Save how much time passed */
       time = micros() - time;
       /* is for sure equal or less than SWBB_BIT_SPACER, and if is more than ACCEPTANCE
          (a minimum HIGH duration) and what is coming after is a LOW bit
          probably a byte is coming so try to receive it. */
-      if(time >= SWBB_ACCEPTANCE && !syncronization_bit(pin))
-        return (uint8_t)read_byte(pin);
+      if(time >= SWBB_ACCEPTANCE && !syncronization_bit(input_pin))
+        return (uint8_t)read_byte(input_pin);
       return FAIL;
     }
 
@@ -203,11 +203,11 @@ class SoftwareBitBang {
     /* Get byte response from receiver */
 
     static inline __attribute__((always_inline))
-    uint16_t get_response(uint8_t pin) {
+    uint16_t get_response(uint8_t input_pin, uint8_t output_pin) {
       uint16_t response = FAIL;
       uint32_t time = micros();
       while(response == FAIL && (uint32_t)(time + SWBB_BIT_SPACER + SWBB_BIT_WIDTH) >= micros())
-        response = receive_byte(pin);
+        response = receive_byte(input_pin, output_pin);
       return response;
     }
 };

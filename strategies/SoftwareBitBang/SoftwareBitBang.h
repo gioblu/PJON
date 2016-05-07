@@ -53,7 +53,7 @@ to be sent again in future until is received or MAX_ATTEMPTS sending attempts is
 reached, but a certain amount of bandwidth can be wasted. Structure intelligently
 your loop cycle to avoid huge blind timeframes.
 
-3 SoftwareBitBang strategy can have some compatibility issues with codebases that
+3 SoftwareBitBang strategy can have some compatibility issue with codebases that
 are using interrupts in their procedure, like for example the Servo library.
 Reliability or bandwidth loss can be experienced because of the cyclical
 interruptions made by third party interrupt driven software to the PJON code.

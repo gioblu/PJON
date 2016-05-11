@@ -134,10 +134,10 @@
   #if MODE == _SWBB_STANDARD
   /* Added by github user SticilFace - 25/04/2016  */
     #if F_CPU == 96000000L
-      #define BIT_WIDTH 48
-      #define BIT_SPACER 112
-      #define ACCEPTANCE 40
-      #define READ_DELAY 4
+      #define SWBB_BIT_WIDTH 48
+      #define SWBB_BIT_SPACER 112
+      #define SWBB_ACCEPTANCE 40
+      #define SWBB_READ_DELAY 4
     #endif
   #endif
 #endif

@@ -200,14 +200,24 @@ class SoftwareBitBang {
     }
 
 
-    /* Get byte response from receiver */
+    /* Receive byte response */
 
     static inline __attribute__((always_inline))
-    uint16_t get_response(uint8_t input_pin, uint8_t output_pin) {
+    uint16_t receive_response(uint8_t input_pin, uint8_t output_pin) {
       uint16_t response = FAIL;
       uint32_t time = micros();
       while(response == FAIL && (uint32_t)(time + SWBB_BIT_SPACER + SWBB_BIT_WIDTH) >= micros())
         response = receive_byte(input_pin, output_pin);
       return response;
+    }
+
+
+    /* Send byte response to package transmitter */
+
+    static inline __attribute__((always_inline))
+    void send_response(uint8_t response, uint8_t input_pin, uint8_t output_pin) {
+      pinModeFast(output_pin, OUTPUT);
+      send_byte(response, input_pin, output_pin);
+      pullDownFast(output_pin);
     }
 };

@@ -30,13 +30,15 @@ class OverSampling {
 
     static inline __attribute__((always_inline))
     boolean can_start(uint8_t input_pin, uint8_t output_pin) {
+      float value = 0.5;
+      unsigned long time = micros();
       pinModeFast(input_pin, INPUT);
       for(uint8_t i = 0; i < 9; i++) {
-        if(digitalReadFast(input_pin))
+        while((uint32_t)(time + _OS_BIT_WIDTH) > micros())
+          value = (value * 0.999)  + (digitalReadFast(input_pin) * 0.001);
+        if(value > 0.5)
           return false;
-        delayMicroseconds(_OS_BIT_WIDTH);
       }
-      if(digitalReadFast(input_pin)) return false;
       return true;
     }
 
@@ -104,6 +106,8 @@ class OverSampling {
 
     static inline __attribute__((always_inline))
     uint16_t receive_byte(uint8_t input_pin, uint8_t output_pin) {
+      pullDownFast(input_pin);
+      pullDownFast(output_pin);
       float value = 0.5;
       unsigned long time = micros();
       /* Update pin value until the pin stops to be HIGH or passed more time than
@@ -125,14 +129,27 @@ class OverSampling {
     }
 
 
-    /* Get byte response from receiver */
+    /* Receive byte response */
 
     static inline __attribute__((always_inline))
-    uint16_t get_response(uint8_t input_pin, uint8_t output_pin) {
+    uint16_t receive_response(uint8_t input_pin, uint8_t output_pin) {
+      digitalWriteFast(output_pin, LOW);
+      digitalWriteFast(input_pin, LOW);
+
       uint16_t response = FAIL;
       uint32_t time = micros();
       while(response == FAIL && (uint32_t)(time + _OS_BIT_SPACER + _OS_BIT_WIDTH) >= micros())
         response = receive_byte(input_pin, output_pin);
       return response;
+    }
+
+
+    /* Send byte response to package transmitter */
+
+    static inline __attribute__((always_inline))
+    void send_response(uint8_t response, uint8_t input_pin, uint8_t output_pin) {
+      pinModeFast(output_pin, OUTPUT);
+      send_byte(response, input_pin, output_pin);
+      pullDownFast(output_pin);
     }
 };

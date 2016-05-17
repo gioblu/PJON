@@ -177,17 +177,13 @@ limitations under the License. */
         }
         if(!CRC) {
           if(data[0] != BROADCAST && _mode != SIMPLEX) {
-            pinModeFast(_output_pin, OUTPUT);
-            Strategy::send_byte(ACK, _input_pin, _output_pin);
-            digitalWriteFast(_output_pin, LOW);
+            Strategy::send_response(ACK, _input_pin, _output_pin);
           }
           _receiver(data[1] - 3, data + 2);
           return ACK;
         } else {
           if(data[0] != BROADCAST && _negative_acknowledge && _mode != SIMPLEX) {
-            pinModeFast(_output_pin, OUTPUT);
-            Strategy::send_byte(NAK, _input_pin, _output_pin);
-            digitalWriteFast(_output_pin, LOW);
+            Strategy::send_response(NAK, _input_pin, _output_pin);
           }
           return NAK;
         }
@@ -306,7 +302,7 @@ limitations under the License. */
 
         if(id == BROADCAST || _mode == SIMPLEX) return ACK;
 
-        uint16_t response = Strategy::get_response(_input_pin, _output_pin);
+        uint16_t response = Strategy::receive_response(_input_pin, _output_pin);
 
         if(response == ACK) return ACK;
 

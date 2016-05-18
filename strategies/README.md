@@ -3,7 +3,7 @@
 PJON codebase uses strategies to physically communicate through the medium used, abstracting the physical layer from its procedure. A Strategy is only a class containing a set of functions able to send and receive messages:
 
 - `boolean can_start(uint8_t input_pin, uint8_t output_pin)`
-  Returns true if the medium is free and false if the medium is in use.
+  Should Return `true` if the medium is free for use and `false` if the medium is in use by some other device.
 
 - `void send_byte(uint8_t input_pin, uint8_t output_pin)`
   Sends a byte on a pin

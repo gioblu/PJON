@@ -87,8 +87,9 @@
 #if defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
   #if _SWBB_MODE == _SWBB_STANDARD
     #if F_CPU == 8000000L
+      /* Internal oscillator */
       #define SWBB_BIT_WIDTH  34
-      #define SWBB_BIT_SPACER 110
+      #define SWBB_BIT_SPACER 114
       #define SWBB_ACCEPTANCE 34
       #define SWBB_READ_DELAY 10
     #endif

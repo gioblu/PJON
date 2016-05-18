@@ -20,8 +20,9 @@ void receiver_function(uint8_t length, uint8_t *payload) {
  if((char)payload[0] == 'B') {
     bus.send(45, "B", 1);
     digitalWrite(13, HIGH);
-    delay(15);
+    delay(5);
     digitalWrite(13, LOW);
+    delay(5);
   }
 }
 

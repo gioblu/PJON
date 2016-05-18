@@ -12,7 +12,7 @@ void setup() {
 
   bus.set_receiver(receiver_function);
   bus.send(45, "B", 1);
-  
+
   Serial.begin(115200);
 };
 

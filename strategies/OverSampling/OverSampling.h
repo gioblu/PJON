@@ -39,6 +39,7 @@ class OverSampling {
         if(value > 0.5)
           return false;
       }
+      pinModeFast(output_pin, OUTPUT);
       return true;
     }
 

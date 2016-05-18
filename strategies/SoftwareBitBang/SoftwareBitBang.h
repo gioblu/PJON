@@ -96,6 +96,7 @@ class SoftwareBitBang {
         delayMicroseconds(SWBB_BIT_WIDTH);
       }
       if(digitalReadFast(input_pin)) return false;
+      pinModeFast(output_pin, OUTPUT);
       return true;
     }
 

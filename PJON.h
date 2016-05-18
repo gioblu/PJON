@@ -285,7 +285,6 @@ limitations under the License. */
         if(_mode != SIMPLEX && !Strategy::can_start(_input_pin, _output_pin)) return BUSY;
 
         uint8_t CRC = 0;
-        pinModeFast(_output_pin, OUTPUT);
 
         Strategy::send_byte(id, _input_pin, _output_pin);
         CRC = compute_crc_8(id, CRC);
@@ -298,7 +297,6 @@ limitations under the License. */
         }
 
         Strategy::send_byte(CRC, _input_pin, _output_pin);
-        digitalWriteFast(_input_pin, LOW);
 
         if(id == BROADCAST || _mode == SIMPLEX) return ACK;
 

@@ -32,14 +32,6 @@ PJON (Padded Jittering Operative Network) is an Arduino compatible, multi-master
 - ESP8266 NodeMCU v0.9-1.0 80Mhz, see https://github.com/esp8266/Arduino
 - MK20DX256 96Mhz (Teensy 3.1)
 
-When including and using PJON, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because PJON is completely software emulated with a non blocking implementation, transforming a painfull walk to the hill in a nice flight.
-
-Single wire simplicity let you to experiment quickly and with creativity. The first test I suggest, at your own risk, is to let two arduino boards communicate through your body touching with the left hand the digital port of the first board (5v 40ma, harmless) and with the right the port of the other one. Will be stunning to see high accuracy digital communication running inside a living biological body. This opens the mind to possible creative solutions.
-
-![PJON - Michael Teeuw application example](http://33.media.tumblr.com/0065c3946a34191a2836c405224158c8/tumblr_inline_nvrbxkXo831s95p1z_500.gif)
-
-PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl/post/130558526217/pjon-my-son)
-
 ####License
 
 ```cpp

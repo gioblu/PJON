@@ -6,9 +6,10 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-PJON	KEYWORD1
+PJON  KEYWORD1
 SoftwareBitBang	KEYWORD1
 OverSampling	KEYWORD1
+Packet  KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
@@ -55,3 +56,4 @@ PACKET_MAX_LENGTH LITERAL1
 SIMPLEX LITERAL1
 HALF_DUPLEX LITERAL1
 TO_BE_SENT LITERAL1
+localhost LITERAL1

@@ -44,6 +44,13 @@ limitations under the License. */
   #define NAK           21
   #define NOT_ASSIGNED  255
 
+  /* A bus id is an array of 4 bytes containing a unique set.
+      The default setting is to run a local bus (0.0.0.0), in this
+      particular case the obvious bus id is omitted from the packet
+      content to reduce overhead. */
+
+  uint8_t localhost[4] = {0, 0, 0, 0};
+
   /* Internal constants */
   #define FAIL          0x100
   #define TO_BE_SENT    74
@@ -72,7 +79,7 @@ limitations under the License. */
   /* Maximum id scan time (5 seconds) */
   #define MAX_ID_SCAN_TIME    5000000
 
-  struct packet {
+  struct Packet {
     uint8_t  attempts;
     uint8_t  device_id;
     char     *content;
@@ -82,11 +89,11 @@ limitations under the License. */
     uint32_t timing;
   };
 
-  typedef void (* receiver)(uint8_t length, uint8_t *payload);
+  typedef void (* receiver)(uint8_t id, uint8_t *payload, uint8_t length);
   typedef void (* error)(uint8_t code, uint8_t data);
 
+  static void dummy_receiver_handler(uint8_t id, uint8_t *payload, uint8_t length) {};
   static void dummy_error_handler(uint8_t code, uint8_t data) {};
-  static void dummy_receiver_handler(uint8_t length, uint8_t *payload) {};
 
   template<typename Strategy = SoftwareBitBang>
   class PJON {
@@ -95,14 +102,38 @@ limitations under the License. */
 
     public:
 
+      /* PJON default initialization:
+           Acknowledge: true
+           Bus id: 0.0.0.0
+           device id: NOT_ASSIGNED (255)
+           Mode: HALF_DUPLEX
+           Strategy: SoftwareBitBang */
+
       PJON() : strategy(Strategy()) {
         _device_id = NOT_ASSIGNED;
-        this->set_default();
+        set_default();
       };
 
-      PJON(uint8_t id) : strategy(Strategy()) {
-        _device_id = id;
-        this->set_default();
+
+      /* PJON initialization passing device id:
+         PJON bus(1); */
+
+      PJON(uint8_t device_id) : strategy(Strategy()) {
+        _device_id = device_id;
+        set_default();
+      };
+
+
+      /* PJON initialization passing bus and device id:
+         uint8_t my_bus = {1, 1, 1, 1};
+         PJON bus(my_bys, 1); */
+
+      PJON(const uint8_t *b_id, uint8_t device_id) : strategy(Strategy()) {
+        for(uint8_t i = 0; i < 4; i++)
+          bus_id[i] = b_id[i];
+
+        _device_id = device_id;
+        set_default();
       };
 
 
@@ -132,6 +163,16 @@ limitations under the License. */
       void begin() {
         randomSeed(analogRead(A0));
         delay(random(0, INITIAL_MAX_DELAY));
+      };
+
+
+      /* Check equality between two bus ids */
+
+      boolean bus_id_equality(uint8_t *name_one, uint8_t *name_two) {
+        for(uint8_t i = 0; i < 4; i++)
+          if(name_one[i] != name_two[i])
+            return false;
+        return true;
       };
 
 
@@ -165,24 +206,34 @@ limitations under the License. */
           data[i] = state = Strategy::receive_byte(_input_pin, _output_pin);
           if(state == FAIL) return FAIL;
 
-          if(i == 0 && data[i] != _device_id && data[i] != BROADCAST)
+          if(i == 0 && data[i] != _device_id && data[i] != BROADCAST && !_router)
             return BUSY;
+
+          /* If an id is assigned to this bus it means that is potentially
+             sharing its medium, or the device could be connected in parallel
+             with other buses. Bus id equality is checked to avoid collision
+             i.e. id 1 bus 1, should not receive a message for id 1 bus 2. */
 
           if(i == 1) {
             if(data[i] > 3 && data[i] < PACKET_MAX_LENGTH)
               package_length = data[i];
             else return FAIL;
           }
+
+          if(!_local && !_router && i > 1 && i < 6)
+            if(bus_id[i - 2] != data[i])
+              return BUSY;
+
           CRC = compute_crc_8(data[i], CRC);
         }
         if(!CRC) {
-          if(data[0] != BROADCAST && _mode != SIMPLEX) {
+          if(_acknowledge && data[0] != BROADCAST && _mode != SIMPLEX) {
             Strategy::send_response(ACK, _input_pin, _output_pin);
           }
-          _receiver(data[1] - 3, data + 2);
+          _receiver(data[0], data + 2, data[1] - 3);
           return ACK;
         } else {
-          if(data[0] != BROADCAST && _negative_acknowledge && _mode != SIMPLEX) {
+          if(_acknowledge && data[0] != BROADCAST && _mode != SIMPLEX) {
             Strategy::send_response(NAK, _input_pin, _output_pin);
           }
           return NAK;
@@ -276,7 +327,7 @@ limitations under the License. */
       Channel analysis   Transmission                            Response
           _____           _____________________________           _____
          | C-A |         | ID | LENGTH | CONTENT | CRC |         | ACK |
-      <--|-----|---------|----|--------|---------|-----|--> <----|-----|
+      <--|-----|---< >---|----|--------|---------|-----|--> <----|-----|
          |  0  |         | 12 |   4    |   64    | 130 |         |  6  |
          |_____|         |____|________|_________|_____|         |_____|  */
 
@@ -285,11 +336,20 @@ limitations under the License. */
         if(_mode != SIMPLEX && !Strategy::can_start(_input_pin, _output_pin)) return BUSY;
 
         uint8_t CRC = 0;
-
         Strategy::send_byte(id, _input_pin, _output_pin);
         CRC = compute_crc_8(id, CRC);
-        Strategy::send_byte(length + 3, _input_pin, _output_pin);
-        CRC = compute_crc_8(length + 3, CRC);
+        Strategy::send_byte(length + ((_local) ? 3 : 7), _input_pin, _output_pin);
+        CRC = compute_crc_8(length + ((_local) ? 3 : 7), CRC);
+
+        /* If an id is assigned to the bus, the packet's content is prepended by
+           the ricipient's bus id. This opens up the possibility to have more than
+           one bus sharing the same medium. */
+
+        if(!_local)
+          for(uint8_t i = 0; i < 4; i++) {
+            Strategy::send_byte(bus_id[i], _input_pin, _output_pin);
+            CRC = compute_crc_8(bus_id[i], CRC);
+          }
 
         for(uint8_t i = 0; i < length; i++) {
           Strategy::send_byte(string[i], _input_pin, _output_pin);
@@ -298,7 +358,7 @@ limitations under the License. */
 
         Strategy::send_byte(CRC, _input_pin, _output_pin);
 
-        if(id == BROADCAST || _mode == SIMPLEX) return ACK;
+        if(!_acknowledge || id == BROADCAST || _mode == SIMPLEX) return ACK;
 
         uint16_t response = Strategy::receive_response(_input_pin, _output_pin);
 
@@ -314,11 +374,28 @@ limitations under the License. */
       };
 
 
+      /* Configure sincronous acknowledge presence: */
+
+      void set_acknowledge(boolean state) {
+        _acknowledge = state;
+      };
+
+
+      /* Set communication mode: */
+
+      void set_communication_mode(uint8_t mode) {
+        _mode = mode;
+      };
+
+
       /* Set bus state default configuration: */
 
       void set_default() {
         _mode = HALF_DUPLEX;
-        _negative_acknowledge = true;
+
+        if(!bus_id_equality(bus_id, localhost))
+          _local = false;
+
         set_error(dummy_error_handler);
         set_receiver(dummy_receiver_handler);
 
@@ -350,15 +427,6 @@ limitations under the License. */
 
       void set_id(uint8_t id) {
         _device_id = id;
-      };
-
-
-      /* Configure if to send or not NAK back to transmitter in case of error:
-         Sending NAK when error is detected can be critical in high interference
-         scenarios. (broken id reception) */
-
-      void set_negative_acknowledge(boolean state) {
-        _negative_acknowledge = state;
       };
 
 
@@ -443,14 +511,17 @@ limitations under the License. */
       };
 
       uint8_t data[PACKET_MAX_LENGTH];
-      packet  packets[MAX_PACKETS];
+      Packet  packets[MAX_PACKETS];
+      uint8_t bus_id[4] = {0, 0, 0, 0};
     private:
+      boolean   _acknowledge = true;
       uint8_t   _device_id;
       uint8_t   _input_pin;
+      boolean   _local = true;
       uint8_t   _mode;
       uint8_t   _output_pin;
       receiver  _receiver;
+      boolean   _router = false;
       error     _error;
-      boolean   _negative_acknowledge;
   };
 #endif

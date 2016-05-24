@@ -1,21 +1,21 @@
 
 /* OverSampling Two wires interrupts-less implementation
    Part of the PJON framework (included in version v3.0)
-   Copyright (c) 2012-2016, Giovanni Blu Mitolo All rights reserved.
+   Copyright (c) 2012-2016, Giovanni Blu Mitolo All rights reserved. */
 
-  STXRX882:
-    Medium: STX882/SRX882 433Mhz ASK/FSK radio modules
-      RX http://nicerf.com/manage/upfile/indexbanner/635331970881921250.pdf
-      TX http://nicerf.com/manage/upfile/indexbanner/635169453223382155.pdf
-      Timing for other hardware can be easily implemented in Timing.h
+#define _STXRX882_STANDARD 0
 
-  Performance:
+/* _STXRX882_STANDARD:
+   Medium: STX882/SRX882 433Mhz ASK/FSK modules or 315/433 MHz modules (green)
+    RX http://nicerf.com/manage/upfile/indexbanner/635331970881921250.pdf
+    TX http://nicerf.com/manage/upfile/indexbanner/635169453223382155.pdf
+    Timing for other hardware can be easily implemented in Timing.h
+
+   Performance:
     Transfer speed: 1620Bb or 202B/s
     Absolute  communication speed: 180B/s (data length 20 of characters)
     Data throughput: 150B/s (data length 20 of characters)
-    Range: 250m with no direct line of sight, 3km with direct line of sight */
-
-#define _STXRX882_STANDARD 0
+    Range: 250m with no direct line of sight, 5km with direct line of sight */
 
 #define _OS_MODE _STXRX882_STANDARD
 
@@ -108,7 +108,10 @@ class OverSampling {
     static inline __attribute__((always_inline))
     uint16_t receive_byte(uint8_t input_pin, uint8_t output_pin) {
       pullDownFast(input_pin);
-      pullDownFast(output_pin);
+
+      if(output_pin != NOT_ASSIGNED && output_pin != input_pin)
+        pullDownFast(output_pin);
+
       float value = 0.5;
       unsigned long time = micros();
       /* Update pin value until the pin stops to be HIGH or passed more time than
@@ -134,8 +137,10 @@ class OverSampling {
 
     static inline __attribute__((always_inline))
     uint16_t receive_response(uint8_t input_pin, uint8_t output_pin) {
-      digitalWriteFast(output_pin, LOW);
       digitalWriteFast(input_pin, LOW);
+
+      if(output_pin != NOT_ASSIGNED && output_pin != input_pin)
+        digitalWriteFast(output_pin, LOW);
 
       uint16_t response = FAIL;
       uint32_t time = micros();
@@ -151,6 +156,6 @@ class OverSampling {
     void send_response(uint8_t response, uint8_t input_pin, uint8_t output_pin) {
       pinModeFast(output_pin, OUTPUT);
       send_byte(response, input_pin, output_pin);
-      pullDownFast(output_pin);
+      digitalWriteFast(output_pin, LOW);
     }
 };

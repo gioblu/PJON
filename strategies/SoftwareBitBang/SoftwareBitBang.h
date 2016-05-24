@@ -3,18 +3,19 @@
    Part of the PJON framework (included in version v3.0)
    Copyright (c) 2012-2016, Giovanni Blu Mitolo All rights reserved.
 
-
 Performance
 
 Using only digitalWriteFast() micros() and delayMicroseconds() fast cross-architecture
-communication speed can be achieved. SoftwareBitBang works in 3 different communication
+communication speed can be achieved. SoftwareBitBang works in 3 different transmission
 modes, STANDARD, FAST and OVERDRIVE:
-STANDARD: 16944Bd or 2.12kB/s cross-architecture, promiscuous clock compatible.
-FAST: 25157Bd or 3.15kB/s cross-architecture, promiscuous clock compatible.
-OVERDRIVE: Runs a specific architecture at its maximum limits (non cross-architecture
-compatible). Every architecture has its own limits, Arduino Duemilanove for example
-runs at 33898Bd or 4.23kB/s, Arduino Zero can reach 48000Bd or 6.00kB/s.
 
+  STANDARD: 16944Bd or 2.12kB/s cross-architecture, promiscuous clock compatible.
+
+  FAST: 25157Bd or 3.15kB/s cross-architecture, promiscuous clock compatible.
+
+  OVERDRIVE: Runs a specific architecture at its maximum limits (non cross-architecture
+  compatible). Every architecture has its own limits, Arduino Duemilanove for example
+  runs at 33898Bd or 4.23kB/s, Arduino Zero can reach 48000Bd or 6.00kB/s.
 
 Compatibility
 
@@ -26,7 +27,6 @@ Compatibility
 - ESP8266 v.1-7 80Mhz "AI-THINKER AT" firmware, see https://github.com/esp8266/Arduino
 - ESP8266 NodeMCU v0.9-1.0 80Mhz, see https://github.com/esp8266/Arduino
 - MK20DX256 96Mhz (Teensy 3.1)
-
 
 Why not interrupts?
 
@@ -40,42 +40,41 @@ and reliable solution that leads to "more predictable" results than interrupt dr
 systems coexisting on small microcontrollers without the original developer and the
 end user knowing about it.
 
-
 Known issues
 
-1 A pull down resistor in the order of mega ohms could be necessary on the bus to
+1) A pull down resistor in the order of mega ohms could be necessary on the bus to
 reduce interference. See https://github.com/gioblu/PJON/wiki/Deal-with-interference
 
-2 Consider that this is not an interrupt driven system and so all the time passed
+2) Consider that this is not an interrupt driven system and so all the time passed
 in delay or executing something a certain amount of packets could be potentially
 lost unheard, the packet manager of PJON will do its job scheduling the packet
 to be sent again in future until is received or MAX_ATTEMPTS sending attempts is
 reached, but a certain amount of bandwidth can be wasted. Structure intelligently
 your loop cycle to avoid huge blind timeframes.
 
-3 SoftwareBitBang strategy can have some compatibility issue with codebases that
+3) SoftwareBitBang strategy can have compatibility issues with codebases that
 are using interrupts in their procedure, like for example the Servo library.
 Reliability or bandwidth loss can be experienced because of the cyclical
 interruptions made by third party interrupt driven software to the PJON code.
 
 
-STANDARD mode performance:
+STANDARD transmission mode performance:
    Transfer speed: 16.944kBb or 2.12kB/s
    Absolute  communication speed: 1.81kB/s (data length 20 of characters)
    Data throughput: 1.51kB/s (data length 20 of characters) */
 #define _SWBB_STANDARD  0
 
-/* FAST mode performance:
+/* FAST transmission mode performance:
    Transfer speed: 25.157kBd or 3.15kB/s
    Absolute  communication speed: 2.55kB/s (data length 20 of characters)
    Data throughput: 2.13kB/s (data length 20 of characters) */
 #define _SWBB_FAST      1
 
-/* OVERDRIVE mode performance:
+/* OVERDRIVE transmission mode performance:
    Architecture / setup dependant, see Timing.h */
 #define _SWBB_OVERDRIVE 2
 
-/* Set here the mode you want to use - default STANDARD */
+/* Set here the selected transmission mode - default STANDARD */
 #define _SWBB_MODE _SWBB_STANDARD
 
 #include "Timing.h"
@@ -187,6 +186,10 @@ class SoftwareBitBang {
     uint16_t receive_byte(uint8_t input_pin, uint8_t output_pin) {
       /* Initialize the pin and set it to LOW to reduce interference */
       pullDownFast(input_pin);
+
+      if(output_pin != input_pin && output_pin != NOT_ASSIGNED)
+        pullDownFast(output_pin);
+
       uint32_t time = micros();
       /* Do nothing until the pin goes LOW or passed more time than SWBB_BIT_SPACER duration */
       while(digitalReadFast(input_pin) && (uint32_t)(micros() - time) <= SWBB_BIT_SPACER);
@@ -205,6 +208,10 @@ class SoftwareBitBang {
 
     static inline __attribute__((always_inline))
     uint16_t receive_response(uint8_t input_pin, uint8_t output_pin) {
+
+      if(output_pin != input_pin && output_pin != NOT_ASSIGNED)
+        digitalWriteFast(output_pin, LOW);
+
       uint16_t response = FAIL;
       uint32_t time = micros();
       while(response == FAIL && (uint32_t)(time + SWBB_BIT_SPACER + SWBB_BIT_WIDTH) >= micros())

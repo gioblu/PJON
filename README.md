@@ -1,24 +1,21 @@
-##PJON v3.0 beta
+##PJON v3.0
 PJON (Padded Jittering Operative Network) is an Arduino compatible, multi-master, multi-media communications bus system. It proposes a Standard and it is designed as a framework for digital communication in embedded systems. It is a valid alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. If you are interested to know more about the PJON standard, visit the [Wiki](https://github.com/gioblu/PJON/wiki). If you need help see the [documentation](https://github.com/gioblu/PJON/wiki/Documentation) or if something is not working visit the [Troubleshooting page](https://github.com/gioblu/PJON/wiki/Troubleshooting). If you own a Saleae Logic Analyzer see [saleae-pjon-protocol-analyzer](https://github.com/aperepel/saleae-pjon-protocol-analyzer) crafted by Andrew Grande.
 
 [![Join the chat at https://gitter.im/gioblu/PJON](https://badges.gitter.im/gioblu/PJON.svg)](https://gitter.im/gioblu/PJON?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ####Features
+- Device id implementation to enable univocal communication up to 254 devices  
+- Bus id implementation to optionally enable shared medium communication
+- Multi media compatibility (wires up to 50m, radio up to 5km)
 - Physical layer abstraction
-  - SoftwareBitBang (software emulated non blocking implementation).
-    - 1 wire (plus common ground) physical layer with up to 50 meters range.
-  - OverSampling (pseudo over-sampling based on SoftwareBitBang).
-    - 2 pins (rx/tx) radio ASK/FSK physical layer with up to 3km range.
-- Multi media compatibility like wires, radio waves and light (still experimental).
-- 2 pin compatibility to enable twisted pair / radio modules.
-- Device id implementation to enable univocal communication up to 254 devices.  
-- Optional auto-addressing with id collision avoidance (experimental).
-- CRC8 table-less cyclic redundancy check implementation.
-- Acknowledgement of correct packet sending.
-- Collision avoidance to enable multi-master capability.
-- Broadcast functionality to contact all connected devices.
-- Packet manager to track and retransmit a failed packet sending in background.
-- Error handling.
+- 2 pin compatibility to enable twisted pair / radio modules
+- Optional auto-addressing with id collision avoidance (experimental)
+- CRC8 table-less cyclic redundancy check implementation
+- Acknowledgement of correct packet sending
+- Collision avoidance to enable multi-master capability
+- Broadcast functionality to contact all connected devices
+- Packet manager to track and retransmit a failed packet sending in background
+- Error handling
 
 ####Compatibility
 - ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)

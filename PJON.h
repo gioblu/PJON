@@ -49,7 +49,6 @@ limitations under the License. */
       particular case the obvious bus id is omitted from the packet
       content to reduce overhead. */
 
-  uint8_t localhost[4] = {0, 0, 0, 0};
 
   /* Internal constants */
   #define FAIL          0x100
@@ -99,6 +98,7 @@ limitations under the License. */
   class PJON {
 
     Strategy strategy;
+    uint8_t localhost[4] = {0, 0, 0, 0};
 
     public:
 
@@ -156,6 +156,10 @@ limitations under the License. */
         }
         _error(ID_ACQUISITION_FAIL, FAIL);
       };
+
+      void set_network(uint8_t *addr) {
+        localhost = addr;
+      }
 
 
       /* Initial random delay to avoid startup collision */

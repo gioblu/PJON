@@ -26,7 +26,7 @@ void receiver_function(uint8_t id, uint8_t *payload, uint8_t length) {
 
   if((char)payload[4] == 'T') {
     Serial.print("Temperature received: ");
-    Serial.print(payload[1] << 8 | payload[2] & 0xFF);
+    Serial.print(payload[4] << 8 | payload[5] & 0xFF);
     // Get back the original integer from the 2 separate bytes
   }
   Serial.println();

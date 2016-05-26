@@ -102,12 +102,12 @@ limitations under the License. */
 
     public:
 
-      /* PJON default initialization:
-           Acknowledge: true
-           Bus id: 0.0.0.0
-           device id: NOT_ASSIGNED (255)
-           Mode: HALF_DUPLEX
-           Strategy: SoftwareBitBang */
+      /* PJON bus default initialization:
+         State: Local (bus_id: 0.0.0.0)
+         Acknowledge: true
+         device id: NOT_ASSIGNED (255)
+         Mode: HALF_DUPLEX
+         Strategy: SoftwareBitBang */
 
       PJON() : strategy(Strategy()) {
         _device_id = NOT_ASSIGNED;
@@ -453,7 +453,7 @@ limitations under the License. */
          This will be called when a correct message will be received.
          Inside there you can code how to react when data is received.
 
-        void receiver_function(uint8_t length, uint8_t *payload) {
+        void receiver_function(uint8_t id, uint8_t *payload, uint8_t length) {
           for(int i = 0; i < length; i++)
             Serial.print((char)payload[i]);
 

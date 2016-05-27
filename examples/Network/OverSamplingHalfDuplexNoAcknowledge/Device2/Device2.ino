@@ -28,10 +28,9 @@ void receiver_function(uint8_t id, uint8_t *payload, uint8_t length) {
   Serial.print(payload[2]);
   Serial.print(payload[3]);
   Serial.print(" - device id: ");
-  Serial.print(id);
+  Serial.println(id);
 
   if((char)payload[4] == 'B') {
-    bus.send(45, "B", 1);
     digitalWrite(13, HIGH);
     delay(5);
     digitalWrite(13, LOW);

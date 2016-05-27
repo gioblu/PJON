@@ -44,13 +44,6 @@ limitations under the License. */
   #define NAK           21
   #define NOT_ASSIGNED  255
 
-  /* A bus id is an array of 4 bytes containing a unique set.
-      The default setting is to run a local bus (0.0.0.0), in this
-      particular case the obvious bus id is omitted from the packet
-      content to reduce overhead. */
-
-  uint8_t localhost[4] = {0, 0, 0, 0};
-
   /* Internal constants */
   #define FAIL          0x100
   #define TO_BE_SENT    74
@@ -512,6 +505,13 @@ limitations under the License. */
 
       uint8_t data[PACKET_MAX_LENGTH];
       Packet  packets[MAX_PACKETS];
+
+      /* A bus id is an array of 4 bytes containing a unique set.
+          The default setting is to run a local bus (0.0.0.0), in this
+          particular case the obvious bus id is omitted from the packet
+          content to reduce overhead. */
+
+      uint8_t localhost[4] = {0, 0, 0, 0};
       uint8_t bus_id[4] = {0, 0, 0, 0};
     private:
       boolean   _acknowledge = true;

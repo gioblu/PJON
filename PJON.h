@@ -39,10 +39,14 @@ limitations under the License. */
   /* Protocol symbols */
   #define ACK           6
   #define ACQUIRE_ID    63
-  #define BROADCAST     0
   #define BUSY          666
   #define NAK           21
   #define NOT_ASSIGNED  255
+  /* Set broadcast address to 0 if not defined other */
+  #ifndef BROADCAST
+      #define BROADCAST     0
+  #endif
+
 
   /* A bus id is an array of 4 bytes containing a unique set.
       The default setting is to run a local bus (0.0.0.0), in this

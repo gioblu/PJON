@@ -24,7 +24,7 @@ void receiver_function(uint8_t id, uint8_t *payload, uint8_t length) {
   Serial.print(payload[2]);
   Serial.print(payload[3]);
   Serial.print(" - device id: ");
-  Serial.print(id);
+  Serial.println(id);
 
   if(payload[4] == 'B') {
     Serial.println(" BLINK!");

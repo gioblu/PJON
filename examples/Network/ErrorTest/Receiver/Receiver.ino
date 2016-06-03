@@ -3,8 +3,11 @@
 float undetected_errors;
 float count;
 
-// <Strategy name> bus(selected device id)
-PJON<SoftwareBitBang> bus(44);
+// Bus id definition
+uint8_t bus_id[] = {0, 0, 0, 1};
+
+// PJON object
+PJON<SoftwareBitBang> bus(bus_id, 44);
 
 void setup() {
   bus.set_pin(12);
@@ -16,7 +19,7 @@ void setup() {
 
 void receiver_function(uint8_t id, uint8_t *payload, uint8_t length) {
 
-  if(length != 4) { // Undetected error in length byte
+  if(length != 8) { // Undetected error in length byte
     Serial.print("L ");
     Serial.print(length);
     Serial.print(" | ");
@@ -24,19 +27,19 @@ void receiver_function(uint8_t id, uint8_t *payload, uint8_t length) {
   }
 
   if(
-    payload[0] != payload[1] ||
-    payload[1] != payload[2] ||
-    payload[0] != payload[2] ||
-    payload[3] != 0
+    payload[4] != payload[5] ||
+    payload[5] != payload[6] ||
+    payload[4] != payload[6] ||
+    payload[7] != 0
   ) {
     undetected_errors++;
-    Serial.print(payload[0]);
+    Serial.print(payload[4]);
     Serial.print(" ");
-    Serial.print(payload[1]);
+    Serial.print(payload[5]);
     Serial.print(" | ");
-    Serial.print(payload[2]);
+    Serial.print(payload[6]);
     Serial.print(" | ");
-    Serial.println(payload[3]);
+    Serial.println(payload[7]);
   }
 
   count++;

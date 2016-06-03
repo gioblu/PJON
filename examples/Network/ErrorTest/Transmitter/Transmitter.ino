@@ -1,7 +1,10 @@
 #include <PJON.h>
 
-// <Strategy name> bus(selected device id)
-PJON<SoftwareBitBang> bus(45);
+// Bus id definition
+uint8_t bus_id[] = {0, 0, 0, 1};
+
+// PJON object
+PJON<SoftwareBitBang> bus(bus_id, 45);
 
 int packet;
 char content[4] = {0, 0, 0, 0};

@@ -41,19 +41,19 @@ limitations under the License. */
   #define ACQUIRE_ID    63
   #define BUSY          666
   #define NAK           21
-  #define NOT_ASSIGNED  255
-  /* Set broadcast address to 0 if not defined other */
+  
+  /* Reserved addresses */
   #ifndef BROADCAST
-      #define BROADCAST     0
+    #define BROADCAST     0
+  #endif
+  #ifndef NOT_ASSIGNED
+    #define NOT_ASSIGNED  255
   #endif
 
-
-  /* A bus id is an array of 4 bytes containing a unique set.
-      The default setting is to run a local bus (0.0.0.0), in this
-      particular case the obvious bus id is omitted from the packet
-      content to reduce overhead. */
-
-
+  #if BROADCAST == NOT_ASSIGNED
+    #error BROADCAST and NOT_ASSIGNED point the same address
+  #endif
+  
   /* Internal constants */
   #define FAIL          0x100
   #define TO_BE_SENT    74
@@ -102,16 +102,15 @@ limitations under the License. */
   class PJON {
 
     Strategy strategy;
-    uint8_t localhost[4] = {0, 0, 0, 0};
 
     public:
 
-      /* PJON default initialization:
-           Acknowledge: true
-           Bus id: 0.0.0.0
-           device id: NOT_ASSIGNED (255)
-           Mode: HALF_DUPLEX
-           Strategy: SoftwareBitBang */
+      /* PJON bus default initialization:
+         State: Local (bus_id: 0.0.0.0)
+         Acknowledge: true
+         device id: NOT_ASSIGNED (255)
+         Mode: HALF_DUPLEX
+         Strategy: SoftwareBitBang */
 
       PJON() : strategy(Strategy()) {
         _device_id = NOT_ASSIGNED;
@@ -160,10 +159,6 @@ limitations under the License. */
         }
         _error(ID_ACQUISITION_FAIL, FAIL);
       };
-
-      void set_network(uint8_t *addr) {
-        localhost = addr;
-      }
 
 
       /* Initial random delay to avoid startup collision */
@@ -461,7 +456,7 @@ limitations under the License. */
          This will be called when a correct message will be received.
          Inside there you can code how to react when data is received.
 
-        void receiver_function(uint8_t length, uint8_t *payload) {
+        void receiver_function(uint8_t id, uint8_t *payload, uint8_t length) {
           for(int i = 0; i < length; i++)
             Serial.print((char)payload[i]);
 
@@ -520,6 +515,13 @@ limitations under the License. */
 
       uint8_t data[PACKET_MAX_LENGTH];
       Packet  packets[MAX_PACKETS];
+
+      /* A bus id is an array of 4 bytes containing a unique set.
+          The default setting is to run a local bus (0.0.0.0), in this
+          particular case the obvious bus id is omitted from the packet
+          content to reduce overhead. */
+
+      uint8_t localhost[4] = {0, 0, 0, 0};
       uint8_t bus_id[4] = {0, 0, 0, 0};
     private:
       boolean   _acknowledge = true;

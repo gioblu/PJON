@@ -39,11 +39,21 @@ limitations under the License. */
   /* Protocol symbols */
   #define ACK           6
   #define ACQUIRE_ID    63
-  #define BROADCAST     0
   #define BUSY          666
   #define NAK           21
-  #define NOT_ASSIGNED  255
+  
+  /* Reserved addresses */
+  #ifndef BROADCAST
+    #define BROADCAST     0
+  #endif
+  #ifndef NOT_ASSIGNED
+    #define NOT_ASSIGNED  255
+  #endif
 
+  #if BROADCAST == NOT_ASSIGNED
+    #error BROADCAST and NOT_ASSIGNED point the same address
+  #endif
+  
   /* Internal constants */
   #define FAIL          0x100
   #define TO_BE_SENT    74

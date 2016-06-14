@@ -82,7 +82,7 @@ limitations under the License. */
   /* Maximum id scan time (5 seconds) */
   #define MAX_ID_SCAN_TIME    5000000
 
-  struct Packet {
+  struct PJON_Packet {
     uint8_t  attempts;
     uint8_t  device_id;
     char     *content;
@@ -514,7 +514,7 @@ limitations under the License. */
       };
 
       uint8_t data[PACKET_MAX_LENGTH];
-      Packet  packets[MAX_PACKETS];
+      PJON_Packet packets[MAX_PACKETS];
 
       /* A bus id is an array of 4 bytes containing a unique set.
           The default setting is to run a local bus (0.0.0.0), in this

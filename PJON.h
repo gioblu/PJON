@@ -213,22 +213,22 @@ limitations under the License. */
             else return FAIL;
           }
 
-          if(!_local && !_router && i > 1 && i < 6)
+          if(_shared && !_router && i > 1 && i < 6)
             if(bus_id[i - 2] != data[i])
               return BUSY;
 
           CRC = compute_crc_8(data[i], CRC);
         }
         if(!CRC) {
-          if(_acknowledge && data[0] != BROADCAST && _mode != SIMPLEX) {
-            Strategy::send_response(ACK, _input_pin, _output_pin);
-          }
+          if(_acknowledge && data[0] != BROADCAST && _mode != SIMPLEX)
+            if(!_shared || (_shared && bus_id_equality(data + 2, bus_id)))
+              Strategy::send_response(ACK, _input_pin, _output_pin);
           _receiver(data[0], data + 2, data[1] - 3);
           return ACK;
         } else {
-          if(_acknowledge && data[0] != BROADCAST && _mode != SIMPLEX) {
-            Strategy::send_response(NAK, _input_pin, _output_pin);
-          }
+          if(_acknowledge && data[0] != BROADCAST && _mode != SIMPLEX)
+            if(!_shared || (_shared && bus_id_equality(data + 2, bus_id)))
+              Strategy::send_response(NAK, _input_pin, _output_pin);
           return NAK;
         }
       };
@@ -265,15 +265,47 @@ limitations under the License. */
      Using the timing parameter you can set the delay between every
      transmission cyclically sending the packet (use remove() function stop it)
 
-     int hi = bus.send(99, "HI!", 3, 1000000); // Send hi every second
+     LOCAL TRANSMISSION -> ISOLATED BUS
 
-     bus.remove(hi); // Stop the cyclical sending
+     int hi = bus.send(99, "HI!", 3);
+     // Send hi once to device 99
+
+     int hi = bus.send_repeatedly(99, "HI!", 3, 1000000);
+     // Send HI! to device 99 every second (1.000.000 microseconds)
+
+     NETWORK TRANSMISSION -> SHARED MEDIUM
+
+     int hi = bus.send(99, {127, 0, 0, 1}, 3);
+     // Send hi once to device 99 on bus id 127.0.0.1
+
+     int hi = bus.send_repeatedly(99, {127, 0, 0, 1}, "HI!", 3, 1000000);
+     // Send HI! to device 99 on bus id 127.0.0.1 every second (1.000.000 microseconds)
+
+     bus.remove(hi); // Stop repeated sending
        _________________________________________________________________________
       |           |        |         |       |          |        |              |
       | device_id | length | content | state | attempts | timing | registration |
       |___________|________|_________|_______|__________|________|______________| */
 
-      uint16_t send(uint8_t id, const char *packet, uint8_t length, uint32_t timing = 0) {
+      uint16_t send(uint8_t id, const char *packet, uint8_t length) {
+        dispatch(id, bus_id, packet, length, 0);
+      };
+
+      uint16_t send(uint8_t id, uint8_t b_id, const char *packet, uint8_t length) {
+        dispatch(id, b_id, packet, length, 0);
+      };
+
+      uint16_t send_repeatedly(uint8_t id, const char *packet, uint8_t length, uint32_t timing) {
+        dispatch(id, bus_id, packet, length, timing);
+      };
+
+      uint16_t send_repeatedly(uint8_t id, uint8_t b_id, const char *packet, uint8_t length, uint32_t timing) {
+        dispatch(id, b_id, packet, length, timing);
+      };
+
+      uint16_t dispatch(uint8_t id, uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing) {
+        length = (_shared) ? length + 4 : length;
+
         if(length >= PACKET_MAX_LENGTH) {
           _error(CONTENT_TOO_LONG, length);
           return FAIL;
@@ -286,7 +318,8 @@ limitations under the License. */
           return FAIL;
         }
 
-        memcpy(str, packet, length);
+        if(_shared) memcpy(str, b_id, 4);
+        memcpy((_shared) ? str + 4 : str, packet, length);
 
         for(uint8_t i = 0; i < MAX_PACKETS; i++)
           if(packets[i].state == 0) {
@@ -331,18 +364,12 @@ limitations under the License. */
         uint8_t CRC = 0;
         Strategy::send_byte(id, _input_pin, _output_pin);
         CRC = compute_crc_8(id, CRC);
-        Strategy::send_byte(length + ((_local) ? 3 : 7), _input_pin, _output_pin);
-        CRC = compute_crc_8(length + ((_local) ? 3 : 7), CRC);
+        Strategy::send_byte(length + 3, _input_pin, _output_pin);
+        CRC = compute_crc_8(length + 3, CRC);
 
         /* If an id is assigned to the bus, the packet's content is prepended by
            the ricipient's bus id. This opens up the possibility to have more than
            one bus sharing the same medium. */
-
-        if(!_local)
-          for(uint8_t i = 0; i < 4; i++) {
-            Strategy::send_byte(bus_id[i], _input_pin, _output_pin);
-            CRC = compute_crc_8(bus_id[i], CRC);
-          }
 
         for(uint8_t i = 0; i < length; i++) {
           Strategy::send_byte(string[i], _input_pin, _output_pin);
@@ -387,7 +414,7 @@ limitations under the License. */
         _mode = HALF_DUPLEX;
 
         if(!bus_id_equality(bus_id, localhost))
-          _local = false;
+          _shared = true;
 
         set_error(dummy_error_handler);
         set_receiver(dummy_receiver_handler);

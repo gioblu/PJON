@@ -394,7 +394,9 @@ limitations under the License. */
       };
 
 
-      /* Configure sincronous acknowledge presence: */
+      /* Configure sincronous acknowledge presence:
+         TRUE: Send back synchronous acknowledge when a packet is correctly received
+         FALSE: Avoid acknowledge transmission */
 
       void set_acknowledge(boolean state) {
         _acknowledge = state;
@@ -450,6 +452,24 @@ limitations under the License. */
       };
 
 
+      /* Configure the bus network behaviour.
+         TRUE: Enable communication to devices part of other bus ids (on a shared medium).
+         FALSE: Isolate communication from external/third-party communication. */
+
+      void set_shared_network(boolean state) {
+        _shared = state;
+      }
+
+
+      /* Set if delivered or undeliverable packets are auto deleted:
+         TRUE: manual packet deletion from buffer is needed
+         FALSE: Automatic deletion in case o  */
+
+      void set_packet_auto_deletion(boolean state) {
+        _auto_delete = state;
+      };
+
+
       /* Set the communicaton pin: */
 
       void set_pin(uint8_t pin) {
@@ -485,6 +505,15 @@ limitations under the License. */
 
       void set_receiver(receiver r) {
         _receiver = r;
+      };
+
+
+      /* Configure if device will act as a router:
+         FALSE: device receives messages only for its bus and device id
+         TRUE:  The receiver function is always called if data is received */
+
+      void set_router(boolean state) {
+        _router = state;
       };
 
 
@@ -542,9 +571,10 @@ limitations under the License. */
       uint8_t bus_id[4] = {0, 0, 0, 0};
     private:
       boolean   _acknowledge = true;
+      boolean   _auto_delete = true;
       uint8_t   _device_id;
       uint8_t   _input_pin;
-      boolean   _local = true;
+      boolean   _shared = false;
       uint8_t   _mode;
       uint8_t   _output_pin;
       receiver  _receiver;

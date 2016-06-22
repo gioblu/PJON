@@ -529,9 +529,9 @@ limitations under the License. */
           else continue;
 
           if(packets[i].state == ACK) {
-            if(!packets[i].timing)
-              remove(i);
-            else {
+            if(!packets[i].timing) {
+              if(_auto_delete) remove(i);
+            } else {
               packets[i].attempts = 0;
               packets[i].registration = micros();
               packets[i].state = TO_BE_SENT;
@@ -544,12 +544,11 @@ limitations under the License. */
               if(packets[i].content[0] == ACQUIRE_ID) {
                 _device_id = packets[i].device_id;
                 remove(i);
-                return;
+                continue;
               } else _error(CONNECTION_LOST, packets[i].device_id);
-
-              if(!packets[i].timing)
-                remove(i);
-              else {
+              if(!packets[i].timing) {
+                if(_auto_delete) remove(i);
+              } else {
                 packets[i].attempts = 0;
                 packets[i].registration = micros();
                 packets[i].state = TO_BE_SENT;

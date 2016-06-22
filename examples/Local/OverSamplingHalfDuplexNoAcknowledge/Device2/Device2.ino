@@ -13,7 +13,7 @@ void setup() {
 
   bus.begin();
 
-  bus.send(44, "B", 1, 1000000);
+  bus.send_repeatedly(44, "B", 1, 1000000);
 
   Serial.begin(115200);
 };
@@ -25,7 +25,7 @@ void receiver_function(uint8_t id, uint8_t *payload, uint8_t length) {
     digitalWrite(13, LOW);
     delay(5);
   }
-}
+};
 
 void loop() {
   bus.receive();

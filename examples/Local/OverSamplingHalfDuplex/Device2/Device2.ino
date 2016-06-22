@@ -12,7 +12,7 @@ void setup() {
 
   bus.begin();
 
-  bus.send(44, "B", 1, 1000000);
+  bus.send_repeatedly(44, "B", 1, 1000000);
 
   Serial.begin(115200);
 };

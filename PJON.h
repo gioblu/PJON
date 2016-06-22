@@ -39,11 +39,21 @@ limitations under the License. */
   /* Protocol symbols */
   #define ACK           6
   #define ACQUIRE_ID    63
-  #define BROADCAST     0
   #define BUSY          666
   #define NAK           21
-  #define NOT_ASSIGNED  255
+  
+  /* Reserved addresses */
+  #ifndef BROADCAST
+    #define BROADCAST     0
+  #endif
+  #ifndef NOT_ASSIGNED
+    #define NOT_ASSIGNED  255
+  #endif
 
+  #if BROADCAST == NOT_ASSIGNED
+    #error BROADCAST and NOT_ASSIGNED point the same address
+  #endif
+  
   /* Internal constants */
   #define FAIL          0x100
   #define TO_BE_SENT    74
@@ -72,7 +82,7 @@ limitations under the License. */
   /* Maximum id scan time (5 seconds) */
   #define MAX_ID_SCAN_TIME    5000000
 
-  struct Packet {
+  struct PJON_Packet {
     uint8_t  attempts;
     uint8_t  device_id;
     char     *content;
@@ -559,7 +569,7 @@ limitations under the License. */
       };
 
       uint8_t data[PACKET_MAX_LENGTH];
-      Packet  packets[MAX_PACKETS];
+      PJON_Packet packets[MAX_PACKETS];
 
       /* A bus id is an array of 4 bytes containing a unique set.
           The default setting is to run a local bus (0.0.0.0), in this

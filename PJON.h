@@ -41,7 +41,7 @@ limitations under the License. */
   #define ACQUIRE_ID    63
   #define BUSY          666
   #define NAK           21
-  
+
   /* Reserved addresses */
   #ifndef BROADCAST
     #define BROADCAST     0
@@ -53,7 +53,7 @@ limitations under the License. */
   #if BROADCAST == NOT_ASSIGNED
     #error BROADCAST and NOT_ASSIGNED point the same address
   #endif
-  
+
   /* Internal constants */
   #define FAIL          0x100
   #define TO_BE_SENT    74
@@ -533,7 +533,7 @@ limitations under the License. */
 
       void update() {
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
-          if(packets[i].state == 0) return;
+          if(packets[i].state == 0) continue;
           if(micros() - packets[i].registration > packets[i].timing + pow(packets[i].attempts, 3))
             packets[i].state = send_string(packets[i].device_id, packets[i].content, packets[i].length);
           else continue;

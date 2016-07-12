@@ -12,7 +12,7 @@ int packet;
 char content[] = "01234567890123456789";
 
 void setup() {
-  bus.set_pin(12);
+  bus.set_pins(NOT_ASSIGNED, 12);
 
   bus.begin();
   packet = bus.send(44, content, 20);

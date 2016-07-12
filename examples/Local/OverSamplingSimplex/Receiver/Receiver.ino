@@ -10,7 +10,7 @@ int fail;
 PJON<OverSampling> bus(44);
 
 void setup() {
-  bus.set_pin(11);
+  bus.set_pins(11);
   bus.begin();
 
   bus.set_receiver(receiver_function);

@@ -34,7 +34,7 @@ class OverSampling {
       unsigned long time = micros();
       pinModeFast(input_pin, INPUT);
       for(uint8_t i = 0; i < 9; i++) {
-        while((uint32_t)(time + _OS_BIT_WIDTH) > micros())
+        while((uint32_t)(micros() - time) < _OS_BIT_WIDTH)
           value = (value * 0.999)  + (digitalReadFast(input_pin) * 0.001);
         if(value > 0.5)
           return false;
@@ -83,7 +83,7 @@ class OverSampling {
       for(uint8_t i = 0; i < 8; i++) {
         unsigned long time = micros();
         float value = 0.5;
-        while((uint32_t)(time + _OS_BIT_WIDTH) > micros())
+        while((uint32_t)(micros() - time) < _OS_BIT_WIDTH)
           value = ((value * 0.999) + (digitalReadFast(pin) * 0.001));
         byte_value += (value > 0.5) << i;
       }
@@ -116,7 +116,7 @@ class OverSampling {
       unsigned long time = micros();
       /* Update pin value until the pin stops to be HIGH or passed more time than
          BIT_SPACER duration */
-      while(((uint32_t)(time + _OS_BIT_SPACER) > micros()) && digitalReadFast(input_pin))
+      while(((uint32_t)(micros() - time) < _OS_BIT_SPACER) && digitalReadFast(input_pin))
         value = (value * 0.999)  + (digitalReadFast(input_pin) * 0.001);
       /* Save how much time passed */
       time = micros();
@@ -125,7 +125,7 @@ class OverSampling {
          probably a byte is coming so try to receive it. */
       if(value > 0.5) {
         value = 0.5;
-        while((uint32_t)(time + _OS_BIT_WIDTH) > micros())
+        while((uint32_t)(micros() - time) < _OS_BIT_WIDTH)
           value = (value * 0.999)  + (digitalReadFast(input_pin) * 0.001);
         if(value < 0.5) return read_byte(input_pin);
       }
@@ -144,7 +144,7 @@ class OverSampling {
 
       uint16_t response = FAIL;
       uint32_t time = micros();
-      while(response == FAIL && (uint32_t)(time + _OS_BIT_SPACER + _OS_BIT_WIDTH) >= micros())
+      while(response == FAIL && (uint32_t)((micros() - _OS_BIT_SPACER) - _OS_BIT_WIDTH) <= time)
         response = receive_byte(input_pin, output_pin);
       return response;
     }

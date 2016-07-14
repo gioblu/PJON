@@ -149,10 +149,10 @@ limitations under the License. */
         uint8_t ping_id;
         char msg = ACQUIRE_ID;
 
-        for(uint8_t id = 1; id < 255 && (uint32_t)(micros() - time < MAX_ID_SCAN_TIME); id++) {
+        for(uint8_t id = 1; id < 255 && (uint32_t)(micros() - time) < MAX_ID_SCAN_TIME; id++) {
           ping_id = send(id, &msg, 1);
 
-          while(packets[ping_id].state != 0 && (uint32_t)(micros() - time < MAX_ID_SCAN_TIME))
+          while(packets[ping_id].state != 0 && (uint32_t)(micros() - time) < MAX_ID_SCAN_TIME)
             update();
 
           if(_device_id != NOT_ASSIGNED) return;

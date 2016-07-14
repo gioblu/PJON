@@ -214,7 +214,7 @@ class SoftwareBitBang {
 
       uint16_t response = FAIL;
       uint32_t time = micros();
-      while(response == FAIL && (uint32_t)(time + SWBB_BIT_SPACER + SWBB_BIT_WIDTH) >= micros())
+      while(response == FAIL && (uint32_t)((micros() - SWBB_BIT_SPACER) - SWBB_BIT_WIDTH) <= time)
         response = receive_byte(input_pin, output_pin);
       return response;
     }

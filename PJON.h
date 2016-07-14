@@ -149,10 +149,10 @@ limitations under the License. */
         uint8_t ping_id;
         char msg = ACQUIRE_ID;
 
-        for(uint8_t id = 1; id < 255 && (time + MAX_ID_SCAN_TIME > micros()); id++) {
+        for(uint8_t id = 1; id < 255 && (uint32_t)(micros() - time < MAX_ID_SCAN_TIME); id++) {
           ping_id = send(id, &msg, 1);
 
-          while(packets[ping_id].state != 0 && (time + MAX_ID_SCAN_TIME > micros()))
+          while(packets[ping_id].state != 0 && (uint32_t)(micros() - time < MAX_ID_SCAN_TIME))
             update();
 
           if(_device_id != NOT_ASSIGNED) return;
@@ -249,7 +249,7 @@ limitations under the License. */
       uint16_t receive(uint32_t duration) {
         uint16_t response;
         uint32_t time = micros();
-        while((uint32_t)(time + duration) >= micros()) {
+        while((uint32_t)(micros() - time) <= duration) {
           response = receive();
           if(response == ACK)
             return ACK;
@@ -534,7 +534,7 @@ limitations under the License. */
       void update() {
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
-          if(micros() - packets[i].registration > packets[i].timing + pow(packets[i].attempts, 3))
+          if((uint32_t)(micros() - packets[i].registration) > packets[i].timing + pow(packets[i].attempts, 3))
             packets[i].state = send_string(packets[i].device_id, packets[i].content, packets[i].length);
           else continue;
 

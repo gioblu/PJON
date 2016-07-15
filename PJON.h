@@ -57,7 +57,8 @@ limitations under the License. */
   /* Internal constants */
   #define FAIL          0x100
   #define TO_BE_SENT    74
-
+  #define SHARED_BIT    0x10
+  
   #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
   #include "strategies/OverSampling/OverSampling.h"
 
@@ -72,9 +73,13 @@ limitations under the License. */
   Max attempts before throwing CONNECTON_LOST error */
   #define MAX_ATTEMPTS        125
   /* Packets buffer length, if full PACKETS_BUFFER_FULL error is thrown */
-  #define MAX_PACKETS         10
+  #ifndef MAX_PACKETS
+    #define MAX_PACKETS       10
+  #endif  
   /* Max packet length, higher if necessary (and you have free memory) */
-  #define PACKET_MAX_LENGTH   50
+  #ifndef PACKET_MAX_LENGTH
+    #define PACKET_MAX_LENGTH 50
+  #endif  
   /* Maximum random delay on startup in milliseconds */
   #define INITIAL_MAX_DELAY   1000
   /* Maximum randon delay on collision */
@@ -84,18 +89,29 @@ limitations under the License. */
 
   struct PJON_Packet {
     uint8_t  attempts;
+    uint8_t  type;
     uint8_t  device_id;
-    char     *content;
+    char     *content;  // if shared medium, the contents starts with receiver and sender bus ids
     uint8_t  length;
     uint32_t registration;
     uint16_t state;
     uint32_t timing;
-  };
+  };  
+  
+  /* Metainfo about the last received packet (type, sender id and bus). 
+   The bus ids will only be available if (type & SHARED_BIT != 0). */
+  struct PacketInfo {
+    uint8_t type = 0;
+    uint8_t receiver_id = 0;
+    uint8_t receiver_bus_id[4];
+    uint8_t sender_id = 0;
+    uint8_t sender_bus_id[4];
+  };    
 
-  typedef void (* receiver)(uint8_t id, uint8_t *payload, uint8_t length);
+  typedef void (* receiver)(uint8_t *payload, uint8_t length, const PacketInfo &packet_info);
   typedef void (* error)(uint8_t code, uint8_t data);
 
-  static void dummy_receiver_handler(uint8_t id, uint8_t *payload, uint8_t length) {};
+  static void dummy_receiver_handler(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {};
   static void dummy_error_handler(uint8_t code, uint8_t data) {};
 
   template<typename Strategy = SoftwareBitBang>
@@ -132,9 +148,7 @@ limitations under the License. */
          PJON bus(my_bys, 1); */
 
       PJON(const uint8_t *b_id, uint8_t device_id) : strategy(Strategy()) {
-        for(uint8_t i = 0; i < 4; i++)
-          bus_id[i] = b_id[i];
-
+        copy_bus_id(bus_id, b_id);
         _device_id = device_id;
         set_default();
       };
@@ -175,9 +189,12 @@ limitations under the License. */
         for(uint8_t i = 0; i < 4; i++)
           if(name_one[i] != name_two[i])
             return false;
-        return true;
+        return true;        
       };
 
+      /* Copy a bus id */
+
+      void copy_bus_id(uint8_t dest[], uint8_t src[]) { memcpy(dest, src, 4); }  
 
       /* Compute CRC8 with a table-less implementation: */
 
@@ -202,14 +219,24 @@ limitations under the License. */
 
       uint16_t receive() {
         uint16_t state;
-        uint16_t package_length = PACKET_MAX_LENGTH;
+        uint16_t packet_length = PACKET_MAX_LENGTH;
         uint8_t CRC = 0;
+        uint8_t sender_id = 0;
+        uint8_t sender_bus_id[4] = {0,0,0,0};
+        uint8_t packet_type = 0;
+        bool bus_present = false;
 
-        for(uint8_t i = 0; i < package_length; i++) {
+        for(uint8_t i = 0; i < packet_length; i++) {
           data[i] = state = Strategy::receive_byte(_input_pin, _output_pin);
           if(state == FAIL) return FAIL;
 
-          if(i == 0 && data[i] != _device_id && data[i] != BROADCAST && !_router)
+          if(i == 0) {
+            packet_type = data[i];
+            bus_present = (packet_type & SHARED_BIT != 0);
+            if ((bus_present != _shared) && !_router) return BUSY; // Keep private and shared buses apart
+          }
+
+          if(i == 1 && data[i] != _device_id && data[i] != BROADCAST && !_router)
             return BUSY;
 
           /* If an id is assigned to this bus it means that is potentially
@@ -217,27 +244,34 @@ limitations under the License. */
              with other buses. Bus id equality is checked to avoid collision
              i.e. id 1 bus 1, should not receive a message for id 1 bus 2. */
 
-          if(i == 1) {
-            if(data[i] > 3 && data[i] < PACKET_MAX_LENGTH)
-              package_length = data[i];
+          if(i == 3) {
+            if(data[i] > 5 && data[i] < PACKET_MAX_LENGTH)
+              packet_length = data[i];
             else return FAIL;
           }
 
-          if(_shared && !_router && i > 1 && i < 6)
-            if(bus_id[i - 2] != data[i])
+          if(_shared && bus_present && !_router && i > 3 && i < 8)
+            if(bus_id[i - 4] != data[i])
               return BUSY;
-
+            
           CRC = compute_crc_8(data[i], CRC);
         }
         if(!CRC) {
-          if(_acknowledge && data[0] != BROADCAST && _mode != SIMPLEX)
-            if(!_shared || (_shared && bus_id_equality(data + 2, bus_id)))
+          if(_acknowledge && data[1] != BROADCAST && _mode != SIMPLEX)
+            if(!_shared || (_shared && bus_present && bus_id_equality(data + 4, bus_id)))
               Strategy::send_response(ACK, _input_pin, _output_pin);
-          _receiver(data[0], data + 2, data[1] - 3);
+          last_packet_info.type = packet_type;
+          last_packet_info.receiver_id = data[1];
+          last_packet_info.sender_id = data[2];
+          if (bus_present) {
+            copy_bus_id(last_packet_info.receiver_bus_id, data + 4);
+            copy_bus_id(last_packet_info.sender_bus_id, data + 8);
+          }
+          _receiver(data + (bus_present ? 12 : 4), data[3] - (bus_present ? 13 : 5), last_packet_info);
           return ACK;
         } else {
-          if(_acknowledge && data[0] != BROADCAST && _mode != SIMPLEX)
-            if(!_shared || (_shared && bus_id_equality(data + 2, bus_id)))
+          if(_acknowledge && data[1] != BROADCAST && _mode != SIMPLEX)
+            if(!_shared || (_shared && bus_present && bus_id_equality(data + 4, bus_id)))
               Strategy::send_response(NAK, _input_pin, _output_pin);
           return NAK;
         }
@@ -297,24 +331,32 @@ limitations under the License. */
       | device_id | length | content | state | attempts | timing | registration |
       |___________|________|_________|_______|__________|________|______________| */
 
-      uint16_t send(uint8_t id, const char *packet, uint8_t length) {
-        dispatch(id, bus_id, packet, length, 0);
+      uint16_t send(uint8_t id, const char *packet, uint8_t length, uint8_t custom_type = 0) {
+        dispatch(id, bus_id, packet, length, 0, custom_type & 0x0F);
       };
 
-      uint16_t send(uint8_t id, uint8_t b_id, const char *packet, uint8_t length) {
-        dispatch(id, b_id, packet, length, 0);
+      uint16_t send(uint8_t id, uint8_t b_id, const char *packet, uint8_t length, uint8_t custom_type = 0) {
+        dispatch(id, b_id, packet, length, 0, custom_type & 0x0F);
       };
 
-      uint16_t send_repeatedly(uint8_t id, const char *packet, uint8_t length, uint32_t timing) {
-        dispatch(id, bus_id, packet, length, timing);
+      uint16_t send_repeatedly(uint8_t id, const char *packet, uint8_t length, uint32_t timing, uint8_t custom_type = 0) {
+        dispatch(id, bus_id, packet, length, timing, custom_type & 0x0F);
       };
 
-      uint16_t send_repeatedly(uint8_t id, uint8_t b_id, const char *packet, uint8_t length, uint32_t timing) {
-        dispatch(id, b_id, packet, length, timing);
+      uint16_t send_repeatedly(uint8_t id, uint8_t b_id, const char *packet, uint8_t length, uint32_t timing, uint8_t custom_type = 0) {
+        dispatch(id, b_id, packet, length, timing, custom_type & 0x0F);
       };
 
-      uint16_t dispatch(uint8_t id, uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing) {
-        length = (_shared) ? length + 4 : length;
+    /* Send a packet to the sender of the last packet received.
+     This function is typically called from with the receive callback function to deliver a response to
+     a request. */
+      uint16_t reply(const char *packet, uint8_t length, uint8_t custom_type = 0) {
+        if (last_packet_info.sender_id > 0)
+          dispatch(last_packet_info.sender_id, last_packet_info.sender_bus_id, packet, length, 0, custom_type);
+      }
+      
+      uint16_t dispatch(uint8_t id, uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing, uint8_t custom_type = 0) {
+        length = (_shared) ? length + 8 : length;
 
         if(length >= PACKET_MAX_LENGTH) {
           _error(CONTENT_TOO_LONG, length);
@@ -328,11 +370,15 @@ limitations under the License. */
           return FAIL;
         }
 
-        if(_shared) memcpy(str, b_id, 4);
-        memcpy((_shared) ? str + 4 : str, packet, length);
+        if(_shared) {
+          copy_bus_id(str, b_id);
+          copy_bus_id(&str[4], bus_id);
+        }
+        memcpy((_shared) ? str + 8 : str, packet, length);
 
         for(uint8_t i = 0; i < MAX_PACKETS; i++)
           if(packets[i].state == 0) {
+            packets[i].type = custom_type | (_shared ? SHARED_BIT : 0);
             packets[i].content = str;
             packets[i].device_id = id;
             packets[i].length = length;
@@ -367,15 +413,20 @@ limitations under the License. */
          |  0  |         | 12 |   4    |   64    | 130 |         |  6  |
          |_____|         |____|________|_________|_____|         |_____|  */
 
-      uint16_t send_string(uint8_t id, char *string, uint8_t length) {
+      uint16_t send_string(uint8_t id, char *string, uint8_t length, uint8_t custom_type = 0) {
         if(!string) return FAIL;
         if(_mode != SIMPLEX && !Strategy::can_start(_input_pin, _output_pin)) return BUSY;
 
         uint8_t CRC = 0;
-        Strategy::send_byte(id, _input_pin, _output_pin);
+        uint8_t type = (custom_type & 0x0F) | (_shared ? SHARED_BIT : 0);
+        Strategy::send_byte(type, _input_pin, _output_pin);         // content type
+        CRC = compute_crc_8(type, CRC);
+        Strategy::send_byte(id, _input_pin, _output_pin);           // receiver id
         CRC = compute_crc_8(id, CRC);
-        Strategy::send_byte(length + 3, _input_pin, _output_pin);
-        CRC = compute_crc_8(length + 3, CRC);
+        Strategy::send_byte(_device_id, _input_pin, _output_pin);   // sender id
+        CRC = compute_crc_8(_device_id, CRC);
+        Strategy::send_byte(length + 5, _input_pin, _output_pin);   // length
+        CRC = compute_crc_8(length + 5, CRC);
 
         /* If an id is assigned to the bus, the packet's content is prepended by
            the ricipient's bus id. This opens up the possibility to have more than
@@ -535,7 +586,7 @@ limitations under the License. */
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
           if((uint32_t)(micros() - packets[i].registration) > packets[i].timing + pow(packets[i].attempts, 3))
-            packets[i].state = send_string(packets[i].device_id, packets[i].content, packets[i].length);
+            packets[i].state = send_string(packets[i].device_id, packets[i].content, packets[i].length, packets[i].type);
           else continue;
 
           if(packets[i].state == ACK) {
@@ -576,8 +627,12 @@ limitations under the License. */
           particular case the obvious bus id is omitted from the packet
           content to reduce overhead. */
 
+      /* Remember some Metainfo about the last received packet (type, sender and receiver id and bus) */
+      PacketInfo last_packet_info;
+      
       uint8_t localhost[4] = {0, 0, 0, 0};
-      uint8_t bus_id[4] = {0, 0, 0, 0};
+      uint8_t bus_id[4] = {0, 0, 0, 0};    
+      
     private:
       boolean   _acknowledge = true;
       boolean   _auto_delete = true;

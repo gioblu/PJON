@@ -59,10 +59,10 @@ limitations under the License. */
   #define TO_BE_SENT       74
   
   /* Packet type bits (upper 4 bits available for future use) */
-  #define BUSID_BIT        1     // bus id(s) is included
-  #define SENDER_BIT       2     // sender id (and potentially sender bus id) is included
-  #define ACKREQ_BIT       4     // a sync ACK is requested for this packet
-  #define OSPREY_BIT       8     // this packet contains OSPREY encapsulated data
+  #define BUSID_BIT        1     // Bus id(s) is included
+  #define SENDER_BIT       2     // Sender id (and potentially sender bus id) is included
+  #define ACKREQ_BIT       4     // A sync ACK is requested for this packet
+  #define OSPREY_BIT       8     // This packet contains OSPREY encapsulated data
   
   /* Macros for getting packet type information */
   #define CONTAINS_BUSID(t)  ((t & BUSID_BIT) != 0)

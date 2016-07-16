@@ -285,7 +285,7 @@ limitations under the License. */
           if(_acknowledge && data[0] != BROADCAST && _mode != SIMPLEX)
             if(!_shared || (_shared && busid_present && bus_id_equality(last_packet_info.receiver_bus_id, bus_id)))
               Strategy::send_response(ACK, _input_pin, _output_pin);
-           uint8_t payload_pos = 3 + (busid_present ? 8 + sender_present : sender_present); 
+           uint8_t payload_pos = 3 + (busid_present ? (sender_present ? 9 : 4) : sender_present); 
            _receiver(data + payload_pos, data[3] - payload_pos - 1, last_packet_info);
           return ACK;
         } else {

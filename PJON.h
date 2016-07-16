@@ -55,9 +55,20 @@ limitations under the License. */
   #endif
 
   /* Internal constants */
-  #define FAIL          0x100
-  #define TO_BE_SENT    74
-  #define SHARED_BIT    0x10
+  #define FAIL             0x100
+  #define TO_BE_SENT       74
+  
+  /* Packet type bits (upper 4 bits available for future use) */
+  #define BUSID_BIT        1     // bus id(s) is included
+  #define SENDER_BIT       2     // sender id (and potentially sender bus id) is included
+  #define ACKREQ_BIT       4     // a sync ACK is requested for this packet
+  #define OSPREY_BIT       8     // this packet contains OSPREY encapsulated data
+  
+  /* Macros for getting packet type information */
+  #define CONTAINS_BUSID(t)  ((t & BUSID_BIT) != 0)
+  #define CONTAINS_SENDER(t) ((t & SENDER_BIT) != 0)
+  #define CONTAINS_ACKREQ(t) ((t & ACKREQ_BIT) != 0)
+  #define CONTAINS_OSPREY(t) ((t & OSPREY_BIT) != 0) 
   
   #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
   #include "strategies/OverSampling/OverSampling.h"
@@ -98,15 +109,14 @@ limitations under the License. */
     uint32_t timing;
   };  
   
-  /* Metainfo about the last received packet (type, sender id and bus). 
-   The bus ids will only be available if (type & SHARED_BIT != 0). */
+  /* Metainfo about the last received packet (type, receiver and sender id and bus id) */
   struct PacketInfo {
     uint8_t type = 0;
     uint8_t receiver_id = 0;
-    uint8_t receiver_bus_id[4];
-    uint8_t sender_id = 0;
-    uint8_t sender_bus_id[4];
-  };    
+    uint8_t receiver_bus_id[4]; // available if CONTAINS_BUSID(type)
+    uint8_t sender_id = 0;      // available if CONTAINS_SENDER(type)
+    uint8_t sender_bus_id[4];   // available if CONTAINS_SENDER(type) && CONTAINS_BUSID(type)
+  };
 
   typedef void (* receiver)(uint8_t *payload, uint8_t length, const PacketInfo &packet_info);
   typedef void (* error)(uint8_t code, uint8_t data);
@@ -185,7 +195,7 @@ limitations under the License. */
 
       /* Check equality between two bus ids */
 
-      boolean bus_id_equality(uint8_t *name_one, uint8_t *name_two) {
+      boolean bus_id_equality(const uint8_t *name_one, const uint8_t *name_two) {
         for(uint8_t i = 0; i < 4; i++)
           if(name_one[i] != name_two[i])
             return false;
@@ -194,7 +204,7 @@ limitations under the License. */
 
       /* Copy a bus id */
 
-      void copy_bus_id(uint8_t dest[], uint8_t src[]) { memcpy(dest, src, 4); }  
+      void copy_bus_id(uint8_t dest[], const uint8_t src[]) const { memcpy(dest, src, 4); }  
 
       /* Compute CRC8 with a table-less implementation: */
 
@@ -214,6 +224,18 @@ limitations under the License. */
         return _device_id;
       };
 
+      /* Fill in a PacketInfo struct by parsing a packet: */
+
+      void get_packet_info(const uint8_t *packet, PacketInfo &packet_info) const {
+        packet_info.receiver_id = packet[0];
+        packet_info.type = packet[2];
+        bool sender_present = CONTAINS_SENDER(packet_info.type);
+        if (sender_present) packet_info.sender_id = packet[3];
+        if (CONTAINS_BUSID(packet_info.type)) {
+          copy_bus_id(packet_info.receiver_bus_id, packet + (sender_present ? 4 : 3));
+          if (sender_present) copy_bus_id(packet_info.sender_bus_id, packet + (sender_present ? 8 : 7));
+        }
+      }
 
       /* Try to receive a packet: */
 
@@ -224,60 +246,57 @@ limitations under the License. */
         uint8_t sender_id = 0;
         uint8_t sender_bus_id[4] = {0,0,0,0};
         uint8_t packet_type = 0;
-        bool bus_present = false;
+        bool busid_present = false;
+        uint8_t sender_present = 0; // 0 or 1, used in summations
 
         for(uint8_t i = 0; i < packet_length; i++) {
           data[i] = state = Strategy::receive_byte(_input_pin, _output_pin);
           if(state == FAIL) return FAIL;
 
-          if(i == 0) {
-            packet_type = data[i];
-            bus_present = (packet_type & SHARED_BIT != 0);
-            if ((bus_present != _shared) && !_router) return BUSY; // Keep private and shared buses apart
+          if(i == 0 && data[i] != _device_id && data[i] != BROADCAST && !_router)
+            return BUSY;
+
+          if(i == 1) {
+            if(data[i] > 4 && data[i] < PACKET_MAX_LENGTH)
+              packet_length = data[i];
+            else return FAIL;
           }
 
-          if(i == 1 && data[i] != _device_id && data[i] != BROADCAST && !_router)
-            return BUSY;
+          if(i == 2) {
+            packet_type = data[i];
+            busid_present = CONTAINS_BUSID(packet_type);
+            sender_present = CONTAINS_SENDER(packet_type);
+            if ((busid_present != _shared) && !_router) return BUSY; // Keep private and shared buses apart
+          }
 
           /* If an id is assigned to this bus it means that is potentially
              sharing its medium, or the device could be connected in parallel
              with other buses. Bus id equality is checked to avoid collision
              i.e. id 1 bus 1, should not receive a message for id 1 bus 2. */
-
-          if(i == 3) {
-            if(data[i] > 5 && data[i] < PACKET_MAX_LENGTH)
-              packet_length = data[i];
-            else return FAIL;
-          }
-
-          if(_shared && bus_present && !_router && i > 3 && i < 8)
-            if(bus_id[i - 4] != data[i])
+          
+          if(_shared && busid_present && !_router && i > 2 + sender_present && i < 7 + sender_present)
+            if(bus_id[i - (3 + sender_present)] != data[i])
               return BUSY;
             
           CRC = compute_crc_8(data[i], CRC);
         }
         if(!CRC) {
-          if(_acknowledge && data[1] != BROADCAST && _mode != SIMPLEX)
-            if(!_shared || (_shared && bus_present && bus_id_equality(data + 4, bus_id)))
+          get_packet_info(data, last_packet_info);
+          if(_acknowledge && data[0] != BROADCAST && _mode != SIMPLEX)
+            if(!_shared || (_shared && busid_present && bus_id_equality(last_packet_info.receiver_bus_id, bus_id)))
               Strategy::send_response(ACK, _input_pin, _output_pin);
-          last_packet_info.type = packet_type;
-          last_packet_info.receiver_id = data[1];
-          last_packet_info.sender_id = data[2];
-          if (bus_present) {
-            copy_bus_id(last_packet_info.receiver_bus_id, data + 4);
-            copy_bus_id(last_packet_info.sender_bus_id, data + 8);
-          }
-          _receiver(data + (bus_present ? 12 : 4), data[3] - (bus_present ? 13 : 5), last_packet_info);
+           uint8_t payload_pos = 3 + (busid_present ? 8 + sender_present : sender_present); 
+           _receiver(data + payload_pos, data[3] - payload_pos - 1, last_packet_info);
           return ACK;
         } else {
-          if(_acknowledge && data[1] != BROADCAST && _mode != SIMPLEX)
-            if(!_shared || (_shared && bus_present && bus_id_equality(data + 4, bus_id)))
+          if(_acknowledge && data[0] != BROADCAST && _mode != SIMPLEX)
+            if(!_shared || (_shared && busid_present && bus_id_equality(data + 3 + sender_present, bus_id)))
               Strategy::send_response(NAK, _input_pin, _output_pin);
           return NAK;
         }
       };
 
-
+      
       /* Try to receive a packet repeatedly with a maximum duration: */
 
       uint16_t receive(uint32_t duration) {
@@ -331,32 +350,35 @@ limitations under the License. */
       | device_id | length | content | state | attempts | timing | registration |
       |___________|________|_________|_______|__________|________|______________| */
 
-      uint16_t send(uint8_t id, const char *packet, uint8_t length, uint8_t custom_type = 0) {
-        dispatch(id, bus_id, packet, length, 0, custom_type & 0x0F);
+      uint16_t send(uint8_t id, const char *packet, uint8_t length) {
+        return dispatch(id, bus_id, packet, length, 0);
       };
 
-      uint16_t send(uint8_t id, uint8_t b_id, const char *packet, uint8_t length, uint8_t custom_type = 0) {
-        dispatch(id, b_id, packet, length, 0, custom_type & 0x0F);
+      uint16_t send(uint8_t id, uint8_t b_id, const char *packet, uint8_t length) {
+        return dispatch(id, b_id, packet, length, 0);
       };
 
-      uint16_t send_repeatedly(uint8_t id, const char *packet, uint8_t length, uint32_t timing, uint8_t custom_type = 0) {
-        dispatch(id, bus_id, packet, length, timing, custom_type & 0x0F);
+      uint16_t send_repeatedly(uint8_t id, const char *packet, uint8_t length, uint32_t timing) {
+        return dispatch(id, bus_id, packet, length, timing);
       };
 
-      uint16_t send_repeatedly(uint8_t id, uint8_t b_id, const char *packet, uint8_t length, uint32_t timing, uint8_t custom_type = 0) {
-        dispatch(id, b_id, packet, length, timing, custom_type & 0x0F);
+      uint16_t send_repeatedly(uint8_t id, uint8_t b_id, const char *packet, uint8_t length, uint32_t timing) {
+        return dispatch(id, b_id, packet, length, timing);
       };
 
+      
     /* Send a packet to the sender of the last packet received.
      This function is typically called from with the receive callback function to deliver a response to
      a request. */
-      uint16_t reply(const char *packet, uint8_t length, uint8_t custom_type = 0) {
+      uint16_t reply(const char *packet, uint8_t length) {
         if (last_packet_info.sender_id > 0)
-          dispatch(last_packet_info.sender_id, last_packet_info.sender_bus_id, packet, length, 0, custom_type);
+          return dispatch(last_packet_info.sender_id, last_packet_info.sender_bus_id, packet, length, 0);
+        return false;
       }
       
+      
       uint16_t dispatch(uint8_t id, uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing, uint8_t custom_type = 0) {
-        length = (_shared) ? length + 8 : length;
+        length = _shared ? length + (_use_sender_id ? 8 : 4) : length; // one or two bus ids added to message
 
         if(length >= PACKET_MAX_LENGTH) {
           _error(CONTENT_TOO_LONG, length);
@@ -371,14 +393,14 @@ limitations under the License. */
         }
 
         if(_shared) {
-          copy_bus_id(str, b_id);
-          copy_bus_id(&str[4], bus_id);
+          copy_bus_id((uint8_t*) str, b_id);
+          if (_use_sender_id) copy_bus_id((uint8_t*) &str[4], bus_id);
         }
-        memcpy((_shared) ? str + 8 : str, packet, length);
+        memcpy(_shared ? str + (_use_sender_id ? 8 : 4) : str, packet, length);
 
         for(uint8_t i = 0; i < MAX_PACKETS; i++)
           if(packets[i].state == 0) {
-            packets[i].type = custom_type | (_shared ? SHARED_BIT : 0);
+            packets[i].type = custom_type | (_shared ? BUSID_BIT : 0) | (_use_sender_id ? SENDER_BIT : 0);
             packets[i].content = str;
             packets[i].device_id = id;
             packets[i].length = length;
@@ -418,15 +440,17 @@ limitations under the License. */
         if(_mode != SIMPLEX && !Strategy::can_start(_input_pin, _output_pin)) return BUSY;
 
         uint8_t CRC = 0;
-        uint8_t type = (custom_type & 0x0F) | (_shared ? SHARED_BIT : 0);
-        Strategy::send_byte(type, _input_pin, _output_pin);         // content type
-        CRC = compute_crc_8(type, CRC);
+        uint8_t type = custom_type | (_shared ? BUSID_BIT : 0) | (_use_sender_id ? SENDER_BIT : 0);
         Strategy::send_byte(id, _input_pin, _output_pin);           // receiver id
         CRC = compute_crc_8(id, CRC);
-        Strategy::send_byte(_device_id, _input_pin, _output_pin);   // sender id
-        CRC = compute_crc_8(_device_id, CRC);
-        Strategy::send_byte(length + 5, _input_pin, _output_pin);   // length
-        CRC = compute_crc_8(length + 5, CRC);
+        Strategy::send_byte(length + (CONTAINS_SENDER(type) ? 5 : 4), _input_pin, _output_pin);   // length
+        CRC = compute_crc_8(length + (CONTAINS_SENDER(type) ? 5 : 4), CRC);
+        Strategy::send_byte(type, _input_pin, _output_pin);         // content type
+        CRC = compute_crc_8(type, CRC);
+        if (CONTAINS_SENDER(type)) {
+          Strategy::send_byte(_device_id, _input_pin, _output_pin);   // sender id
+          CRC = compute_crc_8(_device_id, CRC);
+        }
 
         /* If an id is assigned to the bus, the packet's content is prepended by
            the ricipient's bus id. This opens up the possibility to have more than
@@ -455,7 +479,7 @@ limitations under the License. */
       };
 
 
-      /* Configure sincronous acknowledge presence:
+      /* Configure synchronous acknowledge presence:
          TRUE: Send back synchronous acknowledge when a packet is correctly received
          FALSE: Avoid acknowledge transmission */
 
@@ -512,7 +536,13 @@ limitations under the License. */
         _device_id = id;
       };
 
+      /* Include sender id in outgoing packages so that they can be answered to. 
+       Disable this to slightly reduce package sizes */
 
+      void use_sender_id(bool state) {
+        _use_sender_id = state;
+      }
+      
       /* Configure the bus network behaviour.
          TRUE: Enable communication to devices part of other bus ids (on a shared medium).
          FALSE: Isolate communication from external/third-party communication. */
@@ -630,7 +660,7 @@ limitations under the License. */
       /* Remember some Metainfo about the last received packet (type, sender and receiver id and bus) */
       PacketInfo last_packet_info;
       
-      uint8_t localhost[4] = {0, 0, 0, 0};
+      const uint8_t localhost[4] = {0, 0, 0, 0};
       uint8_t bus_id[4] = {0, 0, 0, 0};    
       
     private:
@@ -639,6 +669,7 @@ limitations under the License. */
       uint8_t   _device_id;
       uint8_t   _input_pin;
       boolean   _shared = false;
+      boolean   _use_sender_id = true;
       uint8_t   _mode;
       uint8_t   _output_pin;
       receiver  _receiver;

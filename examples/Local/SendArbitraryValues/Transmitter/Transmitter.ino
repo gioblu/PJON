@@ -3,6 +3,8 @@
 // <Strategy name> bus(selected device id)
 PJON<SoftwareBitBang> bus(45);
 
+unsigned long time = millis();
+
 void setup() {
   bus.set_pin(12);
   bus.begin();
@@ -18,9 +20,6 @@ void error_handler(uint8_t code, uint8_t data) {
     Serial.println(data);
   }
 }
-
-
-unsigned long time = millis();
 
 void loop() {
 

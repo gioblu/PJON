@@ -9,7 +9,6 @@ void setup() {
 
   bus.set_pin(12);
   bus.set_receiver(receiver_function);
-  bus.include_sender_info(true);
   bus.begin();
   bus.send_repeatedly(44, "B", 1, 1000000); // Send B to device 44 every second
 }

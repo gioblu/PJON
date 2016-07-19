@@ -688,7 +688,7 @@ limitations under the License. */
       uint8_t   _device_id;
       uint8_t   _input_pin;
       boolean   _shared = false;
-      boolean   _include_sender_info = false;
+      boolean   _include_sender_info = true;
       uint8_t   _mode;
       uint8_t   _output_pin;
       receiver  _receiver;

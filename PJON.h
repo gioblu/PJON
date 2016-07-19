@@ -110,7 +110,7 @@ limitations under the License. */
     uint32_t timing;
   };
 
-  /* Metainfo about the last received packet (header, receiver and sender id and bus id) */
+  /* Last received packet Metainfo */
   struct PacketInfo {
     uint8_t header = 0;
     uint8_t receiver_id = 0;
@@ -137,6 +137,7 @@ limitations under the License. */
          Acknowledge: true
          device id: NOT_ASSIGNED (255)
          Mode: HALF_DUPLEX
+         Sender info: true
          Strategy: SoftwareBitBang */
 
       PJON() : strategy(Strategy()) {
@@ -269,7 +270,7 @@ limitations under the License. */
             else return FAIL;
           }
 
-          if(i == 2) {
+          if(i == 2) { // Packet header
             shared = CONTAINS_MODE_INFO(data[2]);
             packet_includes_sender_info = CONTAINS_SENDER_INFO(data[2]);
             acknowledge_requested = CONTAINS_ACK_REQUEST(data[2]);
@@ -435,23 +436,31 @@ limitations under the License. */
 
       /* An Example of how the string "@" is formatted and sent:
 
-       ID 12            LENGTH 4         CONTENT 64       CRC 130
-       ________________ ________________ ________________ __________________
-      |Sync | Byte     |Sync | Byte     |Sync | Byte     |Sync | Byte       |
-      |___  |     __   |___  |      _   |___  |  _       |___  |  _      _  |
-      |   | |    |  |  |   | |     | |  |   | | | |      |   | | | |    | | |
-      | 1 |0|0000|11|00| 1 |0|00000|1|00| 1 |0|0|1|000000| 1 |0|0|1|0000|1|0|
-      |___|_|____|__|__|___|_|_____|_|__|___|_|_|_|______|___|_|_|_|____|_|_|
+       ID 12            LENGTH 5           HEADER B0010000  CONTENT 64       CRC
+       ________________ __________________ ________________ ________________ __________________
+      |Sync | Byte     |Sync | Byte       |Sync | Byte     |Sync | Byte     |Sync | Byte       |
+      |___  |     __   |___  |      _   _ |___  |   _      |___  |  _       |___  |  _      _  |
+      |   | |    |  |  |   | |     | | | ||   | |  | |     |   | | | |      |   | | | |    | | |
+      | 1 |0|0000|11|00| 1 |0|00000|1|0|1|| 1 |0|00|1|00000| 1 |0|0|1|000000| 1 |0|0|1|0000|1|0|
+      |___|_|____|__|__|___|_|_____|_|_|_||___|_|__|_|_____|___|_|_|_|______|___|_|_|_|____|_|_|
 
       A standard packet transmission is a bidirectional communication between
       two devices that can be divided in 3 different phases:
 
-      Channel analysis   Transmission                            Response
-          _____           _____________________________           _____
-         | C-A |         | ID | LENGTH | CONTENT | CRC |         | ACK |
-      <--|-----|---< >---|----|--------|---------|-----|--> <----|-----|
-         |  0  |         | 12 |   4    |   64    | 130 |         |  6  |
-         |_____|         |____|________|_________|_____|         |_____|  */
+      Channel analysis   Transmission                                     Response
+          _____           ______________________________________           _____
+         | C-A |         | ID | LENGTH | HEADER | CONTENT | CRC |         | ACK |
+      <--|-----|---< >---|----|--------|--------|---------|-----|--> <----|-----|
+         |  0  |         | 12 |   5    |  001   |   64    |     |         |  6  |
+         |_____|         |____|________|________|_________|_____|         |_____|
+
+
+      HEADER POSSIBLE CONFIGURATIONS:
+      The first 3 bits of the HEADER byte are reserved to PJON, the rest if free for use.
+      [0, 0, 0]: Local bus  | No sender info included | No acknowledge
+      [1, 0, 0]: Shared bus | No sender info included | No acknowledge
+      [1, 1, 0]: Shared bus | Sender info included    | No acknowledge
+      [1, 1, 1]: Shared bus | Sender info included    | Acknowledge requested  */
 
       uint16_t send_string(uint8_t id, char *string, uint8_t length, uint8_t custom_header = 0) {
         if(!string) return FAIL;
@@ -603,7 +612,7 @@ limitations under the License. */
          This will be called when a correct message will be received.
          Inside there you can code how to react when data is received.
 
-        void receiver_function(uint8_t id, uint8_t *payload, uint8_t length) {
+        void receiver_function(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {
           for(int i = 0; i < length; i++)
             Serial.print((char)payload[i]);
 

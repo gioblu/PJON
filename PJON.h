@@ -408,16 +408,11 @@ limitations under the License. */
 
         if(_shared) {
           copy_bus_id((uint8_t*) str, b_id);
-//          str[4] = id;
           if(_include_sender_info) {
             copy_bus_id((uint8_t*) &str[4], bus_id);
             str[8] = _device_id;
           }
-        } else {
-          if(_include_sender_info) {
-            str[0] = _device_id;
-          }
-        }
+        } else if(_include_sender_info) str[0] = _device_id;
 
         memcpy(str + (_shared ? (_include_sender_info ? 9 : 4) : (_include_sender_info ? 1 : 0)), packet, length);
 

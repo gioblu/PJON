@@ -292,7 +292,7 @@ limitations under the License. */
           if(acknowledge_requested && data[0] != BROADCAST && _mode != SIMPLEX)
             if(!_shared || (_shared && shared && bus_id_equality(last_packet_info.receiver_bus_id, bus_id)))
               Strategy::send_response(ACK, _input_pin, _output_pin);
-           uint8_t payload_offset = 3 + (shared ? (packet_includes_sender_info ? 10 : 5) : (packet_includes_sender_info ? 1 : 0));
+           uint8_t payload_offset = 3 + (shared ? (packet_includes_sender_info ? 9 : 4) : (packet_includes_sender_info ? 1 : 0));
            _receiver(data + payload_offset, data[3] - payload_offset - 1, last_packet_info);
           return ACK;
         } else {
@@ -385,7 +385,7 @@ limitations under the License. */
 
 
       uint16_t dispatch(uint8_t id, uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing, uint8_t custom_header = 0) {
-        length = _shared ? length + (_include_sender_info ? 10 : 5) : length + (_include_sender_info ? 1 : 0);
+        length = _shared ? length + (_include_sender_info ? 9 : 4) : length + (_include_sender_info ? 1 : 0);
 
         // Compose PJON 1 byte header
         if(custom_header == 0) {
@@ -408,18 +408,13 @@ limitations under the License. */
 
         if(_shared) {
           copy_bus_id((uint8_t*) str, b_id);
-          str[4] = id;
           if(_include_sender_info) {
-            copy_bus_id((uint8_t*) &str[5], bus_id);
-            str[9] = _device_id;
+            copy_bus_id((uint8_t*) &str[4], bus_id);
+            str[8] = _device_id;
           }
-        } else {
-          if(_include_sender_info) {
-            str[0] = _device_id;
-          }
-        }
+        } else if(_include_sender_info) str[0] = _device_id;
 
-        memcpy(str + (_shared ? (_include_sender_info ? 10 : 5) : (_include_sender_info ? 1 : 0)), packet, length);
+        memcpy(str + (_shared ? (_include_sender_info ? 9 : 4) : (_include_sender_info ? 1 : 0)), packet, length);
 
         for(uint8_t i = 0; i < MAX_PACKETS; i++)
           if(packets[i].state == 0) {

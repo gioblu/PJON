@@ -19,8 +19,8 @@ void setup() {
   Serial.begin(115200);
 };
 
-void receiver_function(uint8_t id, uint8_t *payload, uint8_t length) {
- if((char)payload[4] == 'B') {
+void receiver_function(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {
+ if((char)payload[0] == 'B') {
     bus.send(45, "B", 1);
     digitalWrite(13, HIGH);
     delay(5);

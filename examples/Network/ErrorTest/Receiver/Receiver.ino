@@ -17,7 +17,7 @@ void setup() {
   Serial.begin(115200);
 };
 
-void receiver_function(uint8_t id, uint8_t *payload, uint8_t length) {
+void receiver_function(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {
 
   if(length != 8) { // Undetected error in length byte
     Serial.print("L ");

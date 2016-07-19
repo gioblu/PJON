@@ -61,7 +61,7 @@ limitations under the License. */
   /* Packet header bits (upper 4 bits available for future use) */
   #define MODE_BIT        1 // 1 - Shared | 0 - Local
   #define SENDER_INFO_BIT 2 // 1 - Sender device id + Sender bus id if shared | 0 - No info inclusion
-  #define ACK_REQUEST_BIT 3 // 1 - Request synchronous acknowledge | 0 - Do not request acknowledge
+  #define ACK_REQUEST_BIT 4 // 1 - Request synchronous acknowledge | 0 - Do not request acknowledge
 
   /* Macros for getting packet header information */
   #define CONTAINS_MODE_INFO(t) ((t & MODE_BIT) != 0)
@@ -385,7 +385,7 @@ limitations under the License. */
 
 
       uint16_t dispatch(uint8_t id, uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing, uint8_t custom_header = 0) {
-        length = _shared ? length + (_include_sender_info ? 9 : 4) : length + (_include_sender_info ? 1 : 0);
+        uint8_t new_length = _shared ? (length + (_include_sender_info ? 9 : 4)) : (length + (_include_sender_info ? 1 : 0));
 
         // Compose PJON 1 byte header
         if(custom_header == 0) {
@@ -394,12 +394,12 @@ limitations under the License. */
           custom_header |= (_acknowledge ? ACK_REQUEST_BIT : 0);
         }
 
-        if(length >= PACKET_MAX_LENGTH) {
-          _error(CONTENT_TOO_LONG, length);
+        if(new_length >= PACKET_MAX_LENGTH) {
+          _error(CONTENT_TOO_LONG, new_length);
           return FAIL;
         }
 
-        char *str = (char *) malloc(length);
+        char *str = (char *) malloc(new_length);
 
         if(str == NULL) {
           _error(MEMORY_FULL, 0);
@@ -421,7 +421,7 @@ limitations under the License. */
             packets[i].header = custom_header;
             packets[i].content = str;
             packets[i].device_id = id;
-            packets[i].length = length;
+            packets[i].length = new_length;
             packets[i].state = TO_BE_SENT;
             packets[i].registration = micros();
             packets[i].timing = timing;

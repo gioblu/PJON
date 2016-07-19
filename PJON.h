@@ -61,7 +61,7 @@ limitations under the License. */
   /* Packet header bits (upper 4 bits available for future use) */
   #define MODE_BIT        1 // 1 - Shared | 0 - Local
   #define SENDER_INFO_BIT 2 // 1 - Sender device id + Sender bus id if shared | 0 - No info inclusion
-  #define ACK_REQUEST_BIT 3 // 1 - Request synchronous acknowledge | 0 - Do not request acknowledge
+  #define ACK_REQUEST_BIT 4 // 1 - Request synchronous acknowledge | 0 - Do not request acknowledge
 
   /* Macros for getting packet header information */
   #define CONTAINS_MODE_INFO(t) ((t & MODE_BIT) != 0)
@@ -292,7 +292,7 @@ limitations under the License. */
           if(acknowledge_requested && data[0] != BROADCAST && _mode != SIMPLEX)
             if(!_shared || (_shared && shared && bus_id_equality(last_packet_info.receiver_bus_id, bus_id)))
               Strategy::send_response(ACK, _input_pin, _output_pin);
-           uint8_t payload_offset = 3 + (shared ? (packet_includes_sender_info ? 10 : 5) : (packet_includes_sender_info ? 1 : 0));
+           uint8_t payload_offset = 3 + (shared ? (packet_includes_sender_info ? 9 : 4) : (packet_includes_sender_info ? 1 : 0));
            _receiver(data + payload_offset, data[3] - payload_offset - 1, last_packet_info);
           return ACK;
         } else {
@@ -385,7 +385,7 @@ limitations under the License. */
 
 
       uint16_t dispatch(uint8_t id, uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing, uint8_t custom_header = 0) {
-        length = _shared ? length + (_include_sender_info ? 10 : 5) : length + (_include_sender_info ? 1 : 0);
+        uint8_t new_length = _shared ? (length + (_include_sender_info ? 9 : 4)) : (length + (_include_sender_info ? 1 : 0));
 
         // Compose PJON 1 byte header
         if(custom_header == 0) {
@@ -394,12 +394,12 @@ limitations under the License. */
           custom_header |= (_acknowledge ? ACK_REQUEST_BIT : 0);
         }
 
-        if(length >= PACKET_MAX_LENGTH) {
-          _error(CONTENT_TOO_LONG, length);
+        if(new_length >= PACKET_MAX_LENGTH) {
+          _error(CONTENT_TOO_LONG, new_length);
           return FAIL;
         }
 
-        char *str = (char *) malloc(length);
+        char *str = (char *) malloc(new_length);
 
         if(str == NULL) {
           _error(MEMORY_FULL, 0);
@@ -408,10 +408,10 @@ limitations under the License. */
 
         if(_shared) {
           copy_bus_id((uint8_t*) str, b_id);
-          str[4] = id;
+//          str[4] = id;
           if(_include_sender_info) {
-            copy_bus_id((uint8_t*) &str[5], bus_id);
-            str[9] = _device_id;
+            copy_bus_id((uint8_t*) &str[4], bus_id);
+            str[8] = _device_id;
           }
         } else {
           if(_include_sender_info) {
@@ -419,14 +419,14 @@ limitations under the License. */
           }
         }
 
-        memcpy(str + (_shared ? (_include_sender_info ? 10 : 5) : (_include_sender_info ? 1 : 0)), packet, length);
+        memcpy(str + (_shared ? (_include_sender_info ? 9 : 4) : (_include_sender_info ? 1 : 0)), packet, length);
 
         for(uint8_t i = 0; i < MAX_PACKETS; i++)
           if(packets[i].state == 0) {
             packets[i].header = custom_header;
             packets[i].content = str;
             packets[i].device_id = id;
-            packets[i].length = length;
+            packets[i].length = new_length;
             packets[i].state = TO_BE_SENT;
             packets[i].registration = micros();
             packets[i].timing = timing;

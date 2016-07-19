@@ -419,7 +419,7 @@ limitations under the License. */
           }
         }
 
-        memcpy(_shared ? str + (_include_sender_info ? 10 : 5) : str, packet, length);
+        memcpy(str + (_shared ? (_include_sender_info ? 10 : 5) : (_include_sender_info ? 1 : 0)), packet, length);
 
         for(uint8_t i = 0; i < MAX_PACKETS; i++)
           if(packets[i].state == 0) {

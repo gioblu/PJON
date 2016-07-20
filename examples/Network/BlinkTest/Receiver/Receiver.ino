@@ -17,16 +17,24 @@ void setup() {
   Serial.begin(9600);
 };
 
-void receiver_function(uint8_t id, uint8_t *payload, uint8_t length) {
-  Serial.print("Message received for bus id: ");
-  Serial.print(payload[0]);
-  Serial.print(payload[1]);
-  Serial.print(payload[2]);
-  Serial.print(payload[3]);
+void receiver_function(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {
+  Serial.print("Receiver bus id: ");
+  Serial.print(packet_info.receiver_bus_id[0]);
+  Serial.print(packet_info.receiver_bus_id[1]);
+  Serial.print(packet_info.receiver_bus_id[2]);
+  Serial.print(packet_info.receiver_bus_id[3]);
   Serial.print(" - device id: ");
-  Serial.println(id);
+  Serial.println(packet_info.receiver_id);
 
-  if(payload[4] == 'B') {
+  Serial.print("Sender bus id: ");
+  Serial.print(packet_info.sender_bus_id[0]);
+  Serial.print(packet_info.sender_bus_id[1]);
+  Serial.print(packet_info.sender_bus_id[2]);
+  Serial.print(packet_info.sender_bus_id[3]);
+  Serial.print(" - device id: ");
+  Serial.println(packet_info.sender_id);
+
+  if(payload[0] == 'B') {
     Serial.println(" BLINK!");
     digitalWrite(13, HIGH);
     delay(30);

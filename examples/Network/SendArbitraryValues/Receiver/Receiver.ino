@@ -15,18 +15,26 @@ void setup() {
   Serial.begin(115200);
 };
 
-void receiver_function(uint8_t id, uint8_t *payload, uint8_t length) {
-  Serial.print("Message received for bus id: ");
-  Serial.print(payload[0]);
-  Serial.print(payload[1]);
-  Serial.print(payload[2]);
-  Serial.print(payload[3]);
+void receiver_function(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {
+  Serial.print("Receiver bus id: ");
+  Serial.print(packet_info.receiver_bus_id[0]);
+  Serial.print(packet_info.receiver_bus_id[1]);
+  Serial.print(packet_info.receiver_bus_id[2]);
+  Serial.print(packet_info.receiver_bus_id[3]);
   Serial.print(" - device id: ");
-  Serial.print(id);
+  Serial.println(packet_info.receiver_id);
 
-  if((char)payload[4] == 'T') {
+  Serial.print("Sender bus id: ");
+  Serial.print(packet_info.sender_bus_id[0]);
+  Serial.print(packet_info.sender_bus_id[1]);
+  Serial.print(packet_info.sender_bus_id[2]);
+  Serial.print(packet_info.sender_bus_id[3]);
+  Serial.print(" - device id: ");
+  Serial.println(packet_info.sender_id);
+
+  if((char)payload[0] == 'T') {
     Serial.print("Temperature received: ");
-    Serial.print(payload[5] << 8 | payload[6] & 0xFF);
+    Serial.print(payload[1] << 8 | payload[2] & 0xFF);
     // Get back the original integer from the 2 separate bytes
   }
   Serial.println();

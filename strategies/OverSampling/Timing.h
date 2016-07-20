@@ -1,5 +1,5 @@
 
-/* PJON v3.0 OverSampling strategy Transmission Timing table
+/* PJON v4.0 OverSampling strategy Transmission Timing table
    Copyright (c) 2016, Giovanni Blu Mitolo All rights reserved.
 
    All benchmarks should be executed with NetworkAnalysis and SpeedTest examples.

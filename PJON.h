@@ -58,10 +58,22 @@ limitations under the License. */
   #define FAIL       0x100
   #define TO_BE_SENT 74
 
+  /* HEADER CONFIGURATION:
+  The first 3 bits of the HEADER byte are reserved to PJON, the rest if free for use.
+  Thanks to the header byte the transmitter is able to inform the receiver on how
+  the communication is requested to be handled. */
+
   /* Packet header bits (upper 4 bits available for future use) */
   #define MODE_BIT        1 // 1 - Shared | 0 - Local
   #define SENDER_INFO_BIT 2 // 1 - Sender device id + Sender bus id if shared | 0 - No info inclusion
   #define ACK_REQUEST_BIT 4 // 1 - Request synchronous acknowledge | 0 - Do not request acknowledge
+
+  /* [0, 1, 1]: Local bus  | Sender info included    | Acknowledge requested - DEFAULT
+     [0, 0, 1]: Local bus  | No sender info included | Acknowledge requested
+     [0, 0, 0]: Local bus  | No sender info included | No acknowledge
+     [1, 0, 0]: Shared bus | No sender info included | No acknowledge
+     [1, 1, 0]: Shared bus | Sender info included    | No acknowledge
+     [1, 1, 1]: Shared bus | Sender info included    | Acknowledge requested  */
 
   /* Macros for getting packet header information */
   #define CONTAINS_MODE_INFO(t) ((t & MODE_BIT) != 0)
@@ -134,10 +146,10 @@ limitations under the License. */
 
       /* PJON bus default initialization:
          State: Local (bus_id: 0.0.0.0)
-         Acknowledge: true
+         Acknowledge: true (Acknowledge is requested)
          device id: NOT_ASSIGNED (255)
          Mode: HALF_DUPLEX
-         Sender info: true
+         Sender info: true (Sender info are included in the packet)
          Strategy: SoftwareBitBang */
 
       PJON() : strategy(Strategy()) {
@@ -436,31 +448,53 @@ limitations under the License. */
 
       /* An Example of how the string "@" is formatted and sent:
 
-       ID 12            LENGTH 5           HEADER B0010000  CONTENT 64       CRC
-       ________________ __________________ ________________ ________________ __________________
-      |Sync | Byte     |Sync | Byte       |Sync | Byte     |Sync | Byte     |Sync | Byte       |
-      |___  |     __   |___  |      _   _ |___  |   _      |___  |  _       |___  |  _      _  |
-      |   | |    |  |  |   | |     | | | ||   | |  | |     |   | | | |      |   | | | |    | | |
-      | 1 |0|0000|11|00| 1 |0|00000|1|0|1|| 1 |0|00|1|00000| 1 |0|0|1|000000| 1 |0|0|1|0000|1|0|
-      |___|_|____|__|__|___|_|_____|_|_|_||___|_|__|_|_____|___|_|_|_|______|___|_|_|_|____|_|_|
+  RECIPIENT ID 12   LENGTH 5           HEADER 00000100  SENDER ID 11       CONTENT 64       CRC
+   ________________ __________________ ________________ __________________ ________________ __________________
+  |Sync | Byte     |Sync | Byte       |Sync | Byte     |Sync | Byte       |Sync | Byte     |Sync | Byte       |
+  |___  |     __   |___  |      _   _ |___  |      _   |___  |     _   __ |___  |  _       |___  |  _      _  |
+  |   | |    |  |  |   | |     | | | ||   | |     | |  |   | |    | | |  ||   | | | |      |   | | | |    | | |
+  | 1 |0|0000|11|00| 1 |0|00000|1|0|1|| 1 |0|00000|1|00| 1 |0|0000|1|0|11|| 1 |0|0|1|000000| 1 |0|0|1|0000|1|0|
+  |___|_|____|__|__|___|_|_____|_|_|_||___|_|_____|_|__|___|_|____|_|_|__||___|_|_|_|______|___|_|_|_|____|_|_|
 
-      A standard packet transmission is a bidirectional communication between
-      two devices that can be divided in 3 different phases:
+  A standard packet transmission is a bidirectional communication between
+  two devices that can be divided in 3 different phases:
 
-      Channel analysis   Transmission                                     Response
-          _____           ______________________________________           _____
-         | C-A |         | ID | LENGTH | HEADER | CONTENT | CRC |         | ACK |
-      <--|-----|---< >---|----|--------|--------|---------|-----|--> <----|-----|
-         |  0  |         | 12 |   5    |  001   |   64    |     |         |  6  |
-         |_____|         |____|________|________|_________|_____|         |_____|
+  Channel analysis   Transmission                                                 Response
+      _____           ____________________________________________________         _____
+     | C-A |         | ID | LENGTH | HEADER |  SENDER ID  | CONTENT | CRC |       | ACK |
+  <--|-----|---< >---|----|--------|--------|-------------|---------|-----|--> <--|-----|
+     |  0  |         | 12 |   5    |  001   |    ID 11    |   64    |     |       |  6  |
+     |_____|         |____|________|________|_____________|_________|_____|       |_____|
 
+  HEADER CONFIGURATION:
+  [0, 1, 1]: Local bus | Sender info included | Acknowledge requested - DEFAULT
+  __________________________________________________________________________________________
 
-      HEADER POSSIBLE CONFIGURATIONS:
-      The first 3 bits of the HEADER byte are reserved to PJON, the rest if free for use.
-      [0, 0, 0]: Local bus  | No sender info included | No acknowledge
-      [1, 0, 0]: Shared bus | No sender info included | No acknowledge
-      [1, 1, 0]: Shared bus | Sender info included    | No acknowledge
-      [1, 1, 1]: Shared bus | Sender info included    | Acknowledge requested  */
+  A local packet transmission example handled in SIMPLEX mode, with no acknowledge requested:
+
+  Transmission
+   ______________________________________
+  | ID | LENGTH | HEADER | CONTENT | CRC |
+  |----|--------|--------|---------|-----|
+  | 12 |   5    |  000   |   64    |     |
+  |____|________|________|_________|_____|
+
+  HEADER CONFIGURATION:
+  [0, 0, 0]: Local bus | Sender info included | Acknowledge requested - DEFAULT
+  _________________________________________________________________________________________
+
+  A Shared packet transmission example handled in HALF_DUPLEX mode, with acknowledge
+  request, including the sender info:
+
+ Channel analysis                         Transmission                                      Response
+    _____         __________________________________________________________________         _____
+   | C-A |       | ID | LENGTH | HEADER | BUS ID | ID | BUS ID | ID | CONTENT | CRC |       | ACK |
+ <-|-----|--< >--|----|--------|--------|--------|----|--------|----|---------|-----|--> <--|-----|
+   |  0  |       | 12 |   5    |  111   |  0001  | 11 |  0001  | 11 |   64    |     |       |  6  |
+   |_____|       |____|________|________|________|____|________|____|_________|_____|       |_____|
+                                        |Receiver info| Sender info |
+  HEADER CONFIGURATION:
+  [1, 1, 1]: Local bus | Sender info included | Acknowledge requested - DEFAULT */
 
       uint16_t send_string(uint8_t id, char *string, uint8_t length, uint8_t custom_header = 0) {
         if(!string) return FAIL;
@@ -564,12 +598,18 @@ limitations under the License. */
         _device_id = id;
       };
 
-      /* Include sender id in outgoing packages so that they can be answered to.
-       Disable this to slightly reduce package sizes */
+
+      /* Configure sender's information inclusion in the packet.
+         TRUE: Includes 1 byte (device id) in local or 5 (bus id + device id) in shared
+         FALSE: No inclusion (-1 byte overhead in local / -5 in shared)
+
+         If you don't need the sender info disable the inclusion to reduce overhead and
+         higher communication speed. */
 
       void include_sender_info(bool state) {
         _include_sender_info = state;
-      }
+      };
+
 
       /* Configure the bus network behaviour.
          TRUE: Enable communication to devices part of other bus ids (on a shared medium).
@@ -581,8 +621,8 @@ limitations under the License. */
 
 
       /* Set if delivered or undeliverable packets are auto deleted:
-         TRUE: manual packet deletion from buffer is needed
-         FALSE: Automatic deletion in case o  */
+         TRUE: Automatic deletion
+         FALSE: No packet deletion from buffer. Manual packet deletion from buffer is needed.  */
 
       void set_packet_auto_deletion(boolean state) {
         _auto_delete = state;
@@ -685,11 +725,11 @@ limitations under the License. */
           particular case the obvious bus id is omitted from the packet
           content to reduce overhead. */
 
-      /* Remember some Metainfo about the last received packet (header, sender and receiver id and bus) */
-      PacketInfo last_packet_info;
-
       const uint8_t localhost[4] = {0, 0, 0, 0};
       uint8_t bus_id[4] = {0, 0, 0, 0};
+
+      /* Last received packet Metainfo */
+      PacketInfo last_packet_info;
 
     private:
       boolean   _acknowledge = true;

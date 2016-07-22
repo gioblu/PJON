@@ -41,7 +41,7 @@ void loop() {
   }
 
   Serial.print("Absolute com speed: ");
-  Serial.print(test * 34);
+  Serial.print(test * 35);
   Serial.println("B/s");
   Serial.print("Practical bandwidth: ");
   Serial.print(test * 20);

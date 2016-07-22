@@ -29,7 +29,7 @@ void loop() {
     /* Here send_string low level function is used to
     be able to catch every single sending result. */
 
-    int response = bus.send_string(44, content, 20);
+    int response = bus.send_string(44, content, 20, ACK_REQUEST_BIT);
     if(response == ACK)
       test++;
     if(response == NAK)

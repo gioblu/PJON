@@ -298,7 +298,7 @@ limitations under the License. */
         }
         if(!CRC) {
           if(acknowledge_requested && data[0] != BROADCAST && _mode != SIMPLEX)
-            if(!_shared || (_shared && shared && bus_id_equality(data + 7, bus_id)))
+            if(!_shared || (_shared && shared && bus_id_equality(data + 3, bus_id)))
               Strategy::send_response(ACK, _input_pin, _output_pin);
 
           get_packet_info(data, last_packet_info);
@@ -307,7 +307,7 @@ limitations under the License. */
           return ACK;
         } else {
           if(acknowledge_requested && data[0] != BROADCAST && _mode != SIMPLEX)
-            if(!_shared || (_shared && shared && bus_id_equality(data + 7, bus_id)))
+            if(!_shared || (_shared && shared && bus_id_equality(data + 3, bus_id)))
               Strategy::send_response(NAK, _input_pin, _output_pin);
           return NAK;
         }

@@ -12,16 +12,21 @@ uint8_t bus_id[] = {0, 0, 0, 1};
 PJON<SoftwareBitBang> bus(bus_id, 45);
 
 int packet;
-char content[] = "000001234567890123456789"; // First 4 bytes left empty for bus id
+char content[] = "000000000001234567890123456789"; // First 10 bytes left empty for bus id
 
 void setup() {
 
-  /* Manually copy the bus id in the content.
+  /* Manually copy transmitter and receiver info in the content.
      Done only because low level send_string function is used
      to test absolute performance. */
 
   for(uint8_t i = 0; i < 4; i++)
    content[i] = bus_id[i];
+  content[4] = 44;
+
+  for(uint8_t i = 5; i < 9; i++)
+   content[i] = bus_id[i];
+  content[9] = 45;
 
   bus.set_pin(12);
   bus.begin();
@@ -39,7 +44,7 @@ void loop() {
     /* Here send_string low level function is used to
     be able to catch every single sending result. */
 
-    int response = bus.send_string(44, content, 24);
+    int response = bus.send_string(44, content, 30, (uint8_t)(ACK_REQUEST_BIT | SENDER_INFO_BIT | MODE_BIT));
     if(response == ACK)
       test++;
     if(response == NAK)
@@ -51,7 +56,7 @@ void loop() {
   }
 
   Serial.print("Absolute com speed: ");
-  Serial.print(test * 34);
+  Serial.print(test * 35);
   Serial.println("B/s");
   Serial.print("Practical bandwidth: ");
   Serial.print(test * 20);

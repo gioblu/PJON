@@ -2,6 +2,7 @@
 
 // Bus id definition
 uint8_t bus_id[] = {0, 0, 0, 1};
+int packet;
 
 // PJON object
 PJON<SoftwareBitBang> bus(bus_id, 45);
@@ -14,18 +15,19 @@ void setup() {
   bus.begin();
 
   bus.set_receiver(receiver_function);
-  bus.send(44, "B", 1);
+  packet = bus.send(44, "B", 1);
 
   Serial.begin(115200);
 };
 
 void receiver_function(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {
  if((char)payload[0] == 'B') {
-    bus.reply("B", 1);
+    if(!bus.packets[packet].state)
+      packet = bus.reply("B", 1);
     digitalWrite(13, HIGH);
-    delay(5);
+    delay(2);
     digitalWrite(13, LOW);
-    delay(5);
+    delay(2);
   }
 }
 

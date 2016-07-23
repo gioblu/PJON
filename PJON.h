@@ -119,7 +119,6 @@ limitations under the License. */
   /* Last received packet Metainfo */
   struct PacketInfo {
     uint8_t header = 0;
-    uint8_t router_id = 0;
     uint8_t receiver_id = 0;
     uint8_t receiver_bus_id[4];
     uint8_t sender_id = 0;
@@ -238,21 +237,16 @@ limitations under the License. */
       /* Fill in a PacketInfo struct by parsing a packet: */
 
       void get_packet_info(const uint8_t *packet, PacketInfo &packet_info) const {
+        packet_info.receiver_id = packet[0];
         packet_info.header = packet[2];
+
         if((packet_info.header & MODE_BIT) != 0) {
           copy_bus_id(packet_info.receiver_bus_id, packet + 3);
-          packet_info.receiver_id = packet[7];
-          packet_info.router_id = packet[0];
           if((packet_info.header & SENDER_INFO_BIT) != 0) {
-            copy_bus_id(packet_info.sender_bus_id, packet + 8);
-            packet_info.sender_id = packet[12];
+            copy_bus_id(packet_info.sender_bus_id, packet + 7);
+            packet_info.sender_id = packet[11];
           }
-        } else {
-          packet_info.receiver_id = packet[0];
-          if((packet_info.header & SENDER_INFO_BIT) != 0) {
-            packet_info.sender_id = packet[3];
-          }
-        }
+        } else if((packet_info.header & SENDER_INFO_BIT) != 0) packet_info.sender_id = packet[3];
       };
 
       /* Try to receive a packet: */
@@ -302,7 +296,7 @@ limitations under the License. */
               Strategy::send_response(ACK, _input_pin, _output_pin);
 
           get_packet_info(data, last_packet_info);
-          uint8_t payload_offset = 3 + (shared ? (includes_sender_info ? 10 : 5) : (includes_sender_info ? 1 : 0));
+          uint8_t payload_offset = 3 + (shared ? (includes_sender_info ? 9 : 4) : (includes_sender_info ? 1 : 0));
           _receiver(data + payload_offset, data[3] - payload_offset - 1, last_packet_info);
           return ACK;
         } else {
@@ -396,7 +390,7 @@ limitations under the License. */
 
 
       uint16_t dispatch(uint8_t id, uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing, uint8_t header = 0) {
-        uint8_t new_length = _shared ? (length + (_sender_info ? 10 : 5)) : (length + (_sender_info ? 1 : 0));
+        uint8_t new_length = _shared ? (length + (_sender_info ? 9 : 4)) : (length + (_sender_info ? 1 : 0));
 
         // Compose PJON 1 byte header from internal configuration
         if(header == 0) {
@@ -419,14 +413,13 @@ limitations under the License. */
 
         if(_shared) {
           copy_bus_id((uint8_t*) str, b_id);
-          str[4] = id;
           if(_sender_info) {
-            copy_bus_id((uint8_t*) &str[5], bus_id);
-            str[9] = _device_id;
+            copy_bus_id((uint8_t*) &str[4], bus_id);
+            str[8] = _device_id;
           }
         } else if(_sender_info) str[0] = _device_id;
 
-        memcpy(str + (_shared ? (_sender_info ? 10 : 5) : (_sender_info ? 1 : 0)), packet, length);
+        memcpy(str + (_shared ? (_sender_info ? 9 : 4) : (_sender_info ? 1 : 0)), packet, length);
 
         for(uint8_t i = 0; i < MAX_PACKETS; i++)
           if(packets[i].state == 0) {
@@ -503,10 +496,10 @@ limitations under the License. */
 
  Channel analysis                         Transmission                                      Response
     _____         __________________________________________________________________         _____
-   | C-A |       | ID | LENGTH | HEADER | BUS ID | ID | BUS ID | ID | CONTENT | CRC |       | ACK |
- <-|-----|--< >--|----|--------|--------|--------|----|--------|----|---------|-----|--> <--|-----|
-   |  0  |       | 12 |   5    |  111   |  0001  | 11 |  0001  | 11 |   64    |     |       |  6  |
-   |_____|       |____|________|________|________|____|________|____|_________|_____|       |_____|
+   | C-A |       | ID | LENGTH | HEADER |    BUS ID   | BUS ID | ID | CONTENT | CRC |       | ACK |
+ <-|-----|--< >--|----|--------|--------|-------------|--------|----|---------|-----|--> <--|-----|
+   |  0  |       | 12 |   5    |  111   |     0001    |  0001  | 11 |   64    |     |       |  6  |
+   |_____|       |____|________|________|_____________|________|____|_________|_____|       |_____|
                                         |Receiver info| Sender info |
   HEADER CONFIGURATION:
   [1, 1, 1]: Local bus | Sender info included | Acknowledge requested - DEFAULT

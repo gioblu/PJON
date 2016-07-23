@@ -18,7 +18,7 @@ void setup() {
 };
 
 void receiver_function(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {
- if((char)payload[0] == 'B') {
+  if((char)payload[0] == 'B') {
     if(!bus.packets[packet].state)
       packet = bus.reply("B", 1); // Avoid duplicate sending checking old packet state
     digitalWrite(13, HIGH);

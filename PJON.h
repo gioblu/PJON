@@ -101,7 +101,7 @@ limitations under the License. */
   /* Maximum random delay on startup in milliseconds */
   #define INITIAL_MAX_DELAY   1000
   /* Maximum randon delay on collision */
-  #define COLLISION_MAX_DELAY 16
+  #define COLLISION_MAX_DELAY 48
   /* Maximum id scan time (5 seconds) */
   #define MAX_ID_SCAN_TIME    5000000
 
@@ -440,7 +440,7 @@ limitations under the License. */
 
   /* An Example of how the string "@" is formatted and sent:
 
-  RECIPIENT ID 12   LENGTH 5          HEADER 00000100  SENDER ID 11      CONTENT 64       CRC
+  RECIPIENT ID 12   LENGTH 6          HEADER 00000100  SENDER ID 11      CONTENT 64       CRC
    ________________ _________________ ________________ _________________ ________________ __________________
   |Sync | Byte     |Sync | Byte      |Sync | Byte     |Sync | Byte      |Sync | Byte     |Sync | Byte       |
   |___  |     __   |___  |      _   _|___  |      _   |___  |     _   __|___  |  _       |___  |  _      _  |

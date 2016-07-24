@@ -365,7 +365,7 @@ limitations under the License. */
         return dispatch(id, bus_id, packet, length, 0);
       };
 
-      uint16_t send(uint8_t id, uint8_t b_id, const char *packet, uint8_t length) {
+      uint16_t send(uint8_t id, uint8_t *b_id, const char *packet, uint8_t length) {
         return dispatch(id, b_id, packet, length, 0);
       };
 
@@ -373,7 +373,7 @@ limitations under the License. */
         return dispatch(id, bus_id, packet, length, timing);
       };
 
-      uint16_t send_repeatedly(uint8_t id, uint8_t b_id, const char *packet, uint8_t length, uint32_t timing) {
+      uint16_t send_repeatedly(uint8_t id, uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing) {
         return dispatch(id, b_id, packet, length, timing);
       };
 

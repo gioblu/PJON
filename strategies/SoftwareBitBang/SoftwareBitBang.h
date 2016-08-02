@@ -86,7 +86,6 @@ class SoftwareBitBang {
     If receiving 10 bits no 1s are detected
     there is no active transmission */
 
-    static inline __attribute__((always_inline))
     boolean can_start(uint8_t input_pin, uint8_t output_pin) {
       pinModeFast(input_pin, INPUT);
       for(uint8_t i = 0; i < 9; i++) {
@@ -118,7 +117,6 @@ class SoftwareBitBang {
     synchronization loss or simply absence of communication is
     detected at byte level. */
 
-    static inline __attribute__((always_inline))
     void send_byte(uint8_t b, uint8_t input_pin, uint8_t output_pin) {
       digitalWriteFast(output_pin, HIGH);
       delayMicroseconds(SWBB_BIT_SPACER);
@@ -138,7 +136,6 @@ class SoftwareBitBang {
      in which portion of the bit, the reading will be
      executed by the next read_byte function */
 
-    static inline __attribute__((always_inline))
     uint8_t syncronization_bit(uint8_t pin) {
       delayMicroseconds((SWBB_BIT_WIDTH / 2) - SWBB_READ_DELAY);
       uint8_t bit_value = digitalReadFast(pin);
@@ -149,7 +146,6 @@ class SoftwareBitBang {
 
     /* Read a byte from the pin */
 
-    static inline __attribute__((always_inline))
     uint8_t read_byte(uint8_t pin) {
       uint8_t byte_value = B00000000;
       /* Delay until the center of the first bit */
@@ -182,7 +178,6 @@ class SoftwareBitBang {
         |
       ACCEPTANCE */
 
-    static inline __attribute__((always_inline))
     uint16_t receive_byte(uint8_t input_pin, uint8_t output_pin) {
       /* Initialize the pin and set it to LOW to reduce interference */
       pullDownFast(input_pin);
@@ -206,7 +201,6 @@ class SoftwareBitBang {
 
     /* Receive byte response */
 
-    static inline __attribute__((always_inline))
     uint16_t receive_response(uint8_t input_pin, uint8_t output_pin) {
 
       if(output_pin != input_pin && output_pin != NOT_ASSIGNED)
@@ -222,7 +216,6 @@ class SoftwareBitBang {
 
     /* Send byte response to package transmitter */
 
-    static inline __attribute__((always_inline))
     void send_response(uint8_t response, uint8_t input_pin, uint8_t output_pin) {
       pinModeFast(output_pin, OUTPUT);
       send_byte(response, input_pin, output_pin);

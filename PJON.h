@@ -74,8 +74,9 @@ limitations under the License. */
      [1, 1, 0]: Shared bus | Sender info included    | No acknowledge
      [1, 1, 1]: Shared bus | Sender info included    | Acknowledge requested  */
 
-  #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
   #include "strategies/OverSampling/OverSampling.h"
+  #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
+  #include "strategies/ThroughHardwareSerial/ThroughHardwareSerial.h"
 
   /* Errors */
   #define CONNECTION_LOST     101
@@ -133,10 +134,8 @@ limitations under the License. */
 
   template<typename Strategy = SoftwareBitBang>
   class PJON {
-
-    Strategy strategy;
-
     public:
+      Strategy strategy;
 
       /* PJON bus default initialization:
          State: Local (bus_id: 0.0.0.0)
@@ -260,7 +259,7 @@ limitations under the License. */
         bool acknowledge_requested = false;
 
         for(uint8_t i = 0; i < packet_length; i++) {
-          data[i] = state = Strategy::receive_byte(_input_pin, _output_pin);
+          data[i] = state = strategy.receive_byte(_input_pin, _output_pin);
           if(state == FAIL) return FAIL;
 
           if(i == 0 && data[i] != _device_id && data[i] != BROADCAST && !_router)
@@ -293,7 +292,7 @@ limitations under the License. */
         if(!CRC) {
           if(acknowledge_requested && data[0] != BROADCAST && _mode != SIMPLEX)
             if(!_shared || (_shared && shared && bus_id_equality(data + 3, bus_id)))
-              Strategy::send_response(ACK, _input_pin, _output_pin);
+              strategy.send_response(ACK, _input_pin, _output_pin);
 
           get_packet_info(data, last_packet_info);
           uint8_t payload_offset = 3 + (shared ? (includes_sender_info ? 9 : 4) : (includes_sender_info ? 1 : 0));
@@ -302,7 +301,7 @@ limitations under the License. */
         } else {
           if(acknowledge_requested && data[0] != BROADCAST && _mode != SIMPLEX)
             if(!_shared || (_shared && shared && bus_id_equality(data + 3, bus_id)))
-              Strategy::send_response(NAK, _input_pin, _output_pin);
+              strategy.send_response(NAK, _input_pin, _output_pin);
           return NAK;
         }
       };
@@ -514,20 +513,20 @@ limitations under the License. */
 
       uint16_t send_string(uint8_t id, char *string, uint8_t length, uint8_t header = 0) {
         if(!string) return FAIL;
-        if(_mode != SIMPLEX && !Strategy::can_start(_input_pin, _output_pin)) return BUSY;
+        if(_mode != SIMPLEX && !strategy.can_start(_input_pin, _output_pin)) return BUSY;
 
         uint8_t CRC = 0;
 
         // Transmit recipient device id
-        Strategy::send_byte(id, _input_pin, _output_pin);
+        strategy.send_byte(id, _input_pin, _output_pin);
         CRC = compute_crc_8(id, CRC);
 
         // Transmit packet length
-        Strategy::send_byte(length + 4, _input_pin, _output_pin);
+        strategy.send_byte(length + 4, _input_pin, _output_pin);
         CRC = compute_crc_8(length + 4, CRC);
 
         // Transmit header header
-        Strategy::send_byte(header, _input_pin, _output_pin);
+        strategy.send_byte(header, _input_pin, _output_pin);
         CRC = compute_crc_8(header, CRC);
 
         /* If an id is assigned to the bus, the packet's content is prepended by
@@ -535,15 +534,15 @@ limitations under the License. */
            one bus sharing the same medium. */
 
         for(uint8_t i = 0; i < length; i++) {
-          Strategy::send_byte(string[i], _input_pin, _output_pin);
+          strategy.send_byte(string[i], _input_pin, _output_pin);
           CRC = compute_crc_8(string[i], CRC);
         }
 
-        Strategy::send_byte(CRC, _input_pin, _output_pin);
+        strategy.send_byte(CRC, _input_pin, _output_pin);
 
         if(!_acknowledge || id == BROADCAST || _mode == SIMPLEX) return ACK;
 
-        uint16_t response = Strategy::receive_response(_input_pin, _output_pin);
+        uint16_t response = strategy.receive_response(_input_pin, _output_pin);
 
         if(response == ACK) return ACK;
 

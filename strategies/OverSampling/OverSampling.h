@@ -28,7 +28,6 @@ class OverSampling {
     If receiving 10 bits no 1s are detected
     there is no active transmission */
 
-    static inline __attribute__((always_inline))
     boolean can_start(uint8_t input_pin, uint8_t output_pin) {
       float value = 0.5;
       unsigned long time = micros();
@@ -62,7 +61,6 @@ class OverSampling {
     synchronization loss or simply absence of communication is
     detected at byte level. */
 
-    static inline __attribute__((always_inline))
     void send_byte(uint8_t b, uint8_t input_pin, uint8_t output_pin) {
       digitalWriteFast(output_pin, HIGH);
       delayMicroseconds(_OS_BIT_SPACER);
@@ -77,7 +75,6 @@ class OverSampling {
 
     /* Read a byte from the pin */
 
-    static inline __attribute__((always_inline))
     uint8_t read_byte(uint8_t pin) {
       uint8_t byte_value = B00000000;
       for(uint8_t i = 0; i < 8; i++) {
@@ -105,7 +102,6 @@ class OverSampling {
         |
       ACCEPTANCE */
 
-    static inline __attribute__((always_inline))
     uint16_t receive_byte(uint8_t input_pin, uint8_t output_pin) {
       pullDownFast(input_pin);
 
@@ -135,7 +131,6 @@ class OverSampling {
 
     /* Receive byte response */
 
-    static inline __attribute__((always_inline))
     uint16_t receive_response(uint8_t input_pin, uint8_t output_pin) {
       digitalWriteFast(input_pin, LOW);
 
@@ -152,7 +147,6 @@ class OverSampling {
 
     /* Send byte response to package transmitter */
 
-    static inline __attribute__((always_inline))
     void send_response(uint8_t response, uint8_t input_pin, uint8_t output_pin) {
       pinModeFast(output_pin, OUTPUT);
       send_byte(response, input_pin, output_pin);

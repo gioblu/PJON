@@ -10,6 +10,7 @@ PJON (Padded Jittering Operative Network) is an Arduino compatible, multi-master
 - [Bus id](https://github.com/gioblu/PJON/wiki) implementation to optionally enable shared medium communication
 - [Multi media](https://github.com/gioblu/PJON/wiki/OverSampling) compatibility (wires up to 50m, radio up to 5km)
 - Physical layer abstraction and [communication strategy framework](https://github.com/gioblu/PJON/wiki/Strategies)
+- PJON communication through a Serial port with `ThroughHardwareSerial` 
 - 2 pin compatibility to enable twisted pair / radio modules
 - Optional auto-addressing with id collision avoidance (experimental)
 - CRC8 table-less cyclic redundancy check implementation

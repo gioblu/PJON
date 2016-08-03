@@ -43,14 +43,13 @@ class ThroughHardwareSerial {
     /* Returns the Serial object value i.e. if(Serial) */
 
     boolean can_start(uint8_t input_pin, uint8_t output_pin) {
-      return serial;
+      return *serial;
     };
 
 
     /* Send a byte and wait for its transmission end */
 
     void send_byte(uint8_t b, uint8_t input_pin, uint8_t output_pin) {
-      uint32_t time = micros();
       serial->write(b);
       serial->flush();
 

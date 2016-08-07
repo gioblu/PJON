@@ -43,7 +43,7 @@ class ThroughHardwareSerial {
     /* Returns the Serial object value i.e. if(Serial) */
 
     boolean can_start(uint8_t input_pin, uint8_t output_pin) {
-      return *serial;
+      return (serial != NULL) && *serial; // Check if pointer
     };
 
 

@@ -52,13 +52,6 @@ class ThroughHardwareSerial {
     void send_byte(uint8_t b, uint8_t input_pin, uint8_t output_pin) {
       serial->write(b);
       serial->flush();
-
-      #if defined(ARDUINO_ARCH_AVR) || defined(ARDUINO_ARCH_SAM) || defined(ARDUINO_ARCH_SAMD)
-        // Wait for the lingering bytes to transmit (REF: http://forum.arduino.cc/index.php?topic=151014.15)
-        while (!(UCSR0A & (1 << UDRE0)))  // Wait for empty transmit buffer
-           UCSR0A |= 1 << TXC0;  // mark transmission not complete
-        while (!(UCSR0A & (1 << TXC0)));   // Wait for the transmission to complete
-      #endif
     };
 
 

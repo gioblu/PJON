@@ -392,12 +392,10 @@ limitations under the License. */
         uint8_t new_length = _shared ? (length + (_sender_info ? 9 : 4)) : (length + (_sender_info ? 1 : 0));
 
         // Compose PJON 1 byte header from internal configuration
-        if(header == 0) {
-          header |= (_shared ? MODE_BIT : 0);
-          header |= (_sender_info ? SENDER_INFO_BIT : 0);
-          header |= (_acknowledge ? ACK_REQUEST_BIT : 0);
-        }
-
+        header |= (_shared ? MODE_BIT : 0);
+        header |= (_sender_info ? SENDER_INFO_BIT : 0);
+        header |= (_acknowledge ? ACK_REQUEST_BIT : 0);
+        
         if(new_length >= PACKET_MAX_LENGTH) {
           _error(CONTENT_TOO_LONG, new_length);
           return FAIL;

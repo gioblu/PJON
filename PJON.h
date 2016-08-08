@@ -86,11 +86,12 @@ limitations under the License. */
   #define ID_ACQUISITION_FAIL 105
 
   /* Constraints:
+
   Max attempts before throwing CONNECTON_LOST error */
   #ifndef MAX_ATTEMPTS
-    #define MAX_ATTEMPTS        125
+    #define MAX_ATTEMPTS      125
   #endif
-  
+
   /* Packets buffer length, if full PACKETS_BUFFER_FULL error is thrown */
   #ifndef MAX_PACKETS
     #define MAX_PACKETS       10

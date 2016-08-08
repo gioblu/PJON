@@ -87,8 +87,10 @@ limitations under the License. */
 
   /* Constraints:
   Max attempts before throwing CONNECTON_LOST error */
-  #define MAX_ATTEMPTS        125
-
+  #ifndef MAX_ATTEMPTS
+    #define MAX_ATTEMPTS        125
+  #endif
+  
   /* Packets buffer length, if full PACKETS_BUFFER_FULL error is thrown */
   #ifndef MAX_PACKETS
     #define MAX_PACKETS       10

@@ -332,29 +332,33 @@ limitations under the License. */
         packets[id].state = 0;
       };
 
-      /* Remove all packets from the list: 
-       set device_id to zero(0) to clear all packets */
-       
-      void remove_all(uint8_t device_id){
-       for(uint8_t i = 0; i < MAX_PACKETS; i++) {
-        if(packets[i].state == 0) continue;
-        if (device_id == 0 || packets[i].device_id == device_id)
-         remove(i);
-       }
-      }
-     
+
+      /* Remove all packets from the list:
+         Don't pass any parameter to delete all packets
+         Pass a device id to delete all it's related packets  */
+
+      void remove_all_packets(uint8_t device_id) {
+        for(uint8_t i = 0; i < MAX_PACKETS; i++) {
+          if(packets[i].state == 0) continue;
+          if(!device_id || packets[i].device_id == device_id) remove(i);
+        }
+      };
+
+
       /* Get count of the packets for a device_id:
-       set device_id to zero(0) to count all packets */
-       
-      uint8_t get_packet_count(uint8_t device_id){
-       uint8_t packet_count = 0;
-       for(uint8_t i = 0; i < MAX_PACKETS; i++) {
-       if(packets[i].state == 0) continue;
-       if (device_id == 0 || packets[i].device_id == device_id)
-        packet_count++;
-       }
-       return packet_count;
-      }
+         Don't pass any parameter to cou  nt all packets
+         Pass a device id to count all it's related packets */
+
+      uint8_t get_packet_count(uint8_t device_id) {
+        uint8_t packet_count = 0;
+        for(uint8_t i = 0; i < MAX_PACKETS; i++) {
+          if(packets[i].state == 0) continue;
+          if(!device_id || packets[i].device_id == device_id) packet_count++;
+        }
+        return packet_count;
+      };
+
+
       /* Insert a packet in the send list:
        The added packet will be sent in the next update() call.
        Using the timing parameter you can set the delay between every
@@ -417,7 +421,7 @@ limitations under the License. */
         header |= (_shared ? MODE_BIT : 0);
         header |= (_sender_info ? SENDER_INFO_BIT : 0);
         header |= (_acknowledge ? ACK_REQUEST_BIT : 0);
-        
+
         if(new_length >= PACKET_MAX_LENGTH) {
           _error(CONTENT_TOO_LONG, new_length);
           return FAIL;
@@ -712,21 +716,26 @@ limitations under the License. */
 
 
       /* Update the state of the send list:
-         check if there are packets to be sent or to be erased
-         if correctly delivered */
+         Check if there are packets to be sent or to be erased if correctly delivered.
+         Returns the actual number of packets to be sent. */
 
       uint8_t update() {
-        uint8_t packet_count = 0; 
+        uint8_t packet_count = 0;
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
+
           packet_count++;
+
           if((uint32_t)(micros() - packets[i].registration) > packets[i].timing + pow(packets[i].attempts, 3))
             packets[i].state = send_string(packets[i].device_id, packets[i].content, packets[i].length, packets[i].header);
           else continue;
 
           if(packets[i].state == ACK) {
             if(!packets[i].timing) {
-              if(_auto_delete) {remove(i); packet_count--;}
+              if(_auto_delete) {
+                remove(i);
+                packet_count--;
+              }
             } else {
               packets[i].attempts = 0;
               packets[i].registration = micros();
@@ -744,7 +753,10 @@ limitations under the License. */
                 continue;
               } else _error(CONNECTION_LOST, packets[i].device_id);
               if(!packets[i].timing) {
-                if(_auto_delete) {remove(i); packet_count--;}
+                if(_auto_delete) {
+                  remove(i);
+                  packet_count--;
+                }
               } else {
                 packets[i].attempts = 0;
                 packets[i].registration = micros();

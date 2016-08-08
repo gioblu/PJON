@@ -29,7 +29,7 @@ set_id KEYWORD2
 set_pin KEYWORD2
 set_pins KEYWORD2
 remove_all KEYWORD2
-get_packet_count  KEYWORD2
+get_packet_count KEYWORD2
 
 #######################################
 # Instances (KEYWORD2)

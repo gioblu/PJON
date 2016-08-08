@@ -337,7 +337,7 @@ limitations under the License. */
          Don't pass any parameter to delete all packets
          Pass a device id to delete all it's related packets  */
 
-      void remove_all_packets(uint8_t device_id) {
+      void remove_all_packets(uint8_t device_id = 0) {
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
           if(!device_id || packets[i].device_id == device_id) remove(i);
@@ -349,7 +349,7 @@ limitations under the License. */
          Don't pass any parameter to count all packets
          Pass a device id to count all it's related packets */
 
-      uint8_t get_packet_count(uint8_t device_id) {
+      uint8_t get_packet_count(uint8_t device_id = 0) {
         uint8_t packet_count = 0;
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;

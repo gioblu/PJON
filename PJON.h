@@ -352,13 +352,13 @@ limitations under the License. */
          Don't pass any parameter to count all packets
          Pass a device id to count all it's related packets */
 
-      uint8_t get_packet_count(uint8_t device_id = 0) {
-        uint8_t packet_count = 0;
+      uint8_t get_packets_count(uint8_t device_id = 0) {
+        uint8_t packets_count = 0;
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
-          if(!device_id || packets[i].device_id == device_id) packet_count++;
+          if(!device_id || packets[i].device_id == device_id) packets_count++;
         }
-        return packet_count;
+        return packets_count;
       };
 
 
@@ -723,11 +723,11 @@ limitations under the License. */
          Returns the actual number of packets to be sent. */
 
       uint8_t update() {
-        uint8_t packet_count = 0;
+        uint8_t packets_count = 0;
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
 
-          packet_count++;
+          packets_count++;
 
           if((uint32_t)(micros() - packets[i].registration) > packets[i].timing + pow(packets[i].attempts, 3))
             packets[i].state = send_string(packets[i].device_id, packets[i].content, packets[i].length, packets[i].header);
@@ -737,7 +737,7 @@ limitations under the License. */
             if(!packets[i].timing) {
               if(_auto_delete) {
                 remove(i);
-                packet_count--;
+                packets_count--;
               }
             } else {
               packets[i].attempts = 0;
@@ -752,13 +752,13 @@ limitations under the License. */
               if(packets[i].content[0] == ACQUIRE_ID) {
                 _device_id = packets[i].device_id;
                 remove(i);
-                packet_count--;
+                packets_count--;
                 continue;
               } else _error(CONNECTION_LOST, packets[i].device_id);
               if(!packets[i].timing) {
                 if(_auto_delete) {
                   remove(i);
-                  packet_count--;
+                  packets_count--;
                 }
               } else {
                 packets[i].attempts = 0;
@@ -768,7 +768,7 @@ limitations under the License. */
             }
           }
         }
-        return packet_count;
+        return packets_count;
       };
 
       uint8_t data[PACKET_MAX_LENGTH];

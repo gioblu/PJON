@@ -346,7 +346,7 @@ limitations under the License. */
 
 
       /* Get count of the packets for a device_id:
-         Don't pass any parameter to cou  nt all packets
+         Don't pass any parameter to count all packets
          Pass a device id to count all it's related packets */
 
       uint8_t get_packet_count(uint8_t device_id) {

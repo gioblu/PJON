@@ -1,7 +1,7 @@
 
  /*-O//\         __     __
    |-gfo\       |__| | |  | |\ |
-   |!y°o:\      |  __| |__| | \| v4.0
+   |!y°o:\      |  __| |__| | \| v4.1
    |y"s§+`\     Giovanni Blu Mitolo 2012-2016
   /so+:-..`\    gioscarab@gmail.com
   |+/:ngr-*.`\
@@ -74,8 +74,9 @@ limitations under the License. */
      [1, 1, 0]: Shared bus | Sender info included    | No acknowledge
      [1, 1, 1]: Shared bus | Sender info included    | Acknowledge requested  */
 
-  #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
   #include "strategies/OverSampling/OverSampling.h"
+  #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
+  #include "strategies/ThroughHardwareSerial/ThroughHardwareSerial.h"
 
   /* Errors */
   #define CONNECTION_LOST     101
@@ -85,8 +86,11 @@ limitations under the License. */
   #define ID_ACQUISITION_FAIL 105
 
   /* Constraints:
+
   Max attempts before throwing CONNECTON_LOST error */
-  #define MAX_ATTEMPTS        125
+  #ifndef MAX_ATTEMPTS
+    #define MAX_ATTEMPTS      125
+  #endif
 
   /* Packets buffer length, if full PACKETS_BUFFER_FULL error is thrown */
   #ifndef MAX_PACKETS
@@ -133,10 +137,8 @@ limitations under the License. */
 
   template<typename Strategy = SoftwareBitBang>
   class PJON {
-
-    Strategy strategy;
-
     public:
+      Strategy strategy;
 
       /* PJON bus default initialization:
          State: Local (bus_id: 0.0.0.0)
@@ -260,7 +262,7 @@ limitations under the License. */
         bool acknowledge_requested = false;
 
         for(uint8_t i = 0; i < packet_length; i++) {
-          data[i] = state = Strategy::receive_byte(_input_pin, _output_pin);
+          data[i] = state = strategy.receive_byte(_input_pin, _output_pin);
           if(state == FAIL) return FAIL;
 
           if(i == 0 && data[i] != _device_id && data[i] != BROADCAST && !_router)
@@ -293,7 +295,7 @@ limitations under the License. */
         if(!CRC) {
           if(acknowledge_requested && data[0] != BROADCAST && _mode != SIMPLEX)
             if(!_shared || (_shared && shared && bus_id_equality(data + 3, bus_id)))
-              Strategy::send_response(ACK, _input_pin, _output_pin);
+              strategy.send_response(ACK, _input_pin, _output_pin);
 
           get_packet_info(data, last_packet_info);
           uint8_t payload_offset = 3 + (shared ? (includes_sender_info ? 9 : 4) : (includes_sender_info ? 1 : 0));
@@ -302,7 +304,7 @@ limitations under the License. */
         } else {
           if(acknowledge_requested && data[0] != BROADCAST && _mode != SIMPLEX)
             if(!_shared || (_shared && shared && bus_id_equality(data + 3, bus_id)))
-              Strategy::send_response(NAK, _input_pin, _output_pin);
+              strategy.send_response(NAK, _input_pin, _output_pin);
           return NAK;
         }
       };
@@ -331,6 +333,32 @@ limitations under the License. */
         packets[id].length = 0;
         packets[id].registration = 0;
         packets[id].state = 0;
+      };
+
+
+      /* Remove all packets from the list:
+         Don't pass any parameter to delete all packets
+         Pass a device id to delete all it's related packets  */
+
+      void remove_all_packets(uint8_t device_id = 0) {
+        for(uint8_t i = 0; i < MAX_PACKETS; i++) {
+          if(packets[i].state == 0) continue;
+          if(!device_id || packets[i].device_id == device_id) remove(i);
+        }
+      };
+
+
+      /* Get count of the packets for a device_id:
+         Don't pass any parameter to count all packets
+         Pass a device id to count all it's related packets */
+
+      uint8_t get_packets_count(uint8_t device_id = 0) {
+        uint8_t packets_count = 0;
+        for(uint8_t i = 0; i < MAX_PACKETS; i++) {
+          if(packets[i].state == 0) continue;
+          if(!device_id || packets[i].device_id == device_id) packets_count++;
+        }
+        return packets_count;
       };
 
 
@@ -365,7 +393,7 @@ limitations under the License. */
         return dispatch(id, bus_id, packet, length, 0);
       };
 
-      uint16_t send(uint8_t id, uint8_t b_id, const char *packet, uint8_t length) {
+      uint16_t send(uint8_t id, uint8_t *b_id, const char *packet, uint8_t length) {
         return dispatch(id, b_id, packet, length, 0);
       };
 
@@ -373,7 +401,7 @@ limitations under the License. */
         return dispatch(id, bus_id, packet, length, timing);
       };
 
-      uint16_t send_repeatedly(uint8_t id, uint8_t b_id, const char *packet, uint8_t length, uint32_t timing) {
+      uint16_t send_repeatedly(uint8_t id, uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing) {
         return dispatch(id, b_id, packet, length, timing);
       };
 
@@ -393,11 +421,9 @@ limitations under the License. */
         uint8_t new_length = _shared ? (length + (_sender_info ? 9 : 4)) : (length + (_sender_info ? 1 : 0));
 
         // Compose PJON 1 byte header from internal configuration
-        if(header == 0) {
-          header |= (_shared ? MODE_BIT : 0);
-          header |= (_sender_info ? SENDER_INFO_BIT : 0);
-          header |= (_acknowledge ? ACK_REQUEST_BIT : 0);
-        }
+        header |= (_shared ? MODE_BIT : 0);
+        header |= (_sender_info ? SENDER_INFO_BIT : 0);
+        header |= (_acknowledge ? ACK_REQUEST_BIT : 0);
 
         if(new_length >= PACKET_MAX_LENGTH) {
           _error(CONTENT_TOO_LONG, new_length);
@@ -514,20 +540,20 @@ limitations under the License. */
 
       uint16_t send_string(uint8_t id, char *string, uint8_t length, uint8_t header = 0) {
         if(!string) return FAIL;
-        if(_mode != SIMPLEX && !Strategy::can_start(_input_pin, _output_pin)) return BUSY;
+        if(_mode != SIMPLEX && !strategy.can_start(_input_pin, _output_pin)) return BUSY;
 
         uint8_t CRC = 0;
 
         // Transmit recipient device id
-        Strategy::send_byte(id, _input_pin, _output_pin);
+        strategy.send_byte(id, _input_pin, _output_pin);
         CRC = compute_crc_8(id, CRC);
 
         // Transmit packet length
-        Strategy::send_byte(length + 4, _input_pin, _output_pin);
+        strategy.send_byte(length + 4, _input_pin, _output_pin);
         CRC = compute_crc_8(length + 4, CRC);
 
         // Transmit header header
-        Strategy::send_byte(header, _input_pin, _output_pin);
+        strategy.send_byte(header, _input_pin, _output_pin);
         CRC = compute_crc_8(header, CRC);
 
         /* If an id is assigned to the bus, the packet's content is prepended by
@@ -535,15 +561,15 @@ limitations under the License. */
            one bus sharing the same medium. */
 
         for(uint8_t i = 0; i < length; i++) {
-          Strategy::send_byte(string[i], _input_pin, _output_pin);
+          strategy.send_byte(string[i], _input_pin, _output_pin);
           CRC = compute_crc_8(string[i], CRC);
         }
 
-        Strategy::send_byte(CRC, _input_pin, _output_pin);
+        strategy.send_byte(CRC, _input_pin, _output_pin);
 
         if(!_acknowledge || id == BROADCAST || _mode == SIMPLEX) return ACK;
 
-        uint16_t response = Strategy::receive_response(_input_pin, _output_pin);
+        uint16_t response = strategy.receive_response(_input_pin, _output_pin);
 
         if(response == ACK) return ACK;
 
@@ -693,19 +719,26 @@ limitations under the License. */
 
 
       /* Update the state of the send list:
-         check if there are packets to be sent or to be erased
-         if correctly delivered */
+         Check if there are packets to be sent or to be erased if correctly delivered.
+         Returns the actual number of packets to be sent. */
 
-      void update() {
+      uint8_t update() {
+        uint8_t packets_count = 0;
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
+
+          packets_count++;
+
           if((uint32_t)(micros() - packets[i].registration) > packets[i].timing + pow(packets[i].attempts, 3))
             packets[i].state = send_string(packets[i].device_id, packets[i].content, packets[i].length, packets[i].header);
           else continue;
 
           if(packets[i].state == ACK) {
             if(!packets[i].timing) {
-              if(_auto_delete) remove(i);
+              if(_auto_delete) {
+                remove(i);
+                packets_count--;
+              }
             } else {
               packets[i].attempts = 0;
               packets[i].registration = micros();
@@ -719,10 +752,14 @@ limitations under the License. */
               if(packets[i].content[0] == ACQUIRE_ID) {
                 _device_id = packets[i].device_id;
                 remove(i);
+                packets_count--;
                 continue;
               } else _error(CONNECTION_LOST, packets[i].device_id);
               if(!packets[i].timing) {
-                if(_auto_delete) remove(i);
+                if(_auto_delete) {
+                  remove(i);
+                  packets_count--;
+                }
               } else {
                 packets[i].attempts = 0;
                 packets[i].registration = micros();
@@ -731,6 +768,7 @@ limitations under the License. */
             }
           }
         }
+        return packets_count;
       };
 
       uint8_t data[PACKET_MAX_LENGTH];

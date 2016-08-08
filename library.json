@@ -12,8 +12,8 @@
     "type": "git",
     "url": "https://github.com/gioblu/PJON.git"
   },
-  "version": "4.0",
-  "examples": "examples/*/*/*.ino",
+  "version": "4.1",
+  "examples": "examples/*/*/*/*.ino",
   "frameworks": "arduino",
   "platforms":
   [

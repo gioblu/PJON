@@ -299,7 +299,7 @@ limitations under the License. */
 
           get_packet_info(data, last_packet_info);
           uint8_t payload_offset = 3 + (shared ? (includes_sender_info ? 9 : 4) : (includes_sender_info ? 1 : 0));
-          _receiver(data + payload_offset, data[3] - payload_offset - 1, last_packet_info);
+          _receiver(data + payload_offset, data[1] - payload_offset - 1, last_packet_info);
           return ACK;
         } else {
           if(acknowledge_requested && data[0] != BROADCAST && _mode != SIMPLEX)

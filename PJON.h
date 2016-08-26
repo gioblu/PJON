@@ -135,7 +135,7 @@ limitations under the License. */
   static void dummy_receiver_handler(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {};
   static void dummy_error_handler(uint8_t code, uint8_t data) {};
 
-  
+
   /* Check equality between two bus ids */
 
   boolean bus_id_equality(const uint8_t *name_one, const uint8_t *name_two) {
@@ -160,9 +160,9 @@ limitations under the License. */
       if(result) crc ^= 0x8C;
     }
     return crc;
-  };  
-  
-  
+  };
+
+
   template<typename Strategy = SoftwareBitBang>
   class PJON {
     public:
@@ -361,16 +361,16 @@ limitations under the License. */
         return packets_count;
       };
 
-      
+
       /* Calculate the total message size when potentially including sender id and bus id */
-      
-      uint8_t get_total_length(uint8_t length) const {
-        return _shared ? (length + (_sender_info ? 9 : 4)) : (length + (_sender_info ? 1 : 0));
+
+      uint8_t info_overhead(uint8_t length) const {
+        return _shared ? (_sender_info ? 9 : 4) : (_sender_info ? 1 : 0);
       }
 
-      
+
       /* Return the header byte based on current configuration */
-      
+
       uint8_t get_header_byte() const {
         // Compose PJON 1 byte header from internal configuration
         return (_shared ? MODE_BIT : 0) |
@@ -378,10 +378,10 @@ limitations under the License. */
                (_acknowledge ? ACK_REQUEST_BIT : 0);
       }
 
-      
+
       /* The sender id and bus id for sender and reciver may be prefixed to the real message.
          Compose the composite message. */
-      
+
       void compose_message(const uint8_t *b_id, char *str, const char *packet, uint8_t length) const {
         if(_shared) {
           copy_bus_id((uint8_t*) str, b_id);
@@ -391,10 +391,10 @@ limitations under the License. */
           }
         } else if(_sender_info) str[0] = _device_id;
 
-        memcpy(str + (_shared ? (_sender_info ? 9 : 4) : (_sender_info ? 1 : 0)), packet, length);
-      }
-      
-      
+        memcpy(str + info_overhead(), packet, length);
+      };
+
+
       /* Insert a packet in the send list:
        The added packet will be sent in the next update() call.
        Using the timing parameter you can set the delay between every
@@ -451,7 +451,7 @@ limitations under the License. */
 
 
       uint16_t dispatch(uint8_t id, uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing, uint8_t header = 0) {
-        uint8_t new_length = get_total_length(length);
+        uint8_t new_length = length + info_overhead();
 
         if(new_length >= PACKET_MAX_LENGTH) {
           _error(CONTENT_TOO_LONG, new_length);
@@ -727,14 +727,14 @@ limitations under the License. */
       void set_router(boolean state) {
         _router = state;
       };
-      
-      
-      /* In router mode, the receiver function can ack for selected receiver 
+
+
+      /* In router mode, the receiver function can ack for selected receiver
          device ids for which the route is known */
-         
-      void ack() { 
-        strategy.send_response(ACK, _input_pin, _output_pin); 
-      }
+
+      void send_acknowledge() {
+        strategy.send_response(ACK, _input_pin, _output_pin);
+      };
 
 
       /* Update the state of the send list:

@@ -1,7 +1,21 @@
 
-/* OverSampling Two wires interrupts-less implementation
-   Part of the PJON framework (included in version v3.0)
-   Copyright (c) 2012-2016, Giovanni Blu Mitolo All rights reserved. */
+/* OverSampling 1 or 2 wires interrupts-less digital communication transport layer
+   used as a Strategy by the PJON framework (included in version v3.0)
+   ____________________________________________________________________________
+
+   Copyright 2012-2016 Giovanni Blu Mitolo gioscarab@gmail.com
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License. */
 
 #define _STXRX882_STANDARD 0
 
@@ -15,11 +29,12 @@
     Transfer speed: 1620Bb or 202B/s
     Absolute  communication speed: 180B/s (data length 20 of characters)
     Data throughput: 150B/s (data length 20 of characters)
-    Range: 250m with no direct line of sight, 5km with direct line of sight */
+    Range: 250m with no direct line of sight, 5km with direct line of sight  */
 
 #define _OS_MODE _STXRX882_STANDARD
 
 #include "Timing.h"
+#include "../../utils/digitalWriteFast.h"
 
 class OverSampling {
   public:
@@ -28,17 +43,17 @@ class OverSampling {
     If receiving 10 bits no 1s are detected
     there is no active transmission */
 
-    boolean can_start(uint8_t input_pin, uint8_t output_pin) {
+    boolean can_start() {
       float value = 0.5;
       unsigned long time = micros();
-      pinModeFast(input_pin, INPUT);
+      pinModeFast(_input_pin, INPUT);
       for(uint8_t i = 0; i < 9; i++) {
         while((uint32_t)(micros() - time) < _OS_BIT_WIDTH)
-          value = (value * 0.999)  + (digitalReadFast(input_pin) * 0.001);
+          value = (value * 0.999)  + (digitalReadFast(_input_pin) * 0.001);
         if(value > 0.5)
           return false;
       }
-      pinModeFast(output_pin, OUTPUT);
+      pinModeFast(_output_pin, OUTPUT);
       return true;
     }
 
@@ -61,27 +76,35 @@ class OverSampling {
     synchronization loss or simply absence of communication is
     detected at byte level. */
 
-    void send_byte(uint8_t b, uint8_t input_pin, uint8_t output_pin) {
-      digitalWriteFast(output_pin, HIGH);
+    void send_byte(uint8_t b) {
+      digitalWriteFast(_output_pin, HIGH);
       delayMicroseconds(_OS_BIT_SPACER);
-      digitalWriteFast(output_pin, LOW);
+      digitalWriteFast(_output_pin, LOW);
       delayMicroseconds(_OS_BIT_WIDTH);
       for(uint8_t mask = 0x01; mask; mask <<= 1) {
-        digitalWriteFast(output_pin, b & mask);
+        digitalWriteFast(_output_pin, b & mask);
         delayMicroseconds(_OS_BIT_WIDTH);
       }
-    }
+    };
+
+
+    /* Send a string: */
+
+    void send_string(uint8_t *string, uint8_t length) {
+      for(uint8_t b = 0; b < length; b++)
+        send_byte(string[b]);
+    };
 
 
     /* Read a byte from the pin */
 
-    uint8_t read_byte(uint8_t pin) {
+    uint8_t read_byte() {
       uint8_t byte_value = B00000000;
       for(uint8_t i = 0; i < 8; i++) {
         unsigned long time = micros();
         float value = 0.5;
         while((uint32_t)(micros() - time) < _OS_BIT_WIDTH)
-          value = ((value * 0.999) + (digitalReadFast(pin) * 0.001));
+          value = ((value * 0.999) + (digitalReadFast(_input_pin) * 0.001));
         byte_value += (value > 0.5) << i;
       }
       return byte_value;
@@ -102,18 +125,18 @@ class OverSampling {
         |
       ACCEPTANCE */
 
-    uint16_t receive_byte(uint8_t input_pin, uint8_t output_pin) {
-      pullDownFast(input_pin);
+    uint16_t receive_byte() {
+      pullDownFast(_input_pin);
 
-      if(output_pin != NOT_ASSIGNED && output_pin != input_pin)
-        pullDownFast(output_pin);
+      if(_output_pin != NOT_ASSIGNED && _output_pin != _input_pin)
+        pullDownFast(_output_pin);
 
       float value = 0.5;
       unsigned long time = micros();
       /* Update pin value until the pin stops to be HIGH or passed more time than
          BIT_SPACER duration */
-      while(((uint32_t)(micros() - time) < _OS_BIT_SPACER) && digitalReadFast(input_pin))
-        value = (value * 0.999)  + (digitalReadFast(input_pin) * 0.001);
+      while(((uint32_t)(micros() - time) < _OS_BIT_SPACER) && digitalReadFast(_input_pin))
+        value = (value * 0.999)  + (digitalReadFast(_input_pin) * 0.001);
       /* Save how much time passed */
       time = micros();
       /* If pin value is in average more than 0.5, is a 1, and if is more than
@@ -122,8 +145,8 @@ class OverSampling {
       if(value > 0.5) {
         value = 0.5;
         while((uint32_t)(micros() - time) < _OS_BIT_WIDTH)
-          value = (value * 0.999)  + (digitalReadFast(input_pin) * 0.001);
-        if(value < 0.5) return read_byte(input_pin);
+          value = (value * 0.999)  + (digitalReadFast(_input_pin) * 0.001);
+        if(value < 0.5) return read_byte();
       }
       return FAIL;
     }
@@ -131,25 +154,45 @@ class OverSampling {
 
     /* Receive byte response */
 
-    uint16_t receive_response(uint8_t input_pin, uint8_t output_pin) {
-      digitalWriteFast(input_pin, LOW);
+    uint16_t receive_response() {
+      digitalWriteFast(_input_pin, LOW);
 
-      if(output_pin != NOT_ASSIGNED && output_pin != input_pin)
-        digitalWriteFast(output_pin, LOW);
+      if(_output_pin != NOT_ASSIGNED && _output_pin != _input_pin)
+        digitalWriteFast(_output_pin, LOW);
 
       uint16_t response = FAIL;
       uint32_t time = micros();
       while(response == FAIL && (uint32_t)((micros() - _OS_BIT_SPACER) - _OS_BIT_WIDTH) <= time)
-        response = receive_byte(input_pin, output_pin);
+        response = receive_byte();
       return response;
     }
 
 
     /* Send byte response to package transmitter */
 
-    void send_response(uint8_t response, uint8_t input_pin, uint8_t output_pin) {
-      pinModeFast(output_pin, OUTPUT);
-      send_byte(response, input_pin, output_pin);
-      digitalWriteFast(output_pin, LOW);
+    void send_response(uint8_t response) {
+      pinModeFast(_output_pin, OUTPUT);
+      send_byte(response);
+      digitalWriteFast(_output_pin, LOW);
     }
+
+
+    /* Set the communicaton pin: */
+
+    void set_pin(uint8_t pin) {
+      _input_pin = pin;
+      _output_pin = pin;
+    };
+
+
+    /* Set a pair of communication pins: */
+
+    void set_pins(uint8_t input_pin = NOT_ASSIGNED, uint8_t output_pin = NOT_ASSIGNED) {
+      _input_pin = input_pin;
+      _output_pin = output_pin;
+    };
+
+  private:
+    uint8_t _input_pin;
+    uint8_t _output_pin;
 };

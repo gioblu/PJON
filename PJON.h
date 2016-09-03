@@ -38,7 +38,6 @@ limitations under the License. */
 
   /* Protocol symbols */
   #define ACK         6
-  #define ACQUIRE_ID  63
   #define BUSY        666
   #define NAK         21
 
@@ -199,27 +198,6 @@ limitations under the License. */
         copy_bus_id(bus_id, b_id);
         _device_id = device_id;
         set_default();
-      };
-
-
-      /* Look for a free id:
-         All ids are scanned looking for a free one. If no answer is received after
-         MAX_ATTEMPTS attempts, id is acquired and used as new id by the scanning device. */
-
-      void acquire_id() {
-        uint32_t time = micros();
-        uint8_t ping_id;
-        char msg = ACQUIRE_ID;
-
-        for(uint8_t id = 1; id < 255 && (uint32_t)(micros() - time) < MAX_ID_SCAN_TIME; id++) {
-          ping_id = send(id, &msg, 1);
-
-          while(packets[ping_id].state != 0 && (uint32_t)(micros() - time) < MAX_ID_SCAN_TIME)
-            update();
-
-          if(_device_id != NOT_ASSIGNED) return;
-        }
-        _error(ID_ACQUISITION_FAIL, FAIL);
       };
 
 
@@ -768,12 +746,7 @@ limitations under the License. */
           if(packets[i].state == FAIL) {
             packets[i].attempts++;
             if(packets[i].attempts > MAX_ATTEMPTS) {
-              if(packets[i].content[0] == ACQUIRE_ID) {
-                _device_id = packets[i].device_id;
-                remove(i);
-                packets_count--;
-                continue;
-              } else _error(CONNECTION_LOST, packets[i].device_id);
+              _error(CONNECTION_LOST, packets[i].device_id);
               if(!packets[i].timing) {
                 if(_auto_delete) {
                   remove(i);

@@ -567,25 +567,6 @@ limitations under the License. */
       };
 
 
-      /* Set the communicaton pin: */
-
-      void set_pin(uint8_t pin) {
-        _input_pin = pin;
-        _output_pin = pin;
-      };
-
-
-      /* Set a pair of communication pins: */
-
-      void set_pins(uint8_t input_pin = NOT_ASSIGNED, uint8_t output_pin = NOT_ASSIGNED) {
-        _input_pin = input_pin;
-        _output_pin = output_pin;
-
-        if(input_pin == NOT_ASSIGNED || output_pin == NOT_ASSIGNED)
-          _mode = SIMPLEX;
-      };
-
-
       /* Pass as a parameter a void function you previously defined in your code.
          This will be called when a correct message will be received.
          Inside there you can code how to react when data is received.
@@ -688,11 +669,9 @@ limitations under the License. */
       boolean   _acknowledge = true;
       boolean   _auto_delete = true;
       uint8_t   _device_id;
-      uint8_t   _input_pin;
       boolean   _shared = false;
       boolean   _sender_info = true;
       uint8_t   _mode;
-      uint8_t   _output_pin;
       receiver  _receiver;
       boolean   _router = false;
       error     _error;

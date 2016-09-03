@@ -83,11 +83,12 @@ limitations under the License. */
       };
 
 
-      /* Get the device id, returning a single byte (watch out to id collision): */
+      /* Get the device id, returning a single byte: */
 
       uint8_t device_id() const {
         return _device_id;
       };
+
 
       /* Fill in a PacketInfo struct by parsing a packet: */
 
@@ -103,6 +104,7 @@ limitations under the License. */
           }
         } else if((packet_info.header & SENDER_INFO_BIT) != 0) packet_info.sender_id = packet[3];
       };
+
 
       /* Try to receive a packet: */
 
@@ -285,25 +287,23 @@ limitations under the License. */
        int hi = bus.send_repeatedly(99, {127, 0, 0, 1}, "HI!", 3, 1000000);
        // Send HI! to device 99 on bus id 127.0.0.1 every second (1.000.000 microseconds)
 
-       bus.remove(hi); // Stop repeated sending
-       _________________________________________________________________________
-      |           |        |         |       |          |        |              |
-      | device_id | length | content | state | attempts | timing | registration |
-      |___________|________|_________|_______|__________|________|______________| */
+       bus.remove(hi); // Stop repeated sending */
 
       uint16_t send(uint8_t id, const char *packet, uint8_t length) {
         return dispatch(id, bus_id, packet, length, 0);
       };
 
-      uint16_t send(uint8_t id, uint8_t *b_id, const char *packet, uint8_t length) {
+      uint16_t send(uint8_t id, const uint8_t *b_id, const char *packet, uint8_t length) {
         return dispatch(id, b_id, packet, length, 0);
       };
 
+      /* IMPORTANT: send_repeatedly timing parameter maximum is 4294 microseconds or 71.56 minutes */
       uint16_t send_repeatedly(uint8_t id, const char *packet, uint8_t length, uint32_t timing) {
         return dispatch(id, bus_id, packet, length, timing);
       };
 
-      uint16_t send_repeatedly(uint8_t id, uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing) {
+      /* IMPORTANT: send_repeatedly timing parameter maximum is 4294 microseconds or 71.56 minutes */
+      uint16_t send_repeatedly(uint8_t id, const uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing) {
         return dispatch(id, b_id, packet, length, timing);
       };
 
@@ -338,15 +338,15 @@ limitations under the License. */
       };
 
 
-  /* An Example of how the string "@" is formatted and sent:
+  /* An Example of how the packet "@" is formatted and sent:
 
-  RECIPIENT ID 12   LENGTH 6          HEADER 00000100  SENDER ID 11      CONTENT 64       CRC
-   ________________ _________________ ________________ _________________ ________________ __________________
-  |Sync | Byte     |Sync | Byte      |Sync | Byte     |Sync | Byte      |Sync | Byte     |Sync | Byte       |
-  |___  |     __   |___  |      _   _|___  |      _   |___  |     _   __|___  |  _       |___  |  _      _  |
-  |   | |    |  |  |   | |     | | | |   | |     | |  |   | |    | | |  |   | | | |      |   | | | |    | | |
-  | 1 |0|0000|11|00| 1 |0|00000|1|0|1| 1 |0|00000|1|00| 1 |0|0000|1|0|11| 1 |0|0|1|000000| 1 |0|0|1|0000|1|0|
-  |___|_|____|__|__|___|_|_____|_|_|_|___|_|_____|_|__|___|_|____|_|_|__|___|_|_|_|______|___|_|_|_|____|_|_|
+  RECIPIENT ID 12   LENGTH 6          HEADER 00000110  SENDER ID 11      CONTENT 64       CRC
+   ________________ _________________ _________________ _________________ ________________ __________________
+  |Sync | Byte     |Sync | Byte      |Sync | Byte      |Sync | Byte      |Sync | Byte     |Sync | Byte       |
+  |___  |     __   |___  |      _   _|___  |      _ _  |___  |     _   __|___  |  _       |___  |  _      _  |
+  |   | |    |  |  |   | |     | | | |   | |     | | | |   | |    | | |  |   | | | |      |   | | | |    | | |
+  | 1 |0|0000|11|00| 1 |0|00000|1|0|1| 1 |0|00000|1|1|0| 1 |0|0000|1|0|11| 1 |0|0|1|000000| 1 |0|0|1|0000|1|0|
+  |___|_|____|__|__|___|_|_____|_|_|_|___|_|_____|_|_|_|___|_|____|_|_|__|___|_|_|_|______|___|_|_|_|____|_|_|
 
   A standard packet transmission is a bidirectional communication between
   two devices that can be divided in 3 different phases:
@@ -359,7 +359,7 @@ limitations under the License. */
      |_____|         |____|________|________|_____________|_________|_____|       |_____|
 
   DEFAULT HEADER CONFIGURATION:
-  [0, 1, 1]: Local bus | Sender info included | Acknowledge requested
+  00000110: Acknowledge requested | Sender info included | Local bus
 
   BUS CONFIGURATION:
   bus.set_acknowledge(true);
@@ -381,7 +381,7 @@ limitations under the License. */
      |____|________|________|_________|_____|
 
   HEADER CONFIGURATION:
-  [0, 0, 0]: Local bus | Sender info included | Acknowledge requested
+  00000000: Acknowledge not requested | Sender info not included | Local bus
 
   BUS CONFIGURATION:
   bus.set_acknowledge(false);
@@ -402,7 +402,7 @@ limitations under the License. */
    |_____|       |____|________|________|_____________|________|____|_________|_____|       |_____|
                                         |Receiver info| Sender info |
   HEADER CONFIGURATION:
-  [1, 1, 1]: Local bus | Sender info included | Acknowledge requested - DEFAULT
+  00000111: Acknowledge requested | Sender info included | Shared bus
 
   BUS CONFIGURATION:
   bus.set_acknowledge(true);

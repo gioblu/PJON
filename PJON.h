@@ -364,7 +364,7 @@ limitations under the License. */
 
       /* Calculate the total message size when potentially including sender id and bus id */
 
-      uint8_t info_overhead(uint8_t length) const {
+      uint8_t info_overhead() const {
         return _shared ? (_sender_info ? 9 : 4) : (_sender_info ? 1 : 0);
       }
 

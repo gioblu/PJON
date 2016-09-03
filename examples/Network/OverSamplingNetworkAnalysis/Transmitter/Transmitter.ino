@@ -12,18 +12,11 @@ uint8_t bus_id[] = {0, 0, 0, 1};
 PJON<OverSampling> bus(bus_id, 44);
 
 int packet;
-char content[] = "000001234567890123456789"; // First 4 bytes left empty for bus id
+char content[] = "01234567890123456789"; // First 4 bytes left empty for bus id
 
 void setup() {
 
-  /* Manually copy the bus id in the content.
-     Done only because low level send_string function is used
-     to test absolute performance. */
-
-  for(uint8_t i = 0; i < 4; i++)
-    content[i] = bus_id[i];
-
-  bus.set_pins(11, 12);
+  bus.strategy.set_pins(11, 12);
 
   bus.begin();
 
@@ -37,10 +30,10 @@ void loop() {
   long time = millis();
   while(millis() - time < 1000) {
 
-    /* Here send_string low level function is used to
+    /* Here send_packet low level function is used to
     be able to catch every single sending result. */
 
-    int response = bus.send_string(44, content, 20);
+    int response = bus.send_packet(44, bus_id, content, 20);
     if(response == ACK)
       test++;
     if(response == NAK)

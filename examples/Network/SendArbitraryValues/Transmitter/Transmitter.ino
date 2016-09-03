@@ -7,7 +7,7 @@ uint8_t bus_id[] = {0, 0, 0, 1};
 PJON<SoftwareBitBang> bus(bus_id, 45);
 
 void setup() {
-  bus.set_pin(12);
+  bus.stratey.set_pin(12);
   bus.begin();
 
   bus.set_error(error_handler);

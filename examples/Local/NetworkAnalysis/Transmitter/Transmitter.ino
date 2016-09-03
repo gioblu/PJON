@@ -12,7 +12,7 @@ int packet;
 char content[] = "01234567890123456789";
 
 void setup() {
-  bus.set_pin(12);
+  bus.strategy.set_pin(12);
 
   bus.begin();
 
@@ -26,10 +26,10 @@ void loop() {
   long time = millis();
   while(millis() - time < 1000) {
 
-    /* Here send_string low level function is used to
+    /* Here send_packet low level function is used to
     be able to catch every single sending result. */
 
-    int response = bus.send_string(44, content, 20, ACK_REQUEST_BIT);
+    int response = bus.send_packet(44, content, 20);
     if(response == ACK)
       test++;
     if(response == NAK)

@@ -9,7 +9,9 @@
 PJON  KEYWORD1
 SoftwareBitBang	KEYWORD1
 OverSampling	KEYWORD1
-Packet  KEYWORD1
+ThroughHardwareSerial KEYWORD1
+PJON_Packet  KEYWORD1
+PacketInfo   KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
@@ -41,7 +43,6 @@ get_packet_count KEYWORD2
 #######################################
 
 ACK LITERAL1
-ACQUIRE_ID LITERAL1
 BROADCAST	LITERAL1
 BUSY LITERAL1
 COLLISION_MAX_DELAY LITERAL1

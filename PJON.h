@@ -1,19 +1,49 @@
 
- /*-O//\         __     __
-   |-gfo\       |__| | |  | |\ |
-   |!y°o:\      |  __| |__| | \| v4.3
-   |y"s§+`\     Giovanni Blu Mitolo 2012-2016
-  /so+:-..`\    gioscarab@gmail.com
+ /*-O//\             __     __
+   |-gfo\           |__| | |  | |\ |
+   |!y°o:\          |  __| |__| | \| v5.0
+   |y"s§+`\         multi-master, multi-media communications bus system framework
+  /so+:-..`\        Copyright 2012-2016 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
-  |5/:%&-a3f.:;\    PJON is a multi-master, multi-media, device communications bus
-  \+//u/+g%{osv,,\   system framework able to connect up to 255 arduino boards over
-    \=+&/osw+olds.\\   one or two wires up to 5.95kB/s.
+  |5/:%&-a3f.:;\
+  \+//u/+g%{osv,,\
+    \=+&/osw+olds.\\
        \:/+-.-°-:+oss\
         | |       \oy\\
         > <
-  _____-| |-________________________________________________________________________
+  _____-| |-___________________________________________________________________
 
-Copyright 2012-2016 Giovanni Blu Mitolo gioscarab@gmail.com
+Credits to contributors:
+- Fred Larsen (Systems engineering, header driven communication, debugging)
+- Pantovich github user (update returning number of packets to be delivered)
+- Adrian Sławiński (Fix to enable SimpleModbusMasterV2 compatibility)
+- SticilFace github user (Teensy porting)
+- Esben Soeltoft (Arduino Zero porting)
+- Alex Grishin (ESP8266 porting)
+- Andrew Grande (Testing, support, bugfix)
+- Mauro Zancarlin (Systems engineering, testing, bugfix)
+- Michael Teeww (Callback based reception, debugging)
+- PaoloP74 github user (Library conversion to 1.x Arduino IDE)
+
+Bug reports:
+- Zbigniew Zasieczny (header reference inconsistency report)
+- DanRoad reddit user (can_start ThroughHardwareSerial bugfix)
+- Remo Kallio (Packet index 0 bugfix)
+- Emanuele Iannone (Forcing SIMPLEX in OverSamplingSimplex)
+- Christian Pointner (Fixed compiler warnings)
+- Andrew Grande (ESP8266 example watchdog error bug fix)
+- Mauro Mombelli (Code cleanup)
+
+PJON Standard compliant tools:
+- https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande
+- https://github.com/Girgitt/PJON-python PJON running on Python by Zbigniew Zasieczny
+
+PJON is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo,
+with the support ot the internet community if you want to see the PJON project growing
+with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
+__________________________________________________________________________________________
+
+Copyright 2012-2016 by Giovanni Blu Mitolo gioscarab@gmail.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

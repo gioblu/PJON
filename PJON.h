@@ -180,7 +180,6 @@ limitations under the License. */
 
       void remove(uint16_t id) {
         packets[id].attempts = 0;
-        packets[id].device_id = 0;
         packets[id].length = 0;
         packets[id].registration = 0;
         packets[id].state = 0;
@@ -194,7 +193,7 @@ limitations under the License. */
       void remove_all_packets(uint8_t device_id = 0) {
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
-          if(!device_id || packets[i].device_id == device_id) remove(i);
+          if(!device_id || packets[i].content[0] == device_id) remove(i);
         }
       };
 
@@ -207,42 +206,61 @@ limitations under the License. */
         uint8_t packets_count = 0;
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
-          if(!device_id || packets[i].device_id == device_id) packets_count++;
+          if(!device_id || packets[i].content[0] == device_id) packets_count++;
         }
         return packets_count;
       };
 
 
-      /* Calculate the total message size when potentially including sender id and bus id */
+      /* Calculate the packet's overhead: */
 
-      uint8_t info_overhead() const {
-        return _shared ? (_sender_info ? 9 : 4) : (_sender_info ? 1 : 0);
-      }
+      uint8_t packet_overhead() const {
+        return _shared ? (_sender_info ? 13 : 8) : (_sender_info ? 5 : 4);
+      };
 
 
-      /* Return the header byte based on current configuration */
+      /* Return the header byte based on current configuration: */
 
-      uint8_t get_header_byte() const {
+      uint8_t get_header() const {
         // Compose PJON 1 byte header from internal configuration
         return (_shared ? MODE_BIT : 0) |
                (_sender_info ? SENDER_INFO_BIT : 0) |
                (_acknowledge ? ACK_REQUEST_BIT : 0);
-      }
+      };
 
 
-      /* The sender id and bus id for sender and reciver may be prefixed to the real message.
-         Compose the composite message. */
+      /* Compose packet in PJON format: */
 
-      void compose_message(const uint8_t *b_id, char *str, const char *packet, uint8_t length) const {
+      uint8_t compose_packet(
+        const uint8_t id,
+        const uint8_t *b_id,
+        char *destination,
+        const char *source,
+        uint8_t length,
+        uint8_t header
+      ) const {
+        uint8_t new_length = length + packet_overhead();
+
+        if(new_length >= PACKET_MAX_LENGTH) {
+          _error(CONTENT_TOO_LONG, new_length);
+          return 0;
+        }
+
+        destination[0] = id;
+        destination[1] = new_length;
+        destination[2] = (header & ~(MODE_BIT | SENDER_INFO_BIT | ACK_REQUEST_BIT)) | get_header();
+
         if(_shared) {
-          copy_bus_id((uint8_t*) str, b_id);
+          copy_bus_id((uint8_t*) &destination[3], b_id);
           if(_sender_info) {
-            copy_bus_id((uint8_t*) &str[4], bus_id);
-            str[8] = _device_id;
+            copy_bus_id((uint8_t*) &destination[7], bus_id);
+            destination[11] = _device_id;
           }
-        } else if(_sender_info) str[0] = _device_id;
+        } else if(_sender_info) destination[3] = _device_id;
 
-        memcpy(str + info_overhead(), packet, length);
+        memcpy(destination + (packet_overhead() - 1), source, length);
+        destination[new_length - 1] = compute_crc_8((uint8_t *)destination, new_length - 1);
+        return new_length;
       };
 
 
@@ -301,20 +319,14 @@ limitations under the License. */
       };
 
 
-      uint16_t dispatch(uint8_t id, uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing, uint8_t header = 0) {
-        uint8_t new_length = length + info_overhead();
+      /* Add a packet to the send list ready to be delivered by the next update() call: */
 
-        if(new_length >= PACKET_MAX_LENGTH) {
-          _error(CONTENT_TOO_LONG, new_length);
-          return FAIL;
-        }
-
+      uint16_t dispatch(uint8_t id, const uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing, uint8_t header = 0) {
          for(uint8_t i = 0; i < MAX_PACKETS; i++)
           if(packets[i].state == 0) {
-            packets[i].header = (header & ~(MODE_BIT | SENDER_INFO_BIT | ACK_REQUEST_BIT)) | get_header_byte(); // Override native PJON bits
-            compose_message(b_id, packets[i].content, packet, length);
-            packets[i].device_id = id;
-            packets[i].length = new_length;
+            if(!(length = compose_packet(id, b_id, packets[i].content, packet, length, header)))
+              return FAIL;
+            packets[i].length = length;
             packets[i].state = TO_BE_SENT;
             packets[i].registration = micros();
             packets[i].timing = timing;
@@ -420,6 +432,50 @@ limitations under the License. */
         if(response == NAK) return NAK;
 
         return FAIL;
+      };
+
+
+      /* Send a packet passing its info as parameters: */
+
+      uint16_t send_packet(uint8_t id, char *string, uint8_t length, uint8_t header = 0) {
+        if(!(length = compose_packet(id, bus_id, (char *)data, string, length, header)))
+          return FAIL;
+        return send_packet((char *)data, length);
+      };
+
+      uint16_t send_packet(uint8_t id, const uint8_t *b_id, char *string, uint8_t length, uint8_t header = 0) {
+        if(!(length = compose_packet(id, b_id, (char *)data, string, length, header)))
+          return FAIL;
+        return send_packet((char *)data, length);
+      };
+
+      /* Send a packet without using the send list. It is called send_packet_blocking
+         because the code execution is stuck inside this function until the packet is
+         delivered or the timeout is reached: */
+
+      uint16_t send_packet_blocking(
+        uint8_t id,
+        const uint8_t *b_id,
+        const char *string,
+        uint8_t length,
+        uint32_t timeout,
+        uint8_t header = 0
+      ) {
+        if(!(length = compose_packet(id, bus_id, (char *)data, string, length, header))) return FAIL;
+        uint16_t status = FAIL;
+        uint32_t attempts = 0;
+        uint32_t time = micros();
+        while(status != ACK && (uint32_t)(micros() - time) < timeout) {
+          status = send_packet((char*)data, length);
+          if(status == ACK) return status;
+          attempts++;
+          delayMicroseconds(attempts *attempts *attempts);
+        }
+        return status;
+      };
+
+      uint16_t send_packet_blocking(uint8_t id, const char *string, uint8_t length, uint32_t timeout, uint8_t header = 0) {
+        return send_packet_blocking(id, bus_id, string, length, timeout, header);
       };
 
 
@@ -577,8 +633,10 @@ limitations under the License. */
 
           packets_count++;
 
-          if((uint32_t)(micros() - packets[i].registration) > packets[i].timing + pow(packets[i].attempts, 3))
-            packets[i].state = send_string(packets[i].device_id, packets[i].content, packets[i].length, packets[i].header);
+          if(
+            (uint32_t)(micros() - packets[i].registration) >
+            packets[i].timing + (uint32_t)packets[i].attempts * (uint32_t)packets[i].attempts * (uint32_t)packets[i].attempts
+          ) packets[i].state = send_packet(packets[i].content, packets[i].length);
           else continue;
 
           if(packets[i].state == ACK) {
@@ -591,23 +649,21 @@ limitations under the License. */
               packets[i].attempts = 0;
               packets[i].registration = micros();
               packets[i].state = TO_BE_SENT;
-            }
+            } continue;
           }
 
-          if(packets[i].state == FAIL) {
-            packets[i].attempts++;
-            if(packets[i].attempts > MAX_ATTEMPTS) {
-              _error(CONNECTION_LOST, packets[i].device_id);
-              if(!packets[i].timing) {
-                if(_auto_delete) {
-                  remove(i);
-                  packets_count--;
-                }
-              } else {
-                packets[i].attempts = 0;
-                packets[i].registration = micros();
-                packets[i].state = TO_BE_SENT;
+          packets[i].attempts++;
+          if(packets[i].attempts > MAX_ATTEMPTS) {
+            _error(CONNECTION_LOST, packets[i].content[0]);
+            if(!packets[i].timing) {
+              if(_auto_delete) {
+                remove(i);
+                packets_count--;
               }
+            } else {
+              packets[i].attempts = 0;
+              packets[i].registration = micros();
+              packets[i].state = TO_BE_SENT;
             }
           }
         }

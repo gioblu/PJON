@@ -115,7 +115,7 @@ limitations under the License. */
         bool acknowledge_requested = false;
 
         for(uint8_t i = 0; i < packet_length; i++) {
-          data[i] = state = strategy.receive_byte(_input_pin, _output_pin);
+          data[i] = state = strategy.receive_byte();
           if(state == FAIL) return FAIL;
 
           if(i == 0 && data[i] != _device_id && data[i] != BROADCAST && !_router)
@@ -140,15 +140,14 @@ limitations under the License. */
              i.e. id 1 bus 1, should not receive a message for id 1 bus 2. */
 
           if(_shared && shared && !_router && i > 2 && i < 7)
-            if(bus_id[i - 3] != data[i])
-              return BUSY;
+            if(bus_id[i - 3] != data[i]) return BUSY;
 
-          CRC = compute_crc_8(data[i], CRC);
+          CRC = roll_crc_8(data[i], CRC);
         }
         if(!CRC) {
           if(acknowledge_requested && data[0] != BROADCAST && _mode != SIMPLEX)
             if(!_shared || (_shared && shared && bus_id_equality(data + 3, bus_id)))
-              strategy.send_response(ACK, _input_pin, _output_pin);
+              strategy.send_response(ACK);
 
           get_packet_info(data, last_packet_info);
           uint8_t payload_offset = 3 + (shared ? (includes_sender_info ? 9 : 4) : (includes_sender_info ? 1 : 0));
@@ -157,7 +156,7 @@ limitations under the License. */
         } else {
           if(acknowledge_requested && data[0] != BROADCAST && _mode != SIMPLEX)
             if(!_shared || (_shared && shared && bus_id_equality(data + 3, bus_id)))
-              strategy.send_response(NAK, _input_pin, _output_pin);
+              strategy.send_response(NAK);
           return NAK;
         }
       };
@@ -401,38 +400,16 @@ limitations under the License. */
   with many other buses with transmission certainty through synchronous acknowledge
   and sender info to easy reply to packets with the reply() function. */
 
-      uint16_t send_string(uint8_t id, char *string, uint8_t length, uint8_t header = 0) {
+      uint16_t send_packet(const char *string, uint8_t length) {
         if(!string) return FAIL;
-        if(_mode != SIMPLEX && !strategy.can_start(_input_pin, _output_pin)) return BUSY;
 
-        uint8_t CRC = 0;
+        if(_mode != SIMPLEX && !strategy.can_start()) return BUSY;
 
-        // Transmit recipient device id
-        strategy.send_byte(id, _input_pin, _output_pin);
-        CRC = compute_crc_8(id, CRC);
+        strategy.send_string((uint8_t *)string, length);
 
-        // Transmit packet length
-        strategy.send_byte(length + 4, _input_pin, _output_pin);
-        CRC = compute_crc_8(length + 4, CRC);
+        if(!_acknowledge || string[0] == BROADCAST || _mode == SIMPLEX) return ACK;
 
-        // Transmit header byte
-        strategy.send_byte(header, _input_pin, _output_pin);
-        CRC = compute_crc_8(header, CRC);
-
-        /* If an id is assigned to the bus, the packet's content is prepended by
-           the ricipient's bus id. This opens up the possibility to have more than
-           one bus sharing the same medium. */
-
-        for(uint8_t i = 0; i < length; i++) {
-          strategy.send_byte(string[i], _input_pin, _output_pin);
-          CRC = compute_crc_8(string[i], CRC);
-        }
-
-        strategy.send_byte(CRC, _input_pin, _output_pin);
-
-        if(!_acknowledge || id == BROADCAST || _mode == SIMPLEX) return ACK;
-
-        uint16_t response = strategy.receive_response(_input_pin, _output_pin);
+        uint16_t response = strategy.receive_response();
 
         if(response == ACK) return ACK;
 
@@ -585,7 +562,7 @@ limitations under the License. */
          device ids for which the route is known */
 
       void send_acknowledge() {
-        strategy.send_response(ACK, _input_pin, _output_pin);
+        strategy.send_response(ACK);
       };
 
 

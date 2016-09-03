@@ -32,7 +32,9 @@ Bug reports:
 - Emanuele Iannone (Forcing SIMPLEX in OverSamplingSimplex)
 - Christian Pointner (Fixed compiler warnings)
 - Andrew Grande (ESP8266 example watchdog error bug fix)
+- Fabian Gärtner (receive function and big packets bugfix)
 - Mauro Mombelli (Code cleanup)
+- Shachar Limor (Blink example pinMode bugfix)
 
 PJON Standard compliant tools:
 - https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande

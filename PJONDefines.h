@@ -119,12 +119,16 @@ limitations under the License. */
     #define MAX_ATTEMPTS      125
   #endif
 
-  /* Packets buffer length, if full PACKETS_BUFFER_FULL error is thrown */
+  /* Packet buffer length, if full PACKETS_BUFFER_FULL error is thrown.
+     The packet buffer is preallocated, so its length strongly affects
+     memory consumption */
   #ifndef MAX_PACKETS
-    #define MAX_PACKETS       10
+    #define MAX_PACKETS       5
   #endif
 
-  /* Max packet length, higher if necessary (and you have free memory) */
+  /* Max packet length, higher if necessary.
+     The max packet length defines the length of packets pre-allocated buffers
+     so it strongly affects memory consumption */
   #ifndef PACKET_MAX_LENGTH
     #define PACKET_MAX_LENGTH 50
   #endif

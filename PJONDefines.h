@@ -108,9 +108,7 @@ limitations under the License. */
   /* Errors */
   #define CONNECTION_LOST     101
   #define PACKETS_BUFFER_FULL 102
-  #define MEMORY_FULL         103
   #define CONTENT_TOO_LONG    104
-  #define ID_ACQUISITION_FAIL 105
 
   /* Constraints:
 

@@ -21,17 +21,22 @@ acquire_id KEYWORD2
 begin KEYWORD2
 can_start	KEYWORD2
 device_id KEYWORD2
-update KEYWORD2
+get_packet_count KEYWORD2
+include_sender_info KEYWORD2
 receive	KEYWORD2
 remove KEYWORD2
+remove_all KEYWORD2
 send KEYWORD2
-send_string	KEYWORD2
+send_repeatedly KEYWORD2
+send_packet KEYWORD2
+set_acknowledge KEYWORD2
+set_communication_mode KEYWORD2
 set_error KEYWORD2
 set_id KEYWORD2
-set_pin KEYWORD2
-set_pins KEYWORD2
-remove_all KEYWORD2
-get_packet_count KEYWORD2
+set_packet_auto_deletion KEYWORD2
+set_receiver KEYWORD2
+set_shared_network KEYWORD2
+update KEYWORD2
 
 #######################################
 # Instances (KEYWORD2)

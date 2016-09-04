@@ -28,8 +28,8 @@ PJON (Padded Jittering Operative Network) is an Arduino compatible, multi-master
 - MK20DX256 96Mhz (Teensy 3.1)
 
 ####Compliant tools
--[saleae-pjon-protocol-analyzer](https://github.com/aperepel/saleae-pjon-protocol-analyzer) by Andrew Grande.
--[PJON-python](https://github.com/Girgitt/PJON-python) by Zbigniew Zasieczny.
+- [saleae-pjon-protocol-analyzer](https://github.com/aperepel/saleae-pjon-protocol-analyzer) by Andrew Grande.
+- [PJON-python](https://github.com/Girgitt/PJON-python) by Zbigniew Zasieczny.
 
 ####License
 

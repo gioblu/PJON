@@ -8,22 +8,27 @@ boolean can_start()
 Should Return `true` if the medium is free for use and `false` if the medium is in use by some other device.
 
 ```cpp
-void send_byte(uint8_t b)
+void send_string(uint8_t *string, uint8_t length)
 ```
-Sends a byte on a pin
+Sends a string of a certain length through the medium
 
 ```cpp
-uint16_t receive_byte()
+void send_byte(uint8_t b) { ... };
 ```
-Receives a byte from a pin
+Sends a byte though the medium
 
 ```cpp
-void send_response(uint8_t response)
+uint16_t receive_byte() { ... };
+```
+Receives a byte though the medium
+
+```cpp
+void send_response(uint8_t response) { ... };
 ```
 Send a response to the packet's transmitter
 
 ```cpp
-uint16_t receive_response()
+uint16_t receive_response() { ... };
 ```
 Receives a response from the packet's receiver
 
@@ -33,7 +38,7 @@ You can define your own set of 5 methods to use PJON with your personal strategy
 // Simple Serial physical layer example
 void send_byte(uint8_t b) {
   Serial.print(b);
-}
+};
 ```
 
 ####How to define a new strategy
@@ -48,7 +53,8 @@ class YourStrategyName {
     uint16_t receive_response() { ... };
     void send_byte(uint8_t b) { ... };
     void send_response(uint8_t response) { ... };
-}
+    void send_string(uint8_t *string, uint8_t length) { ... };
+};
 ```
 
 Simply add your code in the functions declaration shown above and instantiate PJON using the strategy type you

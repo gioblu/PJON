@@ -6,7 +6,7 @@ PJON<SoftwareBitBang> bus(45);
 unsigned long time = millis();
 
 void setup() {
-  bus.set_pin(12);
+  bus.strategy.set_pin(12);
   bus.begin();
 
   bus.set_error(error_handler);

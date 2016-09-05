@@ -1,5 +1,5 @@
 
-/* PJON v4.0 SoftwareBitBang strategy Transmission Timing table
+/* PJON SoftwareBitBang strategy Transmission Timing table
    Copyright (c) 2012-2016, Giovanni Blu Mitolo All rights reserved.
 
    Often timing in two different architectures doesn't match. This happens because

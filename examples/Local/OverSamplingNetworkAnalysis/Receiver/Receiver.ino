@@ -4,7 +4,7 @@
 PJON<OverSampling> bus(44);
 
 void setup() {
-  bus.set_pins(11, 12);
+  bus.strategy.set_pins(11, 12);
 
   bus.begin();
 

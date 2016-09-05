@@ -7,7 +7,7 @@ int packet;
 char content[] = "01234567890123456789";
 
 void setup() {
-  bus.set_pin(12);
+  bus.strategy.set_pin(12);
   bus.begin();
 
   bus.set_error(error_handler);

@@ -1,24 +1,20 @@
 
 ![PJON](http://www.gioblu.com/PJON/PJON-github-header-tiny.png)
-##PJON v4.2
-PJON (Padded Jittering Operative Network) is an Arduino compatible, multi-master, multi-media communications bus system. It proposes a Standard and it is designed as a framework for digital communication. It is a valid alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. If you are interested to know more about the PJON Standard, visit the [Wiki](https://github.com/gioblu/PJON/wiki). If you need help see the [documentation](https://github.com/gioblu/PJON/wiki/Documentation) or if something is not working visit the [Troubleshooting page](https://github.com/gioblu/PJON/wiki/Troubleshooting). If you own a Saleae Logic Analyzer see [saleae-pjon-protocol-analyzer](https://github.com/aperepel/saleae-pjon-protocol-analyzer) crafted by Andrew Grande.
+##PJON v5.0 beta
+PJON (Padded Jittering Operative Network) is an Arduino compatible, multi-master, multi-media communications bus system. It proposes a Standard and it is designed as a framework for digital communication. It is a valid alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. Visit the [Wiki](https://github.com/gioblu/PJON/wiki), [Documentation](https://github.com/gioblu/PJON/wiki/Documentation) and [Troubleshooting](https://github.com/gioblu/PJON/wiki/Troubleshooting) wiki pages to know more about the PJON Standard.
 
 [![Video introduction](https://img.shields.io/badge/PJON-video%20introduction-blue.svg)](https://www.youtube.com/watch?v=vjc4ZF5own8)
 [![Join the chat at https://gitter.im/gioblu/PJON](https://badges.gitter.im/gioblu/PJON.svg)](https://gitter.im/gioblu/PJON?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Donate](http://img.shields.io/paypal/donate.png?color=brightgreen)](https://www.paypal.me/PJON)
 
 ####Features
-- [Device id](https://github.com/gioblu/PJON/wiki) implementation to enable univocal communication up to 254 devices  
-- [Bus id](https://github.com/gioblu/PJON/wiki) implementation to optionally enable shared medium communication
-- [Multi media](https://github.com/gioblu/PJON/wiki/OverSampling) compatibility (wires up to 50m, radio up to 5km)
-- Physical layer abstraction and [communication strategy framework](https://github.com/gioblu/PJON/wiki/Strategies)
-- PJON communication through a Serial port with `ThroughHardwareSerial`
-- 2 pin compatibility to enable twisted pair / radio modules
-- Optional auto-addressing with id collision avoidance (experimental)
+- Multi-media compatible thanks to the physical layer abstraction or [Strategy framework](https://github.com/gioblu/PJON/wiki/Strategies)
+- [Device id](https://github.com/gioblu/PJON/wiki) implementation to contact a certain device in the bus  
+- [Bus id](https://github.com/gioblu/PJON/wiki) implementation to contact a device in a certain bus
 - CRC8 table-less cyclic redundancy check implementation
 - Acknowledgement of correct packet sending
 - Collision avoidance to enable multi-master capability
 - Broadcast functionality to contact all connected devices
-- Packet manager to track and retransmit a failed packet sending in background
+- Packet manager handle, track and if necessary retransmit a packet sending in background
 - Error handling
 
 ####Compatibility
@@ -31,10 +27,14 @@ PJON (Padded Jittering Operative Network) is an Arduino compatible, multi-master
 - ESP8266 NodeMCU v0.9-1.0 80Mhz, see https://github.com/esp8266/Arduino
 - MK20DX256 96Mhz (Teensy 3.1)
 
+####Compliant tools
+- [saleae-pjon-protocol-analyzer](https://github.com/aperepel/saleae-pjon-protocol-analyzer) by Andrew Grande.
+- [PJON-python](https://github.com/Girgitt/PJON-python) by Zbigniew Zasieczny.
+
 ####License
 
 ```cpp
-/* Copyright 2012-2016 Giovanni Blu Mitolo
+/* Copyright 2010-2016 Giovanni Blu Mitolo
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

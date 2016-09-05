@@ -15,7 +15,7 @@ int packet;
 char content[] = "01234567890123456789";
 
 void setup() {
-  bus.set_pin(12);
+  bus.strategy.set_pin(12);
 
   bus.begin();
   packet = bus.send(44, content, 20);

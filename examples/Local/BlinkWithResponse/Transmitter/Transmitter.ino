@@ -7,7 +7,7 @@ void setup() {
   pinModeFast(13, OUTPUT);
   digitalWriteFast(13, LOW); // Initialize LED 13 to be off
 
-  bus.set_pin(12);
+  bus.strategy.set_pin(12);
   bus.set_receiver(receiver_function);
   bus.begin();
   bus.send_repeatedly(44, "B", 1, 1000000); // Send B to device 44 every second

@@ -34,7 +34,7 @@ PJON (Padded Jittering Operative Network) is an Arduino compatible, multi-master
 ####License
 
 ```cpp
-/* Copyright 2012-2016 Giovanni Blu Mitolo
+/* Copyright 2010-2016 Giovanni Blu Mitolo
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -1,4 +1,3 @@
-![PJON SoftwareBitBang wiki](http://www.gioblu.com/PJON/PJON-robot.jpg)
 
 **Medium:** Wire |
 **Pins used:** 1 / 2

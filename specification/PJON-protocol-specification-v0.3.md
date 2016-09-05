@@ -22,12 +22,12 @@ The actual PJON network protocol stack model lacks segmentation, and routing pro
 ```cpp  
  ___________________________________________
 | PJON Protocol layer                       |
-| Addressing, acknowledgement, multiplexing |
-| and traffic control                       |
-|___________________________________________|
+| Addressing, acknowledgement               |
+| multiplexing, traffic control             |
+|-------------------------------------------|
 | STRATEGY                                  |
 | Data link, transmission of data frames    |
-|___________________________________________|
+|-------------------------------------------|
 | Physical layer                            |
 | Cable, transceivers ecc                   |
 |___________________________________________|

@@ -14,7 +14,7 @@ New feature: Bus identification
 ```
 
 ###PJON Protocol Specification v0.2
-After more than 4 years of testing, a second, experimental draft of the PJON protocol layer specification has been released to continue to pursue the goal of providing a new and open-source, multi-master communications bus system Standard. The main changes contains the addition of a IPv4 like 4 byte bus id. This extends the network capabilities of the PJON procol from 254 devices of the 0.1 version of the protocol specification to 1.090.921.692.930 devices of the 0.2. It is created to provide the community with a new and easy way to communicate data and build a network of devices. Its more common applications are in the field of internet of things and embedded systems. Extended tests proved its effectiveness on different media like electricity, radio and light.
+After more than 4 years of testing, a second, experimental draft of the PJON protocol layer specification has been released to continue to pursue the goal of providing a new and open-source, multi-master communications bus system Standard. The main changes contains the addition of a IPv4 like 4 byte bus id. This extends the network capabilities of the PJON protocol from 254 devices of the 0.1 version to 1.090.921.692.930 devices supported by the 0.2 version. It is created to provide the community with a new and easy way to communicate data and build a network of devices. Its more common applications are in the field of internet of things and embedded systems. Extended tests proved its effectiveness on different media like electricity, radio and light.
 
 ###Basic concepts
 * Every bus has a unique IPv4 like 4 bytes id

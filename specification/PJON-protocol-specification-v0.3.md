@@ -65,6 +65,17 @@ Channel analysis   Transmission                                     Response
 ```
 In the first phase the bus is analyzed by transmitter reading 10 logical bits, if any logical 1 is detected the channel is considered free, transmission phase starts in which the packet is entirely transmitted. Receiver calculates CRC and starts the response phase transmitting a single byte, `ACK` (decimal 6) in case of correct reception or `NAK` (decimal 21) if an error in the packet's content is detected. If transmitter receives no answer or `NAK` the packet sending is scheduled with a delay of `ATTEMPTS * ATTEMPTS * ATTEMPTS` with a maximum of 125 `ATTEMPTS` to obtain data transmission 3rd degree polynomial backoff.
 
+Below is shown the same local transmission used as an example before, formatted to be sent in a shared environment, where device id `12` of bus `0.0.0.1` sends @ (decimal 64) to device id `11` in bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient, and optionally the sender's bus and device id:
+```cpp  
+Channel analysis                     Transmission                              Response
+ _____     _________________________________________________________________     _____
+| C-A |   | ID | LENGTH | HEADER |   BUS ID   | BUS ID | ID | CONTENT | CRC |   | ACK |
+|-----|< >|----|--------|--------|------------|--------|----|---------|-----|> <|-----|
+|  0  |   | 12 |   15   |  111   |    0001    |  0001  | 11 |   64    |     |   |  6  |
+|_____|   |____|________|________|____________|________|____|_________|_____|   |_____|
+                                 |  RX INFO   |   TX INFO   |
+```
+
 ###Header configuration
 The header bitmask let the packet's receiver handle the exchange as transmitter requested.
 ```cpp
@@ -84,19 +95,7 @@ As you can see for now, only the uppermost bit states are used for packet transm
 
 
 ###Bus network
-A PJON bus network is the result of n PJON buses sharing the same medium and or interconnection of PJON buses using routers. A router is a device connected to n PJON buses with n dedicated pins on n dedicated media, able to route a packet from a bus to anotherone.
-
-Below is shown the same local transmission used as an example before, formatted to be sent in a shared environment, where device id `12` of bus `0.0.0.1` sends @ (decimal 64) to device id `11` in bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient, and optionally the sender's bus and device id:
-```cpp  
-Channel analysis                     Transmission                              Response
- _____     _________________________________________________________________     _____
-| C-A |   | ID | LENGTH | HEADER |   BUS ID   | BUS ID | ID | CONTENT | CRC |   | ACK |
-|-----|< >|----|--------|--------|------------|--------|----|---------|-----|> <|-----|
-|  0  |   | 12 |   15   |  111   |    0001    |  0001  | 11 |   64    |     |   |  6  |
-|_____|   |____|________|________|____________|________|____|_________|_____|   |_____|
-                                 |  RX INFO   |   TX INFO   |
-```
-Thanks to this rule is not only possible to share a medium with neighbours, but also network with them and enhance connectivity for free.
+A PJON bus network is the result of n PJON buses sharing the same medium and or interconnection of PJON buses using routers. A router is a device connected to n PJON buses with n dedicated pins on n dedicated media, able to route a packet from a bus to anotherone. Thanks to this rule is not only possible to share a medium with neighbours, but also network with them and enhance connectivity for free.
 ```cpp  
    TWO BUSES CONNECTED THROUGH A ROUTER
 

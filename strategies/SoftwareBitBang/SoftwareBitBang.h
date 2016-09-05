@@ -1,43 +1,22 @@
 
 /* SoftwareBitBang 1 or 2 wires interrupts-less digital communication Transport layer
    Used as a Strategy by the PJON framework (included in version v3.0)
+   Compliant with the Padded jittering data link layer specification v0.1
+____________________________________________________________________________
 
-Performance
+Copyright 2012-2016 Giovanni Blu Mitolo gioscarab@gmail.com
 
-Using only digitalWriteFast() micros() and delayMicroseconds() fast cross-architecture
-communication speed can be achieved. SoftwareBitBang works in 3 different transmission
-modes, STANDARD, FAST and OVERDRIVE:
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-  STANDARD: 16944Bd or 2.12kB/s cross-architecture, promiscuous clock compatible.
+    http://www.apache.org/licenses/LICENSE-2.0
 
-  FAST: 25157Bd or 3.15kB/s cross-architecture, promiscuous clock compatible.
-
-  OVERDRIVE: Runs a specific architecture at its maximum limits (non cross-architecture
-  compatible). Every architecture has its own limits, Arduino Duemilanove for example
-  runs at 33898Bd or 4.23kB/s, Arduino Zero can reach 48000Bd or 6.00kB/s.
-
-Compatibility
-
-- ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
-- ATmega2560 16Mhz (Arduino Mega)
-- ATmega16u4/32u4 16Mhz (Arduino Leonardo)
-- ATtiny45/85 8Mhz, see https://github.com/gioblu/PJON/wiki/ATtiny-interfacing
-- SAMD (Arduino Zero)
-- ESP8266 v.1-7 80Mhz "AI-THINKER AT" firmware, see https://github.com/esp8266/Arduino
-- ESP8266 NodeMCU v0.9-1.0 80Mhz, see https://github.com/esp8266/Arduino
-- MK20DX256 96Mhz (Teensy 3.1)
-
-Why not interrupts?
-
-Usage of libraries is really extensive in the Arduino environment and often the
-end user is not able to go over collisions or redefinitions. Very often a library
-is using hardware resources of the microcontroller as timers or interrupts, colliding
-or interrupting other libraries. This happens because in general Arduino boards have
-limited hardware resources. To have a universal and reliable communication medium
-in this sort of environment, software emulated bit-banging, I think, is a good, stable
-and reliable solution that leads to "more predictable" results than interrupt driven
-systems coexisting on small microcontrollers without the original developer and the
-end user knowing about it.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 Known issues
 
@@ -55,32 +34,19 @@ your loop cycle to avoid huge blind timeframes.
 are using interrupts in their procedure, like for example the Servo library.
 Reliability or bandwidth loss can be experienced because of the cyclical
 interruptions made by third party interrupt driven software to the PJON code.
-____________________________________________________________________________
-
-Copyright 2012-2016 Giovanni Blu Mitolo gioscarab@gmail.com
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
 
 STANDARD transmission mode performance:
    Transfer speed: 16.944kBb or 2.12kB/s
    Absolute  communication speed: 1.81kB/s (data length 20 of characters)
-   Data throughput: 1.51kB/s (data length 20 of characters) */
+   Data throughput: 1.51kB/s (data length 20 of characters)
+   Promiscuous architecture/clock compatible */
 #define _SWBB_STANDARD  0
 
 /* FAST transmission mode performance:
    Transfer speed: 25.157kBd or 3.15kB/s
    Absolute  communication speed: 2.55kB/s (data length 20 of characters)
-   Data throughput: 2.13kB/s (data length 20 of characters) */
+   Data throughput: 2.13kB/s (data length 20 of characters)
+   Promiscuous architecture/clock compatible */
 #define _SWBB_FAST      1
 
 /* OVERDRIVE transmission mode performance:

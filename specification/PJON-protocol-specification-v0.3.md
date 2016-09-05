@@ -16,6 +16,23 @@ New feature: Header driven dynamical configuration proposed and implemented by F
 ###PJON Protocol specification v0.3
 A third draft of the PJON protocol layer has been released with the addition of a 1 byte header able to contain the configuration for the packet's communication procedure and its meta-data. The PJON communication procedure configuration was, in versions 0.1 and 0.2, static and not contained in the packet's meta-data, for this reason two differently configured devices, could not establish nominal communication, without configuration pairing. It is now possible for the packet's receiver to read the header, react as transmitter requested and parse the packet and its info correctly.
 
+
+###PJON network protocol stack model
+The actual PJON network protocol stack model lacks segmentation, and routing procedures, dedicated to higher level layers to be added during development.
+```cpp  
+ ___________________________________________
+| PJON Protocol layer                       |
+| Addressing, acknowledgement, multiplexing |
+| and traffic control                       |
+|___________________________________________|
+| STRATEGY                                  |
+| Data link, transmission of data frames    |
+|___________________________________________|
+| Physical layer                            |
+| Cable, transceivers ecc                   |
+|___________________________________________|
+```
+
 ###Basic concepts
 * Every bus has a unique IPv4 like 4 bytes id
 * Many buses can coexist on the same medium

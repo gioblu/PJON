@@ -4,18 +4,6 @@
 
 Oversampling strategy comes from the [PJON_ASK](https://github.com/gioblu/PJON_ASK) repository, and it was integrated in the PJON repository from version 3.0 beta, as a physical layer strategy. Bits are over-sampled to have high resilience in high interference scenarios like ASK/FSK cheap radio transceivers in urban environment. It is tested effectively with many versions of the ASK/FSK 315/433Mhz modules available on the market.
 
-####Byte transmission
-Every byte is prepended with 2 synchronization padding bits and transmission occurs LSB-first. The first is a longer than standard logic 1 followed by a standard logic 0. The reception tecnique is based on finding a logic 1 as long as the first padding bit within a certain threshold, synchronizing to its falling edge and checking if it is followed by a logic 0. If this pattern is recognised, reception starts, if not, interference, synchronization loss or simply absence of communication is detected at byte level.
-```cpp  
- __________ ___________________________
-| SyncPad  | Byte                      |
-|______    |___       ___     _____    |
-|      |   |   |     |   |   |     |   |
-|    1 | 0 | 1 | 0 0 | 1 | 0 | 1 1 | 0 |
-|______|___|___|_____|___|___|_____|___|
-```
-This adds a certain overhead to information but reduces the need of precise time tuning because synchronization is renewed every byte.
-
 ####Compatibility
 - ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
 - ATmega2560 16Mhz (Arduino Mega)

@@ -1,3 +1,6 @@
+[v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md) - [v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md) - [v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md)
+
+
 ```cpp
 /*
 Milan, Italy - 10/04/2010
@@ -23,7 +26,7 @@ The first experimental specification of the PJON protocol layer has been drafted
 
 ###Packet transmission
 The concept of packet enables to send a communication payload to every connected device with correct reception certainty. A packet contains the recipient id, the length of the packet, its content and the CRC. Here is an example of a packet sending to device id 12 containing the string "@":
-
+```cpp
  ID 12            LENGTH 4         CONTENT 64       CRC 130
  ________________ ________________ ________________ __________________
 |Sync | Byte     |Sync | Byte     |Sync | Byte     |Sync | Byte       |
@@ -31,20 +34,23 @@ The concept of packet enables to send a communication payload to every connected
 |   | |    |  |  |   | |     | |  |   | | | |      |   | | | |    | | |
 | 1 |0|0000|11|0 | 1 |0|00000|1|00| 1 |0|0|1|000000| 1 |0|0|1|0000|1|0|
 |___|_|____|__|__|___|_|_____|_|__|___|_|_|_|______|___|_|_|_|____|_|_|
+```
 
 A standard packet transmission is a bidirectional communication between two devices that can be divided in 3 different phases: channel analysis, transmission and response.
-
+```cpp
   Channel analysis   Transmission                            Response
       _____           _____________________________           _____
      | C-A |         | ID | LENGTH | CONTENT | CRC |         | ACK |
   <--|-----|---------|----|--------|---------|-----|--> <----|-----|
      |  0  |         | 12 |   4    |   64    | 130 |         |  6  |
      |_____|         |____|________|_________|_____|         |_____|
+```
+
 In the first phase the bus is analyzed by transmitter reading 10 logical bits, if no logical 1s are detected the channel is considered free, transmission phase starts in which the packet is entirely transmitted. Receiver calculates CRC and starts the response phase transmitting a single byte, ACK (dec 6) in case of correct reception or NAK (dec 21) if an error in the packet's content is detected. If transmitter receives no answer or NAK the packet sending has to be scheduled with a delay of ATTEMPTS * ATTEMPTS with a maximum of 250 ATTEMPTS to obtain data transmission quadratic backoff.
 
 ###Network
 A PJON network is made by a collection of up to 255 devices transmitting and receiving on the same medium. Communication between devices occurs through packets and it is based on democracy: every device has the right to transmit on the common medium for up to (1000 / devices number) milliseconds / second.
-
+```cpp
     _______     _______     _______     _______    _______
    |       |   |       |   |       |   |       |   |       |  
    | ID 0  |   | ID 1  |   | ID 2  |   | ID 3  |   | ID 4  |  
@@ -54,3 +60,4 @@ A PJON network is made by a collection of up to 255 devices transmitting and rec
         |       |   |       |   |       |   |       |   
         | ID 5  |   | ID 6  |   | ID 7  |   | ID 8  |
         |_______|   |_______|   |_______|   |_______|    
+```

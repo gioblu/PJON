@@ -9,12 +9,12 @@ of Giovanni Blu Mitolo - Copyright 2010-2016 All rights reserved
 Related work: https://github.com/gioblu/PJON/
 Compliant implementation versions: PJON 4.0-5.0
 
-New feature: Header driven dynamical configuration by Fred Larsen
+New feature: Header driven dynamical configuration proposed and implemented by Fred Larsen
 */
 ```
 
 ###PJON Protocol specification v0.3
-A third draft of the PJON protocol layer has been released with the addition of a 1 byte header able to contain the configuration for the packet's communication procedure and its meta-data information. The PJON communication procedure configuration was, in versions 0.1 and 0.2, static and not contained in the packet's meta-information, for this reason two differently configured buses, could not establish nominal communication, without configuration pairing.
+A third draft of the PJON protocol layer has been released with the addition of a 1 byte header able to contain the configuration for the packet's communication procedure and its meta-data information. The PJON communication procedure configuration was, in versions 0.1 and 0.2, static and not contained in the packet's meta-information, for this reason two differently configured buses, could not establish nominal communication, without configuration pairing. Is now possible for the packet's receiver to read the haeder and know how to behave to positively end the exchange and parse the packet and its info correctly.
 
 ###Basic concepts
 * Every bus has a unique IPv4 like 4 bytes id

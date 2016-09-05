@@ -42,7 +42,6 @@ A PJON bus is made by a collection of up to 255 devices transmitting and receivi
          |_______|   |_______|   |_______|   |_______|    
 ```
 
-
 ###Packet transmission
 The concept of packet enables to send a communication payload to every connected device with correct reception certainty. A packet contains the recipient id, its length, its header, its content and the CRC. In this example is shown a packet transmission in a local bus to device id 12 containing the string @ (decimal 64):
 ```cpp  
@@ -56,6 +55,15 @@ The concept of packet enables to send a communication payload to every connected
 |___|_|____|__|__|___|_|_____|_|_|_|___|_|_____|_|__|___|_|_|_|______|___|_|_|_|__|_|___|
 ```
 A default local packet transmission is a bidirectional communication between two devices that can be divided in 3 different phases: **channel analysis**, **transmission** and **response**. The packet transmission procedure is regulated by its header.
+```cpp  
+Channel analysis   Transmission                                     Response
+    _____           ________________________________________           _____
+   | C-A |         | ID | LENGTH |  HEADER  | CONTENT | CRC |         | ACK |
+<--|-----|---< >---|----|--------|----------|---------|-----|--> <----|-----|
+   |  0  |         | 12 |   4    | 00000100 |    64   |  72 |         |  6  |
+   |_____|         |____|________|__________|_________|_____|         |_____|
+```
+In the first phase the bus is analyzed by transmitter reading 10 logical bits, if any logical 1 is detected the channel is considered free, transmission phase starts in which the packet is entirely transmitted. Receiver calculates CRC and starts the response phase transmitting a single byte, `ACK` (decimal 6) in case of correct reception or `NAK` (decimal 21) if an error in the packet's content is detected. If transmitter receives no answer or `NAK` the packet sending is scheduled with a delay of `ATTEMPTS * ATTEMPTS * ATTEMPTS` with a maximum of 125 `ATTEMPTS` to obtain data transmission 3rd degree polynomial backoff.
 
 ###Header configuration
 The header bitmask let the packet's receiver handle the exchange as transmitter requested.
@@ -74,19 +82,21 @@ The header bitmask let the packet's receiver handle the exchange as transmitter 
 ```
 As you can see for now, only the uppermost bit states are used for packet transmission exchange configuration, the unused bits may be used in future to extend or optimize the PJON Standard, so is suggested not make use of them on application level.
 
-```cpp  
-Channel analysis   Transmission                                     Response
-    _____           ________________________________________           _____
-   | C-A |         | ID | LENGTH |  HEADER  | CONTENT | CRC |         | ACK |
-<--|-----|---< >---|----|--------|----------|---------|-----|--> <----|-----|
-   |  0  |         | 12 |   4    | 00000100 |    64   |  72 |         |  6  |
-   |_____|         |____|________|__________|_________|_____|         |_____|
-```
-In the first phase the bus is analyzed by transmitter reading 10 logical bits, if any logical 1 is detected the channel is considered free, transmission phase starts in which the packet is entirely transmitted. Receiver calculates CRC and starts the response phase transmitting a single byte, `ACK` (decimal 6) in case of correct reception or `NAK` (decimal 21) if an error in the packet's content is detected. If transmitter receives no answer or `NAK` the packet sending is scheduled with a delay of `ATTEMPTS * ATTEMPTS * ATTEMPTS` with a maximum of 125 `ATTEMPTS` to obtain data transmission 3rd degree polynomial backoff.
 
 ###Bus network
 A PJON bus network is the result of n PJON buses sharing the same medium and or interconnection of PJON buses using routers. A router is a device connected to n PJON buses with n dedicated pins on n dedicated media, able to route a packet from a bus to anotherone.
 
+Below is shown the same local transmission used as an example before, formatted to be sent in a shared environment, where device id `12` of bus `0.0.0.1` sends @ (decimal 64) to device id `11` in bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient, and optionally the sender's bus and device id:
+```cpp  
+Channel analysis                     Transmission                              Response
+ _____     _________________________________________________________________     _____
+| C-A |   | ID | LENGTH | HEADER |   BUS ID   | BUS ID | ID | CONTENT | CRC |   | ACK |
+|-----|< >|----|--------|--------|------------|--------|----|---------|-----|> <|-----|
+|  0  |   | 12 |   15   |  111   |    0001    |  0001  | 11 |   64    |     |   |  6  |
+|_____|   |____|________|________|____________|________|____|_________|_____|   |_____|
+                                 |  RX INFO   |   TX INFO   |
+```
+Thanks to this rule is not only possible to share a medium with neighbours, but also network with them and enhance connectivity for free.
 ```cpp  
    TWO BUSES CONNECTED THROUGH A ROUTER
 
@@ -101,7 +111,6 @@ A PJON bus network is the result of n PJON buses sharing the same medium and or 
          | ID 2  |                        | ID 2  |
          |_______|                        |_______|
 ```
-
 In a shared medium it is necessary to define a bus id to isolate devices from outcoming communication of other buses nearby, enabling many to coexist on the same communication medium.
 ```cpp  
    TWO BUSES SHARING THE SAME MEDIUM
@@ -118,14 +127,3 @@ In a shared medium it is necessary to define a bus id to isolate devices from ou
          |_______|                        |_______|
 
 ```
-Below is shown the same local transmission used as an example before, formatted to be sent in a shared environment, where device id `12` of bus `0.0.0.1` sends @ (decimal 64) to device id `11` in bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient, and optionally the sender's bus and device id:
-```cpp  
-Channel analysis                     Transmission                              Response
- _____     _________________________________________________________________     _____
-| C-A |   | ID | LENGTH | HEADER |   BUS ID   | BUS ID | ID | CONTENT | CRC |   | ACK |
-|-----|< >|----|--------|--------|------------|--------|----|---------|-----|> <|-----|
-|  0  |   | 12 |   15   |  111   |    0001    |  0001  | 11 |   64    |     |   |  6  |
-|_____|   |____|________|________|____________|________|____|_________|_____|   |_____|
-                                 |  RX INFO   |   TX INFO   |
-```
-Thanks to this rule is not only possible to share a medium with neighbours, but also network with them and enhance connectivity for free.

@@ -8,7 +8,15 @@ SoftwareBitBang is the default data link layer strategy used by the PJON templat
 Pass the `SoftwareBitBang` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy. All the other necessary information is present in the general [Documentation](https://github.com/gioblu/PJON/wiki/Documentation).
 ```cpp  
   PJON<SoftwareBitBang> bus;
+
+  void setup() {
+    bus.strategy.set_pin(12);      // Set the pin 12 as the communication pin
+                                   // or
+    bus.strategy.set_pins(11, 12); // Set pin 11 as input pin and pin 12 as output pin  
+  }
+
 ```
+After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance.
 
 ####Compatibility
 - ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)

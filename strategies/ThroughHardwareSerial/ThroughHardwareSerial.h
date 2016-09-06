@@ -1,5 +1,5 @@
 
-/* ThroughHardwareSerial digital communication transport layer
+/* ThroughHardwareSerial digital communication data link layer
    used as a Strategy by the PJON framework (included in version v4.1)
    ____________________________________________________________________________
 

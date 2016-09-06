@@ -1,39 +1,22 @@
 
-/* SoftwareBitBang 1 or 2 wires interrupts-less digital communication Transport layer
-   Used as a Strategy by the PJON framework (included in version v3.0)
+/* SoftwareBitBang 1 or 2 wires interrupts-less digital communication data link layer
+   used as a Strategy by the PJON framework (included in version v3.0)
    Compliant with the Padded jittering data link layer specification v0.1
-____________________________________________________________________________
+   _____________________________________________________________________________
 
-Copyright 2012-2016 Giovanni Blu Mitolo gioscarab@gmail.com
+    Copyright 2012-2016 Giovanni Blu Mitolo gioscarab@gmail.com
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-Known issues
-
-1) A pull down resistor in the order of mega ohms could be necessary on the bus to
-reduce interference. See https://github.com/gioblu/PJON/wiki/Deal-with-interference
-
-2) Consider that this is not an interrupt driven system and so all the time passed
-in delay or executing something a certain amount of packets could be potentially
-lost unheard, the packet manager of PJON will do its job scheduling the packet
-to be sent again in future until is received or MAX_ATTEMPTS sending attempts is
-reached, but a certain amount of bandwidth can be wasted. Structure intelligently
-your loop cycle to avoid huge blind timeframes.
-
-3) SoftwareBitBang strategy can have compatibility issues with codebases that
-are using interrupts in their procedure, like for example the Servo library.
-Reliability or bandwidth loss can be experienced because of the cyclical
-interruptions made by third party interrupt driven software to the PJON code.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 STANDARD transmission mode performance:
    Transfer speed: 16.944kBb or 2.12kB/s

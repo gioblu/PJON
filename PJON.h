@@ -115,10 +115,74 @@ limitations under the License. */
       };
 
 
+      /* Compose packet in PJON format: */
+
+      uint8_t compose_packet(
+        const uint8_t id,
+        const uint8_t *b_id,
+        char *destination,
+        const char *source,
+        uint8_t length,
+        uint8_t header
+      ) const {
+        uint8_t new_length = length + packet_overhead();
+
+        if(new_length >= PACKET_MAX_LENGTH) {
+          _error(CONTENT_TOO_LONG, new_length);
+          return 0;
+        }
+
+        destination[0] = id;
+        destination[1] = new_length;
+        destination[2] = (header & ~(MODE_BIT | SENDER_INFO_BIT | ACK_REQUEST_BIT)) | get_header();
+
+        if(_shared) {
+          copy_bus_id((uint8_t*) &destination[3], b_id);
+          if(_sender_info) {
+            copy_bus_id((uint8_t*) &destination[7], bus_id);
+            destination[11] = _device_id;
+          }
+        } else if(_sender_info) destination[3] = _device_id;
+
+        memcpy(destination + (packet_overhead() - 1), source, length);
+        destination[new_length - 1] = compute_crc_8((uint8_t *)destination, new_length - 1);
+        return new_length;
+      };
+
+
       /* Get the device id, returning a single byte: */
 
       uint8_t device_id() const {
         return _device_id;
+      };
+
+
+      /* Add a packet to the send list ready to be delivered by the next update() call: */
+
+      uint16_t dispatch(uint8_t id, const uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing, uint8_t header = 0) {
+         for(uint8_t i = 0; i < MAX_PACKETS; i++)
+          if(packets[i].state == 0) {
+            if(!(length = compose_packet(id, b_id, packets[i].content, packet, length, header)))
+              return FAIL;
+            packets[i].length = length;
+            packets[i].state = TO_BE_SENT;
+            packets[i].registration = micros();
+            packets[i].timing = timing;
+            return i;
+          }
+
+        _error(PACKETS_BUFFER_FULL, MAX_PACKETS);
+        return FAIL;
+      };
+
+
+      /* Return the header byte based on current configuration: */
+
+      uint8_t get_header() const {
+        // Compose PJON 1 byte header from internal configuration
+        return (_shared ? MODE_BIT : 0) |
+               (_sender_info ? SENDER_INFO_BIT : 0) |
+               (_acknowledge ? ACK_REQUEST_BIT : 0);
       };
 
 
@@ -135,6 +199,27 @@ limitations under the License. */
             packet_info.sender_id = packet[11];
           }
         } else if((packet_info.header & SENDER_INFO_BIT) != 0) packet_info.sender_id = packet[3];
+      };
+
+
+      /* Get count of the packets for a device_id:
+         Don't pass any parameter to count all packets
+         Pass a device id to count all it's related packets */
+
+      uint8_t get_packets_count(uint8_t device_id = 0) const {
+        uint8_t packets_count = 0;
+        for(uint8_t i = 0; i < MAX_PACKETS; i++) {
+          if(packets[i].state == 0) continue;
+          if(!device_id || packets[i].content[0] == device_id) packets_count++;
+        }
+        return packets_count;
+      };
+
+
+      /* Calculate the packet's overhead: */
+
+      uint8_t packet_overhead() const {
+        return _shared ? (_sender_info ? 13 : 8) : (_sender_info ? 5 : 4);
       };
 
 
@@ -232,69 +317,14 @@ limitations under the License. */
       };
 
 
-      /* Get count of the packets for a device_id:
-         Don't pass any parameter to count all packets
-         Pass a device id to count all it's related packets */
+      /* Send a packet to the sender of the last packet received.
+         This function is typically called from with the receive
+         callback function to deliver a response to a request. */
 
-      uint8_t get_packets_count(uint8_t device_id = 0) const {
-        uint8_t packets_count = 0;
-        for(uint8_t i = 0; i < MAX_PACKETS; i++) {
-          if(packets[i].state == 0) continue;
-          if(!device_id || packets[i].content[0] == device_id) packets_count++;
-        }
-        return packets_count;
-      };
-
-
-      /* Calculate the packet's overhead: */
-
-      uint8_t packet_overhead() const {
-        return _shared ? (_sender_info ? 13 : 8) : (_sender_info ? 5 : 4);
-      };
-
-
-      /* Return the header byte based on current configuration: */
-
-      uint8_t get_header() const {
-        // Compose PJON 1 byte header from internal configuration
-        return (_shared ? MODE_BIT : 0) |
-               (_sender_info ? SENDER_INFO_BIT : 0) |
-               (_acknowledge ? ACK_REQUEST_BIT : 0);
-      };
-
-
-      /* Compose packet in PJON format: */
-
-      uint8_t compose_packet(
-        const uint8_t id,
-        const uint8_t *b_id,
-        char *destination,
-        const char *source,
-        uint8_t length,
-        uint8_t header
-      ) const {
-        uint8_t new_length = length + packet_overhead();
-
-        if(new_length >= PACKET_MAX_LENGTH) {
-          _error(CONTENT_TOO_LONG, new_length);
-          return 0;
-        }
-
-        destination[0] = id;
-        destination[1] = new_length;
-        destination[2] = (header & ~(MODE_BIT | SENDER_INFO_BIT | ACK_REQUEST_BIT)) | get_header();
-
-        if(_shared) {
-          copy_bus_id((uint8_t*) &destination[3], b_id);
-          if(_sender_info) {
-            copy_bus_id((uint8_t*) &destination[7], bus_id);
-            destination[11] = _device_id;
-          }
-        } else if(_sender_info) destination[3] = _device_id;
-
-        memcpy(destination + (packet_overhead() - 1), source, length);
-        destination[new_length - 1] = compute_crc_8((uint8_t *)destination, new_length - 1);
-        return new_length;
+      uint16_t reply(const char *packet, uint8_t length) {
+        if(last_packet_info.sender_id != BROADCAST)
+          return dispatch(last_packet_info.sender_id, last_packet_info.sender_bus_id, packet, length, 0);
+        return false;
       };
 
 
@@ -337,36 +367,6 @@ limitations under the License. */
       /* IMPORTANT: send_repeatedly timing parameter maximum is 4294 microseconds or 71.56 minutes */
       uint16_t send_repeatedly(uint8_t id, const uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing) {
         return dispatch(id, b_id, packet, length, timing);
-      };
-
-
-      /* Send a packet to the sender of the last packet received.
-         This function is typically called from with the receive
-         callback function to deliver a response to a request. */
-
-      uint16_t reply(const char *packet, uint8_t length) {
-        if(last_packet_info.sender_id != BROADCAST)
-          return dispatch(last_packet_info.sender_id, last_packet_info.sender_bus_id, packet, length, 0);
-        return false;
-      };
-
-
-      /* Add a packet to the send list ready to be delivered by the next update() call: */
-
-      uint16_t dispatch(uint8_t id, const uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing, uint8_t header = 0) {
-         for(uint8_t i = 0; i < MAX_PACKETS; i++)
-          if(packets[i].state == 0) {
-            if(!(length = compose_packet(id, b_id, packets[i].content, packet, length, header)))
-              return FAIL;
-            packets[i].length = length;
-            packets[i].state = TO_BE_SENT;
-            packets[i].registration = micros();
-            packets[i].timing = timing;
-            return i;
-          }
-
-        _error(PACKETS_BUFFER_FULL, MAX_PACKETS);
-        return FAIL;
       };
 
 
@@ -481,6 +481,7 @@ limitations under the License. */
         return send_packet((char *)data, length);
       };
 
+
       /* Send a packet without using the send list. It is called send_packet_blocking
          because the code execution is stuck inside this function until the packet is
          delivered or the timeout is reached: */
@@ -508,6 +509,14 @@ limitations under the License. */
 
       uint16_t send_packet_blocking(uint8_t id, const char *string, uint8_t length, uint32_t timeout, uint8_t header = 0) {
         return send_packet_blocking(id, bus_id, string, length, timeout, header);
+      };
+
+
+      /* In router mode, the receiver function can ack for selected receiver
+         device ids for which the route is known */
+
+      void send_acknowledge() {
+        strategy.send_response(ACK);
       };
 
 
@@ -624,14 +633,6 @@ limitations under the License. */
 
       void set_router(boolean state) {
         _router = state;
-      };
-
-
-      /* In router mode, the receiver function can ack for selected receiver
-         device ids for which the route is known */
-
-      void send_acknowledge() {
-        strategy.send_response(ACK);
       };
 
 

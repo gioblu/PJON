@@ -1,4 +1,3 @@
-![ThroughHardwareSerial](http://www.gioblu.com/PJON/PJON-makers.jpg)
 
 **Medium:** Hardware Serial port |
 **Pins used:** 2

@@ -26,33 +26,10 @@ class ThroughHardwareSerial {
   public:
     HardwareSerial *serial;
 
-    /* Pass the Serial port where you want to operate with */
-
-    void set_serial(HardwareSerial *serial_port) {
-      serial = serial_port;
-    };
-
-
     /* Returns the Serial object value i.e. if(Serial) */
 
     boolean can_start() {
       return (serial != NULL) && *serial; // Check if pointer
-    };
-
-
-    /* Send a byte and wait for its transmission end */
-
-    void send_byte(uint8_t b) {
-      serial->write(b);
-      serial->flush();
-    };
-
-
-    /* Send a string: */
-
-    void send_string(uint8_t *string, uint8_t length) {
-      for(uint8_t b = 0; b < length; b++)
-        send_byte(string[b]);
     };
 
 
@@ -74,9 +51,32 @@ class ThroughHardwareSerial {
     };
 
 
+    /* Send a byte and wait for its transmission end */
+
+    void send_byte(uint8_t b) {
+      serial->write(b);
+      serial->flush();
+    };
+
+
     /* Send byte response to the packet's transmitter */
 
     void send_response(uint8_t response) {
       send_byte(response);
+    };
+
+
+    /* Send a string: */
+
+    void send_string(uint8_t *string, uint8_t length) {
+      for(uint8_t b = 0; b < length; b++)
+        send_byte(string[b]);
+    };
+
+
+    /* Pass the Serial port where you want to operate with */
+
+    void set_serial(HardwareSerial *serial_port) {
+      serial = serial_port;
     };
 };

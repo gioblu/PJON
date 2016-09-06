@@ -79,59 +79,6 @@ class SoftwareBitBang {
     };
 
 
-    /* Every byte is prepended with 2 synchronization padding bits. The first
-       is a longer than standard logic 1 followed by a standard logic 0.
-       __________ ___________________________
-      | SyncPad  | Byte                      |
-      |______    |___       ___     _____    |
-      | |    |   |   |     |   |   |     |   |
-      | | 1  | 0 | 1 | 0 0 | 1 | 0 | 1 1 | 0 |
-      |_|____|___|___|_____|___|___|_____|___|
-        |
-       ACCEPTANCE
-
-    The reception tecnique is based on finding a logic 1 as long as the
-    first padding bit within a certain threshold, synchronizing to its
-    falling edge and checking if it is followed by a logic 0. If this
-    pattern is recognised, reception starts, if not, interference,
-    synchronization loss or simply absence of communication is
-    detected at byte level. */
-
-    void send_byte(uint8_t b) {
-      digitalWriteFast(_output_pin, HIGH);
-      delayMicroseconds(SWBB_BIT_SPACER);
-      digitalWriteFast(_output_pin, LOW);
-      delayMicroseconds(SWBB_BIT_WIDTH);
-      for(uint8_t mask = 0x01; mask; mask <<= 1) {
-        digitalWriteFast(_output_pin, b & mask);
-        delayMicroseconds(SWBB_BIT_WIDTH);
-      }
-    };
-
-
-    /* Send a string: */
-
-    void send_string(uint8_t *string, uint8_t length) {
-      for(uint8_t b = 0; b < length; b++)
-        send_byte(string[b]);
-    };
-
-
-    /* Syncronize with transmitter:
-     This function is used only in byte syncronization.
-     READ_DELAY has to be tuned to correctly send and
-     receive transmissions because this variable shifts
-     in which portion of the bit, the reading will be
-     executed by the next read_byte function */
-
-    uint8_t syncronization_bit() {
-      delayMicroseconds((SWBB_BIT_WIDTH / 2) - SWBB_READ_DELAY);
-      uint8_t bit_value = digitalReadFast(_input_pin);
-      delayMicroseconds(SWBB_BIT_WIDTH / 2);
-      return bit_value;
-    };
-
-
     /* Read a byte from the pin */
 
     uint8_t read_byte() {
@@ -201,12 +148,65 @@ class SoftwareBitBang {
     };
 
 
+    /* Every byte is prepended with 2 synchronization padding bits. The first
+       is a longer than standard logic 1 followed by a standard logic 0.
+       __________ ___________________________
+      | SyncPad  | Byte                      |
+      |______    |___       ___     _____    |
+      | |    |   |   |     |   |   |     |   |
+      | | 1  | 0 | 1 | 0 0 | 1 | 0 | 1 1 | 0 |
+      |_|____|___|___|_____|___|___|_____|___|
+        |
+       ACCEPTANCE
+
+    The reception tecnique is based on finding a logic 1 as long as the
+    first padding bit within a certain threshold, synchronizing to its
+    falling edge and checking if it is followed by a logic 0. If this
+    pattern is recognised, reception starts, if not, interference,
+    synchronization loss or simply absence of communication is
+    detected at byte level. */
+
+    void send_byte(uint8_t b) {
+      digitalWriteFast(_output_pin, HIGH);
+      delayMicroseconds(SWBB_BIT_SPACER);
+      digitalWriteFast(_output_pin, LOW);
+      delayMicroseconds(SWBB_BIT_WIDTH);
+      for(uint8_t mask = 0x01; mask; mask <<= 1) {
+        digitalWriteFast(_output_pin, b & mask);
+        delayMicroseconds(SWBB_BIT_WIDTH);
+      }
+    };
+
+
     /* Send byte response to package transmitter */
 
     void send_response(uint8_t response) {
       pinModeFast(_output_pin, OUTPUT);
       send_byte(response);
       pullDownFast(_output_pin);
+    };
+
+
+    /* Send a string: */
+
+    void send_string(uint8_t *string, uint8_t length) {
+      for(uint8_t b = 0; b < length; b++)
+        send_byte(string[b]);
+    };
+
+
+    /* Syncronize with transmitter:
+     This function is used only in byte syncronization.
+     READ_DELAY has to be tuned to correctly send and
+     receive transmissions because this variable shifts
+     in which portion of the bit, the reading will be
+     executed by the next read_byte function */
+
+    uint8_t syncronization_bit() {
+      delayMicroseconds((SWBB_BIT_WIDTH / 2) - SWBB_READ_DELAY);
+      uint8_t bit_value = digitalReadFast(_input_pin);
+      delayMicroseconds(SWBB_BIT_WIDTH / 2);
+      return bit_value;
     };
 
 

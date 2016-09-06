@@ -22,7 +22,7 @@ Serial communication is an hardware integrated communication medium that can rea
 ####How to use ThroughHardwareSerial
 Pass the `ThroughHardwareSerial` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy.
 ```cpp  
-  PJON<ThroughHardwareSerial> bus; // 2 pin over-sampled physical layer
+  PJON<ThroughHardwareSerial> bus; // 2 pin over-sampled data link layer
 ```
 Call the `begin` method on the `Serial` object you want to use for PJON communication and pass it to the `set_serial` method:
 ```cpp  

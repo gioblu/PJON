@@ -7,44 +7,23 @@ PJON (Padded Jittering Operative Network) is an Arduino compatible, multi-master
 [![Join the chat at https://gitter.im/gioblu/PJON](https://badges.gitter.im/gioblu/PJON.svg)](https://gitter.im/gioblu/PJON?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Donate](http://img.shields.io/paypal/donate.png?color=brightgreen)](https://www.paypal.me/PJON)
 
 ####Features
-- Multi-media compatible thanks to the physical layer abstraction or [Strategy framework](https://github.com/gioblu/PJON/wiki/Strategies)
-- [Device id](https://github.com/gioblu/PJON/wiki) implementation to contact a certain device in the bus  
-- [Bus id](https://github.com/gioblu/PJON/wiki) implementation to contact a device in a certain bus
-- CRC8 table-less cyclic redundancy check implementation
+- Multi-media compatible data link layer or [Strategy](https://github.com/gioblu/PJON/wiki/Strategies)
+- Configurable 2 level addressing (device and bus id) for scalable applications
 - Acknowledgement of correct packet sending
 - Collision avoidance to enable multi-master capability
-- Broadcast functionality to contact all connected devices
-- Packet manager handle, track and if necessary retransmit a packet sending in background
+- Democratized traffic control system
+- CRC8 table-less cyclic redundancy check implementation
+- Packet manager to handle, track and if necessary retransmit a packet sending in background
 - Error handling
 
-####Compatibility
-- ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
-- ATmega2560 16Mhz (Arduino Mega)
-- ATmega16u4/32u4 16Mhz (Arduino Leonardo)
-- ATtiny45/85 8Mhz, see https://github.com/gioblu/PJON/wiki/ATtiny-interfacing
-- SAMD (Arduino Zero)
-- ESP8266 v.1-7 80Mhz "AI-THINKER AT" firmware, see https://github.com/esp8266/Arduino
-- ESP8266 NodeMCU v0.9-1.0 80Mhz, see https://github.com/esp8266/Arduino
-- MK20DX256 96Mhz (Teensy 3.1)
+####PJON Protocol layer specification
+- [PJON protocol layer v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md)
+- [PJON protocol layer v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md)
+- [PJON protocol layer v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md)
+
+####Padded jittering data link layer specification
+- [Padded jittering data link layer v0.1](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/padded-jittering-protocol-specification-v0.1.md)
 
 ####Compliant tools
 - [saleae-pjon-protocol-analyzer](https://github.com/aperepel/saleae-pjon-protocol-analyzer) by Andrew Grande.
 - [PJON-python](https://github.com/Girgitt/PJON-python) by Zbigniew Zasieczny.
-
-####License
-
-```cpp
-/* Copyright 2010-2016 Giovanni Blu Mitolo
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License. */
-```

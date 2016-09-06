@@ -16,7 +16,7 @@ The first experimental specification of the PJON protocol layer has been drafted
 
 ###Basic concepts
 * Every device has an unique 1 byte ID (0-255)
-* Every device transmits and receives on the same common PJON network medium
+* Every device transmits and receives on the same common medium
 * Every device has an equal right to transmit and receive on the common medium
 * Every device can be connected to n PJON network media (with n dedicated pins)
 * Transmission occurs only if the communication medium is not in use
@@ -35,7 +35,7 @@ The concept of packet enables to send a communication payload to every connected
 |___|_|____|__|__|___|_|_____|_|__|___|_|_|_|______|___|_|_|_|____|_|_|
 ```
 
-A standard packet transmission is a bidirectional communication between two devices that can be divided in 3 different phases: channel analysis, transmission and response.
+A standard packet transmission is a bidirectional communication between two devices that can be divided in 3 different phases: channel **analysis**, **transmission** and **response**.
 ```cpp
   Channel analysis   Transmission                            Response
       _____           _____________________________           _____
@@ -45,7 +45,7 @@ A standard packet transmission is a bidirectional communication between two devi
      |_____|         |____|________|_________|_____|         |_____|
 ```
 
-In the first phase the bus is analyzed by transmitter reading 10 logical bits, if no logical 1s are detected the channel is considered free, transmission phase starts in which the packet is entirely transmitted. Receiver calculates CRC and starts the response phase transmitting a single byte, `ACK` (dec 6) in case of correct reception or `NAK` (dec 21) if an error in the packet's content is detected. If transmitter receives no answer or NAK the packet sending has to be scheduled with a delay of `ATTEMPTS` * `ATTEMPTS` with a maximum of 250 `ATTEMPTS` to obtain data transmission quadratic backoff.
+In the first phase the bus is analyzed by transmitter reading 10 logical bits, if any logical high is detected, the channel is considered free and transmission phase starts in which the packet is entirely transmitted. Receiver calculates CRC and starts the response phase transmitting a single byte, `ACK` (dec 6) in case of correct reception or `NAK` (dec 21) if an error in the packet's content is detected. If transmitter receives no answer or NAK the packet sending has to be scheduled with a delay of `ATTEMPTS` * `ATTEMPTS` with a maximum of 250 `ATTEMPTS` to obtain data transmission quadratic backoff.
 
 ###Bus
 A PJON Bus is made by a group of up to 255 devices transmitting and receiving on the same medium. Communication between devices occurs through packets and it is based on democracy: every device has the right to transmit on the common medium for up to (1000 / devices number) milliseconds / second.

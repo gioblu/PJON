@@ -1,28 +1,6 @@
 
 /* ThroughHardwareSerial digital communication transport layer
    used as a Strategy by the PJON framework (included in version v4.1)
-   With ThroughHardwareSerial PJON can run through the Serial port of your device.
-   Both ports should be free from usb computer connection and data pin should
-   be wired inverted (TX->RX, RX->TX).
-
-   Why to add PJON over Serial?
-   Serial communication is an hardware integrated communication medium that can
-   reach very fast communication speed but it is quite basic.
-
-   Serial Downsides:
-     - No CRC, checksum or parity bit (ensure correct data transfert)
-     - No transmission certainty (lack of acknowledge from receiver)
-     - No packet handling (no retrasmission in case of error)
-     - No idea of id (no chance to connect more than 2 devices together)
-
-   Adding PJON over Serial you get:
-     - Correct transmission certainty with the use of CRC 8-bit
-     - Acnowledge byte to inform transmitter of correct data reception
-     - Packet handling, i.e. example schedule a repeated packet transmission.
-     - Connect 2 slaves with a 1 master having univocal communication with device id
-
-   ThroughHardwareSerial can run a 2 device bus in multi-master or a n devices bus
-   in a master-slave setup. (n still unkown, tested with 1 master and 2 slaves)
    ____________________________________________________________________________
 
    ThroughHardwareSerial, Copyright (c) 2016 by Giovanni Blu Mitolo

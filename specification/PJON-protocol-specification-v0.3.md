@@ -63,13 +63,13 @@ A PJON bus is made by a group of up to 255 devices transmitting and receiving on
 A packet transmission is the exchange of a string to one of the devices connected to the bus with optional correct reception certainty. A packet contains the recipient id, its length, its header, its content and the CRC. In this example is shown a packet transmission in a local bus to device id 12 containing the string @ (decimal 64):
 ```cpp  
 
- RECIPIENT ID 12  LENGTH 5          HEADER 1        CONTENT 64       CRC 72
- ________________ _________________ ________________ ________________ __________________
-|Sync | Byte     |Sync | Byte      |Sync | Byte     |Sync | Byte     |Sync | Byte       |
-|___  |     __   |___  |      _   _|___  |      _   |___  |  _       |___  |  _    _    |
-|   | |    |  |  |   | |     | | | |   | |     | |  |   | | | |      |   | | | |  | |   |
-| 1 |0|0000|11|00| 1 |0|00000|1|0|1| 1 |0|00000|1|00| 1 |0|0|1|000000| 1 |0|0|1|00|1|000|
-|___|_|____|__|__|___|_|_____|_|_|_|___|_|_____|_|__|___|_|_|_|______|___|_|_|_|__|_|___|
+ ID 12       LENGTH 5     HEADER 1    CONTENT 64  CRC 72
+ __________  ___________  __________  __________  ____________
+| Byte     || Byte      || Byte     || Byte     || Byte       |
+|     __   ||      _   _||      _   ||  _       ||  _    _    |
+|    |  |  ||     | | | ||     | |  || | |      || | |  | |   |
+|0000|11|00||00000|1|0|1||00000|1|00||0|1|000000||0|1|00|1|000|
+|____|__|__||_____|_|_|_||_____|_|__||_|_|______||_|_|__|_|___|
 ```
 A default local packet transmission is a bidirectional communication between two devices that can be divided in 3 different phases: **channel analysis**, **transmission** and **response**. The packet transmission procedure is regulated by its header.
 ```cpp  

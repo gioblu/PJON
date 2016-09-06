@@ -27,12 +27,12 @@ The first experimental specification of the PJON protocol layer has been drafted
 The concept of packet enables to send a communication payload to every connected device with correct reception certainty. A packet contains the recipient id, the length of the packet, its content and the CRC. Here is an example of a packet sending to device id 12 containing the string "@":
 ```cpp
  ID 12            LENGTH 4         CONTENT 64       CRC 130
- ________________ ________________ ________________ __________________
-|Sync | Byte     |Sync | Byte     |Sync | Byte     |Sync | Byte       |
-|___  |     __   |___  |      _   |___  |  _       |___  |  _      _  |
-|   | |    |  |  |   | |     | |  |   | | | |      |   | | | |    | | |
-| 1 |0|0000|11|0 | 1 |0|00000|1|00| 1 |0|0|1|000000| 1 |0|0|1|0000|1|0|
-|___|_|____|__|__|___|_|_____|_|__|___|_|_|_|______|___|_|_|_|____|_|_|
+ __________  __________  __________  ____________
+| Byte     || Byte     || Byte     || Byte       |
+|     __   ||      _   ||  _       ||  _      _  |
+|    |  |  ||     | |  || | |      || | |    | | |
+|0000|11|0 ||00000|1|00||0|1|000000||0|1|0000|1|0|
+|____|__|__||_____|_|__||_|_|______||_|_|____|_|_|
 ```
 
 A standard packet transmission is a bidirectional communication between two devices that can be divided in 3 different phases: channel **analysis**, **transmission** and **response**.

@@ -11,7 +11,6 @@ PJON (Padded Jittering Operative Network) is an Arduino compatible, multi-master
 - Configurable 2 level addressing (device and bus id) for scalable applications
 - Acknowledgement of correct packet sending
 - Collision avoidance to enable multi-master capability
-- Democratized traffic control system
 - CRC8 table-less cyclic redundancy check implementation
 - Packet manager to handle, track and if necessary retransmit a packet sending in background
 - Error handling

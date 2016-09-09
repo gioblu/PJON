@@ -1,5 +1,6 @@
 
 PJON is and will always be free for use for both personal and commercial purposes.
+
 Giovanni Blu Mitolo (gioscarab@gmail.com) Copyright 2010-2016
 
 Licensed under the Apache License, Version 2.0 (the "License"); you

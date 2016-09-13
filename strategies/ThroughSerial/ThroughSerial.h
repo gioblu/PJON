@@ -4,7 +4,8 @@
 
    Contributors:
     - Fred Larsen, Development, testing and debugging
-    - Zbigniew Zasieczny, Naive collision avoidance for multi-drop RS485
+    - Zbigniew Zasieczny, collision avoidance multi-drop RS485 (latency)
+      and SoftwareSerial compatibility
    ____________________________________________________________________________
 
    ThroughSerial, Copyright (c) 2016 by Giovanni Blu Mitolo All rights reserved.

@@ -25,19 +25,22 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 
-#define THROUGH_SERIAL_MAX_TIME 10000              // Wait up to 15 milliseconds for an incoming byte
+#define THROUGH_SERIAL_MAX_BYTE_TIME 10000         // Wait up to 10 milliseconds for an incoming byte
 #define THROUGH_SERIAL_FREE_TIME_BEFORE_START 500  // 0.5 milliseconds of free channell before sending
 
 class ThroughSerial {
   public:
     Stream *serial = NULL;
-    /* Returns the Serial object value i.e. if(Serial) */
 
     boolean can_start() {
       if(serial->available()) return false;
-      if (micros() - _last_reception_time < random(THROUGH_SERIAL_FREE_TIME_BEFORE_START, 2 * THROUGH_SERIAL_FREE_TIME_BEFORE_START) ) return false;
 
-      return (serial != NULL); // Check if initialized
+      if(
+        (uint32_t)(micros() - _last_reception_time) <
+        random(THROUGH_SERIAL_FREE_TIME_BEFORE_START, 2 * THROUGH_SERIAL_FREE_TIME_BEFORE_START)
+      ) return false;
+
+      return (serial != NULL);
     };
 
 
@@ -45,7 +48,7 @@ class ThroughSerial {
 
     uint16_t receive_byte() {
       uint32_t time = micros();
-      while(micros() - time < THROUGH_SERIAL_MAX_TIME)
+      while((uint32_t)(micros() - time) < THROUGH_SERIAL_MAX_BYTE_TIME)
         if(serial->available()) {
           _last_reception_time = micros();
           return (uint8_t)serial->read();

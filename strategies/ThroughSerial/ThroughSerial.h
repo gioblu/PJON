@@ -1,10 +1,13 @@
 
-/* ThroughHardwareSerial digital communication data link layer
+/* ThroughSerial digital communication data link layer
    used as a Strategy by the PJON framework (included in version v4.1)
+
+   Contributors:
+    - Fred Larsen, Development, testing and debugging
+    - Zbigniew Zasieczny, Naive collision avoidance for multi-drop RS485
    ____________________________________________________________________________
 
-   ThroughHardwareSerial, Copyright (c) 2016 by Giovanni Blu Mitolo
-   and Fred Larsen All rights reserved.
+   ThroughSerial, Copyright (c) 2016 by Giovanni Blu Mitolo All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -19,17 +22,21 @@
    limitations under the License. */
 
 #include <Arduino.h>
+#include <SoftwareSerial.h>
 
-#define THROUGH_HARDWARE_SERIAL_MAX_TIME 1000000 // Wait up to 1 second for an incoming byte
+#define THROUGH_SERIAL_MAX_TIME 10000              // Wait up to 15 milliseconds for an incoming byte
+#define THROUGH_SERIAL_FREE_TIME_BEFORE_START 500  // 0.5 milliseconds of free channell before sending
 
-class ThroughHardwareSerial {
+class ThroughSerial {
   public:
-    HardwareSerial *serial;
-
+    Stream *serial = NULL;
     /* Returns the Serial object value i.e. if(Serial) */
 
     boolean can_start() {
-      return (serial != NULL) && *serial; // Check if pointer
+      if(serial->available()) return false;
+      if (micros() - _last_reception_time < random(THROUGH_SERIAL_FREE_TIME_BEFORE_START, 2 * THROUGH_SERIAL_FREE_TIME_BEFORE_START) ) return false;
+
+      return (serial != NULL); // Check if initialized
     };
 
 
@@ -37,9 +44,11 @@ class ThroughHardwareSerial {
 
     uint16_t receive_byte() {
       uint32_t time = micros();
-      while(micros() - time < THROUGH_HARDWARE_SERIAL_MAX_TIME)
-        if(serial->available() > 0)
+      while(micros() - time < THROUGH_SERIAL_MAX_TIME)
+        if(serial->available()) {
+          _last_reception_time = micros();
           return (uint8_t)serial->read();
+        }
       return FAIL;
     };
 
@@ -79,4 +88,11 @@ class ThroughHardwareSerial {
     void set_serial(HardwareSerial *serial_port) {
       serial = serial_port;
     };
+
+    void set_serial(SoftwareSerial *serial_port) {
+      serial = serial_port;
+    };
+
+  private:
+    uint32_t _last_reception_time;
 };

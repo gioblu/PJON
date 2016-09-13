@@ -9,7 +9,7 @@
 PJON  KEYWORD1
 SoftwareBitBang	KEYWORD1
 OverSampling	KEYWORD1
-ThroughHardwareSerial KEYWORD1
+ThroughSerial KEYWORD1
 PJON_Packet  KEYWORD1
 PacketInfo   KEYWORD1
 

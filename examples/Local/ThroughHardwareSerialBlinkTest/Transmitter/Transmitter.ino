@@ -1,7 +1,7 @@
 #include <PJON.h>
 
 // <Strategy name> bus(selected device id)
-PJON<ThroughHardwareSerial> bus(45);
+PJON<ThroughSerial> bus(45);
 
 void setup() {
   bus.begin();

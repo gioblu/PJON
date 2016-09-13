@@ -27,7 +27,7 @@ Credits to contributors:
 
 Bug reports:
 - Zbigniew Zasieczny (header reference inconsistency report)
-- DanRoad reddit user (can_start ThroughHardwareSerial bugfix)
+- DanRoad reddit user (can_start ThroughSerial bugfix)
 - Remo Kallio (Packet index 0 bugfix)
 - Emanuele Iannone (Forcing SIMPLEX in OverSamplingSimplex)
 - Christian Pointner (Fixed compiler warnings)

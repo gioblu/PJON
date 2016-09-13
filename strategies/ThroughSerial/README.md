@@ -1,8 +1,8 @@
 
-**Medium:** Hardware Serial port |
-**Pins used:** 2
+**Medium:** Hardware/Software Serial port |
+**Pins used:** 1 or 2
 
-With ThroughHardwareSerial data link layer strategy, PJON can run through the Serial port of your device. Both ports should be free from USB computer connection and data pins should be wired inverted, TX to RX and RX to TX.
+With ThroughSerial data link layer strategy, PJON can run through the Serial port of your device. Both ports should be free from USB computer connection and data pins should be wired inverted, TX to RX and RX to TX.
 
 ####Why PJON over Serial?
 Serial communication is an hardware integrated communication medium that can reach very fast communication speed but it is quite basic and lacks many of the necessary structures and entities for an easy setup of a network communication.
@@ -17,12 +17,12 @@ Serial communication is an hardware integrated communication medium that can rea
 - Correct transmission certainty with the use of CRC 8-bit
 - Acnowledge byte to inform transmitter of correct data reception
 - Packet handling, i.e. schedule a repeated packet transmission.
-- ThroughHardwareSerial can run a 2 device bus in multi-master mode or a n devices bus in master-slave mode. (n still unkown, tested with 1 master and 2 slaves)
+- ThroughSerial can run a 2 device bus in multi-master mode or a n devices bus in master-slave mode. (n still unkown, tested with 1 master and 2 slaves)
 
-####How to use ThroughHardwareSerial
-Pass the `ThroughHardwareSerial` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy.
+####How to use ThroughSerial
+Pass the `ThroughSerial` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy.
 ```cpp  
-  PJON<ThroughHardwareSerial> bus; // 2 pin over-sampled data link layer
+  PJON<ThroughSerial> bus; // 2 pin over-sampled data link layer
 ```
 Call the `begin` method on the `Serial` object you want to use for PJON communication and pass it to the `set_serial` method:
 ```cpp  

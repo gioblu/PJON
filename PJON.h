@@ -27,7 +27,7 @@ Credits to contributors:
 
 Bug reports:
 - Zbigniew Zasieczny (header reference inconsistency report)
-- DanRoad reddit user (can_start ThroughHardwareSerial bugfix)
+- DanRoad reddit user (can_start ThroughSerial bugfix)
 - Remo Kallio (Packet index 0 bugfix)
 - Emanuele Iannone (Forcing SIMPLEX in OverSamplingSimplex)
 - Christian Pointner (Fixed compiler warnings)
@@ -66,7 +66,7 @@ limitations under the License. */
 
   #include "strategies/OverSampling/OverSampling.h"
   #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
-  #include "strategies/ThroughHardwareSerial/ThroughHardwareSerial.h"
+  #include "strategies/ThroughSerial/ThroughSerial.h"
 
   template<typename Strategy = SoftwareBitBang>
   class PJON {

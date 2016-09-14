@@ -649,7 +649,9 @@ limitations under the License. */
 
           if(
             (uint32_t)(micros() - packets[i].registration) >
-            packets[i].timing + (uint32_t)packets[i].attempts * (uint32_t)packets[i].attempts * (uint32_t)packets[i].attempts
+            (uint32_t)(
+              packets[i].timing +
+              ((uint32_t)packets[i].attempts * (uint32_t)packets[i].attempts * (uint32_t)packets[i].attempts))
           ) packets[i].state = send_packet(packets[i].content, packets[i].length);
           else continue;
 

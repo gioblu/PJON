@@ -2,29 +2,17 @@
 **Medium:** Hardware/Software Serial port |
 **Pins used:** 1 or 2
 
-With ThroughSerial data link layer strategy, PJON can run through the Serial port of your device. Both ports should be free from USB computer connection and data pins should be wired inverted, TX to RX and RX to TX.
+With ThroughSerial data link layer strategy, PJON can run through a software emulated or hardware Serial port. 
 
 ####Why PJON over Serial?
-Serial communication is an hardware integrated communication medium that can reach very fast communication speed but it is quite basic and lacks many of the necessary structures and entities for an easy setup of a network communication.
-
-####Serial Downsides:
-- No CRC, checksum or parity bit (ensure correct data transfert)
-- No transmission certainty (lack of acknowledge from receiver)
-- No packet handling (no retrasmission in case of error)
-- No idea of id (no chance to connect more than 2 devices together)
-
-####Adding PJON over Serial you get:
-- Correct transmission certainty with the use of CRC 8-bit
-- Acnowledge byte to inform transmitter of correct data reception
-- Packet handling, i.e. schedule a repeated packet transmission.
-- ThroughSerial can run a 2 device bus in multi-master mode or a n devices bus in master-slave mode. (n still unkown, tested with 1 master and 2 slaves)
+Serial communication is an hardware integrated or software emulated data communication that can reach very fast communication speed but it includes only the data link layer; adding PJON on top of the Serial data link layer it is possible to leverage of the PJON protocol layer features like acknowledge, addressing, multiplexing, packet handling, 8-bit CRC and traffic control.
 
 ####How to use ThroughSerial
-Pass the `ThroughSerial` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy.
+Pass the `ThroughSerial` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
 ```cpp  
   PJON<ThroughSerial> bus; // 2 pin over-sampled data link layer
 ```
-Call the `begin` method on the `Serial` object you want to use for PJON communication and pass it to the `set_serial` method:
+Call the `begin` method on the `Serial` or `SoftwareSerial`  object you want to use for PJON communication and pass it to the `set_serial` method:
 ```cpp  
   void setup() {
     Serial.begin(9600);

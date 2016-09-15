@@ -68,7 +68,6 @@ class ThroughSerial {
 
     void send_byte(uint8_t b) {
       serial->write(b);
-      serial->flush();
     };
 
 
@@ -76,6 +75,7 @@ class ThroughSerial {
 
     void send_response(uint8_t response) {
       send_byte(response);
+      serial->flush();
     };
 
 
@@ -84,6 +84,7 @@ class ThroughSerial {
     void send_string(uint8_t *string, uint8_t length) {
       for(uint8_t b = 0; b < length; b++)
         send_byte(string[b]);
+      serial->flush();
     };
 
 

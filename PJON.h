@@ -145,7 +145,7 @@ limitations under the License. */
           }
         } else if(_sender_info) destination[3] = _device_id;
 
-        memcpy(destination + (packet_overhead() - 1), source, length);
+        memcpy(destination + (new_length - length - 1), source, length);
         destination[new_length - 1] = compute_crc_8((uint8_t *)destination, new_length - 1);
         return new_length;
       };

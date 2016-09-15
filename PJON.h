@@ -206,7 +206,8 @@ limitations under the License. */
             copy_bus_id(packet_info.sender_bus_id, packet + 7);
             packet_info.sender_id = packet[11];
           }
-        } else if((packet_info.header & SENDER_INFO_BIT) != 0) packet_info.sender_id = packet[3];
+        } else if((packet_info.header & SENDER_INFO_BIT) != 0)
+          packet_info.sender_id = packet[3];
       };
 
 
@@ -714,18 +715,14 @@ limitations under the License. */
 
       uint8_t data[PACKET_MAX_LENGTH];
       PJON_Packet packets[MAX_PACKETS];
-
       /* A bus id is an array of 4 bytes containing a unique set.
           The default setting is to run a local bus (0.0.0.0), in this
           particular case the obvious bus id is omitted from the packet
           content to reduce overhead. */
-
       const uint8_t localhost[4] = {0, 0, 0, 0};
       uint8_t bus_id[4] = {0, 0, 0, 0};
-
       /* Last received packet Metainfo */
       PacketInfo last_packet_info;
-
     private:
       boolean   _acknowledge = true;
       boolean   _auto_delete = true;

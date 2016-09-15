@@ -502,32 +502,39 @@ limitations under the License. */
 
 
       /* Send a packet without using the send list. It is called send_packet_blocking
-         because the code execution is stuck inside this function until the packet is
-         delivered or the timeout is reached: */
+         because it tries to transmit a packet multiple times within an internal cycle
+         until the packet is delivered, or timing limit is reached. */
 
       uint16_t send_packet_blocking(
         uint8_t id,
         const uint8_t *b_id,
         const char *string,
         uint8_t length,
-        uint32_t timeout,
-        uint8_t header = 0
+        uint32_t timing = MAX_BACK_OFF, // Default value is a standard cubic back off
+        uint8_t header = FROM_CONFIG
       ) {
         if(!(length = compose_packet(id, bus_id, (char *)data, string, length, header))) return FAIL;
-        uint16_t status = FAIL;
+        uint16_t state = FAIL;
         uint32_t attempts = 0;
         uint32_t time = micros();
-        while(status != ACK && (uint32_t)(micros() - time) < timeout) {
-          status = send_packet((char*)data, length);
-          if(status == ACK) return status;
+        while(state != ACK && attempts <= MAX_ATTEMPTS && (uint32_t)(micros() - time) < timing) {
+          state = send_packet((char*)data, length);
+          if(state == ACK) return state;
           attempts++;
-          delayMicroseconds(attempts *attempts *attempts);
+          if(state != FAIL) delayMicroseconds(random(0, COLLISION_MAX_DELAY));
+          while(micros() - time < (attempts * attempts * attempts));
         }
-        return status;
+        return state;
       };
 
-      uint16_t send_packet_blocking(uint8_t id, const char *string, uint8_t length, uint32_t timeout, uint8_t header = 0) {
-        return send_packet_blocking(id, bus_id, string, length, timeout, header);
+      uint16_t send_packet_blocking(
+        uint8_t id,
+        const char *string,
+        uint8_t length,
+        uint32_t timing = MAX_BACK_OFF,  // Default value is a standard cubic back off
+        uint8_t header = FROM_CONFIG
+      ) {
+        return send_packet_blocking(id, bus_id, string, length, timing, header);
       };
 
 

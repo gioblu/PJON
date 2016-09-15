@@ -93,17 +93,10 @@ limitations under the License. */
   Thanks to the header byte the transmitter is able to instruct
   the receiver to handle communication as requested. */
 
-  /* Packet header bits */
-  #define MODE_BIT        1 // 1 - Shared | 0 - Local
-  #define SENDER_INFO_BIT 2 // 1 - Sender device id + Sender bus id if shared | 0 - No info inclusion
-  #define ACK_REQUEST_BIT 4 // 1 - Request synchronous acknowledge | 0 - Do not request acknowledge
-
-  /* [0, 1, 1]: Local bus  | Sender info included    | Acknowledge requested - DEFAULT
-     [0, 0, 1]: Local bus  | No sender info included | Acknowledge requested
-     [0, 0, 0]: Local bus  | No sender info included | No acknowledge
-     [1, 0, 0]: Shared bus | No sender info included | No acknowledge
-     [1, 1, 0]: Shared bus | Sender info included    | No acknowledge
-     [1, 1, 1]: Shared bus | Sender info included    | Acknowledge requested  */
+  #define FROM_CONFIG     B11111111 // Get header from internal configuration
+  #define MODE_BIT        B00000001 // 1 - Shared | 0 - Local
+  #define SENDER_INFO_BIT B00000010 // 1 - Sender device id + Sender bus id if shared | 0 - No info inclusion
+  #define ACK_REQUEST_BIT B00000100 // 1 - Request synchronous acknowledge | 0 - Do not request acknowledge
 
   /* Errors */
   #define CONNECTION_LOST     101

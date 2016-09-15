@@ -123,9 +123,10 @@ limitations under the License. */
         char *destination,
         const char *source,
         uint8_t length,
-        uint8_t header
+        uint8_t header = FROM_CONFIG
       ) const {
-        uint8_t new_length = length + packet_overhead();
+        if(header == FROM_CONFIG) header = get_header();
+        uint8_t new_length = length + packet_overhead(header);
 
         if(new_length >= PACKET_MAX_LENGTH) {
           _error(CONTENT_TOO_LONG, new_length);
@@ -134,7 +135,7 @@ limitations under the License. */
 
         destination[0] = id;
         destination[1] = new_length;
-        destination[2] = (header & ~(MODE_BIT | SENDER_INFO_BIT | ACK_REQUEST_BIT)) | get_header();
+        destination[2] = header;
 
         if(_shared) {
           copy_bus_id((uint8_t*) &destination[3], b_id);
@@ -159,7 +160,14 @@ limitations under the License. */
 
       /* Add a packet to the send list ready to be delivered by the next update() call: */
 
-      uint16_t dispatch(uint8_t id, const uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing, uint8_t header = 0) {
+      uint16_t dispatch(
+        uint8_t id,
+        const uint8_t *b_id,
+        const char *packet,
+        uint8_t length,
+        uint32_t timing,
+        uint8_t header = FROM_CONFIG
+      ) {
          for(uint8_t i = 0; i < MAX_PACKETS; i++)
           if(packets[i].state == 0) {
             if(!(length = compose_packet(id, b_id, packets[i].content, packet, length, header)))
@@ -218,8 +226,10 @@ limitations under the License. */
 
       /* Calculate the packet's overhead: */
 
-      uint8_t packet_overhead() const {
-        return _shared ? (_sender_info ? 13 : 8) : (_sender_info ? 5 : 4);
+      uint8_t packet_overhead(uint8_t header) const {
+        return (header & MODE_BIT) ?
+        (header & SENDER_INFO_BIT ? 13 : 8) :
+        (header & SENDER_INFO_BIT ? 5 : 4);
       };
 
 
@@ -321,9 +331,16 @@ limitations under the License. */
          This function is typically called from with the receive
          callback function to deliver a response to a request. */
 
-      uint16_t reply(const char *packet, uint8_t length) {
+      uint16_t reply(const char *packet, uint8_t length, uint8_t header = FROM_CONFIG) {
         if(last_packet_info.sender_id != BROADCAST)
-          return dispatch(last_packet_info.sender_id, last_packet_info.sender_bus_id, packet, length, 0);
+          return dispatch(
+            last_packet_info.sender_id,
+            last_packet_info.sender_bus_id,
+            packet,
+            length,
+            0,
+            header
+          );
         return false;
       };
 
@@ -351,22 +368,41 @@ limitations under the License. */
 
        bus.remove(hi); // Stop repeated sending */
 
-      uint16_t send(uint8_t id, const char *packet, uint8_t length) {
-        return dispatch(id, bus_id, packet, length, 0);
+      uint16_t send(uint8_t id, const char *string, uint8_t length, uint8_t header = FROM_CONFIG) {
+        return dispatch(id, bus_id, string, length, 0, header);
       };
 
-      uint16_t send(uint8_t id, const uint8_t *b_id, const char *packet, uint8_t length) {
-        return dispatch(id, b_id, packet, length, 0);
+      uint16_t send(
+        uint8_t id,
+        const uint8_t *b_id,
+        const char *string,
+        uint8_t length,
+        uint8_t header = FROM_CONFIG
+      ) {
+        return dispatch(id, b_id, string, length, 0, header);
       };
 
       /* IMPORTANT: send_repeatedly timing parameter maximum is 4294 microseconds or 71.56 minutes */
-      uint16_t send_repeatedly(uint8_t id, const char *packet, uint8_t length, uint32_t timing) {
-        return dispatch(id, bus_id, packet, length, timing);
+      uint16_t send_repeatedly(
+        uint8_t id,
+        const char *string,
+        uint8_t length,
+        uint32_t timing,
+        uint8_t header = FROM_CONFIG
+      ) {
+        return dispatch(id, bus_id, string, length, timing, header);
       };
 
       /* IMPORTANT: send_repeatedly timing parameter maximum is 4294 microseconds or 71.56 minutes */
-      uint16_t send_repeatedly(uint8_t id, const uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing) {
-        return dispatch(id, b_id, packet, length, timing);
+      uint16_t send_repeatedly(
+        uint8_t id,
+        const uint8_t *b_id,
+        const char *string,
+        uint8_t length,
+        uint32_t timing,
+        uint8_t header = FROM_CONFIG
+      ) {
+        return dispatch(id, b_id, string, length, timing, header);
       };
 
 
@@ -446,36 +482,31 @@ limitations under the License. */
 
       uint16_t send_packet(const char *string, uint8_t length) {
         if(!string) return FAIL;
-
         if(_mode != SIMPLEX && !strategy.can_start()) return BUSY;
-
         strategy.send_string((uint8_t *)string, length);
-
-        if(!_acknowledge || string[0] == BROADCAST || _mode == SIMPLEX) return ACK;
-
+        if(string[0] == BROADCAST || !_acknowledge || _mode == SIMPLEX) return ACK;
         uint16_t response = strategy.receive_response();
-
-        if(response == ACK) return ACK;
-
-        /* Random delay if NAK, corrupted ACK/NAK or collision */
-        if(response != FAIL)
-          delayMicroseconds(random(0, COLLISION_MAX_DELAY));
-
-        if(response == NAK) return NAK;
-
-        return FAIL;
+        if(response == ACK || response == NAK || response == FAIL) return response;
+        else return BUSY;
       };
 
 
       /* Send a packet passing its info as parameters: */
 
-      uint16_t send_packet(uint8_t id, char *string, uint8_t length, uint8_t header = 0) {
+      uint16_t send_packet(uint8_t id, char *string, uint8_t length, uint8_t header = FROM_CONFIG) {
         if(!(length = compose_packet(id, bus_id, (char *)data, string, length, header)))
           return FAIL;
         return send_packet((char *)data, length);
       };
 
-      uint16_t send_packet(uint8_t id, const uint8_t *b_id, char *string, uint8_t length, uint8_t header = 0) {
+
+      uint16_t send_packet(
+        uint8_t id,
+        const uint8_t *b_id,
+        char *string,
+        uint8_t length,
+        uint8_t header = FROM_CONFIG
+      ) {
         if(!(length = compose_packet(id, b_id, (char *)data, string, length, header)))
           return FAIL;
         return send_packet((char *)data, length);

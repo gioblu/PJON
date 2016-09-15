@@ -237,30 +237,23 @@ limitations under the License. */
 
       uint16_t receive() {
         uint16_t state;
-        uint16_t packet_length = PACKET_MAX_LENGTH;
         uint8_t CRC = 0;
         bool shared = false;
-        bool includes_sender_info = false;
-        bool acknowledge_requested = false;
 
-        for(uint8_t i = 0; i < packet_length; i++) {
+        data[1] = PACKET_MAX_LENGTH;
+        for(uint8_t i = 0; i < data[1]; i++) {
           data[i] = state = strategy.receive_byte();
           if(state == FAIL) return FAIL;
 
           if(i == 0 && data[i] != _device_id && data[i] != BROADCAST && !_router)
             return BUSY;
 
-          if(i == 1) {
-            if(data[i] > 4 && data[i] < PACKET_MAX_LENGTH)
-              packet_length = data[i];
-            else return FAIL;
-          }
+          if(i == 1 && (data[i] < 4 || data[i] > PACKET_MAX_LENGTH)) return FAIL;
 
           if(i == 2) { // Packet header
             shared = data[2] & MODE_BIT;
-            includes_sender_info = data[2] & SENDER_INFO_BIT;
-            acknowledge_requested = data[2] & ACK_REQUEST_BIT;
-            if((shared != _shared) && !_router) return BUSY; // Keep private and shared buses apart
+            // Keep private and shared buses apart
+            if((shared != _shared) && !_router) return BUSY;
           }
 
           /* If an id is assigned to this bus it means that is potentially
@@ -273,21 +266,16 @@ limitations under the License. */
 
           CRC = roll_crc_8(data[i], CRC);
         }
-        if(!CRC) {
-          if(acknowledge_requested && data[0] != BROADCAST && _mode != SIMPLEX)
-            if(!_shared || (_shared && shared && bus_id_equality(data + 3, bus_id)))
-              strategy.send_response(ACK);
 
+        if(data[2] & ACK_REQUEST_BIT && data[0] != BROADCAST && _mode != SIMPLEX && !_router)
+          if(!_shared || (_shared && shared && bus_id_equality(data + 3, bus_id)))
+            strategy.send_response(CRC ? NAK : ACK);
+
+        if(!CRC) {
           get_packet_info(data, last_packet_info);
-          uint8_t payload_offset = 3 + (shared ? (includes_sender_info ? 9 : 4) : (includes_sender_info ? 1 : 0));
-          _receiver(data + payload_offset, data[1] - payload_offset - 1, last_packet_info);
+          _receiver(data + (packet_overhead(data[2]) - 1), data[1] - packet_overhead(data[2]), last_packet_info);
           return ACK;
-        } else {
-          if(acknowledge_requested && data[0] != BROADCAST && _mode != SIMPLEX)
-            if(!_shared || (_shared && shared && bus_id_equality(data + 3, bus_id)))
-              strategy.send_response(NAK);
-          return NAK;
-        }
+        } else return NAK;
       };
 
 

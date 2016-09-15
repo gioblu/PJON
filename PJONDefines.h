@@ -93,8 +93,6 @@ limitations under the License. */
   /* HEADER CONFIGURATION:
   Thanks to the header byte the transmitter is able to instruct
   the receiver to handle communication as requested. */
-
-  #define FROM_CONFIG     B11111111 // Get header from internal configuration
   #define MODE_BIT        B00000001 // 1 - Shared | 0 - Local
   #define SENDER_INFO_BIT B00000010 // 1 - Sender device id + Sender bus id if shared | 0 - No info inclusion
   #define ACK_REQUEST_BIT B00000100 // 1 - Request synchronous acknowledge | 0 - Do not request acknowledge

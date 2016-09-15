@@ -123,9 +123,9 @@ limitations under the License. */
         char *destination,
         const char *source,
         uint8_t length,
-        uint8_t header = FROM_CONFIG
+        uint8_t header = NOT_ASSIGNED
       ) const {
-        if(header == FROM_CONFIG) header = get_header();
+        if(header == NOT_ASSIGNED) header = get_header();
         uint8_t new_length = length + packet_overhead(header);
 
         if(new_length >= PACKET_MAX_LENGTH) {
@@ -166,7 +166,7 @@ limitations under the License. */
         const char *packet,
         uint8_t length,
         uint32_t timing,
-        uint8_t header = FROM_CONFIG
+        uint8_t header = NOT_ASSIGNED
       ) {
          for(uint8_t i = 0; i < MAX_PACKETS; i++)
           if(packets[i].state == 0) {
@@ -320,7 +320,7 @@ limitations under the License. */
          This function is typically called from with the receive
          callback function to deliver a response to a request. */
 
-      uint16_t reply(const char *packet, uint8_t length, uint8_t header = FROM_CONFIG) {
+      uint16_t reply(const char *packet, uint8_t length, uint8_t header = NOT_ASSIGNED) {
         if(last_packet_info.sender_id != BROADCAST)
           return dispatch(
             last_packet_info.sender_id,
@@ -357,7 +357,7 @@ limitations under the License. */
 
        bus.remove(hi); // Stop repeated sending */
 
-      uint16_t send(uint8_t id, const char *string, uint8_t length, uint8_t header = FROM_CONFIG) {
+      uint16_t send(uint8_t id, const char *string, uint8_t length, uint8_t header = NOT_ASSIGNED) {
         return dispatch(id, bus_id, string, length, 0, header);
       };
 
@@ -366,7 +366,7 @@ limitations under the License. */
         const uint8_t *b_id,
         const char *string,
         uint8_t length,
-        uint8_t header = FROM_CONFIG
+        uint8_t header = NOT_ASSIGNED
       ) {
         return dispatch(id, b_id, string, length, 0, header);
       };
@@ -377,7 +377,7 @@ limitations under the License. */
         const char *string,
         uint8_t length,
         uint32_t timing,
-        uint8_t header = FROM_CONFIG
+        uint8_t header = NOT_ASSIGNED
       ) {
         return dispatch(id, bus_id, string, length, timing, header);
       };
@@ -389,7 +389,7 @@ limitations under the License. */
         const char *string,
         uint8_t length,
         uint32_t timing,
-        uint8_t header = FROM_CONFIG
+        uint8_t header = NOT_ASSIGNED
       ) {
         return dispatch(id, b_id, string, length, timing, header);
       };
@@ -482,7 +482,7 @@ limitations under the License. */
 
       /* Send a packet passing its info as parameters: */
 
-      uint16_t send_packet(uint8_t id, char *string, uint8_t length, uint8_t header = FROM_CONFIG) {
+      uint16_t send_packet(uint8_t id, char *string, uint8_t length, uint8_t header = NOT_ASSIGNED) {
         if(!(length = compose_packet(id, bus_id, (char *)data, string, length, header)))
           return FAIL;
         return send_packet((char *)data, length);
@@ -494,7 +494,7 @@ limitations under the License. */
         const uint8_t *b_id,
         char *string,
         uint8_t length,
-        uint8_t header = FROM_CONFIG
+        uint8_t header = NOT_ASSIGNED
       ) {
         if(!(length = compose_packet(id, b_id, (char *)data, string, length, header)))
           return FAIL;
@@ -512,7 +512,7 @@ limitations under the License. */
         const char *string,
         uint8_t length,
         uint32_t timing = MAX_BACK_OFF, // Default value is a standard cubic back off
-        uint8_t header = FROM_CONFIG
+        uint8_t header = NOT_ASSIGNED
       ) {
         if(!(length = compose_packet(id, bus_id, (char *)data, string, length, header))) return FAIL;
         uint16_t state = FAIL;
@@ -533,7 +533,7 @@ limitations under the License. */
         const char *string,
         uint8_t length,
         uint32_t timing = MAX_BACK_OFF,  // Default value is a standard cubic back off
-        uint8_t header = FROM_CONFIG
+        uint8_t header = NOT_ASSIGNED
       ) {
         return send_packet_blocking(id, bus_id, string, length, timing, header);
       };

@@ -691,6 +691,9 @@ limitations under the License. */
             } continue;
           }
 
+          if(packets[i].state != FAIL)
+            delayMicroseconds(random(0, COLLISION_MAX_DELAY));
+
           packets[i].attempts++;
           if(packets[i].attempts > MAX_ATTEMPTS) {
             _error(CONNECTION_LOST, packets[i].content[0]);

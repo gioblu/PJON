@@ -117,6 +117,11 @@ limitations under the License. */
     #define MAX_ATTEMPTS      125
   #endif
 
+  /* Max time delayed by backoff in microseconds  */
+  #ifndef MAX_BACK_OFF
+    #define MAX_BACK_OFF (uint32_t)MAX_ATTEMPTS * (uint32_t)MAX_ATTEMPTS * (uint32_t)MAX_ATTEMPTS
+  #endif
+
   /* Packet buffer length, if full PACKETS_BUFFER_FULL error is thrown.
      The packet buffer is preallocated, so its length strongly affects
      memory consumption */

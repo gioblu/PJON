@@ -642,17 +642,14 @@ limitations under the License. */
 
       uint8_t update() {
         uint8_t packets_count = 0;
+        uint32_t back_off;
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
-
           packets_count++;
-
-          if(
-            (uint32_t)(micros() - packets[i].registration) >
-            (uint32_t)(
-              packets[i].timing +
-              ((uint32_t)packets[i].attempts * (uint32_t)packets[i].attempts * (uint32_t)packets[i].attempts))
-          ) packets[i].state = send_packet(packets[i].content, packets[i].length);
+          back_off = packets[i].attempts;
+          back_off = back_off * back_off * back_off;
+          if((uint32_t)(micros() - packets[i].registration) - back_off > packets[i].timing)
+            packets[i].state = send_packet(packets[i].content, packets[i].length);
           else continue;
 
           if(packets[i].state == ACK) {

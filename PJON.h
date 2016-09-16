@@ -273,11 +273,11 @@ limitations under the License. */
           if(!_shared || (_shared && shared && bus_id_equality(data + 3, bus_id)))
             strategy.send_response(CRC ? NAK : ACK);
 
-        if(!CRC) {
-          get_packet_info(data, last_packet_info);
-          _receiver(data + (packet_overhead(data[2]) - 1), data[1] - packet_overhead(data[2]), last_packet_info);
-          return ACK;
-        } else return NAK;
+        if(CRC) return NAK;
+
+        get_packet_info(data, last_packet_info);
+        _receiver(data + (packet_overhead(data[2]) - 1), data[1] - packet_overhead(data[2]), last_packet_info);
+        return ACK;
       };
 
 

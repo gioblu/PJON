@@ -136,14 +136,13 @@ limitations under the License. */
         destination[0] = id;
         destination[1] = new_length;
         destination[2] = header;
-
-        if(_shared) {
+        if(header & MODE_BIT) {
           copy_bus_id((uint8_t*) &destination[3], b_id);
-          if(_sender_info) {
+          if(header & SENDER_INFO_BIT) {
             copy_bus_id((uint8_t*) &destination[7], bus_id);
             destination[11] = _device_id;
           }
-        } else if(_sender_info) destination[3] = _device_id;
+        } else if(header & SENDER_INFO_BIT) destination[3] = _device_id;
 
         memcpy(destination + (new_length - length - 1), source, length);
         destination[new_length - 1] = compute_crc_8((uint8_t *)destination, new_length - 1);

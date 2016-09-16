@@ -371,7 +371,7 @@ limitations under the License. */
         return dispatch(id, b_id, string, length, 0, header);
       };
 
-      /* IMPORTANT: send_repeatedly timing parameter maximum is 4294 microseconds or 71.56 minutes */
+      /* IMPORTANT: send_repeatedly timing maximum is 4293014170 microseconds or 71.55 minutes */
       uint16_t send_repeatedly(
         uint8_t id,
         const char *string,
@@ -382,7 +382,7 @@ limitations under the License. */
         return dispatch(id, bus_id, string, length, timing, header);
       };
 
-      /* IMPORTANT: send_repeatedly timing parameter maximum is 4294 microseconds or 71.56 minutes */
+      /* IMPORTANT: send_repeatedly timing maximum is 4293014170 microseconds or 71.55 minutes */
       uint16_t send_repeatedly(
         uint8_t id,
         const uint8_t *b_id,
@@ -523,7 +523,7 @@ limitations under the License. */
           if(state == ACK) return state;
           attempts++;
           if(state != FAIL) delayMicroseconds(random(0, COLLISION_MAX_DELAY));
-          while(micros() - time < (attempts * attempts * attempts));
+          while((uint32_t)(micros() - time) < (attempts * attempts * attempts));
         }
         return state;
       };
@@ -675,7 +675,7 @@ limitations under the License. */
           packets_count++;
           back_off = packets[i].attempts;
           back_off = back_off * back_off * back_off;
-          if((uint32_t)(micros() - packets[i].registration) - back_off > packets[i].timing)
+          if((uint32_t)(micros() - packets[i].registration) > packets[i].timing + back_off)
             packets[i].state = send_packet(packets[i].content, packets[i].length);
           else continue;
 

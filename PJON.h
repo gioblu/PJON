@@ -63,7 +63,6 @@ limitations under the License. */
   #define PJON_h
   #include <Arduino.h>
   #include <PJONDefines.h>
-
   #include "strategies/OverSampling/OverSampling.h"
   #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
   #include "strategies/ThroughSerial/ThroughSerial.h"
@@ -186,7 +185,6 @@ limitations under the License. */
       /* Return the header byte based on current configuration: */
 
       uint8_t get_header() const {
-        // Compose PJON 1 byte header from internal configuration
         return (_shared ? MODE_BIT : 0) |
                (_sender_info ? SENDER_INFO_BIT : 0) |
                (_acknowledge ? ACK_REQUEST_BIT : 0);
@@ -198,7 +196,6 @@ limitations under the License. */
       void get_packet_info(const uint8_t *packet, PacketInfo &packet_info) const {
         packet_info.receiver_id = packet[0];
         packet_info.header = packet[2];
-
         if((packet_info.header & MODE_BIT) != 0) {
           copy_bus_id(packet_info.receiver_bus_id, packet + 3);
           if((packet_info.header & SENDER_INFO_BIT) != 0) {
@@ -241,7 +238,6 @@ limitations under the License. */
         uint16_t state;
         uint8_t CRC = 0;
         bool shared = false;
-
         data[1] = PACKET_MAX_LENGTH;
         for(uint8_t i = 0; i < data[1]; i++) {
           data[i] = state = strategy.receive_byte();
@@ -341,21 +337,17 @@ limitations under the License. */
        transmission cyclically sending the packet (use remove() function stop it)
 
        LOCAL TRANSMISSION -> ISOLATED BUS
-
        int hi = bus.send(99, "HI!", 3);
        // Send hi once to device 99
-
        int hi = bus.send_repeatedly(99, "HI!", 3, 1000000);
        // Send HI! to device 99 every second (1.000.000 microseconds)
 
        NETWORK TRANSMISSION -> SHARED MEDIUM
-
-       int hi = bus.send(99, {127, 0, 0, 1}, 3);
+       uint8_t bus_id[] = {127, 0, 0, 1};
+       int hi = bus.send(99, bus_id, "HI!", 3);
        // Send hi once to device 99 on bus id 127.0.0.1
-
-       int hi = bus.send_repeatedly(99, {127, 0, 0, 1}, "HI!", 3, 1000000);
+       int hi = bus.send_repeatedly(99, bus_id, "HI!", 3, 1000000);
        // Send HI! to device 99 on bus id 127.0.0.1 every second (1.000.000 microseconds)
-
        bus.remove(hi); // Stop repeated sending */
 
       uint16_t send(uint8_t id, const char *string, uint8_t length, uint8_t header = NOT_ASSIGNED) {
@@ -568,13 +560,9 @@ limitations under the License. */
 
       void set_default() {
         _mode = HALF_DUPLEX;
-
-        if(!bus_id_equality(bus_id, localhost))
-          _shared = true;
-
+        if(!bus_id_equality(bus_id, localhost)) _shared = true;
         set_error(dummy_error_handler);
         set_receiver(dummy_receiver_handler);
-
         for(int i = 0; i < MAX_PACKETS; i++) {
           packets[i].state = 0;
           packets[i].timing = 0;
@@ -643,7 +631,6 @@ limitations under the License. */
         void receiver_function(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {
           for(int i = 0; i < length; i++)
             Serial.print((char)payload[i]);
-
           Serial.print(" ");
           Serial.println(length);
         };

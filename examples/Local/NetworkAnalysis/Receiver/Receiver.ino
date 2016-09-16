@@ -5,10 +5,7 @@ PJON<SoftwareBitBang> bus(44);
 
 void setup() {
   bus.strategy.set_pin(12);
-
   bus.begin();
-
-  Serial.begin(115200);
 };
 
 void loop() {

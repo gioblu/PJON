@@ -226,7 +226,9 @@ limitations under the License. */
 
       /* Calculate the packet's overhead: */
 
-      uint8_t packet_overhead(uint8_t header) const {
+      uint8_t packet_overhead(uint8_t header = NOT_ASSIGNED) const {
+        if(header == NOT_ASSIGNED)
+          return _shared ? (_sender_info ? 13 : 8) : (_sender_info ? 5 : 4);
         return (header & MODE_BIT) ?
         (header & SENDER_INFO_BIT ? 13 : 8) :
         (header & SENDER_INFO_BIT ? 5 : 4);

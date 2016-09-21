@@ -111,6 +111,9 @@ class ThroughSerial {
       serial = serial_port;
     };
 
+
+    /* Pass the enable transmission pin for RS485 if in use */
+
     void set_enable_RS485_pin(uint8_t pin) {
       _enable_RS485_pin = pin;
       pinModeFast(_enable_RS485_pin, OUTPUT);

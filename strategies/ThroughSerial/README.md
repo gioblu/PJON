@@ -21,7 +21,7 @@ Call the `begin` method on the `Serial` or `SoftwareSerial`  object you want to 
 ```
 For a simple use with RS485 serial modules a transmission enable pin setter has been added:
 ```cpp  
-  bus.set_enable_RS485_pin(11);
+  bus.strategy.set_enable_RS485_pin(11);
 ```
 
 All the other necessary information is present in the general [Documentation](https://github.com/gioblu/PJON/wiki/Documentation).

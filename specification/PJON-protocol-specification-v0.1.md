@@ -26,7 +26,7 @@ The first experimental specification of the PJON protocol layer has been drafted
 ###Packet transmission
 The concept of packet enables to send a communication payload to every connected device with correct reception certainty. A packet contains the recipient id, the length of the packet, its content and the CRC. Here is an example of a packet sending to device id 12 containing the string "@":
 ```cpp
- ID 12            LENGTH 4         CONTENT 64       CRC 130
+ ID 12       LENGTH 4    CONTENT 64  CRC 130
  __________  __________  __________  ____________
 | Byte     || Byte     || Byte     || Byte       |
 |     __   ||      _   ||  _       ||  _      _  |

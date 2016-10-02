@@ -53,7 +53,6 @@ class OverSampling {
         if(value > 0.5)
           return false;
       }
-      pinModeFast(_output_pin, OUTPUT);
       return true;
     };
 
@@ -165,15 +164,17 @@ class OverSampling {
     void send_response(uint8_t response) {
       pinModeFast(_output_pin, OUTPUT);
       send_byte(response);
-      digitalWriteFast(_output_pin, LOW);
+      pullDownFast(_output_pin);
     };
 
 
     /* Send a string: */
 
     void send_string(uint8_t *string, uint8_t length) {
+      pinModeFast(_output_pin, OUTPUT);
       for(uint8_t b = 0; b < length; b++)
         send_byte(string[b]);
+      pullDownFast(_output_pin);
     };
 
 

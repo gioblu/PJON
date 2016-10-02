@@ -57,7 +57,6 @@ class SoftwareBitBang {
         delayMicroseconds(SWBB_BIT_WIDTH);
       }
       if(digitalReadFast(_input_pin)) return false;
-      pinModeFast(_output_pin, OUTPUT);
       return true;
     };
 
@@ -173,8 +172,10 @@ class SoftwareBitBang {
     /* Send a string: */
 
     void send_string(uint8_t *string, uint8_t length) {
+      pinModeFast(_output_pin, OUTPUT);
       for(uint8_t b = 0; b < length; b++)
         send_byte(string[b]);
+      pullDownFast(_output_pin);
     };
 
 

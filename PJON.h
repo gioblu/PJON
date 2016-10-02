@@ -636,19 +636,19 @@ limitations under the License. */
         const uint8_t *b_id,
         const char *string,
         uint8_t length,
-        uint32_t timing = MAX_BACK_OFF, // Default value is a standard cubic back off
         uint8_t header = NOT_ASSIGNED
       ) {
-        if(!(length = compose_packet(id, bus_id, (char *)data, string, length, header))) return FAIL;
+        if(!(length = compose_packet(id, b_id, (char *)data, string, length, header))) return FAIL;
         uint16_t state = FAIL;
         uint32_t attempts = 0;
         uint32_t time = micros();
-        while(state != ACK && attempts <= MAX_ATTEMPTS && (uint32_t)(micros() - time) < timing) {
+        while(state != ACK && attempts <= MAX_ATTEMPTS) {
           state = send_packet((char*)data, length);
           if(state == ACK) return state;
           attempts++;
-          if(state != FAIL) delayMicroseconds(random(0, COLLISION_MAX_DELAY));
+          if(state != FAIL) delayMicroseconds(random(0, COLLISION_DELAY));
           while((uint32_t)(micros() - time) < (attempts * attempts * attempts));
+          time = micros();
         }
         return state;
       };
@@ -657,10 +657,9 @@ limitations under the License. */
         uint8_t id,
         const char *string,
         uint8_t length,
-        uint32_t timing = MAX_BACK_OFF,  // Default value is a standard cubic back off
         uint8_t header = NOT_ASSIGNED
       ) {
-        return send_packet_blocking(id, bus_id, string, length, timing, header);
+        return send_packet_blocking(id, bus_id, string, length, header);
       };
 
 
@@ -813,7 +812,7 @@ limitations under the License. */
           }
 
           if(packets[i].state != FAIL)
-            delayMicroseconds(random(0, COLLISION_MAX_DELAY));
+            delayMicroseconds(random(0, COLLISION_DELAY));
 
           packets[i].attempts++;
           if(packets[i].attempts > MAX_ATTEMPTS) {
@@ -828,7 +827,7 @@ limitations under the License. */
               packets[i].registration = micros();
               packets[i].state = TO_BE_SENT;
             }
-          }
+          } else packets[i].registration = micros();
         }
         return packets_count;
       };

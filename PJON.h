@@ -1,7 +1,7 @@
 
  /*-O//\             __     __
    |-gfo\           |__| | |  | |\ |
-   |!y°o:\          |  __| |__| | \| v5.0 beta
+   |!y°o:\          |  __| |__| | \| v5.1
    |y"s§+`\         multi-master, multi-media communications bus system framework
   /so+:-..`\        Copyright 2010-2016 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
@@ -27,7 +27,7 @@ Credits to contributors:
 
 Bug reports:
 - Zbigniew Zasieczny (header reference inconsistency report)
-- DanRoad reddit user (can_start ThroughHardwareSerial bugfix)
+- DanRoad reddit user (can_start ThroughSerial bugfix)
 - Remo Kallio (Packet index 0 bugfix)
 - Emanuele Iannone (Forcing SIMPLEX in OverSamplingSimplex)
 - Christian Pointner (Fixed compiler warnings)
@@ -40,7 +40,7 @@ PJON Standard compliant tools:
 - https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande
 - https://github.com/Girgitt/PJON-python PJON running on Python by Zbigniew Zasieczny
 
-PJON is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo,
+PJON is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
 with the support ot the internet community if you want to see the PJON project growing
 with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
 __________________________________________________________________________________________
@@ -63,10 +63,9 @@ limitations under the License. */
   #define PJON_h
   #include <Arduino.h>
   #include <PJONDefines.h>
-
   #include "strategies/OverSampling/OverSampling.h"
   #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
-  #include "strategies/ThroughHardwareSerial/ThroughHardwareSerial.h"
+  #include "strategies/ThroughSerial/ThroughSerial.h"
 
   template<typename Strategy = SoftwareBitBang>
   class PJON {
@@ -115,10 +114,80 @@ limitations under the License. */
       };
 
 
+      /* Compose packet in PJON format: */
+
+      uint8_t compose_packet(
+        const uint8_t id,
+        const uint8_t *b_id,
+        char *destination,
+        const char *source,
+        uint8_t length,
+        uint8_t header = NOT_ASSIGNED
+      ) const {
+        if(header == NOT_ASSIGNED) header = get_header();
+        uint8_t new_length = length + packet_overhead(header);
+
+        if(new_length >= PACKET_MAX_LENGTH) {
+          _error(CONTENT_TOO_LONG, new_length);
+          return 0;
+        }
+
+        destination[0] = id;
+        destination[1] = new_length;
+        destination[2] = header;
+        if(header & MODE_BIT) {
+          copy_bus_id((uint8_t*) &destination[3], b_id);
+          if(header & SENDER_INFO_BIT) {
+            copy_bus_id((uint8_t*) &destination[7], bus_id);
+            destination[11] = _device_id;
+          }
+        } else if(header & SENDER_INFO_BIT) destination[3] = _device_id;
+
+        memcpy(destination + (new_length - length - 1), source, length);
+        destination[new_length - 1] = compute_crc_8((uint8_t *)destination, new_length - 1);
+        return new_length;
+      };
+
+
       /* Get the device id, returning a single byte: */
 
       uint8_t device_id() const {
         return _device_id;
+      };
+
+
+      /* Add a packet to the send list ready to be delivered by the next update() call: */
+
+      uint16_t dispatch(
+        uint8_t id,
+        const uint8_t *b_id,
+        const char *packet,
+        uint8_t length,
+        uint32_t timing,
+        uint8_t header = NOT_ASSIGNED
+      ) {
+         for(uint8_t i = 0; i < MAX_PACKETS; i++)
+          if(packets[i].state == 0) {
+            if(!(length = compose_packet(id, b_id, packets[i].content, packet, length, header)))
+              return FAIL;
+            packets[i].length = length;
+            packets[i].state = TO_BE_SENT;
+            packets[i].registration = micros();
+            packets[i].timing = timing;
+            return i;
+          }
+
+        _error(PACKETS_BUFFER_FULL, MAX_PACKETS);
+        return FAIL;
+      };
+
+
+      /* Return the header byte based on current configuration: */
+
+      uint8_t get_header() const {
+        return (_shared ? MODE_BIT : 0) |
+               (_sender_info ? SENDER_INFO_BIT : 0) |
+               (_acknowledge ? ACK_REQUEST_BIT : 0);
       };
 
 
@@ -127,14 +196,39 @@ limitations under the License. */
       void get_packet_info(const uint8_t *packet, PacketInfo &packet_info) const {
         packet_info.receiver_id = packet[0];
         packet_info.header = packet[2];
-
         if((packet_info.header & MODE_BIT) != 0) {
           copy_bus_id(packet_info.receiver_bus_id, packet + 3);
           if((packet_info.header & SENDER_INFO_BIT) != 0) {
             copy_bus_id(packet_info.sender_bus_id, packet + 7);
             packet_info.sender_id = packet[11];
           }
-        } else if((packet_info.header & SENDER_INFO_BIT) != 0) packet_info.sender_id = packet[3];
+        } else if((packet_info.header & SENDER_INFO_BIT) != 0)
+          packet_info.sender_id = packet[3];
+      };
+
+
+      /* Get count of the packets for a device_id:
+         Don't pass any parameter to count all packets
+         Pass a device id to count all it's related packets */
+
+      uint8_t get_packets_count(uint8_t device_id = NOT_ASSIGNED) const {
+        uint8_t packets_count = 0;
+        for(uint8_t i = 0; i < MAX_PACKETS; i++) {
+          if(packets[i].state == 0) continue;
+          if(device_id == NOT_ASSIGNED || packets[i].content[0] == device_id) packets_count++;
+        }
+        return packets_count;
+      };
+
+
+      /* Calculate the packet's overhead: */
+
+      uint8_t packet_overhead(uint8_t header = NOT_ASSIGNED) const {
+        if(header == NOT_ASSIGNED)
+          return _shared ? (_sender_info ? 13 : 8) : (_sender_info ? 5 : 4);
+        return (header & MODE_BIT) ?
+        (header & SENDER_INFO_BIT ? 13 : 8) :
+        (header & SENDER_INFO_BIT ? 5 : 4);
       };
 
 
@@ -142,30 +236,22 @@ limitations under the License. */
 
       uint16_t receive() {
         uint16_t state;
-        uint16_t packet_length = PACKET_MAX_LENGTH;
         uint8_t CRC = 0;
         bool shared = false;
-        bool includes_sender_info = false;
-        bool acknowledge_requested = false;
-
-        for(uint8_t i = 0; i < packet_length; i++) {
+        data[1] = PACKET_MAX_LENGTH;
+        for(uint8_t i = 0; i < data[1]; i++) {
           data[i] = state = strategy.receive_byte();
           if(state == FAIL) return FAIL;
 
           if(i == 0 && data[i] != _device_id && data[i] != BROADCAST && !_router)
             return BUSY;
 
-          if(i == 1) {
-            if(data[i] > 4 && data[i] < PACKET_MAX_LENGTH)
-              packet_length = data[i];
-            else return FAIL;
-          }
+          if(i == 1 && (data[i] < 4 || data[i] > PACKET_MAX_LENGTH)) return FAIL;
 
           if(i == 2) { // Packet header
             shared = data[2] & MODE_BIT;
-            includes_sender_info = data[2] & SENDER_INFO_BIT;
-            acknowledge_requested = data[2] & ACK_REQUEST_BIT;
-            if((shared != _shared) && !_router) return BUSY; // Keep private and shared buses apart
+            // Keep private and shared buses apart
+            if((shared != _shared) && !_router) return BUSY;
           }
 
           /* If an id is assigned to this bus it means that is potentially
@@ -178,21 +264,16 @@ limitations under the License. */
 
           CRC = roll_crc_8(data[i], CRC);
         }
-        if(!CRC) {
-          if(acknowledge_requested && data[0] != BROADCAST && _mode != SIMPLEX)
-            if(!_shared || (_shared && shared && bus_id_equality(data + 3, bus_id)))
-              strategy.send_response(ACK);
 
-          get_packet_info(data, last_packet_info);
-          uint8_t payload_offset = 3 + (shared ? (includes_sender_info ? 9 : 4) : (includes_sender_info ? 1 : 0));
-          _receiver(data + payload_offset, data[1] - payload_offset - 1, last_packet_info);
-          return ACK;
-        } else {
-          if(acknowledge_requested && data[0] != BROADCAST && _mode != SIMPLEX)
-            if(!_shared || (_shared && shared && bus_id_equality(data + 3, bus_id)))
-              strategy.send_response(NAK);
-          return NAK;
-        }
+        if(data[2] & ACK_REQUEST_BIT && data[0] != BROADCAST && _mode != SIMPLEX && !_router)
+          if(!_shared || (_shared && shared && bus_id_equality(data + 3, bus_id)))
+            strategy.send_response(CRC ? NAK : ACK);
+
+        if(CRC) return NAK;
+
+        get_packet_info(data, last_packet_info);
+        _receiver(data + (packet_overhead(data[2]) - 1), data[1] - packet_overhead(data[2]), last_packet_info);
+        return ACK;
       };
 
 
@@ -232,69 +313,21 @@ limitations under the License. */
       };
 
 
-      /* Get count of the packets for a device_id:
-         Don't pass any parameter to count all packets
-         Pass a device id to count all it's related packets */
+      /* Send a packet to the sender of the last packet received.
+         This function is typically called from with the receive
+         callback function to deliver a response to a request. */
 
-      uint8_t get_packets_count(uint8_t device_id = 0) const {
-        uint8_t packets_count = 0;
-        for(uint8_t i = 0; i < MAX_PACKETS; i++) {
-          if(packets[i].state == 0) continue;
-          if(!device_id || packets[i].content[0] == device_id) packets_count++;
-        }
-        return packets_count;
-      };
-
-
-      /* Calculate the packet's overhead: */
-
-      uint8_t packet_overhead() const {
-        return _shared ? (_sender_info ? 13 : 8) : (_sender_info ? 5 : 4);
-      };
-
-
-      /* Return the header byte based on current configuration: */
-
-      uint8_t get_header() const {
-        // Compose PJON 1 byte header from internal configuration
-        return (_shared ? MODE_BIT : 0) |
-               (_sender_info ? SENDER_INFO_BIT : 0) |
-               (_acknowledge ? ACK_REQUEST_BIT : 0);
-      };
-
-
-      /* Compose packet in PJON format: */
-
-      uint8_t compose_packet(
-        const uint8_t id,
-        const uint8_t *b_id,
-        char *destination,
-        const char *source,
-        uint8_t length,
-        uint8_t header
-      ) const {
-        uint8_t new_length = length + packet_overhead();
-
-        if(new_length >= PACKET_MAX_LENGTH) {
-          _error(CONTENT_TOO_LONG, new_length);
-          return 0;
-        }
-
-        destination[0] = id;
-        destination[1] = new_length;
-        destination[2] = (header & ~(MODE_BIT | SENDER_INFO_BIT | ACK_REQUEST_BIT)) | get_header();
-
-        if(_shared) {
-          copy_bus_id((uint8_t*) &destination[3], b_id);
-          if(_sender_info) {
-            copy_bus_id((uint8_t*) &destination[7], bus_id);
-            destination[11] = _device_id;
-          }
-        } else if(_sender_info) destination[3] = _device_id;
-
-        memcpy(destination + (packet_overhead() - 1), source, length);
-        destination[new_length - 1] = compute_crc_8((uint8_t *)destination, new_length - 1);
-        return new_length;
+      uint16_t reply(const char *packet, uint8_t length, uint8_t header = NOT_ASSIGNED) {
+        if(last_packet_info.sender_id != BROADCAST)
+          return dispatch(
+            last_packet_info.sender_id,
+            last_packet_info.sender_bus_id,
+            packet,
+            length,
+            0,
+            header
+          );
+        return false;
       };
 
 
@@ -304,69 +337,54 @@ limitations under the License. */
        transmission cyclically sending the packet (use remove() function stop it)
 
        LOCAL TRANSMISSION -> ISOLATED BUS
-
        int hi = bus.send(99, "HI!", 3);
        // Send hi once to device 99
-
        int hi = bus.send_repeatedly(99, "HI!", 3, 1000000);
        // Send HI! to device 99 every second (1.000.000 microseconds)
 
        NETWORK TRANSMISSION -> SHARED MEDIUM
-
-       int hi = bus.send(99, {127, 0, 0, 1}, 3);
+       uint8_t bus_id[] = {127, 0, 0, 1};
+       int hi = bus.send(99, bus_id, "HI!", 3);
        // Send hi once to device 99 on bus id 127.0.0.1
-
-       int hi = bus.send_repeatedly(99, {127, 0, 0, 1}, "HI!", 3, 1000000);
+       int hi = bus.send_repeatedly(99, bus_id, "HI!", 3, 1000000);
        // Send HI! to device 99 on bus id 127.0.0.1 every second (1.000.000 microseconds)
-
        bus.remove(hi); // Stop repeated sending */
 
-      uint16_t send(uint8_t id, const char *packet, uint8_t length) {
-        return dispatch(id, bus_id, packet, length, 0);
+      uint16_t send(uint8_t id, const char *string, uint8_t length, uint8_t header = NOT_ASSIGNED) {
+        return dispatch(id, bus_id, string, length, 0, header);
       };
 
-      uint16_t send(uint8_t id, const uint8_t *b_id, const char *packet, uint8_t length) {
-        return dispatch(id, b_id, packet, length, 0);
+      uint16_t send(
+        uint8_t id,
+        const uint8_t *b_id,
+        const char *string,
+        uint8_t length,
+        uint8_t header = NOT_ASSIGNED
+      ) {
+        return dispatch(id, b_id, string, length, 0, header);
       };
 
-      /* IMPORTANT: send_repeatedly timing parameter maximum is 4294 microseconds or 71.56 minutes */
-      uint16_t send_repeatedly(uint8_t id, const char *packet, uint8_t length, uint32_t timing) {
-        return dispatch(id, bus_id, packet, length, timing);
+      /* IMPORTANT: send_repeatedly timing maximum is 4293014170 microseconds or 71.55 minutes */
+      uint16_t send_repeatedly(
+        uint8_t id,
+        const char *string,
+        uint8_t length,
+        uint32_t timing,
+        uint8_t header = NOT_ASSIGNED
+      ) {
+        return dispatch(id, bus_id, string, length, timing, header);
       };
 
-      /* IMPORTANT: send_repeatedly timing parameter maximum is 4294 microseconds or 71.56 minutes */
-      uint16_t send_repeatedly(uint8_t id, const uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing) {
-        return dispatch(id, b_id, packet, length, timing);
-      };
-
-
-      /* Send a packet to the sender of the last packet received.
-         This function is typically called from with the receive
-         callback function to deliver a response to a request. */
-
-      uint16_t reply(const char *packet, uint8_t length) {
-        if(last_packet_info.sender_id != BROADCAST)
-          return dispatch(last_packet_info.sender_id, last_packet_info.sender_bus_id, packet, length, 0);
-        return false;
-      };
-
-
-      /* Add a packet to the send list ready to be delivered by the next update() call: */
-
-      uint16_t dispatch(uint8_t id, const uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing, uint8_t header = 0) {
-         for(uint8_t i = 0; i < MAX_PACKETS; i++)
-          if(packets[i].state == 0) {
-            if(!(length = compose_packet(id, b_id, packets[i].content, packet, length, header)))
-              return FAIL;
-            packets[i].length = length;
-            packets[i].state = TO_BE_SENT;
-            packets[i].registration = micros();
-            packets[i].timing = timing;
-            return i;
-          }
-
-        _error(PACKETS_BUFFER_FULL, MAX_PACKETS);
-        return FAIL;
+      /* IMPORTANT: send_repeatedly timing maximum is 4293014170 microseconds or 71.55 minutes */
+      uint16_t send_repeatedly(
+        uint8_t id,
+        const uint8_t *b_id,
+        const char *string,
+        uint8_t length,
+        uint32_t timing,
+        uint8_t header = NOT_ASSIGNED
+      ) {
+        return dispatch(id, b_id, string, length, timing, header);
       };
 
 
@@ -446,68 +464,79 @@ limitations under the License. */
 
       uint16_t send_packet(const char *string, uint8_t length) {
         if(!string) return FAIL;
-
         if(_mode != SIMPLEX && !strategy.can_start()) return BUSY;
-
         strategy.send_string((uint8_t *)string, length);
-
-        if(!_acknowledge || string[0] == BROADCAST || _mode == SIMPLEX) return ACK;
-
+        if(string[0] == BROADCAST || !_acknowledge || _mode == SIMPLEX) return ACK;
         uint16_t response = strategy.receive_response();
-
-        if(response == ACK) return ACK;
-
-        /* Random delay if NAK, corrupted ACK/NAK or collision */
-        if(response != FAIL)
-          delayMicroseconds(random(0, COLLISION_MAX_DELAY));
-
-        if(response == NAK) return NAK;
-
-        return FAIL;
+        if(response == ACK || response == NAK || response == FAIL) return response;
+        else return BUSY;
       };
 
 
       /* Send a packet passing its info as parameters: */
 
-      uint16_t send_packet(uint8_t id, char *string, uint8_t length, uint8_t header = 0) {
+      uint16_t send_packet(uint8_t id, char *string, uint8_t length, uint8_t header = NOT_ASSIGNED) {
         if(!(length = compose_packet(id, bus_id, (char *)data, string, length, header)))
           return FAIL;
         return send_packet((char *)data, length);
       };
 
-      uint16_t send_packet(uint8_t id, const uint8_t *b_id, char *string, uint8_t length, uint8_t header = 0) {
+
+      uint16_t send_packet(
+        uint8_t id,
+        const uint8_t *b_id,
+        char *string,
+        uint8_t length,
+        uint8_t header = NOT_ASSIGNED
+      ) {
         if(!(length = compose_packet(id, b_id, (char *)data, string, length, header)))
           return FAIL;
         return send_packet((char *)data, length);
       };
 
+
       /* Send a packet without using the send list. It is called send_packet_blocking
-         because the code execution is stuck inside this function until the packet is
-         delivered or the timeout is reached: */
+         because it tries to transmit a packet multiple times within an internal cycle
+         until the packet is delivered, or timing limit is reached. */
 
       uint16_t send_packet_blocking(
         uint8_t id,
         const uint8_t *b_id,
         const char *string,
         uint8_t length,
-        uint32_t timeout,
-        uint8_t header = 0
+        uint32_t timing = MAX_BACK_OFF, // Default value is a standard cubic back off
+        uint8_t header = NOT_ASSIGNED
       ) {
         if(!(length = compose_packet(id, bus_id, (char *)data, string, length, header))) return FAIL;
-        uint16_t status = FAIL;
+        uint16_t state = FAIL;
         uint32_t attempts = 0;
         uint32_t time = micros();
-        while(status != ACK && (uint32_t)(micros() - time) < timeout) {
-          status = send_packet((char*)data, length);
-          if(status == ACK) return status;
+        while(state != ACK && attempts <= MAX_ATTEMPTS && (uint32_t)(micros() - time) < timing) {
+          state = send_packet((char*)data, length);
+          if(state == ACK) return state;
           attempts++;
-          delayMicroseconds(attempts *attempts *attempts);
+          if(state != FAIL) delayMicroseconds(random(0, COLLISION_MAX_DELAY));
+          while((uint32_t)(micros() - time) < (attempts * attempts * attempts));
         }
-        return status;
+        return state;
       };
 
-      uint16_t send_packet_blocking(uint8_t id, const char *string, uint8_t length, uint32_t timeout, uint8_t header = 0) {
-        return send_packet_blocking(id, bus_id, string, length, timeout, header);
+      uint16_t send_packet_blocking(
+        uint8_t id,
+        const char *string,
+        uint8_t length,
+        uint32_t timing = MAX_BACK_OFF,  // Default value is a standard cubic back off
+        uint8_t header = NOT_ASSIGNED
+      ) {
+        return send_packet_blocking(id, bus_id, string, length, timing, header);
+      };
+
+
+      /* In router mode, the receiver function can ack for selected receiver
+         device ids for which the route is known */
+
+      void send_acknowledge() {
+        strategy.send_response(ACK);
       };
 
 
@@ -531,13 +560,9 @@ limitations under the License. */
 
       void set_default() {
         _mode = HALF_DUPLEX;
-
-        if(!bus_id_equality(bus_id, localhost))
-          _shared = true;
-
+        if(!bus_id_equality(bus_id, localhost)) _shared = true;
         set_error(dummy_error_handler);
         set_receiver(dummy_receiver_handler);
-
         for(int i = 0; i < MAX_PACKETS; i++) {
           packets[i].state = 0;
           packets[i].timing = 0;
@@ -606,7 +631,6 @@ limitations under the License. */
         void receiver_function(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {
           for(int i = 0; i < length; i++)
             Serial.print((char)payload[i]);
-
           Serial.print(" ");
           Serial.println(length);
         };
@@ -627,29 +651,20 @@ limitations under the License. */
       };
 
 
-      /* In router mode, the receiver function can ack for selected receiver
-         device ids for which the route is known */
-
-      void send_acknowledge() {
-        strategy.send_response(ACK);
-      };
-
-
       /* Update the state of the send list:
          Check if there are packets to be sent or to be erased if correctly delivered.
          Returns the actual number of packets to be sent. */
 
       uint8_t update() {
         uint8_t packets_count = 0;
+        uint32_t back_off;
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
-
           packets_count++;
-
-          if(
-            (uint32_t)(micros() - packets[i].registration) >
-            packets[i].timing + (uint32_t)packets[i].attempts * (uint32_t)packets[i].attempts * (uint32_t)packets[i].attempts
-          ) packets[i].state = send_packet(packets[i].content, packets[i].length);
+          back_off = packets[i].attempts;
+          back_off = back_off * back_off * back_off;
+          if((uint32_t)(micros() - packets[i].registration) > packets[i].timing + back_off)
+            packets[i].state = send_packet(packets[i].content, packets[i].length);
           else continue;
 
           if(packets[i].state == ACK) {
@@ -664,6 +679,9 @@ limitations under the License. */
               packets[i].state = TO_BE_SENT;
             } continue;
           }
+
+          if(packets[i].state != FAIL)
+            delayMicroseconds(random(0, COLLISION_MAX_DELAY));
 
           packets[i].attempts++;
           if(packets[i].attempts > MAX_ATTEMPTS) {
@@ -685,18 +703,14 @@ limitations under the License. */
 
       uint8_t data[PACKET_MAX_LENGTH];
       PJON_Packet packets[MAX_PACKETS];
-
       /* A bus id is an array of 4 bytes containing a unique set.
           The default setting is to run a local bus (0.0.0.0), in this
           particular case the obvious bus id is omitted from the packet
           content to reduce overhead. */
-
       const uint8_t localhost[4] = {0, 0, 0, 0};
       uint8_t bus_id[4] = {0, 0, 0, 0};
-
       /* Last received packet Metainfo */
       PacketInfo last_packet_info;
-
     private:
       boolean   _acknowledge = true;
       boolean   _auto_delete = true;

@@ -9,7 +9,7 @@
 PJON  KEYWORD1
 SoftwareBitBang	KEYWORD1
 OverSampling	KEYWORD1
-ThroughHardwareSerial KEYWORD1
+ThroughSerial KEYWORD1
 PJON_Packet  KEYWORD1
 PacketInfo   KEYWORD1
 
@@ -29,6 +29,7 @@ remove_all KEYWORD2
 send KEYWORD2
 send_repeatedly KEYWORD2
 send_packet KEYWORD2
+send_packet_blocking KEYWORD2
 set_acknowledge KEYWORD2
 set_communication_mode KEYWORD2
 set_error KEYWORD2

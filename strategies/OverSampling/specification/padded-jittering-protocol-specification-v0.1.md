@@ -10,7 +10,7 @@ Compliant implementation versions: PJON 1.0-5.0
 */
 ```
 ###The Padded jittering data link layer
-The first experimental specification of the Padded jittering data link layer has been drafted to proposa a new way to transmit data with cheap and low performance microcontrollers without the necessity of hardware interrupts for its working procedure. Extended tests proved its effectiveness on different media like electricity, radio frequency and light.
+The first experimental specification of the Padded jittering data link layer has been drafted to propose a new way to transmit data with cheap and low performance microcontrollers without the necessity of hardware interrupts for its working procedure. Extended tests proved its effectiveness on different media like electricity, radio frequency and light.
 
 ###Basic concepts
 * Use a pattern of predefined initial padding bits to identify a byte transmission
@@ -29,4 +29,14 @@ Every byte is prepended with 2 synchronization padding bits and transmission occ
    |
  ACCEPTANCE
 ```
-This adds a certain overhead to information but reduces the need of precise time tuning because synchronization is renewed every byte. All the first padding bit duration minus `ACCEPTANCE` is the synchronization window the receiver has for every incoming byte. If the length of the first padding bit is less than `ACCEPTANCE` the received signal is considered interference.
+The addition of the padding bits a certain overhead to information but reduces the need of precise time tuning because synchronization is renewed every byte. All the first padding bit duration minus `ACCEPTANCE` is the synchronization window the receiver has for every incoming byte. If the length of the first padding bit is less than `ACCEPTANCE` the received signal is considered interference.
+
+```cpp  
+ ________________ _________________ ________________ ________________ __________________
+|Sync | Byte     |Sync | Byte      |Sync | Byte     |Sync | Byte     |Sync | Byte       |
+|___  |     __   |___  |      _   _|___  |      _   |___  |  _       |___  |  _    _    |
+|   | |    |  |  |   | |     | | | |   | |     | |  |   | | | |      |   | | | |  | |   |
+| 1 |0|0000|11|00| 1 |0|00000|1|0|1| 1 |0|00000|1|00| 1 |0|0|1|000000| 1 |0|0|1|00|1|000|
+|___|_|____|__|__|___|_|_____|_|_|_|___|_|_____|_|__|___|_|_|_|______|___|_|_|_|__|_|___|
+```
+In a scenario where a stream of byte is coming, following this strategy a low performance or clock inaccurate microcontroller can be correctly synchronized back with the transmitter every byte and easily detect an interference or the end of transmission.

@@ -1,9 +1,11 @@
-[v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md) - [v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md) - [v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md)
+- PJON Protocol specification:
+[v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md) - [v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md) - **[v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md)**
+- Dynamic addressing specification: [v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md)
 
 ```cpp
 /*
 Milan, Italy - 04/09/2016
-The PJON protocol layer specification is an invention and intellectual property
+The PJON protocol specification is an invention and intellectual property
 of Giovanni Blu Mitolo - Copyright 2010-2016 All rights reserved
 
 Related work: https://github.com/gioblu/PJON/
@@ -14,11 +16,11 @@ New feature: Header driven dynamical configuration proposed and implemented by F
 ```
 
 ###PJON Protocol specification v0.3
-A third draft of the PJON protocol layer has been released with the addition of a 1 byte header able to contain the configuration for the packet's communication procedure and its meta-data. In versions 0.1 and 0.2, the PJON communication procedure configuration was static and the header not present, for this reason two differently configured devices, could not establish nominal communication, without configuration pairing. It is now possible for the packet's receiver to read the header, react as transmitter requested and parse the packet and its info correctly.
+A third draft of the PJON protocol has been released with the addition of a 1 byte header designed to contain the configuration for the packet's communication procedure and its meta-data. In versions 0.1 and 0.2, the PJON communication procedure configuration was static and the header not present, for this reason two differently configured devices, could not establish nominal communication, without configuration pairing. It is now possible for the packet's receiver to read the header, react as transmitter requested and parse the packet and its info correctly.
 
 
 ###Network protocol stack model
-The actual PJON network protocol stack model lacks segmentation and routing procedures, dedicated to higher level layers to be added during development.
+The actual PJON network protocol stack model lacks **segmentation** and **routing** procedures, dedicated to higher level layers to be added during development.
 ```cpp  
  ___________________________________________
 | PJON Protocol layer                       |
@@ -46,7 +48,7 @@ The actual PJON network protocol stack model lacks segmentation and routing proc
 The PJON protocol v0.3 handles internal bus connectivity and unique addressing for 254 devices, through bus communication with unique bus addressing for 4.294.967.295 buses, supporting up to 1.090.921.692.930 devices.
 
 ###Bus
-A PJON bus is made by a collection of up to 255 devices transmitting and receiving on the same medium. Communication between devices occurs through packets and it is based on democracy: every device has the right to transmit on the common medium for up to `(1000 / devices number) milliseconds / second`.
+A PJON bus is made by a group of up to 255 devices transmitting and receiving on the same medium. Communication between devices occurs through packets and it is based on democracy: every device has the right to transmit on the common medium for up to `(1000 / devices number) milliseconds / second`.
 ```cpp  
     _______     _______     _______     _______     _______
    |       |   |       |   |       |   |       |   |       |  
@@ -60,16 +62,16 @@ A PJON bus is made by a collection of up to 255 devices transmitting and receivi
 ```
 
 ###Packet transmission
-The concept of packet enables to send a communication payload to every connected device with correct reception certainty. A packet contains the recipient id, its length, its header, its content and the CRC. In this example is shown a packet transmission in a local bus to device id 12 containing the string @ (decimal 64):
+A packet transmission is the exchange of a string to one of the devices connected to the bus with optional correct reception certainty. A packet contains the recipient id, its length, its header, its content and the CRC. In this example is shown a packet transmission in a local bus to device id 12 containing the string @ (decimal 64):
 ```cpp  
 
- RECIPIENT ID 12  LENGTH 5          HEADER 1        CONTENT 64       CRC 72
- ________________ _________________ ________________ ________________ __________________
-|Sync | Byte     |Sync | Byte      |Sync | Byte     |Sync | Byte     |Sync | Byte       |
-|___  |     __   |___  |      _   _|___  |      _   |___  |  _       |___  |  _    _    |
-|   | |    |  |  |   | |     | | | |   | |     | |  |   | | | |      |   | | | |  | |   |
-| 1 |0|0000|11|00| 1 |0|00000|1|0|1| 1 |0|00000|1|00| 1 |0|0|1|000000| 1 |0|0|1|00|1|000|
-|___|_|____|__|__|___|_|_____|_|_|_|___|_|_____|_|__|___|_|_|_|______|___|_|_|_|__|_|___|
+ ID 12       LENGTH 5     HEADER 1    CONTENT 64  CRC 72
+ __________  ___________  __________  __________  ____________
+| Byte     || Byte      || Byte     || Byte     || Byte       |
+|     __   ||      _   _||      _   ||  _       ||  _    _    |
+|    |  |  ||     | | | ||     | |  || | |      || | |  | |   |
+|0000|11|00||00000|1|0|1||00000|1|00||0|1|000000||0|1|00|1|000|
+|____|__|__||_____|_|_|_||_____|_|__||_|_|______||_|_|__|_|___|
 ```
 A default local packet transmission is a bidirectional communication between two devices that can be divided in 3 different phases: **channel analysis**, **transmission** and **response**. The packet transmission procedure is regulated by its header.
 ```cpp  

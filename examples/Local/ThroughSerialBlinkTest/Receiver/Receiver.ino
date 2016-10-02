@@ -1,7 +1,7 @@
 #include <PJON.h>
 
 // <Strategy name> bus(selected device id)
-PJON<ThroughHardwareSerial> bus(44);
+PJON<ThroughSerial> bus(44);
 
 void setup() {
   pinModeFast(13, OUTPUT);

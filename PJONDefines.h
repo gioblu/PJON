@@ -1,7 +1,7 @@
 
  /*-O//\             __     __
    |-gfo\           |__| | |  | |\ |
-   |!y°o:\          |  __| |__| | \| v5.0 beta
+   |!y°o:\          |  __| |__| | \| v5.1
    |y"s§+`\         multi-master, multi-media communications bus system framework
   /so+:-..`\        Copyright 2010-2016 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
@@ -27,7 +27,7 @@ Credits to contributors:
 
 Bug reports:
 - Zbigniew Zasieczny (header reference inconsistency report)
-- DanRoad reddit user (can_start ThroughHardwareSerial bugfix)
+- DanRoad reddit user (can_start ThroughSerial bugfix)
 - Remo Kallio (Packet index 0 bugfix)
 - Emanuele Iannone (Forcing SIMPLEX in OverSamplingSimplex)
 - Christian Pointner (Fixed compiler warnings)
@@ -40,7 +40,7 @@ PJON Standard compliant tools:
 - https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande
 - https://github.com/Girgitt/PJON-python PJON running on Python by Zbigniew Zasieczny
 
-PJON is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo,
+PJON is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
 with the support ot the internet community if you want to see the PJON project growing
 with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
 __________________________________________________________________________________________
@@ -77,6 +77,7 @@ limitations under the License. */
   #ifndef BROADCAST
     #define BROADCAST 0
   #endif
+
   #ifndef NOT_ASSIGNED
     #define NOT_ASSIGNED 255
   #endif
@@ -92,18 +93,9 @@ limitations under the License. */
   /* HEADER CONFIGURATION:
   Thanks to the header byte the transmitter is able to instruct
   the receiver to handle communication as requested. */
-
-  /* Packet header bits */
-  #define MODE_BIT        1 // 1 - Shared | 0 - Local
-  #define SENDER_INFO_BIT 2 // 1 - Sender device id + Sender bus id if shared | 0 - No info inclusion
-  #define ACK_REQUEST_BIT 4 // 1 - Request synchronous acknowledge | 0 - Do not request acknowledge
-
-  /* [0, 1, 1]: Local bus  | Sender info included    | Acknowledge requested - DEFAULT
-     [0, 0, 1]: Local bus  | No sender info included | Acknowledge requested
-     [0, 0, 0]: Local bus  | No sender info included | No acknowledge
-     [1, 0, 0]: Shared bus | No sender info included | No acknowledge
-     [1, 1, 0]: Shared bus | Sender info included    | No acknowledge
-     [1, 1, 1]: Shared bus | Sender info included    | Acknowledge requested  */
+  #define MODE_BIT        B00000001 // 1 - Shared | 0 - Local
+  #define SENDER_INFO_BIT B00000010 // 1 - Sender device id + Sender bus id if shared | 0 - No info inclusion
+  #define ACK_REQUEST_BIT B00000100 // 1 - Request synchronous acknowledge | 0 - Do not request acknowledge
 
   /* Errors */
   #define CONNECTION_LOST     101
@@ -115,6 +107,11 @@ limitations under the License. */
   Max attempts before throwing CONNECTON_LOST error */
   #ifndef MAX_ATTEMPTS
     #define MAX_ATTEMPTS      125
+  #endif
+
+  /* Max time delayed by backoff in microseconds  */
+  #ifndef MAX_BACK_OFF
+    #define MAX_BACK_OFF (uint32_t)MAX_ATTEMPTS * (uint32_t)MAX_ATTEMPTS * (uint32_t)MAX_ATTEMPTS
   #endif
 
   /* Packet buffer length, if full PACKETS_BUFFER_FULL error is thrown.

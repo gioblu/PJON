@@ -1,5 +1,5 @@
 
-/* OverSampling 1 or 2 wires interrupts-less digital communication transport layer
+/* OverSampling 1 or 2 wires interrupts-less digital communication data link layer
    used as a Strategy by the PJON framework (included in version v3.0)
    Compliant with the Padded jittering data link layer specification v0.1   ____________________________________________________________________________
 
@@ -55,44 +55,6 @@ class OverSampling {
       }
       pinModeFast(_output_pin, OUTPUT);
       return true;
-    }
-
-
-    /* Every byte is prepended with 2 synchronization padding bits. The first
-       is a longer than standard logic 1 followed by a standard logic 0.
-       __________ ___________________________
-      | SyncPad  | Byte                      |
-      |______    |___       ___     _____    |
-      | |    |   |   |     |   |   |     |   |
-      | | 1  | 0 | 1 | 0 0 | 1 | 0 | 1 1 | 0 |
-      |_|____|___|___|_____|___|___|_____|___|
-        |
-       ACCEPTANCE
-
-    The reception tecnique is based on finding a logic 1 as long as the
-    first padding bit within a certain threshold, synchronizing to its
-    falling edge and checking if it is followed by a logic 0. If this
-    pattern is recognised, reception starts, if not, interference,
-    synchronization loss or simply absence of communication is
-    detected at byte level. */
-
-    void send_byte(uint8_t b) {
-      digitalWriteFast(_output_pin, HIGH);
-      delayMicroseconds(_OS_BIT_SPACER);
-      digitalWriteFast(_output_pin, LOW);
-      delayMicroseconds(_OS_BIT_WIDTH);
-      for(uint8_t mask = 0x01; mask; mask <<= 1) {
-        digitalWriteFast(_output_pin, b & mask);
-        delayMicroseconds(_OS_BIT_WIDTH);
-      }
-    };
-
-
-    /* Send a string: */
-
-    void send_string(uint8_t *string, uint8_t length) {
-      for(uint8_t b = 0; b < length; b++)
-        send_byte(string[b]);
     };
 
 
@@ -108,7 +70,7 @@ class OverSampling {
         byte_value += (value > 0.5) << i;
       }
       return byte_value;
-    }
+    };
 
 
     /* Check if a byte is coming from the pin:
@@ -149,7 +111,7 @@ class OverSampling {
         if(value < 0.5) return read_byte();
       }
       return FAIL;
-    }
+    };
 
 
     /* Receive byte response */
@@ -165,7 +127,37 @@ class OverSampling {
       while(response == FAIL && (uint32_t)((micros() - _OS_BIT_SPACER) - _OS_BIT_WIDTH) <= time)
         response = receive_byte();
       return response;
-    }
+    };
+
+
+    /* Every byte is prepended with 2 synchronization padding bits. The first
+       is a longer than standard logic 1 followed by a standard logic 0.
+       __________ ___________________________
+      | SyncPad  | Byte                      |
+      |______    |___       ___     _____    |
+      | |    |   |   |     |   |   |     |   |
+      | | 1  | 0 | 1 | 0 0 | 1 | 0 | 1 1 | 0 |
+      |_|____|___|___|_____|___|___|_____|___|
+        |
+       ACCEPTANCE
+
+    The reception tecnique is based on finding a logic 1 as long as the
+    first padding bit within a certain threshold, synchronizing to its
+    falling edge and checking if it is followed by a logic 0. If this
+    pattern is recognised, reception starts, if not, interference,
+    synchronization loss or simply absence of communication is
+    detected at byte level. */
+
+    void send_byte(uint8_t b) {
+      digitalWriteFast(_output_pin, HIGH);
+      delayMicroseconds(_OS_BIT_SPACER);
+      digitalWriteFast(_output_pin, LOW);
+      delayMicroseconds(_OS_BIT_WIDTH);
+      for(uint8_t mask = 0x01; mask; mask <<= 1) {
+        digitalWriteFast(_output_pin, b & mask);
+        delayMicroseconds(_OS_BIT_WIDTH);
+      }
+    };
 
 
     /* Send byte response to package transmitter */
@@ -174,7 +166,15 @@ class OverSampling {
       pinModeFast(_output_pin, OUTPUT);
       send_byte(response);
       digitalWriteFast(_output_pin, LOW);
-    }
+    };
+
+
+    /* Send a string: */
+
+    void send_string(uint8_t *string, uint8_t length) {
+      for(uint8_t b = 0; b < length; b++)
+        send_byte(string[b]);
+    };
 
 
     /* Set the communicaton pin: */

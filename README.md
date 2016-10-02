@@ -8,8 +8,9 @@ PJON (Padded Jittering Operative Network) is an Arduino compatible, multi-master
 [![Join the chat at https://gitter.im/gioblu/PJON](https://badges.gitter.im/gioblu/PJON.svg)](https://gitter.im/gioblu/PJON?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Donate](http://img.shields.io/paypal/donate.png?color=brightgreen)](https://www.paypal.me/PJON)
 
 ####Features
-- Multi-media compatible data link layer or [Strategy](https://github.com/gioblu/PJON/wiki/Strategies)
 - Configurable 2 level addressing (device and bus id) for scalable applications
+- Many supported media like 1 or 2 wires, Serial, RS485, many radio modules, Ethernet and UDP  
+- Master-slave or multi-master easy to use [dynamic addressing](https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md)
 - Acknowledgement of correct packet sending
 - Collision avoidance to enable multi-master capability
 - CRC8 table-less cyclic redundancy check implementation
@@ -17,9 +18,10 @@ PJON (Padded Jittering Operative Network) is an Arduino compatible, multi-master
 - Error handling
 
 ####PJON Protocol layer specification
-- [PJON protocol layer v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md)
-- [PJON protocol layer v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md)
-- [PJON protocol layer v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md)
+- [PJON protocol specification v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md)
+- [PJON protocol specification v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md)
+- [PJON protocol specification v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md)
+- [PJON dynamic addressing specification v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md)
 
 ####Padded jittering data link layer specification
 - [Padded jittering data link layer v0.1](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/padded-jittering-protocol-specification-v0.1.md)

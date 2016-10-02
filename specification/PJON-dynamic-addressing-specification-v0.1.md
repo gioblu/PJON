@@ -37,7 +37,7 @@ ______|_____________|_____________|_____________|___________| ID   254 |
 * Master has a caducous internal device archive
 * Broadcasts `ID_LIST` to get `ID_REFRESH` requests from already approved devices
 * Handles `ID_REQUEST` requests from devices asking for device id assignment
-* Handles `ID_NEGATE` request for colliding or inconsistent devices
+* Sends `ID_NEGATE` request to colliding or inconsistent devices
 * Handles `ID_NEGATE` requests from slaves who are leaving the bus  
 
 ####Slave features
@@ -46,7 +46,7 @@ ______|_____________|_____________|_____________|___________| ID   254 |
 * Sends `ID_REFRESH` request to master if required by master `ID_LIST` broadcast
 * Sends `ID_REQUEST` to master if device id assignment is necessary
 * Regenerates rid and restarts the process if `ID_NEGATE` is received from master
-* Sends `ID_NEGATE` before leaving shut down / leaving the bus
+* Sends `ID_NEGATE` before shut down / leaving the bus
 * Fall back to multi-master procedure if no master is present
 
 ####Procedure

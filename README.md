@@ -9,7 +9,7 @@ PJON (Padded Jittering Operative Network) is an Arduino compatible, multi-master
 
 ####Features
 - Configurable 2 level addressing (device and bus id) for scalable applications
-- Many supported media like 1 or 2 wires, Serial, RS485, many radio modules, Ethernet and UDP  
+- Many supported media like 1 or 2 wires, Serial, RS485, many radio modules and Ethernet with TCP and UDP  
 - Master-slave or multi-master easy to use [dynamic addressing](https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md)
 - Acknowledgement of correct packet sending
 - Collision avoidance to enable multi-master capability

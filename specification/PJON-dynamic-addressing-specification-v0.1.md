@@ -65,7 +65,7 @@ the collided device still not approved to regenerate a device rid:
 >| NOT_ASSIGNED | LENGTH | 00010100 | ID_NEGATE | RID 1 | RID 2 | RID 3 | RID 4 | CRC |> <| ACK |
  |______________|________|__________|___________|_______|_______|_______|_______|_____|   |_____|
 ```  
-Master broadcasts new device id response:
+Master broadcasts response containing the new id reserved for the device rid who requested:
 ```cpp  
   ___________ ________ __________ ____________ _______ _______ _______ _______ ____ _____
  |           |        |  HEADER  |            |       |       |       |       |    |     |
@@ -80,7 +80,7 @@ Slave device id acquisition confirmation:
  |___________|________|__________|____________|_______|_______|_______|_______|____|_____|   |_____|
 ```
 If master detects reference inconsistencies at this stage, sends a `ID_NEGATE` request to the slave id
-to force the device requesting ID_CONFIRM to regenerate a rid and try again:
+to force the device requesting `ID_CONFIRM` to regenerate a rid and try again:
 ```cpp  
   ____ ________ __________ ___________ _______ _______ _______ _______ _____     _____
  |    |        |  HEADER  |           |       |       |       |       |     |   |     |
@@ -105,7 +105,7 @@ Slave device `ID_REFRESH` request:
  |___________|________|__________|____________|_______|_______|_______|_______|____|_____|   |_____|
 ```
 If the id requested by the slave is free in the reference, id is approved by the master and the exchange ends.
-If the id is found already in use, the master sends an ID_NEGATE request forcing the slave to
+If the id is found already in use, the master sends an `ID_NEGATE` request forcing the slave to
 acquire a new id through an `ID_REQUEST`:
 
 Master sends `ID_NEGATE` request to the slave:

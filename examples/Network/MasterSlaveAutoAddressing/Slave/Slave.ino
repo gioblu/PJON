@@ -1,4 +1,4 @@
-#include <PJON.h>
+#include <PJONSlave.h>
 
 // Bus id definition
 uint8_t bus_id[] = {0, 0, 0, 1};

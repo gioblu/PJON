@@ -326,5 +326,5 @@ limitations under the License. */
   /* Shared callback function definition: */
   template<typename Strategy>
   PJONMaster<Strategy> * PJONMaster<Strategy>::_current_pjon_master = NULL;
-  
+
 #endif

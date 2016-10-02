@@ -1,9 +1,10 @@
-[v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md) - [v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md) - [v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md)
+- PJON Protocol specification: **[v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md)** - [v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md) - [v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md)
+- Dynamic addressing specification: [v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md)
 
 ```cpp
 /*
 Milan, Italy - 10/04/2010
-The PJON protocol layer specification is an invention and intellectual property
+The PJON protocol specification is an invention and intellectual property
 of Giovanni Blu Mitolo - Copyright 2010-2016 All rights reserved
 
 Related work: https://github.com/gioblu/PJON
@@ -12,7 +13,7 @@ Compliant implementation versions: PJON 1.0-3.0-beta
 ```
 
 ###PJON Protocol specification v0.1
-The first experimental specification of the PJON protocol layer has been drafted with the goal of offering a new open-source, multi-master communications bus system Standard. Its more common applications are in the field of internet of things and embedded systems. Extended tests proved its effectiveness on different media like electricity, radio frequency and light.
+The first experimental specification of the PJON protocol has been drafted with the goal of offering a new open-source, multi-master communications bus system Standard. Its more common applications are in the field of internet of things and embedded systems. Extended tests proved its effectiveness on different media like electricity, radio frequency and light.
 
 ###Basic concepts
 * Every device has an unique 1 byte ID (0-255)

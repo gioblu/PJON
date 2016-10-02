@@ -18,7 +18,7 @@ Master Thesis, IT University of Copenhagen, Denmark, September 2016
 ```
 
 ###PJON dynamic addressing specification v0.1
-With this draft it is defined the dynamic addressing procedure used by a device in multi-master configuration or the one imposed and regulated by the master in a master-slave configuration.
+This draft defines the dynamic addressing procedure used by a device in multi-master configuration or the one imposed and regulated by the master in a master-slave configuration.
 
 ###Master-slave dynamic addressing
 ```cpp  

@@ -11,7 +11,23 @@
        \:/+-.-°-:+oss\
         | |       \oy\\
         > <
-  _____-| |-___________________________________________________________________
+ ______-| |-___________________________________________________________________
+
+PJON is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
+with the support ot the internet community if you want to see the PJON project growing
+with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
+
+PJON Protocol specification:
+- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md
+- v0.2 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md
+- v0.3 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md
+
+PJON Dynamic addressing specification:
+- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md
+
+PJON Standard compliant tools:
+- https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande
+- https://github.com/Girgitt/PJON-python PJON running on Python by Zbigniew Zasieczny
 
 Credits to contributors:
 - Fred Larsen (Systems engineering, header driven communication, debugging)
@@ -35,15 +51,7 @@ Bug reports:
 - Fabian Gärtner (receive function and big packets bugfix)
 - Mauro Mombelli (Code cleanup)
 - Shachar Limor (Blink example pinMode bugfix)
-
-PJON Standard compliant tools:
-- https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande
-- https://github.com/Girgitt/PJON-python PJON running on Python by Zbigniew Zasieczny
-
-PJON is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
-with the support ot the internet community if you want to see the PJON project growing
-with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
-__________________________________________________________________________________________
+ ______________________________________________________________________________
 
 Copyright 2012-2016 by Giovanni Blu Mitolo gioscarab@gmail.com
 
@@ -106,11 +114,58 @@ limitations under the License. */
       };
 
 
-      /* Initial random delay to avoid startup collision */
+      /* Acquire a free id */
+
+      void acquire_id() {
+        generate_rid();
+        if(!acquire_id_master_slave())
+          acquire_id_multi_master();
+      };
+
+      void acquire_id_multi_master(uint8_t limit = 0) {
+        if(limit >= MAX_ACQUIRE_ID_COLLISIONS)
+          return _error(ID_ACQUISITION_FAIL, FAIL);
+
+        delay(random(ACQUIRE_ID_DELAY * 0.25, ACQUIRE_ID_DELAY));
+        uint32_t time = micros();
+        char msg = ID_ACQUIRE;
+        char head = get_header() | ADDRESS_BIT | ACK_REQUEST_BIT;
+        _device_id = NOT_ASSIGNED;
+
+        for(uint8_t id = generate_random_byte(); (uint32_t)(micros() - time) < ID_SCAN_TIME; id++)
+          if(id == BROADCAST || id == NOT_ASSIGNED || id == MASTER_ID) continue;
+          else if(send_packet_blocking(id, bus_id, &msg, 1, head) == FAIL) {
+             _device_id = id;
+            break;
+          }
+
+        receive((random(ACQUIRE_ID_DELAY * 0.25, ACQUIRE_ID_DELAY)) * 1000);
+        if(send_packet_blocking(_device_id, bus_id, &msg, 1, head) == ACK)
+          acquire_id_multi_master(limit++);
+      };
+
+      bool acquire_id_master_slave() {
+        char response[5];
+        response[0] = ID_REQUEST;
+        response[1] = (uint32_t)(_rid) >> 24;
+        response[2] = (uint32_t)(_rid) >> 16;
+        response[3] = (uint32_t)(_rid) >>  8;
+        response[4] = (uint32_t)(_rid);
+
+        if(send_packet_blocking(MASTER_ID, response, 5, get_header() | ADDRESS_BIT | ACK_REQUEST_BIT) == ACK)
+          return true;
+
+        return false;
+      };
+
+
+      /* Begin function to be called in setup: */
 
       void begin() {
         randomSeed(analogRead(A0));
-        delay(random(0, INITIAL_MAX_DELAY));
+        delay(random(0, INITIAL_DELAY));
+        if(_device_id == NOT_ASSIGNED)
+          acquire_id();
       };
 
 
@@ -156,6 +211,24 @@ limitations under the License. */
       };
 
 
+      /* Release device id (Master-slave only): */
+
+      bool discard_device_id() {
+        char request[6] = {ID_NEGATE, _rid >> 24, _rid >> 16, _rid >> 8, _rid, _device_id};
+        if(send_packet_blocking(
+          MASTER_ID,
+          bus_id,
+          request,
+          6,
+          get_header() | ACK_REQUEST_BIT | SENDER_INFO_BIT | ADDRESS_BIT
+        ) == ACK) {
+          _device_id = NOT_ASSIGNED;
+          return true;
+        }
+        return false;
+      };
+
+
       /* Add a packet to the send list ready to be delivered by the next update() call: */
 
       uint16_t dispatch(
@@ -182,28 +255,27 @@ limitations under the License. */
       };
 
 
+      /* Generate a new device rid: */
+      void generate_rid() {
+        _rid = (
+          (uint32_t)((generate_random_byte()) << 24) ^
+          (uint32_t)((generate_random_byte()) << 16) ^
+          (uint32_t)((generate_random_byte()) <<  8) ^
+          (uint32_t)(generate_random_byte())
+        ) ^ (uint32_t)(generate_random_byte());
+      };
+
+      uint8_t generate_random_byte() {
+        return (analogRead(A0) ^ ~(micros()) ^ ~(millis())) % 255;
+      };
+
+
       /* Return the header byte based on current configuration: */
 
       uint8_t get_header() const {
         return (_shared ? MODE_BIT : 0) |
                (_sender_info ? SENDER_INFO_BIT : 0) |
                (_acknowledge ? ACK_REQUEST_BIT : 0);
-      };
-
-
-      /* Fill in a PacketInfo struct by parsing a packet: */
-
-      void get_packet_info(const uint8_t *packet, PacketInfo &packet_info) const {
-        packet_info.receiver_id = packet[0];
-        packet_info.header = packet[2];
-        if((packet_info.header & MODE_BIT) != 0) {
-          copy_bus_id(packet_info.receiver_bus_id, packet + 3);
-          if((packet_info.header & SENDER_INFO_BIT) != 0) {
-            copy_bus_id(packet_info.sender_bus_id, packet + 7);
-            packet_info.sender_id = packet[11];
-          }
-        } else if((packet_info.header & SENDER_INFO_BIT) != 0)
-          packet_info.sender_id = packet[3];
       };
 
 
@@ -221,6 +293,57 @@ limitations under the License. */
       };
 
 
+      /* Get device random id: */
+
+      uint32_t get_rid() {
+        return _rid;
+      };
+
+
+      /* Handle slave side master-slave addressing procedure: */
+
+      bool handle_addressing() {
+        if(last_packet_info.header & ADDRESS_BIT && _device_id != MASTER_ID) {
+          uint8_t overhead = packet_overhead(last_packet_info.header);
+          uint8_t rid[4] = {_rid >> 24, _rid >> 16, _rid >> 8, _rid};
+          char response[6];
+          response[1] = rid[0];
+          response[2] = rid[1];
+          response[3] = rid[2];
+          response[4] = rid[3];
+
+          if(data[overhead - 1] == ID_REQUEST)
+            if(bus_id_equality(data + overhead, rid)) {
+              response[0] = ID_CONFIRM;
+              response[5] = data[overhead + 4];
+              set_id(response[5]);
+              if(send_packet_blocking(
+                MASTER_ID, bus_id, response, 6, get_header() | ADDRESS_BIT | ACK_REQUEST_BIT
+              ) != ACK) {
+                _device_id = NOT_ASSIGNED;
+                _error(ID_ACQUISITION_FAIL, ID_CONFIRM);
+              }
+            }
+
+          if(data[overhead - 1] == ID_NEGATE)
+            if(bus_id_equality(data + overhead, rid) && _device_id == data[0])
+              acquire_id();
+
+          if(data[overhead - 1] == ID_LIST)
+            if(_device_id != NOT_ASSIGNED)
+              if((uint32_t)(micros() - _last_request_time) > (ADDRESSING_TIMEOUT * 1.125)) {
+                _last_request_time = micros();
+                response[0] = ID_REFRESH;
+                response[5] = _device_id;
+                send(MASTER_ID, response, 6, get_header() | ADDRESS_BIT | ACK_REQUEST_BIT);
+              }
+
+          return true;
+        }
+        return false;
+      };
+
+
       /* Calculate the packet's overhead: */
 
       uint8_t packet_overhead(uint8_t header = NOT_ASSIGNED) const {
@@ -232,12 +355,25 @@ limitations under the License. */
       };
 
 
-      /* Try to receive a packet: */
+      /* Fill in a PacketInfo struct by parsing a packet: */
+
+      void parse(const uint8_t *packet, PacketInfo &packet_info) const {
+        packet_info.receiver_id = packet[0];
+        packet_info.header = packet[2];
+        if((packet_info.header & MODE_BIT) != 0) {
+          copy_bus_id(packet_info.receiver_bus_id, packet + 3);
+          if((packet_info.header & SENDER_INFO_BIT) != 0) {
+            copy_bus_id(packet_info.sender_bus_id, packet + 7);
+            packet_info.sender_id = packet[11];
+          }
+        } else if((packet_info.header & SENDER_INFO_BIT) != 0)
+          packet_info.sender_id = packet[3];
+      };
+
 
       uint16_t receive() {
         uint16_t state;
         uint8_t CRC = 0;
-        bool shared = false;
         data[1] = PACKET_MAX_LENGTH;
         for(uint8_t i = 0; i < data[1]; i++) {
           data[i] = state = strategy.receive_byte();
@@ -248,31 +384,27 @@ limitations under the License. */
 
           if(i == 1 && (data[i] < 4 || data[i] > PACKET_MAX_LENGTH)) return FAIL;
 
-          if(i == 2) { // Packet header
-            shared = data[2] & MODE_BIT;
-            // Keep private and shared buses apart
-            if((shared != _shared) && !_router) return BUSY;
-          }
+          if(i == 2 && ((data[2] & MODE_BIT) != _shared) && !_router) return BUSY;
 
           /* If an id is assigned to this bus it means that is potentially
              sharing its medium, or the device could be connected in parallel
              with other buses. Bus id equality is checked to avoid collision
              i.e. id 1 bus 1, should not receive a message for id 1 bus 2. */
 
-          if(_shared && shared && !_router && i > 2 && i < 7)
+          if(_shared && (data[2] & MODE_BIT) && !_router && i > 2 && i < 7)
             if(bus_id[i - 3] != data[i]) return BUSY;
 
           CRC = roll_crc_8(data[i], CRC);
         }
 
         if(data[2] & ACK_REQUEST_BIT && data[0] != BROADCAST && _mode != SIMPLEX && !_router)
-          if(!_shared || (_shared && shared && bus_id_equality(data + 3, bus_id)))
+          if(!_shared || (_shared && (data[2] & MODE_BIT) && bus_id_equality(data + 3, bus_id)))
             strategy.send_response(CRC ? NAK : ACK);
 
         if(CRC) return NAK;
-
-        get_packet_info(data, last_packet_info);
-        _receiver(data + (packet_overhead(data[2]) - 1), data[1] - packet_overhead(data[2]), last_packet_info);
+        parse(data, last_packet_info);
+        if(!handle_addressing())
+          _receiver(data + (packet_overhead(data[2]) - 1), data[1] - packet_overhead(data[2]), last_packet_info);
         return ACK;
       };
 
@@ -504,19 +636,19 @@ limitations under the License. */
         const uint8_t *b_id,
         const char *string,
         uint8_t length,
-        uint32_t timing = MAX_BACK_OFF, // Default value is a standard cubic back off
         uint8_t header = NOT_ASSIGNED
       ) {
-        if(!(length = compose_packet(id, bus_id, (char *)data, string, length, header))) return FAIL;
+        if(!(length = compose_packet(id, b_id, (char *)data, string, length, header))) return FAIL;
         uint16_t state = FAIL;
         uint32_t attempts = 0;
         uint32_t time = micros();
-        while(state != ACK && attempts <= MAX_ATTEMPTS && (uint32_t)(micros() - time) < timing) {
+        while(state != ACK && attempts <= MAX_ATTEMPTS) {
           state = send_packet((char*)data, length);
           if(state == ACK) return state;
           attempts++;
-          if(state != FAIL) delayMicroseconds(random(0, COLLISION_MAX_DELAY));
+          if(state != FAIL) delayMicroseconds(random(0, COLLISION_DELAY));
           while((uint32_t)(micros() - time) < (attempts * attempts * attempts));
+          time = micros();
         }
         return state;
       };
@@ -525,10 +657,9 @@ limitations under the License. */
         uint8_t id,
         const char *string,
         uint8_t length,
-        uint32_t timing = MAX_BACK_OFF,  // Default value is a standard cubic back off
         uint8_t header = NOT_ASSIGNED
       ) {
-        return send_packet_blocking(id, bus_id, string, length, timing, header);
+        return send_packet_blocking(id, bus_id, string, length, header);
       };
 
 
@@ -681,7 +812,7 @@ limitations under the License. */
           }
 
           if(packets[i].state != FAIL)
-            delayMicroseconds(random(0, COLLISION_MAX_DELAY));
+            delayMicroseconds(random(0, COLLISION_DELAY));
 
           packets[i].attempts++;
           if(packets[i].attempts > MAX_ATTEMPTS) {
@@ -696,7 +827,7 @@ limitations under the License. */
               packets[i].registration = micros();
               packets[i].state = TO_BE_SENT;
             }
-          }
+          } else packets[i].registration = micros();
         }
         return packets_count;
       };
@@ -715,11 +846,13 @@ limitations under the License. */
       boolean   _acknowledge = true;
       boolean   _auto_delete = true;
       uint8_t   _device_id;
-      boolean   _shared = false;
-      boolean   _sender_info = true;
+      error     _error;
+      uint32_t  _last_request_time;
       uint8_t   _mode;
       receiver  _receiver;
+      uint32_t  _rid;
       boolean   _router = false;
-      error     _error;
+      boolean   _sender_info = true;
+      boolean   _shared = false;
   };
 #endif

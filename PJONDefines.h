@@ -11,39 +11,24 @@
        \:/+-.-°-:+oss\
         | |       \oy\\
         > <
-  _____-| |-___________________________________________________________________
-
-Credits to contributors:
-- Fred Larsen (Systems engineering, header driven communication, debugging)
-- Pantovich github user (update returning number of packets to be delivered)
-- Adrian Sławiński (Fix to enable SimpleModbusMasterV2 compatibility)
-- SticilFace github user (Teensy porting)
-- Esben Soeltoft (Arduino Zero porting)
-- Alex Grishin (ESP8266 porting)
-- Andrew Grande (Testing, support, bugfix)
-- Mauro Zancarlin (Systems engineering, testing, bugfix)
-- Michael Teeww (Callback based reception, debugging)
-- PaoloP74 github user (Library conversion to 1.x Arduino IDE)
-
-Bug reports:
-- Zbigniew Zasieczny (header reference inconsistency report)
-- DanRoad reddit user (can_start ThroughSerial bugfix)
-- Remo Kallio (Packet index 0 bugfix)
-- Emanuele Iannone (Forcing SIMPLEX in OverSamplingSimplex)
-- Christian Pointner (Fixed compiler warnings)
-- Andrew Grande (ESP8266 example watchdog error bug fix)
-- Fabian Gärtner (receive function and big packets bugfix)
-- Mauro Mombelli (Code cleanup)
-- Shachar Limor (Blink example pinMode bugfix)
-
-PJON Standard compliant tools:
-- https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande
-- https://github.com/Girgitt/PJON-python PJON running on Python by Zbigniew Zasieczny
+ ______-| |-___________________________________________________________________
 
 PJON is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
 with the support ot the internet community if you want to see the PJON project growing
 with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
-__________________________________________________________________________________________
+
+PJON Protocol specification:
+- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md
+- v0.2 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md
+- v0.3 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md
+
+PJON Dynamic addressing specification:
+- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md
+
+PJON Standard compliant tools:
+- https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande
+- https://github.com/Girgitt/PJON-python PJON running on Python by Zbigniew Zasieczny
+ ______________________________________________________________________________
 
 Copyright 2012-2016 by Giovanni Blu Mitolo gioscarab@gmail.com
 
@@ -59,23 +44,32 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-#ifndef PJONBase_h
-  #define PJONBase_h
-
+#ifndef PJONDefines_h
+  #define PJONDefines_h
   #include "utils/CRC8.h"
+
+  /* Device id of the master */
+  #define MASTER_ID   254
+  #define MAX_DEVICES  25
 
   /* Communication modes */
   #define SIMPLEX     150
   #define HALF_DUPLEX 151
 
   /* Protocol symbols */
-  #define ACK         6
+  #define ACK           6
   #define BUSY        666
-  #define NAK         21
+  #define NAK          21
 
-  /* Reserved addresses */
+  #define ID_ACQUIRE  199
+  #define ID_REQUEST  200
+  #define ID_CONFIRM  201
+  #define ID_NEGATE   203
+  #define ID_LIST     204
+  #define ID_REFRESH  205
+
   #ifndef BROADCAST
-    #define BROADCAST 0
+    #define BROADCAST   0
   #endif
 
   #ifndef NOT_ASSIGNED
@@ -95,18 +89,20 @@ limitations under the License. */
   the receiver to handle communication as requested. */
   #define MODE_BIT        B00000001 // 1 - Shared | 0 - Local
   #define SENDER_INFO_BIT B00000010 // 1 - Sender device id + Sender bus id if shared | 0 - No info inclusion
-  #define ACK_REQUEST_BIT B00000100 // 1 - Request synchronous acknowledge | 0 - Do not request acknowledge
+  #define ACK_REQUEST_BIT B00000100 // 1 - Request acknowledge | 0 - Do not request acknowledge
+  #define ADDRESS_BIT     B00010000 // 1 - Addressing related | 0 - Not addressing related
 
-  /* Errors */
+  /* ERRORS: */
   #define CONNECTION_LOST     101
   #define PACKETS_BUFFER_FULL 102
   #define CONTENT_TOO_LONG    104
+  #define ID_ACQUISITION_FAIL 105
+  #define DEVICES_BUFFER_FULL 254
 
-  /* Constraints:
-
+  /* CONSTRAINTS:
   Max attempts before throwing CONNECTON_LOST error */
   #ifndef MAX_ATTEMPTS
-    #define MAX_ATTEMPTS      125
+    #define MAX_ATTEMPTS       50
   #endif
 
   /* Max time delayed by backoff in microseconds  */
@@ -118,22 +114,33 @@ limitations under the License. */
      The packet buffer is preallocated, so its length strongly affects
      memory consumption */
   #ifndef MAX_PACKETS
-    #define MAX_PACKETS       5
+    #define MAX_PACKETS         5
   #endif
 
   /* Max packet length, higher if necessary.
      The max packet length defines the length of packets pre-allocated buffers
      so it strongly affects memory consumption */
   #ifndef PACKET_MAX_LENGTH
-    #define PACKET_MAX_LENGTH 50
+    #define PACKET_MAX_LENGTH  50
   #endif
 
+  /* TIMING:
+     Maximum number of device id collisions during auto-addressing */
+  #define MAX_ACQUIRE_ID_COLLISIONS      10
+  /* Delay between device id acquisition and self request */
+  #define ACQUIRE_ID_DELAY             1250
   /* Maximum random delay on startup in milliseconds */
-  #define INITIAL_MAX_DELAY   1000
+  #define INITIAL_DELAY                1000
   /* Maximum randon delay on collision */
-  #define COLLISION_MAX_DELAY 48
-  /* Maximum id scan time (5 seconds) */
-  #define MAX_ID_SCAN_TIME    5000000
+  #define COLLISION_DELAY                48
+  /* Maximum id scan time (6 seconds) */
+  #define ID_SCAN_TIME              6000000
+  /* Master free id broadcast response interval (0.1 seconds) */
+  #define ID_REQUEST_INTERVAL        100000
+  /* Master ID_REQUEST and ID_NEGATE timeout */
+  #define ADDRESSING_TIMEOUT        2900000
+  /* Master ID_LIST interval (10 seconds) */
+  #define MASTER_LOOKUP_INTERVAL   10000000
 
   struct PJON_Packet {
     uint8_t  attempts;

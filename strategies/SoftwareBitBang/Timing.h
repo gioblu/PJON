@@ -142,3 +142,47 @@
     #endif
   #endif
 #endif
+
+/* Avoid error if any previous defined -------------------------------------- */
+#if _SWBB_MODE == _SWBB_STANDARD
+  #ifndef SWBB_BIT_WIDTH
+    #define SWBB_BIT_WIDTH 40
+  #endif
+  #ifndef SWBB_BIT_SPACER
+    #define SWBB_BIT_SPACER 112
+  #endif
+  #ifndef SWBB_ACCEPTANCE
+    #define SWBB_ACCEPTANCE 40
+  #endif
+  #ifndef SWBB_READ_DELAY
+    #define SWBB_READ_DELAY 4
+  #endif
+#endif
+#if _SWBB_MODE == _SWBB_FAST
+  #ifndef SWBB_BIT_WIDTH
+    #define SWBB_BIT_WIDTH 28
+  #endif
+  #ifndef SWBB_BIT_SPACER
+    #define SWBB_BIT_SPACER 66
+  #endif
+  #ifndef SWBB_ACCEPTANCE
+    #define SWBB_ACCEPTANCE 28
+  #endif
+  #ifndef SWBB_READ_DELAY
+    #define SWBB_READ_DELAY 4
+  #endif
+#endif
+#if _SWBB_MODE == _SWBB_OVERDRIVE
+  #ifndef SWBB_BIT_WIDTH
+    #define SWBB_BIT_WIDTH 20
+  #endif
+  #ifndef SWBB_BIT_SPACER
+    #define SWBB_BIT_SPACER 56
+  #endif
+  #ifndef SWBB_ACCEPTANCE
+    #define SWBB_ACCEPTANCE 20
+  #endif
+  #ifndef SWBB_READ_DELAY
+    #define SWBB_READ_DELAY 8
+  #endif
+#endif

@@ -8,6 +8,7 @@
 
 PJON  KEYWORD1
 PJONMaster KEYWORD1
+PJONSlave  KEYWORD1
 SoftwareBitBang	KEYWORD1
 OverSampling	KEYWORD1
 ThroughSerial KEYWORD1

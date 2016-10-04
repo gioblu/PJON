@@ -133,6 +133,7 @@ limitations under the License. */
         uint8_t header = NOT_ASSIGNED
       ) const {
         if(header == NOT_ASSIGNED) header = get_header();
+        if(header & ACK_REQUEST_BIT && id == BROADCAST) header &= ~(ACK_REQUEST_BIT);
         uint8_t new_length = length + packet_overhead(header);
 
         if(new_length >= PACKET_MAX_LENGTH) {

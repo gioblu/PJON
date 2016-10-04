@@ -280,8 +280,9 @@ limitations under the License. */
                 if(bus_id_equality(this->last_packet_info.sender_bus_id, this->bus_id))
                   delete_id_reference(this->last_packet_info.sender_id);
 
-          _master_receiver(this->data + overhead - 1, this->data[1] - overhead, this->last_packet_info);
         }
+
+        _master_receiver(this->data + overhead - 1, this->data[1] - overhead, this->last_packet_info);
         return ACK;
       };
 

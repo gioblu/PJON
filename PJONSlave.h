@@ -131,7 +131,7 @@ limitations under the License. */
           this->bus_id,
           response,
           5,
-          this->get_header() | ADDRESS_BIT | ACK_REQUEST_BIT
+          this->get_header() | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
         ) == ACK) return true;
 
         return false;
@@ -156,7 +156,7 @@ limitations under the License. */
           this->bus_id,
           request,
           6,
-          this->get_header() | ACK_REQUEST_BIT | SENDER_INFO_BIT | ADDRESS_BIT
+          this->get_header() | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
         ) == ACK) {
           this->_device_id = NOT_ASSIGNED;
           return true;
@@ -214,7 +214,11 @@ limitations under the License. */
               response[5] = this->data[overhead + 4];
               this->set_id(response[5]);
               if(this->send_packet_blocking(
-                MASTER_ID, this->bus_id, response, 6, this->get_header() | ADDRESS_BIT | ACK_REQUEST_BIT
+                MASTER_ID,
+                this->bus_id,
+                response,
+                6,
+                this->get_header() | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
               ) != ACK) {
                 this->set_id(NOT_ASSIGNED);
                 _slave_error(ID_ACQUISITION_FAIL, ID_CONFIRM);
@@ -231,7 +235,13 @@ limitations under the License. */
                 _last_request_time = micros();
                 response[0] = ID_REFRESH;
                 response[5] = this->_device_id;
-                this->send(MASTER_ID, this->bus_id, response, 6, this->get_header() | ADDRESS_BIT | ACK_REQUEST_BIT);
+                this->send(
+                  MASTER_ID,
+                  this->bus_id,
+                  response,
+                  6,
+                  this->get_header() | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
+                );
               }
 
           return true;

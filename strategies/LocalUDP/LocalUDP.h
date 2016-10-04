@@ -1,11 +1,10 @@
 
-/* LocalUDP is a Strategy for the PJON framework (included in version v6.0)
+/* LocalUDP is a Strategy for the PJON framework (included in version v5.2)
    It supports delivering PJON packets over Ethernet UDP on the local network (LAN).
-   Compliant with the Padded jittering data link layer specification v0.4
+   Compliant with the PJON protocol layer specification v0.3
    _____________________________________________________________________________
 
-    Copyright 2012-2016 Giovanni Blu Mitolo gioscarab@gmail.com
-    LocalUDP strategy added by Fred Larsen
+    LocalUDP strategy proposed and developed by Fred Larsen 02/10/2016
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,8 +16,7 @@
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
-    limitations under the License.
-*/
+    limitations under the License. */
 
 #pragma once
 

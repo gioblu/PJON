@@ -144,6 +144,7 @@ limitations under the License. */
         uint8_t result = 0;
         for(uint8_t i = 0; i < MAX_DEVICES; i++)
           if(ids[i].state) result++;
+        return result;
       };
 
 

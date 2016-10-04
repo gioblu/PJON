@@ -29,7 +29,7 @@ class EthernetTCP {
     uint16_t last_send_result = FAIL;
 
     /* Caching of incoming packet to make it possible to deliver it byte for byte */
-    
+
     uint8_t incoming_packet_buf[PACKET_MAX_LENGTH];
     uint16_t incoming_packet_size = 0;
     uint16_t incoming_packet_pos = 0;
@@ -43,15 +43,15 @@ class EthernetTCP {
         incoming_packet_pos = 0;
       }
     }
-    
+
     EthernetTCP() {
       link.set_receiver(static_receiver, this);
     }
-    
+
     /* Check if the channel is free for transmission */
 
     boolean can_start() {
-      
+
       return link.device_id() != 0;
     };
 
@@ -79,11 +79,11 @@ class EthernetTCP {
 
     void send_response(uint8_t response) { // Empty, ACK is always sent
     };
-    
+
 
     /* Send a string: */
 
-    void send_string(uint8_t *string, uint8_t length) {    
+    void send_string(uint8_t *string, uint8_t length) {
       if (length > 0)
         last_send_result = link.send((uint8_t)string[0], (const char*)string, length);
     };

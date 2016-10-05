@@ -53,7 +53,6 @@ class EthernetTCP {
     /* Check if the channel is free for transmission */
 
     boolean can_start() {
-      
       return link.device_id() != 0;
     };
 

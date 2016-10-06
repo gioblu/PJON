@@ -102,11 +102,7 @@ class ThroughSerial {
 
     /* Pass the Serial port where you want to operate with */
 
-    void set_serial(HardwareSerial *serial_port) {
-      serial = serial_port;
-    };
-
-    void set_serial(SoftwareSerial *serial_port) {
+    void set_serial(Stream *serial_port) {
       serial = serial_port;
     };
 

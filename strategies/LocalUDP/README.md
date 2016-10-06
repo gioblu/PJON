@@ -1,5 +1,5 @@
 
-**Medium:** Ethernet port, wired or WiFi |
+**Medium:** Ethernet port, wired or WiFi
 
 With the LocalUDP PJON strategy, multiple devices with Ethernet ports can use PJON to communicate with each other on a local subnet, wired or over WiFi or both.
 

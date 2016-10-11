@@ -71,6 +71,8 @@ limitations under the License. */
   #define PJON_h
   #include <Arduino.h>
   #include <PJONDefines.h>
+  #include "strategies/EthernetTCP/EthernetTCP.h"
+  #include "strategies/LocalUDP/LocalUDP.h"
   #include "strategies/OverSampling/OverSampling.h"
   #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
   #include "strategies/ThroughSerial/ThroughSerial.h"

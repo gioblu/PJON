@@ -1,49 +1,35 @@
 
 ![PJON](http://www.gioblu.com/PJON/PJON-github-header-tiny.png)
-##PJON v4.1
-PJON (Padded Jittering Operative Network) is an Arduino compatible, multi-master, multi-media communications bus system. It proposes a Standard and it is designed as a framework for digital communication. It is a valid alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. If you are interested to know more about the PJON Standard, visit the [Wiki](https://github.com/gioblu/PJON/wiki). If you need help see the [documentation](https://github.com/gioblu/PJON/wiki/Documentation) or if something is not working visit the [Troubleshooting page](https://github.com/gioblu/PJON/wiki/Troubleshooting). If you own a Saleae Logic Analyzer see [saleae-pjon-protocol-analyzer](https://github.com/aperepel/saleae-pjon-protocol-analyzer) crafted by Andrew Grande.
+##PJON v5.2
+PJON (Padded Jittering Operative Network) is an Arduino compatible, multi-master, multi-media communications bus system. It proposes a Standard and it is designed as a framework for digital communication. It is a valid alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. Visit the [Wiki](https://github.com/gioblu/PJON/wiki), [Documentation](https://github.com/gioblu/PJON/wiki/Documentation) and [Troubleshooting](https://github.com/gioblu/PJON/wiki/Troubleshooting) wiki pages to know more about the PJON Standard.
 
-[![Join the chat at https://gitter.im/gioblu/PJON](https://badges.gitter.im/gioblu/PJON.svg)](https://gitter.im/gioblu/PJON?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Donate](http://img.shields.io/paypal/donate.png?color=blue)](https://www.paypal.me/PJON)
+[![Get PJON bus id](https://img.shields.io/badge/GET-PJON%20bus%20id-lightgrey.svg)](http://www.pjon.org/get-bus-id.php)
+[![Video introduction](https://img.shields.io/badge/PJON-video%20introduction-blue.svg)](https://www.youtube.com/watch?v=vjc4ZF5own8)
+[![Join the chat at https://gitter.im/gioblu/PJON](https://badges.gitter.im/gioblu/PJON.svg)](https://gitter.im/gioblu/PJON?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Donate](http://img.shields.io/paypal/donate.png?color=brightgreen)](https://www.paypal.me/PJON)
 
 ####Features
-- [Device id](https://github.com/gioblu/PJON/wiki) implementation to enable univocal communication up to 254 devices  
-- [Bus id](https://github.com/gioblu/PJON/wiki) implementation to optionally enable shared medium communication
-- [Multi media](https://github.com/gioblu/PJON/wiki/OverSampling) compatibility (wires up to 50m, radio up to 5km)
-- Physical layer abstraction and [communication strategy framework](https://github.com/gioblu/PJON/wiki/Strategies)
-- PJON communication through a Serial port with `ThroughHardwareSerial` 
-- 2 pin compatibility to enable twisted pair / radio modules
-- Optional auto-addressing with id collision avoidance (experimental)
-- CRC8 table-less cyclic redundancy check implementation
+- Configurable 2 level addressing (device and bus id) for scalable applications
+- Multi-media support thanks to the data link layer abstraction or [Strategy](https://github.com/gioblu/PJON/tree/master/strategies) framework  
+- Master-slave or multi-master [dynamic addressing](https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md)
 - Acknowledgement of correct packet sending
 - Collision avoidance to enable multi-master capability
-- Broadcast functionality to contact all connected devices
-- Packet manager to track and retransmit a failed packet sending in background
+- CRC8 table-less cyclic redundancy check implementation
+- Packet manager to handle, track and if necessary retransmit a packet sending in background
 - Error handling
 
-####Compatibility
-- ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
-- ATmega2560 16Mhz (Arduino Mega)
-- ATmega16u4/32u4 16Mhz (Arduino Leonardo)
-- ATtiny45/85 8Mhz, see https://github.com/gioblu/PJON/wiki/ATtiny-interfacing
-- SAMD (Arduino Zero)
-- ESP8266 v.1-7 80Mhz "AI-THINKER AT" firmware, see https://github.com/esp8266/Arduino
-- ESP8266 NodeMCU v0.9-1.0 80Mhz, see https://github.com/esp8266/Arduino
-- MK20DX256 96Mhz (Teensy 3.1)
+####PJON Protocol layer specification
+- [PJON protocol specification v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md)
+- [PJON protocol specification v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md)
+- [PJON protocol specification v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md)
+- [PJON dynamic addressing specification v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md)
 
-####License
+####Padded jittering data link layer specification
+- [Padded jittering data link layer v0.1](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/padded-jittering-protocol-specification-v0.1.md)
 
-```cpp
-/* Copyright 2012-2016 Giovanni Blu Mitolo
+####Compliant tools
+- [saleae-pjon-protocol-analyzer](https://github.com/aperepel/saleae-pjon-protocol-analyzer) by Andrew Grande.
+- [PJON-python](https://github.com/Girgitt/PJON-python) by Zbigniew Zasieczny.
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License. */
-```
+PJON is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
+with the support ot the internet community if you want to see the PJON project growing
+with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON

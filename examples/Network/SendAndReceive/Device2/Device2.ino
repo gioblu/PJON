@@ -11,7 +11,7 @@ void setup() {
   pinModeFast(13, OUTPUT);
   digitalWriteFast(13, LOW); // Initialize LED 13 to be off
 
-  bus.set_pin(12);
+  bus.strategy.set_pin(12);
   bus.begin();
 
   bus.set_receiver(receiver_function);

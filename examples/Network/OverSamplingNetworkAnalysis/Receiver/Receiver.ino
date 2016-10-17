@@ -7,7 +7,7 @@ uint8_t bus_id[] = {0, 0, 0, 1};
 PJON<OverSampling> bus(bus_id, 44);
 
 void setup() {
-  bus.set_pins(11, 12);
+  bus.strategy.set_pins(11, 12);
 
   bus.begin();
 

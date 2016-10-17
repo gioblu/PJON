@@ -12,7 +12,7 @@ uint8_t bus_id[] = {0, 0, 0, 1};
 PJON<SoftwareBitBang> bus(bus_id, 44);
 
 void setup() {
-  bus.set_pin(12);
+  bus.strategy.set_pin(12);
   bus.begin();
 
   bus.set_receiver(receiver_function);
@@ -41,7 +41,7 @@ void loop() {
   }
 
   Serial.print("Absolute com speed: ");
-  Serial.print(test * 34);
+  Serial.print(test * (20 + bus.packet_overhead() + 1));
   Serial.println("B/s");
   Serial.print("Practical bandwidth: ");
   Serial.print(test * 20);

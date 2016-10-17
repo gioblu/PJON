@@ -1,19 +1,59 @@
 
- /*-O//\         __     __
-   |-gfo\       |__| | |  | |\ |
-   |!y°o:\      |  __| |__| | \| v4.1
-   |y"s§+`\     Giovanni Blu Mitolo 2012-2016
-  /so+:-..`\    gioscarab@gmail.com
+ /*-O//\             __     __
+   |-gfo\           |__| | |  | |\ |
+   |!y°o:\          |  __| |__| | \| v5.2
+   |y"s§+`\         multi-master, multi-media communications bus system framework
+  /so+:-..`\        Copyright 2010-2016 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
-  |5/:%&-a3f.:;\    PJON is a multi-master, multi-media, device communications bus
-  \+//u/+g%{osv,,\   system framework able to connect up to 255 arduino boards over
-    \=+&/osw+olds.\\   one or two wires up to 5.95kB/s.
+  |5/:%&-a3f.:;\
+  \+//u/+g%{osv,,\
+    \=+&/osw+olds.\\
        \:/+-.-°-:+oss\
         | |       \oy\\
         > <
-  _____-| |-________________________________________________________________________
+ ______-| |-___________________________________________________________________
 
-Copyright 2012-2016 Giovanni Blu Mitolo gioscarab@gmail.com
+PJON is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
+with the support ot the internet community if you want to see the PJON project growing
+with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
+
+PJON Protocol specification:
+- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md
+- v0.2 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md
+- v0.3 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md
+
+PJON Dynamic addressing specification:
+- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md
+
+PJON Standard compliant tools:
+- https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande
+- https://github.com/Girgitt/PJON-python PJON running on Python by Zbigniew Zasieczny
+
+Credits to contributors:
+- Fred Larsen (Systems engineering, header driven communication, debugging)
+- Pantovich github user (update returning number of packets to be delivered)
+- Adrian Sławiński (Fix to enable SimpleModbusMasterV2 compatibility)
+- SticilFace github user (Teensy porting)
+- Esben Soeltoft (Arduino Zero porting)
+- Alex Grishin (ESP8266 porting)
+- Andrew Grande (Testing, support, bugfix)
+- Mauro Zancarlin (Systems engineering, testing, bugfix)
+- Michael Teeww (Callback based reception, debugging)
+- PaoloP74 github user (Library conversion to 1.x Arduino IDE)
+
+Bug reports:
+- Zbigniew Zasieczny (header reference inconsistency report)
+- DanRoad reddit user (can_start ThroughSerial bugfix)
+- Remo Kallio (Packet index 0 bugfix)
+- Emanuele Iannone (Forcing SIMPLEX in OverSamplingSimplex)
+- Christian Pointner (Fixed compiler warnings)
+- Andrew Grande (ESP8266 example watchdog error bug fix)
+- Fabian Gärtner (receive function and big packets bugfix)
+- Mauro Mombelli (Code cleanup)
+- Shachar Limor (Blink example pinMode bugfix)
+ ______________________________________________________________________________
+
+Copyright 2012-2016 by Giovanni Blu Mitolo gioscarab@gmail.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -30,109 +70,12 @@ limitations under the License. */
 #ifndef PJON_h
   #define PJON_h
   #include <Arduino.h>
-  #include <digitalWriteFast.h>
-
-  /* Communication modes */
-  #define SIMPLEX     150
-  #define HALF_DUPLEX 151
-
-  /* Protocol symbols */
-  #define ACK         6
-  #define ACQUIRE_ID  63
-  #define BUSY        666
-  #define NAK         21
-
-  /* Reserved addresses */
-  #ifndef BROADCAST
-    #define BROADCAST 0
-  #endif
-  #ifndef NOT_ASSIGNED
-    #define NOT_ASSIGNED 255
-  #endif
-
-  #if BROADCAST == NOT_ASSIGNED
-    #error BROADCAST and NOT_ASSIGNED point the same address
-  #endif
-
-  /* Internal constants */
-  #define FAIL       0x100
-  #define TO_BE_SENT 74
-
-  /* HEADER CONFIGURATION:
-  Thanks to the header byte the transmitter is able to instruct
-  the receiver to handle communication as requested. */
-
-  /* Packet header bits */
-  #define MODE_BIT        1 // 1 - Shared | 0 - Local
-  #define SENDER_INFO_BIT 2 // 1 - Sender device id + Sender bus id if shared | 0 - No info inclusion
-  #define ACK_REQUEST_BIT 4 // 1 - Request synchronous acknowledge | 0 - Do not request acknowledge
-
-  /* [0, 1, 1]: Local bus  | Sender info included    | Acknowledge requested - DEFAULT
-     [0, 0, 1]: Local bus  | No sender info included | Acknowledge requested
-     [0, 0, 0]: Local bus  | No sender info included | No acknowledge
-     [1, 0, 0]: Shared bus | No sender info included | No acknowledge
-     [1, 1, 0]: Shared bus | Sender info included    | No acknowledge
-     [1, 1, 1]: Shared bus | Sender info included    | Acknowledge requested  */
-
+  #include <PJONDefines.h>
+  #include "strategies/EthernetTCP/EthernetTCP.h"
+  #include "strategies/LocalUDP/LocalUDP.h"
   #include "strategies/OverSampling/OverSampling.h"
   #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
-  #include "strategies/ThroughHardwareSerial/ThroughHardwareSerial.h"
-
-  /* Errors */
-  #define CONNECTION_LOST     101
-  #define PACKETS_BUFFER_FULL 102
-  #define MEMORY_FULL         103
-  #define CONTENT_TOO_LONG    104
-  #define ID_ACQUISITION_FAIL 105
-
-  /* Constraints:
-  Max attempts before throwing CONNECTON_LOST error */
-  #ifndef MAX_ATTEMPTS
-    #define MAX_ATTEMPTS        125
-  #endif
-  
-  /* Packets buffer length, if full PACKETS_BUFFER_FULL error is thrown */
-  #ifndef MAX_PACKETS
-    #define MAX_PACKETS       10
-  #endif
-
-  /* Max packet length, higher if necessary (and you have free memory) */
-  #ifndef PACKET_MAX_LENGTH
-    #define PACKET_MAX_LENGTH 50
-  #endif
-
-  /* Maximum random delay on startup in milliseconds */
-  #define INITIAL_MAX_DELAY   1000
-  /* Maximum randon delay on collision */
-  #define COLLISION_MAX_DELAY 48
-  /* Maximum id scan time (5 seconds) */
-  #define MAX_ID_SCAN_TIME    5000000
-
-  struct PJON_Packet {
-    uint8_t  attempts;
-    uint8_t  header;
-    uint8_t  device_id;
-    char     *content;
-    uint8_t  length;
-    uint32_t registration;
-    uint16_t state;
-    uint32_t timing;
-  };
-
-  /* Last received packet Metainfo */
-  struct PacketInfo {
-    uint8_t header = 0;
-    uint8_t receiver_id = 0;
-    uint8_t receiver_bus_id[4];
-    uint8_t sender_id = 0;
-    uint8_t sender_bus_id[4];
-  };
-
-  typedef void (* receiver)(uint8_t *payload, uint8_t length, const PacketInfo &packet_info);
-  typedef void (* error)(uint8_t code, uint8_t data);
-
-  static void dummy_receiver_handler(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {};
-  static void dummy_error_handler(uint8_t code, uint8_t data) {};
+  #include "strategies/ThroughSerial/ThroughSerial.h"
 
   template<typename Strategy = SoftwareBitBang>
   class PJON {
@@ -173,139 +116,167 @@ limitations under the License. */
       };
 
 
-      /* Look for a free id:
-         All ids are scanned looking for a free one. If no answer is received after
-         MAX_ATTEMPTS attempts, id is acquired and used as new id by the scanning device. */
-
-      void acquire_id() {
-        uint32_t time = micros();
-        uint8_t ping_id;
-        char msg = ACQUIRE_ID;
-
-        for(uint8_t id = 1; id < 255 && (uint32_t)(micros() - time) < MAX_ID_SCAN_TIME; id++) {
-          ping_id = send(id, &msg, 1);
-
-          while(packets[ping_id].state != 0 && (uint32_t)(micros() - time) < MAX_ID_SCAN_TIME)
-            update();
-
-          if(_device_id != NOT_ASSIGNED) return;
-        }
-        _error(ID_ACQUISITION_FAIL, FAIL);
-      };
-
-
-      /* Initial random delay to avoid startup collision */
+      /* Begin function to be called in setup: */
 
       void begin() {
         randomSeed(analogRead(A0));
-        delay(random(0, INITIAL_MAX_DELAY));
+        delay(random(0, INITIAL_DELAY));
       };
 
 
-      /* Check equality between two bus ids */
+      /* Compose packet in PJON format: */
 
-      boolean bus_id_equality(const uint8_t *name_one, const uint8_t *name_two) {
-        for(uint8_t i = 0; i < 4; i++)
-          if(name_one[i] != name_two[i])
-            return false;
-        return true;
-      };
+      uint8_t compose_packet(
+        const uint8_t id,
+        const uint8_t *b_id,
+        char *destination,
+        const char *source,
+        uint8_t length,
+        uint8_t header = NOT_ASSIGNED
+      ) const {
+        if(header == NOT_ASSIGNED) header = get_header();
+        if(header & ACK_REQUEST_BIT && id == BROADCAST) header &= ~(ACK_REQUEST_BIT);
+        uint8_t new_length = length + packet_overhead(header);
 
-
-      /* Copy a bus id: */
-
-      void copy_bus_id(uint8_t dest[], const uint8_t src[]) const { memcpy(dest, src, 4); };
-
-
-      /* Compute CRC8 with a table-less implementation: */
-
-      uint8_t compute_crc_8(char input_byte, uint8_t crc) {
-        for (uint8_t i = 8; i; i--, input_byte >>= 1) {
-          uint8_t result = (crc ^ input_byte) & 0x01;
-          crc >>= 1;
-          if(result) crc ^= 0x8C;
+        if(new_length >= PACKET_MAX_LENGTH) {
+          _error(CONTENT_TOO_LONG, new_length);
+          return 0;
         }
-        return crc;
+
+        destination[0] = id;
+        destination[1] = new_length;
+        destination[2] = header;
+        if(header & MODE_BIT) {
+          copy_bus_id((uint8_t*) &destination[3], b_id);
+          if(header & SENDER_INFO_BIT) {
+            copy_bus_id((uint8_t*) &destination[7], bus_id);
+            destination[11] = _device_id;
+          }
+        } else if(header & SENDER_INFO_BIT) destination[3] = _device_id;
+
+        memcpy(destination + (new_length - length - 1), source, length);
+        destination[new_length - 1] = compute_crc_8((uint8_t *)destination, new_length - 1);
+        return new_length;
       };
 
 
-      /* Get the device id, returning a single byte (watch out to id collision): */
+      /* Get the device id, returning a single byte: */
 
-      uint8_t device_id() {
+      uint8_t device_id() const {
         return _device_id;
       };
 
+
+      /* Add a packet to the send list ready to be delivered by the next update() call: */
+
+      uint16_t dispatch(
+        uint8_t id,
+        const uint8_t *b_id,
+        const char *packet,
+        uint8_t length,
+        uint32_t timing,
+        uint8_t header = NOT_ASSIGNED
+      ) {
+         for(uint8_t i = 0; i < MAX_PACKETS; i++)
+          if(packets[i].state == 0) {
+            if(!(length = compose_packet(id, b_id, packets[i].content, packet, length, header)))
+              return FAIL;
+            packets[i].length = length;
+            packets[i].state = TO_BE_SENT;
+            packets[i].registration = micros();
+            packets[i].timing = timing;
+            return i;
+          }
+
+        _error(PACKETS_BUFFER_FULL, MAX_PACKETS);
+        return FAIL;
+      };
+
+
+      /* Return the header byte based on current configuration: */
+
+      uint8_t get_header() const {
+        return (_shared ? MODE_BIT : 0) |
+               (_sender_info ? SENDER_INFO_BIT : 0) |
+               (_acknowledge ? ACK_REQUEST_BIT : 0);
+      };
+
+
+      /* Get count of the packets for a device_id:
+         Don't pass any parameter to count all packets
+         Pass a device id to count all it's related packets */
+
+      uint8_t get_packets_count(uint8_t device_id = NOT_ASSIGNED) const {
+        uint8_t packets_count = 0;
+        for(uint8_t i = 0; i < MAX_PACKETS; i++) {
+          if(packets[i].state == 0) continue;
+          if(device_id == NOT_ASSIGNED || packets[i].content[0] == device_id) packets_count++;
+        }
+        return packets_count;
+      };
+
+
+      /* Calculate the packet's overhead: */
+
+      uint8_t packet_overhead(uint8_t header = NOT_ASSIGNED) const {
+        if(header == NOT_ASSIGNED)
+          return _shared ? (_sender_info ? 13 : 8) : (_sender_info ? 5 : 4);
+        return (header & MODE_BIT) ?
+        (header & SENDER_INFO_BIT ? 13 : 8) :
+        (header & SENDER_INFO_BIT ? 5 : 4);
+      };
+
+
       /* Fill in a PacketInfo struct by parsing a packet: */
 
-      void get_packet_info(const uint8_t *packet, PacketInfo &packet_info) const {
+      void parse(const uint8_t *packet, PacketInfo &packet_info) const {
         packet_info.receiver_id = packet[0];
         packet_info.header = packet[2];
-
         if((packet_info.header & MODE_BIT) != 0) {
           copy_bus_id(packet_info.receiver_bus_id, packet + 3);
           if((packet_info.header & SENDER_INFO_BIT) != 0) {
             copy_bus_id(packet_info.sender_bus_id, packet + 7);
             packet_info.sender_id = packet[11];
           }
-        } else if((packet_info.header & SENDER_INFO_BIT) != 0) packet_info.sender_id = packet[3];
+        } else if((packet_info.header & SENDER_INFO_BIT) != 0)
+          packet_info.sender_id = packet[3];
       };
 
-      /* Try to receive a packet: */
 
       uint16_t receive() {
         uint16_t state;
-        uint16_t packet_length = PACKET_MAX_LENGTH;
         uint8_t CRC = 0;
-        bool shared = false;
-        bool includes_sender_info = false;
-        bool acknowledge_requested = false;
-
-        for(uint8_t i = 0; i < packet_length; i++) {
-          data[i] = state = strategy.receive_byte(_input_pin, _output_pin);
+        data[1] = PACKET_MAX_LENGTH;
+        for(uint8_t i = 0; i < data[1]; i++) {
+          data[i] = state = strategy.receive_byte();
           if(state == FAIL) return FAIL;
 
           if(i == 0 && data[i] != _device_id && data[i] != BROADCAST && !_router)
             return BUSY;
 
-          if(i == 1) {
-            if(data[i] > 4 && data[i] < PACKET_MAX_LENGTH)
-              packet_length = data[i];
-            else return FAIL;
-          }
+          if(i == 1 && (data[i] < 4 || data[i] > PACKET_MAX_LENGTH)) return FAIL;
 
-          if(i == 2) { // Packet header
-            shared = data[2] & MODE_BIT;
-            includes_sender_info = data[2] & SENDER_INFO_BIT;
-            acknowledge_requested = data[2] & ACK_REQUEST_BIT;
-            if((shared != _shared) && !_router) return BUSY; // Keep private and shared buses apart
-          }
+          if(i == 2 && ((data[2] & MODE_BIT) != _shared) && !_router) return BUSY;
 
           /* If an id is assigned to this bus it means that is potentially
              sharing its medium, or the device could be connected in parallel
              with other buses. Bus id equality is checked to avoid collision
              i.e. id 1 bus 1, should not receive a message for id 1 bus 2. */
 
-          if(_shared && shared && !_router && i > 2 && i < 7)
-            if(bus_id[i - 3] != data[i])
-              return BUSY;
+          if(_shared && (data[2] & MODE_BIT) && !_router && i > 2 && i < 7)
+            if(bus_id[i - 3] != data[i]) return BUSY;
 
-          CRC = compute_crc_8(data[i], CRC);
+          CRC = roll_crc_8(data[i], CRC);
         }
-        if(!CRC) {
-          if(acknowledge_requested && data[0] != BROADCAST && _mode != SIMPLEX)
-            if(!_shared || (_shared && shared && bus_id_equality(data + 3, bus_id)))
-              strategy.send_response(ACK, _input_pin, _output_pin);
 
-          get_packet_info(data, last_packet_info);
-          uint8_t payload_offset = 3 + (shared ? (includes_sender_info ? 9 : 4) : (includes_sender_info ? 1 : 0));
-          _receiver(data + payload_offset, data[3] - payload_offset - 1, last_packet_info);
-          return ACK;
-        } else {
-          if(acknowledge_requested && data[0] != BROADCAST && _mode != SIMPLEX)
-            if(!_shared || (_shared && shared && bus_id_equality(data + 3, bus_id)))
-              strategy.send_response(NAK, _input_pin, _output_pin);
-          return NAK;
-        }
+        if(data[2] & ACK_REQUEST_BIT && data[0] != BROADCAST && _mode != SIMPLEX && !_router)
+          if(!_shared || (_shared && (data[2] & MODE_BIT) && bus_id_equality(data + 3, bus_id)))
+            strategy.send_response(CRC ? NAK : ACK);
+
+        if(CRC) return NAK;
+        parse(data, last_packet_info);
+        _receiver(data + (packet_overhead(data[2]) - 1), data[1] - packet_overhead(data[2]), last_packet_info);
+        return ACK;
       };
 
 
@@ -326,9 +297,7 @@ limitations under the License. */
       /* Remove a packet from the send list: */
 
       void remove(uint16_t id) {
-        free(packets[id].content);
         packets[id].attempts = 0;
-        packets[id].device_id = 0;
         packets[id].length = 0;
         packets[id].registration = 0;
         packets[id].state = 0;
@@ -342,22 +311,26 @@ limitations under the License. */
       void remove_all_packets(uint8_t device_id = 0) {
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
-          if(!device_id || packets[i].device_id == device_id) remove(i);
+          if(!device_id || packets[i].content[0] == device_id) remove(i);
         }
       };
 
 
-      /* Get count of the packets for a device_id:
-         Don't pass any parameter to count all packets
-         Pass a device id to count all it's related packets */
+      /* Send a packet to the sender of the last packet received.
+         This function is typically called from with the receive
+         callback function to deliver a response to a request. */
 
-      uint8_t get_packet_count(uint8_t device_id = 0) {
-        uint8_t packet_count = 0;
-        for(uint8_t i = 0; i < MAX_PACKETS; i++) {
-          if(packets[i].state == 0) continue;
-          if(!device_id || packets[i].device_id == device_id) packet_count++;
-        }
-        return packet_count;
+      uint16_t reply(const char *packet, uint8_t length, uint8_t header = NOT_ASSIGNED) {
+        if(last_packet_info.sender_id != BROADCAST)
+          return dispatch(
+            last_packet_info.sender_id,
+            last_packet_info.sender_bus_id,
+            packet,
+            length,
+            0,
+            header
+          );
+        return false;
       };
 
 
@@ -367,111 +340,66 @@ limitations under the License. */
        transmission cyclically sending the packet (use remove() function stop it)
 
        LOCAL TRANSMISSION -> ISOLATED BUS
-
        int hi = bus.send(99, "HI!", 3);
        // Send hi once to device 99
-
        int hi = bus.send_repeatedly(99, "HI!", 3, 1000000);
        // Send HI! to device 99 every second (1.000.000 microseconds)
 
        NETWORK TRANSMISSION -> SHARED MEDIUM
-
-       int hi = bus.send(99, {127, 0, 0, 1}, 3);
+       uint8_t bus_id[] = {127, 0, 0, 1};
+       int hi = bus.send(99, bus_id, "HI!", 3);
        // Send hi once to device 99 on bus id 127.0.0.1
-
-       int hi = bus.send_repeatedly(99, {127, 0, 0, 1}, "HI!", 3, 1000000);
+       int hi = bus.send_repeatedly(99, bus_id, "HI!", 3, 1000000);
        // Send HI! to device 99 on bus id 127.0.0.1 every second (1.000.000 microseconds)
+       bus.remove(hi); // Stop repeated sending */
 
-       bus.remove(hi); // Stop repeated sending
-       _________________________________________________________________________
-      |           |        |         |       |          |        |              |
-      | device_id | length | content | state | attempts | timing | registration |
-      |___________|________|_________|_______|__________|________|______________| */
-
-      uint16_t send(uint8_t id, const char *packet, uint8_t length) {
-        return dispatch(id, bus_id, packet, length, 0);
+      uint16_t send(uint8_t id, const char *string, uint8_t length, uint8_t header = NOT_ASSIGNED) {
+        return dispatch(id, bus_id, string, length, 0, header);
       };
 
-      uint16_t send(uint8_t id, uint8_t *b_id, const char *packet, uint8_t length) {
-        return dispatch(id, b_id, packet, length, 0);
+      uint16_t send(
+        uint8_t id,
+        const uint8_t *b_id,
+        const char *string,
+        uint8_t length,
+        uint8_t header = NOT_ASSIGNED
+      ) {
+        return dispatch(id, b_id, string, length, 0, header);
       };
 
-      uint16_t send_repeatedly(uint8_t id, const char *packet, uint8_t length, uint32_t timing) {
-        return dispatch(id, bus_id, packet, length, timing);
+      /* IMPORTANT: send_repeatedly timing maximum is 4293014170 microseconds or 71.55 minutes */
+      uint16_t send_repeatedly(
+        uint8_t id,
+        const char *string,
+        uint8_t length,
+        uint32_t timing,
+        uint8_t header = NOT_ASSIGNED
+      ) {
+        return dispatch(id, bus_id, string, length, timing, header);
       };
 
-      uint16_t send_repeatedly(uint8_t id, uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing) {
-        return dispatch(id, b_id, packet, length, timing);
-      };
-
-
-      /* Send a packet to the sender of the last packet received.
-         This function is typically called from with the receive
-         callback function to deliver a response to a request. */
-
-      uint16_t reply(const char *packet, uint8_t length) {
-        if(last_packet_info.sender_id != BROADCAST)
-          return dispatch(last_packet_info.sender_id, last_packet_info.sender_bus_id, packet, length, 0);
-        return false;
-      };
-
-
-      uint16_t dispatch(uint8_t id, uint8_t *b_id, const char *packet, uint8_t length, uint32_t timing, uint8_t header = 0) {
-        uint8_t new_length = _shared ? (length + (_sender_info ? 9 : 4)) : (length + (_sender_info ? 1 : 0));
-
-        // Compose PJON 1 byte header from internal configuration
-        header |= (_shared ? MODE_BIT : 0);
-        header |= (_sender_info ? SENDER_INFO_BIT : 0);
-        header |= (_acknowledge ? ACK_REQUEST_BIT : 0);
-
-        if(new_length >= PACKET_MAX_LENGTH) {
-          _error(CONTENT_TOO_LONG, new_length);
-          return FAIL;
-        }
-
-        char *str = (char *) malloc(new_length);
-
-        if(str == NULL) {
-          _error(MEMORY_FULL, 0);
-          return FAIL;
-        }
-
-        if(_shared) {
-          copy_bus_id((uint8_t*) str, b_id);
-          if(_sender_info) {
-            copy_bus_id((uint8_t*) &str[4], bus_id);
-            str[8] = _device_id;
-          }
-        } else if(_sender_info) str[0] = _device_id;
-
-        memcpy(str + (_shared ? (_sender_info ? 9 : 4) : (_sender_info ? 1 : 0)), packet, length);
-
-        for(uint8_t i = 0; i < MAX_PACKETS; i++)
-          if(packets[i].state == 0) {
-            packets[i].header = header;
-            packets[i].content = str;
-            packets[i].device_id = id;
-            packets[i].length = new_length;
-            packets[i].state = TO_BE_SENT;
-            packets[i].registration = micros();
-            packets[i].timing = timing;
-            return i;
-          }
-
-        _error(PACKETS_BUFFER_FULL, MAX_PACKETS);
-        return FAIL;
+      /* IMPORTANT: send_repeatedly timing maximum is 4293014170 microseconds or 71.55 minutes */
+      uint16_t send_repeatedly(
+        uint8_t id,
+        const uint8_t *b_id,
+        const char *string,
+        uint8_t length,
+        uint32_t timing,
+        uint8_t header = NOT_ASSIGNED
+      ) {
+        return dispatch(id, b_id, string, length, timing, header);
       };
 
 
-  /* An Example of how the string "@" is formatted and sent:
+  /* An Example of how the packet "@" is formatted and sent:
 
-  RECIPIENT ID 12   LENGTH 6          HEADER 00000100  SENDER ID 11      CONTENT 64       CRC
-   ________________ _________________ ________________ _________________ ________________ __________________
-  |Sync | Byte     |Sync | Byte      |Sync | Byte     |Sync | Byte      |Sync | Byte     |Sync | Byte       |
-  |___  |     __   |___  |      _   _|___  |      _   |___  |     _   __|___  |  _       |___  |  _      _  |
-  |   | |    |  |  |   | |     | | | |   | |     | |  |   | |    | | |  |   | | | |      |   | | | |    | | |
-  | 1 |0|0000|11|00| 1 |0|00000|1|0|1| 1 |0|00000|1|00| 1 |0|0000|1|0|11| 1 |0|0|1|000000| 1 |0|0|1|0000|1|0|
-  |___|_|____|__|__|___|_|_____|_|_|_|___|_|_____|_|__|___|_|____|_|_|__|___|_|_|_|______|___|_|_|_|____|_|_|
+  RECIPIENT ID 12   LENGTH 6          HEADER 00000110  SENDER ID 11      CONTENT 64       CRC
+   ________________ _________________ _________________ _________________ ________________ __________________
+  |Sync | Byte     |Sync | Byte      |Sync | Byte      |Sync | Byte      |Sync | Byte     |Sync | Byte       |
+  |___  |     __   |___  |      _   _|___  |      _ _  |___  |     _   __|___  |  _       |___  |  _      _  |
+  |   | |    |  |  |   | |     | | | |   | |     | | | |   | |    | | |  |   | | | |      |   | | | |    | | |
+  | 1 |0|0000|11|00| 1 |0|00000|1|0|1| 1 |0|00000|1|1|0| 1 |0|0000|1|0|11| 1 |0|0|1|000000| 1 |0|0|1|0000|1|0|
+  |___|_|____|__|__|___|_|_____|_|_|_|___|_|_____|_|_|_|___|_|____|_|_|__|___|_|_|_|______|___|_|_|_|____|_|_|
 
   A standard packet transmission is a bidirectional communication between
   two devices that can be divided in 3 different phases:
@@ -484,7 +412,7 @@ limitations under the License. */
      |_____|         |____|________|________|_____________|_________|_____|       |_____|
 
   DEFAULT HEADER CONFIGURATION:
-  [0, 1, 1]: Local bus | Sender info included | Acknowledge requested
+  00000110: Acknowledge requested | Sender info included | Local bus
 
   BUS CONFIGURATION:
   bus.set_acknowledge(true);
@@ -506,7 +434,7 @@ limitations under the License. */
      |____|________|________|_________|_____|
 
   HEADER CONFIGURATION:
-  [0, 0, 0]: Local bus | Sender info included | Acknowledge requested
+  00000000: Acknowledge not requested | Sender info not included | Local bus
 
   BUS CONFIGURATION:
   bus.set_acknowledge(false);
@@ -527,7 +455,7 @@ limitations under the License. */
    |_____|       |____|________|________|_____________|________|____|_________|_____|       |_____|
                                         |Receiver info| Sender info |
   HEADER CONFIGURATION:
-  [1, 1, 1]: Local bus | Sender info included | Acknowledge requested - DEFAULT
+  00000111: Acknowledge requested | Sender info included | Shared bus
 
   BUS CONFIGURATION:
   bus.set_acknowledge(true);
@@ -537,48 +465,80 @@ limitations under the License. */
   with many other buses with transmission certainty through synchronous acknowledge
   and sender info to easy reply to packets with the reply() function. */
 
-      uint16_t send_string(uint8_t id, char *string, uint8_t length, uint8_t header = 0) {
+      uint16_t send_packet(const char *string, uint8_t length) {
         if(!string) return FAIL;
-        if(_mode != SIMPLEX && !strategy.can_start(_input_pin, _output_pin)) return BUSY;
+        if(_mode != SIMPLEX && !strategy.can_start()) return BUSY;
+        strategy.send_string((uint8_t *)string, length);
+        if(string[0] == BROADCAST || !_acknowledge || _mode == SIMPLEX) return ACK;
+        uint16_t response = strategy.receive_response();
+        if(response == ACK || response == NAK || response == FAIL) return response;
+        else return BUSY;
+      };
 
-        uint8_t CRC = 0;
 
-        // Transmit recipient device id
-        strategy.send_byte(id, _input_pin, _output_pin);
-        CRC = compute_crc_8(id, CRC);
+      /* Send a packet passing its info as parameters: */
 
-        // Transmit packet length
-        strategy.send_byte(length + 4, _input_pin, _output_pin);
-        CRC = compute_crc_8(length + 4, CRC);
+      uint16_t send_packet(uint8_t id, char *string, uint8_t length, uint8_t header = NOT_ASSIGNED) {
+        if(!(length = compose_packet(id, bus_id, (char *)data, string, length, header)))
+          return FAIL;
+        return send_packet((char *)data, length);
+      };
 
-        // Transmit header header
-        strategy.send_byte(header, _input_pin, _output_pin);
-        CRC = compute_crc_8(header, CRC);
 
-        /* If an id is assigned to the bus, the packet's content is prepended by
-           the ricipient's bus id. This opens up the possibility to have more than
-           one bus sharing the same medium. */
+      uint16_t send_packet(
+        uint8_t id,
+        const uint8_t *b_id,
+        char *string,
+        uint8_t length,
+        uint8_t header = NOT_ASSIGNED
+      ) {
+        if(!(length = compose_packet(id, b_id, (char *)data, string, length, header)))
+          return FAIL;
+        return send_packet((char *)data, length);
+      };
 
-        for(uint8_t i = 0; i < length; i++) {
-          strategy.send_byte(string[i], _input_pin, _output_pin);
-          CRC = compute_crc_8(string[i], CRC);
+
+      /* Send a packet without using the send list. It is called send_packet_blocking
+         because it tries to transmit a packet multiple times within an internal cycle
+         until the packet is delivered, or timing limit is reached. */
+
+      uint16_t send_packet_blocking(
+        uint8_t id,
+        const uint8_t *b_id,
+        const char *string,
+        uint8_t length,
+        uint8_t header = NOT_ASSIGNED
+      ) {
+        if(!(length = compose_packet(id, b_id, (char *)data, string, length, header))) return FAIL;
+        uint16_t state = FAIL;
+        uint32_t attempts = 0;
+        uint32_t time = micros();
+        while(state != ACK && attempts <= MAX_ATTEMPTS) {
+          state = send_packet((char*)data, length);
+          if(state == ACK) return state;
+          attempts++;
+          if(state != FAIL) delayMicroseconds(random(0, COLLISION_DELAY));
+          while((uint32_t)(micros() - time) < (attempts * attempts * attempts));
+          time = micros();
         }
+        return state;
+      };
 
-        strategy.send_byte(CRC, _input_pin, _output_pin);
+      uint16_t send_packet_blocking(
+        uint8_t id,
+        const char *string,
+        uint8_t length,
+        uint8_t header = NOT_ASSIGNED
+      ) {
+        return send_packet_blocking(id, bus_id, string, length, header);
+      };
 
-        if(!_acknowledge || id == BROADCAST || _mode == SIMPLEX) return ACK;
 
-        uint16_t response = strategy.receive_response(_input_pin, _output_pin);
+      /* In router mode, the receiver function can ack for selected receiver
+         device ids for which the route is known */
 
-        if(response == ACK) return ACK;
-
-        /* Random delay if NAK, corrupted ACK/NAK or collision */
-        if(response != FAIL)
-          delayMicroseconds(random(0, COLLISION_MAX_DELAY));
-
-        if(response == NAK) return NAK;
-
-        return FAIL;
+      void send_acknowledge() {
+        strategy.send_response(ACK);
       };
 
 
@@ -602,13 +562,9 @@ limitations under the License. */
 
       void set_default() {
         _mode = HALF_DUPLEX;
-
-        if(!bus_id_equality(bus_id, localhost))
-          _shared = true;
-
+        if(!bus_id_equality(bus_id, localhost)) _shared = true;
         set_error(dummy_error_handler);
         set_receiver(dummy_receiver_handler);
-
         for(int i = 0; i < MAX_PACKETS; i++) {
           packets[i].state = 0;
           packets[i].timing = 0;
@@ -670,25 +626,6 @@ limitations under the License. */
       };
 
 
-      /* Set the communicaton pin: */
-
-      void set_pin(uint8_t pin) {
-        _input_pin = pin;
-        _output_pin = pin;
-      };
-
-
-      /* Set a pair of communication pins: */
-
-      void set_pins(uint8_t input_pin = NOT_ASSIGNED, uint8_t output_pin = NOT_ASSIGNED) {
-        _input_pin = input_pin;
-        _output_pin = output_pin;
-
-        if(input_pin == NOT_ASSIGNED || output_pin == NOT_ASSIGNED)
-          _mode = SIMPLEX;
-      };
-
-
       /* Pass as a parameter a void function you previously defined in your code.
          This will be called when a correct message will be received.
          Inside there you can code how to react when data is received.
@@ -696,7 +633,6 @@ limitations under the License. */
         void receiver_function(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {
           for(int i = 0; i < length; i++)
             Serial.print((char)payload[i]);
-
           Serial.print(" ");
           Serial.println(length);
         };
@@ -722,79 +658,71 @@ limitations under the License. */
          Returns the actual number of packets to be sent. */
 
       uint8_t update() {
-        uint8_t packet_count = 0;
+        uint8_t packets_count = 0;
+        uint32_t back_off;
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
-
-          packet_count++;
-
-          if((uint32_t)(micros() - packets[i].registration) > packets[i].timing + pow(packets[i].attempts, 3))
-            packets[i].state = send_string(packets[i].device_id, packets[i].content, packets[i].length, packets[i].header);
+          packets_count++;
+          back_off = packets[i].attempts;
+          back_off = back_off * back_off * back_off;
+          if((uint32_t)(micros() - packets[i].registration) > packets[i].timing + back_off)
+            packets[i].state = send_packet(packets[i].content, packets[i].length);
           else continue;
 
           if(packets[i].state == ACK) {
             if(!packets[i].timing) {
               if(_auto_delete) {
                 remove(i);
-                packet_count--;
+                packets_count--;
+              }
+            } else {
+              packets[i].attempts = 0;
+              packets[i].registration = micros();
+              packets[i].state = TO_BE_SENT;
+            } continue;
+          }
+
+          if(packets[i].state != FAIL)
+            delayMicroseconds(random(0, COLLISION_DELAY));
+
+          packets[i].attempts++;
+          if(packets[i].attempts > MAX_ATTEMPTS) {
+            _error(CONNECTION_LOST, packets[i].content[0]);
+            if(!packets[i].timing) {
+              if(_auto_delete) {
+                remove(i);
+                packets_count--;
               }
             } else {
               packets[i].attempts = 0;
               packets[i].registration = micros();
               packets[i].state = TO_BE_SENT;
             }
-          }
-
-          if(packets[i].state == FAIL) {
-            packets[i].attempts++;
-            if(packets[i].attempts > MAX_ATTEMPTS) {
-              if(packets[i].content[0] == ACQUIRE_ID) {
-                _device_id = packets[i].device_id;
-                remove(i);
-                packet_count--;
-                continue;
-              } else _error(CONNECTION_LOST, packets[i].device_id);
-              if(!packets[i].timing) {
-                if(_auto_delete) {
-                  remove(i);
-                  packet_count--;
-                }
-              } else {
-                packets[i].attempts = 0;
-                packets[i].registration = micros();
-                packets[i].state = TO_BE_SENT;
-              }
-            }
-          }
+          } else packets[i].registration = micros();
         }
-        return packet_count;
+        return packets_count;
       };
 
       uint8_t data[PACKET_MAX_LENGTH];
       PJON_Packet packets[MAX_PACKETS];
-
       /* A bus id is an array of 4 bytes containing a unique set.
           The default setting is to run a local bus (0.0.0.0), in this
           particular case the obvious bus id is omitted from the packet
           content to reduce overhead. */
-
       const uint8_t localhost[4] = {0, 0, 0, 0};
       uint8_t bus_id[4] = {0, 0, 0, 0};
-
       /* Last received packet Metainfo */
       PacketInfo last_packet_info;
-
     private:
       boolean   _acknowledge = true;
       boolean   _auto_delete = true;
-      uint8_t   _device_id;
-      uint8_t   _input_pin;
-      boolean   _shared = false;
-      boolean   _sender_info = true;
+      error     _error;
       uint8_t   _mode;
-      uint8_t   _output_pin;
       receiver  _receiver;
       boolean   _router = false;
-      error     _error;
+      boolean   _sender_info = true;
+      boolean   _shared = false;
+    protected:
+      uint8_t   _device_id;
   };
 #endif

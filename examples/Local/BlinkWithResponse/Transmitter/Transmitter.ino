@@ -4,6 +4,7 @@
 PJON<SoftwareBitBang> bus(45);
 
 void setup() {
+  Serial.begin(115200);
   pinModeFast(13, OUTPUT);
   digitalWriteFast(13, LOW); // Initialize LED 13 to be off
 
@@ -14,7 +15,7 @@ void setup() {
 }
 
 
-void receiver_function(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {
+void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
   if(payload[0] == 'B') {
     Serial.println("BLINK");
     digitalWrite(13, HIGH);

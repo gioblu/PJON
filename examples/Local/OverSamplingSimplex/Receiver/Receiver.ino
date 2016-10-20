@@ -18,14 +18,14 @@ void setup() {
   Serial.begin(115200);
 };
 
-void receiver_function(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {
+void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
  // Do nothing to avoid affecting speed analysis
 }
 
 void loop() {
   Serial.println("Starting 1 second communication speed test...");
   long time = millis();
-  int response = 0;
+  unsigned int response = 0;
   while(millis() - time < 1000) {
     response = bus.receive();
     if(response == ACK)

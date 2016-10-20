@@ -22,7 +22,7 @@ void error_handler(uint8_t code, uint8_t data) {
     Serial.print("Connection lost with device id ");
     Serial.println(data);
   }
-}
+};
 
 void loop() {
   if(!bus.packets[packet].state)

@@ -33,7 +33,7 @@ void loop() {
     /* Here send_packet low level function is used to
     be able to catch every single sending result. */
 
-    int response = bus.send_packet(44, bus_id, content, 20);
+    unsigned int response = bus.send_packet(44, bus_id, content, 20);
     if(response == ACK)
       test++;
     if(response == NAK)

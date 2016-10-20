@@ -27,7 +27,7 @@ New features:
 With this release, the PJON protocol layer has been vastly extended and generalized aiming to interoperability and to offer a real and complete alternative to the actual set of standards used for networking today. The strong plus of the approach used by the protocol mechanism is high efficiency and low overhead thanks to the configuration driven packet format, enabling easy constrain to application needs.
 
 ###Network protocol stack model
-In the graph below is shown the protocol stack model proposed. The differences between the OSI model stack and the PJON protocol layer stack is how the features are distributed in its layers. Those engineering choices are made to offer a scalable and low overhead stack of protocols able to be used as a set or individually. This stack has been engineered "bottom to top" and originally was applied as an alternative to 1-Wire or i2c, but with this release features has been extended enabling many use cases where the OSI model and the standard network protocol stack is generally applied.
+In the graph below is shown the protocol stack model proposed. The differences between the OSI model and the PJON stack is the presence or absence of some features and how they are distributed in its layers. Those engineering choices are made to offer a scalable and low overhead stack of protocols able to be used as a set or individually. This stack has been engineered "bottom to top" and was originally applied as an alternative to 1-Wire or i2c, with this release features has been extended enabling many use cases where the OSI model is generally applied.
 ```cpp  
  -----------------------------------------------
 | 7 Application layer                           |
@@ -46,7 +46,7 @@ In the graph below is shown the protocol stack model proposed. The differences b
 | Addressing, acknowledgement,                  |
 | multiplexing, traffic control                 |
 |-----------------------------------------------|
-| 2 Data link                                   |
+| 2 Data link layer                             |
 | Data link, transmission of data frames        |
 |-----------------------------------------------|
 | 1 Physical layer                              |
@@ -64,8 +64,9 @@ In the graph below is shown the protocol stack model proposed. The differences b
 * Transmission occurs only if the communication medium is not in use
 * Devices communicate through packets with a maximum length of 255 or 65535 bytes
 * Packet transmission is regulated by a 1, 2 or 3 byte header
+* Synchronous and or asynchronous acknowledgement can be requested  ([Acknowledge specification v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-acknowledge-specification-v0.1.md))
 
-The PJON protocol v1.0 handles internal bus connectivity and unique addressing for 254 devices, through bus communication with unique bus addressing for 4.294.967.295 buses and supports up to 1.090.921.692.930 devices. It regulates the exchange of packets with a configurable set of features driven by its header. Depending on the packet configuration a certain overhead is added to information variying from 3 up to 19 bytes.
+The PJON protocol v1.0 handles internal bus connectivity and unique addressing for 254 devices, through bus communication with unique bus addressing for 4.294.967.295 buses and supports up to 1.090.921.692.930 devices. It regulates the exchange of packets with a configurable set of features driven by its header. Depending on the packet configuration a certain overhead is added to information varying from 3 up to 19 bytes.
 
 ###Bus
 A PJON bus is made by a group of up to 254 devices transmitting and receiving on the same medium. Communication between devices occurs through packets and it is based on democracy: every device has the right to transmit on the common medium for up to `(1000 / devices number) milliseconds / second`.
@@ -82,7 +83,7 @@ A PJON bus is made by a group of up to 254 devices transmitting and receiving on
 ```
 
 ###Bus network
-A PJON bus network is the result of n PJON buses sharing the same medium and or being interconnectied to other PJON buses through routers. A router is a device connected to n PJON buses with n dedicated, potentially different, data link layers on n dedicated media, able to route a packet from a bus to another. Thanks to this rule is not only possible to share the same medium with neighbours, but also network with them and enhance connectivity.
+A PJON bus network is the result of n PJON buses sharing the same medium and or being interconnected to other PJON buses through routers. A router is a device connected to n PJON buses with n dedicated, potentially different, data link layers on n dedicated media, able to route a packet from a bus to another. Thanks to this rule is not only possible to share the same medium with neighbours, but also network with them and enhance connectivity.
 ```cpp  
    TWO BUSES CONNECTED THROUGH A ROUTER
 

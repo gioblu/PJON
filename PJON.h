@@ -461,12 +461,12 @@ limitations under the License. */
 
   /* An Example of how the packet "@" is formatted and sent:
 
-  RECIPIENT ID 12   LENGTH 6          HEADER 00000110  SENDER ID 11      CONTENT 64       CRC
+  RECIPIENT ID 12   HEADER 00000110   LENGTH 6          SENDER ID 11      CONTENT 64       CRC
    ________________ _________________ _________________ _________________ ________________ __________________
   |Sync | Byte     |Sync | Byte      |Sync | Byte      |Sync | Byte      |Sync | Byte     |Sync | Byte       |
-  |___  |     __   |___  |      _   _|___  |      _ _  |___  |     _   __|___  |  _       |___  |  _      _  |
+  |___  |     __   |___  |      _ _  |___  |      _   _|___  |     _   __|___  |  _       |___  |  _      _  |
   |   | |    |  |  |   | |     | | | |   | |     | | | |   | |    | | |  |   | | | |      |   | | | |    | | |
-  | 1 |0|0000|11|00| 1 |0|00000|1|0|1| 1 |0|00000|1|1|0| 1 |0|0000|1|0|11| 1 |0|0|1|000000| 1 |0|0|1|0000|1|0|
+  | 1 |0|0000|11|00| 1 |0|00000|1|1|0| 1 |0|00000|1|0|1| 1 |0|0000|1|0|11| 1 |0|0|1|000000| 1 |0|0|1|0000|1|0|
   |___|_|____|__|__|___|_|_____|_|_|_|___|_|_____|_|_|_|___|_|____|_|_|__|___|_|_|_|______|___|_|_|_|____|_|_|
 
   A standard packet transmission is a bidirectional communication between
@@ -474,9 +474,9 @@ limitations under the License. */
 
   Channel analysis   Transmission                                                 Response
       _____           ____________________________________________________         _____
-     | C-A |         | ID | LENGTH | HEADER |  SENDER ID  | CONTENT | CRC |       | ACK |
+     | C-A |         | ID | HEADER | LENGTH |  SENDER ID  | CONTENT | CRC |       | ACK |
   <--|-----|---< >---|----|--------|--------|-------------|---------|-----|--> <--|-----|
-     |  0  |         | 12 |   5    |  001   |    ID 11    |   64    |     |       |  6  |
+     |  0  |         | 12 |00000001|   5    |    ID 11    |   64    |     |       |  6  |
      |_____|         |____|________|________|_____________|_________|_____|       |_____|
 
   DEFAULT HEADER CONFIGURATION:
@@ -496,9 +496,9 @@ limitations under the License. */
 
      Transmission
       ______________________________________
-     | ID | LENGTH | HEADER | CONTENT | CRC |
+     | ID | HEADER | LENGTH | CONTENT | CRC |
   >--|----|--------|--------|---------|-----|-->
-     | 12 |   5    |  000   |   64    |     |
+     | 12 |00000000|   5    |   64    |     |
      |____|________|________|_________|_____|
 
   HEADER CONFIGURATION:
@@ -517,9 +517,9 @@ limitations under the License. */
 
  Channel analysis                         Transmission                                      Response
     _____         __________________________________________________________________         _____
-   | C-A |       | ID | LENGTH | HEADER |    BUS ID   | BUS ID | ID | CONTENT | CRC |       | ACK |
+   | C-A |       | ID | HEADER | LENGTH |    BUS ID   | BUS ID | ID | CONTENT | CRC |       | ACK |
  <-|-----|--< >--|----|--------|--------|-------------|--------|----|---------|-----|--> <--|-----|
-   |  0  |       | 12 |   5    |  111   |     0001    |  0001  | 11 |   64    |     |       |  6  |
+   |  0  |       | 12 |00000111|   5    |     0001    |  0001  | 11 |   64    |     |       |  6  |
    |_____|       |____|________|________|_____________|________|____|_________|_____|       |_____|
                                         |Receiver info| Sender info |
   HEADER CONFIGURATION:

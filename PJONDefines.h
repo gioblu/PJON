@@ -95,6 +95,7 @@ limitations under the License. */
   #define MODE_BIT          B00000001 // 1 - Shared | 0 - Local
   #define SENDER_INFO_BIT   B00000010 // 1 - Sender device id + Sender bus id if shared | 0 - No info inclusion
   #define ACK_REQUEST_BIT   B00000100 // 1 - Request acknowledge | 0 - Do not request acknowledge
+  #define ACK_MODE_BIT      B00001000 // 1 - Asynchronous acknowledge | 0 - Synchronous acknowledge
   #define ADDRESS_BIT       B00010000 // 1 - Addressing related | 0 - Not addressing related
   #define CRC_BIT           B00100000 // 1 - CRC32 | 0 - CRC8
   #define EXTEND_LENGTH_BIT B01000000 // 1 - 2 bytes length | 0 - 1 byte length

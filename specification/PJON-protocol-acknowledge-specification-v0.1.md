@@ -50,7 +50,7 @@ Channel analysis                     Transmission                               
 |_____|   |____|__________|________|____________|________|____|___________|_________|_____|   |_____|
                                    |  RX INFO   |   TX INFO   |           
 ```
-In the packet shown above device `0` of bus `0.0.0.1` sends `@` or `64` to device `0` of bus `0.0.0.2` containing its packet id `0.0.0.1` that will be used by receiver to send back an asynchronous acknowledgement packet as requested by header `00001111` where `00001000` bit up requests an asynchronous acknowledgement and `00000100` requests a synchronous acknowledgement. This precise case is used as example to show both features used at the same time to obtain an efficient and secure way to transmit packets with correct transmission certainty.
+In the packet shown above device `0` of bus `0.0.0.1` sends `@` or `64` to device `0` of bus `0.0.0.2` containing its packet id `0.0.0.1` that will be used by receiver to send back an asynchronous acknowledgement packet as requested by header `00001111` where `00001000` bit up requests an asynchronous acknowledgement and `00000100` requests a synchronous acknowledgement. This precise case is used as an example to show both features used at the same time to obtain an efficient and secure way to transmit packets with correct transmission certainty.
 
 ```cpp        
 BUS 0.0.0.1                                                                                BUS 0.0.0.2

@@ -132,7 +132,7 @@
 
 /* Teensy ------------------------------------------------------------------- */
 #if defined(__MK20DX256__)
-  #if MODE == _SWBB_STANDARD
+  #if _SWBB_MODE == _SWBB_STANDARD
   /* Added by github user SticilFace - 25/04/2016  */
     #if F_CPU == 96000000L
       #define SWBB_BIT_WIDTH 46
@@ -186,3 +186,15 @@
     #define SWBB_READ_DELAY 8
   #endif
 #endif
+
+/* The default response timeout setup dedicates the transmission time of 1 byte plus
+   4 milliseconds to latency and CRC computation. If receiver needs more than
+   SWBB_TIMEOUT to compute CRC and answer back ACK, transmitter will not receive
+   the incoming synchronous ACK (Uno CRC8 computation: 150 microseconds).
+   Higher or lower if necessary! */
+
+#ifndef SWBB_LATENCY
+  #define SWBB_LATENCY 4000
+#endif
+
+#define SWBB_TIMEOUT ((SWBB_BIT_WIDTH * 9) + SWBB_BIT_SPACER + SWBB_LATENCY)

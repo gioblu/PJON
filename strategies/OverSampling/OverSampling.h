@@ -17,7 +17,7 @@
    See the License for the specific language governing permissions and
    limitations under the License. */
 
-#define _STXRX882_STANDARD 0
+#define _STXRX882_STANDARD 1
 
 /* _STXRX882_STANDARD:
    Medium: STX882/SRX882 433Mhz ASK/FSK modules or 315/433 MHz modules (green)
@@ -31,7 +31,9 @@
     Data throughput: 150B/s (data length 20 of characters)
     Range: 250m with no direct line of sight, 5km with direct line of sight  */
 
-#define _OS_MODE _STXRX882_STANDARD
+#ifndef _OS_MODE
+  #define _OS_MODE _STXRX882_STANDARD
+#endif
 
 #include "Timing.h"
 #include "../../utils/digitalWriteFast.h"
@@ -47,12 +49,15 @@ class OverSampling {
       float value = 0.5;
       unsigned long time = micros();
       pinModeFast(_input_pin, INPUT);
+      delayMicroseconds(_OS_BIT_SPACER / 2);
+      if(digitalReadFast(_input_pin)) return false;
+      delayMicroseconds(_OS_BIT_SPACER / 2);
       for(uint8_t i = 0; i < 9; i++) {
         while((uint32_t)(micros() - time) < _OS_BIT_WIDTH)
           value = (value * 0.999)  + (digitalReadFast(_input_pin) * 0.001);
-        if(value > 0.5)
-          return false;
+        if(value > 0.5) return false;
       }
+      delayMicroseconds(_OS_LATENCY);
       return true;
     };
 
@@ -123,7 +128,7 @@ class OverSampling {
 
       uint16_t response = FAIL;
       uint32_t time = micros();
-      while(response == FAIL && (uint32_t)((micros() - _OS_BIT_SPACER) - _OS_BIT_WIDTH) <= time)
+      while(response == FAIL && (uint32_t)(micros() - _OS_TIMEOUT) <= time)
         response = receive_byte();
       return response;
     };
@@ -170,9 +175,9 @@ class OverSampling {
 
     /* Send a string: */
 
-    void send_string(uint8_t *string, uint8_t length) {
+    void send_string(uint8_t *string, uint16_t length) {
       pinModeFast(_output_pin, OUTPUT);
-      for(uint8_t b = 0; b < length; b++)
+      for(uint16_t b = 0; b < length; b++)
         send_byte(string[b]);
       pullDownFast(_output_pin);
     };

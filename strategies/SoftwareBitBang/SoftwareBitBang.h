@@ -23,21 +23,23 @@ STANDARD transmission mode performance:
    Absolute  communication speed: 1.81kB/s (data length 20 of characters)
    Data throughput: 1.51kB/s (data length 20 of characters)
    Promiscuous architecture/clock compatible */
-#define _SWBB_STANDARD  0
+#define _SWBB_STANDARD  1
 
 /* FAST transmission mode performance:
    Transfer speed: 25.157kBd or 3.15kB/s
    Absolute  communication speed: 2.55kB/s (data length 20 of characters)
    Data throughput: 2.13kB/s (data length 20 of characters)
    Promiscuous architecture/clock compatible */
-#define _SWBB_FAST      1
+#define _SWBB_FAST      2
 
 /* OVERDRIVE transmission mode performance:
    Architecture / setup dependant, see Timing.h */
-#define _SWBB_OVERDRIVE 2
+#define _SWBB_OVERDRIVE 3
 
 /* Set here the selected transmission mode - default STANDARD */
-#define _SWBB_MODE _SWBB_STANDARD
+#ifndef _SWBB_MODE
+  #define _SWBB_MODE _SWBB_STANDARD
+#endif
 
 #include "Timing.h"
 #include "../../utils/digitalWriteFast.h"
@@ -51,12 +53,14 @@ class SoftwareBitBang {
 
     boolean can_start() {
       pinModeFast(_input_pin, INPUT);
+      delayMicroseconds(SWBB_BIT_SPACER / 2);
+      if(digitalReadFast(_input_pin)) return false;
+      delayMicroseconds(SWBB_BIT_SPACER / 2);
       for(uint8_t i = 0; i < 9; i++) {
         if(digitalReadFast(_input_pin))
           return false;
         delayMicroseconds(SWBB_BIT_WIDTH);
       }
-      if(digitalReadFast(_input_pin)) return false;
       return true;
     };
 
@@ -124,7 +128,7 @@ class SoftwareBitBang {
 
       uint16_t response = FAIL;
       uint32_t time = micros();
-      while(response == FAIL && (uint32_t)((micros() - SWBB_BIT_SPACER) - SWBB_BIT_WIDTH) <= time)
+      while(response == FAIL && (uint32_t)(micros() - SWBB_TIMEOUT) <= time)
         response = receive_byte();
       return response;
     };
@@ -171,9 +175,9 @@ class SoftwareBitBang {
 
     /* Send a string: */
 
-    void send_string(uint8_t *string, uint8_t length) {
+    void send_string(uint8_t *string, uint16_t length) {
       pinModeFast(_output_pin, OUTPUT);
-      for(uint8_t b = 0; b < length; b++)
+      for(uint16_t b = 0; b < length; b++)
         send_byte(string[b]);
       pullDownFast(_output_pin);
     };

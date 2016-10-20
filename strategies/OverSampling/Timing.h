@@ -25,3 +25,15 @@
 #ifndef _OS_BIT_SPACER
   #define _OS_BIT_SPACER 328
 #endif
+
+/* The default response timeout setup dedicates the transmission time of 1 byte plus
+  4 milliseconds to latency and CRC computation. If receiver needs more than
+  _OS_TIMEOUT to compute CRC and answer back ACK, transmitter will not receive
+  the incoming synchronous ACK (Uno CRC8 computation: 150 microseconds).
+  Higher or lower if necessary! */
+
+#ifndef _OS_LATENCY
+ #define _OS_LATENCY 4000
+#endif
+
+#define _OS_TIMEOUT ((_OS_BIT_WIDTH * 9) + _OS_BIT_SPACER + _OS_LATENCY)

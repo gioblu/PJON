@@ -144,13 +144,11 @@ limitations under the License. */
   #define ID_REQUEST_INTERVAL        100000
   /* Master ID_REQUEST and ID_NEGATE timeout */
   #define ADDRESSING_TIMEOUT        2900000
-  /* Master ID_LIST interval (10 seconds) */
-  #define MASTER_LOOKUP_INTERVAL   10000000
 
   struct PJON_Packet {
     uint8_t  attempts;
     char     content[PACKET_MAX_LENGTH];
-    uint8_t  length;
+    uint16_t length;
     uint32_t registration;
     uint16_t state;
     uint32_t timing;
@@ -159,16 +157,17 @@ limitations under the License. */
   /* Last received packet Metainfo */
   struct PacketInfo {
     uint8_t header = 0;
+    uint8_t extended_header = 0;
     uint8_t receiver_id = 0;
     uint8_t receiver_bus_id[4];
     uint8_t sender_id = 0;
     uint8_t sender_bus_id[4];
   };
 
-  typedef void (* receiver)(uint8_t *payload, uint8_t length, const PacketInfo &packet_info);
+  typedef void (* receiver)(uint8_t *payload, uint16_t length, const PacketInfo &packet_info);
   typedef void (* error)(uint8_t code, uint8_t data);
 
-  static void dummy_receiver_handler(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {};
+  static void dummy_receiver_handler(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {};
   static void dummy_error_handler(uint8_t code, uint8_t data) {};
 
   /* Check equality between two bus ids */

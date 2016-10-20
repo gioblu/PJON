@@ -199,9 +199,9 @@ limitations under the License. */
         uint8_t id,
         const uint8_t *b_id,
         const char *packet,
-        uint8_t length,
+        uint16_t length,
         uint32_t timing,
-        uint8_t header = NOT_ASSIGNED
+        uint16_t header = NOT_ASSIGNED
       ) {
          for(uint8_t i = 0; i < MAX_PACKETS; i++)
           if(packets[i].state == 0) {
@@ -383,7 +383,7 @@ limitations under the License. */
          This function is typically called from with the receive
          callback function to deliver a response to a request. */
 
-      uint16_t reply(const char *packet, uint8_t length, uint8_t header = NOT_ASSIGNED) {
+      uint16_t reply(const char *packet, uint16_t length, uint16_t header = NOT_ASSIGNED) {
         if(last_packet_info.sender_id != BROADCAST)
           return dispatch(
             last_packet_info.sender_id,
@@ -416,7 +416,7 @@ limitations under the License. */
        // Send HI! to device 99 on bus id 127.0.0.1 every second (1.000.000 microseconds)
        bus.remove(hi); // Stop repeated sending */
 
-      uint16_t send(uint8_t id, const char *string, uint8_t length, uint8_t header = NOT_ASSIGNED) {
+      uint16_t send(uint8_t id, const char *string, uint16_t length, uint16_t header = NOT_ASSIGNED) {
         return dispatch(id, bus_id, string, length, 0, header);
       };
 
@@ -424,8 +424,8 @@ limitations under the License. */
         uint8_t id,
         const uint8_t *b_id,
         const char *string,
-        uint8_t length,
-        uint8_t header = NOT_ASSIGNED
+        uint16_t length,
+        uint16_t header = NOT_ASSIGNED
       ) {
         return dispatch(id, b_id, string, length, 0, header);
       };
@@ -434,9 +434,9 @@ limitations under the License. */
       uint16_t send_repeatedly(
         uint8_t id,
         const char *string,
-        uint8_t length,
+        uint16_t length,
         uint32_t timing,
-        uint8_t header = NOT_ASSIGNED
+        uint16_t header = NOT_ASSIGNED
       ) {
         return dispatch(id, bus_id, string, length, timing, header);
       };
@@ -446,9 +446,9 @@ limitations under the License. */
         uint8_t id,
         const uint8_t *b_id,
         const char *string,
-        uint8_t length,
+        uint16_t length,
         uint32_t timing,
-        uint8_t header = NOT_ASSIGNED
+        uint16_t header = NOT_ASSIGNED
       ) {
         return dispatch(id, b_id, string, length, timing, header);
       };
@@ -528,7 +528,7 @@ limitations under the License. */
   with many other buses with transmission certainty through synchronous acknowledge
   and sender info to easy reply to packets with the reply() function. */
 
-      uint16_t send_packet(const char *string, uint8_t length) {
+      uint16_t send_packet(const char *string, uint16_t length) {
         if(!string) return FAIL;
         if(_mode != SIMPLEX && !strategy.can_start()) return BUSY;
         strategy.send_string((uint8_t *)string, length);
@@ -541,7 +541,7 @@ limitations under the License. */
 
       /* Send a packet passing its info as parameters: */
 
-      uint16_t send_packet(uint8_t id, char *string, uint8_t length, uint8_t header = NOT_ASSIGNED) {
+      uint16_t send_packet(uint8_t id, char *string, uint16_t length, uint16_t header = NOT_ASSIGNED) {
         if(!(length = compose_packet(id, bus_id, (char *)data, string, length, header)))
           return FAIL;
         return send_packet((char *)data, length);
@@ -552,8 +552,8 @@ limitations under the License. */
         uint8_t id,
         const uint8_t *b_id,
         char *string,
-        uint8_t length,
-        uint8_t header = NOT_ASSIGNED
+        uint16_t length,
+        uint16_t header = NOT_ASSIGNED
       ) {
         if(!(length = compose_packet(id, b_id, (char *)data, string, length, header)))
           return FAIL;
@@ -569,8 +569,8 @@ limitations under the License. */
         uint8_t id,
         const uint8_t *b_id,
         const char *string,
-        uint8_t length,
-        uint8_t header = NOT_ASSIGNED
+        uint16_t length,
+        uint16_t header = NOT_ASSIGNED
       ) {
         if(!(length = compose_packet(id, b_id, (char *)data, string, length, header))) return FAIL;
         uint16_t state = FAIL;
@@ -590,8 +590,8 @@ limitations under the License. */
       uint16_t send_packet_blocking(
         uint8_t id,
         const char *string,
-        uint8_t length,
-        uint8_t header = NOT_ASSIGNED
+        uint16_t length,
+        uint16_t header = NOT_ASSIGNED
       ) {
         return send_packet_blocking(id, bus_id, string, length, header);
       };
@@ -702,7 +702,7 @@ limitations under the License. */
          This will be called when a correct message will be received.
          Inside there you can code how to react when data is received.
 
-        void receiver_function(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {
+        void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
           for(int i = 0; i < length; i++)
             Serial.print((char)payload[i]);
           Serial.print(" ");

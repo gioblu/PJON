@@ -105,7 +105,7 @@ public:
       do {
         result = receive_byte();
         if (result == ACK || result == NAK) return result;
-      } while (micros() - start < RESPONSE_TIMEOUT);
+     } while ((uint32_t)(micros() - start) < RESPONSE_TIMEOUT);
       return result;
     };
 

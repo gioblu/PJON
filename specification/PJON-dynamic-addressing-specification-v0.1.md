@@ -1,11 +1,11 @@
 - PJON Protocol specification:
-[v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md) - [v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md) - [v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md)
+[v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md) - [v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md) - [v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md) - [v1.0](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v1.0.md)
 - Dynamic addressing specification: **[v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md)**
 
 ```cpp
 /*
 Milan, Italy - 02/10/2016
-The PJON dynamic addressing specification is an invention and intellectual property
+The PJON™ dynamic addressing specification is an invention and intellectual property
 of Giovanni Blu Mitolo - Copyright 2010-2016 All rights reserved
 
 Related work: https://github.com/gioblu/PJON/
@@ -17,7 +17,7 @@ Master Thesis, IT University of Copenhagen, Denmark, September 2016
 */
 ```
 
-###PJON dynamic addressing specification v0.1
+###PJON™ dynamic addressing specification v0.1
 This draft defines the dynamic addressing procedure used by a device in multi-master configuration or the one imposed and regulated by the master in a master-slave configuration.
 
 ###Master-slave dynamic addressing

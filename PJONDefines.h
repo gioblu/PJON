@@ -48,6 +48,7 @@ limitations under the License. */
 #ifndef PJONDefines_h
   #define PJONDefines_h
   #include "utils/CRC8.h"
+  #include "utils/CRC32.h"
 
   /* Device id of the master */
   #define MASTER_ID   254
@@ -82,16 +83,19 @@ limitations under the License. */
   #endif
 
   /* Internal constants */
-  #define FAIL       0x100
+  #define FAIL       65535
   #define TO_BE_SENT 74
 
   /* HEADER CONFIGURATION:
   Thanks to the header byte the transmitter is able to instruct
   the receiver to handle communication as requested. */
-  #define MODE_BIT        B00000001 // 1 - Shared | 0 - Local
-  #define SENDER_INFO_BIT B00000010 // 1 - Sender device id + Sender bus id if shared | 0 - No info inclusion
-  #define ACK_REQUEST_BIT B00000100 // 1 - Request acknowledge | 0 - Do not request acknowledge
-  #define ADDRESS_BIT     B00010000 // 1 - Addressing related | 0 - Not addressing related
+  #define MODE_BIT          B00000001 // 1 - Shared | 0 - Local
+  #define SENDER_INFO_BIT   B00000010 // 1 - Sender device id + Sender bus id if shared | 0 - No info inclusion
+  #define ACK_REQUEST_BIT   B00000100 // 1 - Request acknowledge | 0 - Do not request acknowledge
+  #define ADDRESS_BIT       B00010000 // 1 - Addressing related | 0 - Not addressing related
+  #define CRC_BIT           B00100000 // 1 - CRC32 | 0 - CRC8
+  #define EXTEND_LENGTH_BIT B01000000 // 1 - 2 bytes length | 0 - 1 byte length
+  #define EXTEND_HEADER_BIT B10000000 // 1 - 2 bytes header | 0 - 1 byte header
 
   /* ERRORS: */
   #define CONNECTION_LOST     101
@@ -115,14 +119,14 @@ limitations under the License. */
      The packet buffer is preallocated, so its length strongly affects
      memory consumption */
   #ifndef MAX_PACKETS
-    #define MAX_PACKETS         5
+    #define MAX_PACKETS          5
   #endif
 
   /* Max packet length, higher if necessary.
      The max packet length defines the length of packets pre-allocated buffers
      so it strongly affects memory consumption */
   #ifndef PACKET_MAX_LENGTH
-    #define PACKET_MAX_LENGTH  50
+    #define PACKET_MAX_LENGTH   50
   #endif
 
   /* TIMING:

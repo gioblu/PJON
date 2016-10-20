@@ -266,36 +266,37 @@ limitations under the License. */
         uint16_t received_data = PJON<Strategy>::receive();
         if(received_data != ACK) return received_data;
 
-        uint8_t overhead = PJON<Strategy>::packet_overhead(this->data[2]);
+        uint8_t overhead = PJON<Strategy>::packet_overhead(this->data[1]);
+        uint8_t CRC_overhead = (this->data[1] & CRC_BIT) ? 4 : 1;
 
-        if(this->last_packet_info.header & ADDRESS_BIT && this->data[1] > 4) {
-          uint8_t request = this->data[overhead - 1];
+        if(this->last_packet_info.header & ADDRESS_BIT && this->data[2] > 4) {
+          uint8_t request = this->data[overhead - CRC_overhead];
           uint32_t rid =
-            (uint32_t)(this->data[overhead]     << 24) |
-            (uint32_t)(this->data[overhead + 1] << 16) |
-            (uint32_t)(this->data[overhead + 2] <<  8) |
-            (uint32_t)(this->data[overhead + 3]);
+            (uint32_t)(this->data[(overhead - CRC_overhead) + 1] << 24) |
+            (uint32_t)(this->data[(overhead - CRC_overhead) + 2] << 16) |
+            (uint32_t)(this->data[(overhead - CRC_overhead) + 3] <<  8) |
+            (uint32_t)(this->data[(overhead - CRC_overhead) + 4]);
 
           if(request == ID_REQUEST)
             approve_id(this->last_packet_info.sender_id, this->last_packet_info.sender_bus_id, rid);
 
           if(request == ID_CONFIRM)
-            if(!confirm_id(rid, this->data[overhead + 4]))
+            if(!confirm_id(rid, this->data[(overhead - CRC_overhead) + 5]))
               negate_id(this->last_packet_info.sender_id, this->last_packet_info.sender_bus_id, rid);
 
           if(request == ID_REFRESH)
-            if(!add_id(this->data[overhead + 4], rid, 1))
+            if(!add_id(this->data[(overhead - CRC_overhead) + 5], rid, 1))
               negate_id(this->last_packet_info.sender_id, this->last_packet_info.sender_bus_id, rid);
 
           if(request == ID_NEGATE)
-            if(this->data[overhead + 4] == this->last_packet_info.sender_id)
+            if(this->data[(overhead - CRC_overhead) + 5] == this->last_packet_info.sender_id)
               if(rid == ids[this->last_packet_info.sender_id - 1].rid)
                 if(bus_id_equality(this->last_packet_info.sender_bus_id, this->bus_id))
                   delete_id_reference(this->last_packet_info.sender_id);
 
         }
 
-        _master_receiver(this->data + overhead - 1, this->data[1] - overhead, this->last_packet_info);
+        _master_receiver(this->data + (overhead - CRC_overhead), this->data[2] - overhead, this->last_packet_info);
         return ACK;
       };
 

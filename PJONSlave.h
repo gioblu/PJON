@@ -207,6 +207,7 @@ limitations under the License. */
       bool handle_addressing() {
         if(this->last_packet_info.header & ADDRESS_BIT && this->_device_id != MASTER_ID) {
           uint8_t overhead = this->packet_overhead(this->last_packet_info.header);
+          uint8_t CRC_overhead = (this->last_packet_info.header & CRC_BIT) ? 4 : 1;
           uint8_t rid[4] = {_rid >> 24, _rid >> 16, _rid >> 8, _rid};
           char response[6];
           response[1] = rid[0];
@@ -214,10 +215,10 @@ limitations under the License. */
           response[3] = rid[2];
           response[4] = rid[3];
 
-          if(this->data[overhead - 1] == ID_REQUEST)
-            if(bus_id_equality(this->data + overhead, rid)) {
+          if(this->data[overhead - CRC_overhead] == ID_REQUEST)
+            if(bus_id_equality(this->data + ((overhead - CRC_overhead) + 1), rid)) {
               response[0] = ID_CONFIRM;
-              response[5] = this->data[overhead + 4];
+              response[5] = this->data[(overhead - CRC_overhead) + 5];
               this->set_id(response[5]);
               if(this->send_packet_blocking(
                 MASTER_ID,
@@ -231,11 +232,15 @@ limitations under the License. */
               }
             }
 
-          if(this->data[overhead - 1] == ID_NEGATE)
-            if(bus_id_equality(this->data + overhead, rid) && this->_device_id == this->data[0])
-              acquire_id();
+          if(this->data[overhead - CRC_overhead] == ID_NEGATE)
+            if(
+              bus_id_equality(
+                this->data + ((overhead - CRC_overhead) + 1),
+                rid
+              ) && this->_device_id == this->data[0]
+            ) acquire_id();
 
-          if(this->data[overhead - 1] == ID_LIST)
+          if(this->data[overhead - CRC_overhead] == ID_LIST)
             if(this->_device_id != NOT_ASSIGNED)
               if((uint32_t)(micros() - _last_request_time) > (ADDRESSING_TIMEOUT * 1.125)) {
                 _last_request_time = micros();
@@ -263,10 +268,14 @@ limitations under the License. */
         uint16_t received_data = PJON<Strategy>::receive();
         if(received_data != ACK) return received_data;
 
-        uint8_t overhead = this->packet_overhead(this->data[2]);
+        uint8_t overhead = this->packet_overhead(this->data[1]);
 
         if(!handle_addressing())
-          _slave_receiver(this->data + overhead - 1, this->data[1] - overhead, this->last_packet_info);
+          _slave_receiver(
+            this->data + (overhead - (this->data[1] & CRC_BIT ? 4 : 1)),
+            this->data[this->data[1] & EXTEND_HEADER_BIT ? 3 : 2] - overhead,
+            this->last_packet_info
+          );
 
         return ACK;
       };

@@ -112,7 +112,7 @@ limitations under the License. */
         for(uint8_t id = generate_random_byte(); (uint32_t)(micros() - time) < ID_SCAN_TIME; id++)
           if(id == BROADCAST || id == NOT_ASSIGNED || id == MASTER_ID) continue;
           else if(this->send_packet_blocking(id, this->bus_id, &msg, 1, head) == FAIL) {
-             this->_device_id = id;
+            this->_device_id = id;
             break;
           }
 
@@ -156,7 +156,15 @@ limitations under the License. */
       /* Release device id (Master-slave only): */
 
       bool discard_device_id() {
-        char request[6] = {ID_NEGATE, _rid >> 24, _rid >> 16, _rid >> 8, _rid, this->_device_id};
+        char request[6] = {
+          ID_NEGATE,
+          _rid >> 24,
+          _rid >> 16,
+          _rid >> 8,
+          _rid,
+          this->_device_id
+        };
+
         if(this->send_packet_blocking(
           MASTER_ID,
           this->bus_id,

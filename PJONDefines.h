@@ -13,19 +13,20 @@
         > <
  ______-| |-___________________________________________________________________
 
-PJON is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
+PJON™ is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
 with the support ot the internet community if you want to see the PJON project growing
 with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
 
-PJON Protocol specification:
+PJON™ Protocol specification:
 - v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md
 - v0.2 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md
 - v0.3 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md
+- v1.0 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v1.0.md
 
-PJON Dynamic addressing specification:
+PJON™ Dynamic addressing specification:
 - v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md
 
-PJON Standard compliant tools:
+PJON™ Standard compliant tools:
 - https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande
 - https://github.com/Girgitt/PJON-python PJON running on Python by Zbigniew Zasieczny
  ______________________________________________________________________________

@@ -1,6 +1,13 @@
 
 #define PACKET_MAX_LENGTH 325 // Make the buffer big enough
 #define MAX_PACKETS         2 // Reduce number of packets not to empty memory
+/*  Acknowledge Latency maximum duration (1000 microseconds default).
+    Can be necessary to higher SWBB_LATENCY to leave enough time to receiver
+    to compute the CRC and to respond with a synchronous acknowledgment.
+    SWBB_LATENCY can be reduced to higher communication speed if
+    devices are near and able to compute CRC fast enough. Now set to
+    4 milliseconds to give time to receive to compute CRC32 of a 300 bytes string. */
+#define SWBB_LATENCY 4000
 
 #include <PJON.h>
 

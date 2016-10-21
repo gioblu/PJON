@@ -1,15 +1,10 @@
-
-#define PJON_DEBUG      false // Set to true to enable Serial feedback on PJON exchanges
-#define PACKET_MAX_LENGTH 325 // Make the buffer big enough
-#define MAX_PACKETS         2 // Reduce number of packets not to empty memory
-
 #include <PJON.h>
 
 float test;
 float mistakes;
 int busy;
 int fail;
-int overhead;
+bool debug = false;
 
 // Bus id definition
 uint8_t bus_id[] = {0, 0, 0, 1};
@@ -20,14 +15,12 @@ PJON<SoftwareBitBang> bus(bus_id, 44);
 void setup() {
   bus.strategy.set_pin(12);
   bus.begin();
-
   bus.set_receiver(receiver_function);
-
   Serial.begin(115200);
 };
 
 void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
-  if(PJON_DEBUG == true) {
+  if(debug) {
     Serial.print("Header: ");
     Serial.print(packet_info.header, BIN);
     // If extended header included
@@ -61,9 +54,9 @@ void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &pack
       Serial.print(" Length: ");
       Serial.println(length);
     }
-    overhead = bus.packet_overhead(packet_info.header);
   }
 }
+
 
 void loop() {
   Serial.println("Starting 1 second communication speed test...");
@@ -80,13 +73,17 @@ void loop() {
     if(response == FAIL)
       fail++;
   }
-  Serial.print(overhead);
-  Serial.print(" ");
+
+  Serial.print("Packet Overhead: ");
+  Serial.print(bus.packet_overhead(bus.last_packet_info.header) + 1);
+  Serial.print("B - Total: ");
+  Serial.print((unsigned int)((bus.packet_overhead(bus.last_packet_info.header) + 1) * test));
+  Serial.println("B");
   Serial.print("Absolute com speed: ");
-  Serial.print(test * (300 + overhead + 1));
+  Serial.print(test * (20 + bus.packet_overhead(bus.last_packet_info.header) + 1));
   Serial.println("B/s");
   Serial.print("Practical bandwidth: ");
-  Serial.print(test * 300);
+  Serial.print(test * 20);
   Serial.println("B/s");
   Serial.print("Packets sent: ");
   Serial.println(test);
@@ -100,6 +97,8 @@ void loop() {
   Serial.print(100 - (100 / (test / mistakes)));
   Serial.println(" %");
   Serial.println(" --------------------- ");
+  // Avoid Serial interference during test flushing
+  Serial.flush();
 
   test = 0;
   mistakes = 0;

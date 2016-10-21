@@ -37,8 +37,8 @@ STANDARD transmission mode performance:
 #define _SWBB_OVERDRIVE 3
 
 /* Set here the selected transmission mode - default STANDARD */
-#ifndef _SWBB_MODE
-  #define _SWBB_MODE _SWBB_STANDARD
+#ifndef SWBB_MODE
+  #define SWBB_MODE _SWBB_STANDARD
 #endif
 
 #include "Timing.h"
@@ -53,14 +53,17 @@ class SoftwareBitBang {
 
     boolean can_start() {
       pinModeFast(_input_pin, INPUT);
-      delayMicroseconds(SWBB_BIT_SPACER / 2);
-      if(digitalReadFast(_input_pin)) return false;
-      delayMicroseconds(SWBB_BIT_SPACER / 2);
-      for(uint8_t i = 0; i < 9; i++) {
+      for(uint8_t i = 0; i < 10; i++) {
         if(digitalReadFast(_input_pin))
           return false;
         delayMicroseconds(SWBB_BIT_WIDTH);
       }
+      delayMicroseconds(SWBB_LATENCY + (SWBB_BIT_SPACER / 2));
+      if(digitalReadFast(_input_pin)) return false;
+      delayMicroseconds(SWBB_BIT_SPACER / 2);
+      if(digitalReadFast(_input_pin)) return false;
+      delayMicroseconds(random(0, COLLISION_DELAY));
+      if(digitalReadFast(_input_pin)) return false;
       return true;
     };
 

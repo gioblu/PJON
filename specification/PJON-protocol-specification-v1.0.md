@@ -64,7 +64,7 @@ In the graph below is shown the protocol stack model proposed. The differences b
 * Transmission occurs only if the communication medium is not in use
 * Devices communicate through packets with a maximum length of 255 or 65535 bytes
 * Packet transmission is regulated by a 1, 2 or 3 byte header
-* Synchronous and or asynchronous acknowledgement can be requested  ([Acknowledge specification v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-acknowledge-specification-v0.1.md))
+* Synchronous and or asynchronous acknowledgement can be requested  (see [Acknowledge specification v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-acknowledge-specification-v0.1.md))
 
 The PJON protocol v1.0 handles internal bus connectivity and unique addressing for 254 devices, through bus communication with unique bus addressing for 4.294.967.295 buses and supports up to 1.090.921.692.930 devices. It regulates the exchange of packets with a configurable set of features driven by its header. Depending on the packet configuration a certain overhead is added to information varying from 3 up to 19 bytes.
 

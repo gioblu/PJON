@@ -226,7 +226,7 @@ limitations under the License. */
           PJON<Strategy>::send_packet_blocking(
             BROADCAST, this->bus_id, &request, 1, PJON<Strategy>::get_header() | ADDRESS_BIT
           );
-          receive(1000);
+          receive(LIST_IDS_RECEPTION_TIME);
         }
       };
 

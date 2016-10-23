@@ -24,7 +24,6 @@
    limitations under the License. */
 
 #include <Arduino.h>
-#include <SoftwareSerial.h>
 
 #define THROUGH_SERIAL_MAX_BYTE_TIME        10000  // Wait up to 10 milliseconds for an incoming byte
 #define THROUGH_SERIAL_FREE_TIME_BEFORE_START 500  // 0.5 milliseconds of free channell before sending
@@ -103,11 +102,7 @@ class ThroughSerial {
 
     /* Pass the Serial port where you want to operate with */
 
-    void set_serial(HardwareSerial *serial_port) {
-      serial = serial_port;
-    };
-
-    void set_serial(SoftwareSerial *serial_port) {
+    void set_serial(Stream *serial_port) {
       serial = serial_port;
     };
 

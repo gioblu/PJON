@@ -1,11 +1,10 @@
 
-/* EthernetTCP is a Strategy for the PJON framework (included in version v6.0)
+/* EthernetTCP is a Strategy for the PJON framework (included in version v5.2)
    It supports delivering PJON packets over Ethernet TCP.
-   Compliant with the Padded jittering data link layer specification v0.4
+   Compliant with the PJON protocol layer specification v0.3
    _____________________________________________________________________________
 
-    Copyright 2012-2016 Giovanni Blu Mitolo gioscarab@gmail.com
-    EthernetTCP strategy and EthernetLink added by Fred Larsen
+    EthernetTCP strategy and EthernetLink proposed and developed by Fred Larsen 02/10/2016
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,8 +16,7 @@
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
-    limitations under the License.
-*/
+    limitations under the License. */
 
 #pragma once
 
@@ -31,7 +29,7 @@ class EthernetTCP {
     uint16_t last_send_result = FAIL;
 
     /* Caching of incoming packet to make it possible to deliver it byte for byte */
-    
+
     uint8_t incoming_packet_buf[PACKET_MAX_LENGTH];
     uint16_t incoming_packet_size = 0;
     uint16_t incoming_packet_pos = 0;
@@ -45,11 +43,11 @@ class EthernetTCP {
         incoming_packet_pos = 0;
       }
     }
-    
+
     EthernetTCP() {
       link.set_receiver(static_receiver, this);
     }
-    
+
     /* Check if the channel is free for transmission */
 
     boolean can_start() {
@@ -80,11 +78,11 @@ class EthernetTCP {
 
     void send_response(uint8_t response) { // Empty, ACK is always sent
     };
-    
+
 
     /* Send a string: */
 
-    void send_string(uint8_t *string, uint8_t length) {    
+    void send_string(uint8_t *string, uint8_t length) {
       if (length > 0)
         last_send_result = link.send((uint8_t)string[0], (const char*)string, length);
     };

@@ -10,9 +10,9 @@
     return crc;
   };
 
-  uint8_t compute_crc_8(const uint8_t *input_byte, uint8_t length) {
+  uint8_t compute_crc_8(const uint8_t *input_byte, uint16_t length) {
     uint8_t crc = 0;
-    for(uint8_t b = 0; b < length; b++)
+    for(uint16_t b = 0; b < length; b++)
       crc = roll_crc_8(input_byte[b], crc);
     return crc;
   };

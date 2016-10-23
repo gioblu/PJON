@@ -4,7 +4,7 @@
 uint8_t bus_id[] = {0, 0, 0, 1};
 
 // PJON object
-PJON<SoftwareBitBang> bus(bus_id, NOT_ASSIGNED);
+PJONSlave<SoftwareBitBang> bus(bus_id, NOT_ASSIGNED);
 
 int packet;
 char content[] = "01234567890123456789";

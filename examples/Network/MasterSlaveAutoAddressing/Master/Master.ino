@@ -15,7 +15,7 @@ void setup() {
   time = millis();
 };
 
-void receiver_function(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {
+void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
   uint32_t rid =
     (uint32_t)(payload[1]) << 24 |
     (uint32_t)(payload[2]) << 16 |
@@ -23,7 +23,7 @@ void receiver_function(uint8_t *payload, uint8_t length, const PacketInfo &packe
     (uint32_t)(payload[4]);
 
   Serial.print("Header: ");
-  Serial.print(packet_info.header);
+  Serial.print(packet_info.header, BIN);
   Serial.print(" Length: ");
   Serial.print(length);
   Serial.print(" Sender id: ");

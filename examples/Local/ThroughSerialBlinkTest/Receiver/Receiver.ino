@@ -14,7 +14,7 @@ void setup() {
   bus.strategy.set_serial(&Serial);
 };
 
-void receiver_function(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {
+void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
   if(payload[0] == 'B') {
     digitalWrite(13, HIGH);
     delay(30);

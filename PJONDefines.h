@@ -1,7 +1,7 @@
 
  /*-O//\             __     __
-   |-gfo\           |__| | |  | |\ |
-   |!y°o:\          |  __| |__| | \| v5.1
+   |-gfo\           |__| | |  | |\ | ™
+   |!y°o:\          |  __| |__| | \| v6.0
    |y"s§+`\         multi-master, multi-media communications bus system framework
   /so+:-..`\        Copyright 2010-2016 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
@@ -13,19 +13,23 @@
         > <
  ______-| |-___________________________________________________________________
 
-PJON is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
+PJON™ is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
 with the support ot the internet community if you want to see the PJON project growing
 with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
 
-PJON Protocol specification:
+PJON™ Protocol specification:
 - v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md
 - v0.2 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md
 - v0.3 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md
+- v1.0 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v1.0.md
 
-PJON Dynamic addressing specification:
+PJON™ Acknowledge specification:
+- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-acknowledge-specification-v0.1.md
+
+PJON™ Dynamic addressing specification:
 - v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md
 
-PJON Standard compliant tools:
+PJON™ Standard compliant tools:
 - https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande
 - https://github.com/Girgitt/PJON-python PJON running on Python by Zbigniew Zasieczny
  ______________________________________________________________________________
@@ -47,6 +51,7 @@ limitations under the License. */
 #ifndef PJONDefines_h
   #define PJONDefines_h
   #include "utils/CRC8.h"
+  #include "utils/CRC32.h"
 
   /* Device id of the master */
   #define MASTER_ID   254
@@ -81,16 +86,20 @@ limitations under the License. */
   #endif
 
   /* Internal constants */
-  #define FAIL       0x100
+  #define FAIL       65535
   #define TO_BE_SENT 74
 
   /* HEADER CONFIGURATION:
   Thanks to the header byte the transmitter is able to instruct
   the receiver to handle communication as requested. */
-  #define MODE_BIT        B00000001 // 1 - Shared | 0 - Local
-  #define SENDER_INFO_BIT B00000010 // 1 - Sender device id + Sender bus id if shared | 0 - No info inclusion
-  #define ACK_REQUEST_BIT B00000100 // 1 - Request acknowledge | 0 - Do not request acknowledge
-  #define ADDRESS_BIT     B00010000 // 1 - Addressing related | 0 - Not addressing related
+  #define MODE_BIT          B00000001 // 1 - Shared | 0 - Local
+  #define SENDER_INFO_BIT   B00000010 // 1 - Sender device id + Sender bus id if shared | 0 - No info inclusion
+  #define ACK_REQUEST_BIT   B00000100 // 1 - Request acknowledge | 0 - Do not request acknowledge
+  #define ACK_MODE_BIT      B00001000 // 1 - Asynchronous acknowledge | 0 - Synchronous acknowledge
+  #define ADDRESS_BIT       B00010000 // 1 - Addressing related | 0 - Not addressing related
+  #define CRC_BIT           B00100000 // 1 - CRC32 | 0 - CRC8
+  #define EXTEND_LENGTH_BIT B01000000 // 1 - 2 bytes length | 0 - 1 byte length
+  #define EXTEND_HEADER_BIT B10000000 // 1 - 2 bytes header | 0 - 1 byte header
 
   /* ERRORS: */
   #define CONNECTION_LOST     101
@@ -114,14 +123,14 @@ limitations under the License. */
      The packet buffer is preallocated, so its length strongly affects
      memory consumption */
   #ifndef MAX_PACKETS
-    #define MAX_PACKETS         5
+    #define MAX_PACKETS          5
   #endif
 
   /* Max packet length, higher if necessary.
      The max packet length defines the length of packets pre-allocated buffers
      so it strongly affects memory consumption */
   #ifndef PACKET_MAX_LENGTH
-    #define PACKET_MAX_LENGTH  50
+    #define PACKET_MAX_LENGTH   50
   #endif
 
   /* TIMING:
@@ -139,13 +148,13 @@ limitations under the License. */
   #define ID_REQUEST_INTERVAL        100000
   /* Master ID_REQUEST and ID_NEGATE timeout */
   #define ADDRESSING_TIMEOUT        2900000
-  /* Master ID_LIST interval (10 seconds) */
-  #define MASTER_LOOKUP_INTERVAL   10000000
+  /* Master reception time during LIST_ID request broadcast (2 milliseconds) */
+  #define LIST_IDS_RECEPTION_TIME     20000
 
   struct PJON_Packet {
     uint8_t  attempts;
     char     content[PACKET_MAX_LENGTH];
-    uint8_t  length;
+    uint16_t length;
     uint32_t registration;
     uint16_t state;
     uint32_t timing;
@@ -154,16 +163,17 @@ limitations under the License. */
   /* Last received packet Metainfo */
   struct PacketInfo {
     uint8_t header = 0;
+    uint8_t extended_header = 0;
     uint8_t receiver_id = 0;
     uint8_t receiver_bus_id[4];
     uint8_t sender_id = 0;
     uint8_t sender_bus_id[4];
   };
 
-  typedef void (* receiver)(uint8_t *payload, uint8_t length, const PacketInfo &packet_info);
+  typedef void (* receiver)(uint8_t *payload, uint16_t length, const PacketInfo &packet_info);
   typedef void (* error)(uint8_t code, uint8_t data);
 
-  static void dummy_receiver_handler(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {};
+  static void dummy_receiver_handler(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {};
   static void dummy_error_handler(uint8_t code, uint8_t data) {};
 
   /* Check equality between two bus ids */

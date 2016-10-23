@@ -1,11 +1,12 @@
 - PJON Protocol specification:
-[v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md) - **[v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md)** - [v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md)
+[v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md) - **[v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md)** - [v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md) - [v1.0](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v1.0.md)
+- Acknowledge specification: [v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-acknowledge-specification-v0.1.md)
 - Dynamic addressing specification: [v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md)
 
 ```cpp
 /*
 Milan, Italy - 19/08/2015
-The PJON protocol specification is an invention and intellectual property
+The PJON™ protocol specification is an invention and intellectual property
 of Giovanni Blu Mitolo - Copyright 2010-2016 All rights reserved
 
 Related work: https://github.com/gioblu/PJON/
@@ -15,7 +16,7 @@ New feature: Bus identification
 */
 ```
 
-###PJON Protocol Specification v0.2
+###PJON™ Protocol Specification v0.2
 After more than 4 years of testing, a second, experimental draft of the PJON protocol specification has been released to continue to pursue the goal of providing a new and open-source, multi-master communications bus system Standard. The main changes contains the addition of a IPv4 like 4 byte bus id. This extends the network capabilities of the PJON protocol from 254 devices of the 0.1 version to 1.090.921.692.930 devices supported by the 0.2 version. It is created to provide the community with a new and easy way to communicate data and build a network of devices. Its more common applications are in the field of the internet of things and embedded systems. Extended tests proved its effectiveness on different media like electricity, radio and light.
 
 ###Basic concepts
@@ -75,7 +76,7 @@ Channel analysis  Transmission                                Response
     _____          _______________________________________     _____
    | C-A |        | ID | LENGTH | BUS ID  | CONTENT | CRC |   | ACK |
 <--|-----|--------|----|--------|---------|---------|-----|> <|-----|
-   |  0  |        | 12 |   4    | 0.0.0.1 |   64    | 130 |   |  6  |
+   |  0  |        | 12 |   8    | 0.0.0.1 |   64    | 130 |   |  6  |
    |_____|        |____|________|_________|_________|_____|   |_____|
 ```
 Thanks to this rule it is not only possible to share a medium with neighbors, but also network with them and enhance connectivity for free.

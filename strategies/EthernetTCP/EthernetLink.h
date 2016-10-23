@@ -124,7 +124,7 @@
 #define MAX_REMOTE_NODES 10
 #define DEFAULT_PORT     7000
 
-typedef void (*link_receiver)(uint8_t id, const uint8_t *payload, uint8_t length, void *callback_object);
+typedef void (*link_receiver)(uint8_t id, const uint8_t *payload, uint16_t length, void *callback_object);
 typedef void (*link_error)(uint8_t code, uint8_t data);
 
 class EthernetLink {
@@ -180,7 +180,7 @@ public:
   void single_socket(bool single_socket) { _single_socket = single_socket; }
   
   // Keep trying to send for a maximum duration
-  int16_t send_with_duration(uint8_t id, const char *packet, uint8_t length, unsigned long duration_us);
+  int16_t send_with_duration(uint8_t id, const char *packet, uint16_t length, unsigned long duration_us);
 
   // In single-socket mode and acting as initiator, connect and check for incoming packets from a specific device
   uint16_t poll_receive(uint8_t remote_id);
@@ -193,7 +193,7 @@ public:
   uint16_t receive();
   uint16_t receive(uint32_t duration_us);
 
-  uint16_t send(uint8_t id, const char *packet, uint8_t length, uint32_t timing_us = 0);
+  uint16_t send(uint8_t id, const char *packet, uint16_t length, uint32_t timing_us = 0);
 
   void set_id(uint8_t id) { _local_id = id; };
   void set_error(link_error e) { _error = e; };

@@ -190,8 +190,7 @@
 /* The default response timeout setup dedicates the transmission time of 1 byte plus
    1 millisecond to latency and CRC computation. If receiver needs more than
    SWBB_TIMEOUT to compute CRC and answer back ACK, transmitter will not receive
-   the incoming synchronous ACK (Uno CRC8 computation: 150 microseconds).
-   Higher or lower if necessary! */
+   the incoming synchronous ACK. Higher or lower if necessary! */
 
 #ifndef SWBB_LATENCY
   #define SWBB_LATENCY 1000

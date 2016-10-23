@@ -53,14 +53,16 @@ class SoftwareBitBang {
 
     boolean can_start() {
       pinModeFast(_input_pin, INPUT);
-      for(uint8_t i = 0; i < 10; i++) {
+      delayMicroseconds(SWBB_BIT_SPACER / 2);
+      if(digitalReadFast(_input_pin)) return false;
+      delayMicroseconds((SWBB_BIT_SPACER / 2));
+      if(digitalReadFast(_input_pin)) return false;
+      delayMicroseconds(SWBB_BIT_WIDTH / 2);
+      for(uint8_t i = 0; i < 9; i++) {
         if(digitalReadFast(_input_pin))
           return false;
         delayMicroseconds(SWBB_BIT_WIDTH);
       }
-      delayMicroseconds(SWBB_LATENCY + (SWBB_BIT_SPACER / 2));
-      if(digitalReadFast(_input_pin)) return false;
-      delayMicroseconds(SWBB_BIT_SPACER / 2);
       if(digitalReadFast(_input_pin)) return false;
       delayMicroseconds(random(0, COLLISION_DELAY));
       if(digitalReadFast(_input_pin)) return false;
@@ -131,8 +133,19 @@ class SoftwareBitBang {
 
       uint16_t response = FAIL;
       uint32_t time = micros();
-      while(response == FAIL && (uint32_t)(micros() - SWBB_TIMEOUT) <= time)
+      /* Transmitter emits a bit SWBB_ACCEPTANCE / 4 long and tries
+         to get a response cyclically for SWBB_TIMEOUT microseconds.
+         Receiver synchronizes to the falling edge of the last incoming
+         bit and transmits ACK or NAK */
+      while(response == FAIL && (uint32_t)(micros() - SWBB_TIMEOUT) <= time) {
+        digitalWriteFast(_input_pin, LOW);
         response = receive_byte();
+        if(response == FAIL) {
+          digitalWriteFast(_output_pin, HIGH);
+          delayMicroseconds(SWBB_BIT_WIDTH / 4);
+          pullDownFast(_output_pin);
+        }
+      }
       return response;
     };
 
@@ -170,6 +183,13 @@ class SoftwareBitBang {
     /* Send byte response to package transmitter */
 
     void send_response(uint8_t response) {
+      pullDownFast(_input_pin);
+      uint32_t time = micros();
+      /* Transmitter emits a bit SWBB_ACCEPTANCE / 4 long and tries
+         to get a response cyclically for SWBB_TIMEOUT microseconds.
+         Receiver synchronizes to the falling edge of the last incoming
+         bit and transmits ACK or NAK */
+      while((uint32_t)(micros() - time) < (SWBB_BIT_WIDTH / 2.25) && digitalReadFast(_input_pin));
       pinModeFast(_output_pin, OUTPUT);
       send_byte(response);
       pullDownFast(_output_pin);

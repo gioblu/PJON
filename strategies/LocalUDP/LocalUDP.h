@@ -123,7 +123,7 @@ public:
 
     /* Send a string: */
 
-    void send_string(uint8_t *string, uint8_t length) {
+    void send_string(uint8_t *string, uint16_t length) {
       if (length > 0) {
         udp.beginPacket(_broadcast, _port);
         udp.write((const char*) &_magic_header, 4);

@@ -345,7 +345,7 @@ uint16_t EthernetLink::poll_receive(uint8_t remote_id) {
 };
 
 
-uint16_t EthernetLink::send(uint8_t id, const char *packet, uint8_t length, uint32_t timing_us) {
+uint16_t EthernetLink::send(uint8_t id, const char *packet, uint16_t length, uint32_t timing_us) {
   // Special algorithm for single-socket transfers
   if (_single_socket)
     return single_socket_transfer(_server ? _client_in : _client_out, id, _server ? false : true, packet, length);
@@ -451,7 +451,7 @@ uint16_t EthernetLink::send(EthernetClient &client, uint8_t id, const char *pack
 };
 
 
-int16_t EthernetLink::send_with_duration(uint8_t id, const char *packet, uint8_t length, uint32_t duration_us) {
+int16_t EthernetLink::send_with_duration(uint8_t id, const char *packet, uint16_t length, uint32_t duration_us) {
   uint32_t start = micros();
   int16_t result = FAIL;
   do {

@@ -8,5 +8,5 @@ The applicant may obtain a license of use concerning to physical and/or digital 
 
 To obtain a license for commercial use of digital and or physical representations of PJON™ and or its brand/icon:
 
-1. Write a brief application containing a *product description*, *tool list* (hardware and software used), *interoperability assessment* (tested with other PJON compliant tools?), *functional tests* (It works? How?) and send it to gioscarab@gmail.com   
+1. Write a brief application containing a **product description**, **tool list** (hardware and software used), **interoperability assessment** (tested with other PJON compliant tools?), **functional tests** (It works? How?) and send it to gioscarab@gmail.com   
 2. Wait for application analysis and if fitting, license release. If an application is considered unfitting, the applicant is informed and, if necessary, supported to make the product PJON™ compliant to the related license.

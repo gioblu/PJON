@@ -1,3 +1,10 @@
+- [Addressing](https://github.com/gioblu/PJON/tree/6.0/documentation/addressing.md)
+- [Configuration](https://github.com/gioblu/PJON/tree/6.0/documentation/configuration.md)
+- [Data reception](https://github.com/gioblu/PJON/tree/6.0/documentation/data-reception.md)
+- [Data transmission](https://github.com/gioblu/PJON/tree/6.0/documentation/data-transmission.md)
+- [Error handling](https://github.com/gioblu/PJON/tree/6.0/documentation/error-handling.md)
+- **[IO setup](https://github.com/gioblu/PJON/tree/6.0/documentation/io-setup.md)**
+
 The physical layer configuration is handled by the Strategy entity, if you want to communicate bi-directionally on a single medium (using SoftwareBitBang or OverSampling), sharing transmission and reception line, use:
 ```cpp  
  PJON<> bus;
@@ -16,3 +23,5 @@ If you don't need bidirectional communication and you have only the transmitter 
  PJON<OverSampling> bus;
  bus.strategy.set_pins(11, NOT_ASSIGNED); // Only receiver
 ```
+
+See other strategies readme to have additional information on their dedicated physical layer configuration.

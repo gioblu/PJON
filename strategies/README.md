@@ -47,7 +47,7 @@ class YourStrategyName {
     uint16_t receive_byte() { ... };
     uint16_t receive_response() { ... };
     void send_response(uint8_t response) { ... };
-    void send_string(uint8_t *string, uint8_t length) { ... };
+    void send_string(uint8_t *string, uint16_t length) { ... };
 };
 ```
 

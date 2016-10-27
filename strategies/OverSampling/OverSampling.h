@@ -31,8 +31,8 @@
     Data throughput: 150B/s (data length 20 of characters)
     Range: 250m with no direct line of sight, 5km with direct line of sight  */
 
-#ifndef _OS_MODE
-  #define _OS_MODE _STXRX882_STANDARD
+#ifndef OS_MODE
+  #define OS_MODE _STXRX882_STANDARD
 #endif
 
 #include "Timing.h"
@@ -49,15 +49,19 @@ class OverSampling {
       float value = 0.5;
       unsigned long time = micros();
       pinModeFast(_input_pin, INPUT);
-      delayMicroseconds(_OS_BIT_SPACER / 2);
-      if(digitalReadFast(_input_pin)) return false;
-      delayMicroseconds(_OS_BIT_SPACER / 2);
-      for(uint8_t i = 0; i < 9; i++) {
-        while((uint32_t)(micros() - time) < _OS_BIT_WIDTH)
+      pullDownFast(_input_pin);
+      while((uint32_t)(micros() - time) < OS_BIT_SPACER)
+        value = digitalReadFast(_input_pin);
+      if(value > 0.5) return false;
+      value = 0.5;
+      time = micros();
+      for(uint8_t i = 0; i < 10; i++) {
+        while((uint32_t)(micros() - time) < OS_BIT_WIDTH)
           value = (value * 0.999)  + (digitalReadFast(_input_pin) * 0.001);
         if(value > 0.5) return false;
       }
-      delayMicroseconds(_OS_LATENCY);
+      delayMicroseconds(random(0, COLLISION_DELAY));
+      if(digitalReadFast(_input_pin)) return false;
       return true;
     };
 
@@ -69,7 +73,7 @@ class OverSampling {
       for(uint8_t i = 0; i < 8; i++) {
         unsigned long time = micros();
         float value = 0.5;
-        while((uint32_t)(micros() - time) < _OS_BIT_WIDTH)
+        while((uint32_t)(micros() - time) < OS_BIT_WIDTH)
           value = ((value * 0.999) + (digitalReadFast(_input_pin) * 0.001));
         byte_value += (value > 0.5) << i;
       }
@@ -101,7 +105,7 @@ class OverSampling {
       unsigned long time = micros();
       /* Update pin value until the pin stops to be HIGH or passed more time than
          BIT_SPACER duration */
-      while(((uint32_t)(micros() - time) < _OS_BIT_SPACER) && digitalReadFast(_input_pin))
+      while(((uint32_t)(micros() - time) < OS_BIT_SPACER) && digitalReadFast(_input_pin))
         value = (value * 0.999)  + (digitalReadFast(_input_pin) * 0.001);
       /* Save how much time passed */
       time = micros();
@@ -110,7 +114,7 @@ class OverSampling {
          probably a byte is coming so try to receive it. */
       if(value > 0.5) {
         value = 0.5;
-        while((uint32_t)(micros() - time) < _OS_BIT_WIDTH)
+        while((uint32_t)(micros() - time) < OS_BIT_WIDTH)
           value = (value * 0.999)  + (digitalReadFast(_input_pin) * 0.001);
         if(value < 0.5) return read_byte();
       }
@@ -128,7 +132,7 @@ class OverSampling {
 
       uint16_t response = FAIL;
       uint32_t time = micros();
-      while(response == FAIL && (uint32_t)(micros() - _OS_TIMEOUT) <= time)
+      while(response == FAIL && (uint32_t)(micros() - OS_TIMEOUT) <= time)
         response = receive_byte();
       return response;
     };
@@ -154,12 +158,12 @@ class OverSampling {
 
     void send_byte(uint8_t b) {
       digitalWriteFast(_output_pin, HIGH);
-      delayMicroseconds(_OS_BIT_SPACER);
+      delayMicroseconds(OS_BIT_SPACER);
       digitalWriteFast(_output_pin, LOW);
-      delayMicroseconds(_OS_BIT_WIDTH);
+      delayMicroseconds(OS_BIT_WIDTH);
       for(uint8_t mask = 0x01; mask; mask <<= 1) {
         digitalWriteFast(_output_pin, b & mask);
-        delayMicroseconds(_OS_BIT_WIDTH);
+        delayMicroseconds(OS_BIT_WIDTH);
       }
     };
 

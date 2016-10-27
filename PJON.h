@@ -575,13 +575,14 @@ limitations under the License. */
         const uint8_t *b_id,
         const char *string,
         uint16_t length,
-        uint16_t header = NOT_ASSIGNED
+        uint16_t header = NOT_ASSIGNED,
+        uint32_t timeout = 3000000
       ) {
         if(!(length = compose_packet(id, b_id, (char *)data, string, length, header))) return FAIL;
         uint16_t state = FAIL;
         uint32_t attempts = 0;
-        uint32_t time = micros();
-        while(state != ACK && attempts <= MAX_ATTEMPTS) {
+        uint32_t time = micros(), start = time;
+        while(state != ACK && attempts <= MAX_ATTEMPTS && (uint32_t)(micros() - start) <= timeout) {
           state = send_packet((char*)data, length);
           if(state == ACK) return state;
           attempts++;

@@ -100,6 +100,13 @@ limitations under the License. */
   #define CRC_BIT           B00100000 // 1 - CRC32 | 0 - CRC8
   #define EXTEND_LENGTH_BIT B01000000 // 1 - 2 bytes length | 0 - 1 byte length
   #define EXTEND_HEADER_BIT B10000000 // 1 - 2 bytes header | 0 - 1 byte header
+  #define ROUTING_BIT       0B0100000000000000 // 1 - Routing request 0 - No routing requested
+  #define SEGMENTATION_BIT  0B0010000000000000 // 1 - Segmentated | 0 - Not segmented
+  #define SESSION_BIT       0B0001000000000000 // 1 - Session | 0 - Not including Session
+  #define PARITY_BIT        0B0000100000000000 // 1 - Parity redundant info | 0 - No parity included
+  #define ENCODING_BIT      0B0000010000000000 // 1 - Encoding info | 0 - Not including encoding ingo
+  #define DATA_COMP_BIT     0B0000001000000000 // 1 - Data compression | 0 - No data compression
+  #define ENCRYPTION_BIT    0B0000000100000000 // 1 - Encrypted data | 0 - Not encrypted data
 
   /* ERRORS: */
   #define CONNECTION_LOST     101
@@ -162,8 +169,7 @@ limitations under the License. */
 
   /* Last received packet Metainfo */
   struct PacketInfo {
-    uint8_t header = 0;
-    uint8_t extended_header = 0;
+    uint16_t header = 0;
     uint8_t receiver_id = 0;
     uint8_t receiver_bus_id[4];
     uint8_t sender_id = 0;

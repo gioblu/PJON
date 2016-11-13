@@ -34,11 +34,6 @@ void setup() {
 void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
   Serial.print("Header: ");
   Serial.print(packet_info.header, BIN);
-  // If extended header included
-  if(packet_info.header & EXTEND_HEADER_BIT) {
-    Serial.print(" Extended header: ");
-    Serial.print(packet_info.extended_header);
-  }
   // If packet formatted for a shared medium
   if(packet_info.header & MODE_BIT) {
     Serial.print(" Receiver bus id: ");

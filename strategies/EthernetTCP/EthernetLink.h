@@ -180,7 +180,7 @@ public:
   void single_socket(bool single_socket) { _single_socket = single_socket; }
   
   // Keep trying to send for a maximum duration
-  int16_t send_with_duration(uint8_t id, const char *packet, uint16_t length, unsigned long duration_us);
+  int16_t send_with_duration(uint8_t id, const char *packet, uint16_t length, uint32_t duration_us);
 
   // In single-socket mode and acting as initiator, connect and check for incoming packets from a specific device
   uint16_t poll_receive(uint8_t remote_id);

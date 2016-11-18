@@ -141,6 +141,7 @@ class SoftwareBitBang {
         digitalWriteFast(_input_pin, LOW);
         response = receive_byte();
         if(response == FAIL) {
+          pinModeFast(_output_pin, OUTPUT);
           digitalWriteFast(_output_pin, HIGH);
           delayMicroseconds(SWBB_BIT_WIDTH / 4);
           pullDownFast(_output_pin);

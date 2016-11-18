@@ -269,11 +269,9 @@ limitations under the License. */
 
       void parse(const uint8_t *packet, PacketInfo &packet_info) const {
         packet_info.receiver_id = packet[0];
-        packet_info.header = packet[1];
-        bool extended_header = packet_info.header & EXTEND_HEADER_BIT;
-        bool extended_length = packet_info.header & EXTEND_LENGTH_BIT;
-        if(extended_header) packet_info.extended_header = packet[2];
-        else packet_info.extended_header = 0;
+        bool extended_header = packet[1] & EXTEND_HEADER_BIT;
+        bool extended_length = packet[1] & EXTEND_LENGTH_BIT;
+        packet_info.header = (extended_header) ? packet[2] << 8 | packet[1] : packet[1];
         if((packet_info.header & MODE_BIT) != 0) {
           copy_bus_id(packet_info.receiver_bus_id, packet + 3 + extended_header + extended_length);
           if((packet_info.header & SENDER_INFO_BIT) != 0) {

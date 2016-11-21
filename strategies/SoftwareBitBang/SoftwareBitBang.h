@@ -133,7 +133,7 @@ class SoftwareBitBang {
 
       uint16_t response = FAIL;
       uint32_t time = micros();
-      /* Transmitter emits a bit SWBB_ACCEPTANCE / 4 long and tries
+      /* Transmitter emits a bit SWBB_BIT_WIDTH / 4 long and tries
          to get a response cyclically for SWBB_TIMEOUT microseconds.
          Receiver synchronizes to the falling edge of the last incoming
          bit and transmits ACK or NAK */
@@ -144,6 +144,7 @@ class SoftwareBitBang {
           pinModeFast(_output_pin, OUTPUT);
           digitalWriteFast(_output_pin, HIGH);
           delayMicroseconds(SWBB_BIT_WIDTH / 4);
+          digitalWriteFast(_output_pin, LOW); // Avoid 1 to 0 bit transition slope -\_
           pullDownFast(_output_pin);
         }
       }
@@ -186,10 +187,12 @@ class SoftwareBitBang {
     void send_response(uint8_t response) {
       pullDownFast(_input_pin);
       uint32_t time = micros();
-      /* Transmitter emits a bit SWBB_ACCEPTANCE / 4 long and tries
+      /* Transmitter emits a bit SWBB_BIT_WIDTH / 4 long and tries
          to get a response cyclically for SWBB_TIMEOUT microseconds.
          Receiver synchronizes to the falling edge of the last incoming
          bit and transmits ACK or NAK */
+      while((uint32_t)(micros() - time) < (SWBB_BIT_WIDTH) && !digitalReadFast(_input_pin))
+        time = micros(); // Wait for the last high ending
       while((uint32_t)(micros() - time) < (SWBB_BIT_WIDTH / 2.25) && digitalReadFast(_input_pin));
       pinModeFast(_output_pin, OUTPUT);
       send_byte(response);
@@ -203,6 +206,7 @@ class SoftwareBitBang {
       pinModeFast(_output_pin, OUTPUT);
       for(uint16_t b = 0; b < length; b++)
         send_byte(string[b]);
+      digitalWriteFast(_output_pin, LOW); // Avoid 1 to 0 bit transition slope -\_
       pullDownFast(_output_pin);
     };
 

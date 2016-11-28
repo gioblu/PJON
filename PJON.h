@@ -123,10 +123,11 @@ limitations under the License. */
       /* Begin function to be called in setup: */
 
       void begin() {
-        randomSeed(analogRead(_random_seed));
-        delay(random(0, INITIAL_DELAY));
+        uint8_t device_id_seed = (_device_id != NOT_ASSIGNED) ? _device_id : 0;
+        randomSeed(analogRead(_random_seed) + device_id_seed);
+        delay(random(0, INITIAL_DELAY) + device_id_seed);
         #if(INCLUDE_ASYNC_ACK)
-          _packet_id_seed = random() + ((_device_id != NOT_ASSIGNED) ? _device_id : 0);
+          _packet_id_seed = random() + device_id_seed;
         #endif
       };
 

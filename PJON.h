@@ -917,7 +917,7 @@ limitations under the License. */
           if(
             actual_info.receiver_id == tested_info.receiver_id &&
             bus_id_equality(actual_info.receiver_bus_id, tested_info.receiver_bus_id)
-          ) if(index > i) return false;
+          ) if(packets[i].registration < packets[index].registration) return false;
         }
         return true;
       };

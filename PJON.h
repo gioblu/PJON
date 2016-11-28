@@ -123,7 +123,7 @@ limitations under the License. */
       /* Begin function to be called in setup: */
 
       void begin() {
-        randomSeed(analogRead(A0));
+        randomSeed(analogRead(_random_seed));
         delay(random(0, INITIAL_DELAY));
       };
 
@@ -699,6 +699,13 @@ limitations under the License. */
 
       void set_packet_auto_deletion(boolean state) {
         _auto_delete = state;
+      };
+
+
+      /* Set the pin used as a seed for random generator: */
+
+      void set_random_seed(uint8_t random_seed) {
+        _random_seed = random_seed;
       };
 
 

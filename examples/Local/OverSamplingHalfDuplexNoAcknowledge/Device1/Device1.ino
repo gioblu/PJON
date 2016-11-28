@@ -8,7 +8,7 @@ void setup() {
   digitalWriteFast(13, LOW); // Initialize LED 13 to be off
 
   bus.strategy.set_pins(11, 12);
-  bus.set_acknowledge(false);
+  bus.set_synchronous_acknowledge(false);
   bus.set_receiver(receiver_function);
 
   bus.begin();

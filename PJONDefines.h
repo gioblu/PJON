@@ -165,7 +165,7 @@ limitations under the License. */
   #define ID_REQUEST_INTERVAL        100000
   /* Master ID_REQUEST and ID_NEGATE timeout */
   #define ADDRESSING_TIMEOUT        2900000
-  /* Master reception time during LIST_ID request broadcast (2 milliseconds) */
+  /* Master reception time during LIST_ID request broadcast (20 milliseconds) */
   #define LIST_IDS_RECEPTION_TIME     20000
   /* Asynchronous acknowledge backoff offset: */
   #define ASYNC_BACKOFF_OFFSET       100000

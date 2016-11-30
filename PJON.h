@@ -267,13 +267,22 @@ limitations under the License. */
       };
 
 
+      /* Generate a new packet id: */
+
+      uint16_t new_packet_id() {
+        _packet_id_seed += 1;
+        if(!_packet_id_seed) _packet_id_seed = 1;
+        return _packet_id_seed;
+      };
+
+
       /* Calculate the packet's overhead: */
 
       uint8_t packet_overhead(uint16_t header = NOT_ASSIGNED) const {
         if(header == NOT_ASSIGNED)
           return (
             _shared ? (_sender_info ? 12 : 7) : (_sender_info ? 4 : 3)
-          ) + (_crc_32 ? 4 : 1) + (_asynchronous_acknowledge) ? 2 : 0;
+          ) + (_crc_32 ? 4 : 1) + (_asynchronous_acknowledge ? 2 : 0);
         return (
           (
             (header & MODE_BIT) ?

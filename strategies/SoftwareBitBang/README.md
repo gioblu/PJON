@@ -46,8 +46,8 @@ Usage of libraries is really extensive in the Arduino environment and often the 
 PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl/post/130558526217/pjon-my-son)
 
 ####Known issues
-- A pull down resistor in the order of mega ohms could be necessary on the bus to
-reduce interference. See https://github.com/gioblu/PJON/wiki/Deal-with-interference
+- A pull down resistor in the order of mega ohms could be necessary on the bus to reduce interference. See https://github.com/gioblu/PJON/wiki/Deal-with-interference. In late november 2016 a bug has been discovered, it was on many devices creating a slight inconsistency in the channel state during transitions, most of the times
+disappearing with the use of a pull-down resistor (https://github.com/gioblu/PJON/commit/120b2c72f1435519e7712adfd2c3f1eecc38557c). With this bugfix the channel is much more reliable and probably some margin has been obtained to higher communication speed.
 - Consider that this is not an interrupt driven system and so all the time passed
 in delay or executing something a certain amount of packets could be potentially
 lost not received, the packet manager of PJON will do its job scheduling the packet

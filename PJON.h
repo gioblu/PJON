@@ -221,13 +221,7 @@ limitations under the License. */
         uint16_t header = NOT_ASSIGNED,
         uint16_t p_id = 0
       ) {
-        #if(INCLUDE_ASYNC_ACK)
-          if((header & ACK_MODE_BIT) && (header & SENDER_INFO_BIT)) _packet_id_seed += 1;
-          if(!(_packet_id_seed)) _packet_id_seed = 1;
-          if(p_id) _packet_id_seed = p_id;
-        #endif
-
-         for(uint8_t i = 0; i < MAX_PACKETS; i++)
+        for(uint8_t i = 0; i < MAX_PACKETS; i++)
           if(packets[i].state == 0) {
             if(!(length = compose_packet(
               id, b_id, packets[i].content, packet, length, header, p_id
@@ -383,17 +377,28 @@ limitations under the License. */
         parse(data, last_packet_info);
 
         #if(INCLUDE_ASYNC_ACK)
-          if((data[1] & ACK_MODE_BIT) && (data[1] & SENDER_INFO_BIT))
-            if(length > packet_overhead(data[1]))
-              dispatch( // Send async ack back to packet's transmitter
+          /* If a packet requesting asynchronous acknowledment is received
+             send the acknowledment packet back to the packet's transmitter */
+          if((data[1] & ACK_MODE_BIT) && (data[1] & SENDER_INFO_BIT)) {
+            if(_auto_delete && length == packet_overhead(data[1]))
+              if(handle_asynchronous_acknowledgment(last_packet_info))
+                return ACK;
+
+            if(length > packet_overhead(data[1])) {
+              dispatch(
                 last_packet_info.sender_id,
                 (uint8_t *)last_packet_info.sender_bus_id,
                 NULL,
                 0,
                 0,
-                get_header() | ACK_MODE_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT,
+                get_header() | ACK_MODE_BIT | SENDER_INFO_BIT,
                 last_packet_info.id
               );
+              update();
+              if(known_packet_id(last_packet_info))
+                return ACK;
+            }
+          }
         #endif
 
         _receiver(
@@ -402,11 +407,6 @@ limitations under the License. */
           last_packet_info
         );
 
-        #if(INCLUDE_ASYNC_ACK)
-          if( _auto_delete && (data[1] & ACK_MODE_BIT) && (data[1] & SENDER_INFO_BIT))
-            if(length == packet_overhead(data[1]))
-              handle_asynchronous_acknowledgment(last_packet_info);
-        #endif
         return ACK;
       };
 
@@ -442,14 +442,11 @@ limitations under the License. */
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           parse((uint8_t *)packets[i].content, actual_info);
           if(actual_info.id == packet_info.id)
-            if(actual_info.receiver_id == packet_info.sender_id &&
-              bus_id_equality(actual_info.receiver_bus_id, packet_info.sender_bus_id) &&
-              actual_info.sender_id == packet_info.receiver_id &&
-              bus_id_equality(actual_info.sender_bus_id, packet_info.receiver_bus_id)
-            ) {
+            if(actual_info.receiver_id == packet_info.sender_id && (
+              (!(actual_info.header & MODE_BIT) && !(packet_info.header & MODE_BIT)) ? true :
+                bus_id_equality(actual_info.receiver_bus_id, packet_info.sender_bus_id)
+            )) {
               if(packets[i].timing) {
-                _packet_id_seed = _packet_id_seed + 1;
-                if(!_packet_id_seed) _packet_id_seed = 1;
                 uint8_t offset = packet_overhead(actual_info.header);
                 uint8_t crc_offset = ((actual_info.header & CRC_BIT) ? 4 : 1);
                 dispatch(
@@ -458,8 +455,7 @@ limitations under the License. */
                   packets[i].content + (offset - crc_offset),
                   packets[i].length - offset,
                   packets[i].timing,
-                  actual_info.header,
-                  _packet_id_seed
+                  actual_info.header
                 );
               }
               remove(i);
@@ -680,7 +676,6 @@ limitations under the License. */
         if(!(length = compose_packet(
           id,
           b_id,
-          _packet_id_seed,
           (char *)data,
           string,
           length,
@@ -934,11 +929,50 @@ limitations under the License. */
         return true;
       };
 
+
+      /* Check if the packet id and its transmitter info are already present in the
+         buffer of recently received packets, if not add it to the buffer. */
+
+      bool known_packet_id(PacketInfo info) {
+        #if(INCLUDE_ASYNC_ACK)
+          for(uint8_t i = 0; i < MAX_RECENT_PACKET_IDS; i++)
+            if(
+              info.id == recent_packet_ids[i].id &&
+              info.sender_id == recent_packet_ids[i].sender_id &&
+              ((
+                (info.header & MODE_BIT) && (recent_packet_ids[i].header & MODE_BIT) &&
+                bus_id_equality((uint8_t *)info.sender_bus_id, (uint8_t *)recent_packet_ids[i].sender_bus_id)
+              ) || !(info.header & MODE_BIT) && !(recent_packet_ids[i].header & MODE_BIT))
+            ) return true;
+
+          save_packet_id(info);
+          return false;
+        #endif
+      };
+
+
+      /* Save packet id in the buffer: */
+
+      void save_packet_id(PacketInfo info) {
+        #if(INCLUDE_ASYNC_ACK)
+          for(uint8_t i = MAX_RECENT_PACKET_IDS - 1; i > 0; i--)
+            recent_packet_ids[i] = recent_packet_ids[i - 1];
+          recent_packet_ids[0].id = info.id;
+          recent_packet_ids[0].header = info.header;
+          recent_packet_ids[0].sender_id = info.sender_id;
+          copy_bus_id(recent_packet_ids[0].sender_bus_id, info.sender_bus_id);
+        #endif
+      };
+
+
       uint8_t bus_id[4] = {0, 0, 0, 0};
       uint8_t data[PACKET_MAX_LENGTH];
       PacketInfo last_packet_info;
       const uint8_t localhost[4] = {0, 0, 0, 0};
       PJON_Packet packets[MAX_PACKETS];
+      #if(INCLUDE_ASYNC_ACK)
+        PJON_Packet_Record recent_packet_ids[MAX_RECENT_PACKET_IDS];
+      #endif
     private:
       boolean   _synchronous_acknowledge = true;
       boolean   _asynchronous_acknowledge = false;
@@ -946,7 +980,7 @@ limitations under the License. */
       boolean   _crc_32 = false;
       error     _error;
       uint8_t   _mode;
-      uint8_t   _packet_id_seed = 0;
+      uint16_t  _packet_id_seed = 0;
       uint8_t   _random_seed = A0;
       receiver  _receiver;
       boolean   _router = false;

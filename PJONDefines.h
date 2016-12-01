@@ -179,6 +179,13 @@ limitations under the License. */
     uint32_t timing;
   };
 
+  struct PJON_Packet_Record {
+    uint16_t id;
+    uint8_t  header;
+    uint8_t  sender_id;
+    uint8_t  sender_bus_id[4];
+  };
+
   /* Last received packet Metainfo */
   struct PacketInfo {
     uint16_t header = 0;

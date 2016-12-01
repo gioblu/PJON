@@ -53,37 +53,48 @@ limitations under the License. */
   #include "utils/CRC8.h"
   #include "utils/CRC32.h"
 
-  /* Device id of the master */
-  #define MASTER_ID   254
-  #define MAX_DEVICES  25
-
-  /* Communication modes */
-  #define SIMPLEX     150
-  #define HALF_DUPLEX 151
-
-  /* Protocol symbols */
-  #define ACK           6
-  #define BUSY        666
-  #define NAK          21
-
-  #define ID_ACQUIRE  199
-  #define ID_REQUEST  200
-  #define ID_CONFIRM  201
-  #define ID_NEGATE   203
-  #define ID_LIST     204
-  #define ID_REFRESH  205
-
+  /* Id used for broadcasting to all devices */
   #ifndef BROADCAST
-    #define BROADCAST   0
+    #define BROADCAST      0
   #endif
 
+  /* Master device id */
+  #define MASTER_ID      254
+
+  /* Device id of still unindexed devices */
   #ifndef NOT_ASSIGNED
     #define NOT_ASSIGNED 255
   #endif
 
   #if BROADCAST == NOT_ASSIGNED
-    #error BROADCAST and NOT_ASSIGNED point the same address
+    #error BROADCAST and NOT_ASSIGNED point the same address!
   #endif
+  #if NOT_ASSIGNED == MASTER_ID
+    #error NOT_ASSIGNED and MASTER_ID point the same address!
+  #endif
+  #if MASTER_ID == BROADCAST
+    #error MASTER_ID and BROADCAST point the same address!
+  #endif
+
+  /* Maximum devices handled by master */
+  #define MAX_DEVICES     25
+
+  /* Communication modes */
+  #define SIMPLEX        150
+  #define HALF_DUPLEX    151
+
+  /* Protocol symbols */
+  #define ACK              6
+  #define BUSY           666
+  #define NAK             21
+
+  /* Dynamic addressing */
+  #define ID_ACQUIRE     199
+  #define ID_REQUEST     200
+  #define ID_CONFIRM     201
+  #define ID_NEGATE      203
+  #define ID_LIST        204
+  #define ID_REFRESH     205
 
   /* INTERNAL CONSTANTS */
   #define FAIL       65535
@@ -129,14 +140,14 @@ limitations under the License. */
      The packet buffer is preallocated, so its length strongly affects
      memory consumption */
   #ifndef MAX_PACKETS
-    #define MAX_PACKETS         5
+    #define MAX_PACKETS 5
   #endif
 
   /* Max packet length, higher if necessary.
      The max packet length defines the length of packets pre-allocated buffers
      so it strongly affects memory consumption */
   #ifndef PACKET_MAX_LENGTH
-    #define PACKET_MAX_LENGTH  50
+    #define PACKET_MAX_LENGTH 50
   #endif
 
   /* If set to true avoids async ack code memory allocation if not used
@@ -145,20 +156,26 @@ limitations under the License. */
     #define INCLUDE_ASYNC_ACK false
   #endif
 
+  /* Maximum packet ids record kept in memory (to avoid duplicated exchanges) */
+  #ifndef MAX_RECENT_PACKET_IDS
+    #define MAX_RECENT_PACKET_IDS 10
+  #endif
+
   /* If set to true ensures packet ordered sending */
   #ifndef ORDERED_SENDING
-    #define ORDERED_SENDING   false
+    #define ORDERED_SENDING false
   #endif
 
   /* TIMING:
-     Maximum number of device id collisions during auto-addressing */
-  #define MAX_ACQUIRE_ID_COLLISIONS      10
-  /* Delay between device id acquisition and self request */
-  #define ACQUIRE_ID_DELAY             1250
-  /* Maximum random delay on startup in milliseconds */
+     Maximum random delay on startup in milliseconds */
   #define INITIAL_DELAY                1000
   /* Maximum randon delay on collision */
   #define COLLISION_DELAY                48
+  /* Dynamic addressing timing constants:
+  /* Maximum number of device id collisions during auto-addressing */
+  #define MAX_ACQUIRE_ID_COLLISIONS      10
+  /* Delay between device id acquisition and self request */
+  #define ACQUIRE_ID_DELAY             1250
   /* Maximum id scan time (6 seconds) */
   #define ID_SCAN_TIME              6000000
   /* Master free id broadcast response interval (0.1 seconds) */

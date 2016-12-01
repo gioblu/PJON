@@ -4,8 +4,10 @@
 
 #include <PJON.h>
 
+uint8_t bus_id[] = {0, 0, 0, 1};
+
 // <Strategy name> bus(selected device id)
-PJON<SoftwareBitBang> bus(44);
+PJON<SoftwareBitBang> bus(bus_id, 44);
 
 void setup() {
   pinModeFast(13, OUTPUT);
@@ -26,5 +28,6 @@ void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &pack
 }
 
 void loop() {
+  bus.update();
   bus.receive(1000);
 };

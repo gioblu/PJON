@@ -858,20 +858,17 @@ limitations under the License. */
         uint32_t back_off;
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
+          packets_count++;
 
           #if(ORDERED_SENDING)
             if(!first_packet_to_be_sent(i)) continue;
           #endif
 
-          packets_count++;
-          back_off = packets[i].attempts;
-          back_off = back_off * back_off * back_off;
-
           bool async_ack = (packets[i].content[1] & ACK_MODE_BIT) &&
             (packets[i].content[1] & SENDER_INFO_BIT);
 
-          if(async_ack && packets[i].state != TO_BE_SENT)
-            back_off += ASYNC_BACKOFF_OFFSET;
+          back_off = packets[i].attempts;
+          back_off = (back_off * back_off * back_off * back_off);
 
           if((uint32_t)(micros() - packets[i].registration) > packets[i].timing + back_off)
             packets[i].state = send_packet(packets[i].content, packets[i].length);
@@ -910,7 +907,7 @@ limitations under the License. */
               packets[i].registration = micros();
               packets[i].state = TO_BE_SENT;
             }
-          } else packets[i].registration = micros();
+          }
         }
         return packets_count;
       };

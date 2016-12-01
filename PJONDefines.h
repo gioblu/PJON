@@ -117,7 +117,7 @@ limitations under the License. */
   /* CONSTRAINTS:
   Max attempts before throwing CONNECTON_LOST error */
   #ifndef MAX_ATTEMPTS
-    #define MAX_ATTEMPTS       50
+    #define MAX_ATTEMPTS 42
   #endif
 
   /* Max time delayed by backoff in microseconds  */
@@ -167,8 +167,6 @@ limitations under the License. */
   #define ADDRESSING_TIMEOUT        2900000
   /* Master reception time during LIST_ID request broadcast (20 milliseconds) */
   #define LIST_IDS_RECEPTION_TIME     20000
-  /* Asynchronous acknowledge backoff offset: */
-  #define ASYNC_BACKOFF_OFFSET       100000
 
   struct PJON_Packet {
     uint8_t  attempts;

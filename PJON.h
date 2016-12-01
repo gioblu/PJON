@@ -137,12 +137,12 @@ limitations under the License. */
       uint16_t compose_packet(
         const uint8_t id,
         const uint8_t *b_id,
-        const uint16_t p_id,
         char *destination,
         const char *source,
         uint16_t length,
-        uint16_t header = NOT_ASSIGNED
-      ) const {
+        uint16_t header = NOT_ASSIGNED,
+        uint16_t p_id = 0
+      ) {
         if(header == NOT_ASSIGNED) header = get_header();
         if(header > 255) header |= EXTEND_HEADER_BIT;
         if(length > 255) header |= (EXTEND_LENGTH_BIT | CRC_BIT);
@@ -150,8 +150,10 @@ limitations under the License. */
         uint16_t new_length = length + packet_overhead(header);
         bool extended_header = header & EXTEND_HEADER_BIT;
         bool extended_length = header & EXTEND_LENGTH_BIT;
+
         #if(INCLUDE_ASYNC_ACK)
-          bool async_ack = (header & ACK_MODE_BIT) && (header & SENDER_INFO_BIT) && p_id;
+          bool async_ack = (header & ACK_MODE_BIT) && (header & SENDER_INFO_BIT);
+          if(!p_id && async_ack) p_id = new_packet_id();
         #endif
 
         if(new_length > 255 && !extended_length) {
@@ -228,7 +230,7 @@ limitations under the License. */
          for(uint8_t i = 0; i < MAX_PACKETS; i++)
           if(packets[i].state == 0) {
             if(!(length = compose_packet(
-              id, b_id, _packet_id_seed, packets[i].content, packet, length, header
+              id, b_id, packets[i].content, packet, length, header, p_id
             ))) return FAIL;
             packets[i].length = length;
             packets[i].state = TO_BE_SENT;
@@ -644,7 +646,7 @@ limitations under the License. */
       /* Send a packet passing its info as parameters: */
 
       uint16_t send_packet(uint8_t id, char *string, uint16_t length, uint16_t header = NOT_ASSIGNED) {
-        if(!(length = compose_packet(id, bus_id, _packet_id_seed, (char *)data, string, length, header)))
+        if(!(length = compose_packet(id, bus_id, (char *)data, string, length, header)))
           return FAIL;
         return send_packet((char *)data, length);
       };
@@ -657,7 +659,7 @@ limitations under the License. */
         uint16_t length,
         uint16_t header = NOT_ASSIGNED
       ) {
-        if(!(length = compose_packet(id,b_id,_packet_id_seed,(char *)data,string,length,header)))
+        if(!(length = compose_packet(id, b_id, (char *)data, string, length, header)))
           return FAIL;
         return send_packet((char *)data, length);
       };

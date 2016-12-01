@@ -912,6 +912,9 @@ limitations under the License. */
         return packets_count;
       };
 
+
+      /* Check if the packet index passed is the first to be sent: */
+
       boolean first_packet_to_be_sent(uint8_t index) {
         PacketInfo actual_info;
         PacketInfo tested_info;

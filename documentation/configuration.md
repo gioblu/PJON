@@ -1,9 +1,9 @@
-- [Addressing](https://github.com/gioblu/PJON/tree/6.0/documentation/addressing.md)
-- **[Configuration](https://github.com/gioblu/PJON/tree/6.0/documentation/configuration.md)**
-- [Data reception](https://github.com/gioblu/PJON/tree/6.0/documentation/data-reception.md)
-- [Data transmission](https://github.com/gioblu/PJON/tree/6.0/documentation/data-transmission.md)
-- [Error handling](https://github.com/gioblu/PJON/tree/6.0/documentation/error-handling.md)
-- [IO setup](https://github.com/gioblu/PJON/tree/6.0/documentation/io-setup.md)
+- [Addressing](https://github.com/gioblu/PJON/tree/6.1/documentation/addressing.md)
+- **[Configuration](https://github.com/gioblu/PJON/tree/6.1/documentation/configuration.md)**
+- [Data reception](https://github.com/gioblu/PJON/tree/6.1/documentation/data-reception.md)
+- [Data transmission](https://github.com/gioblu/PJON/tree/6.1/documentation/data-transmission.md)
+- [Error handling](https://github.com/gioblu/PJON/tree/6.1/documentation/error-handling.md)
+- [IO setup](https://github.com/gioblu/PJON/tree/6.1/documentation/io-setup.md)
 
 
 Before approaching to the PJON class it is possible to define the packets and content buffer length.  Pre-defining `MAX_PACKETS` and `PACKET_MAX_LENGTH` it is possible to configure this constants to reach the project and memory requirements. Obviously, the less memory is dedicated to this buffers, the more memory can be used for something else.
@@ -14,7 +14,6 @@ Before approaching to the PJON class it is possible to define the packets and co
 /* PJON can store up to 1 packet of up to
    20 characters - packet overhead (from 4 to 13 depending by configuration) */
 ```
-
 Templates can be scary at first sight, but they are quite straight-forward and efficient. Lets start coding, looking how to instantiate in the simplest way the `PJON` object that in the example is called bus with a wire compatible physical layer:
 ```cpp  
   PJON<> bus;
@@ -56,9 +55,18 @@ Configure the communication mode:
   bus.set_communication_mode(SIMPLEX);     // Run in mono-directional SIMPLEX mode
   bus.set_communication_mode(HALF_DUPLEX); // Run in bi-directional HALF_DUPLEX mode
 ```
-Configure acknowledge:
+Configure synchronous acknowledge:
 ```cpp  
-  bus.set_acknowledge(false);
+  bus.set_synchronous_acknowledge(false); // Avoid sync ack
+```
+If you are interested in including the asynchronous acknowledment feature in your sketch, you need to define the `INCLUDE_ASYNC_ACK` as following (made to save more than 1kB on sketches where this feature is not used):
+```cpp  
+#define INCLUDE_ASYNC_ACK true
+#include <PJON.h>
+```
+Configure asynchronous acknowledge:
+```cpp  
+  bus.set_asynchronous_acknowledge(true); // Enable async ack
 ```
 Force CRC32 use for every packet sent:
 ```cpp  

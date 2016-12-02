@@ -1,33 +1,33 @@
+
+/* Include Async ACK code setting INCLUDE_ASYNC_ACK as true before including PJON.h */
+#define INCLUDE_ASYNC_ACK true
+
 #include <PJON.h>
 
+uint8_t bus_id[] = {0, 0, 0, 1};
+
 // <Strategy name> bus(selected device id)
-PJON<OverSampling> bus(44);
+PJON<SoftwareBitBang> bus(bus_id, 44);
 
 void setup() {
   pinModeFast(13, OUTPUT);
   digitalWriteFast(13, LOW); // Initialize LED 13 to be off
 
-  bus.strategy.set_pins(11, 12);
-  bus.set_synchronous_acknowledge(false);
-  bus.set_receiver(receiver_function);
-
+  bus.strategy.set_pin(12);
   bus.begin();
-
-  bus.send_repeatedly(45, "B", 1, 1000000);
-
-  Serial.begin(115200);
+  bus.set_receiver(receiver_function);
 };
 
 void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
- if((char)payload[0] == 'B') {
+  if(payload[0] == 'B') {
     digitalWrite(13, HIGH);
-    delay(5);
+    delay(3);
     digitalWrite(13, LOW);
-    delay(5);
+    delay(3);
   }
 }
 
 void loop() {
-  bus.receive();
   bus.update();
+  bus.receive(1000);
 };

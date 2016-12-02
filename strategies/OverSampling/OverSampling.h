@@ -173,6 +173,7 @@ class OverSampling {
     void send_response(uint8_t response) {
       pinModeFast(_output_pin, OUTPUT);
       send_byte(response);
+      digitalWriteFast(_output_pin, LOW); // Avoid 1 to 0 bit transition slope -\_
       pullDownFast(_output_pin);
     };
 
@@ -183,6 +184,7 @@ class OverSampling {
       pinModeFast(_output_pin, OUTPUT);
       for(uint16_t b = 0; b < length; b++)
         send_byte(string[b]);
+      digitalWriteFast(_output_pin, LOW); // Avoid 1 to 0 bit transition slope -\_
       pullDownFast(_output_pin);
     };
 

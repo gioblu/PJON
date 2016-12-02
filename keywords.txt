@@ -36,7 +36,9 @@ send KEYWORD2
 send_repeatedly KEYWORD2
 send_packet KEYWORD2
 send_packet_blocking KEYWORD2
-set_acknowledge KEYWORD2
+set_synchronous_acknowledge KEYWORD2
+set_asynchronous_acknowledge KEYWORD2
+set_random_seed KEYWORD2
 set_communication_mode KEYWORD2
 set_error KEYWORD2
 set_id KEYWORD2
@@ -76,6 +78,7 @@ localhost LITERAL1
 MODE_BIT LITERAL1
 SENDER_INFO_BIT LITERAL1
 ACK_REQUEST_BIT LITERAL1
+ACK_MODE_BIT LITERAL1
 ADDRESS_BIT LITERAL1
 CRC_BIT LITERAL1
 EXTEND_LENGTH_BIT LITERAL1

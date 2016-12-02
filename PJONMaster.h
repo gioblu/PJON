@@ -59,7 +59,7 @@ limitations under the License. */
 
   /* Reference to device */
   struct Device_reference {
-    uint8_t  packet_id    = 0;
+    uint8_t  packet_index = 0;
     uint32_t registration = 0;
     uint32_t rid          = 0;
     bool     state        = 0;
@@ -121,7 +121,7 @@ limitations under the License. */
         response[4] = (uint32_t)(rid);
         response[5] = state;
 
-        ids[response[5] - 1].packet_id = PJON<Strategy>::send_repeatedly(
+        ids[response[5] - 1].packet_index = PJON<Strategy>::send_repeatedly(
           BROADCAST,
           b_id,
           response,
@@ -146,7 +146,7 @@ limitations under the License. */
         if(ids[id - 1].rid == rid && !ids[id - 1].state) {
           if(micros() - ids[id - 1].registration < ADDRESSING_TIMEOUT) {
             ids[id - 1].state = true;
-            PJON<Strategy>::remove(ids[id - 1].packet_id);
+            PJON<Strategy>::remove(ids[id - 1].packet_index);
             return true;
           }
         }
@@ -169,13 +169,13 @@ limitations under the License. */
       void delete_id_reference(uint8_t id = 0) {
         if(!id) {
           for(uint8_t i = 0; i < MAX_DEVICES; i++) {
-            ids[i].packet_id = 0;
+            ids[i].packet_index = 0;
             ids[i].registration = 0;
             ids[i].rid = 0;
             ids[i].state = false;
           }
         } else if(id > 0 && id < MAX_DEVICES) {
-          ids[id - 1].packet_id = 0;
+          ids[id - 1].packet_index = 0;
           ids[id - 1].registration = 0;
           ids[id - 1].rid   = 0;
           ids[id - 1].state = false;

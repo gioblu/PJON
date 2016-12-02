@@ -123,8 +123,12 @@ limitations under the License. */
       /* Begin function to be called in setup: */
 
       void begin() {
-        randomSeed(analogRead(A0));
-        delay(random(0, INITIAL_DELAY));
+        uint8_t device_id_seed = (_device_id != NOT_ASSIGNED) ? _device_id : 0;
+        randomSeed(analogRead(_random_seed) + device_id_seed);
+        delay(random(0, INITIAL_DELAY) + device_id_seed);
+        #if(INCLUDE_ASYNC_ACK)
+          _packet_id_seed = random() + device_id_seed;
+        #endif
       };
 
 
@@ -136,15 +140,21 @@ limitations under the License. */
         char *destination,
         const char *source,
         uint16_t length,
-        uint16_t header = NOT_ASSIGNED
-      ) const {
+        uint16_t header = NOT_ASSIGNED,
+        uint16_t p_id = 0
+      ) {
         if(header == NOT_ASSIGNED) header = get_header();
-        if((header & ACK_REQUEST_BIT) && id == BROADCAST) header &= ~(ACK_REQUEST_BIT);
         if(header > 255) header |= EXTEND_HEADER_BIT;
         if(length > 255) header |= (EXTEND_LENGTH_BIT | CRC_BIT);
+        if(id == BROADCAST) header &= ~(ACK_REQUEST_BIT | ACK_MODE_BIT);
         uint16_t new_length = length + packet_overhead(header);
         bool extended_header = header & EXTEND_HEADER_BIT;
         bool extended_length = header & EXTEND_LENGTH_BIT;
+
+        #if(INCLUDE_ASYNC_ACK)
+          bool async_ack = (header & ACK_MODE_BIT) && (header & SENDER_INFO_BIT);
+          if(!p_id && async_ack) p_id = new_packet_id();
+        #endif
 
         if(new_length > 255 && !extended_length) {
           header |= (EXTEND_LENGTH_BIT | CRC_BIT);
@@ -157,28 +167,31 @@ limitations under the License. */
         }
 
         destination[0] = id;
-
         if(extended_header) {
           destination[1] = (uint16_t)header;
           destination[2] = (uint16_t)header >> 8;
         } else destination[1] = header;
-
         if(extended_length) {
           destination[2 + extended_header] = new_length >> 8;
           destination[3 + extended_header] = new_length & 0xFF;
         } else destination[2 + extended_header] = new_length;
-
         if(header & MODE_BIT) {
           copy_bus_id((uint8_t*) &destination[3 + extended_header + extended_length], b_id);
           if(header & SENDER_INFO_BIT) {
             copy_bus_id((uint8_t*) &destination[7 + extended_header + extended_length], bus_id);
             destination[11 + extended_header + extended_length] = _device_id;
+            #if(INCLUDE_ASYNC_ACK)
+              if(async_ack) memcpy(destination + 12 + extended_header + extended_length, &p_id, 2);
+            #endif
           }
-        } else if(header & SENDER_INFO_BIT)
+        } else if(header & SENDER_INFO_BIT) {
           destination[3 + extended_header + extended_length] = _device_id;
+          #if(INCLUDE_ASYNC_ACK)
+            if(async_ack) memcpy(destination + 4 + extended_header + extended_length, &p_id, 2);
+          #endif
+        }
 
         memcpy(destination + (new_length - length - (header & CRC_BIT ? 4 : 1)), source, length);
-
         if(header & CRC_BIT) {
           uint32_t CRC = compute_crc_32((uint8_t *)destination, new_length - 4);
           destination[new_length - 4] = (uint32_t)(CRC) >> 24;
@@ -186,7 +199,6 @@ limitations under the License. */
           destination[new_length - 2] = (uint32_t)(CRC) >>  8;
           destination[new_length - 1] = (uint32_t)(CRC);
         } else destination[new_length - 1] = compute_crc_8((uint8_t *)destination, new_length - 1);
-
         return new_length;
       };
 
@@ -206,12 +218,14 @@ limitations under the License. */
         const char *packet,
         uint16_t length,
         uint32_t timing,
-        uint16_t header = NOT_ASSIGNED
+        uint16_t header = NOT_ASSIGNED,
+        uint16_t p_id = 0
       ) {
-         for(uint8_t i = 0; i < MAX_PACKETS; i++)
+        for(uint8_t i = 0; i < MAX_PACKETS; i++)
           if(packets[i].state == 0) {
-            if(!(length = compose_packet(id, b_id, packets[i].content, packet, length, header)))
-              return FAIL;
+            if(!(length = compose_packet(
+              id, b_id, packets[i].content, packet, length, header, p_id
+            ))) return FAIL;
             packets[i].length = length;
             packets[i].state = TO_BE_SENT;
             packets[i].registration = micros();
@@ -229,7 +243,8 @@ limitations under the License. */
       uint16_t get_header() const {
         return (_shared ? MODE_BIT : 0) |
                (_sender_info ? SENDER_INFO_BIT : 0) |
-               (_acknowledge ? ACK_REQUEST_BIT : 0) |
+               (_synchronous_acknowledge ? ACK_REQUEST_BIT : 0) |
+               (_asynchronous_acknowledge ? ACK_MODE_BIT : 0) |
                (_crc_32 ? CRC_BIT : 0);
       };
 
@@ -248,11 +263,22 @@ limitations under the License. */
       };
 
 
+      /* Generate a new packet id: */
+
+      uint16_t new_packet_id() {
+        _packet_id_seed += 1;
+        if(!_packet_id_seed) _packet_id_seed = 1;
+        return _packet_id_seed;
+      };
+
+
       /* Calculate the packet's overhead: */
 
       uint8_t packet_overhead(uint16_t header = NOT_ASSIGNED) const {
         if(header == NOT_ASSIGNED)
-          return (_shared ? (_sender_info ? 12 : 7) : (_sender_info ? 4 : 3)) + (_crc_32 ? 4 : 1);
+          return (
+            _shared ? (_sender_info ? 12 : 7) : (_sender_info ? 4 : 3)
+          ) + (_crc_32 ? 4 : 1) + (_asynchronous_acknowledge ? 2 : 0);
         return (
           (
             (header & MODE_BIT) ?
@@ -261,6 +287,7 @@ limitations under the License. */
           ) + (header & EXTEND_LENGTH_BIT  ?  2 : 1)
             + (header & EXTEND_HEADER_BIT  ?  2 : 1)
             + (header & CRC_BIT            ?  4 : 1)
+            + (header & ACK_MODE_BIT       ?  2 : 0)
         );
       };
 
@@ -272,14 +299,24 @@ limitations under the License. */
         bool extended_header = packet[1] & EXTEND_HEADER_BIT;
         bool extended_length = packet[1] & EXTEND_LENGTH_BIT;
         packet_info.header = (extended_header) ? packet[2] << 8 | packet[1] : packet[1];
+        uint8_t offset = extended_header + extended_length;
         if((packet_info.header & MODE_BIT) != 0) {
-          copy_bus_id(packet_info.receiver_bus_id, packet + 3 + extended_header + extended_length);
+          copy_bus_id(packet_info.receiver_bus_id, packet + 3 + offset);
           if((packet_info.header & SENDER_INFO_BIT) != 0) {
-            copy_bus_id(packet_info.sender_bus_id, packet + 7 + extended_header + extended_length);
-            packet_info.sender_id = packet[11 + extended_header + extended_length];
+            copy_bus_id(packet_info.sender_bus_id, packet + 7 + offset);
+            packet_info.sender_id = packet[11 + offset];
+            #if(INCLUDE_ASYNC_ACK)
+              if(packet_info.header & ACK_MODE_BIT)
+                packet_info.id = packet[13 + offset] << 8 | packet[12 + offset] & 0xFF;
+            #endif
           }
-        } else if((packet_info.header & SENDER_INFO_BIT) != 0)
-          packet_info.sender_id = packet[3 + extended_header + extended_length];
+        } else if((packet_info.header & SENDER_INFO_BIT) != 0) {
+          packet_info.sender_id = packet[3 + offset];
+          #if(INCLUDE_ASYNC_ACK)
+            if(packet_info.header & ACK_MODE_BIT)
+              packet_info.id = packet[5 + offset] << 8 | packet[4 + offset] & 0xFF;
+          #endif
+        }
       };
 
 
@@ -329,19 +366,47 @@ limitations under the License. */
             } else CRC = true;
         } else CRC = !compute_crc_8(data, length);
 
-        if(data[1] & ACK_REQUEST_BIT && data[0] != BROADCAST && _mode != SIMPLEX && !_router)
-          if(
-            !_shared || (_shared && (data[1] & MODE_BIT) &&
-            bus_id_equality(data + 3 + extended_length + extended_header, bus_id))
-          ) strategy.send_response(!CRC ? NAK : ACK);
+        if(data[1] & ACK_REQUEST_BIT && data[0] != BROADCAST)
+          if(_mode != SIMPLEX && !_router)
+            if(!_shared || (
+              _shared && (data[1] & MODE_BIT) &&
+              bus_id_equality(data + 3 + extended_length + extended_header, bus_id)
+            )) strategy.send_response(!CRC ? NAK : ACK);
 
         if(!CRC) return NAK;
         parse(data, last_packet_info);
+
+        #if(INCLUDE_ASYNC_ACK)
+          /* If a packet requesting asynchronous acknowledment is received
+             send the acknowledment packet back to the packet's transmitter */
+          if((data[1] & ACK_MODE_BIT) && (data[1] & SENDER_INFO_BIT)) {
+            if(_auto_delete && length == packet_overhead(data[1]))
+              if(handle_asynchronous_acknowledgment(last_packet_info))
+                return ACK;
+
+            if(length > packet_overhead(data[1])) {
+              dispatch(
+                last_packet_info.sender_id,
+                (uint8_t *)last_packet_info.sender_bus_id,
+                NULL,
+                0,
+                0,
+                get_header() | ACK_MODE_BIT | SENDER_INFO_BIT,
+                last_packet_info.id
+              );
+              update();
+              if(known_packet_id(last_packet_info))
+                return ACK;
+            }
+          }
+        #endif
+
         _receiver(
           data + (packet_overhead(data[1]) - (data[1] & CRC_BIT ? 4 : 1)),
           length - packet_overhead(data[1]),
           last_packet_info
         );
+
         return ACK;
       };
 
@@ -362,11 +427,42 @@ limitations under the License. */
 
       /* Remove a packet from the send list: */
 
-      void remove(uint16_t id) {
-        packets[id].attempts = 0;
-        packets[id].length = 0;
-        packets[id].registration = 0;
-        packets[id].state = 0;
+      void remove(uint16_t index) {
+        packets[index].attempts = 0;
+        packets[index].length = 0;
+        packets[index].registration = 0;
+        packets[index].state = 0;
+      };
+
+
+      /* Remove a packet from the packet's buffer passing its id as reference: */
+
+      boolean handle_asynchronous_acknowledgment(PacketInfo packet_info) {
+        PacketInfo actual_info;
+        for(uint8_t i = 0; i < MAX_PACKETS; i++) {
+          parse((uint8_t *)packets[i].content, actual_info);
+          if(actual_info.id == packet_info.id)
+            if(actual_info.receiver_id == packet_info.sender_id && (
+              (!(actual_info.header & MODE_BIT) && !(packet_info.header & MODE_BIT)) ? true :
+                bus_id_equality(actual_info.receiver_bus_id, packet_info.sender_bus_id)
+            )) {
+              if(packets[i].timing) {
+                uint8_t offset = packet_overhead(actual_info.header);
+                uint8_t crc_offset = ((actual_info.header & CRC_BIT) ? 4 : 1);
+                dispatch(
+                  actual_info.receiver_id,
+                  (uint8_t *)actual_info.receiver_bus_id,
+                  packets[i].content + (offset - crc_offset),
+                  packets[i].length - offset,
+                  packets[i].timing,
+                  actual_info.header
+                );
+              }
+              remove(i);
+              return true;
+            }
+        }
+        return false;
       };
 
 
@@ -481,7 +577,7 @@ limitations under the License. */
   00000110: Acknowledge requested | Sender info included | Local bus
 
   BUS CONFIGURATION:
-  bus.set_acknowledge(true);
+  bus.set_synchronous_acknowledge(true);
   bus.include_sender_info(true);
 
   Average overhead, average bandwidth availability setup. Can be used only in an isolated
@@ -503,7 +599,7 @@ limitations under the License. */
   00000000: Acknowledge not requested | Sender info not included | Local bus
 
   BUS CONFIGURATION:
-  bus.set_acknowledge(false);
+  bus.set_synchronous_acknowledge(false);
   bus.include_sender_info(false);
 
   Low overhead, high bandwidth availability setup. Can be used only in an isolated
@@ -524,7 +620,7 @@ limitations under the License. */
   00000111: Acknowledge requested | Sender info included | Shared bus
 
   BUS CONFIGURATION:
-  bus.set_acknowledge(true);
+  bus.set_synchronous_acknowledge(true);
   bus.include_sender_info(true);
 
   High overhead, low bandwidth availability setup. Can be used sharing the medium
@@ -535,7 +631,8 @@ limitations under the License. */
         if(!string) return FAIL;
         if(_mode != SIMPLEX && !strategy.can_start()) return BUSY;
         strategy.send_string((uint8_t *)string, length);
-        if(string[0] == BROADCAST || !_acknowledge || _mode == SIMPLEX) return ACK;
+        if(string[0] == BROADCAST || !_synchronous_acknowledge || _mode == SIMPLEX)
+          return ACK;
         uint16_t response = strategy.receive_response();
         if(response == ACK || response == NAK || response == FAIL) return response;
         else return BUSY;
@@ -576,7 +673,14 @@ limitations under the License. */
         uint16_t header = NOT_ASSIGNED,
         uint32_t timeout = 3000000
       ) {
-        if(!(length = compose_packet(id, b_id, (char *)data, string, length, header))) return FAIL;
+        if(!(length = compose_packet(
+          id,
+          b_id,
+          (char *)data,
+          string,
+          length,
+          header
+        ))) return FAIL;
         uint16_t state = FAIL;
         uint32_t attempts = 0;
         uint32_t time = micros(), start = time;
@@ -604,7 +708,7 @@ limitations under the License. */
       /* In router mode, the receiver function can ack for selected receiver
          device ids for which the route is known */
 
-      void send_acknowledge() {
+      void send_synchronous_acknowledge() {
         strategy.send_response(ACK);
       };
 
@@ -613,8 +717,17 @@ limitations under the License. */
          TRUE: Send back synchronous acknowledge when a packet is correctly received
          FALSE: Avoid acknowledge transmission */
 
-      void set_acknowledge(boolean state) {
-        _acknowledge = state;
+      void set_synchronous_acknowledge(boolean state) {
+        _synchronous_acknowledge = state;
+      };
+
+
+      /* Configure asynchronous acknowledge presence:
+         TRUE: Send back asynchronous acknowledge packet
+         FALSE: Avoid acknowledge packet transmission */
+
+      void set_asynchronous_acknowledge(boolean state) {
+        _asynchronous_acknowledge = state;
       };
 
 
@@ -702,6 +815,13 @@ limitations under the License. */
       };
 
 
+      /* Set the pin used as a seed for random generator: */
+
+      void set_random_seed(uint8_t random_seed) {
+        _random_seed = random_seed;
+      };
+
+
       /* Pass as a parameter a void function you previously defined in your code.
          This will be called when a correct message will be received.
          Inside there you can code how to react when data is received.
@@ -739,15 +859,28 @@ limitations under the License. */
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
           packets_count++;
+
+          #if(ORDERED_SENDING)
+            if(!first_packet_to_be_sent(i)) continue;
+          #endif
+
+          bool async_ack = (packets[i].content[1] & ACK_MODE_BIT) &&
+            (packets[i].content[1] & SENDER_INFO_BIT);
+
           back_off = packets[i].attempts;
-          back_off = back_off * back_off * back_off;
+          back_off = (back_off * back_off * back_off * back_off);
+
           if((uint32_t)(micros() - packets[i].registration) > packets[i].timing + back_off)
             packets[i].state = send_packet(packets[i].content, packets[i].length);
           else continue;
 
           if(packets[i].state == ACK) {
             if(!packets[i].timing) {
-              if(_auto_delete) {
+              if(
+                _auto_delete && (
+                  (packets[i].length == packet_overhead(packets[i].content[1]) && async_ack
+                ) || !(packets[i].content[1] & ACK_MODE_BIT))
+              ) {
                 remove(i);
                 packets_count--;
               }
@@ -774,27 +907,81 @@ limitations under the License. */
               packets[i].registration = micros();
               packets[i].state = TO_BE_SENT;
             }
-          } else packets[i].registration = micros();
+          }
         }
         return packets_count;
       };
 
-      uint8_t data[PACKET_MAX_LENGTH];
-      PJON_Packet packets[MAX_PACKETS];
-      /* A bus id is an array of 4 bytes containing a unique set.
-          The default setting is to run a local bus (0.0.0.0), in this
-          particular case the obvious bus id is omitted from the packet
-          content to reduce overhead. */
-      const uint8_t localhost[4] = {0, 0, 0, 0};
+
+      /* Check if the packet index passed is the first to be sent: */
+
+      boolean first_packet_to_be_sent(uint8_t index) {
+        PacketInfo actual_info;
+        PacketInfo tested_info;
+        parse((uint8_t *)packets[index].content, actual_info);
+        for(uint8_t i = 0; i < MAX_PACKETS; i++) {
+          parse((uint8_t *)packets[i].content, tested_info);
+          if(
+            actual_info.receiver_id == tested_info.receiver_id &&
+            bus_id_equality(actual_info.receiver_bus_id, tested_info.receiver_bus_id)
+          ) if(packets[i].registration < packets[index].registration) return false;
+        }
+        return true;
+      };
+
+
+      /* Check if the packet id and its transmitter info are already present in the
+         buffer of recently received packets, if not add it to the buffer. */
+
+      bool known_packet_id(PacketInfo info) {
+        #if(INCLUDE_ASYNC_ACK)
+          for(uint8_t i = 0; i < MAX_RECENT_PACKET_IDS; i++)
+            if(
+              info.id == recent_packet_ids[i].id &&
+              info.sender_id == recent_packet_ids[i].sender_id &&
+              ((
+                (info.header & MODE_BIT) && (recent_packet_ids[i].header & MODE_BIT) &&
+                bus_id_equality((uint8_t *)info.sender_bus_id, (uint8_t *)recent_packet_ids[i].sender_bus_id)
+              ) || !(info.header & MODE_BIT) && !(recent_packet_ids[i].header & MODE_BIT))
+            ) return true;
+
+          save_packet_id(info);
+          return false;
+        #endif
+      };
+
+
+      /* Save packet id in the buffer: */
+
+      void save_packet_id(PacketInfo info) {
+        #if(INCLUDE_ASYNC_ACK)
+          for(uint8_t i = MAX_RECENT_PACKET_IDS - 1; i > 0; i--)
+            recent_packet_ids[i] = recent_packet_ids[i - 1];
+          recent_packet_ids[0].id = info.id;
+          recent_packet_ids[0].header = info.header;
+          recent_packet_ids[0].sender_id = info.sender_id;
+          copy_bus_id(recent_packet_ids[0].sender_bus_id, info.sender_bus_id);
+        #endif
+      };
+
+
       uint8_t bus_id[4] = {0, 0, 0, 0};
-      /* Last received packet Metainfo */
+      uint8_t data[PACKET_MAX_LENGTH];
       PacketInfo last_packet_info;
+      const uint8_t localhost[4] = {0, 0, 0, 0};
+      PJON_Packet packets[MAX_PACKETS];
+      #if(INCLUDE_ASYNC_ACK)
+        PJON_Packet_Record recent_packet_ids[MAX_RECENT_PACKET_IDS];
+      #endif
     private:
-      boolean   _acknowledge = true;
+      boolean   _synchronous_acknowledge = true;
+      boolean   _asynchronous_acknowledge = false;
       boolean   _auto_delete = true;
       boolean   _crc_32 = false;
       error     _error;
       uint8_t   _mode;
+      uint16_t  _packet_id_seed = 0;
+      uint8_t   _random_seed = A0;
       receiver  _receiver;
       boolean   _router = false;
       boolean   _sender_info = true;

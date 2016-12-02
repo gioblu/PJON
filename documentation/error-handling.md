@@ -1,9 +1,9 @@
-- [Addressing](https://github.com/gioblu/PJON/tree/6.0/documentation/addressing.md)
-- [Configuration](https://github.com/gioblu/PJON/tree/6.0/documentation/configuration.md)
-- [Data reception](https://github.com/gioblu/PJON/tree/6.0/documentation/data-reception.md)
-- [Data transmission](https://github.com/gioblu/PJON/tree/6.0/documentation/data-transmission.md)
-- **[Error handling](https://github.com/gioblu/PJON/tree/6.0/documentation/error-handling.md)**
-- [IO setup](https://github.com/gioblu/PJON/tree/6.0/documentation/io-setup.md)
+- [Addressing](https://github.com/gioblu/PJON/tree/6.1/documentation/addressing.md)
+- [Configuration](https://github.com/gioblu/PJON/tree/6.1/documentation/configuration.md)
+- [Data reception](https://github.com/gioblu/PJON/tree/6.1/documentation/data-reception.md)
+- [Data transmission](https://github.com/gioblu/PJON/tree/6.1/documentation/data-transmission.md)
+- **[Error handling](https://github.com/gioblu/PJON/tree/6.1/documentation/error-handling.md)**
+- [IO setup](https://github.com/gioblu/PJON/tree/6.1/documentation/io-setup.md)
 
 PJON is designed to inform the user if an error is detected. A `void function` has to be defined as the error handler, it receives 2 parameters the first is the error code and the second is 1 byte additional data related to the error.
 

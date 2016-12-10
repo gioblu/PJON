@@ -227,7 +227,7 @@ limitations under the License. */
         uint32_t time = micros();
         char request = ID_LIST;
         while(micros() - time < ADDRESSING_TIMEOUT) {
-          PJON<Strategy>::send_packet_blocking(
+          PJON<Strategy>::send_packet(
             BROADCAST, this->bus_id, &request, 1, PJON<Strategy>::get_header() | ADDRESS_BIT
           );
           receive(LIST_IDS_RECEPTION_TIME);

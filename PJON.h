@@ -874,6 +874,8 @@ limitations under the License. */
             packets[i].state = send_packet(packets[i].content, packets[i].length);
           else continue;
 
+          packets[i].attempts++;
+
           if(packets[i].state == ACK) {
             if(!packets[i].timing) {
               if(
@@ -888,13 +890,12 @@ limitations under the License. */
               packets[i].attempts = 0;
               packets[i].registration = micros();
               packets[i].state = TO_BE_SENT;
-            } continue;
+            } if(!async_ack) continue;
           }
 
           if(packets[i].state != FAIL)
             delayMicroseconds(random(0, COLLISION_DELAY));
 
-          packets[i].attempts++;
           if(packets[i].attempts > MAX_ATTEMPTS) {
             _error(CONNECTION_LOST, packets[i].content[0]);
             if(!packets[i].timing) {

@@ -4,20 +4,6 @@
 
 SoftwareBitBang is the default data link layer strategy used by the PJON template object. This implementation is based on `micros()` and `delayMicroseconds()`. It makes no use of dedicated timers or interrupt driven strategies to handle communication. It is designed to have a small memory footprint and to be extremely resilient to interference and timing inaccuracies. Thanks to the use of a dedicated digitalWriteFast library, can be achieved fast and reliable cross-architecture communication through one or two pins.
 
-####How to use SoftwareBitBang
-Pass the `SoftwareBitBang` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy. All the other necessary information is present in the general [Documentation](https://github.com/gioblu/PJON/wiki/Documentation).
-```cpp  
-  PJON<SoftwareBitBang> bus;
-
-  void setup() {
-    bus.strategy.set_pin(12);      // Set the pin 12 as the communication pin
-                                   // or
-    bus.strategy.set_pins(11, 12); // Set pin 11 as input pin and pin 12 as output pin  
-  }
-
-```
-After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance.
-
 ####Compatibility
 - ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
 - ATmega2560 16Mhz (Arduino Mega)
@@ -38,6 +24,37 @@ When including and using SoftwareBitBang, as data link layer of a PJON bus, you 
 
 Single wire simplicity let you to experiment quickly and with creativity. The first suggested test, at the tester's risk, is to let two arduino boards communicate through a living body touching with the left hand the digital port of the first board (5v 40ma, harmless) and with the right the port of the other one. It is stunning to see highly accurate digital communication running inside a living biological body. This opens the mind to possible creative solutions.
 
+####How to use SoftwareBitBang
+Pass the `SoftwareBitBang` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy. All the other necessary information is present in the general [Documentation](https://github.com/gioblu/PJON/wiki/Documentation).
+```cpp  
+  /* The default SoftwareBitBang mode is _SWBB_STANDARD
+     (Transfer speed: 16.944kBb or 2.12kB/s) */
+
+  /* Set SoftwareBitBang mode to _SWBB_FAST
+     (Transfer speed: 25.157kBd or 3.15kB/s) */
+  #define SWBB_MODE 2
+
+  /* Set SoftwareBitBang mode to _SWBB_OVERDRIVE
+     (Architecture / Toolchain dependant) */
+  #define SWBB_MODE 3
+
+  /* Acknowledge latency maximum duration (1000 microseconds default).
+  Sending long packets can be necessary to higher SWBB_LATENCY to
+  leave enough time to receiver to compute the CRC and to respond
+  with a synchronous acknowledgment */
+  #define SWBB_LATENCY 1000
+
+  PJON<SoftwareBitBang> bus;
+
+  void setup() {
+    bus.strategy.set_pin(12);      // Set the pin 12 as the communication pin
+                                   // or
+    bus.strategy.set_pins(11, 12); // Set pin 11 as input pin and pin 12 as output pin  
+  }
+
+```
+After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance.
+
 ####Why not interrupts?
 Usage of libraries is really extensive in the Arduino environment and often the end user is not able to go over collisions or redefinitions. Very often a library is using hardware resources of the microcontroller as timers or interrupts, colliding or interrupting other libraries. This happens because in general Arduino boards have limited hardware resources. To have a universal and reliable communication medium in this sort of environment, software emulated bit-banging, is a good, stable and reliable solution that leads to "more predictable" results than interrupt driven systems coexisting on small microcontrollers without the original developer and the end user knowing about it.
 
@@ -46,8 +63,8 @@ Usage of libraries is really extensive in the Arduino environment and often the 
 PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl/post/130558526217/pjon-my-son)
 
 ####Known issues
-- A pull down resistor in the order of mega ohms could be necessary on the bus to reduce interference. See https://github.com/gioblu/PJON/wiki/Deal-with-interference. In late november 2016 a bug has been discovered, it was on many devices creating a slight inconsistency in the channel state during transitions, most of the times
-disappearing with the use of a pull-down resistor (https://github.com/gioblu/PJON/commit/120b2c72f1435519e7712adfd2c3f1eecc38557c). With this bugfix the channel is much more reliable and probably some margin has been obtained to higher communication speed.
+- A pull down resistor in the order of mega ohms could be necessary on the bus to reduce interference, see [deal with interference](https://github.com/gioblu/PJON/wiki/Deal-with-interference). In late november 2016 a bug has been discovered, it was on many devices creating a slight inconsistency in the channel state during transitions, most of the times
+disappearing with the use of a pull-down resistor ([120b2c](https://github.com/gioblu/PJON/commit/120b2c72f1435519e7712adfd2c3f1eecc38557c)). With this bugfix the channel is much more reliable.
 - Consider that this is not an interrupt driven system and so all the time passed
 in delay or executing something a certain amount of packets could be potentially
 lost not received, the packet manager of PJON will do its job scheduling the packet

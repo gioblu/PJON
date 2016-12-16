@@ -26,8 +26,9 @@
 #include <Arduino.h>
 
 #define THROUGH_SERIAL_MAX_BYTE_TIME        1000000
-/* 1 second is the maximum delay you can set in your devices
-   sketches without loosing acknowledment because delaying. */
+/* 1 second maximum timeframe you can have between every receive call in
+   any of the connected devices without loosing synchronous acknowledment
+   because delaying. */
 
 #define THROUGH_SERIAL_FREE_TIME_BEFORE_START   500
 /* 0.5 milliseconds minimum timeframe of free port before transmitting

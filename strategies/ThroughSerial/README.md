@@ -15,8 +15,8 @@ Pass the `ThroughSerial` type as PJON template parameter to instantiate a PJON o
 Call the `begin` method on the `Serial` or `SoftwareSerial`  object you want to use for PJON communication and pass it to the `set_serial` method:
 ```cpp  
 
-  /* Set 1 second as the maximum timeframe between every receive call you can
-     use in your devices sketches without loosing acknowledment because delaying.
+  /* Set 1 second as the maximum timeframe between every receive call in any of
+     the connected devices without loosing synchronous acknowledgment because delaying.
      (before PJON.h inclusion) */
   #define THROUGH_SERIAL_MAX_BYTE_TIME        1000000
 

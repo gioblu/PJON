@@ -2,7 +2,7 @@
 **Media:** Radio, Wire |
 **Pins used:** 1 / 2
 
-Oversampling strategy comes from the [PJON_ASK](https://github.com/gioblu/PJON_ASK) repository, and it was integrated in the PJON repository from version 3.0 beta, as a data link layer strategy. Bits are over-sampled to have high resilience in high interference scenarios, like using an ASK/FSK cheap radio transceivers in an urban environment. It is tested effectively with many versions of the ASK/FSK 315/433Mhz modules available on the market, but it works nominally also through wires and the human body.
+Oversampling strategy was initially developed in the [PJON_ASK](https://github.com/gioblu/PJON_ASK) repository, and it was integrated in the PJON repository from version 3.0 beta, as a data link layer strategy. Bits are over-sampled to have high resilience in high interference scenarios, like using an ASK/FSK cheap radio transceivers in an urban environment. It is tested effectively with many versions of the ASK/FSK 315/433Mhz modules available on the market, but it works nominally also through wires and the human body.
 
 ####Compatibility
 - ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
@@ -17,6 +17,10 @@ Oversampling strategy comes from the [PJON_ASK](https://github.com/gioblu/PJON_A
 ####How to use OverSampling
 Pass the `OverSampling` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy. All the other necessary information is present in the general [Documentation](https://github.com/gioblu/PJON/wiki/Documentation).
 ```cpp  
+/* Maximum latency can be set defining OS_LATENCY before PJON.h inclusion
+   (Default 4 milliseconds) */
+#define OS_LATENCY 4000
+
 PJON<OverSampling> bus; // 2 pin over-sampled data link layer
 
 void setup() {
@@ -32,7 +36,7 @@ To build a real open-source PJON packet radio able to communicate up to 5km you 
 
 ![PJON Oversampling packet radio](http://www.gioblu.com/PJON/PJON-OverSampling-packet-radio-STX882-SRX882.jpg)
 
-The maximum detected range was experimented launching a balloon with a small payload containing the packet radio transmitting its position every minute. The maximum range obtained was slightly more than 5 kilometers. Two couples of STX882 and SRX882 were used as transceivers. If you choose these modules, remember to set `HIGH` the pin `CS` on the receiver before starting reception.
+The maximum detected range was experimented with a small packet radio transmitting its position every minute. The maximum range obtained was slightly more than 5 kilometers in line of sight in open area. Testing it instead in an urban environment the range is down to 250 meters. Two couples of STX882 and SRX882 were used as transceivers. If you choose these modules, remember to set `HIGH` the pin `CS` on the receiver before starting reception.
 
 Using `OverSampling` data link layer, synchronous acknowledge can reduce the maximum range, on certain media, so if you detect reduced range performance in `HALF_DUPLEX` compared to a mono-directional or `SIMPLEX` communication, and you can do without `ACK`, configure the absence of it after the packet transmission:
 ```cpp  

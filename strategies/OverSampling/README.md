@@ -17,17 +17,19 @@ Oversampling strategy was initially developed in the [PJON_ASK](https://github.c
 ####How to use OverSampling
 Pass the `OverSampling` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy. All the other necessary information is present in the general [Documentation](https://github.com/gioblu/PJON/wiki/Documentation).
 ```cpp  
-/* Maximum latency can be set defining OS_LATENCY before PJON.h inclusion
-   (Default 4 milliseconds) */
-#define OS_LATENCY 4000
+  /* Maximum latency can be set defining OS_LATENCY before PJON.h inclusion
+     (Default 4 milliseconds) */
+  #define OS_LATENCY 4000
 
-PJON<OverSampling> bus; // 2 pin over-sampled data link layer
+  #include <PJON.h>
 
-void setup() {
-  bus.strategy.set_pin(12);      // Set the pin 12 as the communication pin
-                                 // or
-  bus.strategy.set_pins(11, 12); // Set pin 11 as input pin and pin 12 as output pin  
-}  
+  PJON<OverSampling> bus; // 2 pin over-sampled data link layer
+
+  void setup() {
+    bus.strategy.set_pin(12);      // Set the pin 12 as the communication pin
+                                   // or
+    bus.strategy.set_pins(11, 12); // Set pin 11 as input pin and pin 12 as output pin  
+  }  
 ```
 After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance.
 

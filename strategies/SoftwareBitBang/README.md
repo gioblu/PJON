@@ -30,19 +30,20 @@ Pass the `SoftwareBitBang` type as PJON template parameter to instantiate a PJON
   /* The default SoftwareBitBang mode is _SWBB_STANDARD
      (Transfer speed: 16.944kBb or 2.12kB/s) */
 
-  /* Set SoftwareBitBang mode to _SWBB_FAST
+  /* Set SoftwareBitBang mode to _SWBB_FAST before PJON.h inclusion
      (Transfer speed: 25.157kBd or 3.15kB/s) */
   #define SWBB_MODE 2
 
-  /* Set SoftwareBitBang mode to _SWBB_OVERDRIVE
+  /* Set SoftwareBitBang mode to _SWBB_OVERDRIVE before PJON.h inclusion
      (Architecture / Toolchain dependant) */
   #define SWBB_MODE 3
 
   /* Acknowledge latency maximum duration (1000 microseconds default).
-  Sending long packets can be necessary to higher SWBB_LATENCY to
-  leave enough time to receiver to compute the CRC and to respond
-  with a synchronous acknowledgment */
+     Could be necessary to higher SWBB_LATENCY if sending long packets because
+     of the CRC computation time needed by receiver before transmitting its acknowledge  */
   #define SWBB_LATENCY 1000
+
+  #include <PJON.h>
 
   PJON<SoftwareBitBang> bus;
 

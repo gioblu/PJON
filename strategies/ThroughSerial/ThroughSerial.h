@@ -25,20 +25,48 @@
 
 #include <Arduino.h>
 
-#define THROUGH_SERIAL_MAX_BYTE_TIME        10000  // Wait up to 10 milliseconds for an incoming byte
-#define THROUGH_SERIAL_FREE_TIME_BEFORE_START 500  // 0.5 milliseconds of free channell before sending
+#define THROUGH_SERIAL_MAX_BYTE_TIME        1000000
+/* 1 second is the maximum delay you can set in your devices
+   sketches without loosing acknowledment because delaying. */
+
+#define THROUGH_SERIAL_FREE_TIME_BEFORE_START   500
+/* 0.5 milliseconds minimum timeframe of free port before transmitting
+
+   This timing configuration is ok for a master-slave setup, but could lead to
+   collisions if used in a multi-master setup.
+
+   If using ThroughSerial multi-master, NEVER set
+   THROUGH_SERIAL_FREE_TIME_BEFORE_START < THROUGH_SERIAL_MAX_BYTE_TIME
+   or a device could start transmitting while a couple is still exchanging an acknowledge
+
+   i.e.
+   #define THROUGH_SERIAL_MAX_BYTE_TIME           100000
+   #define THROUGH_SERIAL_FREE_TIME_BEFORE_START  110000
+
+   Above is shown multi-master compatible setup able to receive a synchronous
+   acknowledgment with a maximum delay 100 milliseconds. Channel analysis before
+   transmission is set to 110 milliseconds to avoid collisions.
+
+   Which is the correct value for your setup depends on the maximum average time
+   interval between every receive call in your system. THROUGH_SERIAL_MAX_BYTE_TIME
+   should be around the same duration. So in a sketch where there is only a
+   delay(10) between every receive call 10000 should be the correct value for
+   THROUGH_SERIAL_MAX_BYTE_TIME.
+
+   If your tasks timing are long and a satisfactory setup can't be reached
+   consider to drop the use of the synchronous acknowledge and start using the
+   asynchronous acknowledgment instead. */
 
 class ThroughSerial {
   public:
     Stream *serial = NULL;
 
     boolean can_start() {
+      delayMicroseconds(random(0, COLLISION_DELAY));
       if(serial->available()) return false;
 
-      if(
-        (uint32_t)(micros() - _last_reception_time) <
-        random(THROUGH_SERIAL_FREE_TIME_BEFORE_START, 2 * THROUGH_SERIAL_FREE_TIME_BEFORE_START)
-      ) return false;
+      if((uint32_t)(micros() - _last_reception_time) < THROUGH_SERIAL_FREE_TIME_BEFORE_START)
+        return false;
 
       return (serial != NULL);
     };

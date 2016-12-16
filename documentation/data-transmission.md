@@ -37,7 +37,13 @@ To broadcast a message to all connected devices, use the `BROADCAST` constant as
 int broadcastTest = bus.send(BROADCAST, "Message for all connected devices.", 34);
 ```
 
-If you need to send a packet in a blocking manner use `send_packet_blocking` method, instead of adding the packet to the queue like `send` does, `send_packet_blocking` executes the transmission and the backoff retry if necessary exactly how would have been executed by the `send` plus `update` chain while returning the effective result of the transmission. Remember that `send_packet_blocking` does not try to receive while transmitting or retrying, so this should be used carefully.
+If you are using PJON in shared mode (so in a medium shared by n buses) you can send to a precise bus or group of devices:
+```cpp
+uint8_t bus_id[] = {127, 0, 0, 1};
+bus.send(12, bus_id, "Ciao!", 5);
+```
+
+If you need to send a packet in a blocking manner use `send_packet_blocking` method, instead of adding the packet to the buffer like `send` does, `send_packet_blocking` executes the transmission and the backoff retry if necessary exactly how would have been executed by the `send` plus `update` chain while returning the effective result of the transmission. Remember that `send_packet_blocking` does not try to receive while transmitting or retrying, so this should be used carefully.
 ```cpp
 if(bus.send_packet_blocking(10, "All is ok?!", 11) == ACK) {
   Serial.println("10 is ok!");

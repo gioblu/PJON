@@ -43,11 +43,12 @@ In the graph below is shown the protocol stack model proposed. The differences b
 | Segmentation, routing                         |
 |-----------------------------------------------|
 | 3 Protocol layer                              |
-| Addressing, acknowledgement,                  |
+| Addressing, asynchronous acknowledgement,     |
 | multiplexing, traffic control                 |
 |-----------------------------------------------|
 | 2 Data link layer                             |
-| Data link, transmission of data frames        |
+| Data link, transmission of packets,           |
+| synchronous acknowledgment                    |
 |-----------------------------------------------|
 | 1 Physical layer                              |
 | Cable, transceivers ecc                       |

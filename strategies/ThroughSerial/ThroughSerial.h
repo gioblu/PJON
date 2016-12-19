@@ -25,7 +25,7 @@
 
 #include <Arduino.h>
 
-#define THROUGH_SERIAL_MAX_BYTE_TIME        1000000
+#define THROUGH_SERIAL_MAX_BYTE_TIME         100000
 /* 1 second maximum timeframe you can have between every receive call in
    any of the connected devices without loosing synchronous acknowledment
    because delaying. */

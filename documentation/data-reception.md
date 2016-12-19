@@ -57,5 +57,5 @@ uint16_t response = bus.receive();
 
 If you want to dedicate a certain timeframe to reception call the `receive` function passing the maximum reception time in microseconds:
 ```cpp
-int response = bus.receive(1000);
+uint16_t response = bus.receive(1000);
 ```

@@ -26,8 +26,7 @@ To send a value repeatedly simply call `send_repeatedly()` and add as last param
 ```cpp
 uint16_t one_second_test = bus.send_repeatedly(100, "Test sent every second!", 23, 1000000);
 ```
-
-The `one_second_test` variable contains the id of the packet, to remove this repeated task simply:
+`send_repeatedly` returns the id of the packet in the packet's buffer, to remove this repeated task simply:
 ```cpp
 bus.remove(one_second_test);
 ```
@@ -61,4 +60,4 @@ if(bus.send_packet_blocking(10, "All is ok?!", 11) == ACK) { // Try with backoff
   Serial.println("10 is ok!");
 }    
 ```
-It also returns the result of transmission exactly as send_packet. Remember that `send_packet_blocking` does not try to receive while transmitting or retrying, so this should be used carefully.
+It also returns the result of transmission exactly as `send_packet`. Remember that `send_packet_blocking` does not try to receive while transmitting or retrying, so this should be used carefully.

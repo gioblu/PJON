@@ -1,9 +1,9 @@
-- [Addressing](https://github.com/gioblu/PJON/tree/6.1/documentation/addressing.md)
-- **[Configuration](https://github.com/gioblu/PJON/tree/6.1/documentation/configuration.md)**
-- [Data reception](https://github.com/gioblu/PJON/tree/6.1/documentation/data-reception.md)
-- [Data transmission](https://github.com/gioblu/PJON/tree/6.1/documentation/data-transmission.md)
-- [Error handling](https://github.com/gioblu/PJON/tree/6.1/documentation/error-handling.md)
-- [IO setup](https://github.com/gioblu/PJON/tree/6.1/documentation/io-setup.md)
+- [Addressing](https://github.com/gioblu/PJON/tree/6.2/documentation/addressing.md)
+- **[Configuration](https://github.com/gioblu/PJON/tree/6.2/documentation/configuration.md)**
+- [Data reception](https://github.com/gioblu/PJON/tree/6.2/documentation/data-reception.md)
+- [Data transmission](https://github.com/gioblu/PJON/tree/6.2/documentation/data-transmission.md)
+- [Error handling](https://github.com/gioblu/PJON/tree/6.2/documentation/error-handling.md)
+- [IO setup](https://github.com/gioblu/PJON/tree/6.2/documentation/io-setup.md)
 
 
 Before approaching to the PJON class it is possible to define the packets and content buffer length.  Pre-defining `MAX_PACKETS` and `PACKET_MAX_LENGTH` it is possible to configure this constants to reach the project and memory requirements. Obviously, the less memory is dedicated to this buffers, the more memory can be used for something else.

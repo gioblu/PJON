@@ -1,9 +1,9 @@
-- [Addressing](https://github.com/gioblu/PJON/tree/6.1/documentation/addressing.md)
-- [Configuration](https://github.com/gioblu/PJON/tree/6.1/documentation/configuration.md)
-- **[Data reception](https://github.com/gioblu/PJON/tree/6.1/documentation/data-reception.md)**
-- [Data transmission](https://github.com/gioblu/PJON/tree/6.1/documentation/data-transmission.md)
-- [Error handling](https://github.com/gioblu/PJON/tree/6.1/documentation/error-handling.md)
-- [IO setup](https://github.com/gioblu/PJON/tree/6.1/documentation/io-setup.md)
+- [Addressing](https://github.com/gioblu/PJON/tree/6.2/documentation/addressing.md)
+- [Configuration](https://github.com/gioblu/PJON/tree/6.2/documentation/configuration.md)
+- **[Data reception](https://github.com/gioblu/PJON/tree/6.2/documentation/data-reception.md)**
+- [Data transmission](https://github.com/gioblu/PJON/tree/6.2/documentation/data-transmission.md)
+- [Error handling](https://github.com/gioblu/PJON/tree/6.2/documentation/error-handling.md)
+- [IO setup](https://github.com/gioblu/PJON/tree/6.2/documentation/io-setup.md)
 
 Define a `void function` that will be called if a correct message is received. This function receives 3 parameters: the transmission content, its length and a pointer to a `PacketInfo` data structure that contains all the info contained in the packet metadata:
 ```cpp

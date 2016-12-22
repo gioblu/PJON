@@ -1,6 +1,6 @@
 
 ![PJON](http://www.gioblu.com/PJON/PJON-github-header-tiny.png)
-##PJON v6.1
+##PJON v6.2
 PJON™ (Padded Jittering Operative Network) is an Arduino compatible, multi-master, multi-media communications bus system. It proposes a Standard and it is designed as a framework for digital communication. It is a valid alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. Visit the [Wiki](https://github.com/gioblu/PJON/wiki), [Documentation](https://github.com/gioblu/PJON/wiki/Documentation) and [Troubleshooting](https://github.com/gioblu/PJON/wiki/Troubleshooting) wiki pages to know more about the PJON Standard.
 
 [![Get PJON bus id](https://img.shields.io/badge/GET-PJON%20bus%20id-lightgrey.svg)](http://www.pjon.org/get-bus-id.php)
@@ -35,7 +35,7 @@ PJON™ (Padded Jittering Operative Network) is an Arduino compatible, multi-mas
 - [PJON-python](https://github.com/Girgitt/PJON-python) by Zbigniew Zasieczny
 - [ModuleInterface](https://github.com/fredilarsen/ModuleInterface) by Fred Larsen
 
-PJON™ is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
+PJON™ is a self-funded, no-profit project created (in 2010) and mantained by Giovanni Blu Mitolo
 with the support ot the internet community if you want to see the PJON project growing
 with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
 

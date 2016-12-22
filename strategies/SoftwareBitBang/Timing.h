@@ -38,12 +38,12 @@
   #endif
   #if SWBB_MODE == _SWBB_OVERDRIVE
     #if F_CPU == 16000000L
-    /* Transfer speed: 33.898kBd or 4.24kB/s
-       Absolute  communication speed: 3.23kB/s
-       Data throughput: 2.68kB/s */
-      #define SWBB_BIT_WIDTH 20
-      #define SWBB_BIT_SPACER 56
-      #define SWBB_ACCEPTANCE 20
+    /* Transfer speed: 39.02kBd or 4.87kB/s
+       Absolute communication speed: 3.35kB/s
+       Data throughput (default conf. sending 20 bytes): 2.56kB/s */
+      #define SWBB_BIT_WIDTH 17
+      #define SWBB_BIT_SPACER 52
+      #define SWBB_ACCEPTANCE 17
       #define SWBB_READ_DELAY 8
     #endif
   #endif

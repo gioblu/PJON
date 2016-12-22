@@ -1,9 +1,9 @@
-- [Addressing](https://github.com/gioblu/PJON/tree/6.1/documentation/addressing.md)
-- [Configuration](https://github.com/gioblu/PJON/tree/6.1/documentation/configuration.md)
-- **[Data reception](https://github.com/gioblu/PJON/tree/6.1/documentation/data-reception.md)**
-- [Data transmission](https://github.com/gioblu/PJON/tree/6.1/documentation/data-transmission.md)
-- [Error handling](https://github.com/gioblu/PJON/tree/6.1/documentation/error-handling.md)
-- [IO setup](https://github.com/gioblu/PJON/tree/6.1/documentation/io-setup.md)
+- [Addressing](https://github.com/gioblu/PJON/tree/6.2/documentation/addressing.md)
+- [Configuration](https://github.com/gioblu/PJON/tree/6.2/documentation/configuration.md)
+- **[Data reception](https://github.com/gioblu/PJON/tree/6.2/documentation/data-reception.md)**
+- [Data transmission](https://github.com/gioblu/PJON/tree/6.2/documentation/data-transmission.md)
+- [Error handling](https://github.com/gioblu/PJON/tree/6.2/documentation/error-handling.md)
+- [IO setup](https://github.com/gioblu/PJON/tree/6.2/documentation/io-setup.md)
 
 Define a `void function` that will be called if a correct message is received. This function receives 3 parameters: the transmission content, its length and a pointer to a `PacketInfo` data structure that contains all the info contained in the packet metadata:
 ```cpp
@@ -47,9 +47,15 @@ bus.set_receiver(receiver_function);
 ```
 To correctly receive data call the `receive` function at least once per loop cycle:
 ```cpp
-int response = bus.receive();
+uint16_t response = bus.receive();
 ```
+`receive` returns the following values:
+- `ACK` (6) if a correct reception occurred
+- `NAK` (21) if a mistake is found in CRC
+- `BUSY` (666) if a transmission for other devices is occurring
+- `FAIL` (65535) if no data is received
+
 If you want to dedicate a certain timeframe to reception call the `receive` function passing the maximum reception time in microseconds:
 ```cpp
-int response = bus.receive(1000);
+uint16_t response = bus.receive(1000);
 ```

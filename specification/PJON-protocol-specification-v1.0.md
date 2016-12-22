@@ -43,11 +43,12 @@ In the graph below is shown the protocol stack model proposed. The differences b
 | Segmentation, routing                         |
 |-----------------------------------------------|
 | 3 Protocol layer                              |
-| Addressing, acknowledgement,                  |
+| Addressing, asynchronous acknowledgement,     |
 | multiplexing, traffic control                 |
 |-----------------------------------------------|
 | 2 Data link layer                             |
-| Data link, transmission of data frames        |
+| Data link, transmission of packets,           |
+| synchronous acknowledgment                    |
 |-----------------------------------------------|
 | 1 Physical layer                              |
 | Cable, transceivers ecc                       |
@@ -174,7 +175,7 @@ Channel analysis   Transmission                                     Response
    |  0  |         | 12 | 00000100 |   5    |    64   |  72 |         |  6  |
    |_____|         |____|__________|________|_________|_____|         |_____|
 ```
-In the first phase the bus is analyzed by transmitter reading 10 logical bits, if any logical 1 is detected the channel is considered free and transmission phase starts in which the packet is entirely transmitted. Receiver calculates CRC and starts the response phase transmitting a single byte, `ACK` (decimal 6) in case of correct reception or `NAK` (decimal 21) if an error in the packet's content is detected. If transmitter receives no answer or `NAK` the packet sending is scheduled with a delay of `ATTEMPTS * ATTEMPTS * ATTEMPTS` with a maximum of 50 `ATTEMPTS` to obtain data transmission 3rd degree polynomial backoff.
+In the first phase the bus is analyzed by transmitter reading 10 logical bits, if any logical 1 is detected the channel is considered free and transmission phase starts in which the packet is entirely transmitted. Receiver calculates CRC and starts the response phase transmitting a single byte, `ACK` (decimal 6) in case of correct reception or `NAK` (decimal 21) if an error in the packet's content is detected. If transmitter receives no answer or `NAK` the packet sending is scheduled with a delay of `ATTEMPTS * ATTEMPTS * ATTEMPTS * ATTEMPTS` with a maximum of 42 `ATTEMPTS` to obtain data transmission 4rd degree polynomial backoff.
 
 Below is shown the same local transmission used as an example before, formatted to be sent over a shared medium, where device id `12` of bus `0.0.0.1` sends @ (decimal 64) to device id `11` in bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient, and optionally the sender's bus and device id:
 ```cpp  

@@ -8,7 +8,7 @@ boolean can_start()
 Should Return `true` if the medium is free for use and `false` if the medium is in use by some other device.
 
 ```cpp
-void send_string(uint8_t *string, uint8_t length)
+void send_string(uint8_t *string, uint16_t length)
 ```
 Sends a string of a certain length through the medium
 

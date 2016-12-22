@@ -1,7 +1,7 @@
 
  /*-O//\             __     __
    |-gfo\           |__| | |  | |\ | ™
-   |!y°o:\          |  __| |__| | \| v6.1
+   |!y°o:\          |  __| |__| | \| v6.2
    |y"s§+`\         multi-master, multi-media communications bus system framework
   /so+:-..`\        Copyright 2010-2016 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
@@ -71,6 +71,8 @@ limitations under the License. */
 
       PJONSlave() : PJON<Strategy>() {
         PJON<Strategy>::set_error(static_error_handler);
+        set_error(dummy_error_handler);
+        set_receiver(dummy_receiver_handler);
       };
 
 
@@ -79,6 +81,8 @@ limitations under the License. */
 
       PJONSlave(uint8_t device_id) : PJON<Strategy>(device_id) {
         PJON<Strategy>::set_error(static_error_handler);
+        set_error(dummy_error_handler);
+        set_receiver(dummy_receiver_handler);
       };
 
 
@@ -88,6 +92,8 @@ limitations under the License. */
 
       PJONSlave(const uint8_t *b_id, uint8_t device_id) : PJON<Strategy>(b_id, device_id) {
         PJON<Strategy>::set_error(static_error_handler);
+        set_error(dummy_error_handler);
+        set_receiver(dummy_receiver_handler);
       };
 
 

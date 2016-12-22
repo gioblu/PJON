@@ -1,7 +1,7 @@
 
  /*-O//\             __     __
    |-gfo\           |__| | |  | |\ | ™
-   |!y°o:\          |  __| |__| | \| v6.1
+   |!y°o:\          |  __| |__| | \| v6.2
    |y"s§+`\         multi-master, multi-media communications bus system framework
   /so+:-..`\        Copyright 2010-2016 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
@@ -80,6 +80,8 @@ limitations under the License. */
 
       PJONMaster() : PJON<Strategy>(MASTER_ID) {
         PJON<Strategy>::set_error(static_error_handler);
+        set_error(dummy_error_handler);
+        set_receiver(dummy_receiver_handler);
         delete_id_reference();
       };
 
@@ -89,6 +91,8 @@ limitations under the License. */
 
       PJONMaster(const uint8_t *b_id) : PJON<Strategy>(b_id, MASTER_ID) {
         PJON<Strategy>::set_error(static_error_handler);
+        set_error(dummy_error_handler);
+        set_receiver(dummy_receiver_handler);
         delete_id_reference();
       };
 
@@ -223,7 +227,7 @@ limitations under the License. */
         uint32_t time = micros();
         char request = ID_LIST;
         while(micros() - time < ADDRESSING_TIMEOUT) {
-          PJON<Strategy>::send_packet_blocking(
+          PJON<Strategy>::send_packet(
             BROADCAST, this->bus_id, &request, 1, PJON<Strategy>::get_header() | ADDRESS_BIT
           );
           receive(LIST_IDS_RECEPTION_TIME);

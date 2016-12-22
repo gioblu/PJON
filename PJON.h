@@ -1,7 +1,7 @@
 
  /*-O//\             __     __
    |-gfo\           |__| | |  | |\ | ™
-   |!y°o:\          |  __| |__| | \| v6.1
+   |!y°o:\          |  __| |__| | \| v6.2
    |y"s§+`\         multi-master, multi-media communications bus system framework
   /so+:-..`\        Copyright 2010-2016 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
@@ -496,24 +496,7 @@ limitations under the License. */
       };
 
 
-      /* Insert a packet in the send list:
-       The added packet will be sent in the next update() call.
-       Using the timing parameter you can set the delay between every
-       transmission cyclically sending the packet (use remove() function stop it)
-
-       LOCAL TRANSMISSION -> ISOLATED BUS
-       int hi = bus.send(99, "HI!", 3);
-       // Send hi once to device 99
-       int hi = bus.send_repeatedly(99, "HI!", 3, 1000000);
-       // Send HI! to device 99 every second (1.000.000 microseconds)
-
-       NETWORK TRANSMISSION -> SHARED MEDIUM
-       uint8_t bus_id[] = {127, 0, 0, 1};
-       int hi = bus.send(99, bus_id, "HI!", 3);
-       // Send hi once to device 99 on bus id 127.0.0.1
-       int hi = bus.send_repeatedly(99, bus_id, "HI!", 3, 1000000);
-       // Send HI! to device 99 on bus id 127.0.0.1 every second (1.000.000 microseconds)
-       bus.remove(hi); // Stop repeated sending */
+      /* Insert a packet in the send list: */
 
       uint16_t send(uint8_t id, const char *string, uint16_t length, uint16_t header = NOT_ASSIGNED) {
         return dispatch(id, bus_id, string, length, 0, header);
@@ -528,6 +511,7 @@ limitations under the License. */
       ) {
         return dispatch(id, b_id, string, length, 0, header);
       };
+
 
       /* IMPORTANT: send_repeatedly timing maximum is 4293014170 microseconds or 71.55 minutes */
       uint16_t send_repeatedly(
@@ -553,79 +537,7 @@ limitations under the License. */
       };
 
 
-  /* An Example of how the packet "@" is formatted and sent:
-
-  RECIPIENT ID 12   HEADER 00000110   LENGTH 6          SENDER ID 11      CONTENT 64       CRC
-   ________________ _________________ _________________ _________________ ________________ __________________
-  |Sync | Byte     |Sync | Byte      |Sync | Byte      |Sync | Byte      |Sync | Byte     |Sync | Byte       |
-  |___  |     __   |___  |      _ _  |___  |      _   _|___  |     _   __|___  |  _       |___  |  _      _  |
-  |   | |    |  |  |   | |     | | | |   | |     | | | |   | |    | | |  |   | | | |      |   | | | |    | | |
-  | 1 |0|0000|11|00| 1 |0|00000|1|1|0| 1 |0|00000|1|0|1| 1 |0|0000|1|0|11| 1 |0|0|1|000000| 1 |0|0|1|0000|1|0|
-  |___|_|____|__|__|___|_|_____|_|_|_|___|_|_____|_|_|_|___|_|____|_|_|__|___|_|_|_|______|___|_|_|_|____|_|_|
-
-  A standard packet transmission is a bidirectional communication between
-  two devices that can be divided in 3 different phases:
-
-  Channel analysis   Transmission                                                 Response
-      _____           ____________________________________________________         _____
-     | C-A |         | ID | HEADER | LENGTH |  SENDER ID  | CONTENT | CRC |       | ACK |
-  <--|-----|---< >---|----|--------|--------|-------------|---------|-----|--> <--|-----|
-     |  0  |         | 12 |00000001|   5    |    ID 11    |   64    |     |       |  6  |
-     |_____|         |____|________|________|_____________|_________|_____|       |_____|
-
-  DEFAULT HEADER CONFIGURATION:
-  00000110: Acknowledge requested | Sender info included | Local bus
-
-  BUS CONFIGURATION:
-  bus.set_synchronous_acknowledge(true);
-  bus.include_sender_info(true);
-
-  Average overhead, average bandwidth availability setup. Can be used only in an isolated
-  medium (i.e. isolated wire) and with up to 254 devices with transmission certainty through
-  synchronous acknowledge, and sender info to easy reply to packets with the reply() function
-  __________________________________________________________________________________________
-
-  A local packet transmission handled in SIMPLEX mode is a monodirectional communication
-  between two devices dispatched in a single phase:
-
-     Transmission
-      ______________________________________
-     | ID | HEADER | LENGTH | CONTENT | CRC |
-  >--|----|--------|--------|---------|-----|-->
-     | 12 |00000000|   5    |   64    |     |
-     |____|________|________|_________|_____|
-
-  HEADER CONFIGURATION:
-  00000000: Acknowledge not requested | Sender info not included | Local bus
-
-  BUS CONFIGURATION:
-  bus.set_synchronous_acknowledge(false);
-  bus.include_sender_info(false);
-
-  Low overhead, high bandwidth availability setup. Can be used only in an isolated
-  medium (i.e. isolated wire) and with up to 254 devices.
-  _________________________________________________________________________________________
-
-  A Shared packet transmission example handled in HALF_DUPLEX mode, with acknowledge
-  request, including the sender info:
-
- Channel analysis                         Transmission                                      Response
-    _____         __________________________________________________________________         _____
-   | C-A |       | ID | HEADER | LENGTH |    BUS ID   | BUS ID | ID | CONTENT | CRC |       | ACK |
- <-|-----|--< >--|----|--------|--------|-------------|--------|----|---------|-----|--> <--|-----|
-   |  0  |       | 12 |00000111|   5    |     0001    |  0001  | 11 |   64    |     |       |  6  |
-   |_____|       |____|________|________|_____________|________|____|_________|_____|       |_____|
-                                        |Receiver info| Sender info |
-  HEADER CONFIGURATION:
-  00000111: Acknowledge requested | Sender info included | Shared bus
-
-  BUS CONFIGURATION:
-  bus.set_synchronous_acknowledge(true);
-  bus.include_sender_info(true);
-
-  High overhead, low bandwidth availability setup. Can be used sharing the medium
-  with many other buses with transmission certainty through synchronous acknowledge
-  and sender info to easy reply to packets with the reply() function. */
+      /* Send an already composed packet:  */
 
       uint16_t send_packet(const char *string, uint16_t length) {
         if(!string) return FAIL;
@@ -639,14 +551,13 @@ limitations under the License. */
       };
 
 
-      /* Send a packet passing its info as parameters: */
+      /* Compose and send a packet passing its info as parameters: */
 
       uint16_t send_packet(uint8_t id, char *string, uint16_t length, uint16_t header = NOT_ASSIGNED) {
         if(!(length = compose_packet(id, bus_id, (char *)data, string, length, header)))
           return FAIL;
         return send_packet((char *)data, length);
       };
-
 
       uint16_t send_packet(
         uint8_t id,
@@ -874,6 +785,8 @@ limitations under the License. */
             packets[i].state = send_packet(packets[i].content, packets[i].length);
           else continue;
 
+          packets[i].attempts++;
+
           if(packets[i].state == ACK) {
             if(!packets[i].timing) {
               if(
@@ -888,13 +801,12 @@ limitations under the License. */
               packets[i].attempts = 0;
               packets[i].registration = micros();
               packets[i].state = TO_BE_SENT;
-            } continue;
+            } if(!async_ack) continue;
           }
 
           if(packets[i].state != FAIL)
             delayMicroseconds(random(0, COLLISION_DELAY));
 
-          packets[i].attempts++;
           if(packets[i].attempts > MAX_ATTEMPTS) {
             _error(CONNECTION_LOST, packets[i].content[0]);
             if(!packets[i].timing) {
@@ -963,7 +875,6 @@ limitations under the License. */
           copy_bus_id(recent_packet_ids[0].sender_bus_id, info.sender_bus_id);
         #endif
       };
-
 
       uint8_t bus_id[4] = {0, 0, 0, 0};
       uint8_t data[PACKET_MAX_LENGTH];

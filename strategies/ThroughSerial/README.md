@@ -15,14 +15,15 @@ Pass the `ThroughSerial` type as PJON template parameter to instantiate a PJON o
 Call the `begin` method on the `Serial` or `SoftwareSerial`  object you want to use for PJON communication and pass it to the `set_serial` method:
 ```cpp  
 
-  /* Set 1 second as the maximum timeframe between every receive call in any of
-     the connected devices without loosing synchronous acknowledgment because delaying.
-     (before PJON.h inclusion) */
-  #define THROUGH_SERIAL_MAX_BYTE_TIME        1000000
+  /* Set 100 milliseconds is the maximum timeframe between every receive call
+     in any of the connected devices. If this timeframe is in average exceeded
+     by some of the connected devices, communication reliability could drop
+     or be disrupted. (before PJON.h inclusion) */
+  #define THROUGH_SERIAL_MAX_BYTE_TIME          1000000
 
   /* Set 0.5 milliseconds as the minimum timeframe of free port before transmitting
      (before PJON.h inclusion) */
-  #define THROUGH_SERIAL_FREE_TIME_BEFORE_START   500
+  #define THROUGH_SERIAL_FREE_TIME_BEFORE_START     500
 
   /* This timing configuration is ok for a master-slave setup, but could lead to
      collisions if used in a multi-master setup.
@@ -65,4 +66,4 @@ For a simple use with RS485 serial modules a transmission enable pin setter has 
 All the other necessary information is present in the general [Documentation](https://github.com/gioblu/PJON/wiki/Documentation).
 
 ####Known issues
-- Being PJON not an interrupt driven, its communication can be affected and potentially disrupted by long delays added in the user's sketch. Try to reduce as possible the interval between each `update` and `receive` call and higher the reception time passing to `receive` a longer timeframe (i.e. `receive(10000)` to receive for 10 milliseconds). A delay between every receive call higher than 1 second can disurpt the synchronous acknowledment transmission phase, higher `THROUGH_SERIAL_MAX_BYTE_TIME` in `ThroughSerial.h` if necessary.
+- Being PJON not an interrupt driven, its communication can be affected and potentially disrupted by long delays added in the user's sketch. Try to reduce as possible the interval between every `receive` call and higher the reception time passing to `receive` a longer timeframe (i.e. `receive(10000)` to receive for 10 milliseconds) if necessary. A delay between every receive call higher than 100 millisseconds can disurpt the synchronous acknowledment transmission phase, higher `THROUGH_SERIAL_MAX_BYTE_TIME` in `ThroughSerial.h` if necessary.

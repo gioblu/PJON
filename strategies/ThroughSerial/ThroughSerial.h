@@ -26,15 +26,16 @@
 #include <Arduino.h>
 
 #define THROUGH_SERIAL_MAX_BYTE_TIME         100000
-/* 1 second maximum timeframe you can have between every receive call in
-   any of the connected devices without loosing synchronous acknowledment
-   because delaying. */
+/* 100 milliseconds is the maximum timeframe between every receive call in
+   any of the connected devices. If this timeframe is in average exceeded
+   by some of the connected devices, communication reliability could drop
+   or be disrupted. */
 
 #define THROUGH_SERIAL_FREE_TIME_BEFORE_START   500
 /* 0.5 milliseconds minimum timeframe of free port before transmitting
 
-   This timing configuration is ok for a master-slave setup, but could lead to
-   collisions if used in a multi-master setup.
+   The proposed default timing configuration is ok for a master-slave setup, but
+   could lead to collisions if used in a multi-master setup.
 
    If using ThroughSerial multi-master, NEVER set
    THROUGH_SERIAL_FREE_TIME_BEFORE_START < THROUGH_SERIAL_MAX_BYTE_TIME

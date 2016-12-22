@@ -84,7 +84,7 @@ TX END-------ACK-><-0-00001111-15-0001-0002-0-99-CRC-<-ACK-><-0-00001111-15-0001
 /* If packet length - its overhead is 4, it is an asynchronous acknowledgement packet
    containing only its packet id */
 ```
-1. Device `0` sends the packet, the router has a route to device `0` of bus `0.0.0.2` so responds with a synchronous acknowledgement
+1) Device `0` sends the packet, the router has a route to device `0` of bus `0.0.0.2` so responds with a synchronous acknowledgement
 ```cpp
   _____ __________ ________ _________ _________ ____ ___________ _________ _______     _____
  | ID  |  HEADER  | LENGTH | BUS ID  | BUS ID  | ID | PACKET ID | CONTENT |  CRC  |   | ACK |
@@ -92,7 +92,7 @@ TX END-------ACK-><-0-00001111-15-0001-0002-0-99-CRC-<-ACK-><-0-00001111-15-0001
  |_____|__________|________|_________|_________|____|___________|_________|_______|   |_____|
                            | RX iNFO |   TX INFO    |
 ```
-2. Device `0` of bus `0.0.0.1` wait for an asynchronous acknowledgement of the packet sent. Router sends to device id `0` of bus `0.0.0.2` and receives a synchronous acknowledgement
+2) Device `0` of bus `0.0.0.1` wait for an asynchronous acknowledgement of the packet sent. Router sends to device id `0` of bus `0.0.0.2` and receives a synchronous acknowledgement
 ```cpp
   _____ __________ ________ _________ _________ ____ ___________ _________ _______     _____
  | ID  |  HEADER  | LENGTH | BUS ID  | BUS ID  | ID | PACKET ID | CONTENT |  CRC  |   | ACK |
@@ -100,7 +100,7 @@ TX END-------ACK-><-0-00001111-15-0001-0002-0-99-CRC-<-ACK-><-0-00001111-15-0001
  |_____|__________|________|_________|_________|____|___________|_________|_______|   |_____|
                            | RX iNFO |   TX INFO    |
 ```
-4. Device `0` of bus `0.0.0.2` sends an asynchronous acknowledgement packet to device `0` of bus `0.0.0.1`. Router has a route to device `0` of bus `0.0.0.1` so responds with a synchronous acknowledgement and device `0` of bus `0.0.0.2` ends the transaction after receiving a synchronous acknowledgement by the router
+3) Device `0` of bus `0.0.0.2` sends an asynchronous acknowledgement packet to device `0` of bus `0.0.0.1`. Router has a route to device `0` of bus `0.0.0.1` so responds with a synchronous acknowledgement and device `0` of bus `0.0.0.2` ends the transaction after receiving a synchronous acknowledgement by the router
 ```cpp
   _____ __________ ________ _________ _________ ____ ___________ _______     _____
  | ID  |  HEADER  | LENGTH | BUS ID  | BUS ID  | ID | PACKET ID |  CRC  |   | ACK |
@@ -108,7 +108,7 @@ TX END-------ACK-><-0-00001111-15-0001-0002-0-99-CRC-<-ACK-><-0-00001111-15-0001
  |_____|__________|________|_________|_________|____|___________|_______|   |_____|
                            | RX iNFO |   TX INFO    |
 ```
-5. Device `0` of bus `0.0.0.2` ends the transaction after receiving a synchronous acknowledgement by the router. Device `0` of bus `0.0.0.1` receives the asynchronous acknowledgement packet forwarded by the router and responds with a synchronous acknowledgement.
+4) Device `0` of bus `0.0.0.2` ends the transaction after receiving a synchronous acknowledgement by the router. Device `0` of bus `0.0.0.1` receives the asynchronous acknowledgement packet forwarded by the router and responds with a synchronous acknowledgement.
 
 ```cpp
   _____ __________ ________ _________ _________ ____ ___________ _______     _____

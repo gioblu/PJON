@@ -20,9 +20,9 @@ void setup() {
 
 void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
   if(payload[0] == 'B') {
-    digitalWrite(13, HIGH);
+    digitalWriteFast(13, HIGH);
     delay(3);
-    digitalWrite(13, LOW);
+    digitalWriteFast(13, LOW);
     delay(3);
   }
 }

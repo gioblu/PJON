@@ -17,21 +17,12 @@ PJON™ is a self-funded, no-profit project created and mantained by Giovanni Bl
 with the support ot the internet community if you want to see the PJON project growing
 with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
 
-PJON™ Protocol specification:
-- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md
-- v0.2 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md
-- v0.3 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md
-- v1.0 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v1.0.md
-
-PJON™ Acknowledge specification:
-- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-acknowledge-specification-v0.1.md
-
-PJON™ Dynamic addressing specification:
-- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md
+For the PJON™ Protocol specification see the specification directory.
 
 PJON™ Standard compliant tools:
 - https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande
 - https://github.com/Girgitt/PJON-python PJON running on Python by Zbigniew Zasieczny
+- https://github.com/fredilarsen/ModuleInterface Easy config and value sync between IOT modules
  ______________________________________________________________________________
 
 Copyright 2012-2017 by Giovanni Blu Mitolo gioscarab@gmail.com

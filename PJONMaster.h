@@ -18,21 +18,8 @@ of Fred Larsen and is inspired by the work of Thomas Snaidero:
 "Modular components for eye tracking, in the interest of helping persons with severely impaired motor skills."
 Master Thesis, IT University of Copenhagen, Denmark, September 2016
 
-PJON™ Protocol specification:
-- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md
-- v0.2 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md
-- v0.3 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md
-- v1.0 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v1.0.md
-
-PJON™ Acknowledge specification:
-- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-acknowledge-specification-v0.1.md
-
 PJON™ Dynamic addressing specification:
 - v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md
-
-PJON™ Standard compliant tools:
-- https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande
-- https://github.com/Girgitt/PJON-python PJON running on Python by Zbigniew Zasieczny
 
 PJON™ is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
 with the support ot the internet community if you want to see the PJON project growing

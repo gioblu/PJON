@@ -17,24 +17,14 @@ PJON™ is a self-funded, no-profit project created and mantained by Giovanni Bl
 with the support ot the internet community if you want to see the PJON project growing
 with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
 
-PJON™ Protocol specification:
-- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md
-- v0.2 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md
-- v0.3 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md
-- v1.0 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v1.0.md
-
-PJON™ Acknowledge specification:
-- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-acknowledge-specification-v0.1.md
-
-PJON™ Dynamic addressing specification:
-- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md
-
 PJON™ Standard compliant tools:
 - https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande
 - https://github.com/Girgitt/PJON-python PJON running on Python by Zbigniew Zasieczny
+- https://github.com/fredilarsen/ModuleInterface Easy config and value sync between IOT modules
 
 Credits to contributors:
 - Fred Larsen (Systems engineering, header driven communication, debugging)
+- budaics github user (ATtiny85 16Mhz external clock testing and wiki page enhancement)
 - Pantovich github user (update returning number of packets to be delivered)
 - Adrian Sławiński (Fix to enable SimpleModbusMasterV2 compatibility)
 - SticilFace github user (Teensy porting)
@@ -46,6 +36,9 @@ Credits to contributors:
 - PaoloP74 github user (Library conversion to 1.x Arduino IDE)
 
 Bug reports:
+- pacproduct github user (Added missing mode configuration SIMPLEX example)
+- elusive-code github user (PJONMaster reset bug)
+- Franketto arduino forum user (PJON ThroughSerial over RS485 delay issue)
 - Zbigniew Zasieczny (header reference inconsistency report)
 - DanRoad reddit user (can_start ThroughSerial bugfix)
 - Remo Kallio (Packet index 0 bugfix)

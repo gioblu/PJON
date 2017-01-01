@@ -41,6 +41,7 @@ limitations under the License. */
 
 #ifndef PJONDefines_h
   #define PJONDefines_h
+  #include "utils/error.h"
   #include "utils/CRC8.h"
   #include "utils/CRC32.h"
 

@@ -1,9 +1,10 @@
 
 /* OverSampling 1 or 2 wires interrupts-less digital communication data link layer
    used as a Strategy by the PJON framework (included in version v3.0)
-   Compliant with the Padded jittering data link layer specification v0.1   ____________________________________________________________________________
+   Compliant with the Padded jittering data link layer specification v0.1
+   ____________________________________________________________________________
 
-   Copyright 2012-2016 Giovanni Blu Mitolo gioscarab@gmail.com
+   Copyright 2012-2017 Giovanni Blu Mitolo gioscarab@gmail.com
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

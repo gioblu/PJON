@@ -1,6 +1,6 @@
 
 /* PJON OverSampling strategy Transmission Timing table
-   Copyright (c) 2016, Giovanni Blu Mitolo All rights reserved.
+   Copyright (c) 2017, Giovanni Blu Mitolo All rights reserved.
 
    All benchmarks should be executed with NetworkAnalysis and SpeedTest examples.
 

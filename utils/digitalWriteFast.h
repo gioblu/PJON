@@ -5,7 +5,7 @@
      - ATtiny45/85 (Trinket / Digispark)
      - SAMD21G18A (Arduino Zero) - Added by Esben Soeltoft 03/09/2016
 
-   Copyright 2012-2016 Giovanni Blu Mitolo
+   Copyright 2012-2017 Giovanni Blu Mitolo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

@@ -17,6 +17,8 @@ PJON™ is a self-funded, no-profit project created and mantained by Giovanni Bl
 with the support ot the internet community if you want to see the PJON project growing
 with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
 
+For the PJON™ Protocol specification see the specification directory.
+
 PJON™ Standard compliant tools:
 - https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande
 - https://github.com/Girgitt/PJON-python PJON running on Python by Zbigniew Zasieczny

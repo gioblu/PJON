@@ -244,11 +244,11 @@
 
     #define pullDownFast(P) \
       do { if(__builtin_constant_p(P)) { \
-          pinModeFast(P, INPUT); \
           digitalWriteFast(P, LOW); \
+          pinModeFast(P, INPUT); \
         } else \
-          pinMode(P, INPUT); \
           digitalWrite(P, LOW); \
+          pinMode(P, INPUT); \
       } while(0)
 
   #else
@@ -267,8 +267,8 @@
     #if !defined(pullDownFast)
       #define pullDownFast(P) \
         do { \
-          pinMode(P, INPUT); \
           digitalWrite(P, LOW); \
+          pinMode(P, INPUT); \
         } while(0)
     #endif
   #endif

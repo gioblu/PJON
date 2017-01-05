@@ -3,19 +3,20 @@
 /*
 Milan, Italy - 10/04/2010
 The Padded jittering data link layer specification is an invention and intellectual property
-of Giovanni Blu Mitolo - Copyright 2010-2016 All rights reserved
+of Giovanni Blu Mitolo - Copyright 2010-2017 All rights reserved
 
 Related work: https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/
 Compliant implementation versions: PJON 1.0-5.0
 */
 ```
 ###The Padded jittering data link layer
-The first experimental specification of the Padded jittering data link layer has been drafted to propose a new way to transmit data with cheap and low performance microcontrollers without the necessity of hardware interrupts for its working procedure. Extended tests proved its effectiveness on different media like electricity, radio frequency and light.
+The first experimental specification of the Padded jittering data link layer has been drafted to propose a new way to transmit data with cheap and low performance microcontrollers without the necessity of hardware interrupts for its working procedure. Thanks to the imposed requirement of non-concurrent and single-task execution, the Padded jittering data-link has a strong resilience also if the communication medium is affected by interference, high capacitance and resistance. Extended tests proved its effectiveness on different media like electricity, radio frequency and light.
 
 ###Basic concepts
-* Use a pattern of predefined initial padding bits to identify a byte transmission
+* Use a pattern of predefined initial padding bits to identify a potential byte transmission
 * Use the falling edge from 1 to 0, present in padding bits, to achieve byte level synchronization
 * Detect interference or absence of communication at byte level
+* Propose a collision free synchronous acknowledgement pattern
 
 ####Byte transmission
 Every byte is prepended with 2 synchronization padding bits and transmission occurs LSB-first. The first is a longer than standard logic 1 followed by a standard logic 0. The reception tecnique is based on finding a logic 1 as long as the first padding bit within a certain threshold, synchronizing to its falling edge and checking if it is followed by a logic 0. If this pattern is detected, reception starts, if not, interference, synchronization loss or simply absence of communication is detected at byte level.
@@ -40,7 +41,7 @@ Padding bits are adding a certain overhead to information but are reducing the n
 | 1 |0|0000|11|00| 1 |0|00000|1|0|1| 1 |0|00000|1|00| 1 |0|0|1|000000| 1 |0|0|1|00|1|000|
 |___|_|____|__|__|___|_|_____|_|_|_|___|_|_____|_|__|___|_|_|_|______|___|_|_|_|__|_|___|
 ```
-In a scenario where a stream of byte is coming, following this strategy a low performance or clock inaccurate microcontroller can be correctly synchronized back with the transmitter every byte and easily detect an interference or the end of transmission.
+In a scenario where a stream of byte is coming, following this approach a low performance or clock inaccurate microcontroller can be correctly synchronized back with the transmitter every byte and easily detect an interference or the end of transmission.
 
 
 ####Synchronous acknowledgement
@@ -54,7 +55,7 @@ Transmission                                               Response
 |____|__________|________|_________|_____|                 |_____|
 ```
 
-In the middle of packet transmission and acknowledgement transmission there is a variable timeframe, influenced by latency and CRC computation time. In order to avoid other devices consider the bus free and start transmitting in the middle of a transmission and a response, the packet's transmitter cyclically transmits a `BIT_WIDTH / 4` HIGH bit and then attempts to receive a response. On the other side the receiver can synchronize its acknowledgement transmission after the last incoming HIGH bit and try more than once if necessary.
+Between a packet transmission and a synchronous acknowledgement transmission from the packet's receiver there is a variable timeframe influenced in its duration by medium latency and CRC computation time. In order to avoid other devices to consider the medium free and start transmitting in the middle of a transmission and a response, the packet's transmitter cyclically transmits a `BIT_WIDTH / 4` HIGH bit and consequently attempts to receive a response. On the other side the receiver can synchronize its acknowledgement transmission after the last incoming HIGH bit and try more than once if necessary.
 ```cpp  
 Transmission                                                         Response
  ________________________________________   _   _   _   _   _   _   _ _____

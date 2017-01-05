@@ -18,7 +18,7 @@
 
    _SWBB_OVERDRIVE mode: Architecture / Toolchain dependant */
 
-/* Arduino Duemilanove, Uno, Nano, Mini, Pro, Pro mini ecc. ----------------- */
+/* ATmega88/168/328 - Arduino Duemilanove, Uno, Nano, Mini, Pro, Pro mini --- */
 #if defined(__AVR_ATmega88__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
   #if SWBB_MODE == _SWBB_STANDARD
     #if F_CPU == 16000000L
@@ -49,7 +49,7 @@
   #endif
 #endif
 
-/* Arduino Leonardo / Micro ------------------------------------------------- */
+/* ATmega16/32U4 - Arduino Leonardo/Micro ----------------------------------- */
 #if defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__)
   /* Working nominally on pin 2 - 4 - 8 - 12 */
   #if SWBB_MODE == _SWBB_STANDARD
@@ -67,7 +67,7 @@
   #endif
 #endif
 
-/* Arduino Mega / Mega nano ------------------------------------------------- */
+/* ATmega1280/2560 - Arduino Mega/Mega-nano --------------------------------- */
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
   #if SWBB_MODE == _SWBB_STANDARD
     #define SWBB_BIT_WIDTH 38
@@ -83,7 +83,7 @@
   #endif
 #endif
 
-/* ATtiny85 ----------------------------------------------------------------- */
+/* ATtiny45/85 -------------------------------------------------------------- */
 #if defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
   #if SWBB_MODE == _SWBB_STANDARD
     #if F_CPU == 8000000L
@@ -130,7 +130,7 @@
   #endif
 #endif
 
-/* Teensy ------------------------------------------------------------------- */
+/* MK20DX256 - Teensy ------------------------------------------------------- */
 #if defined(__MK20DX256__)
   #if SWBB_MODE == _SWBB_STANDARD
   /* Added by github user SticilFace - 25/04/2016  */
@@ -174,13 +174,13 @@
 #endif
 #if SWBB_MODE == _SWBB_OVERDRIVE
   #ifndef SWBB_BIT_WIDTH
-    #define SWBB_BIT_WIDTH 20
+    #define SWBB_BIT_WIDTH 17
   #endif
   #ifndef SWBB_BIT_SPACER
-    #define SWBB_BIT_SPACER 56
+    #define SWBB_BIT_SPACER 52
   #endif
   #ifndef SWBB_ACCEPTANCE
-    #define SWBB_ACCEPTANCE 20
+    #define SWBB_ACCEPTANCE 17
   #endif
   #ifndef SWBB_READ_DELAY
     #define SWBB_READ_DELAY 8
@@ -197,3 +197,15 @@
 #endif
 
 #define SWBB_TIMEOUT ((SWBB_BIT_WIDTH * 9) + SWBB_BIT_SPACER + SWBB_LATENCY)
+
+/* Maximum initial delay in milliseconds: */
+
+#ifndef SWBB_INITIAL_DELAY
+  #define SWBB_INITIAL_DELAY 1000
+#endif
+
+/* Maximum delay in case of collision in microseconds: */
+
+#ifndef SWBB_COLLISION_DELAY
+  #define SWBB_COLLISION_DELAY 16
+#endif

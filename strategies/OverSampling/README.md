@@ -21,6 +21,17 @@ Pass the `OverSampling` type as PJON template parameter to instantiate a PJON ob
      (Default 4 milliseconds) */
   #define OS_LATENCY 4000
 
+  /* Set the back-off exponential degree */
+  #define OS_BACK_OFF_DEGREE 4
+
+  /* Set the maximum sending attempts */
+  #define OS_MAX_ATTEMPTS 20
+
+  /* The values set above are the default producing a 3.2 seconds
+     back-off timeout with 20 attempts. Higher OS_MAX_ATTEMPTS to higher
+     the back-off timeout, higher OS_BACK_OFF_DEGREE to higher the interval
+     between every attempt. */
+
   #include <PJON.h>
 
   PJON<OverSampling> bus; // 2 pin over-sampled data link layer

@@ -136,7 +136,7 @@ limitations under the License. */
       void begin() {
         uint8_t device_id_seed = (_device_id != NOT_ASSIGNED) ? _device_id : 0;
         randomSeed(analogRead(_random_seed) + device_id_seed);
-        delay(random(0, INITIAL_DELAY) + device_id_seed);
+        strategy.begin(device_id_seed);
         #if(INCLUDE_ASYNC_ACK)
           _packet_id_seed = random() + device_id_seed;
         #endif
@@ -593,12 +593,15 @@ limitations under the License. */
         uint16_t state = FAIL;
         uint32_t attempts = 0;
         uint32_t time = micros(), start = time;
-        while(state != ACK && attempts <= MAX_ATTEMPTS && (uint32_t)(micros() - start) <= timeout) {
+        while(
+          (state != ACK) && (attempts <= strategy.get_max_attempts()) &&
+          (uint32_t)(micros() - start) <= timeout
+        ) {
           state = send_packet((char*)data, length);
           if(state == ACK) return state;
           attempts++;
-          if(state != FAIL) delayMicroseconds(random(0, COLLISION_DELAY));
-          while((uint32_t)(micros() - time) < (attempts * attempts * attempts));
+          if(state != FAIL) strategy.handle_collision();
+          while((uint32_t)(micros() - time) < strategy.back_off(attempts));
           time = micros();
         }
         return state;
@@ -772,7 +775,6 @@ limitations under the License. */
 
       uint8_t update() {
         uint8_t packets_count = 0;
-        uint32_t back_off;
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
           packets_count++;
@@ -784,11 +786,10 @@ limitations under the License. */
           bool async_ack = (packets[i].content[1] & ACK_MODE_BIT) &&
             (packets[i].content[1] & SENDER_INFO_BIT);
 
-          back_off = packets[i].attempts;
-          back_off = (back_off * back_off * back_off * back_off);
-
-          if((uint32_t)(micros() - packets[i].registration) > packets[i].timing + back_off)
-            packets[i].state = send_packet(packets[i].content, packets[i].length);
+          if(
+            (uint32_t)(micros() - packets[i].registration) >
+            (uint32_t)(packets[i].timing + strategy.back_off(packets[i].attempts))
+          ) packets[i].state = send_packet(packets[i].content, packets[i].length);
           else continue;
 
           packets[i].attempts++;
@@ -810,10 +811,9 @@ limitations under the License. */
             } if(!async_ack) continue;
           }
 
-          if(packets[i].state != FAIL)
-            delayMicroseconds(random(0, COLLISION_DELAY));
+          if(packets[i].state != FAIL) strategy.handle_collision();
 
-          if(packets[i].attempts > MAX_ATTEMPTS) {
+          if(packets[i].attempts > strategy.get_max_attempts()) {
             _error(CONNECTION_LOST, packets[i].content[0]);
             if(!packets[i].timing) {
               if(_auto_delete) {

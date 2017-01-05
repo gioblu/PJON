@@ -118,7 +118,7 @@ limitations under the License. */
           response,
           6,
           ID_REQUEST_INTERVAL,
-          PJON<Strategy>::get_header() | ADDRESS_BIT
+          PJON<Strategy>::config | ADDRESS_BIT
         );
       };
 
@@ -215,7 +215,7 @@ limitations under the License. */
         char request = ID_LIST;
         while(micros() - time < ADDRESSING_TIMEOUT) {
           PJON<Strategy>::send_packet(
-            BROADCAST, this->bus_id, &request, 1, PJON<Strategy>::get_header() | ADDRESS_BIT
+            BROADCAST, this->bus_id, &request, 1, PJON<Strategy>::config | ADDRESS_BIT
           );
           receive(LIST_IDS_RECEPTION_TIME);
         }
@@ -232,7 +232,7 @@ limitations under the License. */
           b_id,
           response,
           5,
-          PJON<Strategy>::get_header() | ACK_REQUEST_BIT | ADDRESS_BIT
+          PJON<Strategy>::config | ACK_REQUEST_BIT | ADDRESS_BIT
         );
       };
 

@@ -102,7 +102,7 @@ limitations under the License. */
         delay(random(ACQUIRE_ID_DELAY * 0.25, ACQUIRE_ID_DELAY));
         uint32_t time = micros();
         char msg = ID_ACQUIRE;
-        char head = this->get_header() | ADDRESS_BIT | ACK_REQUEST_BIT;
+        char head = this->config | ADDRESS_BIT | ACK_REQUEST_BIT;
         this->_device_id = NOT_ASSIGNED;
 
         for(uint8_t id = generate_random_byte(); (uint32_t)(micros() - time) < ID_SCAN_TIME; id++)
@@ -133,7 +133,7 @@ limitations under the License. */
           this->bus_id,
           response,
           5,
-          this->get_header() | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
+          this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
         ) == ACK) return true;
 
         return false;
@@ -166,7 +166,7 @@ limitations under the License. */
           this->bus_id,
           request,
           6,
-          this->get_header() | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
+          this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
         ) == ACK) {
           this->_device_id = NOT_ASSIGNED;
           return true;
@@ -229,7 +229,7 @@ limitations under the License. */
                 this->bus_id,
                 response,
                 6,
-                this->get_header() | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
+                this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
               ) != ACK) {
                 this->set_id(NOT_ASSIGNED);
                 _slave_error(ID_ACQUISITION_FAIL, ID_CONFIRM);
@@ -255,7 +255,7 @@ limitations under the License. */
                   this->bus_id,
                   response,
                   6,
-                  this->get_header() | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
+                  this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
                 );
               }
 

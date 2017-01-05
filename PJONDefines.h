@@ -58,16 +58,6 @@ limitations under the License. */
     #define NOT_ASSIGNED 255
   #endif
 
-  #if BROADCAST == NOT_ASSIGNED
-    #error BROADCAST and NOT_ASSIGNED point the same address!
-  #endif
-  #if NOT_ASSIGNED == MASTER_ID
-    #error NOT_ASSIGNED and MASTER_ID point the same address!
-  #endif
-  #if MASTER_ID == BROADCAST
-    #error MASTER_ID and BROADCAST point the same address!
-  #endif
-
   /* Maximum devices handled by master */
   #define MAX_DEVICES     25
 
@@ -89,8 +79,8 @@ limitations under the License. */
   #define ID_REFRESH     205
 
   /* INTERNAL CONSTANTS */
-  #define FAIL       65535
-  #define TO_BE_SENT 74
+  #define FAIL         65535
+  #define TO_BE_SENT      74
 
   /* HEADER BITS DEFINITION: */
   #define MODE_BIT          B00000001 // 1 - Shared | 0 - Local
@@ -118,15 +108,6 @@ limitations under the License. */
   #define DEVICES_BUFFER_FULL 254
 
   /* CONSTRAINTS:
-  Max attempts before throwing CONNECTON_LOST error */
-  #ifndef MAX_ATTEMPTS
-    #define MAX_ATTEMPTS 42
-  #endif
-
-  /* Max time delayed by backoff in microseconds  */
-  #ifndef MAX_BACK_OFF
-    #define MAX_BACK_OFF (uint32_t)MAX_ATTEMPTS * (uint32_t)MAX_ATTEMPTS * (uint32_t)MAX_ATTEMPTS
-  #endif
 
   /* Packet buffer length, if full PACKETS_BUFFER_FULL error is thrown.
      The packet buffer is preallocated, so its length strongly affects
@@ -158,13 +139,8 @@ limitations under the License. */
     #define ORDERED_SENDING false
   #endif
 
-  /* TIMING:
-     Maximum random delay on startup in milliseconds */
-  #define INITIAL_DELAY                1000
-  /* Maximum randon delay on collision */
-  #define COLLISION_DELAY                48
   /* Dynamic addressing timing constants:
-  /* Maximum number of device id collisions during auto-addressing */
+     Maximum number of device id collisions during auto-addressing */
   #define MAX_ACQUIRE_ID_COLLISIONS      10
   /* Delay between device id acquisition and self request */
   #define ACQUIRE_ID_DELAY             1250

@@ -82,7 +82,20 @@ limitations under the License. */
   template<typename Strategy = SoftwareBitBang>
   class PJON {
     public:
+      /* Abstract data-link layer class */
       Strategy strategy;
+
+      uint16_t config = SENDER_INFO_BIT | ACK_REQUEST_BIT;
+      uint8_t bus_id[4] = {0, 0, 0, 0};
+      const uint8_t localhost[4] = {0, 0, 0, 0};
+
+      /* Data buffers */
+      uint8_t data[PACKET_MAX_LENGTH];
+      PacketInfo last_packet_info;
+      PJON_Packet packets[MAX_PACKETS];
+      #if(INCLUDE_ASYNC_ACK)
+        PJON_Packet_Record recent_packet_ids[MAX_RECENT_PACKET_IDS];
+      #endif
 
       /* PJON bus default initialization:
          State: Local (bus_id: 0.0.0.0)
@@ -141,7 +154,7 @@ limitations under the License. */
         uint16_t header = NOT_ASSIGNED,
         uint16_t p_id = 0
       ) {
-        if(header == NOT_ASSIGNED) header = get_header();
+        if(header == NOT_ASSIGNED) header = config;
         if(header > 255) header |= EXTEND_HEADER_BIT;
         if(length > 255) header |= (EXTEND_LENGTH_BIT | CRC_BIT);
         if(id == BROADCAST) header &= ~(ACK_REQUEST_BIT | ACK_MODE_BIT);
@@ -236,17 +249,6 @@ limitations under the License. */
       };
 
 
-      /* Return the header byte based on current configuration: */
-
-      uint16_t get_header() const {
-        return (_shared ? MODE_BIT : 0) |
-               (_sender_info ? SENDER_INFO_BIT : 0) |
-               (_synchronous_acknowledge ? ACK_REQUEST_BIT : 0) |
-               (_asynchronous_acknowledge ? ACK_MODE_BIT : 0) |
-               (_crc_32 ? CRC_BIT : 0);
-      };
-
-
       /* Get count of the packets for a device_id:
          Don't pass any parameter to count all packets
          Pass a device id to count all it's related packets */
@@ -273,10 +275,7 @@ limitations under the License. */
       /* Calculate the packet's overhead: */
 
       uint8_t packet_overhead(uint16_t header = NOT_ASSIGNED) const {
-        if(header == NOT_ASSIGNED)
-          return (
-            _shared ? (_sender_info ? 12 : 7) : (_sender_info ? 4 : 3)
-          ) + (_crc_32 ? 4 : 1) + (_asynchronous_acknowledge ? 2 : 0);
+        header = (header == NOT_ASSIGNED) ? config : header;
         return (
           (
             (header & MODE_BIT) ?
@@ -333,7 +332,8 @@ limitations under the License. */
               return BUSY;
 
           if(i == 1) {
-            if(((data[i] & MODE_BIT) != _shared) && !_router) return BUSY;
+            if(((data[i] & MODE_BIT) != (config & MODE_BIT)) && !_router)
+              return BUSY;
             extended_length = data[i] & EXTEND_LENGTH_BIT;
             extended_header = data[i] & EXTEND_HEADER_BIT;
           }
@@ -348,7 +348,7 @@ limitations under the License. */
             if(length < 5 || length > PACKET_MAX_LENGTH) return FAIL;
           }
 
-          if(_shared && (data[1] & MODE_BIT) && !_router)
+          if((config & MODE_BIT) && (data[1] & MODE_BIT) && !_router)
             if((i > (2 + extended_header + extended_length)))
               if((i < (7 + extended_header + extended_length)))
                 if(bus_id[i - 3 - extended_header - extended_length] != data[i])
@@ -366,8 +366,8 @@ limitations under the License. */
 
         if(data[1] & ACK_REQUEST_BIT && data[0] != BROADCAST)
           if(_mode != SIMPLEX && !_router)
-            if(!_shared || (
-              _shared && (data[1] & MODE_BIT) &&
+            if(!(config & MODE_BIT) || (
+              (config & MODE_BIT) && (data[1] & MODE_BIT) &&
               bus_id_equality(data + 3 + extended_length + extended_header, bus_id)
             )) strategy.send_response(!CRC ? NAK : ACK);
 
@@ -389,7 +389,7 @@ limitations under the License. */
                 NULL,
                 0,
                 0,
-                get_header() | ACK_MODE_BIT | SENDER_INFO_BIT,
+                config | ACK_MODE_BIT | SENDER_INFO_BIT,
                 last_packet_info.id
               );
               update();
@@ -541,7 +541,7 @@ limitations under the License. */
         if(!string) return FAIL;
         if(_mode != SIMPLEX && !strategy.can_start()) return BUSY;
         strategy.send_string((uint8_t *)string, length);
-        if(string[0] == BROADCAST || !_synchronous_acknowledge || _mode == SIMPLEX)
+        if(string[0] == BROADCAST || !(config & ACK_REQUEST_BIT) || _mode == SIMPLEX)
           return ACK;
         uint16_t response = strategy.receive_response();
         if(response == ACK || response == NAK || response == FAIL) return response;
@@ -622,12 +622,20 @@ limitations under the License. */
       };
 
 
+      /* Set the config bit state: */
+
+      void set_config_bit(boolean new_state, uint16_t bit) {
+        if(new_state) config |= bit;
+        else config &= ~bit;
+      };
+
+
       /* Configure synchronous acknowledge presence:
          TRUE: Send back synchronous acknowledge when a packet is correctly received
          FALSE: Avoid acknowledge transmission */
 
       void set_synchronous_acknowledge(boolean state) {
-        _synchronous_acknowledge = state;
+        set_config_bit(state, ACK_REQUEST_BIT);
       };
 
 
@@ -636,7 +644,7 @@ limitations under the License. */
          FALSE: Avoid acknowledge packet transmission */
 
       void set_asynchronous_acknowledge(boolean state) {
-        _asynchronous_acknowledge = state;
+        set_config_bit(state, ACK_MODE_BIT);
       };
 
 
@@ -645,7 +653,7 @@ limitations under the License. */
          FALSE: CRC8 */
 
       void set_crc_32(boolean state) {
-        _crc_32 = state;
+        set_config_bit(state, CRC_BIT);
       };
 
 
@@ -660,7 +668,7 @@ limitations under the License. */
 
       void set_default() {
         _mode = HALF_DUPLEX;
-        if(!bus_id_equality(bus_id, localhost)) _shared = true;
+        if(!bus_id_equality(bus_id, localhost)) set_shared_network(true);
         set_error(dummy_error_handler);
         set_receiver(dummy_receiver_handler);
         for(int i = 0; i < MAX_PACKETS; i++) {
@@ -702,7 +710,7 @@ limitations under the License. */
          higher communication speed. */
 
       void include_sender_info(bool state) {
-        _sender_info = state;
+        set_config_bit(state, SENDER_INFO_BIT);
       };
 
 
@@ -711,8 +719,8 @@ limitations under the License. */
          FALSE: Isolate communication from external/third-party communication. */
 
       void set_shared_network(boolean state) {
-        _shared = state;
-      }
+        set_config_bit(state, MODE_BIT);
+      };
 
 
       /* Set if delivered or undeliverable packets are auto deleted:
@@ -874,27 +882,14 @@ limitations under the License. */
         #endif
       };
 
-      uint8_t bus_id[4] = {0, 0, 0, 0};
-      uint8_t data[PACKET_MAX_LENGTH];
-      PacketInfo last_packet_info;
-      const uint8_t localhost[4] = {0, 0, 0, 0};
-      PJON_Packet packets[MAX_PACKETS];
-      #if(INCLUDE_ASYNC_ACK)
-        PJON_Packet_Record recent_packet_ids[MAX_RECENT_PACKET_IDS];
-      #endif
     private:
-      boolean   _synchronous_acknowledge = true;
-      boolean   _asynchronous_acknowledge = false;
       boolean   _auto_delete = true;
-      boolean   _crc_32 = false;
       error     _error;
       uint8_t   _mode;
       uint16_t  _packet_id_seed = 0;
       uint8_t   _random_seed = A0;
       receiver  _receiver;
       boolean   _router = false;
-      boolean   _sender_info = true;
-      boolean   _shared = false;
     protected:
       uint8_t   _device_id;
   };

@@ -33,7 +33,7 @@ void setup() {
   bus.begin();
   // Define a header used for transmission.
   // Force CRC32 and add an additional header byte (only for feature testing)
-  header = bus.get_header() | CRC_BIT | EXTEND_HEADER_BIT;
+  header = bus.config | CRC_BIT | EXTEND_HEADER_BIT;
   Serial.begin(115200);
   Serial.println("PJON - Network analysis");
   Serial.println("Starting a 1 second communication test..");

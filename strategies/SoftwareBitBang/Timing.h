@@ -93,6 +93,22 @@
       #define SWBB_ACCEPTANCE 34
       #define SWBB_READ_DELAY 10
     #endif
+    #if F_CPU == 16000000L
+      /* External 16MHz oscillator */
+      #define SWBB_BIT_WIDTH  40
+      #define SWBB_BIT_SPACER 112
+      #define SWBB_ACCEPTANCE 40
+      #define SWBB_READ_DELAY 4
+    #endif
+  #endif
+  #if SWBB_MODE == _SWBB_FAST
+    #if F_CPU == 16000000L
+      /* External 16MHz oscillator */
+      #define SWBB_BIT_WIDTH  28
+      #define SWBB_BIT_SPACER 66
+      #define SWBB_ACCEPTANCE 28
+      #define SWBB_READ_DELAY 4
+    #endif
   #endif
 #endif
 

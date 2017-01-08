@@ -12,7 +12,7 @@ Oversampling strategy was initially developed in the [PJON_ASK](https://github.c
 ####Performance
 - Transfer speed: 202 B/s or 1620 Baud
 - Data throughput: 150 B/s
-- Range: 250 meters in urban environment / 5km with LOS transmitting from a flying balloon
+- Range: 250 meters in urban environment / 5km with line of sight and ideal atmospheric conditions
 
 ####How to use OverSampling
 Pass the `OverSampling` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy. All the other necessary information is present in the general [Documentation](https://github.com/gioblu/PJON/wiki/Documentation).

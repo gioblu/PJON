@@ -21,6 +21,10 @@ Pass the `OverSampling` type as PJON template parameter to instantiate a PJON ob
      (Default 4 milliseconds) */
   #define OS_LATENCY 4000
 
+  /* Necessary time for receiver to set back its gain after transmission in its
+     vicinity as it happens in HALF_DUPLEX. (by default set to 100 milliseconds) */
+  #define OS_GAIN_REFRESH_DELAY 100    
+
   /* Set the back-off exponential degree */
   #define OS_BACK_OFF_DEGREE 4
 
@@ -51,20 +55,27 @@ To build a real open-source PJON packet radio able to communicate up to 5km you 
 
 The maximum detected range was experimented with a small packet radio transmitting its position every minute. The maximum range obtained was slightly more than 5 kilometers in line of sight in open area. Testing it instead in an urban environment the range is down to 250 meters. Two couples of STX882 and SRX882 were used as transceivers. If you choose these modules, remember to set `HIGH` the pin `CS` on the receiver before starting reception.
 
-Using `OverSampling` data link layer, synchronous acknowledge can reduce the maximum range, on certain media, so if you detect reduced range performance in `HALF_DUPLEX` compared to a mono-directional or `SIMPLEX` communication, and you can do without `ACK`, configure the absence of it after the packet transmission:
-```cpp  
-  bus.set_acknowledge(false);
-```
+If Using `OverSampling` data link layer, the asynchronous acknowledgment is suggested as default acknowledgment mechanism because includes in the packet's meta-info a packet id, avoiding duplicated receptions.
 
 ####Antenna design
-Experiments in `HALF_DUPLEX` mode have shown that it seems better to keep isolated the two antennas, using two different, not connected elements to transmit and receive. The first suggested antenna design is a wide beam pseudo half-wavelength dipole antenna made by two 345mm long conductive elements, one connected to ground and the other connected to the input or output pin:
+Experiments in `HALF_DUPLEX` mode have shown that it seems better to keep isolated the two antennas, using two different, not connected elements to transmit and receive. The first suggested antenna design is a wide beam dipole antenna made by two 173mm (quarter wavelength) or 345mm (half wavelength) long conductive elements, one connected to ground and the other connected to the input or output pin:
 ```cpp  
 
-      345mm                    345mm   
- -------------------|--------------------   
-                  __|__                                 
-                 |tx/rx|                                  
-                 |_____|                                
+ 173mm (quarter wavelength) / 345mm(half wavelength)
+
+ -------------------|--------------------
+                  __|__
+                 |TX/RX|
+                 |_____|
 
 ```
-A more directional, compact and long range antenna design is the pseudo half wavelength wip antenna. Can be easily crafted with two 345mm long insulated wire sections wrapped with each other every 5mm, one is connected to ground and the other to the input or output pin. This design helps because of its strong ground plane, often necessary to have decent results with these modules.
+A more directional, compact and long range antenna design is the wip antenna. Can be easily crafted with two 173mm (quarter wavelength) / 345mm (half wavelength) long insulated wire sections wrapped with each other every 5mm, one is connected to ground and the other to the input or output pin. This design helps because of its strong ground plane, often necessary to have decent results with this sort of hardware.
+```cpp  
+         5mm
+         ||  173mm (quarter wavelength) / 345mm (half wavelength)
+ GND   --\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+ RX/TX --/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+```
+
+####Known issues
+- In older versions, OverSampling was affected by ineffective and short range if used in HALF_DUPLEX mode. This issue has been fixed by handling the gain refresh.

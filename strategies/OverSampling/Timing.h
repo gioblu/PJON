@@ -46,5 +46,23 @@
 /* Maximum delay in case of collision in microseconds: */
 
 #ifndef OS_COLLISION_DELAY
-  #define OS_COLLISION_DELAY 320
+  #define OS_COLLISION_DELAY 328
+#endif
+
+/* Time necessary for receiver to recover its gain: */
+
+#ifndef OS_GAIN_REFRESH_DELAY
+  #define OS_GAIN_REFRESH_DELAY 100
+#endif
+
+/* Maximum transmission attempts */
+
+#ifndef OS_MAX_ATTEMPTS
+  #define OS_MAX_ATTEMPTS    10
+#endif
+
+/* Back-off exponential degree */
+
+#ifndef OS_BACK_OFF_DEGREE
+  #define OS_BACK_OFF_DEGREE 5
 #endif

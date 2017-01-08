@@ -78,4 +78,4 @@ A more directional, compact and long range antenna design is the wip antenna. Ca
 ```
 
 ####Known issues
-- In older versions, OverSampling was affected by ineffective and short range if used in HALF_DUPLEX mode. This issue has been fixed by handling the gain refresh.
+- In older versions, OverSampling was affected by ineffective and short range if used in HALF_DUPLEX mode. This issue has been fixed by handling the gain refresh (see issue [91](https://github.com/gioblu/PJON/issues/91)).

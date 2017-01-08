@@ -22,7 +22,8 @@ Pass the `OverSampling` type as PJON template parameter to instantiate a PJON ob
   #define OS_LATENCY 4000
 
   /* Necessary time for receiver to set back its gain after transmission in its
-     vicinity as it happens in HALF_DUPLEX. (by default set to 100 milliseconds) */
+     vicinity as it happens in HALF_DUPLEX. (by default set to 100 milliseconds).
+     Set to 0 if using OverSampling in SIMPLEX mode (mono-directional communication) */
   #define OS_GAIN_REFRESH_DELAY 100    
 
   /* Set the back-off exponential degree */

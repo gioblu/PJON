@@ -48,7 +48,7 @@ class OverSampling {
       uint32_t result = attempts;
       for(uint8_t d = 0; d < OS_BACK_OFF_DEGREE; d++)
         result *= (uint32_t)(attempts);
-      return result;
+      return (result + OS_GAIN_REFRESH_DELAY);
     };
 
 

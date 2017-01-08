@@ -22,13 +22,13 @@ void setup() {
 
   Serial.begin(115200);
   Serial.println("PJON - Network analysis");
-  Serial.println("Starting a 1 second communication test..");
+  Serial.println("Starting a 5 second communication test..");
   Serial.println();
 }
 
 void loop() {
   long time = millis();
-  while(millis() - time < 1000) {
+  while(millis() - time < 5000) {
 
     /* Here send_packet low level function is used to
     be able to catch every single sending result. */
@@ -45,10 +45,10 @@ void loop() {
   }
 
   Serial.print("Absolute com speed: ");
-  Serial.print(test * 28);
+  Serial.print((test * 28.0) / 5.0);
   Serial.println("B/s");
   Serial.print("Practical bandwidth: ");
-  Serial.print(test * 20);
+  Serial.print((test * 20.0) / 5.0);
   Serial.println("B/s");
   Serial.print("Packets sent: ");
   Serial.println(test);

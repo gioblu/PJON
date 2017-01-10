@@ -185,17 +185,4 @@ limitations under the License. */
   static void dummy_receiver_handler(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {};
   static void dummy_error_handler(uint8_t code, uint8_t data) {};
 
-  /* Check equality between two bus ids */
-
-  boolean bus_id_equality(const uint8_t *name_one, const uint8_t *name_two) {
-    for(uint8_t i = 0; i < 4; i++)
-      if(name_one[i] != name_two[i])
-        return false;
-    return true;
-  };
-
-  /* Copy a bus id: */
-
-  void copy_bus_id(uint8_t dest[], const uint8_t src[]) { memcpy(dest, src, 4); };
-
 #endif

@@ -24,53 +24,52 @@
    limitations under the License. */
 
 #include <Arduino.h>
-
-#define THROUGH_SERIAL_MAX_BYTE_TIME         100000
-/* 100 milliseconds is the maximum timeframe between every receive call in
-   any of the connected devices. If this timeframe is in average exceeded
-   by some of the connected devices, communication reliability could drop
-   or be disrupted. */
-
-#define THROUGH_SERIAL_FREE_TIME_BEFORE_START   500
-/* 0.5 milliseconds minimum timeframe of free port before transmitting
-
-   The proposed default timing configuration is ok for a master-slave setup, but
-   could lead to collisions if used in a multi-master setup.
-
-   If using ThroughSerial multi-master, NEVER set
-   THROUGH_SERIAL_FREE_TIME_BEFORE_START < THROUGH_SERIAL_MAX_BYTE_TIME
-   or a device could start transmitting while a couple is still exchanging an acknowledge
-
-   i.e.
-   #define THROUGH_SERIAL_MAX_BYTE_TIME           100000
-   #define THROUGH_SERIAL_FREE_TIME_BEFORE_START  110000
-
-   Above is shown multi-master compatible setup able to receive a synchronous
-   acknowledgment with a maximum delay 100 milliseconds. Channel analysis before
-   transmission is set to 110 milliseconds to avoid collisions.
-
-   Which is the correct value for your setup depends on the maximum average time
-   interval between every receive call in your system. THROUGH_SERIAL_MAX_BYTE_TIME
-   should be around the same duration. So in a sketch where there is only a
-   delay(10) between every receive call 10000 should be the correct value for
-   THROUGH_SERIAL_MAX_BYTE_TIME.
-
-   If your tasks timing are long and a satisfactory setup can't be reached
-   consider to drop the use of the synchronous acknowledge and start using the
-   asynchronous acknowledgment instead. */
+#include "Timing.h"
 
 class ThroughSerial {
   public:
     Stream *serial = NULL;
 
+    /* Returns the suggested delay related to the attempts passed as parameter: */
+
+    uint32_t back_off(uint8_t attempts) {
+      uint32_t result = attempts;
+      for(uint8_t d = 0; d < TS_BACK_OFF_DEGREE; d++)
+        result *= (uint32_t)(attempts);
+      return result;
+    };
+
+    /* Begin method, to be called before transmission or reception:
+       (returns always true) */
+
+    boolean begin(uint8_t additional_randomness = 0) {
+      delay(random(0, TS_INITIAL_DELAY) + additional_randomness);
+      return true;
+    };
+
+
+    /* Check if the channel is free for transmission: */
+
     boolean can_start() {
-      delayMicroseconds(random(0, COLLISION_DELAY));
+      delayMicroseconds(random(0, TS_COLLISION_DELAY));
       if(serial->available()) return false;
-
-      if((uint32_t)(micros() - _last_reception_time) < THROUGH_SERIAL_FREE_TIME_BEFORE_START)
+      if((uint32_t)(micros() - _last_reception_time) < TS_FREE_TIME_BEFORE_START)
         return false;
-
       return (serial != NULL);
+    };
+
+
+    /* Returns the maximum number of attempts for each transmission: */
+
+    static uint8_t get_max_attempts() {
+      return TS_MAX_ATTEMPTS;
+    };
+
+
+    /* Handle a collision: */
+
+    void handle_collision() {
+      delayMicroseconds(random(0, TS_COLLISION_DELAY));
     };
 
 
@@ -78,7 +77,7 @@ class ThroughSerial {
 
     uint16_t receive_byte() {
       uint32_t time = micros();
-      while((uint32_t)(micros() - time) < THROUGH_SERIAL_MAX_BYTE_TIME)
+      while((uint32_t)(micros() - time) < TS_MAX_BYTE_TIME)
         if(serial->available()) {
           _last_reception_time = micros();
           return (uint8_t)serial->read();

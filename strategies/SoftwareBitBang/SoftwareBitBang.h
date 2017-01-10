@@ -4,7 +4,7 @@
    Compliant with the Padded jittering data link layer specification v0.1
    _____________________________________________________________________________
 
-    Copyright 2012-2016 Giovanni Blu Mitolo gioscarab@gmail.com
+    Copyright 2012-2017 Giovanni Blu Mitolo gioscarab@gmail.com
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -46,10 +46,27 @@ STANDARD transmission mode performance:
 
 class SoftwareBitBang {
   public:
+    /* Returns the suggested delay related to the attempts passed as parameter: */
+
+    uint32_t back_off(uint8_t attempts) {
+      uint32_t result = attempts;
+      for(uint8_t d = 0; d < SWBB_BACK_OFF_DEGREE; d++)
+        result *= (uint32_t)(attempts);
+      return result;
+    };
+
+
+    /* Begin method, to be called before transmission or reception:
+       (returns always true) */
+
+    boolean begin(uint8_t additional_randomness = 0) {
+      delay(random(0, SWBB_INITIAL_DELAY) + additional_randomness);
+      return true;
+    };
+
 
     /* Check if the channel is free for transmission:
-    If receiving 10 bits no 1s are detected
-    there is no active transmission */
+       If receiving 10 bits no 1s are detected there is no active transmission */
 
     boolean can_start() {
       pinModeFast(_input_pin, INPUT);
@@ -64,9 +81,23 @@ class SoftwareBitBang {
         delayMicroseconds(SWBB_BIT_WIDTH);
       }
       if(digitalReadFast(_input_pin)) return false;
-      delayMicroseconds(random(0, COLLISION_DELAY));
+      delayMicroseconds(random(0, SWBB_COLLISION_DELAY));
       if(digitalReadFast(_input_pin)) return false;
       return true;
+    };
+
+
+    /* Returns the maximum number of attempts for each transmission: */
+
+    static uint8_t get_max_attempts() {
+      return SWBB_MAX_ATTEMPTS;
+    };
+
+
+    /* Handle a collision: */
+
+    void handle_collision() {
+      delayMicroseconds(random(0, SWBB_COLLISION_DELAY));
     };
 
 
@@ -144,7 +175,6 @@ class SoftwareBitBang {
           pinModeFast(_output_pin, OUTPUT);
           digitalWriteFast(_output_pin, HIGH);
           delayMicroseconds(SWBB_BIT_WIDTH / 4);
-          digitalWriteFast(_output_pin, LOW); // Avoid 1 to 0 bit transition slope -\_
           pullDownFast(_output_pin);
         }
       }
@@ -206,7 +236,6 @@ class SoftwareBitBang {
       pinModeFast(_output_pin, OUTPUT);
       for(uint16_t b = 0; b < length; b++)
         send_byte(string[b]);
-      digitalWriteFast(_output_pin, LOW); // Avoid 1 to 0 bit transition slope -\_
       pullDownFast(_output_pin);
     };
 

@@ -5,7 +5,7 @@
      - ATtiny45/85 (Trinket / Digispark)
      - SAMD21G18A (Arduino Zero) - Added by Esben Soeltoft 03/09/2016
 
-   Copyright 2012-2016 Giovanni Blu Mitolo
+   Copyright 2012-2017 Giovanni Blu Mitolo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -244,11 +244,11 @@
 
     #define pullDownFast(P) \
       do { if(__builtin_constant_p(P)) { \
-          pinModeFast(P, INPUT); \
           digitalWriteFast(P, LOW); \
+          pinModeFast(P, INPUT); \
         } else \
-          pinMode(P, INPUT); \
           digitalWrite(P, LOW); \
+          pinMode(P, INPUT); \
       } while(0)
 
   #else
@@ -267,8 +267,8 @@
     #if !defined(pullDownFast)
       #define pullDownFast(P) \
         do { \
-          pinMode(P, INPUT); \
           digitalWrite(P, LOW); \
+          pinMode(P, INPUT); \
         } while(0)
     #endif
   #endif

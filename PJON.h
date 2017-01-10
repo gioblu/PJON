@@ -3,7 +3,7 @@
    |-gfo\           |__| | |  | |\ | ™
    |!y°o:\          |  __| |__| | \| v6.2
    |y"s§+`\         multi-master, multi-media communications bus system framework
-  /so+:-..`\        Copyright 2010-2016 by Giovanni Blu Mitolo gioscarab@gmail.com
+  /so+:-..`\        Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
   |5/:%&-a3f.:;\
   \+//u/+g%{osv,,\
@@ -17,24 +17,16 @@ PJON™ is a self-funded, no-profit project created and mantained by Giovanni Bl
 with the support ot the internet community if you want to see the PJON project growing
 with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
 
-PJON™ Protocol specification:
-- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md
-- v0.2 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md
-- v0.3 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md
-- v1.0 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v1.0.md
-
-PJON™ Acknowledge specification:
-- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-acknowledge-specification-v0.1.md
-
-PJON™ Dynamic addressing specification:
-- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md
+For the PJON™ Protocol specification see the specification directory.
 
 PJON™ Standard compliant tools:
 - https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande
 - https://github.com/Girgitt/PJON-python PJON running on Python by Zbigniew Zasieczny
+- https://github.com/fredilarsen/ModuleInterface Easy config and value sync between IOT modules
 
 Credits to contributors:
 - Fred Larsen (Systems engineering, header driven communication, debugging)
+- budaics github user (ATtiny85 16Mhz external clock testing and wiki page enhancement)
 - Pantovich github user (update returning number of packets to be delivered)
 - Adrian Sławiński (Fix to enable SimpleModbusMasterV2 compatibility)
 - SticilFace github user (Teensy porting)
@@ -46,6 +38,9 @@ Credits to contributors:
 - PaoloP74 github user (Library conversion to 1.x Arduino IDE)
 
 Bug reports:
+- pacproduct github user (Added missing mode configuration SIMPLEX example)
+- elusive-code github user (PJONMaster reset bug)
+- Franketto arduino forum user (PJON ThroughSerial over RS485 delay issue)
 - Zbigniew Zasieczny (header reference inconsistency report)
 - DanRoad reddit user (can_start ThroughSerial bugfix)
 - Remo Kallio (Packet index 0 bugfix)
@@ -57,7 +52,7 @@ Bug reports:
 - Shachar Limor (Blink example pinMode bugfix)
  ______________________________________________________________________________
 
-Copyright 2012-2016 by Giovanni Blu Mitolo gioscarab@gmail.com
+Copyright 2012-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -75,16 +70,32 @@ limitations under the License. */
   #define PJON_h
   #include <Arduino.h>
   #include <PJONDefines.h>
-  #include "strategies/EthernetTCP/EthernetTCP.h"
-  #include "strategies/LocalUDP/LocalUDP.h"
   #include "strategies/OverSampling/OverSampling.h"
   #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
   #include "strategies/ThroughSerial/ThroughSerial.h"
+  /* Avoid ATtiny 45/85 error missing inclusion error */
+  #if !defined(__AVR_ATtiny45__) && !defined(__AVR_ATtiny85__)
+    #include "strategies/EthernetTCP/EthernetTCP.h"
+    #include "strategies/LocalUDP/LocalUDP.h"
+  #endif
 
   template<typename Strategy = SoftwareBitBang>
   class PJON {
     public:
+      /* Abstract data-link layer class */
       Strategy strategy;
+
+      uint16_t config = SENDER_INFO_BIT | ACK_REQUEST_BIT;
+      uint8_t bus_id[4] = {0, 0, 0, 0};
+      const uint8_t localhost[4] = {0, 0, 0, 0};
+
+      /* Data buffers */
+      uint8_t data[PACKET_MAX_LENGTH];
+      PacketInfo last_packet_info;
+      PJON_Packet packets[MAX_PACKETS];
+      #if(INCLUDE_ASYNC_ACK)
+        PJON_Packet_Record recent_packet_ids[MAX_RECENT_PACKET_IDS];
+      #endif
 
       /* PJON bus default initialization:
          State: Local (bus_id: 0.0.0.0)
@@ -125,7 +136,7 @@ limitations under the License. */
       void begin() {
         uint8_t device_id_seed = (_device_id != NOT_ASSIGNED) ? _device_id : 0;
         randomSeed(analogRead(_random_seed) + device_id_seed);
-        delay(random(0, INITIAL_DELAY) + device_id_seed);
+        strategy.begin(device_id_seed);
         #if(INCLUDE_ASYNC_ACK)
           _packet_id_seed = random() + device_id_seed;
         #endif
@@ -143,7 +154,7 @@ limitations under the License. */
         uint16_t header = NOT_ASSIGNED,
         uint16_t p_id = 0
       ) {
-        if(header == NOT_ASSIGNED) header = get_header();
+        if(header == NOT_ASSIGNED) header = config;
         if(header > 255) header |= EXTEND_HEADER_BIT;
         if(length > 255) header |= (EXTEND_LENGTH_BIT | CRC_BIT);
         if(id == BROADCAST) header &= ~(ACK_REQUEST_BIT | ACK_MODE_BIT);
@@ -238,17 +249,6 @@ limitations under the License. */
       };
 
 
-      /* Return the header byte based on current configuration: */
-
-      uint16_t get_header() const {
-        return (_shared ? MODE_BIT : 0) |
-               (_sender_info ? SENDER_INFO_BIT : 0) |
-               (_synchronous_acknowledge ? ACK_REQUEST_BIT : 0) |
-               (_asynchronous_acknowledge ? ACK_MODE_BIT : 0) |
-               (_crc_32 ? CRC_BIT : 0);
-      };
-
-
       /* Get count of the packets for a device_id:
          Don't pass any parameter to count all packets
          Pass a device id to count all it's related packets */
@@ -275,10 +275,7 @@ limitations under the License. */
       /* Calculate the packet's overhead: */
 
       uint8_t packet_overhead(uint16_t header = NOT_ASSIGNED) const {
-        if(header == NOT_ASSIGNED)
-          return (
-            _shared ? (_sender_info ? 12 : 7) : (_sender_info ? 4 : 3)
-          ) + (_crc_32 ? 4 : 1) + (_asynchronous_acknowledge ? 2 : 0);
+        header = (header == NOT_ASSIGNED) ? config : header;
         return (
           (
             (header & MODE_BIT) ?
@@ -335,7 +332,8 @@ limitations under the License. */
               return BUSY;
 
           if(i == 1) {
-            if(((data[i] & MODE_BIT) != _shared) && !_router) return BUSY;
+            if(((data[i] & MODE_BIT) != (config & MODE_BIT)) && !_router)
+              return BUSY;
             extended_length = data[i] & EXTEND_LENGTH_BIT;
             extended_header = data[i] & EXTEND_HEADER_BIT;
           }
@@ -350,7 +348,7 @@ limitations under the License. */
             if(length < 5 || length > PACKET_MAX_LENGTH) return FAIL;
           }
 
-          if(_shared && (data[1] & MODE_BIT) && !_router)
+          if((config & MODE_BIT) && (data[1] & MODE_BIT) && !_router)
             if((i > (2 + extended_header + extended_length)))
               if((i < (7 + extended_header + extended_length)))
                 if(bus_id[i - 3 - extended_header - extended_length] != data[i])
@@ -368,8 +366,8 @@ limitations under the License. */
 
         if(data[1] & ACK_REQUEST_BIT && data[0] != BROADCAST)
           if(_mode != SIMPLEX && !_router)
-            if(!_shared || (
-              _shared && (data[1] & MODE_BIT) &&
+            if(!(config & MODE_BIT) || (
+              (config & MODE_BIT) && (data[1] & MODE_BIT) &&
               bus_id_equality(data + 3 + extended_length + extended_header, bus_id)
             )) strategy.send_response(!CRC ? NAK : ACK);
 
@@ -391,7 +389,7 @@ limitations under the License. */
                 NULL,
                 0,
                 0,
-                get_header() | ACK_MODE_BIT | SENDER_INFO_BIT,
+                config | ACK_MODE_BIT | SENDER_INFO_BIT,
                 last_packet_info.id
               );
               update();
@@ -543,7 +541,7 @@ limitations under the License. */
         if(!string) return FAIL;
         if(_mode != SIMPLEX && !strategy.can_start()) return BUSY;
         strategy.send_string((uint8_t *)string, length);
-        if(string[0] == BROADCAST || !_synchronous_acknowledge || _mode == SIMPLEX)
+        if(string[0] == BROADCAST || !(config & ACK_REQUEST_BIT) || _mode == SIMPLEX)
           return ACK;
         uint16_t response = strategy.receive_response();
         if(response == ACK || response == NAK || response == FAIL) return response;
@@ -595,12 +593,15 @@ limitations under the License. */
         uint16_t state = FAIL;
         uint32_t attempts = 0;
         uint32_t time = micros(), start = time;
-        while(state != ACK && attempts <= MAX_ATTEMPTS && (uint32_t)(micros() - start) <= timeout) {
+        while(
+          (state != ACK) && (attempts <= strategy.get_max_attempts()) &&
+          (uint32_t)(micros() - start) <= timeout
+        ) {
           state = send_packet((char*)data, length);
           if(state == ACK) return state;
           attempts++;
-          if(state != FAIL) delayMicroseconds(random(0, COLLISION_DELAY));
-          while((uint32_t)(micros() - time) < (attempts * attempts * attempts));
+          if(state != FAIL) strategy.handle_collision();
+          while((uint32_t)(micros() - time) < strategy.back_off(attempts));
           time = micros();
         }
         return state;
@@ -624,12 +625,20 @@ limitations under the License. */
       };
 
 
+      /* Set the config bit state: */
+
+      void set_config_bit(boolean new_state, uint16_t bit) {
+        if(new_state) config |= bit;
+        else config &= ~bit;
+      };
+
+
       /* Configure synchronous acknowledge presence:
          TRUE: Send back synchronous acknowledge when a packet is correctly received
          FALSE: Avoid acknowledge transmission */
 
       void set_synchronous_acknowledge(boolean state) {
-        _synchronous_acknowledge = state;
+        set_config_bit(state, ACK_REQUEST_BIT);
       };
 
 
@@ -638,7 +647,7 @@ limitations under the License. */
          FALSE: Avoid acknowledge packet transmission */
 
       void set_asynchronous_acknowledge(boolean state) {
-        _asynchronous_acknowledge = state;
+        set_config_bit(state, ACK_MODE_BIT);
       };
 
 
@@ -647,7 +656,7 @@ limitations under the License. */
          FALSE: CRC8 */
 
       void set_crc_32(boolean state) {
-        _crc_32 = state;
+        set_config_bit(state, CRC_BIT);
       };
 
 
@@ -662,7 +671,7 @@ limitations under the License. */
 
       void set_default() {
         _mode = HALF_DUPLEX;
-        if(!bus_id_equality(bus_id, localhost)) _shared = true;
+        if(!bus_id_equality(bus_id, localhost)) set_shared_network(true);
         set_error(dummy_error_handler);
         set_receiver(dummy_receiver_handler);
         for(int i = 0; i < MAX_PACKETS; i++) {
@@ -704,7 +713,7 @@ limitations under the License. */
          higher communication speed. */
 
       void include_sender_info(bool state) {
-        _sender_info = state;
+        set_config_bit(state, SENDER_INFO_BIT);
       };
 
 
@@ -713,8 +722,8 @@ limitations under the License. */
          FALSE: Isolate communication from external/third-party communication. */
 
       void set_shared_network(boolean state) {
-        _shared = state;
-      }
+        set_config_bit(state, MODE_BIT);
+      };
 
 
       /* Set if delivered or undeliverable packets are auto deleted:
@@ -766,7 +775,6 @@ limitations under the License. */
 
       uint8_t update() {
         uint8_t packets_count = 0;
-        uint32_t back_off;
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
           packets_count++;
@@ -778,11 +786,10 @@ limitations under the License. */
           bool async_ack = (packets[i].content[1] & ACK_MODE_BIT) &&
             (packets[i].content[1] & SENDER_INFO_BIT);
 
-          back_off = packets[i].attempts;
-          back_off = (back_off * back_off * back_off * back_off);
-
-          if((uint32_t)(micros() - packets[i].registration) > packets[i].timing + back_off)
-            packets[i].state = send_packet(packets[i].content, packets[i].length);
+          if(
+            (uint32_t)(micros() - packets[i].registration) >
+            (uint32_t)(packets[i].timing + strategy.back_off(packets[i].attempts))
+          ) packets[i].state = send_packet(packets[i].content, packets[i].length);
           else continue;
 
           packets[i].attempts++;
@@ -804,10 +811,9 @@ limitations under the License. */
             } if(!async_ack) continue;
           }
 
-          if(packets[i].state != FAIL)
-            delayMicroseconds(random(0, COLLISION_DELAY));
+          if(packets[i].state != FAIL) strategy.handle_collision();
 
-          if(packets[i].attempts > MAX_ATTEMPTS) {
+          if(packets[i].attempts > strategy.get_max_attempts()) {
             _error(CONNECTION_LOST, packets[i].content[0]);
             if(!packets[i].timing) {
               if(_auto_delete) {
@@ -876,27 +882,14 @@ limitations under the License. */
         #endif
       };
 
-      uint8_t bus_id[4] = {0, 0, 0, 0};
-      uint8_t data[PACKET_MAX_LENGTH];
-      PacketInfo last_packet_info;
-      const uint8_t localhost[4] = {0, 0, 0, 0};
-      PJON_Packet packets[MAX_PACKETS];
-      #if(INCLUDE_ASYNC_ACK)
-        PJON_Packet_Record recent_packet_ids[MAX_RECENT_PACKET_IDS];
-      #endif
     private:
-      boolean   _synchronous_acknowledge = true;
-      boolean   _asynchronous_acknowledge = false;
       boolean   _auto_delete = true;
-      boolean   _crc_32 = false;
       error     _error;
       uint8_t   _mode;
       uint16_t  _packet_id_seed = 0;
       uint8_t   _random_seed = A0;
       receiver  _receiver;
       boolean   _router = false;
-      boolean   _sender_info = true;
-      boolean   _shared = false;
     protected:
       uint8_t   _device_id;
   };

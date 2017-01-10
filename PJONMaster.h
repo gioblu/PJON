@@ -3,7 +3,7 @@
    |-gfo\           |__| | |  | |\ | ™
    |!y°o:\          |  __| |__| | \| v6.2
    |y"s§+`\         multi-master, multi-media communications bus system framework
-  /so+:-..`\        Copyright 2010-2016 by Giovanni Blu Mitolo gioscarab@gmail.com
+  /so+:-..`\        Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
   |5/:%&-a3f.:;\
   \+//u/+g%{osv,,\
@@ -18,28 +18,15 @@ of Fred Larsen and is inspired by the work of Thomas Snaidero:
 "Modular components for eye tracking, in the interest of helping persons with severely impaired motor skills."
 Master Thesis, IT University of Copenhagen, Denmark, September 2016
 
-PJON™ Protocol specification:
-- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md
-- v0.2 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md
-- v0.3 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md
-- v1.0 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v1.0.md
-
-PJON™ Acknowledge specification:
-- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-acknowledge-specification-v0.1.md
-
 PJON™ Dynamic addressing specification:
 - v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md
-
-PJON™ Standard compliant tools:
-- https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande
-- https://github.com/Girgitt/PJON-python PJON running on Python by Zbigniew Zasieczny
 
 PJON™ is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
 with the support ot the internet community if you want to see the PJON project growing
 with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
  ______________________________________________________________________________
 
-Copyright 2012-2016 by Giovanni Blu Mitolo gioscarab@gmail.com
+Copyright 2012-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -131,7 +118,7 @@ limitations under the License. */
           response,
           6,
           ID_REQUEST_INTERVAL,
-          PJON<Strategy>::get_header() | ADDRESS_BIT
+          PJON<Strategy>::config | ADDRESS_BIT
         );
       };
 
@@ -228,7 +215,7 @@ limitations under the License. */
         char request = ID_LIST;
         while(micros() - time < ADDRESSING_TIMEOUT) {
           PJON<Strategy>::send_packet(
-            BROADCAST, this->bus_id, &request, 1, PJON<Strategy>::get_header() | ADDRESS_BIT
+            BROADCAST, this->bus_id, &request, 1, PJON<Strategy>::config | ADDRESS_BIT
           );
           receive(LIST_IDS_RECEPTION_TIME);
         }
@@ -245,7 +232,7 @@ limitations under the License. */
           b_id,
           response,
           5,
-          PJON<Strategy>::get_header() | ACK_REQUEST_BIT | ADDRESS_BIT
+          PJON<Strategy>::config | ACK_REQUEST_BIT | ADDRESS_BIT
         );
       };
 

@@ -23,6 +23,16 @@
 #include "EthernetLink.h"
 #include <PJONDefines.h>
 
+/* Maximum transmission attempts */
+#ifndef ETCP_MAX_ATTEMPTS
+  #define ETCP_MAX_ATTEMPTS   20
+#endif
+
+/* Back-off exponential degree */
+#ifndef ETCP_BACK_OFF_DEGREE
+  #define ETCP_BACK_OFF_DEGREE 4
+#endif
+
 class EthernetTCP {
   public:
     EthernetLink link;
@@ -46,13 +56,44 @@ class EthernetTCP {
 
     EthernetTCP() {
       link.set_receiver(static_receiver, this);
-    }
+    };
+
+
+    /* Returns the suggested delay related to the attempts passed as parameter: */
+
+    uint32_t back_off(uint8_t attempts) {
+      uint32_t result = attempts;
+      for(uint8_t d = 0; d < ETCP_BACK_OFF_DEGREE; d++)
+        result *= (uint32_t)(attempts);
+      return result;
+    };
+
+
+    /* Begin method, to be called before transmission or reception:
+       (returns always true) */
+
+    boolean begin(uint8_t additional_randomness = 0) {
+      return true;
+    };
+
 
     /* Check if the channel is free for transmission */
 
     boolean can_start() {
       return link.device_id() != 0;
     };
+
+
+    /* Returns the maximum number of attempts for each transmission: */
+
+    static uint8_t get_max_attempts() {
+      return ETCP_MAX_ATTEMPTS;
+    };
+
+
+    /* Handle a collision (empty because handled on Ethernet level): */
+
+    void handle_collision() { };
 
 
     uint16_t receive_byte() {

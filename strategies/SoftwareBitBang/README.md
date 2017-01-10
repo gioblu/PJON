@@ -43,14 +43,25 @@ Pass the `SoftwareBitBang` type as PJON template parameter to instantiate a PJON
      of the CRC computation time needed by receiver before transmitting its acknowledge  */
   #define SWBB_LATENCY 1000
 
+  /* Set the back-off exponential degree */
+  #define SWBB_BACK_OFF_DEGREE 4
+
+  /* Set the maximum sending attempts */
+  #define SWBB_MAX_ATTEMPTS 20
+
+  /* The values set above are the default producing a 3.2 seconds
+     back-off timeout with 20 attempts. Higher SWBB_MAX_ATTEMPTS to higher
+     the back-off timeout, higher SWBB_BACK_OFF_DEGREE to higher the interval
+     between every attempt. */
+
   #include <PJON.h>
 
   PJON<SoftwareBitBang> bus;
 
   void setup() {
-    bus.strategy.set_pin(12);      // Set the pin 12 as the communication pin
-                                   // or
-    bus.strategy.set_pins(11, 12); // Set pin 11 as input pin and pin 12 as output pin  
+    bus.strategy.set_pin(12);       // Set the pin 12 as the communication pin
+                                    // or
+    bus.strategy.set_pins(11, 12);  // Set pin 11 as input pin and pin 12 as output pin  
   }
 
 ```

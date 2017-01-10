@@ -7,7 +7,7 @@
 /*
 Milan, Italy - 17/10/2016
 The PJON™ protocol acknowledge specification is an invention and intellectual property
-of Giovanni Blu Mitolo - Copyright 2010-2016 All rights reserved
+of Giovanni Blu Mitolo - Copyright 2010-2017 All rights reserved
 
 Related work: https://github.com/gioblu/PJON/
 Compliant implementation versions: PJON 6.0 and following
@@ -117,4 +117,4 @@ TX END-------ACK-><-0-00001111-15-0001-0002-0-99-CRC-<-ACK-><-0-00001111-15-0001
  |_____|__________|________|_________|_________|____|___________|_______|   |_____|
                            | RX iNFO |   TX INFO    |
 ```
-This documents doesn't want to specif in any way the routing mechanism (still not officially specified), but uses routing as a necessary example to showcase clearly the power of the recursive acknowledgement pattern.
+This documents doesn't want to specify in any way the routing mechanism (still not officially specified), but uses routing as a necessary example to showcase clearly the power of the recursive acknowledgement pattern.

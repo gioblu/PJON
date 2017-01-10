@@ -1,9 +1,10 @@
 
 /* OverSampling 1 or 2 wires interrupts-less digital communication data link layer
    used as a Strategy by the PJON framework (included in version v3.0)
-   Compliant with the Padded jittering data link layer specification v0.1   ____________________________________________________________________________
+   Compliant with the Padded jittering data link layer specification v0.1
+   ____________________________________________________________________________
 
-   Copyright 2012-2016 Giovanni Blu Mitolo gioscarab@gmail.com
+   Copyright 2012-2017 Giovanni Blu Mitolo gioscarab@gmail.com
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -41,28 +42,62 @@
 class OverSampling {
   public:
 
+    /* Returns the suggested delay related to the attempts passed as parameter: */
+
+    uint32_t back_off(uint8_t attempts) {
+      uint32_t result = attempts;
+      for(uint8_t d = 0; d < OS_BACK_OFF_DEGREE; d++)
+        result *= (uint32_t)(attempts);
+      return (result + OS_GAIN_REFRESH_DELAY);
+    };
+
+
+    /* Begin method, to be called before transmission or reception:
+       (returns always true) */
+
+    boolean begin(uint8_t additional_randomness = 0) {
+      delay(random(0, OS_INITIAL_DELAY + OS_GAIN_REFRESH_DELAY) + additional_randomness);
+      return true;
+    };
+
+
     /* Check if the channel is free for transmission:
     If receiving 10 bits no 1s are detected
     there is no active transmission */
 
     boolean can_start() {
+      if(OS_GAIN_REFRESH_DELAY)
+        delay(OS_GAIN_REFRESH_DELAY); // Ensure gain is properly set
       float value = 0.5;
       unsigned long time = micros();
       pinModeFast(_input_pin, INPUT);
-      pullDownFast(_input_pin);
       while((uint32_t)(micros() - time) < OS_BIT_SPACER)
         value = digitalReadFast(_input_pin);
       if(value > 0.5) return false;
       value = 0.5;
       time = micros();
-      for(uint8_t i = 0; i < 10; i++) {
+      for(uint8_t i = 0; i < 10; i++, value = 0.5) {
         while((uint32_t)(micros() - time) < OS_BIT_WIDTH)
           value = (value * 0.999)  + (digitalReadFast(_input_pin) * 0.001);
         if(value > 0.5) return false;
       }
-      delayMicroseconds(random(0, COLLISION_DELAY));
+      delayMicroseconds(random(0, OS_COLLISION_DELAY));
       if(digitalReadFast(_input_pin)) return false;
       return true;
+    };
+
+
+    /* Returns the maximum number of attempts for each transmission: */
+
+    static uint8_t get_max_attempts() {
+      return OS_MAX_ATTEMPTS;
+    };
+
+
+    /* Handle a collision: */
+
+    void handle_collision() {
+      delayMicroseconds(random(0, OS_COLLISION_DELAY));
     };
 
 
@@ -97,7 +132,6 @@ class OverSampling {
 
     uint16_t receive_byte() {
       pullDownFast(_input_pin);
-
       if(_output_pin != NOT_ASSIGNED && _output_pin != _input_pin)
         pullDownFast(_output_pin);
 
@@ -125,8 +159,6 @@ class OverSampling {
     /* Receive byte response */
 
     uint16_t receive_response() {
-      digitalWriteFast(_input_pin, LOW);
-
       if(_output_pin != NOT_ASSIGNED && _output_pin != _input_pin)
         digitalWriteFast(_output_pin, LOW);
 
@@ -171,10 +203,14 @@ class OverSampling {
     /* Send byte response to package transmitter */
 
     void send_response(uint8_t response) {
+      if(OS_GAIN_REFRESH_DELAY) // Necessary for packet's transmitter to refresh its gain
+        delay(OS_GAIN_REFRESH_DELAY);
+      pullDownFast(_input_pin);
       pinModeFast(_output_pin, OUTPUT);
       send_byte(response);
-      digitalWriteFast(_output_pin, LOW); // Avoid 1 to 0 bit transition slope -\_
       pullDownFast(_output_pin);
+      if(OS_GAIN_REFRESH_DELAY) // Necessary for response's transmitter to refresh its gain
+        delay(OS_GAIN_REFRESH_DELAY);
     };
 
 
@@ -184,8 +220,9 @@ class OverSampling {
       pinModeFast(_output_pin, OUTPUT);
       for(uint16_t b = 0; b < length; b++)
         send_byte(string[b]);
-      digitalWriteFast(_output_pin, LOW); // Avoid 1 to 0 bit transition slope -\_
       pullDownFast(_output_pin);
+      if(OS_GAIN_REFRESH_DELAY) // Necessary for packet's transmitter to refresh its gain
+        delay(OS_GAIN_REFRESH_DELAY);
     };
 
 

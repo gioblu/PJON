@@ -1,6 +1,6 @@
 
 /* PJON OverSampling strategy Transmission Timing table
-   Copyright (c) 2016, Giovanni Blu Mitolo All rights reserved.
+   Copyright (c) 2017, Giovanni Blu Mitolo All rights reserved.
 
    All benchmarks should be executed with NetworkAnalysis and SpeedTest examples.
 
@@ -12,18 +12,18 @@
 #if defined(__AVR_ATmega88__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
   #if _OS_MODE == _STXRX882_STANDARD
     #if F_CPU == 16000000L
-      #define OS_BIT_WIDTH 512
-      #define OS_BIT_SPACER 328
+      #define OS_BIT_WIDTH   512
+      #define OS_BIT_SPACER  328
     #endif
   #endif
 #endif
 
 #ifndef OS_BIT_WIDTH
-  #define OS_BIT_WIDTH  512
+  #define OS_BIT_WIDTH       512
 #endif
 
 #ifndef OS_BIT_SPACER
-  #define OS_BIT_SPACER 328
+  #define OS_BIT_SPACER      328
 #endif
 
 /* The default response timeout setup dedicates the transmission time of 1 byte plus
@@ -32,7 +32,37 @@
   the incoming synchronous ACK, Higher or lower if necessary! */
 
 #ifndef OS_LATENCY
- #define OS_LATENCY 4000
+ #define OS_LATENCY         4000
 #endif
 
 #define OS_TIMEOUT ((OS_BIT_WIDTH * 9) + OS_BIT_SPACER + OS_LATENCY)
+
+/* Maximum initial delay in milliseconds: */
+
+#ifndef OS_INITIAL_DELAY
+  #define OS_INITIAL_DELAY  1000
+#endif
+
+/* Maximum delay in case of collision in microseconds: */
+
+#ifndef OS_COLLISION_DELAY
+  #define OS_COLLISION_DELAY 328
+#endif
+
+/* Time necessary for receiver to recover its gain: */
+
+#ifndef OS_GAIN_REFRESH_DELAY
+  #define OS_GAIN_REFRESH_DELAY 100
+#endif
+
+/* Maximum transmission attempts */
+
+#ifndef OS_MAX_ATTEMPTS
+  #define OS_MAX_ATTEMPTS    10
+#endif
+
+/* Back-off exponential degree */
+
+#ifndef OS_BACK_OFF_DEGREE
+  #define OS_BACK_OFF_DEGREE 5
+#endif

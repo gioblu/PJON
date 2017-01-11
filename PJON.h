@@ -138,7 +138,7 @@ limitations under the License. */
         randomSeed(analogRead(_random_seed) + device_id_seed);
         strategy.begin(device_id_seed);
         #if(INCLUDE_ASYNC_ACK)
-          _packet_id_seed = random() + device_id_seed;
+          _packet_id_seed = random(65535) + device_id_seed;
         #endif
       };
 

@@ -494,6 +494,7 @@ limitations under the License. */
       uint16_t send(uint8_t id, const char *string, uint16_t length, uint16_t header = NOT_ASSIGNED) {
         return dispatch(id, bus_id, string, length, 0, header);
       };
+      
 
       uint16_t send(
         uint8_t id,
@@ -516,6 +517,7 @@ limitations under the License. */
       ) {
         return dispatch(id, bus_id, string, length, timing, header);
       };
+
 
       /* IMPORTANT: send_repeatedly timing maximum is 4293014170 microseconds or 71.55 minutes */
       uint16_t send_repeatedly(
@@ -551,6 +553,7 @@ limitations under the License. */
           return FAIL;
         return send_packet((char *)data, length);
       };
+
 
       uint16_t send_packet(
         uint8_t id,
@@ -889,7 +892,7 @@ limitations under the License. */
       /* Copy a bus id: */
 
       static void copy_bus_id(uint8_t dest[], const uint8_t src[]) { memcpy(dest, src, 4); };
-            
+
     private:
       boolean   _auto_delete = true;
       error     _error;

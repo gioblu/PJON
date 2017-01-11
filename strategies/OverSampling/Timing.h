@@ -18,6 +18,16 @@
   #endif
 #endif
 
+/* NodeMCU, generic ESP8266 ------------------------------------------------- */
+#if defined(ESP8266)
+  #if _OS_MODE == _STXRX882_STANDARD
+    #if F_CPU == 80000000L
+      #define OS_BIT_WIDTH   486
+      #define OS_BIT_SPACER  298
+    #endif
+  #endif
+#endif
+
 #ifndef OS_BIT_WIDTH
   #define OS_BIT_WIDTH       512
 #endif

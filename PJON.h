@@ -204,12 +204,12 @@ limitations under the License. */
 
         memcpy(destination + (new_length - length - (header & CRC_BIT ? 4 : 1)), source, length);
         if(header & CRC_BIT) {
-          uint32_t CRC = compute_crc_32((uint8_t *)destination, new_length - 4);
+          uint32_t CRC = crc32::compute_crc_32((uint8_t *)destination, new_length - 4);
           destination[new_length - 4] = (uint32_t)(CRC) >> 24;
           destination[new_length - 3] = (uint32_t)(CRC) >> 16;
           destination[new_length - 2] = (uint32_t)(CRC) >>  8;
           destination[new_length - 1] = (uint32_t)(CRC);
-        } else destination[new_length - 1] = compute_crc_8((uint8_t *)destination, new_length - 1);
+        } else destination[new_length - 1] = crc8::compute_crc_8((uint8_t *)destination, new_length - 1);
         return new_length;
       };
 
@@ -356,13 +356,13 @@ limitations under the License. */
         }
 
         if(data[1] & CRC_BIT) {
-          uint32_t result = compute_crc_32(data, length - 4);
+          uint32_t result = crc32::compute_crc_32(data, length - 4);
           for(uint8_t i = 4; i > 0; i--)
             if((uint8_t)(result >> (8 * (i - 1))) != (uint8_t)data[length - i]) {
               CRC = false;
               break;
             } else CRC = true;
-        } else CRC = !compute_crc_8(data, length);
+        } else CRC = !crc8::compute_crc_8(data, length);
 
         if(data[1] & ACK_REQUEST_BIT && data[0] != BROADCAST)
           if(_mode != SIMPLEX && !_router)
@@ -882,6 +882,19 @@ limitations under the License. */
         #endif
       };
 
+      /* Check equality between two bus ids */
+
+      static boolean bus_id_equality(const uint8_t *name_one, const uint8_t *name_two) {
+        for(uint8_t i = 0; i < 4; i++)
+          if(name_one[i] != name_two[i])
+            return false;
+        return true;
+      };
+
+      /* Copy a bus id: */
+
+      static void copy_bus_id(uint8_t dest[], const uint8_t src[]) { memcpy(dest, src, 4); };
+            
     private:
       boolean   _auto_delete = true;
       error     _error;

@@ -220,7 +220,7 @@ limitations under the License. */
           response[4] = rid[3];
 
           if(this->data[overhead - CRC_overhead] == ID_REQUEST)
-            if(bus_id_equality(this->data + ((overhead - CRC_overhead) + 1), rid)) {
+            if(this->bus_id_equality(this->data + ((overhead - CRC_overhead) + 1), rid)) {
               response[0] = ID_CONFIRM;
               response[5] = this->data[(overhead - CRC_overhead) + 5];
               this->set_id(response[5]);
@@ -238,7 +238,7 @@ limitations under the License. */
 
           if(this->data[overhead - CRC_overhead] == ID_NEGATE)
             if(
-              bus_id_equality(
+              this->bus_id_equality(
                 this->data + ((overhead - CRC_overhead) + 1),
                 rid
               ) && this->_device_id == this->data[0]

@@ -21,11 +21,6 @@ Pass the `OverSampling` type as PJON template parameter to instantiate a PJON ob
      (Default 4 milliseconds) */
   #define OS_LATENCY 4000
 
-  /* Necessary time for receiver to set back its gain after transmission in its
-     vicinity as it happens in HALF_DUPLEX. (by default set to 100 milliseconds).
-     Set to 0 if using OverSampling in SIMPLEX mode (mono-directional communication) */
-  #define OS_GAIN_REFRESH_DELAY 100    
-
   /* Set the back-off exponential degree */
   #define OS_BACK_OFF_DEGREE 4
 
@@ -79,4 +74,4 @@ A more directional, compact and long range antenna design is the wip antenna. Ca
 ```
 
 ####Known issues
-- In older versions, OverSampling was affected by ineffective and short range if used in HALF_DUPLEX mode. This issue has been fixed by handling the gain refresh (see issue [91](https://github.com/gioblu/PJON/issues/91)).
+- In older versions, OverSampling was affected by ineffective and short range if used in `HALF_DUPLEX` mode. This issue has been fixed by handling the gain refresh (see issue [91](https://github.com/gioblu/PJON/issues/91)).

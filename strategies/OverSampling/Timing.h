@@ -52,6 +52,16 @@
   #define OS_BIT_SPACER      328  // 340 microseconds detected by oscilloscope
 #endif
 
+/* Preamble data sent for receiver to tune its gain to signal dB: */
+
+#ifndef OS_PACKET_PREAMBLE_HIGH
+  #define OS_PACKET_PREAMBLE_HIGH 80000
+#endif
+
+#ifndef OS_PACKET_PREAMBLE_LOW
+  #define OS_PACKET_PREAMBLE_LOW 10000
+#endif
+
 /* The default response timeout setup dedicates the transmission time of 1 byte plus
   1 millisecond to latency and CRC computation. If receiver needs more than
   OS_TIMEOUT to compute CRC and answer back ACK, transmitter will not receive
@@ -72,13 +82,7 @@
 /* Maximum delay in case of collision in microseconds: */
 
 #ifndef OS_COLLISION_DELAY
-  #define OS_COLLISION_DELAY 328
-#endif
-
-/* Time necessary for receiver to recover its gain: */
-
-#ifndef OS_GAIN_REFRESH_DELAY
-  #define OS_GAIN_REFRESH_DELAY 100
+  #define OS_COLLISION_DELAY  64
 #endif
 
 /* Maximum transmission attempts */

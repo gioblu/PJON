@@ -56,7 +56,7 @@ class OverSampling {
        (returns always true) */
 
     boolean begin(uint8_t additional_randomness = 0) {
-      delay(random(0, OS_INITIAL_DELAY + OS_GAIN_REFRESH_DELAY) + additional_randomness);
+      delay(random(0, OS_INITIAL_DELAY) + additional_randomness);
       return true;
     };
 

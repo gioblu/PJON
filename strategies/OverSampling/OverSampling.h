@@ -165,7 +165,8 @@ class OverSampling {
         (response != ACK) &&
         (response != NAK) &&
         (uint32_t)(
-          micros() - (OS_TIMEOUT + OS_PACKET_PREAMBLE_LOW + OS_PACKET_PREAMBLE_HIGH)
+          micros() -
+          (OS_TIMEOUT + OS_PREAMBLE_PULSE_WIDTH + (OS_TIMEOUT - OS_BIT_WIDTH))
         ) <= time
       ) response = receive_byte();
       return response;
@@ -202,6 +203,17 @@ class OverSampling {
     };
 
 
+    /* Send preamble with a requested number of pulses: */
+
+    void send_preamble() {
+      digitalWriteFast(_output_pin, HIGH);
+      uint32_t time = micros();
+      while((uint32_t)(micros() - time) < OS_PREAMBLE_PULSE_WIDTH);
+      digitalWriteFast(_output_pin, LOW);
+      delayMicroseconds(OS_TIMEOUT - OS_BIT_WIDTH);
+    };
+
+
     /* Send byte response to package transmitter */
 
     void send_response(uint8_t response) {
@@ -209,10 +221,7 @@ class OverSampling {
       pinModeFast(_output_pin, OUTPUT);
 
       /* Send initial transmission preamble */
-      digitalWriteFast(_output_pin, HIGH);
-      delayMicroseconds(OS_PACKET_PREAMBLE_HIGH);
-      digitalWriteFast(_output_pin, LOW);
-      delayMicroseconds(OS_PACKET_PREAMBLE_LOW);
+      send_preamble();
 
       send_byte(response);
       pullDownFast(_output_pin);
@@ -225,10 +234,7 @@ class OverSampling {
       pinModeFast(_output_pin, OUTPUT);
 
       /* Send initial transmission preamble */
-      digitalWriteFast(_output_pin, HIGH);
-      delayMicroseconds(OS_PACKET_PREAMBLE_HIGH);
-      digitalWriteFast(_output_pin, LOW);
-      delayMicroseconds(OS_PACKET_PREAMBLE_LOW);
+      send_preamble();
 
       for(uint16_t b = 0; b < length; b++)
         send_byte(string[b]);

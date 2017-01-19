@@ -54,12 +54,8 @@
 
 /* Preamble data sent for receiver to tune its gain to signal dB: */
 
-#ifndef OS_PACKET_PREAMBLE_HIGH
-  #define OS_PACKET_PREAMBLE_HIGH 80000
-#endif
-
-#ifndef OS_PACKET_PREAMBLE_LOW
-  #define OS_PACKET_PREAMBLE_LOW 10000
+#ifndef OS_PREAMBLE_PULSE_WIDTH
+  #define OS_PREAMBLE_PULSE_WIDTH 100000
 #endif
 
 /* The default response timeout setup dedicates the transmission time of 1 byte plus
@@ -68,7 +64,7 @@
   the incoming synchronous ACK, Higher or lower if necessary! */
 
 #ifndef OS_LATENCY
- #define OS_LATENCY         4000
+  #define OS_LATENCY         4000
 #endif
 
 #define OS_TIMEOUT ((OS_BIT_WIDTH * 9) + OS_BIT_SPACER + OS_LATENCY)

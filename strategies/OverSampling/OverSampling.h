@@ -74,8 +74,8 @@ class OverSampling {
         value = digitalReadFast(_input_pin);
       if(value > 0.5) return false;
       value = 0.5;
-      time = micros();
       for(uint8_t i = 0; i < 10; i++, value = 0.5) {
+        time = micros();
         while((uint32_t)(micros() - time) < OS_BIT_WIDTH)
           value = (value * 0.999)  + (digitalReadFast(_input_pin) * 0.001);
         if(value > 0.5) return false;

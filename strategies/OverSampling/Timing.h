@@ -10,7 +10,7 @@
    faster speed. Probably you need experience, time and an oscilloscope. */
 
 #if defined(__AVR_ATmega88__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
-  #if _OS_MODE == _STXRX882_STANDARD
+  #if OS_MODE == _STXRX882_STANDARD
     #if F_CPU == 16000000L
       #define OS_BIT_WIDTH   512
       #define OS_BIT_SPACER  328
@@ -18,12 +18,44 @@
   #endif
 #endif
 
+/* ATmega1280/2560 - Arduino Mega/Mega-nano --------------------------------- */
+#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+  #if OS_MODE == _STXRX882_STANDARD
+    #define OS_BIT_WIDTH     508
+    #define OS_BIT_SPACER    332
+  #endif
+#endif
+
+/* ATmega16/32U4 - Arduino Leonardo/Micro ----------------------------------- */
+#if defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__)
+  #if OS_MODE == _STXRX882_STANDARD
+    #define OS_BIT_WIDTH     508
+    #define OS_BIT_SPACER    332
+  #endif
+#endif
+
+/* NodeMCU, generic ESP8266 ------------------------------------------------- */
+#if defined(ESP8266)
+  #if OS_MODE == _STXRX882_STANDARD
+    #if F_CPU == 80000000L
+      #define OS_BIT_WIDTH   520
+      #define OS_BIT_SPACER  332
+    #endif
+  #endif
+#endif
+
 #ifndef OS_BIT_WIDTH
-  #define OS_BIT_WIDTH       512
+  #define OS_BIT_WIDTH       512  // 520 microseconds detected by oscilloscope
 #endif
 
 #ifndef OS_BIT_SPACER
-  #define OS_BIT_SPACER      328
+  #define OS_BIT_SPACER      328  // 340 microseconds detected by oscilloscope
+#endif
+
+/* Preamble data sent for receiver to tune its gain to signal dB: */
+
+#ifndef OS_PREAMBLE_PULSE_WIDTH
+  #define OS_PREAMBLE_PULSE_WIDTH 100000
 #endif
 
 /* The default response timeout setup dedicates the transmission time of 1 byte plus
@@ -32,7 +64,7 @@
   the incoming synchronous ACK, Higher or lower if necessary! */
 
 #ifndef OS_LATENCY
- #define OS_LATENCY         4000
+  #define OS_LATENCY         4000
 #endif
 
 #define OS_TIMEOUT ((OS_BIT_WIDTH * 9) + OS_BIT_SPACER + OS_LATENCY)
@@ -46,13 +78,7 @@
 /* Maximum delay in case of collision in microseconds: */
 
 #ifndef OS_COLLISION_DELAY
-  #define OS_COLLISION_DELAY 328
-#endif
-
-/* Time necessary for receiver to recover its gain: */
-
-#ifndef OS_GAIN_REFRESH_DELAY
-  #define OS_GAIN_REFRESH_DELAY 100
+  #define OS_COLLISION_DELAY  64
 #endif
 
 /* Maximum transmission attempts */

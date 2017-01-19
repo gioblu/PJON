@@ -48,7 +48,7 @@ class OverSampling {
       uint32_t result = attempts;
       for(uint8_t d = 0; d < OS_BACK_OFF_DEGREE; d++)
         result *= (uint32_t)(attempts);
-      return (result + OS_GAIN_REFRESH_DELAY);
+      return result;
     };
 
 
@@ -56,7 +56,7 @@ class OverSampling {
        (returns always true) */
 
     boolean begin(uint8_t additional_randomness = 0) {
-      delay(random(0, OS_INITIAL_DELAY + OS_GAIN_REFRESH_DELAY) + additional_randomness);
+      delay(random(0, OS_INITIAL_DELAY) + additional_randomness);
       return true;
     };
 
@@ -66,8 +66,7 @@ class OverSampling {
     there is no active transmission */
 
     boolean can_start() {
-      if(OS_GAIN_REFRESH_DELAY)
-        delay(OS_GAIN_REFRESH_DELAY); // Ensure gain is properly set
+      delayMicroseconds(random(0, OS_COLLISION_DELAY));
       float value = 0.5;
       unsigned long time = micros();
       pinModeFast(_input_pin, INPUT);
@@ -75,14 +74,12 @@ class OverSampling {
         value = digitalReadFast(_input_pin);
       if(value > 0.5) return false;
       value = 0.5;
-      time = micros();
       for(uint8_t i = 0; i < 10; i++, value = 0.5) {
+        time = micros();
         while((uint32_t)(micros() - time) < OS_BIT_WIDTH)
           value = (value * 0.999)  + (digitalReadFast(_input_pin) * 0.001);
         if(value > 0.5) return false;
       }
-      delayMicroseconds(random(0, OS_COLLISION_DELAY));
-      if(digitalReadFast(_input_pin)) return false;
       return true;
     };
 
@@ -164,8 +161,14 @@ class OverSampling {
 
       uint16_t response = FAIL;
       uint32_t time = micros();
-      while(response == FAIL && (uint32_t)(micros() - OS_TIMEOUT) <= time)
-        response = receive_byte();
+      while(
+        (response != ACK) &&
+        (response != NAK) &&
+        (uint32_t)(
+          micros() -
+          (OS_TIMEOUT + OS_PREAMBLE_PULSE_WIDTH + (OS_TIMEOUT - OS_BIT_WIDTH))
+        ) <= time
+      ) response = receive_byte();
       return response;
     };
 
@@ -200,17 +203,28 @@ class OverSampling {
     };
 
 
+    /* Send preamble with a requested number of pulses: */
+
+    void send_preamble() {
+      digitalWriteFast(_output_pin, HIGH);
+      uint32_t time = micros();
+      while((uint32_t)(micros() - time) < OS_PREAMBLE_PULSE_WIDTH);
+      digitalWriteFast(_output_pin, LOW);
+      delayMicroseconds(OS_TIMEOUT - OS_BIT_WIDTH);
+    };
+
+
     /* Send byte response to package transmitter */
 
     void send_response(uint8_t response) {
-      if(OS_GAIN_REFRESH_DELAY) // Necessary for packet's transmitter to refresh its gain
-        delay(OS_GAIN_REFRESH_DELAY);
       pullDownFast(_input_pin);
       pinModeFast(_output_pin, OUTPUT);
+
+      /* Send initial transmission preamble */
+      send_preamble();
+
       send_byte(response);
       pullDownFast(_output_pin);
-      if(OS_GAIN_REFRESH_DELAY) // Necessary for response's transmitter to refresh its gain
-        delay(OS_GAIN_REFRESH_DELAY);
     };
 
 
@@ -218,11 +232,13 @@ class OverSampling {
 
     void send_string(uint8_t *string, uint16_t length) {
       pinModeFast(_output_pin, OUTPUT);
+
+      /* Send initial transmission preamble */
+      send_preamble();
+
       for(uint16_t b = 0; b < length; b++)
         send_byte(string[b]);
       pullDownFast(_output_pin);
-      if(OS_GAIN_REFRESH_DELAY) // Necessary for packet's transmitter to refresh its gain
-        delay(OS_GAIN_REFRESH_DELAY);
     };
 
 

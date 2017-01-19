@@ -16,6 +16,7 @@ void setup() {
   bus.strategy.set_pins(11, 12);
   bus.begin();
   bus.set_receiver(receiver_function);
+  bus.set_synchronous_acknowledge(false);
 };
 
 void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {

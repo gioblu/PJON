@@ -285,7 +285,7 @@ limitations under the License. */
           if(request == ID_NEGATE)
             if(this->data[(overhead - CRC_overhead) + 5] == this->last_packet_info.sender_id)
               if(rid == ids[this->last_packet_info.sender_id - 1].rid)
-                if(bus_id_equality(this->last_packet_info.sender_bus_id, this->bus_id))
+                if(this->bus_id_equality(this->last_packet_info.sender_bus_id, this->bus_id))
                   delete_id_reference(this->last_packet_info.sender_id);
 
         }

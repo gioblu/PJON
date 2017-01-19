@@ -138,7 +138,7 @@ limitations under the License. */
         randomSeed(analogRead(_random_seed) + device_id_seed);
         strategy.begin(device_id_seed);
         #if(INCLUDE_ASYNC_ACK)
-          _packet_id_seed = random() + device_id_seed;
+          _packet_id_seed = random(65535) + device_id_seed;
         #endif
       };
 
@@ -204,12 +204,12 @@ limitations under the License. */
 
         memcpy(destination + (new_length - length - (header & CRC_BIT ? 4 : 1)), source, length);
         if(header & CRC_BIT) {
-          uint32_t CRC = crc32::compute_crc_32((uint8_t *)destination, new_length - 4);
+          uint32_t CRC = crc32::compute((uint8_t *)destination, new_length - 4);
           destination[new_length - 4] = (uint32_t)(CRC) >> 24;
           destination[new_length - 3] = (uint32_t)(CRC) >> 16;
           destination[new_length - 2] = (uint32_t)(CRC) >>  8;
           destination[new_length - 1] = (uint32_t)(CRC);
-        } else destination[new_length - 1] = crc8::compute_crc_8((uint8_t *)destination, new_length - 1);
+        } else destination[new_length - 1] = crc8::compute((uint8_t *)destination, new_length - 1);
         return new_length;
       };
 
@@ -355,14 +355,9 @@ limitations under the License. */
                   return BUSY;
         }
 
-        if(data[1] & CRC_BIT) {
-          uint32_t result = crc32::compute_crc_32(data, length - 4);
-          for(uint8_t i = 4; i > 0; i--)
-            if((uint8_t)(result >> (8 * (i - 1))) != (uint8_t)data[length - i]) {
-              CRC = false;
-              break;
-            } else CRC = true;
-        } else CRC = !crc8::compute_crc_8(data, length);
+        if(data[1] & CRC_BIT)
+          CRC = crc32::compare(crc32::compute(data, length - 4), data + (length - 4));
+        else CRC = !crc8::compute(data, length);
 
         if(data[1] & ACK_REQUEST_BIT && data[0] != BROADCAST)
           if(_mode != SIMPLEX && !_router)
@@ -499,6 +494,7 @@ limitations under the License. */
       uint16_t send(uint8_t id, const char *string, uint16_t length, uint16_t header = NOT_ASSIGNED) {
         return dispatch(id, bus_id, string, length, 0, header);
       };
+      
 
       uint16_t send(
         uint8_t id,
@@ -521,6 +517,7 @@ limitations under the License. */
       ) {
         return dispatch(id, bus_id, string, length, timing, header);
       };
+
 
       /* IMPORTANT: send_repeatedly timing maximum is 4293014170 microseconds or 71.55 minutes */
       uint16_t send_repeatedly(
@@ -556,6 +553,7 @@ limitations under the License. */
           return FAIL;
         return send_packet((char *)data, length);
       };
+
 
       uint16_t send_packet(
         uint8_t id,
@@ -894,7 +892,7 @@ limitations under the License. */
       /* Copy a bus id: */
 
       static void copy_bus_id(uint8_t dest[], const uint8_t src[]) { memcpy(dest, src, 4); };
-            
+
     private:
       boolean   _auto_delete = true;
       error     _error;

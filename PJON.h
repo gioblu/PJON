@@ -71,7 +71,9 @@ limitations under the License. */
   #include <Arduino.h>
   #include <PJONDefines.h>
   /* Strategy related constant predefinition memory optimization */
-  #if   defined(PJON_INCLUDE_ETCP)
+  #if   defined(PJON_INCLUDE_AS)
+    #include "strategies/AnalogSampling/AnalogSampling.h"
+  #elif defined(PJON_INCLUDE_ETCP)
     #include "strategies/EthernetTCP/EthernetTCP.h"
   #elif defined(PJON_INCLUDE_LUPD)
     #include "strategies/LocalUDP/LocalUDP.h"

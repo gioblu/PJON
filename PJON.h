@@ -71,21 +71,31 @@ limitations under the License. */
   #include <Arduino.h>
   #include <PJONDefines.h>
   /* Strategy related constant predefinition memory optimization */
-  #if   defined(PJON_INCLUDE_AS)
+  #if defined(PJON_INCLUDE_AS)
     #include "strategies/AnalogSampling/AnalogSampling.h"
-  #elif defined(PJON_INCLUDE_ETCP)
+  #endif
+  #if defined(PJON_INCLUDE_ETCP)
     #include "strategies/EthernetTCP/EthernetTCP.h"
-  #elif defined(PJON_INCLUDE_LUPD)
+  #endif
+  #if defined(PJON_INCLUDE_LUPD)
     #include "strategies/LocalUDP/LocalUDP.h"
-  #elif defined(PJON_INCLUDE_OS)
+  #endif
+  #if defined(PJON_INCLUDE_OS)
     #include "strategies/OverSampling/OverSampling.h"
-  #elif defined(PJON_INCLUDE_SWBB)
+  #endif
+  #if defined(PJON_INCLUDE_SWBB)
     #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
-  #elif defined(PJON_INCLUDE_TS)
+  #endif
+  #if defined(PJON_INCLUDE_TS)
     #include "strategies/ThroughSerial/ThroughSerial.h"
-  #elif defined(PJON_INCLUDE_NONE)
-    /* None for custom strategy include */
-  #else
+  #endif
+  #if defined(PJON_INCLUDE_NONE)
+    /* None for custom strategy inclusion */
+  #endif
+  #if !defined(PJON_INCLUDE_AS) && !defined(PJON_INCLUDE_ETCP) && \
+      !defined(PJON_INCLUDE_LUPD) && !defined(PJON_INCLUDE_OS) && \
+      !defined(PJON_INCLUDE_SWBB) && !defined(PJON_INCLUDE_TS) && \
+      !defined(PJON_INCLUDE_NONE)
     #include "strategies/AnalogSampling/AnalogSampling.h"
     #include "strategies/OverSampling/OverSampling.h"
     #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
@@ -97,7 +107,7 @@ limitations under the License. */
     #endif
   #endif
 
-  template<typename Strategy = SoftwareBitBang>
+  template<typename Strategy>
   class PJON {
     public:
       /* Abstract data-link layer class */

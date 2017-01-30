@@ -46,7 +46,11 @@ Pass the `AnalogSampling` type as PJON template parameter to instantiate a PJON 
 After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance.
 
 ####What can be done?
-The most basic example is to connect two devices using a couple of visible light LEDs connected to the A0 pin used as wireless transceivers, infact, leveraging the duality of LEDs:
+The most basic example is to connect two devices using a couple of visible light LEDs connected to the A0 pin used as wireless transceivers.
+
+![PJON AnalogSampling LED wireless communication](http://www.pjon.org/assets/images/PJON-AnalogSampling-half-duplex-led-communication.png)
+
+Infact, leveraging the duality of LEDs:
 
 - Ability to emit photons if electrons are travelling through the junction
 - Ability to emit electrons if photons are hitting the junction (photo-electric effect)

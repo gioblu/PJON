@@ -494,7 +494,7 @@ limitations under the License. */
       uint16_t send(uint8_t id, const char *string, uint16_t length, uint16_t header = NOT_ASSIGNED) {
         return dispatch(id, bus_id, string, length, 0, header);
       };
-      
+
 
       uint16_t send(
         uint8_t id,
@@ -803,9 +803,11 @@ limitations under the License. */
                 packets_count--;
               }
             } else {
-              packets[i].attempts = 0;
-              packets[i].registration = micros();
-              packets[i].state = TO_BE_SENT;
+              if(!async_ack) {
+                packets[i].attempts = 0;
+                packets[i].registration = micros();
+                packets[i].state = TO_BE_SENT;
+              }
             } if(!async_ack) continue;
           }
 

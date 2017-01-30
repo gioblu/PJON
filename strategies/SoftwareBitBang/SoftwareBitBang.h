@@ -61,6 +61,9 @@ class SoftwareBitBang {
 
     boolean begin(uint8_t additional_randomness = 0) {
       delay(random(0, SWBB_INITIAL_DELAY) + additional_randomness);
+      pullDownFast(_input_pin);
+      if(_output_pin != _input_pin)
+        pullDownFast(_output_pin);
       return true;
     };
 

@@ -26,7 +26,7 @@ begin KEYWORD2
 can_start KEYWORD2
 device_id KEYWORD2
 discard_device_id KEYWORD2
-get_packet_count KEYWORD2
+get_packets_count KEYWORD2
 get_rid KEYWORD2
 include_sender_info KEYWORD2
 receive KEYWORD2

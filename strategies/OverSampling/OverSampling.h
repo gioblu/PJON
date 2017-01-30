@@ -134,7 +134,6 @@ class OverSampling {
       pullDownFast(_input_pin);
       if(_output_pin != NOT_ASSIGNED && _output_pin != _input_pin)
         pullDownFast(_output_pin);
-
       float value = 0.5;
       unsigned long time = micros();
       /* Update pin value until the pin stops to be HIGH or passed more time than
@@ -161,7 +160,6 @@ class OverSampling {
     uint16_t receive_response() {
       if(_output_pin != NOT_ASSIGNED && _output_pin != _input_pin)
         digitalWriteFast(_output_pin, LOW);
-
       uint16_t response = FAIL;
       uint32_t time = micros();
       while(
@@ -222,10 +220,8 @@ class OverSampling {
     void send_response(uint8_t response) {
       pullDownFast(_input_pin);
       pinModeFast(_output_pin, OUTPUT);
-
       /* Send initial transmission preamble */
       send_preamble();
-
       send_byte(response);
       pullDownFast(_output_pin);
     };
@@ -235,10 +231,8 @@ class OverSampling {
 
     void send_string(uint8_t *string, uint16_t length) {
       pinModeFast(_output_pin, OUTPUT);
-
       /* Send initial transmission preamble */
       send_preamble();
-
       for(uint16_t b = 0; b < length; b++)
         send_byte(string[b]);
       pullDownFast(_output_pin);

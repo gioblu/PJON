@@ -1,6 +1,6 @@
 
 /* PJON SoftwareBitBang strategy Transmission Timing table
-   Copyright (c) 2012-2016, Giovanni Blu Mitolo All rights reserved.
+   Copyright (c) 2012-2017, Giovanni Blu Mitolo All rights reserved.
 
    Often timing in two different architectures doesn't match. This happens because
    PJON's code execution time can variate, and also time measurement can be
@@ -18,9 +18,9 @@
 
    _SWBB_OVERDRIVE mode: Architecture / Toolchain dependant */
 
-/* Arduino Duemilanove, Uno, Nano, Mini, Pro, Pro mini ecc. ----------------- */
+/* ATmega88/168/328 - Arduino Duemilanove, Uno, Nano, Mini, Pro, Pro mini --- */
 #if defined(__AVR_ATmega88__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
-  #if _SWBB_MODE == _SWBB_STANDARD
+  #if SWBB_MODE == _SWBB_STANDARD
     #if F_CPU == 16000000L
       #define SWBB_BIT_WIDTH 40
       #define SWBB_BIT_SPACER 112
@@ -28,7 +28,7 @@
       #define SWBB_READ_DELAY 4
     #endif
   #endif
-  #if _SWBB_MODE == _SWBB_FAST
+  #if SWBB_MODE == _SWBB_FAST
     #if F_CPU == 16000000L
       #define SWBB_BIT_WIDTH 28
       #define SWBB_BIT_SPACER 66
@@ -36,29 +36,29 @@
       #define SWBB_READ_DELAY 4
     #endif
   #endif
-  #if _SWBB_MODE == _SWBB_OVERDRIVE
+  #if SWBB_MODE == _SWBB_OVERDRIVE
     #if F_CPU == 16000000L
-    /* Transfer speed: 33.898kBd or 4.24kB/s
-       Absolute  communication speed: 3.23kB/s
-       Data throughput: 2.68kB/s */
-      #define SWBB_BIT_WIDTH 20
-      #define SWBB_BIT_SPACER 56
-      #define SWBB_ACCEPTANCE 20
+    /* Transfer speed: 39.02kBd or 4.87kB/s
+       Absolute communication speed: 3.35kB/s
+       Data throughput (default conf. sending 20 bytes): 2.56kB/s */
+      #define SWBB_BIT_WIDTH 17
+      #define SWBB_BIT_SPACER 52
+      #define SWBB_ACCEPTANCE 17
       #define SWBB_READ_DELAY 8
     #endif
   #endif
 #endif
 
-/* Arduino Leonardo / Micro ------------------------------------------------- */
+/* ATmega16/32U4 - Arduino Leonardo/Micro ----------------------------------- */
 #if defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__)
   /* Working nominally on pin 2 - 4 - 8 - 12 */
-  #if _SWBB_MODE == _SWBB_STANDARD
+  #if SWBB_MODE == _SWBB_STANDARD
     #define SWBB_BIT_WIDTH 40
     #define SWBB_BIT_SPACER 112
     #define SWBB_ACCEPTANCE 40
     #define SWBB_READ_DELAY 8
   #endif
-  #if _SWBB_MODE == _SWBB_FAST
+  #if SWBB_MODE == _SWBB_FAST
     /* Working nominally on pin 2 - 4 - 8 - 12 */
     #define SWBB_BIT_WIDTH 28
     #define SWBB_BIT_SPACER 66
@@ -67,15 +67,15 @@
   #endif
 #endif
 
-/* Arduino Mega / Mega nano ------------------------------------------------- */
+/* ATmega1280/2560 - Arduino Mega/Mega-nano --------------------------------- */
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-  #if _SWBB_MODE == _SWBB_STANDARD
+  #if SWBB_MODE == _SWBB_STANDARD
     #define SWBB_BIT_WIDTH 38
     #define SWBB_BIT_SPACER 110
     #define SWBB_ACCEPTANCE 38
     #define SWBB_READ_DELAY 11
   #endif
-  #if _SWBB_MODE == _SWBB_FAST || _SWBB_MODE == _SWBB_OVERDRIVE
+  #if SWBB_MODE == _SWBB_FAST || SWBB_MODE == _SWBB_OVERDRIVE
     #define SWBB_BIT_WIDTH 26
     #define SWBB_BIT_SPACER 64
     #define SWBB_ACCEPTANCE 26
@@ -83,9 +83,9 @@
   #endif
 #endif
 
-/* ATtiny85 ----------------------------------------------------------------- */
+/* ATtiny45/85 -------------------------------------------------------------- */
 #if defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
-  #if _SWBB_MODE == _SWBB_STANDARD
+  #if SWBB_MODE == _SWBB_STANDARD
     #if F_CPU == 8000000L
       /* Internal oscillator */
       #define SWBB_BIT_WIDTH  34
@@ -93,19 +93,35 @@
       #define SWBB_ACCEPTANCE 34
       #define SWBB_READ_DELAY 10
     #endif
+    #if F_CPU == 16000000L
+      /* External 16MHz oscillator */
+      #define SWBB_BIT_WIDTH  40
+      #define SWBB_BIT_SPACER 112
+      #define SWBB_ACCEPTANCE 40
+      #define SWBB_READ_DELAY 4
+    #endif
+  #endif
+  #if SWBB_MODE == _SWBB_FAST
+    #if F_CPU == 16000000L
+      /* External 16MHz oscillator */
+      #define SWBB_BIT_WIDTH  28
+      #define SWBB_BIT_SPACER 66
+      #define SWBB_ACCEPTANCE 28
+      #define SWBB_READ_DELAY 4
+    #endif
   #endif
 #endif
 
 /* Arduino Zero ------------------------------------------------------------- */
 #if defined(ARDUINO_SAMD_ZERO)
-  #if _SWBB_MODE == _SWBB_STANDARD
+  #if SWBB_MODE == _SWBB_STANDARD
   /* Added by Esben Soeltoft - 03/09/2016 */
     #define SWBB_BIT_WIDTH 40
     #define SWBB_BIT_SPACER 112
     #define SWBB_ACCEPTANCE 40
     #define SWBB_READ_DELAY 4
   #endif
-  #if _SWBB_MODE == _SWBB_OVERDRIVE
+  #if SWBB_MODE == _SWBB_OVERDRIVE
   /* Added by Esben Soeltoft - 09/03/2016
      Transfer speer: 48.000kBd or 6.00kB/s
      Absolute communication speed: 6.00kB/s
@@ -119,7 +135,7 @@
 
 /* NodeMCU, generic ESP8266 ------------------------------------------------- */
 #if defined(ESP8266)
-  #if _SWBB_MODE == _SWBB_STANDARD
+  #if SWBB_MODE == _SWBB_STANDARD
   /* Added by github user 240974a - 09/03/2016  */
     #if F_CPU == 80000000L
       #define SWBB_BIT_WIDTH  44
@@ -130,9 +146,9 @@
   #endif
 #endif
 
-/* Teensy ------------------------------------------------------------------- */
+/* MK20DX256 - Teensy ------------------------------------------------------- */
 #if defined(__MK20DX256__)
-  #if MODE == _SWBB_STANDARD
+  #if SWBB_MODE == _SWBB_STANDARD
   /* Added by github user SticilFace - 25/04/2016  */
     #if F_CPU == 96000000L
       #define SWBB_BIT_WIDTH 46
@@ -144,7 +160,7 @@
 #endif
 
 /* Avoid error if any previous defined -------------------------------------- */
-#if _SWBB_MODE == _SWBB_STANDARD
+#if SWBB_MODE == _SWBB_STANDARD
   #ifndef SWBB_BIT_WIDTH
     #define SWBB_BIT_WIDTH 40
   #endif
@@ -158,7 +174,7 @@
     #define SWBB_READ_DELAY 4
   #endif
 #endif
-#if _SWBB_MODE == _SWBB_FAST
+#if SWBB_MODE == _SWBB_FAST
   #ifndef SWBB_BIT_WIDTH
     #define SWBB_BIT_WIDTH 28
   #endif
@@ -172,17 +188,50 @@
     #define SWBB_READ_DELAY 4
   #endif
 #endif
-#if _SWBB_MODE == _SWBB_OVERDRIVE
+#if SWBB_MODE == _SWBB_OVERDRIVE
   #ifndef SWBB_BIT_WIDTH
-    #define SWBB_BIT_WIDTH 20
+    #define SWBB_BIT_WIDTH 17
   #endif
   #ifndef SWBB_BIT_SPACER
-    #define SWBB_BIT_SPACER 56
+    #define SWBB_BIT_SPACER 52
   #endif
   #ifndef SWBB_ACCEPTANCE
-    #define SWBB_ACCEPTANCE 20
+    #define SWBB_ACCEPTANCE 17
   #endif
   #ifndef SWBB_READ_DELAY
     #define SWBB_READ_DELAY 8
   #endif
+#endif
+
+/* The default response timeout setup dedicates the transmission time of 1 byte plus
+   1 millisecond to latency and CRC computation. If receiver needs more than
+   SWBB_TIMEOUT to compute CRC and answer back ACK, transmitter will not receive
+   the incoming synchronous ACK. Higher or lower if necessary! */
+
+#ifndef SWBB_LATENCY
+  #define SWBB_LATENCY 1000
+#endif
+
+#define SWBB_TIMEOUT ((SWBB_BIT_WIDTH * 9) + SWBB_BIT_SPACER + SWBB_LATENCY)
+
+/* Maximum initial delay in milliseconds: */
+
+#ifndef SWBB_INITIAL_DELAY
+  #define SWBB_INITIAL_DELAY 1000
+#endif
+
+/* Maximum delay in case of collision in microseconds: */
+
+#ifndef SWBB_COLLISION_DELAY
+  #define SWBB_COLLISION_DELAY 16
+#endif
+
+/* Maximum transmission attempts */
+#ifndef SWBB_MAX_ATTEMPTS
+  #define SWBB_MAX_ATTEMPTS 20
+#endif
+
+/* Back-off exponential degree */
+#ifndef SWBB_BACK_OFF_DEGREE
+  #define SWBB_BACK_OFF_DEGREE 4
 #endif

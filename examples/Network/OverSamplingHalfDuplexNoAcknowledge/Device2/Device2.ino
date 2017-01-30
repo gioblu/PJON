@@ -10,7 +10,7 @@ void setup() {
   pinModeFast(13, OUTPUT);
   digitalWriteFast(13, LOW); // Initialize LED 13 to be off
 
-  bus.set_acknowledge(false);
+  bus.set_synchronous_acknowledge(false);
   bus.strategy.set_pins(11, 12);
   bus.set_receiver(receiver_function);
 
@@ -21,7 +21,7 @@ void setup() {
   Serial.begin(115200);
 };
 
-void receiver_function(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {
+void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
   Serial.print("Receiver bus id: ");
   Serial.print(packet_info.receiver_bus_id[0]);
   Serial.print(packet_info.receiver_bus_id[1]);

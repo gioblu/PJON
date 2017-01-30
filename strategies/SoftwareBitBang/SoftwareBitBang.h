@@ -4,7 +4,7 @@
    Compliant with the Padded jittering data link layer specification v0.1
    _____________________________________________________________________________
 
-    Copyright 2012-2016 Giovanni Blu Mitolo gioscarab@gmail.com
+    Copyright 2012-2017 Giovanni Blu Mitolo gioscarab@gmail.com
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -23,41 +23,81 @@ STANDARD transmission mode performance:
    Absolute  communication speed: 1.81kB/s (data length 20 of characters)
    Data throughput: 1.51kB/s (data length 20 of characters)
    Promiscuous architecture/clock compatible */
-#define _SWBB_STANDARD  0
+#define _SWBB_STANDARD  1
 
 /* FAST transmission mode performance:
    Transfer speed: 25.157kBd or 3.15kB/s
    Absolute  communication speed: 2.55kB/s (data length 20 of characters)
    Data throughput: 2.13kB/s (data length 20 of characters)
    Promiscuous architecture/clock compatible */
-#define _SWBB_FAST      1
+#define _SWBB_FAST      2
 
 /* OVERDRIVE transmission mode performance:
    Architecture / setup dependant, see Timing.h */
-#define _SWBB_OVERDRIVE 2
+#define _SWBB_OVERDRIVE 3
 
 /* Set here the selected transmission mode - default STANDARD */
-#define _SWBB_MODE _SWBB_STANDARD
+#ifndef SWBB_MODE
+  #define SWBB_MODE _SWBB_STANDARD
+#endif
 
 #include "Timing.h"
 #include "../../utils/digitalWriteFast.h"
 
 class SoftwareBitBang {
   public:
+    /* Returns the suggested delay related to the attempts passed as parameter: */
+
+    uint32_t back_off(uint8_t attempts) {
+      uint32_t result = attempts;
+      for(uint8_t d = 0; d < SWBB_BACK_OFF_DEGREE; d++)
+        result *= (uint32_t)(attempts);
+      return result;
+    };
+
+
+    /* Begin method, to be called before transmission or reception:
+       (returns always true) */
+
+    boolean begin(uint8_t additional_randomness = 0) {
+      delay(random(0, SWBB_INITIAL_DELAY) + additional_randomness);
+      return true;
+    };
+
 
     /* Check if the channel is free for transmission:
-    If receiving 10 bits no 1s are detected
-    there is no active transmission */
+       If receiving 10 bits no 1s are detected there is no active transmission */
 
     boolean can_start() {
       pinModeFast(_input_pin, INPUT);
+      delayMicroseconds(SWBB_BIT_SPACER / 2);
+      if(digitalReadFast(_input_pin)) return false;
+      delayMicroseconds((SWBB_BIT_SPACER / 2));
+      if(digitalReadFast(_input_pin)) return false;
+      delayMicroseconds(SWBB_BIT_WIDTH / 2);
       for(uint8_t i = 0; i < 9; i++) {
         if(digitalReadFast(_input_pin))
           return false;
         delayMicroseconds(SWBB_BIT_WIDTH);
       }
       if(digitalReadFast(_input_pin)) return false;
+      delayMicroseconds(random(0, SWBB_COLLISION_DELAY));
+      if(digitalReadFast(_input_pin)) return false;
       return true;
+    };
+
+
+    /* Returns the maximum number of attempts for each transmission: */
+
+    static uint8_t get_max_attempts() {
+      return SWBB_MAX_ATTEMPTS;
+    };
+
+
+    /* Handle a collision: */
+
+    void handle_collision() {
+      delayMicroseconds(random(0, SWBB_COLLISION_DELAY));
     };
 
 
@@ -124,8 +164,20 @@ class SoftwareBitBang {
 
       uint16_t response = FAIL;
       uint32_t time = micros();
-      while(response == FAIL && (uint32_t)((micros() - SWBB_BIT_SPACER) - SWBB_BIT_WIDTH) <= time)
+      /* Transmitter emits a bit SWBB_BIT_WIDTH / 4 long and tries
+         to get a response cyclically for SWBB_TIMEOUT microseconds.
+         Receiver synchronizes to the falling edge of the last incoming
+         bit and transmits ACK or NAK */
+      while(response == FAIL && (uint32_t)(micros() - SWBB_TIMEOUT) <= time) {
+        digitalWriteFast(_input_pin, LOW);
         response = receive_byte();
+        if(response == FAIL) {
+          pinModeFast(_output_pin, OUTPUT);
+          digitalWriteFast(_output_pin, HIGH);
+          delayMicroseconds(SWBB_BIT_WIDTH / 4);
+          pullDownFast(_output_pin);
+        }
+      }
       return response;
     };
 
@@ -163,6 +215,15 @@ class SoftwareBitBang {
     /* Send byte response to package transmitter */
 
     void send_response(uint8_t response) {
+      pullDownFast(_input_pin);
+      uint32_t time = micros();
+      /* Transmitter emits a bit SWBB_BIT_WIDTH / 4 long and tries
+         to get a response cyclically for SWBB_TIMEOUT microseconds.
+         Receiver synchronizes to the falling edge of the last incoming
+         bit and transmits ACK or NAK */
+      while((uint32_t)(micros() - time) < (SWBB_BIT_WIDTH) && !digitalReadFast(_input_pin))
+        time = micros(); // Wait for the last high ending
+      while((uint32_t)(micros() - time) < (SWBB_BIT_WIDTH / 2.25) && digitalReadFast(_input_pin));
       pinModeFast(_output_pin, OUTPUT);
       send_byte(response);
       pullDownFast(_output_pin);
@@ -171,9 +232,9 @@ class SoftwareBitBang {
 
     /* Send a string: */
 
-    void send_string(uint8_t *string, uint8_t length) {
+    void send_string(uint8_t *string, uint16_t length) {
       pinModeFast(_output_pin, OUTPUT);
-      for(uint8_t b = 0; b < length; b++)
+      for(uint16_t b = 0; b < length; b++)
         send_byte(string[b]);
       pullDownFast(_output_pin);
     };

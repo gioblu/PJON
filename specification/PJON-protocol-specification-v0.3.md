@@ -1,12 +1,13 @@
 - PJON Protocol specification:
-[v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md) - [v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md) - **[v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md)**
+[v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md) - [v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md) - **[v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md)** - [v1.0](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v1.0.md)
+- Acknowledge specification: [v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-acknowledge-specification-v0.1.md)
 - Dynamic addressing specification: [v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md)
 
 ```cpp
 /*
 Milan, Italy - 04/09/2016
-The PJON protocol specification is an invention and intellectual property
-of Giovanni Blu Mitolo - Copyright 2010-2016 All rights reserved
+The PJON™ protocol specification is an invention and intellectual property
+of Giovanni Blu Mitolo - Copyright 2010-2017 All rights reserved
 
 Related work: https://github.com/gioblu/PJON/
 Compliant implementation versions: PJON 4.0-5.0
@@ -15,7 +16,7 @@ New feature: Header driven dynamical configuration proposed and implemented by F
 */
 ```
 
-###PJON Protocol specification v0.3
+###PJON™ Protocol specification v0.3
 A third draft of the PJON protocol has been released with the addition of a 1 byte header designed to contain the configuration for the packet's communication procedure and its meta-data. In versions 0.1 and 0.2, the PJON communication procedure configuration was static and the header not present, for this reason two differently configured devices, could not establish nominal communication, without configuration pairing. It is now possible for the packet's receiver to read the header, react as transmitter requested and parse the packet and its info correctly.
 
 
@@ -79,7 +80,7 @@ Channel analysis   Transmission                                     Response
     _____           ________________________________________           _____
    | C-A |         | ID | LENGTH |  HEADER  | CONTENT | CRC |         | ACK |
 <--|-----|---< >---|----|--------|----------|---------|-----|--> <----|-----|
-   |  0  |         | 12 |   4    | 00000100 |    64   |  72 |         |  6  |
+   |  0  |         | 12 |   5    | 00000100 |    64   |  72 |         |  6  |
    |_____|         |____|________|__________|_________|_____|         |_____|
 ```
 In the first phase the bus is analyzed by transmitter reading 10 logical bits, if any logical 1 is detected the channel is considered free, transmission phase starts in which the packet is entirely transmitted. Receiver calculates CRC and starts the response phase transmitting a single byte, `ACK` (decimal 6) in case of correct reception or `NAK` (decimal 21) if an error in the packet's content is detected. If transmitter receives no answer or `NAK` the packet sending is scheduled with a delay of `ATTEMPTS * ATTEMPTS * ATTEMPTS` with a maximum of 125 `ATTEMPTS` to obtain data transmission 3rd degree polynomial backoff.
@@ -90,7 +91,7 @@ Channel analysis                     Transmission                              R
  _____     _________________________________________________________________     _____
 | C-A |   | ID | LENGTH | HEADER |   BUS ID   | BUS ID | ID | CONTENT | CRC |   | ACK |
 |-----|< >|----|--------|--------|------------|--------|----|---------|-----|> <|-----|
-|  0  |   | 12 |   15   |  111   |    0001    |  0001  | 11 |   64    |     |   |  6  |
+|  0  |   | 12 |   14   |  111   |    0001    |  0001  | 11 |   64    |     |   |  6  |
 |_____|   |____|________|________|____________|________|____|_________|_____|   |_____|
                                  |  RX INFO   |   TX INFO   |
 ```

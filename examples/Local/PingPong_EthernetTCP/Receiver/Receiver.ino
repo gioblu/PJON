@@ -23,7 +23,7 @@ void setup() {
   bus.strategy.link.add_node(45, remote_ip);
   bus.strategy.link.keep_connection(KEEP_CONNECTION);
   bus.strategy.link.single_socket(SINGLE_SOCKET);
-  bus.strategy.link.start_listening(); // Do not call this if SINGLE_SOCKET and transmitter 
+  bus.strategy.link.start_listening(); // Do not call this if SINGLE_SOCKET and transmitter
 
   bus.begin();
   bus.set_receiver(receiver_function);
@@ -32,7 +32,7 @@ void setup() {
 uint32_t cnt = 0;
 uint32_t start = millis();
 
-void receiver_function(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {
+void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
   if(payload[0] == 'P') {
     cnt++;
     if (millis() - start > 1000) {

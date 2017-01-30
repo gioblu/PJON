@@ -1,9 +1,9 @@
 
  /*-O//\             __     __
-   |-gfo\           |__| | |  | |\ |
-   |!y°o:\          |  __| |__| | \| v5.2
+   |-gfo\           |__| | |  | |\ | ™
+   |!y°o:\          |  __| |__| | \| v6.2
    |y"s§+`\         multi-master, multi-media communications bus system framework
-  /so+:-..`\        Copyright 2010-2016 by Giovanni Blu Mitolo gioscarab@gmail.com
+  /so+:-..`\        Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
   |5/:%&-a3f.:;\
   \+//u/+g%{osv,,\
@@ -13,30 +13,20 @@
         > <
  ______-| |-___________________________________________________________________
 
- PJON is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
- with the support ot the internet community if you want to see the PJON project growing
- with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
+PJONMaster has been created by Giovanni Blu Mitolo with the support
+of Fred Larsen and is inspired by the work of Thomas Snaidero:
+"Modular components for eye tracking, in the interest of helping persons with severely impaired motor skills."
+Master Thesis, IT University of Copenhagen, Denmark, September 2016
 
- PJONMaster has been created by Giovanni Blu Mitolo with the support
- of Fred Larsen and is inspired by the work of Thomas Snaidero:
- "Modular components for eye tracking, in the interest of helping persons with severely impaired motor skills."
- Master Thesis, IT University of Copenhagen, Denmark, September 2016
+PJON™ Dynamic addressing specification:
+- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md
 
- PJON Protocol specification:
- - v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md
- - v0.2 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md
- - v0.3 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md
-
- PJON Dynamic addressing specification:
- - v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md
-
- PJON Standard compliant tools:
- - https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande
- - https://github.com/Girgitt/PJON-python PJON running on Python by Zbigniew Zasieczny
-
+PJON™ is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
+with the support ot the internet community if you want to see the PJON project growing
+with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
  ______________________________________________________________________________
 
-Copyright 2012-2016 by Giovanni Blu Mitolo gioscarab@gmail.com
+Copyright 2012-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -56,7 +46,7 @@ limitations under the License. */
 
   /* Reference to device */
   struct Device_reference {
-    uint8_t  packet_id    = 0;
+    uint8_t  packet_index = 0;
     uint32_t registration = 0;
     uint32_t rid          = 0;
     bool     state        = 0;
@@ -77,6 +67,8 @@ limitations under the License. */
 
       PJONMaster() : PJON<Strategy>(MASTER_ID) {
         PJON<Strategy>::set_error(static_error_handler);
+        set_error(dummy_error_handler);
+        set_receiver(dummy_receiver_handler);
         delete_id_reference();
       };
 
@@ -86,6 +78,8 @@ limitations under the License. */
 
       PJONMaster(const uint8_t *b_id) : PJON<Strategy>(b_id, MASTER_ID) {
         PJON<Strategy>::set_error(static_error_handler);
+        set_error(dummy_error_handler);
+        set_receiver(dummy_receiver_handler);
         delete_id_reference();
       };
 
@@ -118,13 +112,13 @@ limitations under the License. */
         response[4] = (uint32_t)(rid);
         response[5] = state;
 
-        ids[response[5] - 1].packet_id = PJON<Strategy>::send_repeatedly(
+        ids[response[5] - 1].packet_index = PJON<Strategy>::send_repeatedly(
           BROADCAST,
           b_id,
           response,
           6,
           ID_REQUEST_INTERVAL,
-          PJON<Strategy>::get_header() | ADDRESS_BIT
+          PJON<Strategy>::config | ADDRESS_BIT
         );
       };
 
@@ -143,7 +137,7 @@ limitations under the License. */
         if(ids[id - 1].rid == rid && !ids[id - 1].state) {
           if(micros() - ids[id - 1].registration < ADDRESSING_TIMEOUT) {
             ids[id - 1].state = true;
-            PJON<Strategy>::remove(ids[id - 1].packet_id);
+            PJON<Strategy>::remove(ids[id - 1].packet_index);
             return true;
           }
         }
@@ -166,13 +160,13 @@ limitations under the License. */
       void delete_id_reference(uint8_t id = 0) {
         if(!id) {
           for(uint8_t i = 0; i < MAX_DEVICES; i++) {
-            ids[i].packet_id = 0;
+            ids[i].packet_index = 0;
             ids[i].registration = 0;
             ids[i].rid = 0;
             ids[i].state = false;
           }
         } else if(id > 0 && id < MAX_DEVICES) {
-          ids[id - 1].packet_id = 0;
+          ids[id - 1].packet_index = 0;
           ids[id - 1].registration = 0;
           ids[id - 1].rid   = 0;
           ids[id - 1].state = false;
@@ -220,10 +214,10 @@ limitations under the License. */
         uint32_t time = micros();
         char request = ID_LIST;
         while(micros() - time < ADDRESSING_TIMEOUT) {
-          PJON<Strategy>::send_packet_blocking(
-            BROADCAST, this->bus_id, &request, 1, PJON<Strategy>::get_header() | ADDRESS_BIT
+          PJON<Strategy>::send_packet(
+            BROADCAST, this->bus_id, &request, 1, PJON<Strategy>::config | ADDRESS_BIT
           );
-          receive(1000);
+          receive(LIST_IDS_RECEPTION_TIME);
         }
       };
 
@@ -238,7 +232,7 @@ limitations under the License. */
           b_id,
           response,
           5,
-          PJON<Strategy>::get_header() | ACK_REQUEST_BIT | ADDRESS_BIT
+          PJON<Strategy>::config | ACK_REQUEST_BIT | ADDRESS_BIT
         );
       };
 
@@ -266,36 +260,37 @@ limitations under the License. */
         uint16_t received_data = PJON<Strategy>::receive();
         if(received_data != ACK) return received_data;
 
-        uint8_t overhead = PJON<Strategy>::packet_overhead(this->data[2]);
+        uint8_t overhead = PJON<Strategy>::packet_overhead(this->data[1]);
+        uint8_t CRC_overhead = (this->data[1] & CRC_BIT) ? 4 : 1;
 
-        if(this->last_packet_info.header & ADDRESS_BIT && this->data[1] > 4) {
-          uint8_t request = this->data[overhead - 1];
+        if(this->last_packet_info.header & ADDRESS_BIT && this->data[2] > 4) {
+          uint8_t request = this->data[overhead - CRC_overhead];
           uint32_t rid =
-            (uint32_t)(this->data[overhead]     << 24) |
-            (uint32_t)(this->data[overhead + 1] << 16) |
-            (uint32_t)(this->data[overhead + 2] <<  8) |
-            (uint32_t)(this->data[overhead + 3]);
+            (uint32_t)(this->data[(overhead - CRC_overhead) + 1] << 24) |
+            (uint32_t)(this->data[(overhead - CRC_overhead) + 2] << 16) |
+            (uint32_t)(this->data[(overhead - CRC_overhead) + 3] <<  8) |
+            (uint32_t)(this->data[(overhead - CRC_overhead) + 4]);
 
           if(request == ID_REQUEST)
             approve_id(this->last_packet_info.sender_id, this->last_packet_info.sender_bus_id, rid);
 
           if(request == ID_CONFIRM)
-            if(!confirm_id(rid, this->data[overhead + 4]))
+            if(!confirm_id(rid, this->data[(overhead - CRC_overhead) + 5]))
               negate_id(this->last_packet_info.sender_id, this->last_packet_info.sender_bus_id, rid);
 
           if(request == ID_REFRESH)
-            if(!add_id(this->data[overhead + 4], rid, 1))
+            if(!add_id(this->data[(overhead - CRC_overhead) + 5], rid, 1))
               negate_id(this->last_packet_info.sender_id, this->last_packet_info.sender_bus_id, rid);
 
           if(request == ID_NEGATE)
-            if(this->data[overhead + 4] == this->last_packet_info.sender_id)
+            if(this->data[(overhead - CRC_overhead) + 5] == this->last_packet_info.sender_id)
               if(rid == ids[this->last_packet_info.sender_id - 1].rid)
-                if(bus_id_equality(this->last_packet_info.sender_bus_id, this->bus_id))
+                if(this->bus_id_equality(this->last_packet_info.sender_bus_id, this->bus_id))
                   delete_id_reference(this->last_packet_info.sender_id);
 
         }
 
-        _master_receiver(this->data + overhead - 1, this->data[1] - overhead, this->last_packet_info);
+        _master_receiver(this->data + (overhead - CRC_overhead), this->data[2] - overhead, this->last_packet_info);
         return ACK;
       };
 

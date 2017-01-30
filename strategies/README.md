@@ -1,14 +1,34 @@
 
 ####What is a Strategy?
-PJON codebase uses strategies to physically communicate through the medium used, abstracting the data link layer from its procedure. A Strategy is only a class containing a set of functions able to send and receive messages:
+PJON codebase uses strategies to physically communicate through the medium used, abstracting the data link layer from its procedure. A Strategy is a class containing the back-off configuration and a set of methods able to send and receive messages:
+
+```cpp
+boolean begin(uint8_t additional_randomness = 0)
+```
+Returns `true` if the strategy is correctly initialized (receives a optional uint8_t used for randomness)
+
+```cpp
+uint32_t back_off(uint8_t attempts)
+```
+Returns the suggested delay related to the attempts passed as parameter
 
 ```cpp
 boolean can_start()
 ```
-Should Return `true` if the medium is free for use and `false` if the medium is in use by some other device.
+Returns `true` if the medium is free for use and `false` if the medium is in use by some other device
 
 ```cpp
-void send_string(uint8_t *string, uint8_t length)
+void handle_collision()
+```
+Handles a collision
+
+```cpp
+uint8_t get_max_attempts()
+```
+Returns the maximum number of attempts in case of failed transmission
+
+```cpp
+void send_string(uint8_t *string, uint16_t length)
 ```
 Sends a string of a certain length through the medium
 
@@ -43,11 +63,14 @@ directory and write the necessary file `YourStrategyName.h`:
 ```cpp
 class YourStrategyName {
   public:
-    boolean can_start() { ... };
+    uint32_t back_off(uint8_t attempts) { ... };
+    boolean  begin(uint8_t additional_randomness) { ... };
+    boolean  can_start() { ... };
+    uint8_t  get_max_attempts() { ... };
     uint16_t receive_byte() { ... };
     uint16_t receive_response() { ... };
-    void send_response(uint8_t response) { ... };
-    void send_string(uint8_t *string, uint8_t length) { ... };
+    void     send_response(uint8_t response) { ... };
+    void     send_string(uint8_t *string, uint16_t length) { ... };
 };
 ```
 

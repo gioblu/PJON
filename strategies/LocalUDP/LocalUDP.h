@@ -24,10 +24,19 @@
 #include <EthernetUdp.h>
 #include <PJONDefines.h>
 
-#define DEFAULT_UDP_PORT 7100
+#define DEFAULT_UDP_PORT             7100
+#define RESPONSE_TIMEOUT  (uint32_t) 10000
+#define UDP_MAGIC_HEADER             0x0DFAC3D0
 
-#define RESPONSE_TIMEOUT (uint32_t) 10000
-#define UDP_MAGIC_HEADER 0x0DFAC3D0
+/* Maximum transmission attempts */
+#ifndef LUDP_MAX_ATTEMPTS
+  #define LUDP_MAX_ATTEMPTS          20
+#endif
+
+/* Back-off exponential degree */
+#ifndef LUDP_BACK_OFF_DEGREE
+  #define LUDP_BACK_OFF_DEGREE       4
+#endif
 
 class LocalUDP {
     bool _udp_initialized = false;
@@ -57,17 +66,36 @@ class LocalUDP {
       return false;
     }
 
-    void empty_buffer() { incoming_packet_size = incoming_packet_pos = 0; }
+    void empty_buffer() {
+      incoming_packet_size = incoming_packet_pos = 0;
+    };
 
-    void check_udp() { if (!_udp_initialized) { udp.begin(_port); _udp_initialized = true; } }
+    void check_udp() {
+      if (!_udp_initialized) {
+        udp.begin(_port);
+        _udp_initialized = true;
+      }
+    };
 
 public:
     LocalUDP() { };
 
-    void set_port(uint16_t port = DEFAULT_UDP_PORT) { _port = port; };
+    /* Returns the suggested delay related to the attempts passed as parameter: */
+
+    uint32_t back_off(uint8_t attempts) {
+      uint32_t result = attempts;
+      for(uint8_t d = 0; d < LUDP_BACK_OFF_DEGREE; d++)
+        result *= (uint32_t)(attempts);
+      return result;
+    };
 
 
-    /*** Below are the functions expected by PJON ***/
+    /* Begin method, to be called before transmission or reception:
+       (returns always true) */
+
+    boolean begin(uint8_t additional_randomness = 0) {
+      return true;
+    };
 
 
     /* Check if the channel is free for transmission */
@@ -78,16 +106,26 @@ public:
     };
 
 
+    /* Returns the maximum number of attempts for each transmission: */
+
+    static uint8_t get_max_attempts() {
+      return LUDP_MAX_ATTEMPTS;
+    };
+
+
+    /* Handle a collision (empty because handled on Ethernet level): */
+
+    void handle_collision() { };
+
+
     uint16_t receive_byte() {
       check_udp();
-
       // Must receive a new packet, or is there more to serve from the last one?
-      if (incoming_packet_pos >= incoming_packet_size) receive_telegram();
-
+      if (incoming_packet_pos >= incoming_packet_size)
+        receive_telegram();
       // Deliver the next byte from the last received packet if any
-      if (incoming_packet_pos < incoming_packet_size) {
+      if (incoming_packet_pos < incoming_packet_size)
         return incoming_packet_buf[incoming_packet_pos++];
-      }
       return FAIL;
     };
 
@@ -97,7 +135,6 @@ public:
     uint16_t receive_response() {
       // This should not be needed, but empty buffer so that we are sure to pick up a new packet.
       empty_buffer();
-
       // TODO: Improve robustness by ignoring packets not from the previous receiver
       // (Perhaps not that important as long as ACK/NAK responses are directed, not broadcast)
       uint32_t start = micros();
@@ -105,7 +142,7 @@ public:
       do {
         result = receive_byte();
         if (result == ACK || result == NAK) return result;
-      } while (micros() - start < RESPONSE_TIMEOUT);
+     } while ((uint32_t)(micros() - start) < RESPONSE_TIMEOUT);
       return result;
     };
 
@@ -123,12 +160,19 @@ public:
 
     /* Send a string: */
 
-    void send_string(uint8_t *string, uint8_t length) {
+    void send_string(uint8_t *string, uint16_t length) {
       if (length > 0) {
         udp.beginPacket(_broadcast, _port);
         udp.write((const char*) &_magic_header, 4);
         udp.write(string, length);
         udp.endPacket();
       }
+    };
+
+
+    /* Set the UDP port: */
+
+    void set_port(uint16_t port = DEFAULT_UDP_PORT) {
+      _port = port;
     };
 };

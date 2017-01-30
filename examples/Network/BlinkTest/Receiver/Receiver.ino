@@ -17,7 +17,7 @@ void setup() {
   Serial.begin(9600);
 };
 
-void receiver_function(uint8_t *payload, uint8_t length, const PacketInfo &packet_info) {
+void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
   Serial.print("Receiver bus id: ");
   Serial.print(packet_info.receiver_bus_id[0]);
   Serial.print(packet_info.receiver_bus_id[1]);

@@ -1,9 +1,9 @@
 
  /*-O//\             __     __
-   |-gfo\           |__| | |  | |\ |
-   |!y°o:\          |  __| |__| | \| v5.2
+   |-gfo\           |__| | |  | |\ | ™
+   |!y°o:\          |  __| |__| | \| v6.2
    |y"s§+`\         multi-master, multi-media communications bus system framework
-  /so+:-..`\        Copyright 2010-2016 by Giovanni Blu Mitolo gioscarab@gmail.com
+  /so+:-..`\        Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
   |5/:%&-a3f.:;\
   \+//u/+g%{osv,,\
@@ -13,29 +13,20 @@
         > <
  ______-| |-___________________________________________________________________
 
-  PJON is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
-  with the support ot the internet community if you want to see the PJON project growing
-  with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
+PJONSlave has been created by Giovanni Blu Mitolo with the support
+of Fred Larsen and is inspired by the work of Thomas Snaidero:
+"Modular components for eye tracking, in the interest of helping persons with severely impaired motor skills."
+Master Thesis, IT University of Copenhagen, Denmark, September 2016
 
-  PJONSlave has been created by Giovanni Blu Mitolo with the support
-  of Fred Larsen and is inspired by the work of Thomas Snaidero:
-  "Modular components for eye tracking, in the interest of helping persons with severely impaired motor skills."
-  Master Thesis, IT University of Copenhagen, Denmark, September 2016
+PJON™ Dynamic addressing specification:
+- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md
 
-  PJON Protocol specification:
-  - v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md
-  - v0.2 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md
-  - v0.3 https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md
-
-  PJON Dynamic addressing specification:
-  - v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md
-
-  PJON Standard compliant tools:
-  - https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande
-  - https://github.com/Girgitt/PJON-python PJON running on Python by Zbigniew Zasieczny
+PJON™ is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
+with the support ot the internet community if you want to see the PJON project growing
+with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
  ______________________________________________________________________________
 
-Copyright 2012-2016 by Giovanni Blu Mitolo gioscarab@gmail.com
+Copyright 2012-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -67,6 +58,8 @@ limitations under the License. */
 
       PJONSlave() : PJON<Strategy>() {
         PJON<Strategy>::set_error(static_error_handler);
+        set_error(dummy_error_handler);
+        set_receiver(dummy_receiver_handler);
       };
 
 
@@ -75,6 +68,8 @@ limitations under the License. */
 
       PJONSlave(uint8_t device_id) : PJON<Strategy>(device_id) {
         PJON<Strategy>::set_error(static_error_handler);
+        set_error(dummy_error_handler);
+        set_receiver(dummy_receiver_handler);
       };
 
 
@@ -84,6 +79,8 @@ limitations under the License. */
 
       PJONSlave(const uint8_t *b_id, uint8_t device_id) : PJON<Strategy>(b_id, device_id) {
         PJON<Strategy>::set_error(static_error_handler);
+        set_error(dummy_error_handler);
+        set_receiver(dummy_receiver_handler);
       };
 
 
@@ -105,13 +102,13 @@ limitations under the License. */
         delay(random(ACQUIRE_ID_DELAY * 0.25, ACQUIRE_ID_DELAY));
         uint32_t time = micros();
         char msg = ID_ACQUIRE;
-        char head = this->get_header() | ADDRESS_BIT | ACK_REQUEST_BIT;
+        char head = this->config | ADDRESS_BIT | ACK_REQUEST_BIT;
         this->_device_id = NOT_ASSIGNED;
 
         for(uint8_t id = generate_random_byte(); (uint32_t)(micros() - time) < ID_SCAN_TIME; id++)
           if(id == BROADCAST || id == NOT_ASSIGNED || id == MASTER_ID) continue;
           else if(this->send_packet_blocking(id, this->bus_id, &msg, 1, head) == FAIL) {
-             this->_device_id = id;
+            this->_device_id = id;
             break;
           }
 
@@ -136,7 +133,7 @@ limitations under the License. */
           this->bus_id,
           response,
           5,
-          this->get_header() | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
+          this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
         ) == ACK) return true;
 
         return false;
@@ -155,13 +152,21 @@ limitations under the License. */
       /* Release device id (Master-slave only): */
 
       bool discard_device_id() {
-        char request[6] = {ID_NEGATE, _rid >> 24, _rid >> 16, _rid >> 8, _rid, this->_device_id};
+        char request[6] = {
+          ID_NEGATE,
+          _rid >> 24,
+          _rid >> 16,
+          _rid >> 8,
+          _rid,
+          this->_device_id
+        };
+
         if(this->send_packet_blocking(
           MASTER_ID,
           this->bus_id,
           request,
           6,
-          this->get_header() | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
+          this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
         ) == ACK) {
           this->_device_id = NOT_ASSIGNED;
           return true;
@@ -206,6 +211,7 @@ limitations under the License. */
       bool handle_addressing() {
         if(this->last_packet_info.header & ADDRESS_BIT && this->_device_id != MASTER_ID) {
           uint8_t overhead = this->packet_overhead(this->last_packet_info.header);
+          uint8_t CRC_overhead = (this->last_packet_info.header & CRC_BIT) ? 4 : 1;
           uint8_t rid[4] = {_rid >> 24, _rid >> 16, _rid >> 8, _rid};
           char response[6];
           response[1] = rid[0];
@@ -213,28 +219,32 @@ limitations under the License. */
           response[3] = rid[2];
           response[4] = rid[3];
 
-          if(this->data[overhead - 1] == ID_REQUEST)
-            if(bus_id_equality(this->data + overhead, rid)) {
+          if(this->data[overhead - CRC_overhead] == ID_REQUEST)
+            if(this->bus_id_equality(this->data + ((overhead - CRC_overhead) + 1), rid)) {
               response[0] = ID_CONFIRM;
-              response[5] = this->data[overhead + 4];
+              response[5] = this->data[(overhead - CRC_overhead) + 5];
               this->set_id(response[5]);
               if(this->send_packet_blocking(
                 MASTER_ID,
                 this->bus_id,
                 response,
                 6,
-                this->get_header() | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
+                this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
               ) != ACK) {
                 this->set_id(NOT_ASSIGNED);
                 _slave_error(ID_ACQUISITION_FAIL, ID_CONFIRM);
               }
             }
 
-          if(this->data[overhead - 1] == ID_NEGATE)
-            if(bus_id_equality(this->data + overhead, rid) && this->_device_id == this->data[0])
-              acquire_id();
+          if(this->data[overhead - CRC_overhead] == ID_NEGATE)
+            if(
+              this->bus_id_equality(
+                this->data + ((overhead - CRC_overhead) + 1),
+                rid
+              ) && this->_device_id == this->data[0]
+            ) acquire_id();
 
-          if(this->data[overhead - 1] == ID_LIST)
+          if(this->data[overhead - CRC_overhead] == ID_LIST)
             if(this->_device_id != NOT_ASSIGNED)
               if((uint32_t)(micros() - _last_request_time) > (ADDRESSING_TIMEOUT * 1.125)) {
                 _last_request_time = micros();
@@ -245,7 +255,7 @@ limitations under the License. */
                   this->bus_id,
                   response,
                   6,
-                  this->get_header() | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
+                  this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
                 );
               }
 
@@ -262,10 +272,14 @@ limitations under the License. */
         uint16_t received_data = PJON<Strategy>::receive();
         if(received_data != ACK) return received_data;
 
-        uint8_t overhead = this->packet_overhead(this->data[2]);
+        uint8_t overhead = this->packet_overhead(this->data[1]);
 
         if(!handle_addressing())
-          _slave_receiver(this->data + overhead - 1, this->data[1] - overhead, this->last_packet_info);
+          _slave_receiver(
+            this->data + (overhead - (this->data[1] & CRC_BIT ? 4 : 1)),
+            this->data[this->data[1] & EXTEND_HEADER_BIT ? 3 : 2] - overhead,
+            this->last_packet_info
+          );
 
         return ACK;
       };

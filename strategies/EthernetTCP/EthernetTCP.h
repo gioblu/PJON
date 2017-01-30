@@ -23,6 +23,16 @@
 #include "EthernetLink.h"
 #include <PJONDefines.h>
 
+/* Maximum transmission attempts */
+#ifndef ETCP_MAX_ATTEMPTS
+  #define ETCP_MAX_ATTEMPTS   20
+#endif
+
+/* Back-off exponential degree */
+#ifndef ETCP_BACK_OFF_DEGREE
+  #define ETCP_BACK_OFF_DEGREE 4
+#endif
+
 class EthernetTCP {
   public:
     EthernetLink link;
@@ -33,10 +43,10 @@ class EthernetTCP {
     uint8_t incoming_packet_buf[PACKET_MAX_LENGTH];
     uint16_t incoming_packet_size = 0;
     uint16_t incoming_packet_pos = 0;
-    static void static_receiver(uint8_t id, const uint8_t *payload, uint8_t length, void *callback_object) {
+    static void static_receiver(uint8_t id, const uint8_t *payload, uint16_t length, void *callback_object) {
       if (callback_object) ((EthernetTCP*)callback_object)->receiver(id, payload, length);
     }
-    void receiver(uint8_t id, const uint8_t *payload, uint8_t length) {
+    void receiver(uint8_t id, const uint8_t *payload, uint16_t length) {
       if (length <= PACKET_MAX_LENGTH) {
         memcpy(incoming_packet_buf, payload, length);
         incoming_packet_size = length;
@@ -46,13 +56,44 @@ class EthernetTCP {
 
     EthernetTCP() {
       link.set_receiver(static_receiver, this);
-    }
+    };
+
+
+    /* Returns the suggested delay related to the attempts passed as parameter: */
+
+    uint32_t back_off(uint8_t attempts) {
+      uint32_t result = attempts;
+      for(uint8_t d = 0; d < ETCP_BACK_OFF_DEGREE; d++)
+        result *= (uint32_t)(attempts);
+      return result;
+    };
+
+
+    /* Begin method, to be called before transmission or reception:
+       (returns always true) */
+
+    boolean begin(uint8_t additional_randomness = 0) {
+      return true;
+    };
+
 
     /* Check if the channel is free for transmission */
 
     boolean can_start() {
       return link.device_id() != 0;
     };
+
+
+    /* Returns the maximum number of attempts for each transmission: */
+
+    static uint8_t get_max_attempts() {
+      return ETCP_MAX_ATTEMPTS;
+    };
+
+
+    /* Handle a collision (empty because handled on Ethernet level): */
+
+    void handle_collision() { };
 
 
     uint16_t receive_byte() {
@@ -82,7 +123,7 @@ class EthernetTCP {
 
     /* Send a string: */
 
-    void send_string(uint8_t *string, uint8_t length) {
+    void send_string(uint8_t *string, uint16_t length) {
       if (length > 0)
         last_send_result = link.send((uint8_t)string[0], (const char*)string, length);
     };

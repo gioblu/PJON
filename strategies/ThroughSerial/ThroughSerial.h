@@ -24,23 +24,52 @@
    limitations under the License. */
 
 #include <Arduino.h>
-
-#define THROUGH_SERIAL_MAX_BYTE_TIME        10000  // Wait up to 10 milliseconds for an incoming byte
-#define THROUGH_SERIAL_FREE_TIME_BEFORE_START 500  // 0.5 milliseconds of free channell before sending
+#include "Timing.h"
 
 class ThroughSerial {
   public:
     Stream *serial = NULL;
 
+    /* Returns the suggested delay related to the attempts passed as parameter: */
+
+    uint32_t back_off(uint8_t attempts) {
+      uint32_t result = attempts;
+      for(uint8_t d = 0; d < TS_BACK_OFF_DEGREE; d++)
+        result *= (uint32_t)(attempts);
+      return result;
+    };
+
+    /* Begin method, to be called before transmission or reception:
+       (returns always true) */
+
+    boolean begin(uint8_t additional_randomness = 0) {
+      delay(random(0, TS_INITIAL_DELAY) + additional_randomness);
+      return true;
+    };
+
+
+    /* Check if the channel is free for transmission: */
+
     boolean can_start() {
+      delayMicroseconds(random(0, TS_COLLISION_DELAY));
       if(serial->available()) return false;
-
-      if(
-        (uint32_t)(micros() - _last_reception_time) <
-        random(THROUGH_SERIAL_FREE_TIME_BEFORE_START, 2 * THROUGH_SERIAL_FREE_TIME_BEFORE_START)
-      ) return false;
-
+      if((uint32_t)(micros() - _last_reception_time) < TS_FREE_TIME_BEFORE_START)
+        return false;
       return (serial != NULL);
+    };
+
+
+    /* Returns the maximum number of attempts for each transmission: */
+
+    static uint8_t get_max_attempts() {
+      return TS_MAX_ATTEMPTS;
+    };
+
+
+    /* Handle a collision: */
+
+    void handle_collision() {
+      delayMicroseconds(random(0, TS_COLLISION_DELAY));
     };
 
 
@@ -48,7 +77,7 @@ class ThroughSerial {
 
     uint16_t receive_byte() {
       uint32_t time = micros();
-      while((uint32_t)(micros() - time) < THROUGH_SERIAL_MAX_BYTE_TIME)
+      while((uint32_t)(micros() - time) < TS_MAX_BYTE_TIME)
         if(serial->available()) {
           _last_reception_time = micros();
           return (uint8_t)serial->read();

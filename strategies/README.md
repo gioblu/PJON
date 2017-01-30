@@ -76,16 +76,3 @@ class YourStrategyName {
 
 Simply add your code in the functions declaration shown above and instantiate PJON using the strategy type you
 have created: `PJON<YourStrategyName> bus();`.
-
-### Memory optimisation
-By default all strategies files are included.
-
-To reduce memory footprint simply add for example `#define PJON_STRATEGY_BITBANG` before PJON include.
-
-Supported definitions:
-- `PJON_STRATEGY_ETHERNET` - EthernetTCP.h
-- `PJON_STRATEGY_LOCALUDP` - LocalUDP.h
-- `PJON_STRATEGY_OVERSAMPLING` - OverSampling.h
-- `PJON_STRATEGY_BITBANG` - SoftwareBitBang.h
-- `PJON_STRATEGY_SERIAL` - ThroughSerial.h
-- `PJON_STRATEGY_NONE` - don't include any strategy file

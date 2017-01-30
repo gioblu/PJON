@@ -86,6 +86,7 @@ limitations under the License. */
   #elif defined(PJON_INCLUDE_NONE)
     /* None for custom strategy include */
   #else
+    #include "strategies/AnalogSampling/AnalogSampling.h"
     #include "strategies/OverSampling/OverSampling.h"
     #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
     #include "strategies/ThroughSerial/ThroughSerial.h"

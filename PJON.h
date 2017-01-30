@@ -70,19 +70,19 @@ limitations under the License. */
   #define PJON_h
   #include <Arduino.h>
   #include <PJONDefines.h>
-  /** Include customisations for memory optimisation */
-  #if defined(PJON_STRATEGY_ETHERNET)
+  /* Strategy related constant predefinition memory optimization */
+  #if   defined(PJON_INCLUDE_ETCP)
     #include "strategies/EthernetTCP/EthernetTCP.h"
-  #elif defined(PJON_STRATEGY_LOCALUDP)
+  #elif defined(PJON_INCLUDE_LUPD)
     #include "strategies/LocalUDP/LocalUDP.h"
-  #elif defined(PJON_STRATEGY_OVERSAMPLING)
+  #elif defined(PJON_INCLUDE_OS)
     #include "strategies/OverSampling/OverSampling.h"
-  #elif defined(PJON_STRATEGY_BITBANG)
+  #elif defined(PJON_INCLUDE_SWBB)
     #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
-  #elif defined(PJON_STRATEGY_SERIAL)
+  #elif defined(PJON_INCLUDE_TS)
     #include "strategies/ThroughSerial/ThroughSerial.h"
-  #elif defined(PJON_STRATEGY_NONE)
-  /* None for custom strategy include */
+  #elif defined(PJON_INCLUDE_NONE)
+    /* None for custom strategy include */
   #else
     #include "strategies/OverSampling/OverSampling.h"
     #include "strategies/SoftwareBitBang/SoftwareBitBang.h"

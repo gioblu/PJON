@@ -46,6 +46,17 @@ SoftwareBitBang is the default data link layer strategy used by the PJON templat
 
 With ThroughSerial data link layer strategy, PJON can run through a software emulated or hardware Serial port. Thanks to this choice it is possible to leverage of virtually all the arduino compatible serial transceivers, like RS485, radio or infrared modules, still having PJON unchanged on top.
 
+
+By default all strategies files are included. To reduce memory footprint simply add for example `#define PJON_INCLUDE_SWBB` before PJON include. You can define more than one strategy related constant if necessary.
+
+Supported definitions:
+- `PJON_INCLUDE_ETCP` includes EthernetTCP
+- `PJON_INCLUDE_LUDP` includes LocalUDP
+- `PJON_INCLUDE_OS` includes OverSampling
+- `PJON_INCLUDE_SWBB` includes SoftwareBitBang
+- `PJON_INCLUDE_TS` includes ThroughSerial
+- `PJON_INCLUDE_NONE` doesn't include any strategy file
+
 Configure network state (local or shared). If local, so if passing `false`, the PJON protol layer procedure is based on a single byte device id to univocally communicate with a device; if in shared mode, so passing `true`, the protocol adopts a 4 byte bus id to univocally communicate with a device in a certain bus:
 ```cpp  
   bus.set_shared_network(true);

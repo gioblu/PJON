@@ -70,13 +70,28 @@ limitations under the License. */
   #define PJON_h
   #include <Arduino.h>
   #include <PJONDefines.h>
-  #include "strategies/OverSampling/OverSampling.h"
-  #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
-  #include "strategies/ThroughSerial/ThroughSerial.h"
-  /* Avoid ATtiny 45/85 error missing inclusion error */
-  #if !defined(__AVR_ATtiny45__) && !defined(__AVR_ATtiny85__)
+  /** Include customisations for memory optimisation */
+  #if defined(PJON_STRATEGY_ETHERNET)
     #include "strategies/EthernetTCP/EthernetTCP.h"
+  #elif defined(PJON_STRATEGY_LOCALUDP)
     #include "strategies/LocalUDP/LocalUDP.h"
+  #elif defined(PJON_STRATEGY_OVERSAMPLING)
+    #include "strategies/OverSampling/OverSampling.h"
+  #elif defined(PJON_STRATEGY_BITBANG)
+    #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
+  #elif defined(PJON_STRATEGY_SERIAL)
+    #include "strategies/ThroughSerial/ThroughSerial.h"
+  #elif defined(PJON_STRATEGY_NONE)
+  /* None for custom strategy include */
+  #else
+    #include "strategies/OverSampling/OverSampling.h"
+    #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
+    #include "strategies/ThroughSerial/ThroughSerial.h"
+    /* Avoid ATtiny 45/85 error missing inclusion error */
+    #if !defined(__AVR_ATtiny45__) && !defined(__AVR_ATtiny85__)
+      #include "strategies/EthernetTCP/EthernetTCP.h"
+      #include "strategies/LocalUDP/LocalUDP.h"
+    #endif
   #endif
 
   template<typename Strategy = SoftwareBitBang>

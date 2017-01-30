@@ -5,9 +5,9 @@
 - [Error handling](https://github.com/gioblu/PJON/tree/6.2/documentation/error-handling.md)
 - **[IO setup](https://github.com/gioblu/PJON/tree/6.2/documentation/io-setup.md)**
 
-The physical layer configuration is handled by the Strategy entity, if you want to communicate bi-directionally on a single medium (using SoftwareBitBang or OverSampling), sharing transmission and reception line, use:
+The physical layer configuration is handled by the Strategy entity, if you want to communicate bi-directionally on a single medium (using SoftwareBitBang, OverSampling or AnalogSampling), sharing transmission and reception line, use:
 ```cpp  
- PJON<> bus;
+ PJON<SoftwareBitBang> bus;
  bus.strategy.set_pin(12);
 ```
 

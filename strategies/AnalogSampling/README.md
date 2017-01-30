@@ -2,7 +2,7 @@
 **Medium:** Light |
 **Pins used:** 1 / 2
 
-`AnalogSampling` is designed to sample digital data using analog readings. It can be used to communicate data wirelessly, through any sort of radiation trasducer but it is optimized for light. It was implemented it in the far 2011 as a stand-alone physical layer able to use a couple of LEDs as wireless transceivers connecting two devices in half-duplex mode with a range of maximum 5 meters with ideal conditions. It always remained at experimental stage. It has been updated to act as a PJON Strategy and work nominally with a single bidirectional transceiver (a single LED for both reception and transmission) or using separate pins for transmission and reception, to enable more standard use cases.
+`AnalogSampling` is designed to sample digital data using analog readings. It can be used to communicate data wirelessly, through any sort of radiation trasducer but it is optimized for light. It was implemented it in the far 2011 as a stand-alone physical layer able to use a couple of LEDs as wireless transceivers connecting two devices in half-duplex mode with a range of maximum 5 meters with ideal conditions. It always remained at experimental stage, here you can see the first [video documented experiment](https://www.youtube.com/watch?v=-Ul2j6ixbmE). It has been debugged and updated to act as a PJON Strategy and work nominally with a single bidirectional transceiver (a single LED for both reception and transmission) or using separate pins for transmission and reception, to enable more standard use cases.
 
 ####Compatibility
 - ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
@@ -65,7 +65,7 @@ The obtained range is related to:
 - **Transmission power** the more power you feed to your transmitter, the more range and reliability you can get
 - **Signal-to-noise ratio or SNR** Noise level affects communication reliability specially when the signal magnitude is lowered by distance, filtering your input from background noise can higher maximum range and overall communication reliability. If your system has to operate with a strong background noise, consider using a hardware filter to cut the background noise frequencies and use a pull down resistor as described above.
 
-With the necessary hardware choices and timing configuration `AnalogSampling` can be used to experiment with short range infrared or visible light communication (i.e. micro-robot swarm, DIY remote), medium range using lighting to stream communication (i.e. cars transmitting data through head and backlights) or long range laser communication (i.e. data between ground and LEO).  
+With the necessary hardware choices and timing configuration `AnalogSampling` can be used to experiment with short range infrared or visible light communication (i.e. micro-robot swarm, DIY remote), medium range using lighting as transcevers (i.e. cars transmitting data through head and backlights) or long range laser communication (i.e. data between ground and LEO).  
 
 ####Known issues
 - Direct sunlight or other light sources can affect receiver's sensitivity and maximum communication range

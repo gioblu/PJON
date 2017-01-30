@@ -64,6 +64,7 @@
       ((P == 14 || P == 15) ? &PINJ : \
       ((P >= 62 && P <= 69) ? &PINK : &PINL))))))))))
 
+    #ifndef __digitalPinToBit
     #define __digitalPinToBit(P) \
       ((P >=  7 && P <=  9) ? P - 3 : ((P >= 10 && P <= 13) ? P - 6 : \
       ((P >= 22 && P <= 29) ? P - 22 : ((P >= 30 && P <= 37) ? 37 - P : \
@@ -73,6 +74,7 @@
       ((P == 1 || P == 14 || P == 16 || P == 20) ? 1 : ((P == 19) ? 2 : \
       ((P == 5 || P == 6 || P == 18) ? 3 : ((P == 2) ? 4 : \
       ((P == 3 || P == 4) ? 5 : 7)))))))))))))))
+    #endif
 
     // 15 PWM
     #define __digitalPinToTimer(P) \
@@ -101,7 +103,9 @@
     #define digitalPinToPortReg(P) ((P >= 0 && P <= 7) ? &PORTD : ((P >= 8 && P <= 13) ? &PORTB : &PORTC))
     #define digitalPinToDDRReg(P) ((P >= 0 && P <= 7) ? &DDRD : ((P >= 8 && P <= 13) ? &DDRB : &DDRC))
     #define digitalPinToPINReg(P) ((P >= 0 && P <= 7) ? &PIND : ((P >= 8 && P <= 13) ? &PINB : &PINC))
+    #ifndef __digitalPinToBit
     #define __digitalPinToBit(P) ((P >= 0 && P <= 7) ? P : ((P >= 8 && P <= 13) ? P - 8 : P - 14))
+    #endif
 
     #define __digitalPinToTimer(P) \
       ((P == 6 || P == 5) ? &TCCR0A : ((P == 9 || P == 10) ? \
@@ -121,6 +125,7 @@
     #define digitalPinToPINReg(P) \
       (((P >= 0 && P <= 4) || P == 6 || P == 12 || P == 24 || P == 25 || P == 29) ? &PIND : \
       ((P == 5 || P == 13) ? &PINC : ((P >= 18 && P <= 23)) ? &PINF : ((P == 7) ? &PINE : &PINB)))
+    #ifndef __digitalPinToBit
     #define __digitalPinToBit(P) \
       ((P >= 8 && P <= 11) ? P - 4 : ((P >= 18 && P <= 21) ? 25 - P : \
       ((P == 0) ? 2 : ((P == 1) ? 3 : ((P == 2) ? 1 : ((P == 3) ? 0 : \
@@ -129,12 +134,15 @@
       ((P == 23) ? 0 : ((P == 24) ? 4 : ((P == 25) ? 7 : ((P == 26) ? 4 : \
       ((P == 27) ? 5 : 6 )))))))))))))))))))
   #endif
+  #endif
 
   #if defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
     #define digitalPinToPortReg(P) &PORTB
     #define digitalPinToDDRReg(P)  &DDRB
     #define digitalPinToPINReg(P)  &PINB
+    #ifndef __digitalPinToBit
     #define __digitalPinToBit(P)   P - 6
+    #endif
   #endif
 
   #if defined(__SAMD21G18A__) || defined(ARDUINO_SAM_ZERO)  // Arduino Zero pins

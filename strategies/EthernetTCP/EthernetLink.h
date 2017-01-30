@@ -212,7 +212,7 @@ private:
     // NOTE: The recv/read functions return -1 if no data waiting, and 0 if socket closed!
     do {
       while ((avail = client.available()) <= 0 && client.connected() && (uint32_t)(millis() - start_ms) < 10000) ;
-      bytes_read = client.read(&contents[total_bytes_read], max(0, min(avail, length - total_bytes_read)));
+      bytes_read = client.read(&contents[total_bytes_read], constrain(avail, 0, length - total_bytes_read));
       if (bytes_read > 0) total_bytes_read += bytes_read;
     } while(bytes_read != ERRORREAD && total_bytes_read < length && millis() - start_ms < 10000);
     if (bytes_read == ERRORREAD) stop(client); // Lost connection

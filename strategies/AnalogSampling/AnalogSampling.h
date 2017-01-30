@@ -38,7 +38,6 @@
 
 #include "Timing.h"
 #include "../../utils/digitalWriteFast.h"
-#include "../../utils/analogReadfast.h"
 
 /* Default reading state threshold: */
 

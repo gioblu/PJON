@@ -297,7 +297,7 @@ limitations under the License. */
 
       /* Slave receiver function setter: */
 
-      void set_receiver(receiver r) {
+      void set_receiver(PJON_Receiver r) {
         _slave_receiver = r;
       };
 

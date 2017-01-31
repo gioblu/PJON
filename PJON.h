@@ -781,7 +781,7 @@ limitations under the License. */
 
         bus.set_receiver(receiver_function); */
 
-      void set_receiver(receiver r) {
+      void set_receiver(PJON_Receiver r) {
         _receiver = r;
       };
 

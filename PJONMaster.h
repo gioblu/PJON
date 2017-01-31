@@ -307,7 +307,7 @@ limitations under the License. */
 
       /* Master receiver function setter: */
 
-      void set_receiver(receiver r) {
+      void set_receiver(PJON_Receiver r) {
         _master_receiver = r;
       };
 

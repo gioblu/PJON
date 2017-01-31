@@ -179,10 +179,10 @@ limitations under the License. */
     uint8_t sender_bus_id[4];
   };
 
-  typedef void (* receiver)(uint8_t *payload, uint16_t length, const PacketInfo &packet_info);
-  typedef void (* error)(uint8_t code, uint8_t data);
+  typedef void (* PJON_Receiver)(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info);
+  typedef void (* PJON_Error)(uint8_t code, uint8_t data);
 
-  static void dummy_receiver_handler(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {};
+  static void dummy_receiver_handler(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {};
   static void dummy_error_handler(uint8_t code, uint8_t data) {};
 
 #endif

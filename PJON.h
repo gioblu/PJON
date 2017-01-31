@@ -924,14 +924,14 @@ limitations under the License. */
       static void copy_bus_id(uint8_t dest[], const uint8_t src[]) { memcpy(dest, src, 4); };
 
     private:
-      boolean   _auto_delete = true;
-      error     _error;
-      uint8_t   _mode;
-      uint16_t  _packet_id_seed = 0;
-      uint8_t   _random_seed = A0;
-      receiver  _receiver;
-      boolean   _router = false;
+      boolean       _auto_delete = true;
+      PJON_Error    _error;
+      uint8_t       _mode;
+      uint16_t      _packet_id_seed = 0;
+      uint8_t       _random_seed = A0;
+      PJON_Receiver _receiver;
+      boolean       _router = false;
     protected:
-      uint8_t   _device_id;
+      uint8_t       _device_id;
   };
 #endif

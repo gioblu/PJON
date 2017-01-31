@@ -328,8 +328,8 @@ limitations under the License. */
       };
 
     private:
-      receiver _master_receiver;
-      error _master_error;
+      PJON_Receiver   _master_receiver;
+      PJON_Error      _master_error;
       static PJONMaster<Strategy> *_current_pjon_master;
   };
 

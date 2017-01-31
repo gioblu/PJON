@@ -317,10 +317,10 @@ limitations under the License. */
       };
 
     private:
-      uint32_t _last_request_time;
-      receiver _slave_receiver;
-      error _slave_error;
-      uint32_t _rid;
+      uint32_t      _last_request_time;
+      PJON_Receiver _slave_receiver;
+      PJON_Error    _slave_error;
+      uint32_t      _rid;
       static PJONSlave<Strategy> *_current_pjon_slave;
   };
 

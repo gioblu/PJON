@@ -15,7 +15,8 @@ ThroughSerial KEYWORD1
 EthernetTCP KEYWORD1
 LocalUDP KEYWORD1
 PJON_Packet KEYWORD1
-PacketInfo KEYWORD1
+PJON_Packet_Info KEYWORD1
+PJON_Error KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)

@@ -50,6 +50,10 @@
   #define AS_BIT_SPACER      1050
 #endif
 
+#ifndef AS_READ_DELAY
+  #define AS_READ_DELAY         0
+#endif
+
 /* The default response timeout setup dedicates the transmission time of 1 byte plus
   1 millisecond to latency and CRC computation. If receiver needs more than
   OS_TIMEOUT to compute CRC and answer back ACK, transmitter will not receive

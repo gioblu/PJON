@@ -32,7 +32,7 @@ void setup() {
 uint32_t cnt = 0;
 uint32_t start = millis();
 
-void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
+void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   if(payload[0] == 'P') {
     cnt++;
     if (millis() - start > 1000) {

@@ -31,7 +31,7 @@ void setup() {
   Serial.begin(115200);
 };
 
-void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
+void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   Serial.print("Header: ");
   Serial.print(packet_info.header, BIN);
   // If packet formatted for a shared medium

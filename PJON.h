@@ -119,7 +119,7 @@ limitations under the License. */
 
       /* Data buffers */
       uint8_t data[PACKET_MAX_LENGTH];
-      PacketInfo last_packet_info;
+      PJON_Packet_Info last_packet_info;
       PJON_Packet packets[MAX_PACKETS];
       #if(INCLUDE_ASYNC_ACK)
         PJON_Packet_Record recent_packet_ids[MAX_RECENT_PACKET_IDS];
@@ -317,9 +317,9 @@ limitations under the License. */
       };
 
 
-      /* Fill in a PacketInfo struct by parsing a packet: */
+      /* Fill in a PJON_Packet_Info struct by parsing a packet: */
 
-      void parse(const uint8_t *packet, PacketInfo &packet_info) const {
+      void parse(const uint8_t *packet, PJON_Packet_Info &packet_info) const {
         packet_info.receiver_id = packet[0];
         bool extended_header = packet[1] & EXTEND_HEADER_BIT;
         bool extended_length = packet[1] & EXTEND_LENGTH_BIT;
@@ -458,8 +458,8 @@ limitations under the License. */
 
       /* Remove a packet from the packet's buffer passing its id as reference: */
 
-      boolean handle_asynchronous_acknowledgment(PacketInfo packet_info) {
-        PacketInfo actual_info;
+      boolean handle_asynchronous_acknowledgment(PJON_Packet_Info packet_info) {
+        PJON_Packet_Info actual_info;
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           parse((uint8_t *)packets[i].content, actual_info);
           if(actual_info.id == packet_info.id)
@@ -772,7 +772,7 @@ limitations under the License. */
          This will be called when a correct message will be received.
          Inside there you can code how to react when data is received.
 
-        void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
+        void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
           for(int i = 0; i < length; i++)
             Serial.print((char)payload[i]);
           Serial.print(" ");
@@ -862,8 +862,8 @@ limitations under the License. */
       /* Check if the packet index passed is the first to be sent: */
 
       boolean first_packet_to_be_sent(uint8_t index) {
-        PacketInfo actual_info;
-        PacketInfo tested_info;
+        PJON_Packet_Info actual_info;
+        PJON_Packet_Info tested_info;
         parse((uint8_t *)packets[index].content, actual_info);
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           parse((uint8_t *)packets[i].content, tested_info);
@@ -879,7 +879,7 @@ limitations under the License. */
       /* Check if the packet id and its transmitter info are already present in the
          buffer of recently received packets, if not add it to the buffer. */
 
-      bool known_packet_id(PacketInfo info) {
+      bool known_packet_id(PJON_Packet_Info info) {
         #if(INCLUDE_ASYNC_ACK)
           for(uint8_t i = 0; i < MAX_RECENT_PACKET_IDS; i++)
             if(
@@ -899,7 +899,7 @@ limitations under the License. */
 
       /* Save packet id in the buffer: */
 
-      void save_packet_id(PacketInfo info) {
+      void save_packet_id(PJON_Packet_Info info) {
         #if(INCLUDE_ASYNC_ACK)
           for(uint8_t i = MAX_RECENT_PACKET_IDS - 1; i > 0; i--)
             recent_packet_ids[i] = recent_packet_ids[i - 1];

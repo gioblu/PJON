@@ -17,7 +17,7 @@ void setup() {
   Serial.begin(115200);
 };
 
-void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
+void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
  if((char)payload[0] == 'B') {
     bus.reply("B", 1);
     digitalWrite(13, HIGH);

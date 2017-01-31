@@ -15,7 +15,7 @@ void setup() {
   time = millis();
 };
 
-void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
+void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   uint32_t rid =
     (uint32_t)(payload[1]) << 24 |
     (uint32_t)(payload[2]) << 16 |

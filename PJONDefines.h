@@ -170,7 +170,7 @@ limitations under the License. */
   };
 
   /* Last received packet Metainfo */
-  struct PacketInfo {
+  struct PJON_Packet_Info {
     uint16_t header = 0;
     uint16_t id = 0;
     uint8_t receiver_id = 0;

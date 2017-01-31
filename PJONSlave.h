@@ -304,7 +304,7 @@ limitations under the License. */
 
       /* Master error receiver function: */
 
-      void set_error(error e) {
+      void set_error(PJON_Error e) {
         _slave_error = e;
       };
 

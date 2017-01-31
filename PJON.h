@@ -719,7 +719,7 @@ limitations under the License. */
 
       bus.set_error(error_handler); */
 
-      void set_error(error e) {
+      void set_error(PJON_Error e) {
         _error = e;
       };
 

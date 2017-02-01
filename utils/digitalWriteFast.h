@@ -1,9 +1,12 @@
 /* digitalWriteFast library
 
    List of supported MCUs:
-     - ATmega8/88/168/328/1280/2560/16U4/32U4 (Duemilanove, Uno, Nano, Mini, Pro, Mega, Leonardo, Micro)
-     - ATtiny45/85 (Trinket / Digispark)
-     - SAMD21G18A (Arduino Zero) - Added by Esben Soeltoft 03/09/2016
+    - ATmega8/88/168/328/1280/2560/16U4/32U4
+      (Duemilanove, Uno, Nano, Mini, Pro, Mega, Leonardo, Micro)
+
+    - ATtiny45/85 (Trinket / Digispark)
+
+    - SAMD21G18A (Arduino Zero) - Added by Esben Soeltoft 03/09/2016
 
    Copyright 2012-2017 Giovanni Blu Mitolo
 
@@ -19,15 +22,11 @@
    See the License for the specific language governing permissions and
    limitations under the License. */
 
-#ifndef __DIGITALWRITEFAST_H_INCLUDED__
-  #define __DIGITALWRITEFAST_H_INCLUDED__
+  #pragma once
 
-  #define BIT_READ(value, bit) (((value) >> (bit)) & 0x01)
-  #define BIT_SET(value, bit) ((value) |= (1UL << (bit)))
-  #define BIT_CLEAR(value, bit) ((value) &= ~(1UL << (bit)))
-  #define BIT_WRITE(value, bit, bitvalue) (bitvalue ? BIT_SET(value, bit) : BIT_CLEAR(value, bit))
+  /* AVR ATmega1280/2560 - Arduino Mega ------------------------------------- */
 
-  #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__) // Arduino Mega Pins
+  #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
     #define digitalPinToPortReg(P) \
       ((P >= 22 && P <= 29) ? &PORTA : \
       (((P >= 10 && P <= 13) || (P >= 50 && P <= 53)) ? &PORTB : \
@@ -70,8 +69,8 @@
         ((P >= 22 && P <= 29) ? P - 22 : ((P >= 30 && P <= 37) ? 37 - P : \
         ((P >= 39 && P <= 41) ? 41 - P : ((P >= 42 && P <= 49) ? 49 - P : \
         ((P >= 50 && P <= 53) ? 53 - P : ((P >= 54 && P <= 61) ? P - 54 : \
-        ((P >= 62 && P <= 69) ? P - 62 : ((P == 0 || P == 15 || P == 17 || P == 21) ? 0 : \
-        ((P == 1 || P == 14 || P == 16 || P == 20) ? 1 : ((P == 19) ? 2 : \
+        ((P >= 62 && P <= 69) ? P - 62 : ((P == 0 || P == 15 || P == 17 || P == 21) \
+        ? 0 : ((P == 1 || P == 14 || P == 16 || P == 20) ? 1 : ((P == 19) ? 2 : \
         ((P == 5 || P == 6 || P == 18) ? 3 : ((P == 2) ? 4 : \
         ((P == 3 || P == 4) ? 5 : 7)))))))))))))))
       #endif
@@ -94,17 +93,28 @@
       ((P == 46) ? COM5A1 : ((P == 45) ? COM5B1 : COM5C1))))))))))))))
   #endif
 
-  #if defined(__AVR_ATmega8__) // PWM ATmega 8
-    #define __digitalPinToTimer(P) ((P ==  9 || P == 10) ? &TCCR1A : ((P == 11) ? &TCCR2 : 0))
-    #define __digitalPinToTimerBitP ((P ==  9) ? COM1A1 : ((P == 10) ? COM1B1 : COM21))
+  /* AVR ATmega8 ------------------------------------------------------------ */
+
+  #if defined(__AVR_ATmega8__)
+    #define __digitalPinToTimer(P) \
+      ((P ==  9 || P == 10) ? &TCCR1A : ((P == 11) ? &TCCR2 : 0))
+    #define __digitalPinToTimerBitP \
+      ((P ==  9) ? COM1A1 : ((P == 10) ? COM1B1 : COM21))
   #endif
 
-  #if defined(__AVR_ATmega88__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
-    #define digitalPinToPortReg(P) ((P >= 0 && P <= 7) ? &PORTD : ((P >= 8 && P <= 13) ? &PORTB : &PORTC))
-    #define digitalPinToDDRReg(P) ((P >= 0 && P <= 7) ? &DDRD : ((P >= 8 && P <= 13) ? &DDRB : &DDRC))
-    #define digitalPinToPINReg(P) ((P >= 0 && P <= 7) ? &PIND : ((P >= 8 && P <= 13) ? &PINB : &PINC))
+  /* AVR ATmega88/168/328/328P - Arduino Duemilanove, Uno, Nano, Mini, Pro -- */
+
+  #if defined(__AVR_ATmega88__)  || defined(__AVR_ATmega168__) || \
+      defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
+    #define digitalPinToPortReg(P) \
+      ((P >= 0 && P <= 7) ? &PORTD : ((P >= 8 && P <= 13) ? &PORTB : &PORTC))
+    #define digitalPinToDDRReg(P) \
+      ((P >= 0 && P <= 7) ? &DDRD : ((P >= 8 && P <= 13) ? &DDRB : &DDRC))
+    #define digitalPinToPINReg(P) \
+      ((P >= 0 && P <= 7) ? &PIND : ((P >= 8 && P <= 13) ? &PINB : &PINC))
     #ifndef __digitalPinToBit
-      #define __digitalPinToBit(P) ((P >= 0 && P <= 7) ? P : ((P >= 8 && P <= 13) ? P - 8 : P - 14))
+      #define __digitalPinToBit(P) \
+        ((P >= 0 && P <= 7) ? P : ((P >= 8 && P <= 13) ? P - 8 : P - 14))
     #endif
 
     #define __digitalPinToTimer(P) \
@@ -115,16 +125,21 @@
       COM1A1 : ((P == 10) ? COM1B1 : ((P == 11) ? COM2A1 : COM2B1)))))
   #endif
 
+  /* AVR ATmega16U4/32U4 - Arduino Leonardo, Micro -------------------------- */
+
   #if defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__)
     #define digitalPinToPortReg(P) \
-      (((P >= 0 && P <= 4) || P == 6 || P == 12 || P == 24 || P == 25 || P == 29) ? &PORTD : \
-      ((P == 5 || P == 13) ? &PORTC : ((P >= 18 && P <= 23)) ? &PORTF : ((P == 7) ? &PORTE : &PORTB)))
+      (((P >= 0 && P <= 4) || P == 6 || P == 12 || P == 24 || P == 25 || P == 29) \
+      ? &PORTD : ((P == 5 || P == 13) ? &PORTC : ((P >= 18 && P <= 23)) ? &PORTF : \
+      ((P == 7) ? &PORTE : &PORTB)))
     #define digitalPinToDDRReg(P) \
-      (((P >= 0 && P <= 4) || P == 6 || P == 12 || P == 24 || P == 25 || P == 29) ? &DDRD : \
-      ((P == 5 || P == 13) ? &DDRC : ((P >= 18 && P <= 23)) ? &DDRF : ((P == 7) ? &DDRE : &DDRB)))
+      (((P >= 0 && P <= 4) || P == 6 || P == 12 || P == 24 || P == 25 || P == 29) \
+      ? &DDRD : ((P == 5 || P == 13) ? &DDRC : ((P >= 18 && P <= 23)) ? \
+      &DDRF : ((P == 7) ? &DDRE : &DDRB)))
     #define digitalPinToPINReg(P) \
-      (((P >= 0 && P <= 4) || P == 6 || P == 12 || P == 24 || P == 25 || P == 29) ? &PIND : \
-      ((P == 5 || P == 13) ? &PINC : ((P >= 18 && P <= 23)) ? &PINF : ((P == 7) ? &PINE : &PINB)))
+      (((P >= 0 && P <= 4) || P == 6 || P == 12 || P == 24 || P == 25 || P == 29) \
+      ? &PIND : ((P == 5 || P == 13) ? &PINC : ((P >= 18 && P <= 23)) ? \
+      &PINF : ((P == 7) ? &PINE : &PINB)))
     #ifndef __digitalPinToBit
       #define __digitalPinToBit(P) \
         ((P >= 8 && P <= 11) ? P - 4 : ((P >= 18 && P <= 21) ? 25 - P : \
@@ -136,14 +151,18 @@
     #endif
   #endif
 
+  /* AVR ATtiny45/85 - Trinket, Digispark ----------------------------------- */
+
   #if defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
     #define digitalPinToPortReg(P) &PORTB
     #define digitalPinToDDRReg(P)  &DDRB
     #define digitalPinToPINReg(P)  &PINB
     #ifndef __digitalPinToBit
-      #define __digitalPinToBit(P)   P - 6
+      #define __digitalPinToBit(P) P - 6
     #endif
   #endif
+
+  /* SAMD21G18A - Arduino Zero ---------------------------------------------- */
 
   #if defined(__SAMD21G18A__) || defined(ARDUINO_SAM_ZERO)  // Arduino Zero pins
     #define __digitalPinToPortBit(P) \
@@ -154,23 +173,44 @@
       ((P == 12) ? PORT_PA19 : ((P == 13) ? PORT_PA17 : ((P == A0) ? PORT_PA02 : \
       ((P == A1) ? PORT_PB08 : ((P == A2) ? PORT_PB09 : ((P == A3) ? PORT_PA04 : \
       ((P == A4) ? PORT_PA05 : ((P == A5) ? PORT_PB02 : ((P == SCK) ? PORT_PB11  : \
-      ((P == MISO) ? PORT_PA12 : ((P == MOSI) ? PORT_PB10 : ((P == PIN_WIRE_SCL) ? PORT_PA23 : \
-      ((P == PIN_WIRE_SDA) ? PORT_PA22 : PORT_PA13)))))))))))))))))))))))))
+      ((P == MISO) ? PORT_PA12 : ((P == MOSI) ? PORT_PB10 : ((P == PIN_WIRE_SCL) ? \
+      PORT_PA23 : ((P == PIN_WIRE_SDA) ? PORT_PA22 : PORT_PA13 \
+      )))))))))))))))))))))))))
 
-    #define __digitalPinToPortReg(P) ((P >= 15 && P <= 16) || (P == 19 ) || (P >= 23 && P <= 24) ? PORTB : PORTA )
-    #define __digitalPinToPortRegOUT(P) ((P >= 15 && P <= 16) || (P == 19 ) || (P >= 23 && P <= 24) ? REG_PORT_OUT1 : REG_PORT_OUT0 )
-    #define __digitalPinToPortRegOUTSET(P) ((P >= 15 && P <= 16) || (P == 19 ) || (P >= 23 && P <= 24) ? REG_PORT_OUTSET1 : REG_PORT_OUTSET0 )
-    #define __digitalPinToPortRegOUTCLR(P) ((P >= 15 && P <= 16) || (P == 19 ) || (P >= 23 && P <= 24) ? REG_PORT_OUTCLR1 : REG_PORT_OUTCLR0 )
-    #define __digitalPinToPortRegPINCFG(P) ((P >= 15 && P <= 16) || (P == 19 ) || (P >= 23 && P <= 24) ? REG_PORT_PINCFG1 : REG_PORT_PINCFG0 )
-    #define __digitalPinToPortRegDIRSET(P) ((P >= 15 && P <= 16) || (P == 19 ) || (P >= 23 && P <= 24) ? REG_PORT_DIRSET1 : REG_PORT_DIRSET0 )
-    #define __digitalPinToPortRegDIRCLR(P) ((P >= 15 && P <= 16) || (P == 19 ) || (P >= 23 && P <= 24) ? REG_PORT_DIRCLR1 : REG_PORT_DIRCLR0 )
-    #define __digitalPinToPortINReg(P) ((P >= 15 && P <= 16) || (P == 19 ) || (P >= 23 && P <= 24) ? REG_PORT_IN1 : REG_PORT_IN0 )
+    #define __digitalPinToPortReg(P) \
+      ((P >= 15 && P <= 16) || (P == 19) || (P >= 23 && P <= 24) ? PORTB : PORTA )
+    #define __digitalPinToPortRegOUT(P) \
+      ((P >= 15 && P <= 16) || (P == 19) || (P >= 23 && P <= 24) ? \
+        REG_PORT_OUT1 : REG_PORT_OUT0)
+    #define __digitalPinToPortRegOUTSET(P) \
+      ((P >= 15 && P <= 16) || (P == 19) || (P >= 23 && P <= 24) ? \
+        REG_PORT_OUTSET1 : REG_PORT_OUTSET0)
+    #define __digitalPinToPortRegOUTCLR(P) \
+      ((P >= 15 && P <= 16) || (P == 19) || (P >= 23 && P <= 24) ? \
+        REG_PORT_OUTCLR1 : REG_PORT_OUTCLR0)
+    #define __digitalPinToPortRegPINCFG(P) \
+      ((P >= 15 && P <= 16) || (P == 19) || (P >= 23 && P <= 24) ? \
+        REG_PORT_PINCFG1 : REG_PORT_PINCFG0)
+    #define __digitalPinToPortRegDIRSET(P) \
+      ((P >= 15 && P <= 16) || (P == 19) || (P >= 23 && P <= 24) ? \
+        REG_PORT_DIRSET1 : REG_PORT_DIRSET0)
+    #define __digitalPinToPortRegDIRCLR(P) \
+      ((P >= 15 && P <= 16) || (P == 19) || (P >= 23 && P <= 24) ? \
+        REG_PORT_DIRCLR1 : REG_PORT_DIRCLR0)
+    #define __digitalPinToPortINReg(P) \
+      ((P >= 15 && P <= 16) || (P == 19) || (P >= 23 && P <= 24) ? \
+        REG_PORT_IN1 : REG_PORT_IN0)
 
     /* functions for read/write/pinmode fast for SAMD chips
-     PWM pins 3, 4, 5, 6, 8, 9, 10, 11, 12, 13 provide 8-bit PWM output with the analogWrite() function
-     analogWrite works on all analog pins and all digital PWM pins. You can supply it any value between 0 and 255.
-     analog pins provide 12bits resolution and provide a value between 0-4096.
-     INPUT (0x0), OUTPUT (0x1), INPUT_PULLUP (0x2) Set pin to input mode with pull-up resistor enabled, INPUT_PULLDOWN (0x3) */
+     PWM pins 3, 4, 5, 6, 8, 9, 10, 11, 12, 13 provide 8-bit PWM output with the
+     analogWrite() function analogWrite works on all analog pins and all digital
+     PWM pins. You can supply it any value between 0 and 255. analog pins provide
+     12bits resolution and provide a value between 0-4096.
+
+     INPUT (0x0),
+     OUTPUT (0x1),
+     INPUT_PULLUP (0x2) Set pin to input mode with pull-up resistor enabled,
+     INPUT_PULLDOWN (0x3) */
 
     #define pinModeFast(P, V) \
       do { if (__builtin_constant_p(P) && __builtin_constant_p(V)) { \
@@ -180,12 +220,10 @@
           } else if(V == 0x2) { \
             PORT->Group[__digitalPinToPortReg(11)].PINCFG[g_APinDescription[11].ulPin].reg = (uint8_t)(PORT_PINCFG_INEN|PORT_PINCFG_PULLEN); \
             __digitalPinToPortRegDIRCLR(P) = (uint32_t)__digitalPinToPortBit(P); \
-            /* Enable pull level (cf '22.6.3.2 Input Configuration' and '22.8.7 Data Output Value Set')*/ \
             __digitalPinToPortRegOUTSET(P) = (uint32_t)__digitalPinToPortBit(P); \
           } else if(V == 0x3) { \
             PORT->Group[g_APinDescription[11].ulPort].PINCFG[g_APinDescription[11].ulPin].reg = (uint8_t)(PORT_PINCFG_INEN|PORT_PINCFG_PULLEN) ; \
             __digitalPinToPortRegDIRCLR(P) = (uint32_t)__digitalPinToPortBit(P); \
-            /* Enable pull level (cf '22.6.3.2 Input Configuration' and '22.8.6 Data Output Value Clear') */  \
             __digitalPinToPortRegOUTCLR(P) = (uint32_t)__digitalPinToPortBit(P); \
           } else { \
             __digitalPinToPortRegPINCFG(P) &= ~(uint8_t)(PORT_PINCFG_INEN); \
@@ -195,7 +233,9 @@
       } while (0)
 
     #define digitalReadFast(P) ( (int) _digitalReadFast_(P) )
-    #define _digitalReadFast_(P) (__builtin_constant_p(P) ) ? ( __digitalPinToPortINReg(P) & __digitalPinToPortBit(P) ) : digitalRead(P)
+    #define _digitalReadFast_(P) \
+      (__builtin_constant_p(P)) ? \
+        (__digitalPinToPortINReg(P) & __digitalPinToPortBit(P)) : digitalRead(P)
 
     #define digitalWriteFast(P, V) \
       do { if (__builtin_constant_p(P) && __builtin_constant_p(V)) { \
@@ -211,9 +251,11 @@
       } while(0)
   #endif
 
+  /* AVR related ------------------------------------------------------------ */
+
   #ifdef __AVR__
     #define __atomicWrite__(A, P, V) \
-      if ( (int)(A) < 0x40) { bitWrite(*(A), __digitalPinToBit(P), V); }  \
+      if ((int)(A) < 0x40) { bitWrite(*(A), __digitalPinToBit(P), V); }  \
       else { \
         uint8_t register saveSreg = SREG; \
         cli(); \
@@ -223,21 +265,27 @@
 
     #ifndef digitalWriteFast
       #define digitalWriteFast(P, V) \
-        do { if(__builtin_constant_p(P) && __builtin_constant_p(V)) __atomicWrite__((uint8_t*) digitalPinToPortReg(P), P, V) \
+        do { \
+          if(__builtin_constant_p(P) && __builtin_constant_p(V)) \
+            __atomicWrite__((uint8_t*) digitalPinToPortReg(P), P, V) \
           else digitalWrite(P, V); \
         } while(0)
     #endif
 
     #if !defined(pinModeFast)
       #define pinModeFast(P, V) \
-      do { if(__builtin_constant_p(P) && __builtin_constant_p(V)) __atomicWrite__((uint8_t*) digitalPinToDDRReg(P), P, V) \
+      do { \
+        if(__builtin_constant_p(P) && __builtin_constant_p(V)) \
+          __atomicWrite__((uint8_t*) digitalPinToDDRReg(P), P, V) \
         else pinMode(P, V); \
       } while(0)
     #endif
 
     #ifndef noAnalogWrite
       #define noAnalogWrite(P) \
-      	do { if(__builtin_constant_p(P) )  __atomicWrite((uint8_t*) __digitalPinToTimer(P), P, 0) \
+      	do { \
+          if(__builtin_constant_p(P)) \
+            __atomicWrite((uint8_t*) __digitalPinToTimer(P), P, 0) \
       		else turnOffPWM(P); \
         } while(0)
     #endif
@@ -246,7 +294,7 @@
     	#define digitalReadFast(P) ((int) _digitalReadFast_(P))
     	#define _digitalReadFast_(P) \
       	(__builtin_constant_p(P)) ? ( \
-      	(BIT_READ(*digitalPinToPINReg(P), __digitalPinToBit(P)))) : \
+      	((((*digitalPinToPINReg(P)) >> (__digitalPinToBit(P))) & 0x01))) : \
       	digitalRead(P)
     #endif
 
@@ -260,6 +308,9 @@
       } while(0)
 
   #else
+
+    /* Fallback to digitalWrite --------------------------------------------- */
+
     #if !defined(digitalWriteFast)
       #define digitalWriteFast digitalWrite
     #endif
@@ -280,4 +331,3 @@
         } while(0)
     #endif
   #endif
-#endif

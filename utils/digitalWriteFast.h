@@ -98,7 +98,7 @@
   #if defined(__AVR_ATmega8__)
     #define __digitalPinToTimer(P) \
       ((P ==  9 || P == 10) ? &TCCR1A : ((P == 11) ? &TCCR2 : 0))
-    #define __digitalPinToTimerBitP \
+    #define __digitalPinToTimerBit(P) \
       ((P ==  9) ? COM1A1 : ((P == 10) ? COM1B1 : COM21))
   #endif
 

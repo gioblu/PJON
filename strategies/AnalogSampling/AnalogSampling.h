@@ -37,7 +37,7 @@
    limitations under the License. */
 
 #include "Timing.h"
-#include "../../utils/PJON_IO.h"
+#include "../../utils/PJON_IO.h" // Dedicated version of digitalWriteFast
 
 /* Default reading state threshold: */
 

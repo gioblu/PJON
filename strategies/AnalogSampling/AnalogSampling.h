@@ -37,7 +37,7 @@
    limitations under the License. */
 
 #include "Timing.h"
-#include "../../utils/digitalWriteFast.h"
+#include "../../utils/PJON_IO.h"
 
 /* Default reading state threshold: */
 
@@ -74,9 +74,9 @@ class AnalogSampling {
 
     boolean begin(uint8_t additional_randomness = 0) {
       delay(random(0, AS_INITIAL_DELAY) + additional_randomness);
-      pullDownFast(_input_pin);
+      PJON_IO_PULL_DOWN(_input_pin);
       if(_output_pin != _input_pin)
-        pullDownFast(_output_pin);
+        PJON_IO_PULL_DOWN(_output_pin);
       uint32_t time = micros();
       compute_analog_read_duration();
       return true;
@@ -166,9 +166,9 @@ class AnalogSampling {
 
 
     uint16_t receive_byte() {
-      pullDownFast(_input_pin);
+      PJON_IO_PULL_DOWN(_input_pin);
       if(_output_pin != NOT_ASSIGNED && _output_pin != _input_pin)
-        pullDownFast(_output_pin);
+        PJON_IO_PULL_DOWN(_output_pin);
       uint32_t time = micros();
 
       if(
@@ -196,9 +196,9 @@ class AnalogSampling {
     /* Receive byte response */
 
     uint16_t receive_response() {
-      pullDownFast(_input_pin);
+      PJON_IO_PULL_DOWN(_input_pin);
       if(_output_pin != NOT_ASSIGNED && _output_pin != _input_pin)
-        digitalWriteFast(_output_pin, LOW);
+        PJON_IO_WRITE(_output_pin, LOW);
       uint16_t response = FAIL;
       uint32_t time = micros();
       while(
@@ -229,12 +229,12 @@ class AnalogSampling {
     detected at byte level. */
 
     void send_byte(uint8_t b) {
-      digitalWriteFast(_output_pin, HIGH);
+      PJON_IO_WRITE(_output_pin, HIGH);
       delayMicroseconds(AS_BIT_SPACER);
-      digitalWriteFast(_output_pin, LOW);
+      PJON_IO_WRITE(_output_pin, LOW);
       delayMicroseconds(AS_BIT_WIDTH);
       for(uint8_t mask = 0x01; mask; mask <<= 1) {
-        digitalWriteFast(_output_pin, b & mask);
+        PJON_IO_WRITE(_output_pin, b & mask);
         delayMicroseconds(AS_BIT_WIDTH);
       }
     };
@@ -244,20 +244,20 @@ class AnalogSampling {
 
     void send_response(uint8_t response) {
       delayMicroseconds(AS_BIT_WIDTH);
-      pullDownFast(_input_pin);
-      pinModeFast(_output_pin, OUTPUT);
+      PJON_IO_PULL_DOWN(_input_pin);
+      PJON_IO_MODE(_output_pin, OUTPUT);
       send_byte(response);
-      pullDownFast(_output_pin);
+      PJON_IO_PULL_DOWN(_output_pin);
     };
 
 
     /* Send a string: */
 
     void send_string(uint8_t *string, uint16_t length) {
-      pinModeFast(_output_pin, OUTPUT);
+      PJON_IO_MODE(_output_pin, OUTPUT);
       for(uint16_t b = 0; b < length; b++)
         send_byte(string[b]);
-      pullDownFast(_output_pin);
+      PJON_IO_PULL_DOWN(_output_pin);
     };
 
 

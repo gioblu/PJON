@@ -35,7 +35,7 @@ Oversampling strategy comes from the [PJON_ASK](https://github.com/gioblu/PJON_A
 
 **[SoftwareBitBang](https://github.com/gioblu/PJON/tree/master/strategies/SoftwareBitBang)** | **Medium:** Wire | **Pins used:** 1 or 2
 
-SoftwareBitBang is the default data link layer strategy used by the PJON template object. This implementation is based on `micros()` and `delayMicroseconds()`. It makes no use of dedicated timers or interrupt driven strategies to handle communication. It is designed to have a small memory footprint and to be extremely resilient to interference and timing inaccuracies. Thanks to the use of a dedicated digitalWriteFast library, can be achieved fast and reliable cross-architecture communication through one or two pins.
+SoftwareBitBang is the default data link layer strategy used by the PJON template object. This implementation is based on `micros()` and `delayMicroseconds()`. It makes no use of dedicated timers or interrupt driven strategies to handle communication. It is designed to have a small memory footprint and to be extremely resilient to interference and timing inaccuracies. Thanks to the use of a dedicated PJON_IO library, can be achieved fast and reliable cross-architecture communication through one or two pins.
 
 **[ThroughSerial](https://github.com/gioblu/PJON/tree/master/strategies/ThroughSerial)** | **Medium:** Hardware Serial port |
 **Pins used:** 2

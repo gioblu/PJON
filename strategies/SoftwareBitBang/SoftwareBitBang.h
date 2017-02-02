@@ -42,7 +42,7 @@ STANDARD transmission mode performance:
 #endif
 
 #include "Timing.h"
-#include "../../utils/digitalWriteFast.h"
+#include "../../utils/PJON_IO.h"
 
 class SoftwareBitBang {
   public:
@@ -61,9 +61,9 @@ class SoftwareBitBang {
 
     boolean begin(uint8_t additional_randomness = 0) {
       delay(random(0, SWBB_INITIAL_DELAY) + additional_randomness);
-      pullDownFast(_input_pin);
+      PJON_IO_PULL_DOWN(_input_pin);
       if(_output_pin != _input_pin)
-        pullDownFast(_output_pin);
+        PJON_IO_PULL_DOWN(_output_pin);
       return true;
     };
 
@@ -72,20 +72,20 @@ class SoftwareBitBang {
        If receiving 10 bits no 1s are detected there is no active transmission */
 
     boolean can_start() {
-      pinModeFast(_input_pin, INPUT);
+      PJON_IO_MODE(_input_pin, INPUT);
       delayMicroseconds(SWBB_BIT_SPACER / 2);
-      if(digitalReadFast(_input_pin)) return false;
+      if(PJON_IO_READ(_input_pin)) return false;
       delayMicroseconds((SWBB_BIT_SPACER / 2));
-      if(digitalReadFast(_input_pin)) return false;
+      if(PJON_IO_READ(_input_pin)) return false;
       delayMicroseconds(SWBB_BIT_WIDTH / 2);
       for(uint8_t i = 0; i < 9; i++) {
-        if(digitalReadFast(_input_pin))
+        if(PJON_IO_READ(_input_pin))
           return false;
         delayMicroseconds(SWBB_BIT_WIDTH);
       }
-      if(digitalReadFast(_input_pin)) return false;
+      if(PJON_IO_READ(_input_pin)) return false;
       delayMicroseconds(random(0, SWBB_COLLISION_DELAY));
-      if(digitalReadFast(_input_pin)) return false;
+      if(PJON_IO_READ(_input_pin)) return false;
       return true;
     };
 
@@ -112,12 +112,12 @@ class SoftwareBitBang {
       delayMicroseconds(SWBB_BIT_WIDTH / 2);
       for(uint8_t i = 0; i < 7; i++) {
         /* Read in the center of the n one */
-        byte_value += digitalReadFast(_input_pin) << i;
+        byte_value += PJON_IO_READ(_input_pin) << i;
         /* Delay until the center of the next one */
         delayMicroseconds(SWBB_BIT_WIDTH);
       }
       /* Read in the center of the last one */
-      byte_value += digitalReadFast(_input_pin) << 7;
+      byte_value += PJON_IO_READ(_input_pin) << 7;
       /* Delay until the end of the bit */
       delayMicroseconds(SWBB_BIT_WIDTH / 2);
       return byte_value;
@@ -140,14 +140,14 @@ class SoftwareBitBang {
 
     uint16_t receive_byte() {
       /* Initialize the pin and set it to LOW to reduce interference */
-      pullDownFast(_input_pin);
+      PJON_IO_PULL_DOWN(_input_pin);
 
       if(_output_pin != _input_pin && _output_pin != NOT_ASSIGNED)
-        pullDownFast(_output_pin);
+        PJON_IO_PULL_DOWN(_output_pin);
 
       uint32_t time = micros();
       /* Do nothing until the pin goes LOW or passed more time than SWBB_BIT_SPACER duration */
-      while(digitalReadFast(_input_pin) && (uint32_t)(micros() - time) <= SWBB_BIT_SPACER);
+      while(PJON_IO_READ(_input_pin) && (uint32_t)(micros() - time) <= SWBB_BIT_SPACER);
       /* Save how much time passed */
       time = micros() - time;
       /* is for sure equal or less than SWBB_BIT_SPACER, and if is more than ACCEPTANCE
@@ -163,7 +163,7 @@ class SoftwareBitBang {
 
     uint16_t receive_response() {
       if(_output_pin != _input_pin && _output_pin != NOT_ASSIGNED)
-        digitalWriteFast(_output_pin, LOW);
+        PJON_IO_WRITE(_output_pin, LOW);
 
       uint16_t response = FAIL;
       uint32_t time = micros();
@@ -172,13 +172,13 @@ class SoftwareBitBang {
          Receiver synchronizes to the falling edge of the last incoming
          bit and transmits ACK or NAK */
       while(response == FAIL && (uint32_t)(micros() - SWBB_TIMEOUT) <= time) {
-        digitalWriteFast(_input_pin, LOW);
+        PJON_IO_WRITE(_input_pin, LOW);
         response = receive_byte();
         if(response == FAIL) {
-          pinModeFast(_output_pin, OUTPUT);
-          digitalWriteFast(_output_pin, HIGH);
+          PJON_IO_MODE(_output_pin, OUTPUT);
+          PJON_IO_WRITE(_output_pin, HIGH);
           delayMicroseconds(SWBB_BIT_WIDTH / 4);
-          pullDownFast(_output_pin);
+          PJON_IO_PULL_DOWN(_output_pin);
         }
       }
       return response;
@@ -204,12 +204,12 @@ class SoftwareBitBang {
     detected at byte level. */
 
     void send_byte(uint8_t b) {
-      digitalWriteFast(_output_pin, HIGH);
+      PJON_IO_WRITE(_output_pin, HIGH);
       delayMicroseconds(SWBB_BIT_SPACER);
-      digitalWriteFast(_output_pin, LOW);
+      PJON_IO_WRITE(_output_pin, LOW);
       delayMicroseconds(SWBB_BIT_WIDTH);
       for(uint8_t mask = 0x01; mask; mask <<= 1) {
-        digitalWriteFast(_output_pin, b & mask);
+        PJON_IO_WRITE(_output_pin, b & mask);
         delayMicroseconds(SWBB_BIT_WIDTH);
       }
     };
@@ -218,28 +218,28 @@ class SoftwareBitBang {
     /* Send byte response to package transmitter */
 
     void send_response(uint8_t response) {
-      pullDownFast(_input_pin);
+      PJON_IO_PULL_DOWN(_input_pin);
       uint32_t time = micros();
       /* Transmitter emits a bit SWBB_BIT_WIDTH / 4 long and tries
          to get a response cyclically for SWBB_TIMEOUT microseconds.
          Receiver synchronizes to the falling edge of the last incoming
          bit and transmits ACK or NAK */
-      while((uint32_t)(micros() - time) < (SWBB_BIT_WIDTH) && !digitalReadFast(_input_pin))
+      while((uint32_t)(micros() - time) < (SWBB_BIT_WIDTH) && !PJON_IO_READ(_input_pin))
         time = micros(); // Wait for the last high ending
-      while((uint32_t)(micros() - time) < (SWBB_BIT_WIDTH / 2.25) && digitalReadFast(_input_pin));
-      pinModeFast(_output_pin, OUTPUT);
+      while((uint32_t)(micros() - time) < (SWBB_BIT_WIDTH / 2.25) && PJON_IO_READ(_input_pin));
+      PJON_IO_MODE(_output_pin, OUTPUT);
       send_byte(response);
-      pullDownFast(_output_pin);
+      PJON_IO_PULL_DOWN(_output_pin);
     };
 
 
     /* Send a string: */
 
     void send_string(uint8_t *string, uint16_t length) {
-      pinModeFast(_output_pin, OUTPUT);
+      PJON_IO_MODE(_output_pin, OUTPUT);
       for(uint16_t b = 0; b < length; b++)
         send_byte(string[b]);
-      pullDownFast(_output_pin);
+      PJON_IO_PULL_DOWN(_output_pin);
     };
 
 
@@ -252,7 +252,7 @@ class SoftwareBitBang {
 
     uint8_t syncronization_bit() {
       delayMicroseconds((SWBB_BIT_WIDTH / 2) - SWBB_READ_DELAY);
-      uint8_t bit_value = digitalReadFast(_input_pin);
+      uint8_t bit_value = PJON_IO_READ(_input_pin);
       delayMicroseconds(SWBB_BIT_WIDTH / 2);
       return bit_value;
     };

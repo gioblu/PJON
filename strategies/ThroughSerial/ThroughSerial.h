@@ -25,6 +25,7 @@
 
 #include <Arduino.h>
 #include "Timing.h"
+#include "../../utils/PJON_IO.h"
 
 class ThroughSerial {
   public:
@@ -104,13 +105,13 @@ class ThroughSerial {
 
     void send_response(uint8_t response) {
       if(_enable_RS485_pin != NOT_ASSIGNED)
-        digitalWriteFast(_enable_RS485_pin, HIGH);
+        PJON_IO_WRITE(_enable_RS485_pin, HIGH);
 
       send_byte(response);
       serial->flush();
 
       if(_enable_RS485_pin != NOT_ASSIGNED)
-        digitalWriteFast(_enable_RS485_pin, LOW);
+        PJON_IO_WRITE(_enable_RS485_pin, LOW);
     };
 
 
@@ -118,14 +119,14 @@ class ThroughSerial {
 
     void send_string(uint8_t *string, uint8_t length) {
       if(_enable_RS485_pin != NOT_ASSIGNED)
-        digitalWriteFast(_enable_RS485_pin, HIGH);
+        PJON_IO_WRITE(_enable_RS485_pin, HIGH);
 
       for(uint8_t b = 0; b < length; b++)
         send_byte(string[b]);
       serial->flush();
 
       if(_enable_RS485_pin != NOT_ASSIGNED)
-        digitalWriteFast(_enable_RS485_pin, LOW);
+        PJON_IO_WRITE(_enable_RS485_pin, LOW);
     };
 
 
@@ -140,7 +141,7 @@ class ThroughSerial {
 
     void set_enable_RS485_pin(uint8_t pin) {
       _enable_RS485_pin = pin;
-      pinModeFast(_enable_RS485_pin, OUTPUT);
+      PJON_IO_MODE(_enable_RS485_pin, OUTPUT);
     };
 
   private:

@@ -7,8 +7,8 @@ uint8_t bus_id[] = {0, 0, 0, 1};
 PJON<OverSampling> bus(bus_id, 45);
 
 void setup() {
-  pinModeFast(13, OUTPUT);
-  digitalWriteFast(13, LOW); // Initialize LED 13 to be off
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW); // Initialize LED 13 to be off
 
   bus.set_synchronous_acknowledge(false);
   bus.strategy.set_pins(11, 12);

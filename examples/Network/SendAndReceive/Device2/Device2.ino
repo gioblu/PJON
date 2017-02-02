@@ -8,8 +8,8 @@ int packet;
 PJON<SoftwareBitBang> bus(bus_id, 45);
 
 void setup() {
-  pinModeFast(13, OUTPUT);
-  digitalWriteFast(13, LOW); // Initialize LED 13 to be off
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW); // Initialize LED 13 to be off
 
   bus.strategy.set_pin(12);
   bus.begin();

@@ -5,8 +5,8 @@ PJON<SoftwareBitBang> bus(45);
 
 void setup() {
   Serial.begin(115200);
-  pinModeFast(13, OUTPUT);
-  digitalWriteFast(13, LOW); // Initialize LED 13 to be off
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW); // Initialize LED 13 to be off
 
   bus.strategy.set_pin(12);
   bus.set_receiver(receiver_function);

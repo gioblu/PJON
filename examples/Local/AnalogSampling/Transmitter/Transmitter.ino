@@ -4,8 +4,8 @@
 PJON<AnalogSampling> bus(45);
 
 void setup() {
-  pinModeFast(13, OUTPUT);
-  digitalWriteFast(13, LOW); // Initialize LED 13 to be off
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW); // Initialize LED 13 to be off
 
   /* Use internal 1.1v analog reference (not available on Arduino Mega)
   DEFAULT: Default analog reference 5v (5v Arduino boards) or 3.3v (3.3V Arduino boards)

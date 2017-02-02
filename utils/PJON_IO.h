@@ -222,11 +222,13 @@ their definition as macros in the global scope.
           PJON_IO_PIN_TO_PORT_REGPINCFG(P) = (uint8_t)(PORT_PINCFG_INEN); \
           PJON_IO_PIN_TO_PORT_REGDIRCLR(P) = (uint32_t)PJON_IO_PIN_TO_PORT_BIT(P); \
         } else if(V == 0x2) { \
-          PORT->Group[PJON_IO_PIN_TO_PORT_REG(11)].PINCFG[g_APinDescription[11].ulPin].reg = (uint8_t)(PORT_PINCFG_INEN|PORT_PINCFG_PULLEN); \
+          PORT->Group[PJON_IO_PIN_TO_PORT_REG(11)].PINCFG[g_APinDescription[11].ulPin].reg = \
+          (uint8_t)(PORT_PINCFG_INEN|PORT_PINCFG_PULLEN); \
           PJON_IO_PIN_TO_PORT_REGDIRCLR(P) = (uint32_t)PJON_IO_PIN_TO_PORT_BIT(P); \
           PJON_IO_PIN_TO_PORT_REGOUTSET(P) = (uint32_t)PJON_IO_PIN_TO_PORT_BIT(P); \
         } else if(V == 0x3) { \
-          PORT->Group[g_APinDescription[11].ulPort].PINCFG[g_APinDescription[11].ulPin].reg = (uint8_t)(PORT_PINCFG_INEN|PORT_PINCFG_PULLEN) ; \
+          PORT->Group[g_APinDescription[11].ulPort].PINCFG[g_APinDescription[11].ulPin].reg = \
+          (uint8_t)(PORT_PINCFG_INEN|PORT_PINCFG_PULLEN) ; \
           PJON_IO_PIN_TO_PORT_REGDIRCLR(P) = (uint32_t)PJON_IO_PIN_TO_PORT_BIT(P); \
           PJON_IO_PIN_TO_PORT_REGOUTCLR(P) = (uint32_t)PJON_IO_PIN_TO_PORT_BIT(P); \
         } else { \

@@ -142,7 +142,7 @@ class SoftwareBitBang {
       /* Initialize the pin and set it to LOW to reduce interference */
       PJON_IO_PULL_DOWN(_input_pin);
 
-      if(_output_pin != _input_pin && _output_pin != NOT_ASSIGNED)
+      if(_output_pin != _input_pin && _output_pin != PJON_NOT_ASSIGNED)
         PJON_IO_PULL_DOWN(_output_pin);
 
       uint32_t time = micros();
@@ -162,7 +162,7 @@ class SoftwareBitBang {
     /* Receive byte response */
 
     uint16_t receive_response() {
-      if(_output_pin != _input_pin && _output_pin != NOT_ASSIGNED)
+      if(_output_pin != _input_pin && _output_pin != PJON_NOT_ASSIGNED)
         PJON_IO_WRITE(_output_pin, LOW);
 
       uint16_t response = FAIL;
@@ -268,7 +268,10 @@ class SoftwareBitBang {
 
     /* Set a pair of communication pins: */
 
-    void set_pins(uint8_t input_pin = NOT_ASSIGNED, uint8_t output_pin = NOT_ASSIGNED) {
+    void set_pins(
+      uint8_t input_pin = PJON_NOT_ASSIGNED,
+      uint8_t output_pin = PJON_NOT_ASSIGNED
+    ) {
       _input_pin = input_pin;
       _output_pin = output_pin;
     };

@@ -103,7 +103,7 @@ limitations under the License. */
         char response[6];
         uint16_t state = reserve_id(rid);
         if(state == DEVICES_BUFFER_FULL) return;
-        if(state == FAIL) return negate_id(NOT_ASSIGNED, b_id, rid);
+        if(state == FAIL) return negate_id(PJON_NOT_ASSIGNED, b_id, rid);
 
         response[0] = ID_REQUEST;
         response[1] = (uint32_t)(rid) >> 24;

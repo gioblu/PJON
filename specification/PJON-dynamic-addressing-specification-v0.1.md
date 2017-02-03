@@ -44,7 +44,7 @@ ______|_____________|_____________|_____________|___________| ID   254 |
 * Handles `ID_NEGATE` requests from slaves who are leaving the bus  
 
 ####Slave features
-* The slave initial device id is `NOT_ASSIGNED` (value 255)
+* The slave initial device id is `PJON_NOT_ASSIGNED` (value 255)
 * Slaves have a unique random generated 4 bytes id or rid
 * Sends `ID_REFRESH` request to master if required by master `ID_LIST` broadcast
 * Sends `ID_REQUEST` to master if device id assignment is necessary
@@ -60,7 +60,7 @@ Slave sends an `ID_REQUEST` to get a new device id:
 >| MASTER_ID | 00010100 | LENGTH | ID_REQUEST | RID 1 | RID 2 | RID 3 | RID 4 | CRC |> <| ACK |
  |___________|__________|________|____________|_______|_______|_______|_______|_____|   |_____|
 ```
-If master detects a device rid collision, sends a `ID_NEGATE` request to `NOT_ASSIGNED` device id to force
+If master detects a device rid collision, sends a `ID_NEGATE` request to `PJON_NOT_ASSIGNED` device id to force
 the collided device still not approved to regenerate a device rid:
 ```cpp  
   ______________ __________ ________ ___________ _______ _______ _______ _______ _____     _____

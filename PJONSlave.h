@@ -51,7 +51,7 @@ limitations under the License. */
       /* PJONSlave bus default initialization:
          State: Local (bus_id: 0.0.0.0)
          Acknowledge: true (Acknowledge is requested)
-         device id: NOT_ASSIGNED (255)
+         device id: PJON_NOT_ASSIGNED (255)
          Mode: HALF_DUPLEX
          Sender info: true (Sender info are included in the packet)
          Strategy: SoftwareBitBang */
@@ -103,10 +103,10 @@ limitations under the License. */
         uint32_t time = micros();
         char msg = ID_ACQUIRE;
         char head = this->config | ADDRESS_BIT | ACK_REQUEST_BIT;
-        this->_device_id = NOT_ASSIGNED;
+        this->_device_id = PJON_NOT_ASSIGNED;
 
         for(uint8_t id = generate_random_byte(); (uint32_t)(micros() - time) < ID_SCAN_TIME; id++)
-          if(id == PJON_BROADCAST || id == NOT_ASSIGNED || id == PJON_MASTER_ID) continue;
+          if(id == PJON_BROADCAST || id == PJON_NOT_ASSIGNED || id == PJON_MASTER_ID) continue;
           else if(this->send_packet_blocking(id, this->bus_id, &msg, 1, head) == FAIL) {
             this->_device_id = id;
             break;
@@ -144,7 +144,7 @@ limitations under the License. */
 
       void begin() {
         PJON<Strategy>::begin();
-        if(this->_device_id == NOT_ASSIGNED)
+        if(this->_device_id == PJON_NOT_ASSIGNED)
           acquire_id();
       };
 
@@ -168,7 +168,7 @@ limitations under the License. */
           6,
           this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
         ) == ACK) {
-          this->_device_id = NOT_ASSIGNED;
+          this->_device_id = PJON_NOT_ASSIGNED;
           return true;
         }
         return false;
@@ -231,7 +231,7 @@ limitations under the License. */
                 6,
                 this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
               ) != ACK) {
-                this->set_id(NOT_ASSIGNED);
+                this->set_id(PJON_NOT_ASSIGNED);
                 _slave_error(ID_ACQUISITION_FAIL, ID_CONFIRM);
               }
             }
@@ -245,7 +245,7 @@ limitations under the License. */
             ) acquire_id();
 
           if(this->data[overhead - CRC_overhead] == ID_LIST)
-            if(this->_device_id != NOT_ASSIGNED)
+            if(this->_device_id != PJON_NOT_ASSIGNED)
               if((uint32_t)(micros() - _last_request_time) > (ADDRESSING_TIMEOUT * 1.125)) {
                 _last_request_time = micros();
                 response[0] = ID_REFRESH;

@@ -52,8 +52,8 @@ limitations under the License. */
   #define PJON_MASTER_ID 254
 
   /* Device id of still unindexed devices */
-  #ifndef NOT_ASSIGNED
-    #define NOT_ASSIGNED 255
+  #ifndef PJON_NOT_ASSIGNED
+    #define PJON_NOT_ASSIGNED 255
   #endif
 
   /* Maximum devices handled by master */

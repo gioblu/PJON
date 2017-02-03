@@ -128,13 +128,13 @@ limitations under the License. */
       /* PJON bus default initialization:
          State: Local (bus_id: 0.0.0.0)
          Acknowledge: true (Acknowledge is requested)
-         device id: NOT_ASSIGNED (255)
+         device id: PJON_NOT_ASSIGNED (255)
          Mode: HALF_DUPLEX
          Sender info: true (Sender info are included in the packet)
          Strategy: SoftwareBitBang */
 
       PJON() : strategy(Strategy()) {
-        _device_id = NOT_ASSIGNED;
+        _device_id = PJON_NOT_ASSIGNED;
         set_default();
       };
 
@@ -162,7 +162,7 @@ limitations under the License. */
       /* Begin function to be called in setup: */
 
       void begin() {
-        uint8_t device_id_seed = (_device_id != NOT_ASSIGNED) ? _device_id : 0;
+        uint8_t device_id_seed = (_device_id != PJON_NOT_ASSIGNED) ? _device_id : 0;
         randomSeed(analogRead(_random_seed) + device_id_seed);
         strategy.begin(device_id_seed);
         #if(INCLUDE_ASYNC_ACK)
@@ -179,10 +179,10 @@ limitations under the License. */
         char *destination,
         const char *source,
         uint16_t length,
-        uint16_t header = NOT_ASSIGNED,
+        uint16_t header = PJON_NOT_ASSIGNED,
         uint16_t p_id = 0
       ) {
-        if(header == NOT_ASSIGNED) header = config;
+        if(header == PJON_NOT_ASSIGNED) header = config;
         if(header > 255) header |= EXTEND_HEADER_BIT;
         if(length > 255) header |= (EXTEND_LENGTH_BIT | CRC_BIT);
         if(id == PJON_BROADCAST) header &= ~(ACK_REQUEST_BIT | ACK_MODE_BIT);
@@ -257,7 +257,7 @@ limitations under the License. */
         const char *packet,
         uint16_t length,
         uint32_t timing,
-        uint16_t header = NOT_ASSIGNED,
+        uint16_t header = PJON_NOT_ASSIGNED,
         uint16_t p_id = 0
       ) {
         for(uint8_t i = 0; i < MAX_PACKETS; i++)
@@ -281,11 +281,12 @@ limitations under the License. */
          Don't pass any parameter to count all packets
          Pass a device id to count all it's related packets */
 
-      uint8_t get_packets_count(uint8_t device_id = NOT_ASSIGNED) const {
+      uint8_t get_packets_count(uint8_t device_id = PJON_NOT_ASSIGNED) const {
         uint8_t packets_count = 0;
         for(uint8_t i = 0; i < MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
-          if(device_id == NOT_ASSIGNED || packets[i].content[0] == device_id) packets_count++;
+          if(device_id == PJON_NOT_ASSIGNED || packets[i].content[0] == device_id)
+            packets_count++;
         }
         return packets_count;
       };
@@ -302,8 +303,8 @@ limitations under the License. */
 
       /* Calculate the packet's overhead: */
 
-      uint8_t packet_overhead(uint16_t header = NOT_ASSIGNED) const {
-        header = (header == NOT_ASSIGNED) ? config : header;
+      uint8_t packet_overhead(uint16_t header = PJON_NOT_ASSIGNED) const {
+        header = (header == PJON_NOT_ASSIGNED) ? config : header;
         return (
           (
             (header & MODE_BIT) ?
@@ -503,7 +504,11 @@ limitations under the License. */
          This function is typically called from with the receive
          callback function to deliver a response to a request. */
 
-      uint16_t reply(const char *packet, uint16_t length, uint16_t header = NOT_ASSIGNED) {
+      uint16_t reply(
+        const char *packet,
+        uint16_t length,
+        uint16_t header = PJON_NOT_ASSIGNED
+      ) {
         if(last_packet_info.sender_id != PJON_BROADCAST)
           return dispatch(
             last_packet_info.sender_id,
@@ -519,7 +524,12 @@ limitations under the License. */
 
       /* Insert a packet in the send list: */
 
-      uint16_t send(uint8_t id, const char *string, uint16_t length, uint16_t header = NOT_ASSIGNED) {
+      uint16_t send(
+        uint8_t id,
+        const char *string,
+        uint16_t length,
+        uint16_t header = PJON_NOT_ASSIGNED
+      ) {
         return dispatch(id, bus_id, string, length, 0, header);
       };
 
@@ -529,32 +539,34 @@ limitations under the License. */
         const uint8_t *b_id,
         const char *string,
         uint16_t length,
-        uint16_t header = NOT_ASSIGNED
+        uint16_t header = PJON_NOT_ASSIGNED
       ) {
         return dispatch(id, b_id, string, length, 0, header);
       };
 
 
-      /* IMPORTANT: send_repeatedly timing maximum is 4293014170 microseconds or 71.55 minutes */
+      /* IMPORTANT: send_repeatedly timing maximum
+         is 4293014170 microseconds or 71.55 minutes */
       uint16_t send_repeatedly(
         uint8_t id,
         const char *string,
         uint16_t length,
         uint32_t timing,
-        uint16_t header = NOT_ASSIGNED
+        uint16_t header = PJON_NOT_ASSIGNED
       ) {
         return dispatch(id, bus_id, string, length, timing, header);
       };
 
 
-      /* IMPORTANT: send_repeatedly timing maximum is 4293014170 microseconds or 71.55 minutes */
+      /* IMPORTANT: send_repeatedly timing maximum
+         is 4293014170 microseconds or 71.55 minutes */
       uint16_t send_repeatedly(
         uint8_t id,
         const uint8_t *b_id,
         const char *string,
         uint16_t length,
         uint32_t timing,
-        uint16_t header = NOT_ASSIGNED
+        uint16_t header = PJON_NOT_ASSIGNED
       ) {
         return dispatch(id, b_id, string, length, timing, header);
       };
@@ -579,7 +591,12 @@ limitations under the License. */
 
       /* Compose and send a packet passing its info as parameters: */
 
-      uint16_t send_packet(uint8_t id, char *string, uint16_t length, uint16_t header = NOT_ASSIGNED) {
+      uint16_t send_packet(
+        uint8_t id,
+        char *string,
+        uint16_t length,
+        uint16_t header = PJON_NOT_ASSIGNED
+      ) {
         if(!(length = compose_packet(id, bus_id, (char *)data, string, length, header)))
           return FAIL;
         return send_packet((char *)data, length);
@@ -591,7 +608,7 @@ limitations under the License. */
         const uint8_t *b_id,
         char *string,
         uint16_t length,
-        uint16_t header = NOT_ASSIGNED
+        uint16_t header = PJON_NOT_ASSIGNED
       ) {
         if(!(length = compose_packet(id, b_id, (char *)data, string, length, header)))
           return FAIL;
@@ -608,7 +625,7 @@ limitations under the License. */
         const uint8_t *b_id,
         const char *string,
         uint16_t length,
-        uint16_t header = NOT_ASSIGNED,
+        uint16_t header = PJON_NOT_ASSIGNED,
         uint32_t timeout = 3000000
       ) {
         if(!(length = compose_packet(
@@ -640,7 +657,7 @@ limitations under the License. */
         uint8_t id,
         const char *string,
         uint16_t length,
-        uint16_t header = NOT_ASSIGNED
+        uint16_t header = PJON_NOT_ASSIGNED
       ) {
         return send_packet_blocking(id, bus_id, string, length, header);
       };

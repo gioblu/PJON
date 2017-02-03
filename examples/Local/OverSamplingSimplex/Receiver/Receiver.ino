@@ -19,7 +19,7 @@ PJON<OverSampling> bus(44);
 
 void setup() {
   bus.set_communication_mode(SIMPLEX);
-  bus.strategy.set_pins(11, NOT_ASSIGNED);
+  bus.strategy.set_pins(11, PJON_NOT_ASSIGNED);
   bus.begin();
 
   bus.set_receiver(receiver_function);

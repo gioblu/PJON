@@ -20,7 +20,7 @@ char content[] = "01234567890123456789";
 
 void setup() {
   bus.set_communication_mode(SIMPLEX);
-  bus.strategy.set_pins(NOT_ASSIGNED, 12);
+  bus.strategy.set_pins(PJON_NOT_ASSIGNED, 12);
 
   bus.begin();
   packet = bus.send(44, content, 20);

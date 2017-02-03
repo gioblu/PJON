@@ -65,7 +65,7 @@ limitations under the License. */
          Sender info: true (Sender info are included in the packet)
          Strategy: SoftwareBitBang */
 
-      PJONMaster() : PJON<Strategy>(MASTER_ID) {
+      PJONMaster() : PJON<Strategy>(PJON_MASTER_ID) {
         PJON<Strategy>::set_error(static_error_handler);
         set_error(dummy_error_handler);
         set_receiver(dummy_receiver_handler);
@@ -76,7 +76,7 @@ limitations under the License. */
          uint8_t my_bus = {1, 1, 1, 1};
          PJONMaster master(my_bys); */
 
-      PJONMaster(const uint8_t *b_id) : PJON<Strategy>(b_id, MASTER_ID) {
+      PJONMaster(const uint8_t *b_id) : PJON<Strategy>(b_id, PJON_MASTER_ID) {
         PJON<Strategy>::set_error(static_error_handler);
         set_error(dummy_error_handler);
         set_receiver(dummy_receiver_handler);

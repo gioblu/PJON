@@ -47,11 +47,11 @@ limitations under the License. */
 
   /* Id used for broadcasting to all devices */
   #ifndef PJON_BROADCAST
-    #define PJON_BROADCAST      0
+    #define PJON_BROADCAST 0
   #endif
 
   /* Master device id */
-  #define MASTER_ID      254
+  #define PJON_MASTER_ID 254
 
   /* Device id of still unindexed devices */
   #ifndef NOT_ASSIGNED

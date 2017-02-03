@@ -106,7 +106,7 @@ limitations under the License. */
         this->_device_id = NOT_ASSIGNED;
 
         for(uint8_t id = generate_random_byte(); (uint32_t)(micros() - time) < ID_SCAN_TIME; id++)
-          if(id == PJON_BROADCAST || id == NOT_ASSIGNED || id == MASTER_ID) continue;
+          if(id == PJON_BROADCAST || id == NOT_ASSIGNED || id == PJON_MASTER_ID) continue;
           else if(this->send_packet_blocking(id, this->bus_id, &msg, 1, head) == FAIL) {
             this->_device_id = id;
             break;
@@ -129,7 +129,7 @@ limitations under the License. */
         response[4] = (uint32_t)(_rid);
 
         if(this->send_packet_blocking(
-          MASTER_ID,
+          PJON_MASTER_ID,
           this->bus_id,
           response,
           5,
@@ -162,7 +162,7 @@ limitations under the License. */
         };
 
         if(this->send_packet_blocking(
-          MASTER_ID,
+          PJON_MASTER_ID,
           this->bus_id,
           request,
           6,
@@ -209,7 +209,7 @@ limitations under the License. */
 
 
       bool handle_addressing() {
-        if(this->last_packet_info.header & ADDRESS_BIT && this->_device_id != MASTER_ID) {
+        if(this->last_packet_info.header & ADDRESS_BIT && this->_device_id != PJON_MASTER_ID) {
           uint8_t overhead = this->packet_overhead(this->last_packet_info.header);
           uint8_t CRC_overhead = (this->last_packet_info.header & CRC_BIT) ? 4 : 1;
           uint8_t rid[4] = {_rid >> 24, _rid >> 16, _rid >> 8, _rid};
@@ -225,7 +225,7 @@ limitations under the License. */
               response[5] = this->data[(overhead - CRC_overhead) + 5];
               this->set_id(response[5]);
               if(this->send_packet_blocking(
-                MASTER_ID,
+                PJON_MASTER_ID,
                 this->bus_id,
                 response,
                 6,
@@ -251,7 +251,7 @@ limitations under the License. */
                 response[0] = ID_REFRESH;
                 response[5] = this->_device_id;
                 this->send(
-                  MASTER_ID,
+                  PJON_MASTER_ID,
                   this->bus_id,
                   response,
                   6,

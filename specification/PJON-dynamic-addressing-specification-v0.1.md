@@ -36,7 +36,7 @@ ______|_____________|_____________|_____________|___________| ID   254 |
 ```
 
 ####Master features
-* The master id is `MASTER_ID` (value 254)
+* The master id is `PJON_MASTER_ID` (value 254)
 * Master has a caducous internal device archive
 * Broadcasts `ID_LIST` to get `ID_REFRESH` requests from already approved devices
 * Handles `ID_REQUEST` requests from devices asking for device id assignment

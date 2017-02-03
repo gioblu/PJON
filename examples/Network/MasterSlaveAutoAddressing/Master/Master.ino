@@ -4,7 +4,7 @@
 uint8_t bus_id[] = {0, 0, 0, 1};
 uint32_t time;
 
-// PJON object - The Master device id is fixed to MASTER_ID or 254
+// PJON object - The Master device id is fixed to PJON_MASTER_ID or 254
 PJONMaster<SoftwareBitBang> bus(bus_id);
 
 void setup() {

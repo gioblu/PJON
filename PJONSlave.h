@@ -106,7 +106,7 @@ limitations under the License. */
         this->_device_id = NOT_ASSIGNED;
 
         for(uint8_t id = generate_random_byte(); (uint32_t)(micros() - time) < ID_SCAN_TIME; id++)
-          if(id == BROADCAST || id == NOT_ASSIGNED || id == MASTER_ID) continue;
+          if(id == PJON_BROADCAST || id == NOT_ASSIGNED || id == MASTER_ID) continue;
           else if(this->send_packet_blocking(id, this->bus_id, &msg, 1, head) == FAIL) {
             this->_device_id = id;
             break;

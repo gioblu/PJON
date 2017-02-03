@@ -13,12 +13,6 @@
   #endif
 #endif
 
-#ifdef BROADCAST
-  #if (BROADCAST != 0)
-    #error BROADCAST constant is set previously to a non compliant value (BROADCAST should be decimal value 0)
-  #endif
-#endif
-
 #ifdef MASTER_ID
   #if (MASTER_ID != 254)
     #error MASTER_ID constant is set previously to a non compliant value (MASTER_ID should be decimal value 254)

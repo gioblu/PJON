@@ -113,7 +113,7 @@ limitations under the License. */
         response[5] = state;
 
         ids[response[5] - 1].packet_index = PJON<Strategy>::send_repeatedly(
-          BROADCAST,
+          PJON_BROADCAST,
           b_id,
           response,
           6,
@@ -215,7 +215,7 @@ limitations under the License. */
         char request = ID_LIST;
         while(micros() - time < ADDRESSING_TIMEOUT) {
           PJON<Strategy>::send_packet(
-            BROADCAST, this->bus_id, &request, 1, PJON<Strategy>::config | ADDRESS_BIT
+            PJON_BROADCAST, this->bus_id, &request, 1, PJON<Strategy>::config | ADDRESS_BIT
           );
           receive(LIST_IDS_RECEPTION_TIME);
         }

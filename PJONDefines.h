@@ -46,8 +46,8 @@ limitations under the License. */
   #include "utils/CRC32.h"
 
   /* Id used for broadcasting to all devices */
-  #ifndef BROADCAST
-    #define BROADCAST      0
+  #ifndef PJON_BROADCAST
+    #define PJON_BROADCAST      0
   #endif
 
   /* Master device id */

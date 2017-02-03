@@ -31,9 +31,9 @@ uint16_t one_second_test = bus.send_repeatedly(100, "Test sent every second!", 2
 bus.remove(one_second_test);
 ```
 
-To broadcast a message to all connected devices, use the `BROADCAST` constant as recipient ID.
+To broadcast a message to all connected devices, use the `PJON_BROADCAST` constant as recipient ID.
 ```cpp
-bus.send(BROADCAST, "Message for all connected devices.", 34);
+bus.send(PJON_BROADCAST, "Message for all connected devices.", 34);
 ```
 
 If you are using PJON in shared mode (so in a medium shared by n buses) you can send to a precise bus or group of devices:

@@ -185,7 +185,7 @@ limitations under the License. */
         if(header == NOT_ASSIGNED) header = config;
         if(header > 255) header |= EXTEND_HEADER_BIT;
         if(length > 255) header |= (EXTEND_LENGTH_BIT | CRC_BIT);
-        if(id == BROADCAST) header &= ~(ACK_REQUEST_BIT | ACK_MODE_BIT);
+        if(id == PJON_BROADCAST) header &= ~(ACK_REQUEST_BIT | ACK_MODE_BIT);
         uint16_t new_length = length + packet_overhead(header);
         bool extended_header = header & EXTEND_HEADER_BIT;
         bool extended_length = header & EXTEND_LENGTH_BIT;
@@ -356,7 +356,7 @@ limitations under the License. */
           if(state == FAIL) return FAIL;
 
           if(i == 0)
-            if(data[i] != _device_id && data[i] != BROADCAST && !_router)
+            if(data[i] != _device_id && data[i] != PJON_BROADCAST && !_router)
               return BUSY;
 
           if(i == 1) {
@@ -387,7 +387,7 @@ limitations under the License. */
           CRC = crc32::compare(crc32::compute(data, length - 4), data + (length - 4));
         else CRC = !crc8::compute(data, length);
 
-        if(data[1] & ACK_REQUEST_BIT && data[0] != BROADCAST)
+        if(data[1] & ACK_REQUEST_BIT && data[0] != PJON_BROADCAST)
           if(_mode != SIMPLEX && !_router)
             if(!(config & MODE_BIT) || (
               (config & MODE_BIT) && (data[1] & MODE_BIT) &&
@@ -504,7 +504,7 @@ limitations under the License. */
          callback function to deliver a response to a request. */
 
       uint16_t reply(const char *packet, uint16_t length, uint16_t header = NOT_ASSIGNED) {
-        if(last_packet_info.sender_id != BROADCAST)
+        if(last_packet_info.sender_id != PJON_BROADCAST)
           return dispatch(
             last_packet_info.sender_id,
             last_packet_info.sender_bus_id,
@@ -566,8 +566,11 @@ limitations under the License. */
         if(!string) return FAIL;
         if(_mode != SIMPLEX && !strategy.can_start()) return BUSY;
         strategy.send_string((uint8_t *)string, length);
-        if(string[0] == BROADCAST || !(config & ACK_REQUEST_BIT) || _mode == SIMPLEX)
-          return ACK;
+        if(
+          string[0] == PJON_BROADCAST ||
+          !(config & ACK_REQUEST_BIT) ||
+          _mode == SIMPLEX
+        ) return ACK;
         uint16_t response = strategy.receive_response();
         if(response == ACK || response == NAK || response == FAIL) return response;
         else return BUSY;

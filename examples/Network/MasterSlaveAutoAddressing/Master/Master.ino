@@ -46,7 +46,7 @@ void loop() {
    for(uint8_t i = 0; i < MAX_DEVICES; i++) {
     if(bus.ids[i].state) {
       Serial.print("Device id: ");
-      Serial.print(i + 1); // Shifted by one to avoid BROADCAST
+      Serial.print(i + 1); // Shifted by one to avoid PJON_BROADCAST
       Serial.print(" Device rid: ");
       Serial.print(bus.ids[i].rid);
       Serial.print(" | ");

@@ -52,7 +52,7 @@ limitations under the License. */
          State: Local (bus_id: 0.0.0.0)
          Acknowledge: true (Acknowledge is requested)
          device id: PJON_NOT_ASSIGNED (255)
-         Mode: HALF_DUPLEX
+         Mode: PJON_HALF_DUPLEX
          Sender info: true (Sender info are included in the packet)
          Strategy: SoftwareBitBang */
 

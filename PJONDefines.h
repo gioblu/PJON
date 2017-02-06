@@ -62,8 +62,8 @@ limitations under the License. */
   #endif
 
   /* Communication modes */
-  #define PJON_SIMPLEX   150
-  #define HALF_DUPLEX    151
+  #define PJON_SIMPLEX        150
+  #define PJON_HALF_DUPLEX    151
 
   /* Protocol symbols */
   #define ACK              6

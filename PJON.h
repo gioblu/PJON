@@ -129,7 +129,7 @@ limitations under the License. */
          State: Local (bus_id: 0.0.0.0)
          Acknowledge: true (Acknowledge is requested)
          device id: PJON_NOT_ASSIGNED (255)
-         Mode: HALF_DUPLEX
+         Mode: PJON_HALF_DUPLEX
          Sender info: true (Sender info are included in the packet)
          Strategy: SoftwareBitBang */
 
@@ -716,7 +716,7 @@ limitations under the License. */
       /* Set bus state default configuration: */
 
       void set_default() {
-        _mode = HALF_DUPLEX;
+        _mode = PJON_HALF_DUPLEX;
         if(!bus_id_equality(bus_id, localhost)) set_shared_network(true);
         set_error(dummy_error_handler);
         set_receiver(dummy_receiver_handler);

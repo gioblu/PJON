@@ -11,7 +11,7 @@ The physical layer configuration is handled by the Strategy entity, if you want 
  bus.strategy.set_pin(12);
 ```
 
-With this setup it is possible to communicate in `HALF_DUPLEX` with up to 254 different devices on the same wire.
+With this setup it is possible to communicate in `PJON_HALF_DUPLEX` with up to 254 different devices on the same wire.
 If for some reason you need to keep separate the two lines, for example if using cheap radio transmitter and receiver modules, to which you have to connect two wires:
 ```cpp  
  PJON<OverSampling> bus;

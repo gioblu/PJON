@@ -21,7 +21,7 @@ If for some reason you need to keep separate the two lines, for example if using
 If you don't need bidirectional communication and you have only the transmitter on one side and the receiver on the other side you can use the `PJON_NOT_ASSIGNED` constant:
 ```cpp  
  PJON<OverSampling> bus;
- bus.strategy.set_communication_mode(SIMPLEX); // Tell PJON we want to operate in Simplex mode
+ bus.strategy.set_communication_mode(PJON_SIMPLEX); // Tell PJON we want to operate in simplex mode
  bus.strategy.set_pins(11, PJON_NOT_ASSIGNED); // Only receiver
 ```
 

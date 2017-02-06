@@ -58,11 +58,11 @@ limitations under the License. */
 
   /* Maximum devices handled by master */
   #ifndef PJON_MAX_DEVICES
-    #define PJON_MAX_DEVICES     25
+    #define PJON_MAX_DEVICES   25
   #endif
 
   /* Communication modes */
-  #define SIMPLEX        150
+  #define PJON_SIMPLEX   150
   #define HALF_DUPLEX    151
 
   /* Protocol symbols */

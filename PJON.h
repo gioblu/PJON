@@ -38,13 +38,13 @@ Credits to contributors:
 - PaoloP74 github user (Library conversion to 1.x Arduino IDE)
 
 Bug reports:
-- pacproduct github user (Added missing mode configuration SIMPLEX example)
+- pacproduct github user (Added missing mode configuration PJON_SIMPLEX example)
 - elusive-code github user (PJONMaster reset bug)
 - Franketto arduino forum user (PJON ThroughSerial over RS485 delay issue)
 - Zbigniew Zasieczny (header reference inconsistency report)
 - DanRoad reddit user (can_start ThroughSerial bugfix)
 - Remo Kallio (Packet index 0 bugfix)
-- Emanuele Iannone (Forcing SIMPLEX in OverSamplingSimplex)
+- Emanuele Iannone (Forcing PJON_SIMPLEX in OverSamplingSimplex)
 - Christian Pointner (Fixed compiler warnings)
 - Andrew Grande (ESP8266 example watchdog error bug fix)
 - Fabian Gärtner (receive function and big packets bugfix)
@@ -389,7 +389,7 @@ limitations under the License. */
         else CRC = !crc8::compute(data, length);
 
         if(data[1] & ACK_REQUEST_BIT && data[0] != PJON_BROADCAST)
-          if(_mode != SIMPLEX && !_router)
+          if(_mode != PJON_SIMPLEX && !_router)
             if(!(config & MODE_BIT) || (
               (config & MODE_BIT) && (data[1] & MODE_BIT) &&
               bus_id_equality(data + 3 + extended_length + extended_header, bus_id)
@@ -576,12 +576,12 @@ limitations under the License. */
 
       uint16_t send_packet(const char *string, uint16_t length) {
         if(!string) return FAIL;
-        if(_mode != SIMPLEX && !strategy.can_start()) return BUSY;
+        if(_mode != PJON_SIMPLEX && !strategy.can_start()) return BUSY;
         strategy.send_string((uint8_t *)string, length);
         if(
           string[0] == PJON_BROADCAST ||
           !(config & ACK_REQUEST_BIT) ||
-          _mode == SIMPLEX
+          _mode == PJON_SIMPLEX
         ) return ACK;
         uint16_t response = strategy.receive_response();
         if(response == ACK || response == NAK || response == FAIL) return response;

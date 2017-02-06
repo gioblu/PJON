@@ -45,7 +45,7 @@ Pass the `OverSampling` type as PJON template parameter to instantiate a PJON ob
 After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance.
 
 ####Use OverSampling with cheap 433Mhz transceivers
-To build a real open-source PJON packet radio able to communicate up to 5km you need only a couple (for `SIMPLEX` mode) or two couples (for `HALF_DUPLEX` mode) of cheap 315/433Mhz ASK/FSK transmitter / receiver modules (with a cost around 2/3 dollars). Please be sure of the regulations your government imposes on radio transmission over these frequencies before use.
+To build a real open-source PJON packet radio able to communicate up to 5km you need only a couple (for `PJON_SIMPLEX` mode) or two couples (for `HALF_DUPLEX` mode) of cheap 315/433Mhz ASK/FSK transmitter / receiver modules (with a cost around 2/3 dollars). Please be sure of the regulations your government imposes on radio transmission over these frequencies before use.
 
 ![PJON Oversampling packet radio](http://www.gioblu.com/PJON/PJON-OverSampling-packet-radio-STX882-SRX882.jpg)
 

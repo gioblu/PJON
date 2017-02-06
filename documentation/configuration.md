@@ -60,8 +60,8 @@ Configure network state (local or shared). If local, so if passing `false`, the 
 ```
 Configure the communication mode:
 ```cpp  
-  bus.set_communication_mode(SIMPLEX);     // Run in mono-directional SIMPLEX mode
-  bus.set_communication_mode(HALF_DUPLEX); // Run in bi-directional HALF_DUPLEX mode
+  bus.set_communication_mode(PJON_SIMPLEX); // Run in mono-directional PJON_SIMPLEX mode
+  bus.set_communication_mode(HALF_DUPLEX);  // Run in bi-directional HALF_DUPLEX mode
 ```
 Configure synchronous acknowledge:
 ```cpp  

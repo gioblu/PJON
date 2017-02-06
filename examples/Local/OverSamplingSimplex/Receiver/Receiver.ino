@@ -18,7 +18,7 @@ int fail;
 PJON<OverSampling> bus(44);
 
 void setup() {
-  bus.set_communication_mode(SIMPLEX);
+  bus.set_communication_mode(PJON_SIMPLEX);
   bus.strategy.set_pins(11, PJON_NOT_ASSIGNED);
   bus.begin();
 

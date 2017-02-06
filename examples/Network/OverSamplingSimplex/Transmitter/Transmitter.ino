@@ -22,7 +22,7 @@ int packet;
 char content[] = "01234567890123456789";
 
 void setup() {
-  bus.set_communication_mode(SIMPLEX);
+  bus.set_communication_mode(PJON_SIMPLEX);
   bus.strategy.set_pins(PJON_NOT_ASSIGNED, 12);
 
   bus.begin();

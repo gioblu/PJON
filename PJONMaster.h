@@ -55,7 +55,7 @@ limitations under the License. */
   template<typename Strategy = SoftwareBitBang>
   class PJONMaster : public PJON<Strategy> {
     public:
-      Device_reference ids[MAX_DEVICES];
+      Device_reference ids[PJON_MAX_DEVICES];
 
       /* PJONMaster bus default initialization:
          State: Local (bus_id: 0.0.0.0)
@@ -149,7 +149,7 @@ limitations under the License. */
 
       uint8_t count_active_ids() {
         uint8_t result = 0;
-        for(uint8_t i = 0; i < MAX_DEVICES; i++)
+        for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++)
           if(ids[i].state) result++;
         return result;
       };
@@ -159,13 +159,13 @@ limitations under the License. */
 
       void delete_id_reference(uint8_t id = 0) {
         if(!id) {
-          for(uint8_t i = 0; i < MAX_DEVICES; i++) {
+          for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++) {
             ids[i].packet_index = 0;
             ids[i].registration = 0;
             ids[i].rid = 0;
             ids[i].state = false;
           }
-        } else if(id > 0 && id < MAX_DEVICES) {
+        } else if(id > 0 && id < PJON_MAX_DEVICES) {
           ids[id - 1].packet_index = 0;
           ids[id - 1].registration = 0;
           ids[id - 1].rid   = 0;
@@ -191,7 +191,7 @@ limitations under the License. */
       /* Remove reserved id which expired (Remove never confirmed id requests): */
 
       void free_reserved_ids_expired() {
-        for(uint8_t i = 0; i < MAX_DEVICES; i++)
+        for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++)
           if(!ids[i].state && ids[i].rid)
             if((uint32_t)(micros() - ids[i].registration) < ADDRESSING_TIMEOUT)
               continue;
@@ -202,7 +202,7 @@ limitations under the License. */
       /* Check for device rid uniqueness in the reference buffer: */
 
       bool unique_rid(uint32_t rid) {
-        for(uint8_t i = 0; i < MAX_DEVICES; i++)
+        for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++)
           if(ids[i].rid == rid) return false;
         return true;
       };
@@ -241,14 +241,14 @@ limitations under the License. */
 
       uint16_t reserve_id(uint32_t rid) {
         if(!unique_rid(rid)) return FAIL;
-        for(uint8_t i = 0; i < MAX_DEVICES; i++)
+        for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++)
           if(!ids[i].state && !ids[i].rid) {
             ids[i].registration = micros();
             ids[i].rid = rid;
             ids[i].state = false;
             return i + 1;
           }
-        _master_error(DEVICES_BUFFER_FULL, MAX_DEVICES);
+        _master_error(DEVICES_BUFFER_FULL, PJON_MAX_DEVICES);
         return DEVICES_BUFFER_FULL;
       };
 

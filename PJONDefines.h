@@ -46,10 +46,10 @@ limitations under the License. */
   #include "utils/CRC32.h"
 
   /* Id used for broadcasting to all devices */
-  #define PJON_BROADCAST 0
+  #define PJON_BROADCAST        0
 
   /* Master device id */
-  #define PJON_MASTER_ID 254
+  #define PJON_MASTER_ID      254
 
   /* Device id of still unindexed devices */
   #ifndef PJON_NOT_ASSIGNED
@@ -57,7 +57,9 @@ limitations under the License. */
   #endif
 
   /* Maximum devices handled by master */
-  #define MAX_DEVICES     25
+  #ifndef PJON_MAX_DEVICES
+    #define PJON_MAX_DEVICES     25
+  #endif
 
   /* Communication modes */
   #define SIMPLEX        150

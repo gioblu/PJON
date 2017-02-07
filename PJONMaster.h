@@ -97,7 +97,7 @@ limitations under the License. */
 
 
       /* Confirm a device id sending a repeated broadcast containing:
-         ID_REQUEST - RID (4 byte random id) - DEVICE ID (the new one assigned) */
+         PJON_ID_REQUEST - RID (4 byte random id) - DEVICE ID (the new one assigned) */
 
       void approve_id(uint8_t id, uint8_t *b_id, uint32_t rid) {
         char response[6];
@@ -105,7 +105,7 @@ limitations under the License. */
         if(state == PJON_DEVICES_BUFFER_FULL) return;
         if(state == PJON_FAIL) return negate_id(PJON_NOT_ASSIGNED, b_id, rid);
 
-        response[0] = ID_REQUEST;
+        response[0] = PJON_ID_REQUEST;
         response[1] = (uint32_t)(rid) >> 24;
         response[2] = (uint32_t)(rid) >> 16;
         response[3] = (uint32_t)(rid) >>  8;
@@ -208,11 +208,11 @@ limitations under the License. */
       };
 
 
-      /* Broadcast a ID_LIST request to all devices: */
+      /* Broadcast a PJON_ID_LIST request to all devices: */
 
       void list_ids() {
         uint32_t time = micros();
-        char request = ID_LIST;
+        char request = PJON_ID_LIST;
         while(micros() - time < PJON_ADDRESSING_TIMEOUT) {
           PJON<Strategy>::send_packet(
             PJON_BROADCAST, this->bus_id, &request, 1, PJON<Strategy>::config | ADDRESS_BIT
@@ -226,7 +226,7 @@ limitations under the License. */
          forcing the slave to make a new request. */
 
       void negate_id(uint8_t id, uint8_t *b_id, uint32_t rid) {
-        char response[5] = { ID_NEGATE, rid >> 24, rid >> 16, rid >> 8, rid};
+        char response[5] = { PJON_ID_NEGATE, rid >> 24, rid >> 16, rid >> 8, rid};
         PJON<Strategy>::send(
           id,
           b_id,
@@ -271,18 +271,18 @@ limitations under the License. */
             (uint32_t)(this->data[(overhead - CRC_overhead) + 3] <<  8) |
             (uint32_t)(this->data[(overhead - CRC_overhead) + 4]);
 
-          if(request == ID_REQUEST)
+          if(request == PJON_ID_REQUEST)
             approve_id(this->last_packet_info.sender_id, this->last_packet_info.sender_bus_id, rid);
 
-          if(request == ID_CONFIRM)
+          if(request == PJON_ID_CONFIRM)
             if(!confirm_id(rid, this->data[(overhead - CRC_overhead) + 5]))
               negate_id(this->last_packet_info.sender_id, this->last_packet_info.sender_bus_id, rid);
 
-          if(request == ID_REFRESH)
+          if(request == PJON_ID_REFRESH)
             if(!add_id(this->data[(overhead - CRC_overhead) + 5], rid, 1))
               negate_id(this->last_packet_info.sender_id, this->last_packet_info.sender_bus_id, rid);
 
-          if(request == ID_NEGATE)
+          if(request == PJON_ID_NEGATE)
             if(this->data[(overhead - CRC_overhead) + 5] == this->last_packet_info.sender_id)
               if(rid == ids[this->last_packet_info.sender_id - 1].rid)
                 if(this->bus_id_equality(this->last_packet_info.sender_bus_id, this->bus_id))

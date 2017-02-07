@@ -69,12 +69,12 @@ limitations under the License. */
   #define NAK             21
 
   /* Dynamic addressing */
-  #define ID_ACQUIRE     199
-  #define ID_REQUEST     200
-  #define ID_CONFIRM     201
-  #define ID_NEGATE      203
-  #define ID_LIST        204
-  #define ID_REFRESH     205
+  #define PJON_ID_ACQUIRE 199
+  #define PJON_ID_REQUEST 200
+  #define PJON_ID_CONFIRM 201
+  #define PJON_ID_NEGATE  203
+  #define PJON_ID_LIST    204
+  #define PJON_ID_REFRESH 205
 
   /* INTERNAL CONSTANTS */
   #define PJON_FAIL    65535

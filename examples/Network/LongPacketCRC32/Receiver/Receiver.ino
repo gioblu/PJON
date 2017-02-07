@@ -75,7 +75,7 @@ void loop() {
       mistakes++;
     if(response == BUSY)
       busy++;
-    if(response == FAIL)
+    if(response == PJON_FAIL)
       fail++;
   }
 

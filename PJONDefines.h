@@ -77,7 +77,7 @@ limitations under the License. */
   #define ID_REFRESH     205
 
   /* INTERNAL CONSTANTS */
-  #define FAIL         65535
+  #define PJON_FAIL    65535
   #define PJON_TO_BE_SENT 74
 
   /* HEADER BITS DEFINITION: */

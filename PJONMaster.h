@@ -103,7 +103,7 @@ limitations under the License. */
         char response[6];
         uint16_t state = reserve_id(rid);
         if(state == PJON_DEVICES_BUFFER_FULL) return;
-        if(state == FAIL) return negate_id(PJON_NOT_ASSIGNED, b_id, rid);
+        if(state == PJON_FAIL) return negate_id(PJON_NOT_ASSIGNED, b_id, rid);
 
         response[0] = ID_REQUEST;
         response[1] = (uint32_t)(rid) >> 24;
@@ -240,7 +240,7 @@ limitations under the License. */
       /* Reserve a device id and wait for its confirmation: */
 
       uint16_t reserve_id(uint32_t rid) {
-        if(!unique_rid(rid)) return FAIL;
+        if(!unique_rid(rid)) return PJON_FAIL;
         for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++)
           if(!ids[i].state && !ids[i].rid) {
             ids[i].registration = micros();
@@ -301,7 +301,7 @@ limitations under the License. */
         uint32_t time = micros();
         while((uint32_t)(micros() - time) <= duration)
           if(receive() == ACK) return ACK;
-        return FAIL;
+        return PJON_FAIL;
       };
 
 

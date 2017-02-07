@@ -36,7 +36,7 @@
 class EthernetTCP {
   public:
     EthernetLink link;
-    uint16_t last_send_result = FAIL;
+    uint16_t last_send_result = PJON_FAIL;
 
     /* Caching of incoming packet to make it possible to deliver it byte for byte */
 
@@ -104,7 +104,7 @@ class EthernetTCP {
       if (incoming_packet_pos < incoming_packet_size) {
         return incoming_packet_buf[incoming_packet_pos++];
       }
-      return FAIL;
+      return PJON_FAIL;
     };
 
 

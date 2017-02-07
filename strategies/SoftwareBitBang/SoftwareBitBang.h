@@ -155,7 +155,7 @@ class SoftwareBitBang {
          probably a byte is coming so try to receive it. */
       if(time >= SWBB_ACCEPTANCE && !syncronization_bit())
         return (uint8_t)read_byte();
-      return FAIL;
+      return PJON_FAIL;
     };
 
 
@@ -165,16 +165,16 @@ class SoftwareBitBang {
       if(_output_pin != _input_pin && _output_pin != PJON_NOT_ASSIGNED)
         PJON_IO_WRITE(_output_pin, LOW);
 
-      uint16_t response = FAIL;
+      uint16_t response = PJON_FAIL;
       uint32_t time = micros();
       /* Transmitter emits a bit SWBB_BIT_WIDTH / 4 long and tries
          to get a response cyclically for SWBB_TIMEOUT microseconds.
          Receiver synchronizes to the falling edge of the last incoming
          bit and transmits ACK or NAK */
-      while(response == FAIL && (uint32_t)(micros() - SWBB_TIMEOUT) <= time) {
+      while(response == PJON_FAIL && (uint32_t)(micros() - SWBB_TIMEOUT) <= time) {
         PJON_IO_WRITE(_input_pin, LOW);
         response = receive_byte();
-        if(response == FAIL) {
+        if(response == PJON_FAIL) {
           PJON_IO_MODE(_output_pin, OUTPUT);
           PJON_IO_WRITE(_output_pin, HIGH);
           delayMicroseconds(SWBB_BIT_WIDTH / 4);

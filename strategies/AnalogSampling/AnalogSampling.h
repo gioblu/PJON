@@ -189,7 +189,7 @@ class AnalogSampling {
         delayMicroseconds(AS_BIT_WIDTH);
         return read_byte();
       }
-      return FAIL;
+      return PJON_FAIL;
     };
 
 
@@ -199,7 +199,7 @@ class AnalogSampling {
       PJON_IO_PULL_DOWN(_input_pin);
       if(_output_pin != PJON_NOT_ASSIGNED && _output_pin != _input_pin)
         PJON_IO_WRITE(_output_pin, LOW);
-      uint16_t response = FAIL;
+      uint16_t response = PJON_FAIL;
       uint32_t time = micros();
       while(
         (response != ACK) &&

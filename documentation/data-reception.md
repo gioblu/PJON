@@ -53,7 +53,7 @@ uint16_t response = bus.receive();
 - `ACK` (6) if a correct reception occurred
 - `NAK` (21) if a mistake is found in CRC
 - `BUSY` (666) if a transmission for other devices is occurring
-- `FAIL` (65535) if no data is received
+- `PJON_FAIL` (65535) if no data is received
 
 If you want to dedicate a certain timeframe to reception call the `receive` function passing the maximum reception time in microseconds:
 ```cpp

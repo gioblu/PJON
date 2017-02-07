@@ -126,7 +126,7 @@ public:
       // Deliver the next byte from the last received packet if any
       if (incoming_packet_pos < incoming_packet_size)
         return incoming_packet_buf[incoming_packet_pos++];
-      return FAIL;
+      return PJON_FAIL;
     };
 
 
@@ -138,7 +138,7 @@ public:
       // TODO: Improve robustness by ignoring packets not from the previous receiver
       // (Perhaps not that important as long as ACK/NAK responses are directed, not broadcast)
       uint32_t start = micros();
-      uint16_t result = FAIL;
+      uint16_t result = PJON_FAIL;
       do {
         result = receive_byte();
         if (result == ACK || result == NAK) return result;

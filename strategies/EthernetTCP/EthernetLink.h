@@ -122,7 +122,7 @@
 // 3. Checksum. Is it needed, as this is also handled on the network layer?
 // 4. Retransmission if not ACKED. Or leave this to caller, as the result is immediately available?
 // 5. FIFO queue class common with PJON? Or skip built-in queue?
-// 6. Call error callback at appropriate times with appropriate codes. Only FAIL and TIMEOUT relevant?
+// 6. Call error callback at appropriate times with appropriate codes. Only PJON_FAIL and TIMEOUT relevant?
 // 7. Encryption. Add extra optional encryption key parameter to add_node, plus dedicated function for server.
 
 #pragma once
@@ -141,8 +141,8 @@
 #endif
 
 // Internal constants
-#ifndef FAIL
-  #define FAIL          0x100
+#ifndef PJON_FAIL
+  #define PJON_FAIL     0x100
 #endif
 
 #define MAX_REMOTE_NODES   10
@@ -221,7 +221,7 @@ private:
 
   // Read a package from a connected client (incoming or outgoing) and send ACK
   uint16_t receive(EthernetClient &client) {
-    int16_t return_value = FAIL;
+    int16_t return_value = PJON_FAIL;
     if(client.available() > 0) {
       #ifdef DEBUGPRINT
         Serial.println("Recv from cl");
@@ -379,7 +379,7 @@ private:
     if (!_single_socket && _server) receive();
 
     // Read ACK
-    int16_t result = FAIL;
+    int16_t result = PJON_FAIL;
     if (ok) {
       uint16_t code = 0;
       ok = read_bytes(client, (byte*) &code, 2) == 2;
@@ -390,7 +390,7 @@ private:
       Serial.print("ACK stat: "); Serial.println(result == ACK);
     #endif
 
-    return result;  // FAIL, ACK or NAK
+    return result;  // PJON_FAIL, ACK or NAK
   }
 
   // Do bidirectional transfer of packets over a single socket connection by using a master-slave mode
@@ -408,7 +408,7 @@ private:
       #ifdef DEBUGPRINT
         Serial.println(connected ? "Out conn" : "No out conn");
       #endif
-      if (!connected) return FAIL;
+      if (!connected) return PJON_FAIL;
 
       // Send singlesocket header and number of outgoing packets
       bool ok = true;
@@ -453,7 +453,7 @@ private:
       #endif
 
       // Disconnect
-      int16_t result = ok ? ACK : FAIL;
+      int16_t result = ok ? ACK : PJON_FAIL;
       disconnect_out_if_needed(result);
       return result;
     } else { // Receiving incoming connections and packets and request
@@ -462,7 +462,7 @@ private:
       #ifdef DEBUGPRINT
   //      Serial.println(connected ? "In conn" : "No in conn");
       #endif
-      if (!connected) return FAIL;
+      if (!connected) return PJON_FAIL;
 
       // Read singlesocket header
       bool ok = read_until_header(client, SINGLESOCKET_HEADER);
@@ -512,10 +512,10 @@ private:
       // Disconnect
       disconnect_in_if_needed();
 
-      return ok ? ACK : FAIL;
+      return ok ? ACK : PJON_FAIL;
     }
     #endif
-    return FAIL;
+    return PJON_FAIL;
   }
 
   // Read until a specific 4 byte value is found. This will resync if stream position is lost.
@@ -569,7 +569,7 @@ public:
   // Keep trying to send for a maximum duration
   int16_t send_with_duration(uint8_t id, const char *packet, uint16_t length, uint32_t duration_us) {
    uint32_t start = micros();
-    int16_t result = FAIL;
+    int16_t result = PJON_FAIL;
     do {
       result = send(id, packet, length);
     } while(result != ACK && (uint32_t)(micros() - start) <= duration_us);
@@ -584,7 +584,7 @@ public:
     } else { // Just do an ordinary receive without using the id
       return receive();
     }
-    return FAIL;
+    return PJON_FAIL;
   }
 
   uint8_t get_id() const { return _local_id; }
@@ -606,18 +606,18 @@ public:
       if (_single_socket) return single_socket_transfer(_client_in, -1, false, NULL, 0);
       else {
         // Accept incoming connected and receive a single incoming packet
-        if (!accept()) return FAIL;
+        if (!accept()) return PJON_FAIL;
         uint16_t result = receive(_client_in);
         disconnect_in_if_needed();
         return result;
       }
     }
-    return FAIL;
+    return PJON_FAIL;
   }
 
   uint16_t receive(uint32_t duration_us) {
     uint32_t start = micros();
-    int16_t result = FAIL;
+    int16_t result = PJON_FAIL;
     do {
       result = receive();
     } while(result != ACK && (uint32_t)(micros() - start) <= duration_us);
@@ -633,7 +633,7 @@ public:
     bool connected = connect(id);
 
     // Send the packet and read ACK
-    int16_t result = FAIL;
+    int16_t result = PJON_FAIL;
     if (connected) result = send(_client_out, id, packet, length);
 
     // Disconnect

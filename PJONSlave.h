@@ -97,7 +97,7 @@ limitations under the License. */
 
       void acquire_id_multi_master(uint8_t limit = 0) {
         if(limit >= PJON_MAX_ACQUIRE_ID_COLLISIONS)
-          return _slave_error(PJON_ID_ACQUISITION_FAIL, FAIL);
+          return _slave_error(PJON_ID_ACQUISITION_FAIL, PJON_FAIL);
 
         delay(random(PJON_ACQUIRE_ID_DELAY * 0.25, PJON_ACQUIRE_ID_DELAY));
         uint32_t time = micros();
@@ -111,7 +111,7 @@ limitations under the License. */
           id++
         )
           if(id == PJON_BROADCAST || id == PJON_NOT_ASSIGNED || id == PJON_MASTER_ID) continue;
-          else if(this->send_packet_blocking(id, this->bus_id, &msg, 1, head) == FAIL) {
+          else if(this->send_packet_blocking(id, this->bus_id, &msg, 1, head) == PJON_FAIL) {
             this->_device_id = id;
             break;
           }
@@ -300,7 +300,7 @@ limitations under the License. */
         uint32_t time = micros();
         while((uint32_t)(micros() - time) <= duration)
           if(receive() == ACK) return ACK;
-        return FAIL;
+        return PJON_FAIL;
       };
 
 

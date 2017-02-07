@@ -84,7 +84,7 @@ class ThroughSerial {
           _last_reception_time = micros();
           return (uint8_t)serial->read();
         }
-      return FAIL;
+      return PJON_FAIL;
     };
 
 

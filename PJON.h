@@ -264,7 +264,7 @@ limitations under the License. */
           if(packets[i].state == 0) {
             if(!(length = compose_packet(
               id, b_id, packets[i].content, packet, length, header, p_id
-            ))) return FAIL;
+            ))) return PJON_FAIL;
             packets[i].length = length;
             packets[i].state = PJON_TO_BE_SENT;
             packets[i].registration = micros();
@@ -273,7 +273,7 @@ limitations under the License. */
           }
 
         _error(PJON_PACKETS_BUFFER_FULL, PJON_MAX_PACKETS);
-        return FAIL;
+        return PJON_FAIL;
       };
 
 
@@ -354,7 +354,7 @@ limitations under the License. */
         bool extended_length = false;
         for(uint16_t i = 0; i < length; i++) {
           data[i] = state = strategy.receive_byte();
-          if(state == FAIL) return FAIL;
+          if(state == PJON_FAIL) return PJON_FAIL;
 
           if(i == 0)
             if(data[i] != _device_id && data[i] != PJON_BROADCAST && !_router)
@@ -369,12 +369,12 @@ limitations under the License. */
 
           if((i == (2 + extended_header)) && !extended_length) {
             length = data[i];
-            if(length < 5 || length > PJON_PACKET_MAX_LENGTH) return FAIL;
+            if(length < 5 || length > PJON_PACKET_MAX_LENGTH) return PJON_FAIL;
           }
 
           if((i == (3 + extended_header)) && extended_length) {
             length = data[i - 1] << 8 | data[i] & 0xFF;
-            if(length < 5 || length > PJON_PACKET_MAX_LENGTH) return FAIL;
+            if(length < 5 || length > PJON_PACKET_MAX_LENGTH) return PJON_FAIL;
           }
 
           if((config & MODE_BIT) && (data[1] & MODE_BIT) && !_router)
@@ -575,7 +575,7 @@ limitations under the License. */
       /* Send an already composed packet:  */
 
       uint16_t send_packet(const char *string, uint16_t length) {
-        if(!string) return FAIL;
+        if(!string) return PJON_FAIL;
         if(_mode != PJON_SIMPLEX && !strategy.can_start()) return BUSY;
         strategy.send_string((uint8_t *)string, length);
         if(
@@ -584,7 +584,8 @@ limitations under the License. */
           _mode == PJON_SIMPLEX
         ) return ACK;
         uint16_t response = strategy.receive_response();
-        if(response == ACK || response == NAK || response == FAIL) return response;
+        if(response == ACK || response == NAK || response == PJON_FAIL)
+          return response;
         else return BUSY;
       };
 
@@ -598,7 +599,7 @@ limitations under the License. */
         uint16_t header = PJON_NOT_ASSIGNED
       ) {
         if(!(length = compose_packet(id, bus_id, (char *)data, string, length, header)))
-          return FAIL;
+          return PJON_FAIL;
         return send_packet((char *)data, length);
       };
 
@@ -611,7 +612,7 @@ limitations under the License. */
         uint16_t header = PJON_NOT_ASSIGNED
       ) {
         if(!(length = compose_packet(id, b_id, (char *)data, string, length, header)))
-          return FAIL;
+          return PJON_FAIL;
         return send_packet((char *)data, length);
       };
 
@@ -635,8 +636,8 @@ limitations under the License. */
           string,
           length,
           header
-        ))) return FAIL;
-        uint16_t state = FAIL;
+        ))) return PJON_FAIL;
+        uint16_t state = PJON_FAIL;
         uint32_t attempts = 0;
         uint32_t time = micros(), start = time;
         while(
@@ -646,7 +647,7 @@ limitations under the License. */
           state = send_packet((char*)data, length);
           if(state == ACK) return state;
           attempts++;
-          if(state != FAIL) strategy.handle_collision();
+          if(state != PJON_FAIL) strategy.handle_collision();
           while((uint32_t)(micros() - time) < strategy.back_off(attempts));
           time = micros();
         }
@@ -859,7 +860,7 @@ limitations under the License. */
             } if(!async_ack) continue;
           }
 
-          if(packets[i].state != FAIL) strategy.handle_collision();
+          if(packets[i].state != PJON_FAIL) strategy.handle_collision();
 
           if(packets[i].attempts > strategy.get_max_attempts()) {
             _error(PJON_CONNECTION_LOST, packets[i].content[0]);

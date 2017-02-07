@@ -52,7 +52,7 @@ The sending is executed as soon as the method is called and it returns the follo
 - `ACK` (6) if a correct reception occurred
 - `NAK` (21) if a mistake is found in CRC
 - `BUSY` (666) if a transmission for other devices is occurring
-- `FAIL` (65535) if no data is received
+- `PJON_FAIL` (65535) if no data is received
 
 Use `send_packet_blocking` if it is necessary to try more than once and so comply with the proposed backoff exactly how is done by the `send` and `update` chain.
 ```cpp

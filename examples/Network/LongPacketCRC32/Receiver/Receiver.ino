@@ -1,5 +1,5 @@
 
-#define PACKET_MAX_LENGTH 325 // Make the buffer big enough
+#define PJON_PACKET_MAX_LENGTH 325 // Make the buffer big enough
 #define MAX_PACKETS         2 // Reduce number of packets not to empty memory
 /*  Acknowledge Latency maximum duration (1000 microseconds default).
     Can be necessary to higher SWBB_LATENCY to leave enough time to receiver

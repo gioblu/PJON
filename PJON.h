@@ -118,7 +118,7 @@ limitations under the License. */
       const uint8_t localhost[4] = {0, 0, 0, 0};
 
       /* Data buffers */
-      uint8_t data[PACKET_MAX_LENGTH];
+      uint8_t data[PJON_PACKET_MAX_LENGTH];
       PJON_Packet_Info last_packet_info;
       PJON_Packet packets[MAX_PACKETS];
       #if(PJON_INCLUDE_ASYNC_ACK)
@@ -200,7 +200,7 @@ limitations under the License. */
           new_length = (uint16_t)(length + packet_overhead(header));
         }
 
-        if(new_length >= PACKET_MAX_LENGTH) {
+        if(new_length >= PJON_PACKET_MAX_LENGTH) {
           _error(PJON_CONTENT_TOO_LONG, new_length);
           return 0;
         }
@@ -348,7 +348,7 @@ limitations under the License. */
 
       uint16_t receive() {
         uint16_t state;
-        uint16_t length = PACKET_MAX_LENGTH;
+        uint16_t length = PJON_PACKET_MAX_LENGTH;
         bool CRC = 0;
         bool extended_header = false;
         bool extended_length = false;
@@ -369,12 +369,12 @@ limitations under the License. */
 
           if((i == (2 + extended_header)) && !extended_length) {
             length = data[i];
-            if(length < 5 || length > PACKET_MAX_LENGTH) return FAIL;
+            if(length < 5 || length > PJON_PACKET_MAX_LENGTH) return FAIL;
           }
 
           if((i == (3 + extended_header)) && extended_length) {
             length = data[i - 1] << 8 | data[i] & 0xFF;
-            if(length < 5 || length > PACKET_MAX_LENGTH) return FAIL;
+            if(length < 5 || length > PJON_PACKET_MAX_LENGTH) return FAIL;
           }
 
           if((config & MODE_BIT) && (data[1] & MODE_BIT) && !_router)

@@ -117,8 +117,8 @@ limitations under the License. */
   /* Max packet length, higher if necessary.
      The max packet length defines the length of packets pre-allocated buffers
      so it strongly affects memory consumption */
-  #ifndef PACKET_MAX_LENGTH
-    #define PACKET_MAX_LENGTH 50
+  #ifndef PJON_PACKET_MAX_LENGTH
+    #define PJON_PACKET_MAX_LENGTH 50
   #endif
 
   /* If set to true avoids async ack code memory allocation if not used
@@ -153,7 +153,7 @@ limitations under the License. */
 
   struct PJON_Packet {
     uint8_t  attempts;
-    char     content[PACKET_MAX_LENGTH];
+    char     content[PJON_PACKET_MAX_LENGTH];
     uint16_t length;
     uint32_t registration;
     uint16_t state;

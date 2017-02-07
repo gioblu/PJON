@@ -48,17 +48,17 @@ class LocalUDP {
 
     /* Caching of incoming packet to make it possible to deliver it byte for byte */
 
-    uint8_t incoming_packet_buf[PACKET_MAX_LENGTH];
+    uint8_t incoming_packet_buf[PJON_PACKET_MAX_LENGTH];
     uint16_t incoming_packet_size = 0;
     uint16_t incoming_packet_pos = 0;
 
     bool receive_telegram() {
       int packetSize = udp.parsePacket();
-      if (packetSize > 4 && packetSize <= PACKET_MAX_LENGTH) {
+      if (packetSize > 4 && packetSize <= PJON_PACKET_MAX_LENGTH) {
         uint32_t header = 0;
         udp.read((char *) &header, 4);
         if (header != _magic_header) return false; // Not a LocalUDP packet
-        udp.read(incoming_packet_buf, PACKET_MAX_LENGTH);
+        udp.read(incoming_packet_buf, PJON_PACKET_MAX_LENGTH);
         incoming_packet_size = packetSize;
         incoming_packet_pos = 0;
         return true;

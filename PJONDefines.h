@@ -128,8 +128,8 @@ limitations under the License. */
   #endif
 
   /* Maximum packet ids record kept in memory (to avoid duplicated exchanges) */
-  #ifndef MAX_RECENT_PACKET_IDS
-    #define MAX_RECENT_PACKET_IDS 10
+  #ifndef PJON_MAX_RECENT_PACKET_IDS
+    #define PJON_MAX_RECENT_PACKET_IDS 10
   #endif
 
   /* If set to true ensures packet ordered sending */

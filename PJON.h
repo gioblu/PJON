@@ -122,7 +122,7 @@ limitations under the License. */
       PJON_Packet_Info last_packet_info;
       PJON_Packet packets[MAX_PACKETS];
       #if(INCLUDE_ASYNC_ACK)
-        PJON_Packet_Record recent_packet_ids[MAX_RECENT_PACKET_IDS];
+        PJON_Packet_Record recent_packet_ids[PJON_MAX_RECENT_PACKET_IDS];
       #endif
 
       /* PJON bus default initialization:
@@ -901,7 +901,7 @@ limitations under the License. */
 
       bool known_packet_id(PJON_Packet_Info info) {
         #if(INCLUDE_ASYNC_ACK)
-          for(uint8_t i = 0; i < MAX_RECENT_PACKET_IDS; i++)
+          for(uint8_t i = 0; i < PJON_MAX_RECENT_PACKET_IDS; i++)
             if(
               info.id == recent_packet_ids[i].id &&
               info.sender_id == recent_packet_ids[i].sender_id &&
@@ -921,7 +921,7 @@ limitations under the License. */
 
       void save_packet_id(PJON_Packet_Info info) {
         #if(INCLUDE_ASYNC_ACK)
-          for(uint8_t i = MAX_RECENT_PACKET_IDS - 1; i > 0; i--)
+          for(uint8_t i = PJON_MAX_RECENT_PACKET_IDS - 1; i > 0; i--)
             recent_packet_ids[i] = recent_packet_ids[i - 1];
           recent_packet_ids[0].id = info.id;
           recent_packet_ids[0].header = info.header;

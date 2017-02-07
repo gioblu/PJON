@@ -266,7 +266,7 @@ limitations under the License. */
               id, b_id, packets[i].content, packet, length, header, p_id
             ))) return FAIL;
             packets[i].length = length;
-            packets[i].state = TO_BE_SENT;
+            packets[i].state = PJON_TO_BE_SENT;
             packets[i].registration = micros();
             packets[i].timing = timing;
             return i;
@@ -854,7 +854,7 @@ limitations under the License. */
               if(!async_ack) {
                 packets[i].attempts = 0;
                 packets[i].registration = micros();
-                packets[i].state = TO_BE_SENT;
+                packets[i].state = PJON_TO_BE_SENT;
               }
             } if(!async_ack) continue;
           }
@@ -871,7 +871,7 @@ limitations under the License. */
             } else {
               packets[i].attempts = 0;
               packets[i].registration = micros();
-              packets[i].state = TO_BE_SENT;
+              packets[i].state = PJON_TO_BE_SENT;
             }
           }
         }

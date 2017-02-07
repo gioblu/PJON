@@ -78,7 +78,7 @@ limitations under the License. */
 
   /* INTERNAL CONSTANTS */
   #define FAIL         65535
-  #define TO_BE_SENT      74
+  #define PJON_TO_BE_SENT 74
 
   /* HEADER BITS DEFINITION: */
   #define MODE_BIT          B00000001 // 1 - Shared | 0 - Local

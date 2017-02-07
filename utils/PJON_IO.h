@@ -1,30 +1,46 @@
-/* PJON_IO library
-   Originally a fork of digitalWriteFast library, then renamed to avoid
-   naming collisions and so subtle bugs and anomalies if used along with
-   third-party software using older/different versions of digitalWriteFast.
+/* Faster digitalWrite, digitalRead, pinMode for Arduino
+   - Basic scheme was developed by Paul Stoffregen with digitalWrite.
+   - Extended to pinMode by John Raines
+   - Extended to digitalRead by John Raines with considerable assistance
+     by William Westfield
+  Copyright (c) 2008-2010 PJRC.COM, LLC
 
-List of supported MCUs:
-  - ATmega8/88/168/328/1280/2560/16U4/32U4
-    (Duemilanove, Uno, Nano, Mini, Pro, Mega, Leonardo, Micro)
-  - ATtiny45/85 (Trinket / Digispark)
-  - SAMD21G18A (Arduino Zero) - Added by Esben Soeltoft 03/09/2016
+  List of supported MCUs:
+  - ATmega8/88/168/328/1280/2560 (Duemilanove, Uno, Nano, Mini, Pro, Mega)
+      Added by Giovanni Blu Mitolo
 
-All methods are defined in uppercase style to implicitly inform the reader of
-their definition as macros in the global scope.
+  - ATmega16U4/32U4 (Leonardo, Micro)
+      Added by Giovanni Blu Mitolo
 
- Copyright 2012-2017 Giovanni Blu Mitolo
+  - ATtiny45/85 (Trinket, Digispark)
+      Added by Giovanni Blu Mitolo
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+  - SAMD21G18A (Arduino Zero)
+      Added by Esben Soeltoft 03/09/2016
 
-    http://www.apache.org/licenses/LICENSE-2.0
+Renamed since v7.0 to avoid naming collisions and so subtle bugs and anomalies
+if used along with third-party software using older/different versions of
+digitalWriteFast. All methods are defined in uppercase style to implicitly
+inform the reader of their definition as macros in the global scope.
+ ______________________________________________________________________________
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License. */
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE. */
 
 #pragma once
 
@@ -285,15 +301,6 @@ their definition as macros in the global scope.
         PJON_IO_ATOMIC_WRITE((uint8_t*) PJON_IO_PIN_TO_DDR_REG(P), P, V) \
       else pinMode(P, V); \
     } while(0)
-  #endif
-
-  #ifndef PJON_IO_NO_ANALOG_WRITE
-    #define PJON_IO_NO_ANALOG_WRITE(P) \
-    	do { \
-        if(__builtin_constant_p(P)) \
-          __atomicWrite((uint8_t*) PJON_IO_PIN_TO_TIMER(P), P, 0) \
-    		else turnOffPWM(P); \
-      } while(0)
   #endif
 
   #ifndef PJON_IO_READ

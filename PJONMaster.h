@@ -117,7 +117,7 @@ limitations under the License. */
           b_id,
           response,
           6,
-          ID_REQUEST_INTERVAL,
+          PJON_ID_REQUEST_INTERVAL,
           PJON<Strategy>::config | ADDRESS_BIT
         );
       };
@@ -135,7 +135,7 @@ limitations under the License. */
 
       bool confirm_id(uint32_t rid, uint8_t id) {
         if(ids[id - 1].rid == rid && !ids[id - 1].state) {
-          if(micros() - ids[id - 1].registration < ADDRESSING_TIMEOUT) {
+          if(micros() - ids[id - 1].registration < PJON_ADDRESSING_TIMEOUT) {
             ids[id - 1].state = true;
             PJON<Strategy>::remove(ids[id - 1].packet_index);
             return true;
@@ -193,7 +193,7 @@ limitations under the License. */
       void free_reserved_ids_expired() {
         for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++)
           if(!ids[i].state && ids[i].rid)
-            if((uint32_t)(micros() - ids[i].registration) < ADDRESSING_TIMEOUT)
+            if((uint32_t)(micros() - ids[i].registration) < PJON_ADDRESSING_TIMEOUT)
               continue;
             else delete_id_reference(i + 1);
       };
@@ -213,11 +213,11 @@ limitations under the License. */
       void list_ids() {
         uint32_t time = micros();
         char request = ID_LIST;
-        while(micros() - time < ADDRESSING_TIMEOUT) {
+        while(micros() - time < PJON_ADDRESSING_TIMEOUT) {
           PJON<Strategy>::send_packet(
             PJON_BROADCAST, this->bus_id, &request, 1, PJON<Strategy>::config | ADDRESS_BIT
           );
-          receive(LIST_IDS_RECEPTION_TIME);
+          receive(PJON_LIST_IDS_TIME);
         }
       };
 

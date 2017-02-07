@@ -96,23 +96,29 @@ limitations under the License. */
       /* Acquire an id in multi-master configuration: */
 
       void acquire_id_multi_master(uint8_t limit = 0) {
-        if(limit >= MAX_ACQUIRE_ID_COLLISIONS)
+        if(limit >= PJON_MAX_ACQUIRE_ID_COLLISIONS)
           return _slave_error(ID_ACQUISITION_FAIL, FAIL);
 
-        delay(random(ACQUIRE_ID_DELAY * 0.25, ACQUIRE_ID_DELAY));
+        delay(random(PJON_ACQUIRE_ID_DELAY * 0.25, PJON_ACQUIRE_ID_DELAY));
         uint32_t time = micros();
         char msg = ID_ACQUIRE;
         char head = this->config | ADDRESS_BIT | ACK_REQUEST_BIT;
         this->_device_id = PJON_NOT_ASSIGNED;
 
-        for(uint8_t id = generate_random_byte(); (uint32_t)(micros() - time) < ID_SCAN_TIME; id++)
+        for(
+          uint8_t id = generate_random_byte();
+          (uint32_t)(micros() - time) < PJON_ID_SCAN_TIME;
+          id++
+        )
           if(id == PJON_BROADCAST || id == PJON_NOT_ASSIGNED || id == PJON_MASTER_ID) continue;
           else if(this->send_packet_blocking(id, this->bus_id, &msg, 1, head) == FAIL) {
             this->_device_id = id;
             break;
           }
 
-        receive((random(ACQUIRE_ID_DELAY * 0.25, ACQUIRE_ID_DELAY)) * 1000);
+        receive(
+          (random(PJON_ACQUIRE_ID_DELAY * 0.25, PJON_ACQUIRE_ID_DELAY)) * 1000
+        );
         if(this->send_packet_blocking(this->_device_id, this->bus_id, &msg, 1, head) == ACK)
           acquire_id_multi_master(limit++);
       };
@@ -246,7 +252,10 @@ limitations under the License. */
 
           if(this->data[overhead - CRC_overhead] == ID_LIST)
             if(this->_device_id != PJON_NOT_ASSIGNED)
-              if((uint32_t)(micros() - _last_request_time) > (ADDRESSING_TIMEOUT * 1.125)) {
+              if(
+                (uint32_t)(micros() - _last_request_time) >
+                (PJON_ADDRESSING_TIMEOUT * 1.125)
+              ) {
                 _last_request_time = micros();
                 response[0] = ID_REFRESH;
                 response[5] = this->_device_id;

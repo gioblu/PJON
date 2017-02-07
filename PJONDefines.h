@@ -139,17 +139,17 @@ limitations under the License. */
 
   /* Dynamic addressing timing constants:
      Maximum number of device id collisions during auto-addressing */
-  #define MAX_ACQUIRE_ID_COLLISIONS      10
+  #define PJON_MAX_ACQUIRE_ID_COLLISIONS 10
   /* Delay between device id acquisition and self request */
-  #define ACQUIRE_ID_DELAY             1250
+  #define PJON_ACQUIRE_ID_DELAY        1250
   /* Maximum id scan time (6 seconds) */
-  #define ID_SCAN_TIME              6000000
+  #define PJON_ID_SCAN_TIME         6000000
   /* Master free id broadcast response interval (0.1 seconds) */
-  #define ID_REQUEST_INTERVAL        100000
+  #define PJON_ID_REQUEST_INTERVAL   100000
   /* Master ID_REQUEST and ID_NEGATE timeout */
-  #define ADDRESSING_TIMEOUT        2900000
+  #define PJON_ADDRESSING_TIMEOUT   2900000
   /* Master reception time during LIST_ID request broadcast (20 milliseconds) */
-  #define LIST_IDS_RECEPTION_TIME     20000
+  #define PJON_LIST_IDS_TIME          20000
 
   struct PJON_Packet {
     uint8_t  attempts;

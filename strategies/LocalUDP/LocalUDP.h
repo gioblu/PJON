@@ -141,7 +141,7 @@ public:
       uint16_t result = PJON_FAIL;
       do {
         result = receive_byte();
-        if (result == ACK || result == NAK) return result;
+        if (result == PJON_ACK || result == PJON_NAK) return result;
      } while ((uint32_t)(micros() - start) < RESPONSE_TIMEOUT);
       return result;
     };
@@ -150,7 +150,7 @@ public:
     /* Send byte response to package transmitter.
        We have the IP so we can skip broadcasting and reply directly. */
 
-    void send_response(uint8_t response) { // Empty, ACK is always sent
+    void send_response(uint8_t response) { // Empty, PJON_ACK is always sent
       udp.beginPacket(udp.remoteIP(), _port);
       udp.write((const char*) &_magic_header, 4);
       udp.write((const char*) &response, 1);

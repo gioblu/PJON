@@ -383,11 +383,11 @@ limitations under the License. */
 
           if(i == 0)
             if(data[i] != _device_id && data[i] != PJON_BROADCAST && !_router)
-              return BUSY;
+              return PJON_BUSY;
 
           if(i == 1) {
             if(((data[i] & MODE_BIT) != (config & MODE_BIT)) && !_router)
-              return BUSY;
+              return PJON_BUSY;
             extended_length = data[i] & EXTEND_LENGTH_BIT;
             extended_header = data[i] & EXTEND_HEADER_BIT;
           }
@@ -406,7 +406,7 @@ limitations under the License. */
             if((i > (2 + extended_header + extended_length)))
               if((i < (7 + extended_header + extended_length)))
                 if(bus_id[i - 3 - extended_header - extended_length] != data[i])
-                  return BUSY;
+                  return PJON_BUSY;
         }
 
         if(data[1] & CRC_BIT)
@@ -420,9 +420,9 @@ limitations under the License. */
             if(!(config & MODE_BIT) || (
               (config & MODE_BIT) && (data[1] & MODE_BIT) &&
               bus_id_equality(data + 3 + extended_length + extended_header, bus_id)
-            )) strategy.send_response(!CRC ? NAK : ACK);
+            )) strategy.send_response(!CRC ? PJON_NAK : PJON_ACK);
 
-        if(!CRC) return NAK;
+        if(!CRC) return PJON_NAK;
         parse(data, last_packet_info);
 
         #if(PJON_INCLUDE_ASYNC_ACK)
@@ -431,7 +431,7 @@ limitations under the License. */
           if((data[1] & ACK_MODE_BIT) && (data[1] & SENDER_INFO_BIT)) {
             if(_auto_delete && length == packet_overhead(data[1]))
               if(handle_asynchronous_acknowledgment(last_packet_info))
-                return ACK;
+                return PJON_ACK;
 
             if(length > packet_overhead(data[1])) {
               dispatch(
@@ -445,7 +445,7 @@ limitations under the License. */
               );
               update();
               if(known_packet_id(last_packet_info))
-                return ACK;
+                return PJON_ACK;
             }
           }
         #endif
@@ -456,7 +456,7 @@ limitations under the License. */
           last_packet_info
         );
 
-        return ACK;
+        return PJON_ACK;
       };
 
 
@@ -467,8 +467,8 @@ limitations under the License. */
         uint32_t time = micros();
         while((uint32_t)(micros() - time) <= duration) {
           response = receive();
-          if(response == ACK)
-            return ACK;
+          if(response == PJON_ACK)
+            return PJON_ACK;
         }
         return response;
       };
@@ -607,17 +607,17 @@ limitations under the License. */
 
       uint16_t send_packet(const char *string, uint16_t length) {
         if(!string) return PJON_FAIL;
-        if(_mode != PJON_SIMPLEX && !strategy.can_start()) return BUSY;
+        if(_mode != PJON_SIMPLEX && !strategy.can_start()) return PJON_BUSY;
         strategy.send_string((uint8_t *)string, length);
         if(
           string[0] == PJON_BROADCAST ||
           !(config & ACK_REQUEST_BIT) ||
           _mode == PJON_SIMPLEX
-        ) return ACK;
+        ) return PJON_ACK;
         uint16_t response = strategy.receive_response();
-        if(response == ACK || response == NAK || response == PJON_FAIL)
+        if(response == PJON_ACK || response == PJON_NAK || response == PJON_FAIL)
           return response;
-        else return BUSY;
+        else return PJON_BUSY;
       };
 
 
@@ -674,11 +674,11 @@ limitations under the License. */
         uint32_t attempts = 0;
         uint32_t time = micros(), start = time;
         while(
-          (state != ACK) && (attempts <= strategy.get_max_attempts()) &&
+          (state != PJON_ACK) && (attempts <= strategy.get_max_attempts()) &&
           (uint32_t)(micros() - start) <= timeout
         ) {
           state = send_packet((char*)data, length);
-          if(state == ACK) return state;
+          if(state == PJON_ACK) return state;
           attempts++;
           if(state != PJON_FAIL) strategy.handle_collision();
           while((uint32_t)(micros() - time) < strategy.back_off(attempts));
@@ -701,7 +701,7 @@ limitations under the License. */
          device ids for which the route is known */
 
       void send_synchronous_acknowledge() {
-        strategy.send_response(ACK);
+        strategy.send_response(PJON_ACK);
       };
 
 
@@ -874,7 +874,7 @@ limitations under the License. */
 
           packets[i].attempts++;
 
-          if(packets[i].state == ACK) {
+          if(packets[i].state == PJON_ACK) {
             if(!packets[i].timing) {
               if(
                 _auto_delete && (

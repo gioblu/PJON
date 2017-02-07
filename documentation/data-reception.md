@@ -50,9 +50,9 @@ To correctly receive data call the `receive` function at least once per loop cyc
 uint16_t response = bus.receive();
 ```
 `receive` returns the following values:
-- `ACK` (6) if a correct reception occurred
-- `NAK` (21) if a mistake is found in CRC
-- `BUSY` (666) if a transmission for other devices is occurring
+- `PJON_ACK` (6) if a correct reception occurred
+- `PJON_NAK` (21) if a mistake is found in CRC
+- `PJON_BUSY` (666) if a transmission for other devices is occurring
 - `PJON_FAIL` (65535) if no data is received
 
 If you want to dedicate a certain timeframe to reception call the `receive` function passing the maximum reception time in microseconds:

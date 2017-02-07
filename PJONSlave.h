@@ -119,7 +119,7 @@ limitations under the License. */
         receive(
           (random(PJON_ACQUIRE_ID_DELAY * 0.25, PJON_ACQUIRE_ID_DELAY)) * 1000
         );
-        if(this->send_packet_blocking(this->_device_id, this->bus_id, &msg, 1, head) == ACK)
+        if(this->send_packet_blocking(this->_device_id, this->bus_id, &msg, 1, head) == PJON_ACK)
           acquire_id_multi_master(limit++);
       };
 
@@ -140,7 +140,7 @@ limitations under the License. */
           response,
           5,
           this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
-        ) == ACK) return true;
+        ) == PJON_ACK) return true;
 
         return false;
       };
@@ -173,7 +173,7 @@ limitations under the License. */
           request,
           6,
           this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
-        ) == ACK) {
+        ) == PJON_ACK) {
           this->_device_id = PJON_NOT_ASSIGNED;
           return true;
         }
@@ -236,7 +236,7 @@ limitations under the License. */
                 response,
                 6,
                 this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
-              ) != ACK) {
+              ) != PJON_ACK) {
                 this->set_id(PJON_NOT_ASSIGNED);
                 _slave_error(PJON_ID_ACQUISITION_FAIL, PJON_ID_CONFIRM);
               }
@@ -279,7 +279,7 @@ limitations under the License. */
       uint16_t receive() {
         _current_pjon_slave = this;
         uint16_t received_data = PJON<Strategy>::receive();
-        if(received_data != ACK) return received_data;
+        if(received_data != PJON_ACK) return received_data;
 
         uint8_t overhead = this->packet_overhead(this->data[1]);
 
@@ -290,7 +290,7 @@ limitations under the License. */
             this->last_packet_info
           );
 
-        return ACK;
+        return PJON_ACK;
       };
 
 
@@ -299,7 +299,7 @@ limitations under the License. */
       uint16_t receive(uint32_t duration) {
         uint32_t time = micros();
         while((uint32_t)(micros() - time) <= duration)
-          if(receive() == ACK) return ACK;
+          if(receive() == PJON_ACK) return PJON_ACK;
         return PJON_FAIL;
       };
 

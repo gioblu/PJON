@@ -21,7 +21,7 @@ void setup() {
 };
 
 void loop() {
-  if(bus.send_packet(44, "B",1) == ACK)
+  if(bus.send_packet(44, "B",1) == PJON_ACK)
     digitalWrite(13, HIGH);
   delay(5);
   digitalWrite(13, LOW);

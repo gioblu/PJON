@@ -45,7 +45,7 @@ In a scenario where a stream of byte is coming, following this approach a low pe
 
 
 ####Synchronous acknowledgement
-After packet reception, the CRC is calculated and a single character is transmitted, `ACK` (value 6) if the packet's content is correct or `NAK` (value 21) if an error is detected.
+After packet reception, the CRC is calculated and a single character is transmitted, `PJON_ACK` (value 6) if the packet's content is correct or `PJON_NAK` (value 21) if an error is detected.
 ```cpp  
 Transmission                                               Response
  ________________________________________                   _____

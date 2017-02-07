@@ -64,9 +64,9 @@ limitations under the License. */
   #define PJON_HALF_DUPLEX    151
 
   /* Protocol symbols */
-  #define ACK              6
-  #define BUSY           666
-  #define NAK             21
+  #define PJON_ACK              6
+  #define PJON_BUSY           666
+  #define PJON_NAK             21
 
   /* Dynamic addressing */
   #define PJON_ID_ACQUIRE 199

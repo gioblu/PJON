@@ -170,7 +170,7 @@ class SoftwareBitBang {
       /* Transmitter emits a bit SWBB_BIT_WIDTH / 4 long and tries
          to get a response cyclically for SWBB_TIMEOUT microseconds.
          Receiver synchronizes to the falling edge of the last incoming
-         bit and transmits ACK or NAK */
+         bit and transmits PJON_ACK or PJON_NAK */
       while(response == PJON_FAIL && (uint32_t)(micros() - SWBB_TIMEOUT) <= time) {
         PJON_IO_WRITE(_input_pin, LOW);
         response = receive_byte();
@@ -223,7 +223,7 @@ class SoftwareBitBang {
       /* Transmitter emits a bit SWBB_BIT_WIDTH / 4 long and tries
          to get a response cyclically for SWBB_TIMEOUT microseconds.
          Receiver synchronizes to the falling edge of the last incoming
-         bit and transmits ACK or NAK */
+         bit and transmits PJON_ACK or PJON_NAK */
       while((uint32_t)(micros() - time) < (SWBB_BIT_WIDTH) && !PJON_IO_READ(_input_pin))
         time = micros(); // Wait for the last high ending
       while((uint32_t)(micros() - time) < (SWBB_BIT_WIDTH / 2.25) && PJON_IO_READ(_input_pin));

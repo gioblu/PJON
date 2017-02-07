@@ -132,12 +132,12 @@
 #endif
 
 // Constants
-#ifndef ACK
-  #define ACK               6
+#ifndef PJON_ACK
+  #define PJON_ACK               6
 #endif
 
-#ifndef NAK
-  #define NAK              21
+#ifndef PJON_NAK
+  #define PJON_NAK              21
 #endif
 
 // Internal constants
@@ -263,11 +263,11 @@ private:
       }
 
       #ifdef DEBUGPRINT
-        Serial.print("Stat bfr send ACK: "); Serial.println(ok);
+        Serial.print("Stat bfr send PJON_ACK: "); Serial.println(ok);
       #endif
 
-      // Write ACK
-      return_value = ok ? ACK : NAK;
+      // Write PJON_ACK
+      return_value = ok ? PJON_ACK : PJON_NAK;
       int8_t acklen = 0;
       if(ok) {
         acklen = client.write((byte*) &return_value, 2);
@@ -275,7 +275,7 @@ private:
       }
 
       #ifdef DEBUGPRINT
-        Serial.print("Sent "); Serial.print(ok ? "ACK: " : "NAK: "); Serial.println(acklen);
+        Serial.print("Sent "); Serial.print(ok ? "PJON_ACK: " : "PJON_NAK: "); Serial.println(acklen);
       #endif
 
       // Call receiver callback function
@@ -340,10 +340,10 @@ private:
   }
 
   void disconnect_out_if_needed(int16_t result) {
-    if (result != ACK || !_keep_connection) {
+    if (result != PJON_ACK || !_keep_connection) {
       stop(_client_out);
       #ifdef DEBUGPRINT
-        Serial.print("Disconn outcl. OK="); Serial.println(result == ACK);
+        Serial.print("Disconn outcl. OK="); Serial.println(result == PJON_ACK);
       #endif
     }
   }
@@ -383,14 +383,14 @@ private:
     if (ok) {
       uint16_t code = 0;
       ok = read_bytes(client, (byte*) &code, 2) == 2;
-      if (ok && (code == ACK || code == NAK)) result = code;
+      if (ok && (code == PJON_ACK || code == PJON_NAK)) result = code;
     }
 
     #ifdef DEBUGPRINT
-      Serial.print("ACK stat: "); Serial.println(result == ACK);
+      Serial.print("PJON_ACK stat: "); Serial.println(result == PJON_ACK);
     #endif
 
-    return result;  // PJON_FAIL, ACK or NAK
+    return result;  // PJON_FAIL, PJON_ACK or PJON_NAK
   }
 
   // Do bidirectional transfer of packets over a single socket connection by using a master-slave mode
@@ -420,9 +420,9 @@ private:
       if (ok) ok = client.write((byte*) &buf, 5) == 5;
       if (ok) client.flush();
 
-      // Send the packet and read ACK
+      // Send the packet and read PJON_ACK
       if (ok && numpackets_out > 0) {
-         ok = send(client, id, contents, length) == ACK;
+         ok = send(client, id, contents, length) == PJON_ACK;
          #ifdef DEBUGPRINT
            Serial.print("Sent p, ok="); Serial.println(ok);
          #endif
@@ -438,13 +438,13 @@ private:
       // Read incoming packages if any
       for (uint8_t i = 0; ok && i < numpackets_in; i++) {
         while (client.available() < 1 && client.connected()) ;
-        ok = receive(client) == ACK;
+        ok = receive(client) == PJON_ACK;
         #ifdef DEBUGPRINT
           Serial.print("Read p, ok="); Serial.println(ok);
         #endif
       }
 
-      // Write singlesocket footer ("ACK" for the whole thing)
+      // Write singlesocket footer ("PJON_ACK" for the whole thing)
       uint32_t foot = SINGLESOCKET_FOOTER;
       if (ok) ok = client.write((byte*) &foot, 4) == 4;
       if (ok) client.flush();
@@ -453,7 +453,7 @@ private:
       #endif
 
       // Disconnect
-      int16_t result = ok ? ACK : PJON_FAIL;
+      int16_t result = ok ? PJON_ACK : PJON_FAIL;
       disconnect_out_if_needed(result);
       return result;
     } else { // Receiving incoming connections and packets and request
@@ -480,7 +480,7 @@ private:
       // Read incoming packets if any, send ACK for each
       for (uint8_t i = 0; ok && i < numpackets_in; i++) {
         while (client.available() < 1 && client.connected()) ;
-        ok = receive(client) == ACK;
+        ok = receive(client) == PJON_ACK;
         #ifdef DEBUGPRINT
           Serial.print("Read p, ok="); Serial.println(ok);
         #endif
@@ -493,7 +493,7 @@ private:
 
       // Write outgoing packets if any
       if (ok && numpackets_out > 0) {
-        ok = send(client, id, contents, length) == ACK;
+        ok = send(client, id, contents, length) == PJON_ACK;
         #ifdef DEBUGPRINT
            Serial.print("Sent p, ok="); Serial.println(ok);
         #endif
@@ -512,7 +512,7 @@ private:
       // Disconnect
       disconnect_in_if_needed();
 
-      return ok ? ACK : PJON_FAIL;
+      return ok ? PJON_ACK : PJON_FAIL;
     }
     #endif
     return PJON_FAIL;
@@ -572,7 +572,7 @@ public:
     int16_t result = PJON_FAIL;
     do {
       result = send(id, packet, length);
-    } while(result != ACK && (uint32_t)(micros() - start) <= duration_us);
+    } while(result != PJON_ACK && (uint32_t)(micros() - start) <= duration_us);
     return result;
   }
 
@@ -620,7 +620,7 @@ public:
     int16_t result = PJON_FAIL;
     do {
       result = receive();
-    } while(result != ACK && (uint32_t)(micros() - start) <= duration_us);
+    } while(result != PJON_ACK && (uint32_t)(micros() - start) <= duration_us);
     return result;
   }
 
@@ -632,7 +632,7 @@ public:
     // Connect or check that we are already connected to the correct server
     bool connected = connect(id);
 
-    // Send the packet and read ACK
+    // Send the packet and read PJON_ACK
     int16_t result = PJON_FAIL;
     if (connected) result = send(_client_out, id, packet, length);
 

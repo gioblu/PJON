@@ -38,11 +38,11 @@ void loop() {
   unsigned int response = 0;
   while(millis() - time < 1000) {
     response = bus.receive();
-    if(response == ACK)
+    if(response == PJON_ACK)
       test++;
-    if(response == NAK)
+    if(response == PJON_NAK)
       mistakes++;
-    if(response == BUSY)
+    if(response == PJON_BUSY)
       busy++;
     if(response == PJON_FAIL)
       fail++;

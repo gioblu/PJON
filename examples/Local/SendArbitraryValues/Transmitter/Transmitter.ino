@@ -46,12 +46,12 @@ void loop() {
     /* Determine communication result and duration */
     send_time = micros() - send_time;
     float duration = send_time / 1000.0;
-    Serial.print((packet == ACK) ? " Transmitted" : " Some error occurred");
+    Serial.print((packet == PJON_ACK) ? " Transmitted" : " Some error occurred");
     Serial.print(" - Duration: ");
     Serial.print(duration);
     Serial.print(" milliseconds");
     Serial.print(" - Communication speed: ");
-    //               1 second / (duration / (overhead + length + ACK))
+    //               1 second / (duration / (overhead + length + PJON_ACK))
     Serial.print((int)(1000.0 / (duration / (bus.packet_overhead() + 3 + 1))));
     Serial.println("B/s");
   }

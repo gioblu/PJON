@@ -202,8 +202,8 @@ class AnalogSampling {
       uint16_t response = PJON_FAIL;
       uint32_t time = micros();
       while(
-        (response != ACK) &&
-        (response != NAK) &&
+        (response != PJON_ACK) &&
+        (response != PJON_NAK) &&
         (uint32_t)(micros() - AS_TIMEOUT) <= time
       ) response = receive_byte();
       return response;

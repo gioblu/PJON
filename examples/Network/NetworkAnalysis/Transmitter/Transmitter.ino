@@ -48,11 +48,11 @@ void loop() {
     be able to catch every single sending result. */
 
     unsigned int response = bus.send_packet(44, bus_id, content, 20, header);
-    if(response == ACK)
+    if(response == PJON_ACK)
       test++;
-    if(response == NAK)
+    if(response == PJON_NAK)
       mistakes++;
-    if(response == BUSY)
+    if(response == PJON_BUSY)
       busy++;
     if(response == PJON_FAIL)
       fail++;
@@ -64,7 +64,7 @@ void loop() {
   Serial.print((unsigned int)((bus.packet_overhead() + 1) * test));
   Serial.println("B");
   Serial.print("Maximum Bandwidth: ");
-  // length + packet overhead + ACK
+  // length + packet overhead + PJON_ACK
   Serial.print((unsigned int)(test * (20 + bus.packet_overhead() + 1)));
   Serial.println("B/s");
   Serial.print("Data throughput: ");

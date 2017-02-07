@@ -258,7 +258,7 @@ limitations under the License. */
       uint16_t receive() {
         _current_pjon_master = this;
         uint16_t received_data = PJON<Strategy>::receive();
-        if(received_data != ACK) return received_data;
+        if(received_data != PJON_ACK) return received_data;
 
         uint8_t overhead = PJON<Strategy>::packet_overhead(this->data[1]);
         uint8_t CRC_overhead = (this->data[1] & CRC_BIT) ? 4 : 1;
@@ -291,7 +291,7 @@ limitations under the License. */
         }
 
         _master_receiver(this->data + (overhead - CRC_overhead), this->data[2] - overhead, this->last_packet_info);
-        return ACK;
+        return PJON_ACK;
       };
 
 
@@ -300,7 +300,7 @@ limitations under the License. */
       uint16_t receive(uint32_t duration) {
         uint32_t time = micros();
         while((uint32_t)(micros() - time) <= duration)
-          if(receive() == ACK) return ACK;
+          if(receive() == PJON_ACK) return PJON_ACK;
         return PJON_FAIL;
       };
 

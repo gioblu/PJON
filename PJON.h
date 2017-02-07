@@ -201,7 +201,7 @@ limitations under the License. */
         }
 
         if(new_length >= PACKET_MAX_LENGTH) {
-          _error(CONTENT_TOO_LONG, new_length);
+          _error(PJON_CONTENT_TOO_LONG, new_length);
           return 0;
         }
 
@@ -272,7 +272,7 @@ limitations under the License. */
             return i;
           }
 
-        _error(PACKETS_BUFFER_FULL, MAX_PACKETS);
+        _error(PJON_PACKETS_BUFFER_FULL, MAX_PACKETS);
         return FAIL;
       };
 
@@ -862,7 +862,7 @@ limitations under the License. */
           if(packets[i].state != FAIL) strategy.handle_collision();
 
           if(packets[i].attempts > strategy.get_max_attempts()) {
-            _error(CONNECTION_LOST, packets[i].content[0]);
+            _error(PJON_CONNECTION_LOST, packets[i].content[0]);
             if(!packets[i].timing) {
               if(_auto_delete) {
                 remove(i);

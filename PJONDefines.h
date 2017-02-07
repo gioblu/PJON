@@ -99,15 +99,15 @@ limitations under the License. */
   #define ENCRYPTION_BIT    0B0000000100000000 // 1 - Encrypted data | 0 - Not encrypted data
 
   /* ERRORS: */
-  #define CONNECTION_LOST     101
-  #define PACKETS_BUFFER_FULL 102
-  #define CONTENT_TOO_LONG    104
-  #define ID_ACQUISITION_FAIL 105
-  #define DEVICES_BUFFER_FULL 254
+  #define PJON_CONNECTION_LOST     101
+  #define PJON_PACKETS_BUFFER_FULL 102
+  #define PJON_CONTENT_TOO_LONG    104
+  #define PJON_ID_ACQUISITION_FAIL 105
+  #define PJON_DEVICES_BUFFER_FULL 254
 
   /* CONSTRAINTS:
 
-  /* Packet buffer length, if full PACKETS_BUFFER_FULL error is thrown.
+  /* Packet buffer length, if full PJON_PACKETS_BUFFER_FULL error is thrown.
      The packet buffer is preallocated, so its length strongly affects
      memory consumption */
   #ifndef MAX_PACKETS

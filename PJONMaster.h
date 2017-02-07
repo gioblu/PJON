@@ -102,7 +102,7 @@ limitations under the License. */
       void approve_id(uint8_t id, uint8_t *b_id, uint32_t rid) {
         char response[6];
         uint16_t state = reserve_id(rid);
-        if(state == DEVICES_BUFFER_FULL) return;
+        if(state == PJON_DEVICES_BUFFER_FULL) return;
         if(state == FAIL) return negate_id(PJON_NOT_ASSIGNED, b_id, rid);
 
         response[0] = ID_REQUEST;
@@ -177,7 +177,7 @@ limitations under the License. */
       /* Master error handler: */
 
       void error_handler(uint8_t code, uint8_t data) {
-        if(code == CONNECTION_LOST)
+        if(code == PJON_CONNECTION_LOST)
           delete_id_reference(data);
         _master_error(code, data);
       };
@@ -248,8 +248,8 @@ limitations under the License. */
             ids[i].state = false;
             return i + 1;
           }
-        _master_error(DEVICES_BUFFER_FULL, PJON_MAX_DEVICES);
-        return DEVICES_BUFFER_FULL;
+        _master_error(PJON_DEVICES_BUFFER_FULL, PJON_MAX_DEVICES);
+        return PJON_DEVICES_BUFFER_FULL;
       };
 
 

@@ -32,7 +32,7 @@ void setup() {
 }
 
 void error_handler(uint8_t code, uint8_t data) {
-  if(code == CONNECTION_LOST) {
+  if(code == PJON_CONNECTION_LOST) {
     Serial.print("Connection lost with device id ");
     Serial.println(data);
   }

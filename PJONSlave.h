@@ -97,7 +97,7 @@ limitations under the License. */
 
       void acquire_id_multi_master(uint8_t limit = 0) {
         if(limit >= PJON_MAX_ACQUIRE_ID_COLLISIONS)
-          return _slave_error(ID_ACQUISITION_FAIL, FAIL);
+          return _slave_error(PJON_ID_ACQUISITION_FAIL, FAIL);
 
         delay(random(PJON_ACQUIRE_ID_DELAY * 0.25, PJON_ACQUIRE_ID_DELAY));
         uint32_t time = micros();
@@ -238,7 +238,7 @@ limitations under the License. */
                 this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
               ) != ACK) {
                 this->set_id(PJON_NOT_ASSIGNED);
-                _slave_error(ID_ACQUISITION_FAIL, ID_CONFIRM);
+                _slave_error(PJON_ID_ACQUISITION_FAIL, ID_CONFIRM);
               }
             }
 

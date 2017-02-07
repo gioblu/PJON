@@ -121,7 +121,7 @@ limitations under the License. */
       uint8_t data[PACKET_MAX_LENGTH];
       PJON_Packet_Info last_packet_info;
       PJON_Packet packets[MAX_PACKETS];
-      #if(INCLUDE_ASYNC_ACK)
+      #if(PJON_INCLUDE_ASYNC_ACK)
         PJON_Packet_Record recent_packet_ids[PJON_MAX_RECENT_PACKET_IDS];
       #endif
 
@@ -165,7 +165,7 @@ limitations under the License. */
         uint8_t device_id_seed = (_device_id != PJON_NOT_ASSIGNED) ? _device_id : 0;
         randomSeed(analogRead(_random_seed) + device_id_seed);
         strategy.begin(device_id_seed);
-        #if(INCLUDE_ASYNC_ACK)
+        #if(PJON_INCLUDE_ASYNC_ACK)
           _packet_id_seed = random(65535) + device_id_seed;
         #endif
       };
@@ -190,7 +190,7 @@ limitations under the License. */
         bool extended_header = header & EXTEND_HEADER_BIT;
         bool extended_length = header & EXTEND_LENGTH_BIT;
 
-        #if(INCLUDE_ASYNC_ACK)
+        #if(PJON_INCLUDE_ASYNC_ACK)
           bool async_ack = (header & ACK_MODE_BIT) && (header & SENDER_INFO_BIT);
           if(!p_id && async_ack) p_id = new_packet_id();
         #endif
@@ -219,13 +219,13 @@ limitations under the License. */
           if(header & SENDER_INFO_BIT) {
             copy_bus_id((uint8_t*) &destination[7 + extended_header + extended_length], bus_id);
             destination[11 + extended_header + extended_length] = _device_id;
-            #if(INCLUDE_ASYNC_ACK)
+            #if(PJON_INCLUDE_ASYNC_ACK)
               if(async_ack) memcpy(destination + 12 + extended_header + extended_length, &p_id, 2);
             #endif
           }
         } else if(header & SENDER_INFO_BIT) {
           destination[3 + extended_header + extended_length] = _device_id;
-          #if(INCLUDE_ASYNC_ACK)
+          #if(PJON_INCLUDE_ASYNC_ACK)
             if(async_ack) memcpy(destination + 4 + extended_header + extended_length, &p_id, 2);
           #endif
         }
@@ -331,14 +331,14 @@ limitations under the License. */
           if((packet_info.header & SENDER_INFO_BIT) != 0) {
             copy_bus_id(packet_info.sender_bus_id, packet + 7 + offset);
             packet_info.sender_id = packet[11 + offset];
-            #if(INCLUDE_ASYNC_ACK)
+            #if(PJON_INCLUDE_ASYNC_ACK)
               if(packet_info.header & ACK_MODE_BIT)
                 packet_info.id = packet[13 + offset] << 8 | packet[12 + offset] & 0xFF;
             #endif
           }
         } else if((packet_info.header & SENDER_INFO_BIT) != 0) {
           packet_info.sender_id = packet[3 + offset];
-          #if(INCLUDE_ASYNC_ACK)
+          #if(PJON_INCLUDE_ASYNC_ACK)
             if(packet_info.header & ACK_MODE_BIT)
               packet_info.id = packet[5 + offset] << 8 | packet[4 + offset] & 0xFF;
           #endif
@@ -398,7 +398,7 @@ limitations under the License. */
         if(!CRC) return NAK;
         parse(data, last_packet_info);
 
-        #if(INCLUDE_ASYNC_ACK)
+        #if(PJON_INCLUDE_ASYNC_ACK)
           /* If a packet requesting asynchronous acknowledment is received
              send the acknowledment packet back to the packet's transmitter */
           if((data[1] & ACK_MODE_BIT) && (data[1] & SENDER_INFO_BIT)) {
@@ -900,7 +900,7 @@ limitations under the License. */
          buffer of recently received packets, if not add it to the buffer. */
 
       bool known_packet_id(PJON_Packet_Info info) {
-        #if(INCLUDE_ASYNC_ACK)
+        #if(PJON_INCLUDE_ASYNC_ACK)
           for(uint8_t i = 0; i < PJON_MAX_RECENT_PACKET_IDS; i++)
             if(
               info.id == recent_packet_ids[i].id &&
@@ -920,7 +920,7 @@ limitations under the License. */
       /* Save packet id in the buffer: */
 
       void save_packet_id(PJON_Packet_Info info) {
-        #if(INCLUDE_ASYNC_ACK)
+        #if(PJON_INCLUDE_ASYNC_ACK)
           for(uint8_t i = PJON_MAX_RECENT_PACKET_IDS - 1; i > 0; i--)
             recent_packet_ids[i] = recent_packet_ids[i - 1];
           recent_packet_ids[0].id = info.id;

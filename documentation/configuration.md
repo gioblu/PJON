@@ -67,9 +67,9 @@ Configure synchronous acknowledge:
 ```cpp  
   bus.set_synchronous_acknowledge(false); // Avoid sync ack
 ```
-If you are interested in including the asynchronous acknowledment feature in your sketch, you need to define the `INCLUDE_ASYNC_ACK` as following (made to save more than 1kB on sketches where this feature is not used):
+If you are interested in including the asynchronous acknowledment feature in your sketch, you need to define the `PJON_INCLUDE_ASYNC_ACK` as following (made to save more than 1kB on sketches where this feature is not used):
 ```cpp  
-#define INCLUDE_ASYNC_ACK true
+#define PJON_INCLUDE_ASYNC_ACK true
 #include <PJON.h>
 ```
 Configure asynchronous acknowledge:

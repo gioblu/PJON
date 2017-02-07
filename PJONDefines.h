@@ -123,8 +123,8 @@ limitations under the License. */
 
   /* If set to true avoids async ack code memory allocation if not used
      (it saves around 1kB of memory) */
-  #ifndef INCLUDE_ASYNC_ACK
-    #define INCLUDE_ASYNC_ACK false
+  #ifndef PJON_INCLUDE_ASYNC_ACK
+    #define PJON_INCLUDE_ASYNC_ACK false
   #endif
 
   /* Maximum packet ids record kept in memory (to avoid duplicated exchanges) */

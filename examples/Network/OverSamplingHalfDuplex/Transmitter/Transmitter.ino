@@ -1,6 +1,6 @@
 
-/* Include Async ACK code setting INCLUDE_ASYNC_ACK as true before including PJON.h */
-#define INCLUDE_ASYNC_ACK true
+/* Include Async ACK code setting PJON_INCLUDE_ASYNC_ACK as true before including PJON.h */
+#define PJON_INCLUDE_ASYNC_ACK true
 
 #include <PJON.h>
 uint16_t packet;

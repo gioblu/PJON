@@ -180,7 +180,7 @@ limitations under the License. */
   typedef void (* PJON_Receiver)(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info);
   typedef void (* PJON_Error)(uint8_t code, uint8_t data);
 
-  static void dummy_receiver_handler(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {};
-  static void dummy_error_handler(uint8_t code, uint8_t data) {};
+  static void PJON_dummy_receiver_handler(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {};
+  static void PJON_dummy_error_handler(uint8_t code, uint8_t data) {};
 
 #endif

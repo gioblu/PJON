@@ -719,8 +719,8 @@ limitations under the License. */
       void set_default() {
         _mode = PJON_HALF_DUPLEX;
         if(!bus_id_equality(bus_id, localhost)) set_shared_network(true);
-        set_error(dummy_error_handler);
-        set_receiver(dummy_receiver_handler);
+        set_error(PJON_dummy_error_handler);
+        set_receiver(PJON_dummy_receiver_handler);
         for(int i = 0; i < PJON_MAX_PACKETS; i++) {
           packets[i].state = 0;
           packets[i].timing = 0;

@@ -67,8 +67,8 @@ limitations under the License. */
 
       PJONMaster() : PJON<Strategy>(PJON_MASTER_ID) {
         PJON<Strategy>::set_error(static_error_handler);
-        set_error(dummy_error_handler);
-        set_receiver(dummy_receiver_handler);
+        set_error(PJON_dummy_error_handler);
+        set_receiver(PJON_dummy_receiver_handler);
         delete_id_reference();
       };
 
@@ -78,8 +78,8 @@ limitations under the License. */
 
       PJONMaster(const uint8_t *b_id) : PJON<Strategy>(b_id, PJON_MASTER_ID) {
         PJON<Strategy>::set_error(static_error_handler);
-        set_error(dummy_error_handler);
-        set_receiver(dummy_receiver_handler);
+        set_error(PJON_dummy_error_handler);
+        set_receiver(PJON_dummy_receiver_handler);
         delete_id_reference();
       };
 

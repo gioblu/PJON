@@ -28,7 +28,7 @@ void error_handler(uint8_t code, uint8_t data) {
     Serial.print("Packet buffer is full, has now a length of ");
     Serial.println(data, DEC);
     Serial.println("Possible wrong bus configuration!");
-    Serial.println("higher MAX_PACKETS in PJON.h if necessary.");
+    Serial.println("higher PJON_MAX_PACKETS if necessary.");
   }
   if(code == PJON_CONTENT_TOO_LONG) {
     Serial.print("Content is too long, length: ");

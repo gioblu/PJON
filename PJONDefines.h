@@ -110,8 +110,8 @@ limitations under the License. */
   /* Packet buffer length, if full PJON_PACKETS_BUFFER_FULL error is thrown.
      The packet buffer is preallocated, so its length strongly affects
      memory consumption */
-  #ifndef MAX_PACKETS
-    #define MAX_PACKETS 5
+  #ifndef PJON_MAX_PACKETS
+    #define PJON_MAX_PACKETS 5
   #endif
 
   /* Max packet length, higher if necessary.

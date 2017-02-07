@@ -1,9 +1,9 @@
 
- /*-O//\             __     __
-   |-gfo\           |__| | |  | |\ | ™
-   |!y°o:\          |  __| |__| | \| v6.2
-   |y"s§+`\         multi-master, multi-media communications bus system framework
-  /so+:-..`\        Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
+ /*-O//\           __     __
+   |-gfo\         |__| | |  | |\ | ™
+   |!y°o:\        |  __| |__| | \| v6.2
+   |y"s§+`\       multi-master, multi-media communications bus system framework
+  /so+:-..`\      Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
   |5/:%&-a3f.:;\
   \+//u/+g%{osv,,\
@@ -162,7 +162,8 @@ limitations under the License. */
       /* Begin function to be called in setup: */
 
       void begin() {
-        uint8_t device_id_seed = (_device_id != PJON_NOT_ASSIGNED) ? _device_id : 0;
+        uint8_t device_id_seed =
+          (_device_id != PJON_NOT_ASSIGNED) ? _device_id : 0;
         randomSeed(analogRead(_random_seed) + device_id_seed);
         strategy.begin(device_id_seed);
         #if(PJON_INCLUDE_ASYNC_ACK)
@@ -215,29 +216,50 @@ limitations under the License. */
           destination[3 + extended_header] = new_length & 0xFF;
         } else destination[2 + extended_header] = new_length;
         if(header & MODE_BIT) {
-          copy_bus_id((uint8_t*) &destination[3 + extended_header + extended_length], b_id);
+          copy_bus_id(
+            (uint8_t*) &destination[3 + extended_header + extended_length],
+            b_id
+          );
           if(header & SENDER_INFO_BIT) {
-            copy_bus_id((uint8_t*) &destination[7 + extended_header + extended_length], bus_id);
+            copy_bus_id(
+              (uint8_t*) &destination[7 + extended_header + extended_length],
+              bus_id
+            );
             destination[11 + extended_header + extended_length] = _device_id;
             #if(PJON_INCLUDE_ASYNC_ACK)
-              if(async_ack) memcpy(destination + 12 + extended_header + extended_length, &p_id, 2);
+              if(async_ack)
+                memcpy(
+                  destination + 12 + extended_header + extended_length,
+                  &p_id,
+                  2
+                );
             #endif
           }
         } else if(header & SENDER_INFO_BIT) {
           destination[3 + extended_header + extended_length] = _device_id;
           #if(PJON_INCLUDE_ASYNC_ACK)
-            if(async_ack) memcpy(destination + 4 + extended_header + extended_length, &p_id, 2);
+            if(async_ack)
+              memcpy(
+                destination + 4 + extended_header + extended_length,
+                &p_id,
+                2
+              );
           #endif
         }
 
-        memcpy(destination + (new_length - length - (header & CRC_BIT ? 4 : 1)), source, length);
+        memcpy(
+          destination + (new_length - length - (header & CRC_BIT ? 4 : 1)),
+          source,
+          length
+        );
         if(header & CRC_BIT) {
           uint32_t CRC = crc32::compute((uint8_t *)destination, new_length - 4);
           destination[new_length - 4] = (uint32_t)(CRC) >> 24;
           destination[new_length - 3] = (uint32_t)(CRC) >> 16;
           destination[new_length - 2] = (uint32_t)(CRC) >>  8;
           destination[new_length - 1] = (uint32_t)(CRC);
-        } else destination[new_length - 1] = crc8::compute((uint8_t *)destination, new_length - 1);
+        } else destination[new_length - 1] =
+          crc8::compute((uint8_t *)destination, new_length - 1);
         return new_length;
       };
 
@@ -249,7 +271,7 @@ limitations under the License. */
       };
 
 
-      /* Add a packet to the send list ready to be delivered by the next update() call: */
+      /* Add a packet to the send list, delivered by the next update() call: */
 
       uint16_t dispatch(
         uint8_t id,
@@ -324,7 +346,8 @@ limitations under the License. */
         packet_info.receiver_id = packet[0];
         bool extended_header = packet[1] & EXTEND_HEADER_BIT;
         bool extended_length = packet[1] & EXTEND_LENGTH_BIT;
-        packet_info.header = (extended_header) ? packet[2] << 8 | packet[1] : packet[1];
+        packet_info.header =
+          (extended_header) ? packet[2] << 8 | packet[1] : packet[1];
         uint8_t offset = extended_header + extended_length;
         if((packet_info.header & MODE_BIT) != 0) {
           copy_bus_id(packet_info.receiver_bus_id, packet + 3 + offset);
@@ -333,14 +356,16 @@ limitations under the License. */
             packet_info.sender_id = packet[11 + offset];
             #if(PJON_INCLUDE_ASYNC_ACK)
               if(packet_info.header & ACK_MODE_BIT)
-                packet_info.id = packet[13 + offset] << 8 | packet[12 + offset] & 0xFF;
+                packet_info.id =
+                  packet[13 + offset] << 8 | packet[12 + offset] & 0xFF;
             #endif
           }
         } else if((packet_info.header & SENDER_INFO_BIT) != 0) {
           packet_info.sender_id = packet[3 + offset];
           #if(PJON_INCLUDE_ASYNC_ACK)
             if(packet_info.header & ACK_MODE_BIT)
-              packet_info.id = packet[5 + offset] << 8 | packet[4 + offset] & 0xFF;
+              packet_info.id =
+                packet[5 + offset] << 8 | packet[4 + offset] & 0xFF;
           #endif
         }
       };
@@ -385,7 +410,9 @@ limitations under the License. */
         }
 
         if(data[1] & CRC_BIT)
-          CRC = crc32::compare(crc32::compute(data, length - 4), data + (length - 4));
+          CRC = crc32::compare(
+            crc32::compute(data, length - 4), data + (length - 4)
+          );
         else CRC = !crc8::compute(data, length);
 
         if(data[1] & ACK_REQUEST_BIT && data[0] != PJON_BROADCAST)
@@ -465,8 +492,12 @@ limitations under the License. */
           parse((uint8_t *)packets[i].content, actual_info);
           if(actual_info.id == packet_info.id)
             if(actual_info.receiver_id == packet_info.sender_id && (
-              (!(actual_info.header & MODE_BIT) && !(packet_info.header & MODE_BIT)) ? true :
-                bus_id_equality(actual_info.receiver_bus_id, packet_info.sender_bus_id)
+              (!(actual_info.header & MODE_BIT) &&
+               !(packet_info.header & MODE_BIT)) ? true :
+                bus_id_equality(
+                  actual_info.receiver_bus_id,
+                  packet_info.sender_bus_id
+                )
             )) {
               if(packets[i].timing) {
                 uint8_t offset = packet_overhead(actual_info.header);
@@ -598,7 +629,8 @@ limitations under the License. */
         uint16_t length,
         uint16_t header = PJON_NOT_ASSIGNED
       ) {
-        if(!(length = compose_packet(id, bus_id, (char *)data, string, length, header)))
+        if(!(length =
+            compose_packet(id, bus_id, (char *)data, string, length, header)))
           return PJON_FAIL;
         return send_packet((char *)data, length);
       };
@@ -611,7 +643,8 @@ limitations under the License. */
         uint16_t length,
         uint16_t header = PJON_NOT_ASSIGNED
       ) {
-        if(!(length = compose_packet(id, b_id, (char *)data, string, length, header)))
+        if(!(length =
+            compose_packet(id, b_id, (char *)data, string, length, header)))
           return PJON_FAIL;
         return send_packet((char *)data, length);
       };
@@ -681,7 +714,7 @@ limitations under the License. */
 
 
       /* Configure synchronous acknowledge presence:
-         TRUE: Send back synchronous acknowledge when a packet is correctly received
+         TRUE: Send synchronous acknowledge when a packet is correctly received
          FALSE: Avoid acknowledge transmission */
 
       void set_synchronous_acknowledge(boolean state) {
@@ -775,7 +808,7 @@ limitations under the License. */
 
       /* Set if delivered or undeliverable packets are auto deleted:
          TRUE: Automatic deletion
-         FALSE: No packet deletion from buffer. Manual packet deletion from buffer is needed.  */
+         FALSE: No packet deletion from buffer, (deletion from buffer by user) */
 
       void set_packet_auto_deletion(boolean state) {
         _auto_delete = state;
@@ -817,8 +850,8 @@ limitations under the License. */
 
 
       /* Update the state of the send list:
-         Check if there are packets to be sent or to be erased if correctly delivered.
-         Returns the actual number of packets to be sent. */
+         Check if there are packets to be sent or to be erased if correctly
+         delivered. Returns the actual number of packets to be sent. */
 
       uint8_t update() {
         uint8_t packets_count = 0;
@@ -845,8 +878,8 @@ limitations under the License. */
             if(!packets[i].timing) {
               if(
                 _auto_delete && (
-                  (packets[i].length == packet_overhead(packets[i].content[1]) && async_ack
-                ) || !(packets[i].content[1] & ACK_MODE_BIT))
+                  (packets[i].length == packet_overhead(packets[i].content[1])
+                && async_ack ) || !(packets[i].content[1] & ACK_MODE_BIT))
               ) {
                 remove(i);
                 packets_count--;
@@ -890,8 +923,12 @@ limitations under the License. */
           parse((uint8_t *)packets[i].content, tested_info);
           if(
             actual_info.receiver_id == tested_info.receiver_id &&
-            bus_id_equality(actual_info.receiver_bus_id, tested_info.receiver_bus_id)
-          ) if(packets[i].registration < packets[index].registration) return false;
+            bus_id_equality(
+              actual_info.receiver_bus_id,
+              tested_info.receiver_bus_id
+            )
+          ) if(packets[i].registration < packets[index].registration)
+            return false;
         }
         return true;
       };
@@ -907,9 +944,13 @@ limitations under the License. */
               info.id == recent_packet_ids[i].id &&
               info.sender_id == recent_packet_ids[i].sender_id &&
               ((
-                (info.header & MODE_BIT) && (recent_packet_ids[i].header & MODE_BIT) &&
-                bus_id_equality((uint8_t *)info.sender_bus_id, (uint8_t *)recent_packet_ids[i].sender_bus_id)
-              ) || !(info.header & MODE_BIT) && !(recent_packet_ids[i].header & MODE_BIT))
+                (info.header & MODE_BIT) &&
+                (recent_packet_ids[i].header & MODE_BIT) && bus_id_equality(
+                  (uint8_t *)info.sender_bus_id,
+                  (uint8_t *)recent_packet_ids[i].sender_bus_id
+                )
+              ) || !(info.header & MODE_BIT) &&
+                   !(recent_packet_ids[i].header & MODE_BIT))
             ) return true;
 
           save_packet_id(info);
@@ -931,18 +972,22 @@ limitations under the License. */
         #endif
       };
 
+
       /* Check equality between two bus ids */
 
-      static boolean bus_id_equality(const uint8_t *name_one, const uint8_t *name_two) {
+      static boolean bus_id_equality(const uint8_t *n_one, const uint8_t *n_two) {
         for(uint8_t i = 0; i < 4; i++)
-          if(name_one[i] != name_two[i])
+          if(n_one[i] != n_two[i])
             return false;
         return true;
       };
 
+
       /* Copy a bus id: */
 
-      static void copy_bus_id(uint8_t dest[], const uint8_t src[]) { memcpy(dest, src, 4); };
+      static void copy_bus_id(uint8_t dest[], const uint8_t src[]) {
+        memcpy(dest, src, 4);
+      };
 
     private:
       boolean       _auto_delete = true;

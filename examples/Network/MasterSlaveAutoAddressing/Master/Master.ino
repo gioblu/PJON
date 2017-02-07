@@ -43,7 +43,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 
 void loop() {
   if(millis() - time > 5000) {
-   for(uint8_t i = 0; i < MAX_DEVICES; i++) {
+   for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++) {
     if(bus.ids[i].state) {
       Serial.print("Device id: ");
       Serial.print(i + 1); // Shifted by one to avoid PJON_BROADCAST

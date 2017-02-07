@@ -133,8 +133,8 @@ limitations under the License. */
   #endif
 
   /* If set to true ensures packet ordered sending */
-  #ifndef ORDERED_SENDING
-    #define ORDERED_SENDING false
+  #ifndef PJON_ORDERED_SENDING
+    #define PJON_ORDERED_SENDING false
   #endif
 
   /* Dynamic addressing timing constants:

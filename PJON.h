@@ -825,7 +825,7 @@ limitations under the License. */
           if(packets[i].state == 0) continue;
           packets_count++;
 
-          #if(ORDERED_SENDING)
+          #if(PJON_ORDERED_SENDING)
             if(!first_packet_to_be_sent(i)) continue;
           #endif
 

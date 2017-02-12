@@ -255,11 +255,12 @@ limitations under the License. */
           length
         );
         if(header & PJON_CRC_BIT) {
-          uint32_t CRC = crc32::compute((uint8_t *)destination, new_length - 4);
-          destination[new_length - 4] = (uint32_t)(CRC) >> 24;
-          destination[new_length - 3] = (uint32_t)(CRC) >> 16;
-          destination[new_length - 2] = (uint32_t)(CRC) >>  8;
-          destination[new_length - 1] = (uint32_t)(CRC);
+          uint32_t computed_crc =
+            crc32::compute((uint8_t *)destination, new_length - 4);
+          destination[new_length - 4] = (uint32_t)(computed_crc) >> 24;
+          destination[new_length - 3] = (uint32_t)(computed_crc) >> 16;
+          destination[new_length - 2] = (uint32_t)(computed_crc) >>  8;
+          destination[new_length - 1] = (uint32_t)(computed_crc);
         } else destination[new_length - 1] =
           crc8::compute((uint8_t *)destination, new_length - 1);
         return new_length;
@@ -378,7 +379,7 @@ limitations under the License. */
       uint16_t receive() {
         uint16_t state;
         uint16_t length = PJON_PACKET_MAX_LENGTH;
-        bool CRC = 0;
+        bool computed_crc = 0;
         bool extended_header = false;
         bool extended_length = false;
         for(uint16_t i = 0; i < length; i++) {
@@ -416,10 +417,10 @@ limitations under the License. */
         }
 
         if(data[1] & PJON_CRC_BIT)
-          CRC = crc32::compare(
+          computed_crc = crc32::compare(
             crc32::compute(data, length - 4), data + (length - 4)
           );
-        else CRC = !crc8::compute(data, length);
+        else computed_crc = !crc8::compute(data, length);
 
         if(data[1] & PJON_ACK_REQ_BIT && data[0] != PJON_BROADCAST)
           if(_mode != PJON_SIMPLEX && !_router)
@@ -429,9 +430,9 @@ limitations under the License. */
                 data + 3 + extended_length + extended_header,
                 bus_id
               )
-            )) strategy.send_response(!CRC ? PJON_NAK : PJON_ACK);
+            )) strategy.send_response(!computed_crc ? PJON_NAK : PJON_ACK);
 
-        if(!CRC) return PJON_NAK;
+        if(!computed_crc) return PJON_NAK;
         parse(data, last_packet_info);
 
         #if(PJON_INCLUDE_ASYNC_ACK)

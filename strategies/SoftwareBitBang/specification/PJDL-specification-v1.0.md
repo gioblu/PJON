@@ -12,7 +12,7 @@ PJDL (Padded jittering data link) specification is an invention and intellectual
 of Giovanni Blu Mitolo - Copyright 2010-2017 All rights reserved
 
 Related work: https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/
-Compliant implementation versions: PJON 1.0-5.0
+Compliant implementation versions: PJON 6.0 and following
 */
 ```
 ###PJDL (Padded Jittering Data Link)

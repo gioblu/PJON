@@ -1,9 +1,9 @@
 
- /*-O//\             __     __
-   |-gfo\           |__| | |  | |\ | ™
-   |!y°o:\          |  __| |__| | \| v6.2
-   |y"s§+`\         multi-master, multi-media communications bus system framework
-  /so+:-..`\        Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
+ /*-O//\           __     __
+   |-gfo\         |__| | |  | |\ | ™
+   |!y°o:\        |  __| |__| | \| v6.2
+   |y"s§+`\       multi-master, multi-media communications bus system framework
+  /so+:-..`\      Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
   |5/:%&-a3f.:;\
   \+//u/+g%{osv,,\
@@ -13,16 +13,20 @@
         > <
  ______-| |-___________________________________________________________________
 
-PJON™ is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
-with the support ot the internet community if you want to see the PJON project growing
-with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
+ PJON™ is a self-funded, no-profit open-source project created and mantained by
+ Giovanni Blu Mitolo with the support ot the internet community if you want
+ to see the PJON project growing with a faster pace, consider a donation
+ at the following link: https://www.paypal.me/PJON
 
-For the PJON™ Protocol specification see the specification directory.
+ For the PJON™ Protocol specification see the specification directory.
 
-PJON™ Standard compliant tools:
-- https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande
-- https://github.com/Girgitt/PJON-python PJON running on Python by Zbigniew Zasieczny
-- https://github.com/fredilarsen/ModuleInterface Easy config and value sync between IOT modules
+ PJON™ Standard compliant tools:
+ - Logic analyzer by Andrew Grande
+   https://github.com/aperepel/saleae-pjon-protocol-analyzer
+ - PJON running on Python by Zbigniew Zasieczny
+   https://github.com/Girgitt/PJON-python
+ - Easy config and value sync between IOT modules
+   https://github.com/fredilarsen/ModuleInterface
  ______________________________________________________________________________
 
 Copyright 2012-2017 by Giovanni Blu Mitolo gioscarab@gmail.com

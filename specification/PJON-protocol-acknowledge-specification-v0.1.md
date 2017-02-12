@@ -29,7 +29,7 @@ Channel analysis   Transmission                                     Response
    |_____|         |____|__________|________|_________|_____|         |_____|
 ```
 
-The graph above contains a standard packet transmission with synchronous acknowledge request where the character `@` or `64` is sent to device id `12` with `00000100` header. As defined by the [PJON protocol layer specification v1.0](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v1.0.md) the third bit from right up in the header requests to transmitter a synchronous acknowledge response. How the synchronous acknowledgement procedure works depends on the medium and the strategy used (See [Padded Jittering data link layer specification v0.1](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/padded-jittering-protocol-specification-v0.1.md)).
+The graph above contains a standard packet transmission with synchronous acknowledge request where the character `@` or `64` is sent to device id `12` with `00000100` header. As defined by the [PJON protocol layer specification v1.0](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v1.0.md) the third bit from right up in the header requests to transmitter a synchronous acknowledge response. How the synchronous acknowledgement procedure works depends on the medium and the strategy used, see [PJDL v1.0](https://github.com/gioblu/PJON/blob/master/SoftwareBitBang/specification/PJDL-specification-v1.0.md) or [PJDLR v1.0](https://github.com/gioblu/PJON/blob/master/OverSampling/specification/PJDLR-specification-v1.0.md)) specification.
 
 ####Asynchronous acknowledge
 

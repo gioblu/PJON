@@ -13,20 +13,24 @@
         > <
  ______-| |-___________________________________________________________________
 
-PJON™ is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
-with the support ot the internet community if you want to see the PJON project growing
-with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
+PJON™ is a self-funded, no-profit open-source project created and mantained by
+Giovanni Blu Mitolo with the support ot the internet community if you want
+to see the PJON project growing with a faster pace, consider a donation
+at the following link: https://www.paypal.me/PJON
 
 For the PJON™ Protocol specification see the specification directory.
 
 PJON™ Standard compliant tools:
-- https://github.com/aperepel/saleae-pjon-protocol-analyzer Logic analyzer by Andrew Grande
-- https://github.com/Girgitt/PJON-python PJON running on Python by Zbigniew Zasieczny
-- https://github.com/fredilarsen/ModuleInterface Easy config and value sync between IOT modules
+- Logic analyzer by Andrew Grande
+  https://github.com/aperepel/saleae-pjon-protocol-analyzer
+- PJON running on Python by Zbigniew Zasieczny
+  https://github.com/Girgitt/PJON-python
+- Easy config and value sync between IOT modules
+  https://github.com/fredilarsen/ModuleInterface
 
 Credits to contributors:
 - Fred Larsen (Systems engineering, header driven communication, debugging)
-- budaics github user (ATtiny85 16Mhz external clock testing and wiki page enhancement)
+- budaics github user (ATtiny85 16Mhz external clock testing and wiki page)
 - Pantovich github user (update returning number of packets to be delivered)
 - Adrian Sławiński (Fix to enable SimpleModbusMasterV2 compatibility)
 - SticilFace github user (Teensy porting)

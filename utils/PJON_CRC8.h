@@ -3,7 +3,7 @@
 
   /* Compute CRC8 with a table-less implementation: */
 
-struct crc8 {
+struct PJON_crc8 {
 
   static uint8_t roll(char input_byte, uint8_t crc) {
     for (uint8_t i = 8; i; i--, input_byte >>= 1) {

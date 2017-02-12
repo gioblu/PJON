@@ -260,13 +260,13 @@ limitations under the License. */
         );
         if(header & PJON_CRC_BIT) {
           uint32_t computed_crc =
-            crc32::compute((uint8_t *)destination, new_length - 4);
+            PJON_crc32::compute((uint8_t *)destination, new_length - 4);
           destination[new_length - 4] = (uint32_t)(computed_crc) >> 24;
           destination[new_length - 3] = (uint32_t)(computed_crc) >> 16;
           destination[new_length - 2] = (uint32_t)(computed_crc) >>  8;
           destination[new_length - 1] = (uint32_t)(computed_crc);
         } else destination[new_length - 1] =
-          crc8::compute((uint8_t *)destination, new_length - 1);
+          PJON_crc8::compute((uint8_t *)destination, new_length - 1);
         return new_length;
       };
 
@@ -421,10 +421,10 @@ limitations under the License. */
         }
 
         if(data[1] & PJON_CRC_BIT)
-          computed_crc = crc32::compare(
-            crc32::compute(data, length - 4), data + (length - 4)
+          computed_crc = PJON_crc32::compare(
+            PJON_crc32::compute(data, length - 4), data + (length - 4)
           );
-        else computed_crc = !crc8::compute(data, length);
+        else computed_crc = !PJON_crc8::compute(data, length);
 
         if(data[1] & PJON_ACK_REQ_BIT && data[0] != PJON_BROADCAST)
           if(_mode != PJON_SIMPLEX && !_router)

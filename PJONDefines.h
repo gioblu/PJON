@@ -46,8 +46,8 @@ limitations under the License. */
 #ifndef PJONDefines_h
   #define PJONDefines_h
   #include "utils/error.h"
-  #include "utils/CRC8.h"
-  #include "utils/CRC32.h"
+  #include "utils/PJON_CRC8.h"
+  #include "utils/PJON_CRC32.h"
 
   /* Id used for broadcasting to all devices */
   #define PJON_BROADCAST        0

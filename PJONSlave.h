@@ -102,7 +102,7 @@ limitations under the License. */
         delay(random(PJON_ACQUIRE_ID_DELAY * 0.25, PJON_ACQUIRE_ID_DELAY));
         uint32_t time = micros();
         char msg = PJON_ID_ACQUIRE;
-        char head = this->config | ADDRESS_BIT | ACK_REQUEST_BIT;
+        char head = this->config | PJON_ADDRESS_BIT | PJON_ACK_REQ_BIT;
         this->_device_id = PJON_NOT_ASSIGNED;
 
         for(
@@ -139,7 +139,7 @@ limitations under the License. */
           this->bus_id,
           response,
           5,
-          this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
+          this->config | PJON_ADDRESS_BIT | PJON_ACK_REQ_BIT | PJON_TX_INFO_BIT
         ) == PJON_ACK) return true;
 
         return false;
@@ -172,7 +172,7 @@ limitations under the License. */
           this->bus_id,
           request,
           6,
-          this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
+          this->config | PJON_ADDRESS_BIT | PJON_ACK_REQ_BIT | PJON_TX_INFO_BIT
         ) == PJON_ACK) {
           this->_device_id = PJON_NOT_ASSIGNED;
           return true;
@@ -215,9 +215,9 @@ limitations under the License. */
 
 
       bool handle_addressing() {
-        if(this->last_packet_info.header & ADDRESS_BIT && this->_device_id != PJON_MASTER_ID) {
+        if(this->last_packet_info.header & PJON_ADDRESS_BIT && this->_device_id != PJON_MASTER_ID) {
           uint8_t overhead = this->packet_overhead(this->last_packet_info.header);
-          uint8_t CRC_overhead = (this->last_packet_info.header & CRC_BIT) ? 4 : 1;
+          uint8_t CRC_overhead = (this->last_packet_info.header & PJON_CRC_BIT) ? 4 : 1;
           uint8_t rid[4] = {_rid >> 24, _rid >> 16, _rid >> 8, _rid};
           char response[6];
           response[1] = rid[0];
@@ -235,7 +235,7 @@ limitations under the License. */
                 this->bus_id,
                 response,
                 6,
-                this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
+                this->config | PJON_ADDRESS_BIT | PJON_ACK_REQ_BIT | PJON_TX_INFO_BIT
               ) != PJON_ACK) {
                 this->set_id(PJON_NOT_ASSIGNED);
                 _slave_error(PJON_ID_ACQUISITION_FAIL, PJON_ID_CONFIRM);
@@ -264,7 +264,7 @@ limitations under the License. */
                   this->bus_id,
                   response,
                   6,
-                  this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
+                  this->config | PJON_ADDRESS_BIT | PJON_ACK_REQ_BIT | PJON_TX_INFO_BIT
                 );
               }
 
@@ -285,8 +285,8 @@ limitations under the License. */
 
         if(!handle_addressing())
           _slave_receiver(
-            this->data + (overhead - (this->data[1] & CRC_BIT ? 4 : 1)),
-            this->data[this->data[1] & EXTEND_HEADER_BIT ? 3 : 2] - overhead,
+            this->data + (overhead - (this->data[1] & PJON_CRC_BIT ? 4 : 1)),
+            this->data[this->data[1] & PJON_EXT_HEAD_BIT ? 3 : 2] - overhead,
             this->last_packet_info
           );
 

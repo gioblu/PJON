@@ -11,7 +11,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
   Serial.print("Header: ");
   Serial.print(packet_info.header, BIN);
   // If packet formatted for a shared medium
-  if((packet_info.header & MODE_BIT) != 0) {
+  if((packet_info.header & PJON_MODE_BIT) != 0) {
     Serial.print(" Receiver bus id: ");
     Serial.print(packet_info.receiver_bus_id[0]);
     Serial.print(packet_info.receiver_bus_id[1]);
@@ -20,7 +20,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
     Serial.print(" Device id: ");
     Serial.print(packet_info.receiver_id);
     // If sender info is included
-    if((packet_info.header & SENDER_INFO_BIT) != 0) {
+    if((packet_info.header & PJON_TX_INFO_BIT) != 0) {
       Serial.print(" Sender bus id: ");
       Serial.print(packet_info.sender_bus_id[0]);
       Serial.print(packet_info.sender_bus_id[1]);

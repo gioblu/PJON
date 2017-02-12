@@ -118,7 +118,7 @@ limitations under the License. */
           response,
           6,
           PJON_ID_REQUEST_INTERVAL,
-          PJON<Strategy>::config | ADDRESS_BIT
+          PJON<Strategy>::config | PJON_ADDRESS_BIT
         );
       };
 
@@ -215,7 +215,7 @@ limitations under the License. */
         char request = PJON_ID_LIST;
         while(micros() - time < PJON_ADDRESSING_TIMEOUT) {
           PJON<Strategy>::send_packet(
-            PJON_BROADCAST, this->bus_id, &request, 1, PJON<Strategy>::config | ADDRESS_BIT
+            PJON_BROADCAST, this->bus_id, &request, 1, PJON<Strategy>::config | PJON_ADDRESS_BIT
           );
           receive(PJON_LIST_IDS_TIME);
         }
@@ -232,7 +232,7 @@ limitations under the License. */
           b_id,
           response,
           5,
-          PJON<Strategy>::config | ACK_REQUEST_BIT | ADDRESS_BIT
+          PJON<Strategy>::config | PJON_ACK_REQ_BIT | PJON_ADDRESS_BIT
         );
       };
 
@@ -261,9 +261,9 @@ limitations under the License. */
         if(received_data != PJON_ACK) return received_data;
 
         uint8_t overhead = PJON<Strategy>::packet_overhead(this->data[1]);
-        uint8_t CRC_overhead = (this->data[1] & CRC_BIT) ? 4 : 1;
+        uint8_t CRC_overhead = (this->data[1] & PJON_CRC_BIT) ? 4 : 1;
 
-        if(this->last_packet_info.header & ADDRESS_BIT && this->data[2] > 4) {
+        if(this->last_packet_info.header & PJON_ADDRESS_BIT && this->data[2] > 4) {
           uint8_t request = this->data[overhead - CRC_overhead];
           uint32_t rid =
             (uint32_t)(this->data[(overhead - CRC_overhead) + 1] << 24) |

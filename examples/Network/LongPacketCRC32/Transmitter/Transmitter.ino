@@ -26,7 +26,7 @@ void setup() {
 
   bus.set_error(error_handler);
 
-  packet = bus.send(44, content, 300, bus.config | EXTEND_HEADER_BIT);
+  packet = bus.send(44, content, 300, bus.config | PJON_EXT_HEAD_BIT);
   // Extend the header to 2 bytes, for simple feature testing
   Serial.begin(115200);
 }
@@ -40,7 +40,7 @@ void error_handler(uint8_t code, uint8_t data) {
 
 void loop() {
   if(!bus.packets[packet].state)
-    packet = bus.send(44, content, 300, bus.config | EXTEND_HEADER_BIT);
+    packet = bus.send(44, content, 300, bus.config | PJON_EXT_HEAD_BIT);
 
   bus.update();
 };

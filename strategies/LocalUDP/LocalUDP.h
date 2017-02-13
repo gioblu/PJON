@@ -24,9 +24,9 @@
 #include <EthernetUdp.h>
 #include <PJONDefines.h>
 
-#define DEFAULT_UDP_PORT             7100
-#define RESPONSE_TIMEOUT  (uint32_t) 10000
-#define UDP_MAGIC_HEADER             0x0DFAC3D0
+#define LUDP_DEFAULT_PORT      7100
+#define LUDP_RESPONSE_TIMEOUT  (uint32_t) 10000
+#define LUDP_MAGIC_HEADER      0x0DFAC3D0
 
 /* Maximum transmission attempts */
 #ifndef LUDP_MAX_ATTEMPTS
@@ -40,8 +40,8 @@
 
 class LocalUDP {
     bool _udp_initialized = false;
-    uint16_t _port = DEFAULT_UDP_PORT;
-    const uint32_t _magic_header = UDP_MAGIC_HEADER;
+    uint16_t _port = LUDP_DEFAULT_PORT;
+    const uint32_t _magic_header = LUDP_MAGIC_HEADER;
     const uint8_t _broadcast[4] = { 0xFF, 0xFF, 0xFF, 0xFF };
 
     EthernetUDP udp;
@@ -142,7 +142,7 @@ public:
       do {
         result = receive_byte();
         if (result == PJON_ACK || result == PJON_NAK) return result;
-     } while ((uint32_t)(micros() - start) < RESPONSE_TIMEOUT);
+     } while ((uint32_t)(micros() - start) < LUDP_RESPONSE_TIMEOUT);
       return result;
     };
 
@@ -172,7 +172,7 @@ public:
 
     /* Set the UDP port: */
 
-    void set_port(uint16_t port = DEFAULT_UDP_PORT) {
+    void set_port(uint16_t port = LUDP_DEFAULT_PORT) {
       _port = port;
     };
 };

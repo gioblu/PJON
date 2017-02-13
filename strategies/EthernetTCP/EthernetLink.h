@@ -142,7 +142,7 @@
 
 // Internal constants
 #ifndef PJON_FAIL
-  #define PJON_FAIL     0x100
+  #define PJON_FAIL          0x100
 #endif
 
 #define ETCP_MAX_REMOTE_NODES   10
@@ -162,8 +162,17 @@
   #define ETCP_ERROR_READ  0
 #endif
 
-typedef void (*link_receiver)(uint8_t id, const uint8_t *payload, uint16_t length, void *callback_object);
-typedef void (*link_error)(uint8_t code, uint8_t data);
+typedef void (*link_receiver)(
+  uint8_t id,
+  const uint8_t *payload,
+  uint16_t length,
+  void *callback_object
+);
+
+typedef void (*link_error)(
+  uint8_t code,
+  uint8_t data
+);
 
 class EthernetLink {
 private:
@@ -640,12 +649,18 @@ public:
     return result;
   }
 
-  void set_id(uint8_t id) { _local_id = id; };
-  void set_error(link_error e) { _error = e; };
-  void set_receiver(link_receiver r, void *callback_object) { _receiver = r; _callback_object = callback_object; };
-
   uint8_t device_id() { return _local_id; };
+
   uint8_t acquire_id() { return 0; }; // Not supported yet
+
+  void set_error(link_error e) { _error = e; };
+
+  void set_id(uint8_t id) { _local_id = id; };
+
+  void set_receiver(link_receiver r, void *callback_object) {
+    _receiver = r;
+    _callback_object = callback_object;
+  };
 
   void update() { };
 };

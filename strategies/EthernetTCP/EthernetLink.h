@@ -157,11 +157,9 @@
 // The UIPEthernet library used for the ENC28J60 based Ethernet shields has the correct return value from
 // the read call, while the standard Ethernet library does not follow the standard!
 #ifdef UIPETHERNET_H
-  #define NOTHINGREAD  0
-  #define ERRORREAD   -1
+  #define ETCP_ERROR_READ -1
 #else
-  #define NOTHINGREAD -1
-  #define ERRORREAD    0
+  #define ETCP_ERROR_READ  0
 #endif
 
 typedef void (*link_receiver)(uint8_t id, const uint8_t *payload, uint16_t length, void *callback_object);
@@ -214,8 +212,8 @@ private:
       while ((avail = client.available()) <= 0 && client.connected() && (uint32_t)(millis() - start_ms) < 10000) ;
       bytes_read = client.read(&contents[total_bytes_read], constrain(avail, 0, length - total_bytes_read));
       if (bytes_read > 0) total_bytes_read += bytes_read;
-    } while(bytes_read != ERRORREAD && total_bytes_read < length && millis() - start_ms < 10000);
-    if (bytes_read == ERRORREAD) stop(client); // Lost connection
+    } while(bytes_read != ETCP_ERROR_READ && total_bytes_read < length && millis() - start_ms < 10000);
+    if (bytes_read == ETCP_ERROR_READ) stop(client); // Lost connection
     return total_bytes_read;
   }
 

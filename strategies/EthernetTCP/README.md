@@ -40,7 +40,7 @@ If this option is set, a socket connection is not closed after a packet has been
 ####Single socket
 By default, each device will listen for incoming socket connections on one port while creating outgoing connections to other devices for outgoing packets. So there is one connection in each direction, allowing packets to be sent in parallel in different directions, as far as that goes with single-threaded programs. Establishing sockets in both directions requires both devices to have fixed IP addresses, and if there are firewalls in between, there must be openings or port-forwarding in both directions.
 
-To simply traffic crossing firewalls, the use of a single-socket configuration, calling `bus.strategy.link.single_socket(true)` is available. It makes one device create a connection to another devices with a fixed IP and a firewall opening / port forwarding. Packets can be send in both directions on this single socket, even if one device has dynamic IP address and no incoming firewall openings.
+To simplify traffic crossing firewalls, the use of a single-socket configuration, calling `bus.strategy.link.single_socket(true)` is available. It makes one device create a connection to another devices with a fixed IP and a firewall opening / port forwarding. Packets can be send in both directions on this single socket, even if one device has dynamic IP address and no incoming firewall openings.
 
 A use case for this is having a master device and a collection of slave devices in different locations that connect to the master to send or receive packets. Only the master need a fixed IP address and one firewall opening / port forwarding.
 

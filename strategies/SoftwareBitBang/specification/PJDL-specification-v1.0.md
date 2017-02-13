@@ -16,7 +16,7 @@ Compliant implementation versions: PJON 6.0 and following
 */
 ```
 ###PJDL (Padded Jittering Data Link)
-PJDL (Padded Jittering Data Link) has been specified to enable a new way to transmit data in simplex and half-duplex mode using cheap and low performance microcontrollers without the need of hardware interrupts for its working procedure. It is designed to support many devices sharing the same medium, to avoid collisions and operate in spite of interference. Extended tests proved its effectiveness on different media like electricity, radio frequency and light.
+PJDL (Padded Jittering Data Link) has been specified to enable a new way to transmit data in simplex and half-duplex mode using cheap and low performance microcontrollers, totally software emulated, without the need of hardware interrupts for its working procedure. It is designed to support many devices sharing the same medium, to avoid collisions and operate in spite of interference. Extended tests proved its effectiveness on different media like electricity, radio frequency and light.
 
 ###Basic concepts
 * Use a pattern of predefined initial padding bits to identify a potential byte transmission
@@ -35,12 +35,12 @@ Every byte is prepended with 2 synchronization padding bits and transmission occ
 |  | 1 | 0 | 1 | 0 0 | 1 | 0 | 1 1 | 0 |
 |_ |___|___|___|_____|___|___|_____|___|
    |
- ACCEPTANCE
+ SWBB_ACCEPTANCE (or minimum acceptable HIGH padding bit duration)
 ```
-Padding bits are adding a certain overhead to information but are reducing the need of precise time tuning because synchronization is renewed every byte. All the first padding bit duration minus `ACCEPTANCE` is the synchronization window the receiver has for every incoming byte. If the length of the first padding bit is less than `ACCEPTANCE` the received signal is considered interference.
+Padding bits are adding a certain overhead to information but are reducing the need of precise timing because synchronization is renewed every byte. All the first padding bit duration minus `SWBB_ACCEPTANCE` is the synchronization window the receiver has for every incoming byte. If the length of the first padding bit is less than `SWBB_ACCEPTANCE` the received signal is considered interference.
 
 ####Packet transmission
-Before a packet transmission, the medium is analyzed to detect ongoing communication and avoid collision. Thanks to the presence of padding bits, also a packet composed by 100 bytes, all with a decimal value of 0, can be transmitted safely without incurring in third-party collision.   
+Before a packet transmission, the medium is analyzed to detect ongoing communication and avoid collision. Thanks to the presence of padding bits, also a packet composed by 100 bytes, all with a decimal value of 0, can be transmitted safely without risk of third-party collision.   
 ```cpp  
  ________________ _________________ ________________ ________________ __________________
 |Sync | Byte     |Sync | Byte      |Sync | Byte     |Sync | Byte     |Sync | Byte       |
@@ -49,7 +49,7 @@ Before a packet transmission, the medium is analyzed to detect ongoing communica
 | 1 |0|0000|11|00| 1 |0|00000|1|0|1| 1 |0|00000|1|00| 1 |0|0|1|000000| 1 |0|0|1|00|1|000|
 |___|_|____|__|__|___|_|_____|_|_|_|___|_|_____|_|__|___|_|_|_|______|___|_|_|_|__|_|___|
 ```
-In a scenario where a stream of bytes is coming, low performance or clock inaccurate microcontroller can be correctly synchronized back with transmitter every byte (thanks to padding bits) and easily detect an interference or the end of transmission.
+In a scenario where a stream of bytes is coming, low performance or clock inaccurate microcontrollers can be correctly synchronized back with transmitter every byte (thanks to padding bits) and easily detect interference or the end of transmission.
 
 ####Synchronous acknowledgement
 After packet reception, CRC is calculated and a single character is transmitted: `PJON_ACK` (value 6) if the packet's content is correct or `PJON_NAK` (value 21) if an error is detected.

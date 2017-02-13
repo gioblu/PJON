@@ -1,5 +1,6 @@
 
-/* SoftwareBitBang 1 or 2 wires interrupts-less digital communication data link layer
+/* SoftwareBitBang
+   1 or 2 wires software emulated digital communication data link layer
    used as a Strategy by the PJON framework (included in version v3.0)
    Compliant with the Padded jittering data link layer specification v0.1
    _____________________________________________________________________________

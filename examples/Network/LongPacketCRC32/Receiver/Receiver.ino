@@ -1,6 +1,6 @@
 
-#define PACKET_MAX_LENGTH 325 // Make the buffer big enough
-#define MAX_PACKETS         2 // Reduce number of packets not to empty memory
+#define PJON_PACKET_MAX_LENGTH 325 // Make the buffer big enough
+#define PJON_MAX_PACKETS         2 // Reduce number of packets not to empty memory
 /*  Acknowledge Latency maximum duration (1000 microseconds default).
     Can be necessary to higher SWBB_LATENCY to leave enough time to receiver
     to compute the CRC and to respond with a synchronous acknowledgment.
@@ -31,11 +31,11 @@ void setup() {
   Serial.begin(115200);
 };
 
-void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
+void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   Serial.print("Header: ");
   Serial.print(packet_info.header, BIN);
   // If packet formatted for a shared medium
-  if(packet_info.header & MODE_BIT) {
+  if(packet_info.header & PJON_MODE_BIT) {
     Serial.print(" Receiver bus id: ");
     Serial.print(packet_info.receiver_bus_id[0]);
     Serial.print(packet_info.receiver_bus_id[1]);
@@ -44,7 +44,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &pack
     Serial.print(" Device id: ");
     Serial.print(packet_info.receiver_id);
     // If sender info is included
-    if((packet_info.header & SENDER_INFO_BIT) != 0) {
+    if((packet_info.header & PJON_TX_INFO_BIT) != 0) {
       Serial.print(" Sender bus id: ");
       Serial.print(packet_info.sender_bus_id[0]);
       Serial.print(packet_info.sender_bus_id[1]);
@@ -53,7 +53,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &pack
       Serial.print(" device id: ");
       Serial.print(packet_info.sender_id);\
     // If local format and sender info included
-    } else if(packet_info.header & SENDER_INFO_BIT) {
+    } else if(packet_info.header & PJON_TX_INFO_BIT) {
       Serial.print(" Sender id: ");
       Serial.print(packet_info.sender_id);
     }
@@ -69,13 +69,13 @@ void loop() {
   unsigned int response = 0;
   while(millis() - time < 1000) {
     response = bus.receive();
-    if(response == ACK)
+    if(response == PJON_ACK)
       test++;
-    if(response == NAK)
+    if(response == PJON_NAK)
       mistakes++;
-    if(response == BUSY)
+    if(response == PJON_BUSY)
       busy++;
-    if(response == FAIL)
+    if(response == PJON_FAIL)
       fail++;
   }
 

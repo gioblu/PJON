@@ -31,9 +31,9 @@ uint16_t one_second_test = bus.send_repeatedly(100, "Test sent every second!", 2
 bus.remove(one_second_test);
 ```
 
-To broadcast a message to all connected devices, use the `BROADCAST` constant as recipient ID.
+To broadcast a message to all connected devices, use the `PJON_BROADCAST` constant as recipient ID.
 ```cpp
-bus.send(BROADCAST, "Message for all connected devices.", 34);
+bus.send(PJON_BROADCAST, "Message for all connected devices.", 34);
 ```
 
 If you are using PJON in shared mode (so in a medium shared by n buses) you can send to a precise bus or group of devices:
@@ -44,19 +44,19 @@ bus.send(12, bus_id, "Ciao!", 5);
 
 If you need to send a packet in a blocking manner use `send_packet` method to try to send it once.
 ```cpp
-if(bus.send_packet(10, "All is ok?!", 11) == ACK) { // Try once
+if(bus.send_packet(10, "All is ok?!", 11) == PJON_ACK) { // Try once
   Serial.println("10 is ok!");
 }  
 ```
 The sending is executed as soon as the method is called and it returns the following values:
-- `ACK` (6) if a correct reception occurred
-- `NAK` (21) if a mistake is found in CRC
-- `BUSY` (666) if a transmission for other devices is occurring
-- `FAIL` (65535) if no data is received
+- `PJON_ACK` (6) if a correct reception occurred
+- `PJON_NAK` (21) if a mistake is found in CRC
+- `PJON_BUSY` (666) if a transmission for other devices is occurring
+- `PJON_FAIL` (65535) if no data is received
 
 Use `send_packet_blocking` if it is necessary to try more than once and so comply with the proposed backoff exactly how is done by the `send` and `update` chain.
 ```cpp
-if(bus.send_packet_blocking(10, "All is ok?!", 11) == ACK) { // Try with backoff
+if(bus.send_packet_blocking(10, "All is ok?!", 11) == PJON_ACK) { // Try with backoff
   Serial.println("10 is ok!");
 }    
 ```

@@ -25,6 +25,8 @@
 
 #include <Arduino.h>
 #include "Timing.h"
+#include "../../utils/PJON_IO.h" // Dedicated version of digitalWriteFast
+
 
 class ThroughSerial {
   public:
@@ -82,7 +84,7 @@ class ThroughSerial {
           _last_reception_time = micros();
           return (uint8_t)serial->read();
         }
-      return FAIL;
+      return PJON_FAIL;
     };
 
 
@@ -103,29 +105,29 @@ class ThroughSerial {
     /* Send byte response to the packet's transmitter */
 
     void send_response(uint8_t response) {
-      if(_enable_RS485_pin != NOT_ASSIGNED)
-        digitalWriteFast(_enable_RS485_pin, HIGH);
+      if(_enable_RS485_pin != PJON_NOT_ASSIGNED)
+        PJON_IO_WRITE(_enable_RS485_pin, HIGH);
 
       send_byte(response);
       serial->flush();
 
-      if(_enable_RS485_pin != NOT_ASSIGNED)
-        digitalWriteFast(_enable_RS485_pin, LOW);
+      if(_enable_RS485_pin != PJON_NOT_ASSIGNED)
+        PJON_IO_WRITE(_enable_RS485_pin, LOW);
     };
 
 
     /* Send a string: */
 
     void send_string(uint8_t *string, uint8_t length) {
-      if(_enable_RS485_pin != NOT_ASSIGNED)
-        digitalWriteFast(_enable_RS485_pin, HIGH);
+      if(_enable_RS485_pin != PJON_NOT_ASSIGNED)
+        PJON_IO_WRITE(_enable_RS485_pin, HIGH);
 
       for(uint8_t b = 0; b < length; b++)
         send_byte(string[b]);
       serial->flush();
 
-      if(_enable_RS485_pin != NOT_ASSIGNED)
-        digitalWriteFast(_enable_RS485_pin, LOW);
+      if(_enable_RS485_pin != PJON_NOT_ASSIGNED)
+        PJON_IO_WRITE(_enable_RS485_pin, LOW);
     };
 
 
@@ -140,10 +142,10 @@ class ThroughSerial {
 
     void set_enable_RS485_pin(uint8_t pin) {
       _enable_RS485_pin = pin;
-      pinModeFast(_enable_RS485_pin, OUTPUT);
+      PJON_IO_MODE(_enable_RS485_pin, OUTPUT);
     };
 
   private:
     uint32_t _last_reception_time;
-    uint8_t  _enable_RS485_pin = NOT_ASSIGNED;
+    uint8_t  _enable_RS485_pin = PJON_NOT_ASSIGNED;
 };

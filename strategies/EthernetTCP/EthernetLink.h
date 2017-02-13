@@ -122,7 +122,7 @@
 // 3. Checksum. Is it needed, as this is also handled on the network layer?
 // 4. Retransmission if not ACKED. Or leave this to caller, as the result is immediately available?
 // 5. FIFO queue class common with PJON? Or skip built-in queue?
-// 6. Call error callback at appropriate times with appropriate codes. Only FAIL and TIMEOUT relevant?
+// 6. Call error callback at appropriate times with appropriate codes. Only PJON_FAIL and TIMEOUT relevant?
 // 7. Encryption. Add extra optional encryption key parameter to add_node, plus dedicated function for server.
 
 #pragma once
@@ -132,40 +132,47 @@
 #endif
 
 // Constants
-#ifndef ACK
-  #define ACK               6
+#ifndef PJON_ACK
+  #define PJON_ACK               6
 #endif
 
-#ifndef NAK
-  #define NAK              21
+#ifndef PJON_NAK
+  #define PJON_NAK              21
 #endif
 
 // Internal constants
-#ifndef FAIL
-  #define FAIL          0x100
+#ifndef PJON_FAIL
+  #define PJON_FAIL          0x100
 #endif
 
-#define MAX_REMOTE_NODES   10
-#define DEFAULT_PORT     7000
+#define ETCP_MAX_REMOTE_NODES   10
+#define ETCP_DEFAULT_PORT     7000
 
 // Magic number to verify that we are aligned with telegram start and end
-#define HEADER 0x18ABC427ul
-#define FOOTER 0x9ABE8873ul
-#define SINGLESOCKET_HEADER 0x4E92AC90ul
-#define SINGLESOCKET_FOOTER 0x7BB1E3F4ul
+#define ETCP_HEADER 0x18ABC427ul
+#define ETCP_FOOTER 0x9ABE8873ul
+#define ETCP_SINGLE_SOCKET_HEADER 0x4E92AC90ul
+#define ETCP_SINGLE_SOCKET_FOOTER 0x7BB1E3F4ul
 
 // The UIPEthernet library used for the ENC28J60 based Ethernet shields has the correct return value from
 // the read call, while the standard Ethernet library does not follow the standard!
 #ifdef UIPETHERNET_H
-  #define NOTHINGREAD  0
-  #define ERRORREAD   -1
+  #define ETCP_ERROR_READ -1
 #else
-  #define NOTHINGREAD -1
-  #define ERRORREAD    0
+  #define ETCP_ERROR_READ  0
 #endif
 
-typedef void (*link_receiver)(uint8_t id, const uint8_t *payload, uint16_t length, void *callback_object);
-typedef void (*link_error)(uint8_t code, uint8_t data);
+typedef void (*link_receiver)(
+  uint8_t id,
+  const uint8_t *payload,
+  uint16_t length,
+  void *callback_object
+);
+
+typedef void (*link_error)(
+  uint8_t code,
+  uint8_t data
+);
 
 class EthernetLink {
 private:
@@ -176,13 +183,13 @@ private:
   // Local node
   uint8_t  _local_id = 0;
   uint8_t  _local_ip[4];
-  uint16_t _local_port = DEFAULT_PORT;
+  uint16_t _local_port = ETCP_DEFAULT_PORT;
 
   // Remote nodes
   uint8_t  _remote_node_count = 0;
-  uint8_t  _remote_id[MAX_REMOTE_NODES];
-  uint8_t  _remote_ip[MAX_REMOTE_NODES][4];
-  uint16_t _remote_port[MAX_REMOTE_NODES];
+  uint8_t  _remote_id[ETCP_MAX_REMOTE_NODES];
+  uint8_t  _remote_ip[ETCP_MAX_REMOTE_NODES][4];
+  uint16_t _remote_port[ETCP_MAX_REMOTE_NODES];
 
   EthernetServer *_server = NULL;
   EthernetClient _client_out;    // Created as an outgoing connection
@@ -193,7 +200,7 @@ private:
 
   void init() {
     memset(_local_ip, 0, 4);
-    for (uint8_t i = 0; i < MAX_REMOTE_NODES; i++) {
+    for (uint8_t i = 0; i < ETCP_MAX_REMOTE_NODES; i++) {
       _remote_id[i] = 0;
       memset(_remote_ip[i], 0, 4);
       _remote_port[i] = 0;
@@ -201,7 +208,7 @@ private:
   }
 
   int16_t find_remote_node(uint8_t id) {
-    for(uint8_t i = 0; i < MAX_REMOTE_NODES; i++) if(_remote_id[i] == id) return i;
+    for(uint8_t i = 0; i < ETCP_MAX_REMOTE_NODES; i++) if(_remote_id[i] == id) return i;
     return -1;
   }
 
@@ -214,22 +221,22 @@ private:
       while ((avail = client.available()) <= 0 && client.connected() && (uint32_t)(millis() - start_ms) < 10000) ;
       bytes_read = client.read(&contents[total_bytes_read], constrain(avail, 0, length - total_bytes_read));
       if (bytes_read > 0) total_bytes_read += bytes_read;
-    } while(bytes_read != ERRORREAD && total_bytes_read < length && millis() - start_ms < 10000);
-    if (bytes_read == ERRORREAD) stop(client); // Lost connection
+    } while(bytes_read != ETCP_ERROR_READ && total_bytes_read < length && millis() - start_ms < 10000);
+    if (bytes_read == ETCP_ERROR_READ) stop(client); // Lost connection
     return total_bytes_read;
   }
 
   // Read a package from a connected client (incoming or outgoing) and send ACK
   uint16_t receive(EthernetClient &client) {
-    int16_t return_value = FAIL;
+    int16_t return_value = PJON_FAIL;
     if(client.available() > 0) {
-      #ifdef DEBUGPRINT
+      #ifdef ETCP_DEBUG_PRINT
         Serial.println("Recv from cl");
       #endif
 
       // Locate and read encapsulation header (4 bytes magic number)
-      bool ok = read_until_header(client, HEADER);
-      #ifdef DEBUGPRINT
+      bool ok = read_until_header(client, ETCP_HEADER);
+      #ifdef ETCP_DEBUG_PRINT
         Serial.print("Read header, stat "); Serial.println(ok);
       #endif
 
@@ -259,23 +266,23 @@ private:
       if(ok) {
         uint32_t foot = 0;
         bytes_read = read_bytes(client, (byte*) &foot, 4);
-        if(bytes_read != 4 || foot != FOOTER) ok = false;
+        if(bytes_read != 4 || foot != ETCP_FOOTER) ok = false;
       }
 
-      #ifdef DEBUGPRINT
-        Serial.print("Stat bfr send ACK: "); Serial.println(ok);
+      #ifdef ETCP_DEBUG_PRINT
+        Serial.print("Stat bfr send PJON_ACK: "); Serial.println(ok);
       #endif
 
-      // Write ACK
-      return_value = ok ? ACK : NAK;
+      // Write PJON_ACK
+      return_value = ok ? PJON_ACK : PJON_NAK;
       int8_t acklen = 0;
       if(ok) {
         acklen = client.write((byte*) &return_value, 2);
         if (acklen == 2) client.flush();
       }
 
-      #ifdef DEBUGPRINT
-        Serial.print("Sent "); Serial.print(ok ? "ACK: " : "NAK: "); Serial.println(acklen);
+      #ifdef ETCP_DEBUG_PRINT
+        Serial.print("Sent "); Serial.print(ok ? "PJON_ACK: " : "PJON_NAK: "); Serial.println(acklen);
       #endif
 
       // Call receiver callback function
@@ -287,14 +294,14 @@ private:
   bool connect(uint8_t id) {
     // Locate the node's IP address and port number
     int16_t pos = find_remote_node(id);
-    #ifdef DEBUGPRINT
+    #ifdef ETCP_DEBUG_PRINT
       Serial.print("Send to srv pos="); Serial.println(pos);
     #endif
 
     // Break existing connection if not connected to the wanted server
     bool connected = _client_out.connected();
     if (connected && _current_device != id) { // Connected, but to the wrong device
-      #ifdef DEBUGPRINT
+      #ifdef ETCP_DEBUG_PRINT
         //if(_keep_connection && _current_device != -1)
         Serial.println("Switch conn to another srv");
       #endif
@@ -306,11 +313,11 @@ private:
 
     // Try to connect to server if not already connected
     if(!connected) {
-      #ifdef DEBUGPRINT
+      #ifdef ETCP_DEBUG_PRINT
         Serial.println("Conn..");
       #endif
       connected = _client_out.connect(_remote_ip[pos], _remote_port[pos]);
-      #ifdef DEBUGPRINT
+      #ifdef ETCP_DEBUG_PRINT
         Serial.println(connected ? "Conn to srv" : "Failed conn to srv");
       #endif
       if(!connected) {
@@ -332,7 +339,7 @@ private:
       stop(_client_in);
       _client_in = _server->available();
       connected = _client_in;
-      #ifdef DEBUGPRINT
+      #ifdef ETCP_DEBUG_PRINT
         if(connected) Serial.println("Accepted");
       #endif
     }
@@ -340,10 +347,10 @@ private:
   }
 
   void disconnect_out_if_needed(int16_t result) {
-    if (result != ACK || !_keep_connection) {
+    if (result != PJON_ACK || !_keep_connection) {
       stop(_client_out);
-      #ifdef DEBUGPRINT
-        Serial.print("Disconn outcl. OK="); Serial.println(result == ACK);
+      #ifdef ETCP_DEBUG_PRINT
+        Serial.print("Disconn outcl. OK="); Serial.println(result == PJON_ACK);
       #endif
     }
   }
@@ -351,7 +358,7 @@ private:
   bool disconnect_in_if_needed() {
     bool connected = _client_in.connected();
     if(!_keep_connection || !connected) {
-      #ifdef DEBUGPRINT
+      #ifdef ETCP_DEBUG_PRINT
         if (connected) Serial.println("Disc. inclient.");
       #endif
       stop(_client_in);
@@ -360,7 +367,7 @@ private:
 
   uint16_t send(EthernetClient &client, uint8_t id, const char *packet, uint16_t length) {
     // Assume we are connected. Try to deliver the package
-    uint32_t head = HEADER, foot = FOOTER, len = length;
+    uint32_t head = ETCP_HEADER, foot = ETCP_FOOTER, len = length;
     byte buf[9];
     memcpy(buf, &head, 4);
     memcpy(&buf[4], &id, 1);
@@ -370,7 +377,7 @@ private:
     if (ok) ok = client.write((byte*) &foot, 4) == 4;
     if (ok) client.flush();
 
-    #ifdef DEBUGPRINT
+    #ifdef ETCP_DEBUG_PRINT
       Serial.print("Write stat: "); Serial.println(ok);
     #endif
 
@@ -379,18 +386,18 @@ private:
     if (!_single_socket && _server) receive();
 
     // Read ACK
-    int16_t result = FAIL;
+    int16_t result = PJON_FAIL;
     if (ok) {
       uint16_t code = 0;
       ok = read_bytes(client, (byte*) &code, 2) == 2;
-      if (ok && (code == ACK || code == NAK)) result = code;
+      if (ok && (code == PJON_ACK || code == PJON_NAK)) result = code;
     }
 
-    #ifdef DEBUGPRINT
-      Serial.print("ACK stat: "); Serial.println(result == ACK);
+    #ifdef ETCP_DEBUG_PRINT
+      Serial.print("PJON_ACK stat: "); Serial.println(result == PJON_ACK);
     #endif
 
-    return result;  // FAIL, ACK or NAK
+    return result;  // PJON_FAIL, PJON_ACK or PJON_NAK
   }
 
   // Do bidirectional transfer of packets over a single socket connection by using a master-slave mode
@@ -398,21 +405,21 @@ private:
 // before closing the connection (unless letting it stay open).
   uint16_t single_socket_transfer(EthernetClient &client, int16_t id, bool master, const char *contents, uint16_t length) {
     #ifndef NO_SINGLE_SOCKET
-    #ifdef DEBUGPRINT
+    #ifdef ETCP_DEBUG_PRINT
   //    Serial.print("Single-socket transfer, id="); Serial.print(id);
   //    Serial.print(", master="); Serial.println(master);
     #endif
     if (master) { // Creating outgoing connections
       // Connect or check that we are already connected to the correct server
       bool connected = id == -1 ? _client_out.connected() : connect(id);
-      #ifdef DEBUGPRINT
+      #ifdef ETCP_DEBUG_PRINT
         Serial.println(connected ? "Out conn" : "No out conn");
       #endif
-      if (!connected) return FAIL;
+      if (!connected) return PJON_FAIL;
 
       // Send singlesocket header and number of outgoing packets
       bool ok = true;
-      uint32_t head = SINGLESOCKET_HEADER;
+      uint32_t head = ETCP_SINGLE_SOCKET_HEADER;
       uint8_t numpackets_out = length > 0 ? 1 : 0;
       char buf[5];
       memcpy(buf, &head, 4);
@@ -420,10 +427,10 @@ private:
       if (ok) ok = client.write((byte*) &buf, 5) == 5;
       if (ok) client.flush();
 
-      // Send the packet and read ACK
+      // Send the packet and read PJON_ACK
       if (ok && numpackets_out > 0) {
-         ok = send(client, id, contents, length) == ACK;
-         #ifdef DEBUGPRINT
+         ok = send(client, id, contents, length) == PJON_ACK;
+         #ifdef ETCP_DEBUG_PRINT
            Serial.print("Sent p, ok="); Serial.println(ok);
          #endif
       }
@@ -431,57 +438,57 @@ private:
       // Read number of incoming messages
       uint8_t numpackets_in = 0;
       if (ok) ok = read_bytes(client, &numpackets_in, 1) == 1;
-      #ifdef DEBUGPRINT
+      #ifdef ETCP_DEBUG_PRINT
         Serial.print("Read np_in: "); Serial.println(numpackets_in);
       #endif
 
       // Read incoming packages if any
       for (uint8_t i = 0; ok && i < numpackets_in; i++) {
         while (client.available() < 1 && client.connected()) ;
-        ok = receive(client) == ACK;
-        #ifdef DEBUGPRINT
+        ok = receive(client) == PJON_ACK;
+        #ifdef ETCP_DEBUG_PRINT
           Serial.print("Read p, ok="); Serial.println(ok);
         #endif
       }
 
-      // Write singlesocket footer ("ACK" for the whole thing)
-      uint32_t foot = SINGLESOCKET_FOOTER;
+      // Write singlesocket footer ("PJON_ACK" for the whole thing)
+      uint32_t foot = ETCP_SINGLE_SOCKET_FOOTER;
       if (ok) ok = client.write((byte*) &foot, 4) == 4;
       if (ok) client.flush();
-      #ifdef DEBUGPRINT
+      #ifdef ETCP_DEBUG_PRINT
         Serial.print("Sent ss foot, ok="); Serial.println(ok);
       #endif
 
       // Disconnect
-      int16_t result = ok ? ACK : FAIL;
+      int16_t result = ok ? PJON_ACK : PJON_FAIL;
       disconnect_out_if_needed(result);
       return result;
     } else { // Receiving incoming connections and packets and request
       // Wait for and accept connection
       bool connected = accept();
-      #ifdef DEBUGPRINT
+      #ifdef ETCP_DEBUG_PRINT
   //      Serial.println(connected ? "In conn" : "No in conn");
       #endif
-      if (!connected) return FAIL;
+      if (!connected) return PJON_FAIL;
 
       // Read singlesocket header
-      bool ok = read_until_header(client, SINGLESOCKET_HEADER);
-      #ifdef DEBUGPRINT
+      bool ok = read_until_header(client, ETCP_SINGLE_SOCKET_HEADER);
+      #ifdef ETCP_DEBUG_PRINT
         Serial.print("Read ss head, ok="); Serial.println(ok);
       #endif
 
       // Read number of incoming packets
       uint8_t numpackets_in = 0;
       if (ok) ok = read_bytes(client, (byte*) &numpackets_in, 1) == 1;
-      #ifdef DEBUGPRINT
+      #ifdef ETCP_DEBUG_PRINT
         Serial.print("Read np_in: "); Serial.println(numpackets_in);
       #endif
 
       // Read incoming packets if any, send ACK for each
       for (uint8_t i = 0; ok && i < numpackets_in; i++) {
         while (client.available() < 1 && client.connected()) ;
-        ok = receive(client) == ACK;
-        #ifdef DEBUGPRINT
+        ok = receive(client) == PJON_ACK;
+        #ifdef ETCP_DEBUG_PRINT
           Serial.print("Read p, ok="); Serial.println(ok);
         #endif
       }
@@ -493,8 +500,8 @@ private:
 
       // Write outgoing packets if any
       if (ok && numpackets_out > 0) {
-        ok = send(client, id, contents, length) == ACK;
-        #ifdef DEBUGPRINT
+        ok = send(client, id, contents, length) == PJON_ACK;
+        #ifdef ETCP_DEBUG_PRINT
            Serial.print("Sent p, ok="); Serial.println(ok);
         #endif
       }
@@ -503,8 +510,8 @@ private:
       if (ok) {
         uint32_t foot = 0;
         ok = read_bytes(client, (byte*) &foot, 4) == 4;
-        if (foot != SINGLESOCKET_FOOTER) ok = 0;
-        #ifdef DEBUGPRINT
+        if (foot != ETCP_SINGLE_SOCKET_FOOTER) ok = 0;
+        #ifdef ETCP_DEBUG_PRINT
           Serial.print("Read ss foot, ok="); Serial.println(ok);
         #endif
       }
@@ -512,10 +519,10 @@ private:
       // Disconnect
       disconnect_in_if_needed();
 
-      return ok ? ACK : FAIL;
+      return ok ? PJON_ACK : PJON_FAIL;
     }
     #endif
-    return FAIL;
+    return PJON_FAIL;
   }
 
   // Read until a specific 4 byte value is found. This will resync if stream position is lost.
@@ -524,7 +531,7 @@ private:
     int8_t bytes_read = 0;
     bytes_read = read_bytes(client, (byte*) &head, 4);
     if(bytes_read != 4 || head != header) { // Did not get header. Lost position in stream?
-      do { // Try to resync if we lost position in the stream (throw avay all until HEADER found)
+      do { // Try to resync if we lost position in the stream (throw avay all until ETCP_HEADER found)
         head = head >> 8; // Make space for 8 bits to be read into the most significant byte
         bytes_read = read_bytes(client, &((byte*) &head)[3], 1);
         if(bytes_read != 1) break;
@@ -536,7 +543,7 @@ public:
   EthernetLink() { init(); };
   EthernetLink(uint8_t id) { init(); set_id(id); };
 
-  int16_t add_node(uint8_t remote_id, const uint8_t remote_ip[], uint16_t port_number = DEFAULT_PORT) {
+  int16_t add_node(uint8_t remote_id, const uint8_t remote_ip[], uint16_t port_number = ETCP_DEFAULT_PORT) {
     // Find free slot
     int16_t remote_id_index = find_remote_node(0);
     if(remote_id_index < 0) return remote_id_index; // All slots taken
@@ -547,10 +554,10 @@ public:
     return remote_id_index;
   }
 
-  void start_listening(uint16_t port_number = DEFAULT_PORT) { // Do not call for single_socket initiator
+  void start_listening(uint16_t port_number = ETCP_DEFAULT_PORT) { // Do not call for single_socket initiator
     if(_server != NULL) return; // Already started
 
-    #ifdef DEBUGPRINT
+    #ifdef ETCP_DEBUG_PRINT
       Serial.print("Lst on port "); Serial.println(port_number);
     #endif
     _server = new EthernetServer(port_number);
@@ -569,10 +576,10 @@ public:
   // Keep trying to send for a maximum duration
   int16_t send_with_duration(uint8_t id, const char *packet, uint16_t length, uint32_t duration_us) {
    uint32_t start = micros();
-    int16_t result = FAIL;
+    int16_t result = PJON_FAIL;
     do {
       result = send(id, packet, length);
-    } while(result != ACK && (uint32_t)(micros() - start) <= duration_us);
+    } while(result != PJON_ACK && (uint32_t)(micros() - start) <= duration_us);
     return result;
   }
 
@@ -584,7 +591,7 @@ public:
     } else { // Just do an ordinary receive without using the id
       return receive();
     }
-    return FAIL;
+    return PJON_FAIL;
   }
 
   uint8_t get_id() const { return _local_id; }
@@ -606,21 +613,21 @@ public:
       if (_single_socket) return single_socket_transfer(_client_in, -1, false, NULL, 0);
       else {
         // Accept incoming connected and receive a single incoming packet
-        if (!accept()) return FAIL;
+        if (!accept()) return PJON_FAIL;
         uint16_t result = receive(_client_in);
         disconnect_in_if_needed();
         return result;
       }
     }
-    return FAIL;
+    return PJON_FAIL;
   }
 
   uint16_t receive(uint32_t duration_us) {
     uint32_t start = micros();
-    int16_t result = FAIL;
+    int16_t result = PJON_FAIL;
     do {
       result = receive();
-    } while(result != ACK && (uint32_t)(micros() - start) <= duration_us);
+    } while(result != PJON_ACK && (uint32_t)(micros() - start) <= duration_us);
     return result;
   }
 
@@ -632,8 +639,8 @@ public:
     // Connect or check that we are already connected to the correct server
     bool connected = connect(id);
 
-    // Send the packet and read ACK
-    int16_t result = FAIL;
+    // Send the packet and read PJON_ACK
+    int16_t result = PJON_FAIL;
     if (connected) result = send(_client_out, id, packet, length);
 
     // Disconnect
@@ -642,12 +649,18 @@ public:
     return result;
   }
 
-  void set_id(uint8_t id) { _local_id = id; };
-  void set_error(link_error e) { _error = e; };
-  void set_receiver(link_receiver r, void *callback_object) { _receiver = r; _callback_object = callback_object; };
-
   uint8_t device_id() { return _local_id; };
+
   uint8_t acquire_id() { return 0; }; // Not supported yet
+
+  void set_error(link_error e) { _error = e; };
+
+  void set_id(uint8_t id) { _local_id = id; };
+
+  void set_receiver(link_receiver r, void *callback_object) {
+    _receiver = r;
+    _callback_object = callback_object;
+  };
 
   void update() { };
 };

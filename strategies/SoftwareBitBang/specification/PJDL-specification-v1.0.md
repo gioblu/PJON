@@ -1,5 +1,5 @@
 - PJDL (Padded Jittering Data Link) specification:
-**[PJDL v0.1](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/padded-jittering-protocol-specification-v0.1.md)** - [PJDL v1.0](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) - [PJDLR v1.0](https://github.com/gioblu/PJON/blob/master/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
+[PJDL v0.1](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/padded-jittering-protocol-specification-v0.1.md) - **[PJDL v1.0](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md)** - [PJDLR v1.0](https://github.com/gioblu/PJON/blob/master/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
 - PJON (Padded Jittering Operative Network) Protocol specification:
 [v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md) - [v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md) - [v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md) - [v1.0](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v1.0.md)
 - Acknowledge specification: [v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-acknowledge-specification-v0.1.md)
@@ -8,21 +8,22 @@
 ```cpp
 /*
 Milan, Italy - 10/04/2010
-The Padded jittering data link layer specification is an invention and intellectual property
+PJDL (Padded jittering data link) specification is an invention and intellectual property
 of Giovanni Blu Mitolo - Copyright 2010-2017 All rights reserved
 
 Related work: https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/
-Compliant implementation versions: PJON 1.0-5.0
+Compliant implementation versions: PJON 6.0 and following
 */
 ```
-###The Padded jittering data link layer
-The first experimental specification of the Padded jittering data link layer has been drafted to propose a new way to transmit data with cheap and low performance microcontrollers without the necessity of hardware interrupts for its working procedure. Thanks to the imposed requirement of non-concurrent and single-task execution, the Padded jittering data-link has a strong resilience also if the communication medium is affected by interference, high capacitance and resistance. Extended tests proved its effectiveness on different media like electricity, radio frequency and light.
+###PJDL (Padded Jittering Data Link)
+PJDL (Padded Jittering Data Link) has been specified to enable a new way to transmit data in simplex and half-duplex mode using cheap and low performance microcontrollers, totally software emulated, without the need of hardware interrupts for its working procedure. It is designed to support many devices sharing the same medium, to avoid collisions and operate in spite of interference. Extended tests proved its effectiveness on different media like electricity, radio frequency and light.
 
 ###Basic concepts
 * Use a pattern of predefined initial padding bits to identify a potential byte transmission
 * Use the falling edge from 1 to 0, present in padding bits, to achieve byte level synchronization
 * Detect interference or absence of communication at byte level
-* Propose a collision free synchronous acknowledgement pattern
+* Enable channel analysis and collision avoidance
+* Enable a collision free synchronous acknowledgement pattern
 
 ####Byte transmission
 Every byte is prepended with 2 synchronization padding bits and transmission occurs LSB-first. The first is a longer than standard logic 1 followed by a standard logic 0. The reception tecnique is based on finding a logic 1 as long as the first padding bit within a certain threshold, synchronizing to its falling edge and checking if it is followed by a logic 0. If this pattern is detected, reception starts, if not, interference, synchronization loss or simply absence of communication is detected at byte level.
@@ -34,11 +35,12 @@ Every byte is prepended with 2 synchronization padding bits and transmission occ
 |  | 1 | 0 | 1 | 0 0 | 1 | 0 | 1 1 | 0 |
 |_ |___|___|___|_____|___|___|_____|___|
    |
- ACCEPTANCE
+ SWBB_ACCEPTANCE (or minimum acceptable HIGH padding bit duration)
 ```
-Padding bits are adding a certain overhead to information but are reducing the need of precise time tuning because synchronization is renewed every byte. All the first padding bit duration minus `ACCEPTANCE` is the synchronization window the receiver has for every incoming byte. If the length of the first padding bit is less than `ACCEPTANCE` the received signal is considered interference.
+Padding bits are adding a certain overhead to information but are reducing the need of precise timing because synchronization is renewed every byte. All the first padding bit duration minus `SWBB_ACCEPTANCE` is the synchronization window the receiver has for every incoming byte. If the length of the first padding bit is less than `SWBB_ACCEPTANCE` the received signal is considered interference.
 
-####String transmission
+####Packet transmission
+Before a packet transmission, the medium is analyzed to detect ongoing communication and avoid collision. Thanks to the presence of padding bits, also a packet composed by 100 bytes, all with a decimal value of 0, can be transmitted safely without risk of third-party collision.   
 ```cpp  
  ________________ _________________ ________________ ________________ __________________
 |Sync | Byte     |Sync | Byte      |Sync | Byte     |Sync | Byte     |Sync | Byte       |
@@ -47,11 +49,10 @@ Padding bits are adding a certain overhead to information but are reducing the n
 | 1 |0|0000|11|00| 1 |0|00000|1|0|1| 1 |0|00000|1|00| 1 |0|0|1|000000| 1 |0|0|1|00|1|000|
 |___|_|____|__|__|___|_|_____|_|_|_|___|_|_____|_|__|___|_|_|_|______|___|_|_|_|__|_|___|
 ```
-In a scenario where a stream of byte is coming, following this approach a low performance or clock inaccurate microcontroller can be correctly synchronized back with the transmitter every byte and easily detect an interference or the end of transmission.
-
+In a scenario where a stream of bytes is coming, low performance or clock inaccurate microcontrollers can be correctly synchronized back with transmitter every byte (thanks to padding bits) and easily detect interference or the end of transmission.
 
 ####Synchronous acknowledgement
-After packet reception, the CRC is calculated and a single character is transmitted, `PJON_ACK` (value 6) if the packet's content is correct or `PJON_NAK` (value 21) if an error is detected.
+After packet reception, CRC is calculated and a single character is transmitted: `PJON_ACK` (value 6) if the packet's content is correct or `PJON_NAK` (value 21) if an error is detected.
 ```cpp  
 Transmission                                               Response
  ________________________________________                   _____
@@ -72,4 +73,4 @@ Transmission                                                         Response
 
 ```
 
-The maximum time dedicated to potential acknowledgement reception and consequent channel jittering is defined by the use case constrains like maximum packet length and devices distance.
+The maximum time dedicated to potential acknowledgement reception and consequent channel jittering is defined by the use case constrains like maximum packet length and devices distance. Thanks to the presence of the jittering wave, many differently configured devices can coexist on the same medium with no risk of collision.

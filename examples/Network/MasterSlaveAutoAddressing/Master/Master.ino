@@ -4,7 +4,7 @@
 uint8_t bus_id[] = {0, 0, 0, 1};
 uint32_t time;
 
-// PJON object - The Master device id is fixed to MASTER_ID or 254
+// PJON object - The Master device id is fixed to PJON_MASTER_ID or 254
 PJONMaster<SoftwareBitBang> bus(bus_id);
 
 void setup() {
@@ -15,7 +15,7 @@ void setup() {
   time = millis();
 };
 
-void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
+void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   uint32_t rid =
     (uint32_t)(payload[1]) << 24 |
     (uint32_t)(payload[2]) << 16 |
@@ -43,10 +43,10 @@ void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &pack
 
 void loop() {
   if(millis() - time > 5000) {
-   for(uint8_t i = 0; i < MAX_DEVICES; i++) {
+   for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++) {
     if(bus.ids[i].state) {
       Serial.print("Device id: ");
-      Serial.print(i + 1); // Shifted by one to avoid BROADCAST
+      Serial.print(i + 1); // Shifted by one to avoid PJON_BROADCAST
       Serial.print(" Device rid: ");
       Serial.print(bus.ids[i].rid);
       Serial.print(" | ");

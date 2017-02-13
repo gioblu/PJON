@@ -3,7 +3,7 @@
  /* CRC32 table-less implementation
     See: http://www.hackersdelight.org/hdcodetxt/crc.c.txt */
 
-struct crc32 {
+struct PJON_crc32 {
 
   static uint32_t compute(const uint8_t *data, uint16_t length, uint32_t previousCrc32 = 0) {
     uint8_t bits;

@@ -1,7 +1,24 @@
 
-/* OverSampling 1 or 2 wires interrupts-less digital communication data link layer
-   used as a Strategy by the PJON framework (included in version v3.0)
+/* AnalogSampling data link layer
+   used as a Strategy by the PJON framework
    Compliant with the Padded jittering data link layer specification v0.1
+
+   It is designed to sample digital data using analog readings.
+   It can be effectively used to communicate data wirelessly, through
+   any sort of radiation transceiver. The most basic example is to use a couple
+   of visible light LEDs connected to the A0 pin used as wireless transceivers
+   infact, leveraging the duality of LEDs:
+   - Ability to emit photons if electrons are travelling through the junction
+   - Ability to emit electrons if photons are hitting the junction (photo-electric effect)
+   it is possibile to use them as wireless (bidirectional) transceivers!
+
+   The obtained range is related to:
+   - Analog reference (voltage reading resolution)
+   - LED sensitivity to the signal
+   - Available current for transmitter
+
+   For a long range use case a couple of photodiodes and laser emitters is
+   suggested. It may be necessary to teak timing constants in Timing.h.
    ____________________________________________________________________________
 
    Copyright 2012-2017 Giovanni Blu Mitolo gioscarab@gmail.com
@@ -18,35 +35,34 @@
    See the License for the specific language governing permissions and
    limitations under the License. */
 
-#define _STXRX882_STANDARD 1
-
-/* _STXRX882_STANDARD:
-   Medium: STX882/SRX882 433Mhz ASK/FSK modules or 315/433 MHz modules (green)
-    RX http://nicerf.com/manage/upfile/indexbanner/635331970881921250.pdf
-    TX http://nicerf.com/manage/upfile/indexbanner/635169453223382155.pdf
-    Timing for other hardware can be easily implemented in Timing.h
-
-   Performance:
-    Transfer speed: 1620Bb or 202B/s
-    Absolute  communication speed: 180B/s (data length 20 of characters)
-    Data throughput: 150B/s (data length 20 of characters)
-    Range: 250m with no direct line of sight, 5km with direct line of sight  */
-
-#ifndef OS_MODE
-  #define OS_MODE _STXRX882_STANDARD
-#endif
-
 #include "Timing.h"
 #include "../../utils/PJON_IO.h" // Dedicated version of digitalWriteFast
 
-class OverSampling {
+/* Default reading state threshold: */
+
+#ifndef AS_THRESHOLD
+  #define AS_THRESHOLD    1
+#endif
+
+/* _AS_STANDARD transmission mode performance:
+   Transfer speed: 1024Bb or 128B/s
+   Absolute  communication speed: 128B/s (data length 20 of characters)
+   Data throughput: 100B/s (data length 20 of characters) */
+#define _AS_STANDARD  1
+
+/* Set here the selected transmission mode - default STANDARD */
+#ifndef AS_MODE
+  #define AS_MODE _AS_STANDARD
+#endif
+
+class AnalogSampling {
   public:
 
     /* Returns the suggested delay related to the attempts passed as parameter: */
 
     uint32_t back_off(uint8_t attempts) {
       uint32_t result = attempts;
-      for(uint8_t d = 0; d < OS_BACK_OFF_DEGREE; d++)
+      for(uint8_t d = 0; d < AS_BACK_OFF_DEGREE; d++)
         result *= (uint32_t)(attempts);
       return result;
     };
@@ -56,10 +72,12 @@ class OverSampling {
        (returns always true) */
 
     boolean begin(uint8_t additional_randomness = 0) {
-      delay(random(0, OS_INITIAL_DELAY) + additional_randomness);
+      delay(random(0, AS_INITIAL_DELAY) + additional_randomness);
       PJON_IO_PULL_DOWN(_input_pin);
       if(_output_pin != _input_pin)
         PJON_IO_PULL_DOWN(_output_pin);
+      uint32_t time = micros();
+      compute_analog_read_duration();
       return true;
     };
 
@@ -69,49 +87,64 @@ class OverSampling {
     there is no active transmission */
 
     boolean can_start() {
-      delayMicroseconds(random(0, OS_COLLISION_DELAY));
-      float value = 0.5;
-      unsigned long time = micros();
-      PJON_IO_MODE(_input_pin, INPUT);
-      while((uint32_t)(micros() - time) < OS_BIT_SPACER)
-        value = PJON_IO_READ(_input_pin);
-      if(value > 0.5) return false;
-      value = 0.5;
-      for(uint8_t i = 0; i < 10; i++, value = 0.5) {
-        time = micros();
-        while((uint32_t)(micros() - time) < OS_BIT_WIDTH)
-          value = (value * 0.999)  + (PJON_IO_READ(_input_pin) * 0.001);
-        if(value > 0.5) return false;
-      }
+      if(read_byte() != B00000000) return false;
+      delayMicroseconds(AS_BIT_SPACER / 2);
+      if(analogRead(_input_pin) > threshold) return false;
+      delayMicroseconds(AS_BIT_SPACER / 2);
+      if(analogRead(_input_pin) > threshold) return false;
+      delayMicroseconds(random(0, AS_COLLISION_DELAY));
+      if(analogRead(_input_pin) > threshold) return false;
       return true;
+    };
+
+
+    /* compute analogRead duration: */
+
+    void compute_analog_read_duration() {
+      uint32_t time = micros();
+      analogRead(_input_pin);
+      _analog_read_time = (uint32_t)(micros() - time);
+      for(uint8_t i = 0; i < 10; i++) {
+        time = micros();
+        analogRead(_input_pin);
+        _analog_read_time = (_analog_read_time * 0.75) + ((uint32_t)(micros() - time) * 0.25);
+        // TODO - check for granularity
+      }
     };
 
 
     /* Returns the maximum number of attempts for each transmission: */
 
     static uint8_t get_max_attempts() {
-      return OS_MAX_ATTEMPTS;
+      return AS_MAX_ATTEMPTS;
     };
 
 
     /* Handle a collision: */
 
     void handle_collision() {
-      delayMicroseconds(random(0, OS_COLLISION_DELAY));
+      delayMicroseconds(random(0, AS_COLLISION_DELAY));
     };
 
 
     /* Read a byte from the pin */
 
     uint8_t read_byte() {
-      uint8_t byte_value = B00000000;
-      for(uint8_t i = 0; i < 8; i++) {
-        unsigned long time = micros();
-        float value = 0.5;
-        while((uint32_t)(micros() - time) < OS_BIT_WIDTH)
-          value = ((value * 0.999) + (PJON_IO_READ(_input_pin) * 0.001));
-        byte_value += (value > 0.5) << i;
+      int bit_value;
+      int high_bit = 0;
+      int low_bit = 0;
+      uint8_t byte_value = 0;
+      for(int i = 0; i < 8; i++) {
+        long time = micros();
+        delayMicroseconds((AS_BIT_WIDTH / 2) - AS_READ_DELAY);
+        bit_value = analogRead(_input_pin);
+        byte_value += (bit_value > threshold) << i;
+        high_bit = (((bit_value > threshold) ? bit_value : high_bit) + high_bit) / 2;
+        low_bit  = (((bit_value < threshold) ? bit_value : low_bit) + low_bit) / 2;
+        delayMicroseconds(AS_BIT_WIDTH - (uint32_t)(micros() - time));
       }
+      threshold = (high_bit + low_bit) / 2;
+      _last_update = micros();
       return byte_value;
     };
 
@@ -130,26 +163,30 @@ class OverSampling {
         |
       ACCEPTANCE */
 
+
     uint16_t receive_byte() {
       PJON_IO_PULL_DOWN(_input_pin);
       if(_output_pin != PJON_NOT_ASSIGNED && _output_pin != _input_pin)
         PJON_IO_PULL_DOWN(_output_pin);
-      float value = 0.5;
-      unsigned long time = micros();
-      /* Update pin value until the pin stops to be HIGH or passed more time than
-         BIT_SPACER duration */
-      while(((uint32_t)(micros() - time) < OS_BIT_SPACER) && PJON_IO_READ(_input_pin))
-        value = (value * 0.999)  + (PJON_IO_READ(_input_pin) * 0.001);
-      /* Save how much time passed */
-      time = micros();
-      /* If pin value is in average more than 0.5, is a 1, and if is more than
-         ACCEPTANCE (a minimum HIGH duration) and what is coming after is a LOW bit
-         probably a byte is coming so try to receive it. */
-      if(value > 0.5) {
-        value = 0.5;
-        while((uint32_t)(micros() - time) < OS_BIT_WIDTH)
-          value = (value * 0.999)  + (PJON_IO_READ(_input_pin) * 0.001);
-        if(value < 0.5) return read_byte();
+      uint32_t time = micros();
+
+      if(
+        ((uint32_t)(micros() - _last_update) > AS_THRESHOLD_DECREASE_INTERVAL) &&
+        threshold
+      ) {
+        threshold *= 0.25;
+        _last_update = micros();
+      }
+
+      while(
+        (analogRead(_input_pin) > threshold) &&
+        ((uint32_t)(micros() - time) <= AS_BIT_SPACER)
+      ); // Do nothing
+
+      time  = micros() - time;
+      if(time >= AS_BIT_SPACER * 0.75 && time <= AS_BIT_SPACER * 1.25) {
+        delayMicroseconds(AS_BIT_WIDTH);
+        return read_byte();
       }
       return PJON_FAIL;
     };
@@ -158,6 +195,7 @@ class OverSampling {
     /* Receive byte response */
 
     uint16_t receive_response() {
+      PJON_IO_PULL_DOWN(_input_pin);
       if(_output_pin != PJON_NOT_ASSIGNED && _output_pin != _input_pin)
         PJON_IO_WRITE(_output_pin, LOW);
       uint16_t response = PJON_FAIL;
@@ -165,10 +203,7 @@ class OverSampling {
       while(
         (response != PJON_ACK) &&
         (response != PJON_NAK) &&
-        (uint32_t)(
-          micros() -
-          (OS_TIMEOUT + OS_PREAMBLE_PULSE_WIDTH + (OS_TIMEOUT - OS_BIT_WIDTH))
-        ) <= time
+        (uint32_t)(micros() - AS_TIMEOUT) <= time
       ) response = receive_byte();
       return response;
     };
@@ -194,34 +229,22 @@ class OverSampling {
 
     void send_byte(uint8_t b) {
       PJON_IO_WRITE(_output_pin, HIGH);
-      delayMicroseconds(OS_BIT_SPACER);
+      delayMicroseconds(AS_BIT_SPACER);
       PJON_IO_WRITE(_output_pin, LOW);
-      delayMicroseconds(OS_BIT_WIDTH);
+      delayMicroseconds(AS_BIT_WIDTH);
       for(uint8_t mask = 0x01; mask; mask <<= 1) {
         PJON_IO_WRITE(_output_pin, b & mask);
-        delayMicroseconds(OS_BIT_WIDTH);
+        delayMicroseconds(AS_BIT_WIDTH);
       }
-    };
-
-
-    /* Send preamble with a requested number of pulses: */
-
-    void send_preamble() {
-      PJON_IO_WRITE(_output_pin, HIGH);
-      uint32_t time = micros();
-      while((uint32_t)(micros() - time) < OS_PREAMBLE_PULSE_WIDTH);
-      PJON_IO_WRITE(_output_pin, LOW);
-      delayMicroseconds(OS_TIMEOUT - OS_BIT_WIDTH);
     };
 
 
     /* Send byte response to package transmitter */
 
     void send_response(uint8_t response) {
+      delayMicroseconds(AS_BIT_WIDTH);
       PJON_IO_PULL_DOWN(_input_pin);
       PJON_IO_MODE(_output_pin, OUTPUT);
-      /* Send initial transmission preamble */
-      send_preamble();
       send_byte(response);
       PJON_IO_PULL_DOWN(_output_pin);
     };
@@ -231,8 +254,6 @@ class OverSampling {
 
     void send_string(uint8_t *string, uint16_t length) {
       PJON_IO_MODE(_output_pin, OUTPUT);
-      /* Send initial transmission preamble */
-      send_preamble();
       for(uint16_t b = 0; b < length; b++)
         send_byte(string[b]);
       PJON_IO_PULL_DOWN(_output_pin);
@@ -257,7 +278,18 @@ class OverSampling {
       _output_pin = output_pin;
     };
 
+
+    /* Set the threshold analog value between a LOW and a HIGH read: */
+
+    void set_threshold(uint16_t value) {
+      threshold = value;
+    };
+
+
+    uint16_t threshold = AS_THRESHOLD;
   private:
-    uint8_t _input_pin;
-    uint8_t _output_pin;
+    uint16_t _analog_read_time;
+    uint8_t  _input_pin;
+    uint8_t  _output_pin;
+    uint32_t _last_update;
 };

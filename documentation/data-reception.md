@@ -5,13 +5,13 @@
 - [Error handling](https://github.com/gioblu/PJON/tree/6.2/documentation/error-handling.md)
 - [IO setup](https://github.com/gioblu/PJON/tree/6.2/documentation/io-setup.md)
 
-Define a `void function` that will be called if a correct message is received. This function receives 3 parameters: the transmission content, its length and a pointer to a `PacketInfo` data structure that contains all the info contained in the packet metadata:
+Define a `void function` that will be called if a correct message is received. This function receives 3 parameters: the transmission content, its length and a pointer to a `PJON_Packet_Info` data structure that contains all the info contained in the packet metadata:
 ```cpp
-void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
+void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   Serial.print("Header: ");
   Serial.print(packet_info.header, BIN);
   // If packet formatted for a shared medium
-  if((packet_info.header & MODE_BIT) != 0) {
+  if((packet_info.header & PJON_MODE_BIT) != 0) {
     Serial.print(" Receiver bus id: ");
     Serial.print(packet_info.receiver_bus_id[0]);
     Serial.print(packet_info.receiver_bus_id[1]);
@@ -20,7 +20,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &pack
     Serial.print(" Device id: ");
     Serial.print(packet_info.receiver_id);
     // If sender info is included
-    if((packet_info.header & SENDER_INFO_BIT) != 0) {
+    if((packet_info.header & PJON_TX_INFO_BIT) != 0) {
       Serial.print(" Sender bus id: ");
       Serial.print(packet_info.sender_bus_id[0]);
       Serial.print(packet_info.sender_bus_id[1]);
@@ -50,10 +50,10 @@ To correctly receive data call the `receive` function at least once per loop cyc
 uint16_t response = bus.receive();
 ```
 `receive` returns the following values:
-- `ACK` (6) if a correct reception occurred
-- `NAK` (21) if a mistake is found in CRC
-- `BUSY` (666) if a transmission for other devices is occurring
-- `FAIL` (65535) if no data is received
+- `PJON_ACK` (6) if a correct reception occurred
+- `PJON_NAK` (21) if a mistake is found in CRC
+- `PJON_BUSY` (666) if a transmission for other devices is occurring
+- `PJON_FAIL` (65535) if no data is received
 
 If you want to dedicate a certain timeframe to reception call the `receive` function passing the maximum reception time in microseconds:
 ```cpp

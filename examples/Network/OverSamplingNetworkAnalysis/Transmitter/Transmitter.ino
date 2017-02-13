@@ -34,13 +34,13 @@ void loop() {
     be able to catch every single sending result. */
 
     unsigned int response = bus.send_packet(44, bus_id, content, 20);
-    if(response == ACK)
+    if(response == PJON_ACK)
       test++;
-    if(response == NAK)
+    if(response == PJON_NAK)
       mistakes++;
-    if(response == BUSY)
+    if(response == PJON_BUSY)
       busy++;
-    if(response == FAIL)
+    if(response == PJON_FAIL)
       fail++;
   }
 

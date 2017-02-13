@@ -51,15 +51,15 @@ limitations under the License. */
       /* PJONSlave bus default initialization:
          State: Local (bus_id: 0.0.0.0)
          Acknowledge: true (Acknowledge is requested)
-         device id: NOT_ASSIGNED (255)
-         Mode: HALF_DUPLEX
+         device id: PJON_NOT_ASSIGNED (255)
+         Mode: PJON_HALF_DUPLEX
          Sender info: true (Sender info are included in the packet)
          Strategy: SoftwareBitBang */
 
       PJONSlave() : PJON<Strategy>() {
         PJON<Strategy>::set_error(static_error_handler);
-        set_error(dummy_error_handler);
-        set_receiver(dummy_receiver_handler);
+        set_error(PJON_dummy_error_handler);
+        set_receiver(PJON_dummy_receiver_handler);
       };
 
 
@@ -68,8 +68,8 @@ limitations under the License. */
 
       PJONSlave(uint8_t device_id) : PJON<Strategy>(device_id) {
         PJON<Strategy>::set_error(static_error_handler);
-        set_error(dummy_error_handler);
-        set_receiver(dummy_receiver_handler);
+        set_error(PJON_dummy_error_handler);
+        set_receiver(PJON_dummy_receiver_handler);
       };
 
 
@@ -79,8 +79,8 @@ limitations under the License. */
 
       PJONSlave(const uint8_t *b_id, uint8_t device_id) : PJON<Strategy>(b_id, device_id) {
         PJON<Strategy>::set_error(static_error_handler);
-        set_error(dummy_error_handler);
-        set_receiver(dummy_receiver_handler);
+        set_error(PJON_dummy_error_handler);
+        set_receiver(PJON_dummy_receiver_handler);
       };
 
 
@@ -96,24 +96,30 @@ limitations under the License. */
       /* Acquire an id in multi-master configuration: */
 
       void acquire_id_multi_master(uint8_t limit = 0) {
-        if(limit >= MAX_ACQUIRE_ID_COLLISIONS)
-          return _slave_error(ID_ACQUISITION_FAIL, FAIL);
+        if(limit >= PJON_MAX_ACQUIRE_ID_COLLISIONS)
+          return _slave_error(PJON_ID_ACQUISITION_FAIL, PJON_FAIL);
 
-        delay(random(ACQUIRE_ID_DELAY * 0.25, ACQUIRE_ID_DELAY));
+        delay(random(PJON_ACQUIRE_ID_DELAY * 0.25, PJON_ACQUIRE_ID_DELAY));
         uint32_t time = micros();
-        char msg = ID_ACQUIRE;
-        char head = this->config | ADDRESS_BIT | ACK_REQUEST_BIT;
-        this->_device_id = NOT_ASSIGNED;
+        char msg = PJON_ID_ACQUIRE;
+        char head = this->config | PJON_ADDRESS_BIT | PJON_ACK_REQ_BIT;
+        this->_device_id = PJON_NOT_ASSIGNED;
 
-        for(uint8_t id = generate_random_byte(); (uint32_t)(micros() - time) < ID_SCAN_TIME; id++)
-          if(id == BROADCAST || id == NOT_ASSIGNED || id == MASTER_ID) continue;
-          else if(this->send_packet_blocking(id, this->bus_id, &msg, 1, head) == FAIL) {
+        for(
+          uint8_t id = generate_random_byte();
+          (uint32_t)(micros() - time) < PJON_ID_SCAN_TIME;
+          id++
+        )
+          if(id == PJON_BROADCAST || id == PJON_NOT_ASSIGNED || id == PJON_MASTER_ID) continue;
+          else if(this->send_packet_blocking(id, this->bus_id, &msg, 1, head) == PJON_FAIL) {
             this->_device_id = id;
             break;
           }
 
-        receive((random(ACQUIRE_ID_DELAY * 0.25, ACQUIRE_ID_DELAY)) * 1000);
-        if(this->send_packet_blocking(this->_device_id, this->bus_id, &msg, 1, head) == ACK)
+        receive(
+          (random(PJON_ACQUIRE_ID_DELAY * 0.25, PJON_ACQUIRE_ID_DELAY)) * 1000
+        );
+        if(this->send_packet_blocking(this->_device_id, this->bus_id, &msg, 1, head) == PJON_ACK)
           acquire_id_multi_master(limit++);
       };
 
@@ -122,19 +128,19 @@ limitations under the License. */
 
       bool acquire_id_master_slave() {
         char response[5];
-        response[0] = ID_REQUEST;
+        response[0] = PJON_ID_REQUEST;
         response[1] = (uint32_t)(_rid) >> 24;
         response[2] = (uint32_t)(_rid) >> 16;
         response[3] = (uint32_t)(_rid) >>  8;
         response[4] = (uint32_t)(_rid);
 
         if(this->send_packet_blocking(
-          MASTER_ID,
+          PJON_MASTER_ID,
           this->bus_id,
           response,
           5,
-          this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
-        ) == ACK) return true;
+          this->config | PJON_ADDRESS_BIT | PJON_ACK_REQ_BIT | PJON_TX_INFO_BIT
+        ) == PJON_ACK) return true;
 
         return false;
       };
@@ -144,7 +150,7 @@ limitations under the License. */
 
       void begin() {
         PJON<Strategy>::begin();
-        if(this->_device_id == NOT_ASSIGNED)
+        if(this->_device_id == PJON_NOT_ASSIGNED)
           acquire_id();
       };
 
@@ -153,7 +159,7 @@ limitations under the License. */
 
       bool discard_device_id() {
         char request[6] = {
-          ID_NEGATE,
+          PJON_ID_NEGATE,
           _rid >> 24,
           _rid >> 16,
           _rid >> 8,
@@ -162,13 +168,13 @@ limitations under the License. */
         };
 
         if(this->send_packet_blocking(
-          MASTER_ID,
+          PJON_MASTER_ID,
           this->bus_id,
           request,
           6,
-          this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
-        ) == ACK) {
-          this->_device_id = NOT_ASSIGNED;
+          this->config | PJON_ADDRESS_BIT | PJON_ACK_REQ_BIT | PJON_TX_INFO_BIT
+        ) == PJON_ACK) {
+          this->_device_id = PJON_NOT_ASSIGNED;
           return true;
         }
         return false;
@@ -209,9 +215,9 @@ limitations under the License. */
 
 
       bool handle_addressing() {
-        if(this->last_packet_info.header & ADDRESS_BIT && this->_device_id != MASTER_ID) {
+        if(this->last_packet_info.header & PJON_ADDRESS_BIT && this->_device_id != PJON_MASTER_ID) {
           uint8_t overhead = this->packet_overhead(this->last_packet_info.header);
-          uint8_t CRC_overhead = (this->last_packet_info.header & CRC_BIT) ? 4 : 1;
+          uint8_t CRC_overhead = (this->last_packet_info.header & PJON_CRC_BIT) ? 4 : 1;
           uint8_t rid[4] = {_rid >> 24, _rid >> 16, _rid >> 8, _rid};
           char response[6];
           response[1] = rid[0];
@@ -219,24 +225,24 @@ limitations under the License. */
           response[3] = rid[2];
           response[4] = rid[3];
 
-          if(this->data[overhead - CRC_overhead] == ID_REQUEST)
+          if(this->data[overhead - CRC_overhead] == PJON_ID_REQUEST)
             if(this->bus_id_equality(this->data + ((overhead - CRC_overhead) + 1), rid)) {
-              response[0] = ID_CONFIRM;
+              response[0] = PJON_ID_CONFIRM;
               response[5] = this->data[(overhead - CRC_overhead) + 5];
               this->set_id(response[5]);
               if(this->send_packet_blocking(
-                MASTER_ID,
+                PJON_MASTER_ID,
                 this->bus_id,
                 response,
                 6,
-                this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
-              ) != ACK) {
-                this->set_id(NOT_ASSIGNED);
-                _slave_error(ID_ACQUISITION_FAIL, ID_CONFIRM);
+                this->config | PJON_ADDRESS_BIT | PJON_ACK_REQ_BIT | PJON_TX_INFO_BIT
+              ) != PJON_ACK) {
+                this->set_id(PJON_NOT_ASSIGNED);
+                _slave_error(PJON_ID_ACQUISITION_FAIL, PJON_ID_CONFIRM);
               }
             }
 
-          if(this->data[overhead - CRC_overhead] == ID_NEGATE)
+          if(this->data[overhead - CRC_overhead] == PJON_ID_NEGATE)
             if(
               this->bus_id_equality(
                 this->data + ((overhead - CRC_overhead) + 1),
@@ -244,18 +250,21 @@ limitations under the License. */
               ) && this->_device_id == this->data[0]
             ) acquire_id();
 
-          if(this->data[overhead - CRC_overhead] == ID_LIST)
-            if(this->_device_id != NOT_ASSIGNED)
-              if((uint32_t)(micros() - _last_request_time) > (ADDRESSING_TIMEOUT * 1.125)) {
+          if(this->data[overhead - CRC_overhead] == PJON_ID_LIST)
+            if(this->_device_id != PJON_NOT_ASSIGNED)
+              if(
+                (uint32_t)(micros() - _last_request_time) >
+                (PJON_ADDRESSING_TIMEOUT * 1.125)
+              ) {
                 _last_request_time = micros();
-                response[0] = ID_REFRESH;
+                response[0] = PJON_ID_REFRESH;
                 response[5] = this->_device_id;
                 this->send(
-                  MASTER_ID,
+                  PJON_MASTER_ID,
                   this->bus_id,
                   response,
                   6,
-                  this->config | ADDRESS_BIT | ACK_REQUEST_BIT | SENDER_INFO_BIT
+                  this->config | PJON_ADDRESS_BIT | PJON_ACK_REQ_BIT | PJON_TX_INFO_BIT
                 );
               }
 
@@ -270,18 +279,18 @@ limitations under the License. */
       uint16_t receive() {
         _current_pjon_slave = this;
         uint16_t received_data = PJON<Strategy>::receive();
-        if(received_data != ACK) return received_data;
+        if(received_data != PJON_ACK) return received_data;
 
         uint8_t overhead = this->packet_overhead(this->data[1]);
 
         if(!handle_addressing())
           _slave_receiver(
-            this->data + (overhead - (this->data[1] & CRC_BIT ? 4 : 1)),
-            this->data[this->data[1] & EXTEND_HEADER_BIT ? 3 : 2] - overhead,
+            this->data + (overhead - (this->data[1] & PJON_CRC_BIT ? 4 : 1)),
+            this->data[this->data[1] & PJON_EXT_HEAD_BIT ? 3 : 2] - overhead,
             this->last_packet_info
           );
 
-        return ACK;
+        return PJON_ACK;
       };
 
 
@@ -290,21 +299,21 @@ limitations under the License. */
       uint16_t receive(uint32_t duration) {
         uint32_t time = micros();
         while((uint32_t)(micros() - time) <= duration)
-          if(receive() == ACK) return ACK;
-        return FAIL;
+          if(receive() == PJON_ACK) return PJON_ACK;
+        return PJON_FAIL;
       };
 
 
       /* Slave receiver function setter: */
 
-      void set_receiver(receiver r) {
+      void set_receiver(PJON_Receiver r) {
         _slave_receiver = r;
       };
 
 
       /* Master error receiver function: */
 
-      void set_error(error e) {
+      void set_error(PJON_Error e) {
         _slave_error = e;
       };
 
@@ -317,10 +326,10 @@ limitations under the License. */
       };
 
     private:
-      uint32_t _last_request_time;
-      receiver _slave_receiver;
-      error _slave_error;
-      uint32_t _rid;
+      uint32_t      _last_request_time;
+      PJON_Receiver _slave_receiver;
+      PJON_Error    _slave_error;
+      uint32_t      _rid;
       static PJONSlave<Strategy> *_current_pjon_slave;
   };
 

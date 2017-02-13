@@ -36,18 +36,18 @@
 class EthernetTCP {
   public:
     EthernetLink link;
-    uint16_t last_send_result = FAIL;
+    uint16_t last_send_result = PJON_FAIL;
 
     /* Caching of incoming packet to make it possible to deliver it byte for byte */
 
-    uint8_t incoming_packet_buf[PACKET_MAX_LENGTH];
+    uint8_t incoming_packet_buf[PJON_PACKET_MAX_LENGTH];
     uint16_t incoming_packet_size = 0;
     uint16_t incoming_packet_pos = 0;
     static void static_receiver(uint8_t id, const uint8_t *payload, uint16_t length, void *callback_object) {
       if (callback_object) ((EthernetTCP*)callback_object)->receiver(id, payload, length);
     }
     void receiver(uint8_t id, const uint8_t *payload, uint16_t length) {
-      if (length <= PACKET_MAX_LENGTH) {
+      if (length <= PJON_PACKET_MAX_LENGTH) {
         memcpy(incoming_packet_buf, payload, length);
         incoming_packet_size = length;
         incoming_packet_pos = 0;
@@ -104,7 +104,7 @@ class EthernetTCP {
       if (incoming_packet_pos < incoming_packet_size) {
         return incoming_packet_buf[incoming_packet_pos++];
       }
-      return FAIL;
+      return PJON_FAIL;
     };
 
 

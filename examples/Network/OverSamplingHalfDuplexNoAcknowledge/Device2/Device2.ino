@@ -7,8 +7,8 @@ uint8_t bus_id[] = {0, 0, 0, 1};
 PJON<OverSampling> bus(bus_id, 45);
 
 void setup() {
-  pinModeFast(13, OUTPUT);
-  digitalWriteFast(13, LOW); // Initialize LED 13 to be off
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW); // Initialize LED 13 to be off
 
   bus.set_synchronous_acknowledge(false);
   bus.strategy.set_pins(11, 12);
@@ -21,7 +21,7 @@ void setup() {
   Serial.begin(115200);
 };
 
-void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
+void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   Serial.print("Receiver bus id: ");
   Serial.print(packet_info.receiver_bus_id[0]);
   Serial.print(packet_info.receiver_bus_id[1]);

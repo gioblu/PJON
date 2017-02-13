@@ -1,6 +1,6 @@
 
-/* Include Async ACK code setting INCLUDE_ASYNC_ACK as true before including PJON.h */
-#define INCLUDE_ASYNC_ACK true
+/* Include Async ACK code setting PJON_INCLUDE_ASYNC_ACK as true before including PJON.h */
+#define PJON_INCLUDE_ASYNC_ACK true
 
 #include <PJON.h>
 
@@ -10,8 +10,8 @@ uint8_t bus_id[] = {0, 0, 0, 1};
 PJON<SoftwareBitBang> bus(bus_id, 45);
 
 void setup() {
-  pinModeFast(13, OUTPUT);
-  digitalWriteFast(13, LOW); // Initialize LED 13 to be off
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW); // Initialize LED 13 to be off
 
   bus.strategy.set_pin(12);
   /* A packet containing the id of every packet received will be sent back

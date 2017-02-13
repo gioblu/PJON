@@ -1,6 +1,6 @@
 
-/* Include Async ACK code setting INCLUDE_ASYNC_ACK as true before including PJON.h */
-#define INCLUDE_ASYNC_ACK true
+/* Include Async ACK code setting PJON_INCLUDE_ASYNC_ACK as true before including PJON.h */
+#define PJON_INCLUDE_ASYNC_ACK true
 
 #include <PJON.h>
 uint16_t packet;
@@ -11,8 +11,8 @@ PJON<OverSampling> bus(bus_id, 45);
 
 void setup() {
   Serial.begin(115200);
-  pinModeFast(13, OUTPUT);
-  digitalWriteFast(13, LOW); // Initialize LED 13 to be off
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW); // Initialize LED 13 to be off
 
   bus.strategy.set_pins(11, 12);
   /* A packet containing the id of every packet received will be sent back
@@ -33,20 +33,20 @@ void setup() {
 }
 
 void error_handler(uint8_t code, uint8_t data) {
-  if(code == CONNECTION_LOST) {
+  if(code == PJON_CONNECTION_LOST) {
     Serial.print("Connection with device ID ");
     Serial.print(data);
     Serial.print(" - ");
     Serial.print(micros());
     Serial.println(" is lost.");
   }
-  if(code == PACKETS_BUFFER_FULL) {
+  if(code == PJON_PACKETS_BUFFER_FULL) {
     Serial.print("Packet buffer is full, has now a length of ");
     Serial.println(data, DEC);
     Serial.println("Possible wrong bus configuration!");
-    Serial.println("higher MAX_PACKETS in PJON.h if necessary.");
+    Serial.println("higher PJON_MAX_PACKETS if necessary.");
   }
-  if(code == CONTENT_TOO_LONG) {
+  if(code == PJON_CONTENT_TOO_LONG) {
     Serial.print("Content is too long, length: ");
     Serial.println(data);
   }

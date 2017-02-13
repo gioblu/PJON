@@ -24,9 +24,9 @@
 #include <EthernetUdp.h>
 #include <PJONDefines.h>
 
-#define DEFAULT_UDP_PORT             7100
-#define RESPONSE_TIMEOUT  (uint32_t) 10000
-#define UDP_MAGIC_HEADER             0x0DFAC3D0
+#define LUDP_DEFAULT_PORT      7100
+#define LUDP_RESPONSE_TIMEOUT  (uint32_t) 10000
+#define LUDP_MAGIC_HEADER      0x0DFAC3D0
 
 /* Maximum transmission attempts */
 #ifndef LUDP_MAX_ATTEMPTS
@@ -40,25 +40,25 @@
 
 class LocalUDP {
     bool _udp_initialized = false;
-    uint16_t _port = DEFAULT_UDP_PORT;
-    const uint32_t _magic_header = UDP_MAGIC_HEADER;
+    uint16_t _port = LUDP_DEFAULT_PORT;
+    const uint32_t _magic_header = LUDP_MAGIC_HEADER;
     const uint8_t _broadcast[4] = { 0xFF, 0xFF, 0xFF, 0xFF };
 
     EthernetUDP udp;
 
     /* Caching of incoming packet to make it possible to deliver it byte for byte */
 
-    uint8_t incoming_packet_buf[PACKET_MAX_LENGTH];
+    uint8_t incoming_packet_buf[PJON_PACKET_MAX_LENGTH];
     uint16_t incoming_packet_size = 0;
     uint16_t incoming_packet_pos = 0;
 
     bool receive_telegram() {
       int packetSize = udp.parsePacket();
-      if (packetSize > 4 && packetSize <= PACKET_MAX_LENGTH) {
+      if (packetSize > 4 && packetSize <= PJON_PACKET_MAX_LENGTH) {
         uint32_t header = 0;
         udp.read((char *) &header, 4);
         if (header != _magic_header) return false; // Not a LocalUDP packet
-        udp.read(incoming_packet_buf, PACKET_MAX_LENGTH);
+        udp.read(incoming_packet_buf, PJON_PACKET_MAX_LENGTH);
         incoming_packet_size = packetSize;
         incoming_packet_pos = 0;
         return true;
@@ -126,7 +126,7 @@ public:
       // Deliver the next byte from the last received packet if any
       if (incoming_packet_pos < incoming_packet_size)
         return incoming_packet_buf[incoming_packet_pos++];
-      return FAIL;
+      return PJON_FAIL;
     };
 
 
@@ -138,11 +138,11 @@ public:
       // TODO: Improve robustness by ignoring packets not from the previous receiver
       // (Perhaps not that important as long as ACK/NAK responses are directed, not broadcast)
       uint32_t start = micros();
-      uint16_t result = FAIL;
+      uint16_t result = PJON_FAIL;
       do {
         result = receive_byte();
-        if (result == ACK || result == NAK) return result;
-     } while ((uint32_t)(micros() - start) < RESPONSE_TIMEOUT);
+        if (result == PJON_ACK || result == PJON_NAK) return result;
+     } while ((uint32_t)(micros() - start) < LUDP_RESPONSE_TIMEOUT);
       return result;
     };
 
@@ -150,7 +150,7 @@ public:
     /* Send byte response to package transmitter.
        We have the IP so we can skip broadcasting and reply directly. */
 
-    void send_response(uint8_t response) { // Empty, ACK is always sent
+    void send_response(uint8_t response) { // Empty, PJON_ACK is always sent
       udp.beginPacket(udp.remoteIP(), _port);
       udp.write((const char*) &_magic_header, 4);
       udp.write((const char*) &response, 1);
@@ -172,7 +172,7 @@ public:
 
     /* Set the UDP port: */
 
-    void set_port(uint16_t port = DEFAULT_UDP_PORT) {
+    void set_port(uint16_t port = LUDP_DEFAULT_PORT) {
       _port = port;
     };
 };

@@ -1,4 +1,6 @@
-- PJON Protocol specification:
+- PJDL (Padded Jittering Data Link) specification:
+[PJDL v0.1](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/padded-jittering-protocol-specification-v0.1.md) - [PJDL v1.0](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) - [PJDLR v1.0](https://github.com/gioblu/PJON/blob/master/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
+- PJON (Padded Jittering Operative Network) Protocol specification:
 [v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md) - **[v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md)** - [v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md) - [v1.0](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v1.0.md)
 - Acknowledge specification: [v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-acknowledge-specification-v0.1.md)
 - Dynamic addressing specification: [v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md)
@@ -68,7 +70,7 @@ A standard local packet transmission is a bidirectional communication between tw
      |_____|         |____|________|_________|_____|         |_____|
 ```
 
-In the first phase the bus is analyzed by transmitter reading 10 logical bits, if any logical high is detected, the channel is considered free and transmission phase starts in which the packet is entirely transmitted. Receiver calculates CRC and starts the response phase transmitting a single byte, `ACK` (dec 6) in case of correct reception or `NAK` (dec 21) if an error in the packet's content is detected. If transmitter receives no answer or NAK the packet sending has to be scheduled with a delay of `ATTEMPTS` * `ATTEMPTS` * `ATTEMPTS` with a maximum of 125 `ATTEMPTS` to obtain data transmission 3rd degree polynomial backoff.
+In the first phase the bus is analyzed by transmitter reading 10 logical bits, if any logical high is detected, the channel is considered free and transmission phase starts in which the packet is entirely transmitted. Receiver calculates CRC and starts the response phase transmitting a single byte, `PJON_ACK` (dec 6) in case of correct reception or `PJON_NAK` (dec 21) if an error in the packet's content is detected. If transmitter receives no answer or `PJON_NAK` the packet sending has to be scheduled with a delay of `ATTEMPTS` * `ATTEMPTS` * `ATTEMPTS` with a maximum of 125 `ATTEMPTS` to obtain data transmission 3rd degree polynomial backoff.
 
 In a shared medium it is necessary to define a bus id to isolate devices from outcoming communication of other buses nearby. Below is shown the same local transmission (with the obvious `0.0.0.0` or localhost bus id omitted) used as an example before, in a shared environment instead the packet's content is prepended with the bus id:
 ```cpp

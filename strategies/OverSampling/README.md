@@ -2,7 +2,7 @@
 **Media:** Radio, Wire |
 **Pins used:** 1 / 2
 
-Oversampling strategy was initially developed in the [PJON_ASK](https://github.com/gioblu/PJON_ASK) repository, and it was integrated in the PJON repository from version 3.0 beta, as a data link layer strategy. Bits are over-sampled to have high resilience in high interference scenarios, like using an ASK/FSK cheap radio transceivers in an urban environment. It is tested effectively with many versions of the ASK/FSK 315/433Mhz modules available on the market, but it works nominally also through wires and the human body.
+Oversampling strategy was initially developed in the [PJON_ASK](https://github.com/gioblu/PJON_ASK) repository, and it was integrated in the PJON repository from version 3.0 beta, as a data link layer strategy. Bits are over-sampled to have high resilience in high interference scenarios, like using an ASK/FSK cheap radio transceivers in an urban environment. It is tested effectively with many versions of the ASK/FSK 315/433Mhz modules available on the market, but it works nominally also through wires and the human body. It complies with [PJDLR v1.0](https://github.com/gioblu/PJON/blob/master/strategies/OverSampling/specification/PJDLR-specification-v1.0.md) Data link layer specification.
 
 ####Compatibility
 - ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
@@ -45,7 +45,7 @@ Pass the `OverSampling` type as PJON template parameter to instantiate a PJON ob
 After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance.
 
 ####Use OverSampling with cheap 433Mhz transceivers
-To build a real open-source PJON packet radio able to communicate up to 5km you need only a couple (for `SIMPLEX` mode) or two couples (for `HALF_DUPLEX` mode) of cheap 315/433Mhz ASK/FSK transmitter / receiver modules (with a cost around 2/3 dollars). Please be sure of the regulations your government imposes on radio transmission over these frequencies before use.
+To build a real open-source PJON packet radio able to communicate up to 5km you need only a couple (for `PJON_SIMPLEX` mode) or two couples (for `PJON_HALF_DUPLEX` mode) of cheap 315/433Mhz ASK/FSK transmitter / receiver modules (with a cost around 2/3 dollars). Please be sure of the regulations your government imposes on radio transmission over these frequencies before use.
 
 ![PJON Oversampling packet radio](http://www.gioblu.com/PJON/PJON-OverSampling-packet-radio-STX882-SRX882.jpg)
 
@@ -54,7 +54,7 @@ The maximum detected range was experimented with a small packet radio transmitti
 If Using `OverSampling` data link layer, the asynchronous acknowledgment is suggested as default acknowledgment mechanism because includes in the packet's meta-info a packet id, avoiding duplicated receptions.
 
 ####Antenna design
-Experiments in `HALF_DUPLEX` mode have shown that it seems better to keep isolated the two antennas, using two different, not connected elements to transmit and receive. The first suggested antenna design is a wide beam dipole antenna made by two 173mm (quarter wavelength) or 345mm (half wavelength) long conductive elements, one connected to ground and the other connected to the input or output pin:
+Experiments in `PJON_HALF_DUPLEX` mode have shown that it seems better to keep isolated the two antennas, using two different, not connected elements to transmit and receive. The first suggested antenna design is a wide beam dipole antenna made by two 173mm (quarter wavelength) or 345mm (half wavelength) long conductive elements, one connected to ground and the other connected to the input or output pin:
 ```cpp  
 
  173mm (quarter wavelength) / 345mm(half wavelength)
@@ -74,4 +74,4 @@ A more directional, compact and long range antenna design is the wip antenna. Ca
 ```
 
 ####Known issues
-- In older versions, OverSampling was affected by ineffective and short range if used in `HALF_DUPLEX` mode. This issue has been fixed by handling the gain refresh (see issue [91](https://github.com/gioblu/PJON/issues/91)).
+- In older versions, OverSampling was affected by ineffective and short range if used in `PJON_HALF_DUPLEX` mode. This issue has been fixed by handling the gain refresh (see issue [91](https://github.com/gioblu/PJON/issues/91)).

@@ -18,8 +18,8 @@ int fail;
 PJON<OverSampling> bus(44);
 
 void setup() {
-  bus.set_communication_mode(SIMPLEX);
-  bus.strategy.set_pins(11, NOT_ASSIGNED);
+  bus.set_communication_mode(PJON_SIMPLEX);
+  bus.strategy.set_pins(11, PJON_NOT_ASSIGNED);
   bus.begin();
 
   bus.set_receiver(receiver_function);
@@ -27,7 +27,7 @@ void setup() {
   Serial.begin(115200);
 };
 
-void receiver_function(uint8_t *payload, uint16_t length, const PacketInfo &packet_info) {
+void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
  // Do nothing to avoid affecting speed analysis
 }
 
@@ -37,13 +37,13 @@ void loop() {
   unsigned int response = 0;
   while(millis() - time < 1000) {
     response = bus.receive();
-    if(response == ACK)
+    if(response == PJON_ACK)
       test++;
-    if(response == NAK)
+    if(response == PJON_NAK)
       mistakes++;
-    if(response == BUSY)
+    if(response == PJON_BUSY)
       busy++;
-    if(response == FAIL)
+    if(response == PJON_FAIL)
       fail++;
   }
 

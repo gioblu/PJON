@@ -11,9 +11,6 @@ uint8_t local_ip[] = { 192, 1, 1, 144 },
 // <Strategy name> bus(selected device id)
 PJON<EthernetTCP> bus(44);
 
-#define SINGLE_SOCKET 0
-#define KEEP_CONNECTION 1
-
 void setup() {
   Serial.begin(115200);
   Serial.println("Receiver started.");
@@ -21,8 +18,8 @@ void setup() {
 
   bus.strategy.link.set_id(bus.device_id());
   bus.strategy.link.add_node(45, remote_ip);
-  bus.strategy.link.keep_connection(KEEP_CONNECTION);
-  bus.strategy.link.single_socket(SINGLE_SOCKET);
+  bus.strategy.link.keep_connection(true);
+  bus.strategy.link.single_socket(false);
   bus.strategy.link.start_listening(); // Do not call this if SINGLE_SOCKET and transmitter
 
   bus.begin();

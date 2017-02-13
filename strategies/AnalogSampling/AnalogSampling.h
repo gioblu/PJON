@@ -13,7 +13,6 @@
    it is possibile to use them as wireless (bidirectional) transceivers!
 
    The obtained range is related to:
-   - ADC prescaler (reading duration)
    - Analog reference (voltage reading resolution)
    - LED sensitivity to the signal
    - Available current for transmitter
@@ -287,18 +286,10 @@ class AnalogSampling {
     };
 
 
-    /* Set the ADC prescaler (4 default): */
-
-    void set_prescaler(uint16_t prescaler) {
-      _prescaler = prescaler;
-      compute_analog_read_duration();
-    };
-
     uint16_t threshold = AS_THRESHOLD;
   private:
     uint16_t _analog_read_time;
     uint8_t  _input_pin;
     uint8_t  _output_pin;
-    uint8_t  _prescaler = B00000111;
     uint32_t _last_update;
 };

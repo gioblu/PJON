@@ -43,16 +43,15 @@ In the graph below is shown the protocol stack model proposed. The differences b
 | 4 Network layer                               |
 | Segmentation, routing                         |
 |-----------------------------------------------|
-| 3 Protocol layer                              |
+| 3 Protocol layer: PJON                        |
 | Addressing, asynchronous acknowledgement,     |
 | multiplexing, traffic control                 |
 |-----------------------------------------------|
-| 2 Data link layer                             |
+| 2 Data link layer: PJDL/PJDLR                 |
 | Data link, transmission of packets,           |
 | synchronous acknowledgment                    |
 |-----------------------------------------------|
-| 1 Physical layer                              |
-| Cable, transceivers ecc                       |
+| 1 Physical layer: Cables, transceivers ecc.   |
 |_______________________________________________|
 ```
 
@@ -118,7 +117,7 @@ In a shared medium it is defined a IPv4 like bus id to isolate devices from outc
 ```
 
 ###Packet transmission
-A packet transmission is the exchange of a string to one or many of the devices connected to the bus with optional correct reception certainty. The simplest form of packet is constructed by a recipient id, a header, the length, the content and its CRC. In this example is shown a packet transmission in a local bus to device id 12 containing the string @ (decimal 64):
+A packet transmission is an exchange of a string to one or many of the devices connected to the bus with optional correct reception certainty. The simplest form of packet is constructed by a recipient id, a header, the length, the content and its CRC. In this example is shown a packet transmission in a local bus to device id 12 containing the string @ (decimal 64):
 ```cpp  
 
  ID 12       HEADER 1    LENGTH 5     CONTENT 64  CRC 72

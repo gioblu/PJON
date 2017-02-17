@@ -22,6 +22,8 @@ uint32_t cnt = 0;
 uint32_t start = millis();
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
+  /* Make use of the payload before sending something, the buffer where payload points to is
+     overwritten when a new message is dispatched */
   if(payload[0] == 'P') {
     cnt++;
     if (millis() - start > 1000) {

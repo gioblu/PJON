@@ -32,6 +32,8 @@ void setup() {
 };
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
+  /* Make use of the payload before sending something, the buffer where payload points to is
+     overwritten when a new message is dispatched */
   Serial.print("Header: ");
   Serial.print(packet_info.header, BIN);
   // If packet formatted for a shared medium

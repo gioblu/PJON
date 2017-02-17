@@ -20,6 +20,8 @@ void setup() {
 };
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
+  /* Make use of the payload before sending something, the buffer where payload points to is
+     overwritten when a new message is dispatched */
   Serial.print("RX:");
   Serial.print(" Device id: ");
   Serial.print(packet_info.receiver_id);

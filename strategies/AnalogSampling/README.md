@@ -2,7 +2,7 @@
 **Medium:** Light |
 **Pins used:** 1 / 2
 
-AnalogSampling is designed to sample digital data using analog readings. It can be used to communicate data wirelessly through light. It is able to use a single LED for both photo-emission and photo-reception phases enabling an half-duplex connection between two devices with a range of maximum 5 meters in ideal conditions using only a pair of LEDs (visible light, infrared or ultraviolet) or with two pairs of any sort of tuned photo-emitters and photo-receivers. It was originally implemented it in the far 2011, here you can see the first [video documented experiment](https://www.youtube.com/watch?v=-Ul2j6ixbmE). It has been recently debugged and updated to act as a PJON Strategy.
+AnalogSampling is designed to sample digital data using analog readings. It can be used to communicate data wirelessly through light. It is able to use a single LED for both photo-emission and photo-reception phases enabling an half-duplex connection between two devices with a range of maximum 5 meters in ideal conditions using only a pair of LEDs (visible light, infrared or ultraviolet) or with two pairs of any sort of tuned photo-emitters and photo-receivers. It was originally implemented it in the far 2011, here you can see the first [video documented experiment](https://www.youtube.com/watch?v=-Ul2j6ixbmE). It has been recently debugged and updated to act as a PJON Strategy. Take a look at the [video introduction](https://www.youtube.com/watch?v=yIncPe8OPpg) for a brief showcase of its features. 
 
 ####Compatibility
 - ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)

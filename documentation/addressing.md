@@ -1,9 +1,9 @@
-- **[Addressing](https://github.com/gioblu/PJON/tree/6.2/documentation/addressing.md)**
-- [Configuration](https://github.com/gioblu/PJON/tree/6.2/documentation/configuration.md)
-- [Data reception](https://github.com/gioblu/PJON/tree/6.2/documentation/data-reception.md)
-- [Data transmission](https://github.com/gioblu/PJON/tree/6.2/documentation/data-transmission.md)
-- [Error handling](https://github.com/gioblu/PJON/tree/6.2/documentation/error-handling.md)
-- [IO setup](https://github.com/gioblu/PJON/tree/6.2/documentation/io-setup.md)
+- **[Addressing](https://github.com/gioblu/PJON/tree/7.0/documentation/addressing.md)**
+- [Configuration](https://github.com/gioblu/PJON/tree/7.0/documentation/configuration.md)
+- [Data reception](https://github.com/gioblu/PJON/tree/7.0/documentation/data-reception.md)
+- [Data transmission](https://github.com/gioblu/PJON/tree/7.0/documentation/data-transmission.md)
+- [Error handling](https://github.com/gioblu/PJON/tree/7.0/documentation/error-handling.md)
+- [IO setup](https://github.com/gioblu/PJON/tree/7.0/documentation/io-setup.md)
 
 The PJON object can be instanced passing the predefined device id, or without passing any parameter relying on the [dynamic addressing procedure](https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md). If your installation is private and not accessible from outside (wired network in business, home, industry) you can use any sort of bus indexing without worrying about bus id collision. If PJON is used on a shared medium, where other PJON users could network we strongly suggest users to register for an official PJON bus id to [get a unique bus id](http://www.pjon.org/get-bus-id.php) for your group of devices.
 ```cpp  

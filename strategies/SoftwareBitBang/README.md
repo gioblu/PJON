@@ -2,7 +2,7 @@
 **Medium:** Wire |
 **Pins used:** 1 / 2
 
-SoftwareBitBang is the default data link layer strategy used by PJON. This implementation is based on `micros()` and `delayMicroseconds()`. It is totally software emulated and makes no use of dedicated timers or interrupt driven strategies to handle communication. It is designed to have a small memory footprint and to be extremely resilient to interference and timing inaccuracies. Thanks to the use of a dedicated `PJON_IO` library, can be achieved fast and reliable cross-architecture communication through one or two pins. It complies with [PJDL v1.0](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) Data link layer specification.
+SoftwareBitBang is the default data link layer strategy used by PJON. This implementation is based on `micros()` and `delayMicroseconds()`. It is totally software emulated and makes no use of dedicated timers or interrupt driven strategies to handle communication. It is designed to have a small memory footprint and to be extremely resilient to interference and timing inaccuracies. Thanks to the use of a dedicated `PJON_IO` library, can be achieved fast and reliable cross-architecture communication through one or two pins. It complies with [PJDL v1.0](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) Data link layer specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=Vg5aSlD-VCU) for a brief showcase of its features. 
 
 ####Compatibility
 - ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)

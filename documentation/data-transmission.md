@@ -1,9 +1,9 @@
-- [Addressing](https://github.com/gioblu/PJON/tree/6.2/documentation/addressing.md)
-- [Configuration](https://github.com/gioblu/PJON/tree/6.2/documentation/configuration.md)
-- [Data reception](https://github.com/gioblu/PJON/tree/6.2/documentation/data-reception.md)
-- **[Data transmission](https://github.com/gioblu/PJON/tree/6.2/documentation/data-transmission.md)**
-- [Error handling](https://github.com/gioblu/PJON/tree/6.2/documentation/error-handling.md)
-- [IO setup](https://github.com/gioblu/PJON/tree/6.2/documentation/io-setup.md)
+- [Addressing](https://github.com/gioblu/PJON/tree/7.0/documentation/addressing.md)
+- [Configuration](https://github.com/gioblu/PJON/tree/7.0/documentation/configuration.md)
+- [Data reception](https://github.com/gioblu/PJON/tree/7.0/documentation/data-reception.md)
+- **[Data transmission](https://github.com/gioblu/PJON/tree/7.0/documentation/data-transmission.md)**
+- [Error handling](https://github.com/gioblu/PJON/tree/7.0/documentation/error-handling.md)
+- [IO setup](https://github.com/gioblu/PJON/tree/7.0/documentation/io-setup.md)
 
 The begin function has to be called in the setup or in the loop. The lack of this method call can lead to collision problems on startup, so be sure to call this function before starting transmitting or receiving.
 ```cpp  
@@ -54,9 +54,9 @@ The sending is executed as soon as the method is called and it returns the follo
 - `PJON_BUSY` (666) if a transmission for other devices is occurring
 - `PJON_FAIL` (65535) if no data is received
 
-Use `send_packet_blocking` if it is necessary to try more than once and so comply with the proposed backoff exactly how is done by the `send` and `update` chain.
+Use `send_packet_blocking` if it is necessary to try more than once and so comply with the proposed back-off exactly how is done by the `send` and `update` chain.
 ```cpp
-if(bus.send_packet_blocking(10, "All is ok?!", 11) == PJON_ACK) { // Try with backoff
+if(bus.send_packet_blocking(10, "All is ok?!", 11) == PJON_ACK) { // Try with back-off
   Serial.println("10 is ok!");
 }    
 ```

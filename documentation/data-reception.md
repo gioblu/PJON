@@ -1,13 +1,15 @@
-- [Addressing](https://github.com/gioblu/PJON/tree/6.2/documentation/addressing.md)
-- [Configuration](https://github.com/gioblu/PJON/tree/6.2/documentation/configuration.md)
-- **[Data reception](https://github.com/gioblu/PJON/tree/6.2/documentation/data-reception.md)**
-- [Data transmission](https://github.com/gioblu/PJON/tree/6.2/documentation/data-transmission.md)
-- [Error handling](https://github.com/gioblu/PJON/tree/6.2/documentation/error-handling.md)
-- [IO setup](https://github.com/gioblu/PJON/tree/6.2/documentation/io-setup.md)
+- [Addressing](https://github.com/gioblu/PJON/tree/7.0/documentation/addressing.md)
+- [Configuration](https://github.com/gioblu/PJON/tree/7.0/documentation/configuration.md)
+- **[Data reception](https://github.com/gioblu/PJON/tree/7.0/documentation/data-reception.md)**
+- [Data transmission](https://github.com/gioblu/PJON/tree/7.0/documentation/data-transmission.md)
+- [Error handling](https://github.com/gioblu/PJON/tree/7.0/documentation/error-handling.md)
+- [IO setup](https://github.com/gioblu/PJON/tree/7.0/documentation/io-setup.md)
 
 Define a `void function` that will be called if a correct message is received. This function receives 3 parameters: the transmission content, its length and a pointer to a `PJON_Packet_Info` data structure that contains all the info contained in the packet metadata:
 ```cpp
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
+  /* Make use of the payload before sending something, the buffer where payload points to is
+     overwritten when a new message is dispatched */
   Serial.print("Header: ");
   Serial.print(packet_info.header, BIN);
   // If packet formatted for a shared medium

@@ -43,16 +43,15 @@ In the graph below is shown the protocol stack model proposed. The differences b
 | 4 Network layer                               |
 | Segmentation, routing                         |
 |-----------------------------------------------|
-| 3 Protocol layer                              |
+| 3 Protocol layer: PJON                        |
 | Addressing, asynchronous acknowledgement,     |
 | multiplexing, traffic control                 |
 |-----------------------------------------------|
-| 2 Data link layer                             |
+| 2 Data link layer: PJDL/PJDLR                 |
 | Data link, transmission of packets,           |
 | synchronous acknowledgment                    |
 |-----------------------------------------------|
-| 1 Physical layer                              |
-| Cable, transceivers ecc                       |
+| 1 Physical layer: Cables, transceivers ecc.   |
 |_______________________________________________|
 ```
 
@@ -118,7 +117,7 @@ In a shared medium it is defined a IPv4 like bus id to isolate devices from outc
 ```
 
 ###Packet transmission
-A packet transmission is the exchange of a string to one or many of the devices connected to the bus with optional correct reception certainty. The simplest form of packet is constructed by a recipient id, a header, the length, the content and its CRC. In this example is shown a packet transmission in a local bus to device id 12 containing the string @ (decimal 64):
+A packet transmission is an exchange of a string to one or many of the devices connected to the bus with optional correct reception certainty. The simplest form of packet is constructed by a recipient id, a header, the length, the content and its CRC. In this example is shown a packet transmission in a local bus to device id 12 containing the string @ (decimal 64):
 ```cpp  
 
  ID 12       HEADER 1    LENGTH 5     CONTENT 64  CRC 72
@@ -176,7 +175,7 @@ Channel analysis   Transmission                                     Response
    |  0  |         | 12 | 00000100 |   5    |    64   |  72 |         |  6  |
    |_____|         |____|__________|________|_________|_____|         |_____|
 ```
-In the first phase the bus is analyzed by transmitter reading 10 logical bits, if any logical 1 is detected the channel is considered free and transmission phase starts in which the packet is entirely transmitted. Receiver calculates CRC and starts the response phase transmitting a single byte, `PJON_ACK` (decimal 6) in case of correct reception or `PJON_NAK` (decimal 21) if an error in the packet's content is detected. If transmitter receives no answer or `PJON_NAK` the packet sending is scheduled with a delay of `ATTEMPTS * ATTEMPTS * ATTEMPTS * ATTEMPTS` with a maximum of 42 `ATTEMPTS` to obtain data transmission 4rd degree polynomial backoff.
+In the first phase the bus is analyzed by transmitter reading 10 logical bits, if any logical 1 is detected the channel is considered free and transmission phase starts in which the packet is entirely transmitted. Receiver calculates CRC and starts the response phase transmitting a single byte, `PJON_ACK` (decimal 6) in case of correct reception or `PJON_NAK` (decimal 21) if an error in the packet's content is detected. If transmitter receives no answer or `PJON_NAK` the packet sending is scheduled with a delay of `ATTEMPTS * ATTEMPTS * ATTEMPTS * ATTEMPTS` with a maximum of 42 `ATTEMPTS` to obtain data transmission 4rd degree polynomial back-off.
 
 Below is shown the same local transmission used as an example before, formatted to be sent over a shared medium, where device id `12` of bus `0.0.0.1` sends @ (decimal 64) to device id `11` in bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient, and optionally the sender's bus and device id:
 ```cpp  

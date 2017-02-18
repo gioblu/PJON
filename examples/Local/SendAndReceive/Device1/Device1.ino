@@ -37,6 +37,8 @@ void error_handler(uint8_t code, uint8_t data) {
 };
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
+  /* Make use of the payload before sending something, the buffer where payload points to is
+     overwritten when a new message is dispatched */
   if((char)payload[0] == 'B') {
     if(!bus.packets[packet].state)
       packet = bus.reply("B", 1); // Avoid duplicate sending checking old packet state

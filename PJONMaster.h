@@ -135,7 +135,7 @@ limitations under the License. */
 
       bool confirm_id(uint32_t rid, uint8_t id) {
         if(ids[id - 1].rid == rid && !ids[id - 1].state) {
-          if(micros() - ids[id - 1].registration < PJON_ADDRESSING_TIMEOUT) {
+          if((uint32_t)(micros() - ids[id - 1].registration) < PJON_ADDRESSING_TIMEOUT) {
             ids[id - 1].state = true;
             PJON<Strategy>::remove(ids[id - 1].packet_index);
             return true;
@@ -213,7 +213,7 @@ limitations under the License. */
       void list_ids() {
         uint32_t time = micros();
         char request = PJON_ID_LIST;
-        while(micros() - time < PJON_ADDRESSING_TIMEOUT) {
+        while((uint32_t)(micros() - time) < PJON_ADDRESSING_TIMEOUT) {
           PJON<Strategy>::send_packet(
             PJON_BROADCAST, this->bus_id, &request, 1, PJON<Strategy>::config | PJON_ADDRESS_BIT
           );

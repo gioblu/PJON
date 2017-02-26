@@ -41,14 +41,15 @@ In the graph below is shown the protocol stack model proposed. The differences b
 | Session                                       |
 |-----------------------------------------------|
 | 4 Network layer                               |
-| Segmentation, routing                         |
+| Routing, segmentation                         |
 |-----------------------------------------------|
 | 3 Protocol layer: PJON                        |
-| Addressing, asynchronous acknowledgement,     |
-| multiplexing, traffic control                 |
+| Addressing, reliable packet transmission,     |
+| multiplexing, traffic control,                |
+| asynchronous acknowledgement                  |
 |-----------------------------------------------|
 | 2 Data link layer: PJDL/PJDLR                 |
-| Data link, transmission of packets,           |
+| Data link, collision avoidance,               |
 | synchronous acknowledgment                    |
 |-----------------------------------------------|
 | 1 Physical layer: Cables, transceivers ecc.   |

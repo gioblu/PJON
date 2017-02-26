@@ -22,13 +22,21 @@
    See the License for the specific language governing permissions and
    limitations under the License. */
 
+/* Maximum time to wait for a potentially coming byte.
+   Should always be slightly higher than the other tasks loop time */
 
-#define TS_MAX_BYTE_TIME         100000
+#ifndef TS_MAX_BYTE_TIME
+  #define TS_MAX_BYTE_TIME         100000
+#endif
+
 /* Maximum timeframe between every receive call in any of the connected devices.
    If this timeframe is in average exceeded by some of the connected devices
    communication reliability could drop or be disrupted. */
 
-#define TS_FREE_TIME_BEFORE_START   500
+#ifndef TS_FREE_TIME_BEFORE_START
+  #define TS_FREE_TIME_BEFORE_START   500
+#endif
+
 /* 0.5 milliseconds minimum timeframe of free port before transmitting
 
    The proposed default timing configuration is ok for a master-slave setup, but

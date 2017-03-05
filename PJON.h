@@ -500,7 +500,7 @@ limitations under the License. */
 
       /* Remove a packet from the packet's buffer passing its id as reference: */
 
-      boolean handle_asynchronous_acknowledgment(PJON_Packet_Info packet_info) {
+      bool handle_asynchronous_acknowledgment(PJON_Packet_Info packet_info) {
         PJON_Packet_Info actual_info;
         for(uint8_t i = 0; i < PJON_MAX_PACKETS; i++) {
           parse((uint8_t *)packets[i].content, actual_info);
@@ -751,7 +751,7 @@ limitations under the License. */
 
       /* Set the config bit state: */
 
-      void set_config_bit(boolean new_state, uint16_t bit) {
+      void set_config_bit(bool new_state, uint16_t bit) {
         if(new_state) config |= bit;
         else config &= ~bit;
       };
@@ -761,7 +761,7 @@ limitations under the License. */
          TRUE: Send synchronous acknowledge when a packet is correctly received
          FALSE: Avoid acknowledge transmission */
 
-      void set_synchronous_acknowledge(boolean state) {
+      void set_synchronous_acknowledge(bool state) {
         set_config_bit(state, PJON_ACK_REQ_BIT);
       };
 
@@ -770,7 +770,7 @@ limitations under the License. */
          TRUE: Send back asynchronous acknowledge packet
          FALSE: Avoid acknowledge packet transmission */
 
-      void set_asynchronous_acknowledge(boolean state) {
+      void set_asynchronous_acknowledge(bool state) {
         set_config_bit(state, PJON_ACK_MODE_BIT);
       };
 
@@ -779,7 +779,7 @@ limitations under the License. */
          TRUE:  CRC32
          FALSE: CRC8 */
 
-      void set_crc_32(boolean state) {
+      void set_crc_32(bool state) {
         set_config_bit(state, PJON_CRC_BIT);
       };
 
@@ -845,7 +845,7 @@ limitations under the License. */
          TRUE: Enable devices part of other bus ids (shared medium).
          FALSE: Isolate from external/third-party communication. */
 
-      void set_shared_network(boolean state) {
+      void set_shared_network(bool state) {
         set_config_bit(state, PJON_MODE_BIT);
       };
 
@@ -854,7 +854,7 @@ limitations under the License. */
          TRUE: Automatic deletion
          FALSE: No packet deletion from buffer, (deletion from buffer by user) */
 
-      void set_packet_auto_deletion(boolean state) {
+      void set_packet_auto_deletion(bool state) {
         _auto_delete = state;
       };
 
@@ -892,7 +892,7 @@ limitations under the License. */
          FALSE: device receives messages only for its bus and device id
          TRUE:  The receiver function is always called if data is received */
 
-      void set_router(boolean state) {
+      void set_router(bool state) {
         _router = state;
       };
 
@@ -963,7 +963,7 @@ limitations under the License. */
 
       /* Check if the packet index passed is the first to be sent: */
 
-      boolean first_packet_to_be_sent(uint8_t index) {
+      bool first_packet_to_be_sent(uint8_t index) {
         PJON_Packet_Info actual_info;
         PJON_Packet_Info tested_info;
         parse((uint8_t *)packets[index].content, actual_info);
@@ -1023,7 +1023,7 @@ limitations under the License. */
 
       /* Check equality between two bus ids */
 
-      static boolean bus_id_equality(const uint8_t *n_one, const uint8_t *n_two) {
+      static bool bus_id_equality(const uint8_t *n_one, const uint8_t *n_two) {
         for(uint8_t i = 0; i < 4; i++)
           if(n_one[i] != n_two[i])
             return false;
@@ -1038,13 +1038,13 @@ limitations under the License. */
       };
 
     private:
-      boolean       _auto_delete = true;
+      bool          _auto_delete = true;
       PJON_Error    _error;
       uint8_t       _mode;
       uint16_t      _packet_id_seed = 0;
       uint8_t       _random_seed = A0;
       PJON_Receiver _receiver;
-      boolean       _router = false;
+      bool          _router = false;
     protected:
       uint8_t       _device_id;
   };

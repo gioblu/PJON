@@ -44,7 +44,7 @@ class ThroughSerial {
     /* Begin method, to be called before transmission or reception:
        (returns always true) */
 
-    boolean begin(uint8_t additional_randomness = 0) {
+    bool begin(uint8_t additional_randomness = 0) {
       delay(random(0, TS_INITIAL_DELAY) + additional_randomness);
       return true;
     };
@@ -52,7 +52,7 @@ class ThroughSerial {
 
     /* Check if the channel is free for transmission: */
 
-    boolean can_start() {
+    bool can_start() {
       delayMicroseconds(random(0, TS_COLLISION_DELAY));
       if(serial->available()) return false;
       if((uint32_t)(micros() - _last_reception_time) < TS_FREE_TIME_BEFORE_START)

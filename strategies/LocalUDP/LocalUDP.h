@@ -93,14 +93,14 @@ public:
     /* Begin method, to be called before transmission or reception:
        (returns always true) */
 
-    boolean begin(uint8_t additional_randomness = 0) {
+    bool begin(uint8_t additional_randomness = 0) {
       return true;
     };
 
 
     /* Check if the channel is free for transmission */
 
-    boolean can_start() {
+    bool can_start() {
       check_udp();
       return true;
     };

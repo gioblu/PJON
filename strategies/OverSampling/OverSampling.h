@@ -55,7 +55,7 @@ class OverSampling {
     /* Begin method, to be called before transmission or reception:
        (returns always true) */
 
-    boolean begin(uint8_t additional_randomness = 0) {
+    bool begin(uint8_t additional_randomness = 0) {
       delay(random(0, OS_INITIAL_DELAY) + additional_randomness);
       PJON_IO_PULL_DOWN(_input_pin);
       if(_output_pin != _input_pin)
@@ -68,7 +68,7 @@ class OverSampling {
     If receiving 10 bits no 1s are detected
     there is no active transmission */
 
-    boolean can_start() {
+    bool can_start() {
       delayMicroseconds(random(0, OS_COLLISION_DELAY));
       float value = 0.5;
       unsigned long time = micros();

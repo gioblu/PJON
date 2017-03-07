@@ -78,40 +78,40 @@ A packet transmission is the exchange of a string to one of the devices connecte
 ```
 A default local packet transmission is a bidirectional communication between two devices that can be divided in 3 different phases: **channel analysis**, **transmission** and **response**. The packet transmission procedure is regulated by its header.
 ```cpp  
-Channel analysis   Transmission                                     Response
-    _____           ________________________________________           _____
-   | C-A |         | ID | LENGTH |  HEADER  | CONTENT | CRC |         | ACK |
-<--|-----|---< >---|----|--------|----------|---------|-----|--> <----|-----|
-   |  0  |         | 12 |   5    | 00000100 |    64   |  72 |         |  6  |
-   |_____|         |____|________|__________|_________|_____|         |_____|
+Channel analysis  Transmission                                  Response
+    _____          ________________________________________        _____
+   | C-A |        | ID | LENGTH |  HEADER  | CONTENT | CRC |      | ACK |
+<--|-----|---< >--|----|--------|----------|---------|-----|-> <--|-----|
+   |  0  |        | 12 |   5    | 00000100 |    64   |  72 |      |  6  |
+   |_____|        |____|________|__________|_________|_____|      |_____|
 ```
 In the first phase the bus is analyzed by transmitter reading 10 logical bits, if any logical 1 is detected the channel is considered free, transmission phase starts in which the packet is entirely transmitted. Receiver calculates CRC and starts the response phase transmitting a single byte, `PJON_ACK` (decimal 6) in case of correct reception or `PJON_NAK` (decimal 21) if an error in the packet's content is detected. If transmitter receives no answer or `PJON_NAK` the packet sending is scheduled with a delay of `ATTEMPTS * ATTEMPTS * ATTEMPTS` with a maximum of 125 `ATTEMPTS` to obtain data transmission 3rd degree polynomial back-off.
 
 Below is shown the same local transmission used as an example before, formatted to be sent in a shared environment, where device id `12` of bus `0.0.0.1` sends @ (decimal 64) to device id `11` in bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient, and optionally the sender's bus and device id:
 ```cpp  
-Channel analysis                     Transmission                              Response
- _____     _________________________________________________________________     _____
-| C-A |   | ID | LENGTH | HEADER |   BUS ID   | BUS ID | ID | CONTENT | CRC |   | ACK |
-|-----|< >|----|--------|--------|------------|--------|----|---------|-----|> <|-----|
-|  0  |   | 12 |   14   |  111   |    0001    |  0001  | 11 |   64    |     |   |  6  |
-|_____|   |____|________|________|____________|________|____|_________|_____|   |_____|
-                                 |  RX INFO   |   TX INFO   |
+Channel analysis           Transmission                   Response
+ ___     _____________________________________________     ___
+|C-A|   |ID|LENGTH|HEADER|BUS ID|BUS ID|ID|CONTENT|CRC|   |ACK|
+|---|< >|--|------|------|------|------|--|-------|---|> <|---|
+| 0 |   |12|  14  | 111  | 0001 | 0001 |11|  64   |   |   | 6 |
+|___|   |__|______|______|______|______|__|_______|___|   |___|
+                         |RXINFO| TX INFO |
 ```
 
 ###Header configuration
 The header bitmask let the packet's receiver handle the exchange as transmitter requested.
 ```cpp
- _______________________________________ _______________________________________
-| 00000110 | Acknowledge requested     | Sender info included     | Local bus  | DEFAULT
-| 00000100 | Acknowledge requested     | Sender info not included | Local bus  |
-| 00000010 | Acknowledge not requested | Sender info included     | Local bus  |
-| 00000000 | Acknowledge not requested | Sender info not included | Local bus  |
-|----------|-------------------------- |--------------------------|------------|
-| 00000111 | Acknowledge requested     | Sender info included     | Shared bus |
-| 00000101 | Acknowledge requested     | Sender info not included | Shared bus |
-| 00000011 | Acknowledge not requested | Sender info included     | Shared bus |
-| 00000001 | Acknowledge not requested | Sender info not included | Shared bus |
-|__________|___________________________|__________________________|____________|
+ _______________________________________________________________________
+|00000110|Acknowledge requested    |Sender info included    |Local bus |DEFAULT
+|00000100|Acknowledge requested    |Sender info not included|Local bus |
+|00000010|Acknowledge not requested|Sender info included    |Local bus |
+|00000000|Acknowledge not requested|Sender info not included|Local bus |
+|--------|-------------------------|------------------------|----------|
+|00000111|Acknowledge requested    |Sender info included    |Shared bus|
+|00000101|Acknowledge requested    |Sender info not included|Shared bus|
+|00000011|Acknowledge not requested|Sender info included    |Shared bus|
+|00000001|Acknowledge not requested|Sender info not included|Shared bus|
+|________|_________________________|________________________|__________|
 ```
 As you can see for now, only the uppermost bit states are used for packet transmission exchange configuration, the unused bits may be used in future to extend or optimize the PJON Standard, so it is suggested not make use of them on application level.
 

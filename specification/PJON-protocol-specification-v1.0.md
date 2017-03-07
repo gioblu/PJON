@@ -133,70 +133,70 @@ A default local packet transmission is a optionally bidirectional communication 
 ```cpp
 HEADER BITMASK
 
-     1          2          3         4         5         6         7         8
- __________ __________ _________ _________ _________ __________ _________ _________
-|          |          |         |         |         |          |         |         | byte 1
-| EXTENDED | EXTENDED |   CRC   | ADDRESS | ACKMODE |   ACK    | TX INFO |   MODE  |
-|  HEADER  |  LENGTH  |         |         |         |          |         |         |
-|__________|__________|_________|_________|_________|__________|_________|_________|
-|          |          |         |         |         |          |         |         | byte 2
-| EXTENDED | ROUTING  | SEGMENT | SESSION | PARITY  | ENCODING |  DATA   |  ENCRY  | OPTIONAL
-|  HEADER  |          |  ATION  |         |         |          |  COMP.  |  PTION  |
-|__________|__________|_________|_________|_________|__________|_________|_________|
-|          |          |         |         |         |          |         |         | byte 3
-|   N/A    |   N/A    |   N/A   |   N/A   |   N/A   |   N/A    |   N/A   |   N/A   | OPTIONAL
-|          |          |         |         |         |          |         |         |
-|__________|__________|_________|_________|_________|__________|_________|_________|
+     1       2        3       4       5      6       7       8
+ ________ ________ _______ _______ _______ ______ _______ _______
+|        |        |       |       |       |      |       |       | byte 1
+| EXT.   | EXT.   |  CRC  | ADDR. |  ACK  | ACK  |  TX   |  MODE |
+| HEADER | LENGTH |       |       |  MODE |      | INFO  |       |
+|________|________|_______|_______|_______|______|_______|_______|
+|        |        |       |       |       |      |       |       | byte 2
+| EXT.   | ROUT.  | SEGM. | SESS. | PAR.  | ENCO | DATA  | ENCRY | OPTIONAL
+| HEADER |        |       |       |       | DING | COMP. | PTION |
+|________|________|_______|_______|_______|______|_______|_______|
+|        |        |       |       |       |      |       |       | byte 3
+|  N/A   |  N/A   |  N/A  |  N/A  |  N/A  | N/A  |  N/A  |  N/A  | OPTIONAL
+|        |        |       |       |       |      |       |       |
+|________|________|_______|_______|_______|______|_______|_______|
 ```
 Header byte 1 bits roles:
-* **Extended header** bit informs if the header is composed by 1 (value 0) or 2 bytes (value 1)
-* **Extended Length** bit informs the receiver if the packet contains 1 (value 0) or 2 (value 1) bytes length
+* **EXT. HEADER** or extended header bit informs if the header is composed by 1 (value 0) or 2 bytes (value 1)
+* **EXT. LENGTH** or extended length bit informs the receiver if the packet contains 1 (value 0) or 2 (value 1) bytes length
 * **CRC** bit informs the receiver which CRC was used as check for the packet, CRC 8 (value 0) or CRC 32 (value 1)
-* **Address** bit informs if the packet is part of an addressing procedure (value 1) or not (value 0)
-* **Acknowledge mode** bit informs if the requested acknowledge is synchronous (value 0) or asynchronous (value 1)
-* **Acknowledge** bit informs if acknowledge is requested (value 1) or not (value 0)
-* **Transmitter info** bit informs if the sender info are included (value 1) or not (value 0)
-* **Mode** bit informs if the packet is a shared mode (value 1) or if local mode formatted (value 0)
+* **ADDR.** or addressing bit informs if the packet is part of an addressing procedure (value 1) or not (value 0)
+* **ACK MODE** or acknowledge mode bit informs if the requested acknowledge is synchronous (value 0) or asynchronous (value 1)
+* **ACK** or acknowledge bit informs if acknowledge is requested (value 1) or not (value 0)
+* **TX INFO** or transmitter info bit informs if the sender info are included (value 1) or not (value 0)
+* **MODE** bit informs if the packet is a shared mode (value 1) or if local mode formatted (value 0)
 
 Header byte 2 bits roles:
-* **Extended header** bit informs if the header is composed by 2 (value 0) or 3 bytes (value 1)
-* **Routing** bit informs if routing meta-data is included (value 1) or not (value 0)
-* **Segmentation** bit informs it part of a segmented transmission (value 1) or not (value 0)
-* **Session** bit informs if session meta-data is included (value 1) or not (value 0)
-* **Parity** bit informs if parity information for auto-correction is included (value 1) or not (value 0)
-* **Encoding** bit informs if encoding meta-data is included (value 1) or not (value 0)
-* **Data compression** bit informs if data compression meta-data is included (value 1) or not (value 0)
-* **Encryption** bit informs if encryption meta-data is included (value 1) or not (value 0)
+* **EXT. HEADER** bit informs if the header is composed by 2 (value 0) or 3 bytes (value 1)
+* **ROUT.** or routing bit informs if routing meta-data is included (value 1) or not (value 0)
+* **SEGM.** or segmentation bit informs it part of a segmented transmission (value 1) or not (value 0)
+* **SESS.** or session bit informs if session meta-data is included (value 1) or not (value 0)
+* **PAR.** or parity bit informs if parity information for auto-correction is included (value 1) or not (value 0)
+* **ENCODING** bit informs if encoding meta-data is included (value 1) or not (value 0)
+* **DATA COMP.** or data compression bit informs if data compression meta-data is included (value 1) or not (value 0)
+* **ENCRYPTION** bit informs if encryption meta-data is included (value 1) or not (value 0)
 
 ```cpp  
-Channel analysis   Transmission                                     Response
-    _____           ________________________________________           _____
-   | C-A |         | ID |  HEADER  | LENGTH | CONTENT | CRC |         | ACK |
-<--|-----|---< >---|----|----------|--------|---------|-----|--> <----|-----|
-   |  0  |         | 12 | 00000100 |   5    |    64   |  72 |         |  6  |
-   |_____|         |____|__________|________|_________|_____|         |_____|
+Channel analysis  Transmission                                  Response
+    _____          ________________________________________        _____
+   | C-A |        | ID |  HEADER  | LENGTH | CONTENT | CRC |      | ACK |
+<--|-----|---< >--|----|----------|--------|---------|-----|-> <--|-----|
+   |  0  |        | 12 | 00000100 |   5    |    64   |  72 |      |  6  |
+   |_____|        |____|__________|________|_________|_____|      |_____|
 ```
 In the first phase the bus is analyzed by transmitter reading 10 logical bits, if any logical 1 is detected the channel is considered free and transmission phase starts in which the packet is entirely transmitted. Receiver calculates CRC and starts the response phase transmitting a single byte, `PJON_ACK` (decimal 6) in case of correct reception or `PJON_NAK` (decimal 21) if an error in the packet's content is detected. If transmitter receives no answer or `PJON_NAK` the packet sending is scheduled with a delay of `ATTEMPTS * ATTEMPTS * ATTEMPTS * ATTEMPTS` with a maximum of 42 `ATTEMPTS` to obtain data transmission 4rd degree polynomial back-off.
 
 Below is shown the same local transmission used as an example before, formatted to be sent over a shared medium, where device id `12` of bus `0.0.0.1` sends @ (decimal 64) to device id `11` in bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient, and optionally the sender's bus and device id:
 ```cpp  
-Channel analysis                     Transmission                                 Response
- _____     ___________________________________________________________________     _____
-| C-A |   | ID |  HEADER  | LENGTH |   BUS ID   | BUS ID | ID | CONTENT | CRC |   | ACK |
-|-----|< >|----|----------|--------|------------|--------|----|---------|-----|> <|-----|
-|  0  |   | 12 | 00000111 |   14   |    0001    |  0001  | 11 |   64    |     |   |  6  |
-|_____|   |____|__________|________|____________|________|____|_________|_____|   |_____|
-                                   |  RX INFO   |   TX INFO   |
+Channel analysis             Transmission                   Response
+ ___     _______________________________________________     ___
+|C-A|   |ID| HEADER |LENGTH|BUS ID|BUS ID|ID|CONTENT|CRC|   |ACK|
+|---|< >|--|--------|------|------|------|--|-------|---|> <|---|
+| 0 |   |12|00000111|  14  | 0001 | 0001 |11|  64   |   |   | 6 |
+|___|   |__|________|______|______|______|__|_______|___|   |___|
+                           |RXINFO| TX INFO |
 ```
 
 Configuring the header it is possible to leverage of the extended features of the protocol:
 ```cpp  
-Channel analysis                     Transmission                                             Response
- _____     ________________________________________________________________________________     _____
-| C-A |   | ID |  HEADER  | LENGTH 1 | LENGTH 2 |  BUS ID  | BUS ID | ID | CONTENT | CRC32 |   | ACK |
-|-----|< >|----|----------|----------|----------|----------|--------|----|---------|-------|> <|-----|
-|  0  |   | 12 | 01100111 |  byte 1  |  byte 2  |   0001   |  0001  | 11 |         |1|2|3|4|   |  6  |
-|_____|   |____|__________|__________|__________|__________|________|____|_________|_|_|_|_|   |_____|
-                                                | RX INFO  |   TX INFO   |          
+Channel analysis                     Transmission                     Response
+ ___    ____________________________________________________________     ___
+|C-A|  |ID| HEADER |LENGTH 1|LENGTH 2|BUS ID|BUS ID|ID|CONT.| CRC32 |   |ACK|
+|---|<>|--|--------|--------|--------|------|------|--|-----|-------|> <|---|
+| 0 |  |12|01100111| byte 1 | byte 2 | 0001 | 0001 |11|     |1|2|3|4|   | 6 |
+|___|  |__|________|________|________|______|______|__|_____|_|_|_|_|   |___|
+                                     |RXINFO| TX INFO |          
 ```
 The graph above shows a packet transmission where the length is of 2 bytes supporting up to 65.535kB packet length. Receiver is able to parse the packet correctly reading the header, where `B01000000` up signals a 2 bytes length format and `B00100000` up signals CRC32 use.

@@ -63,7 +63,7 @@
     #define SWBB_BIT_WIDTH 28
     #define SWBB_BIT_SPACER 66
     #define SWBB_ACCEPTANCE 28
-    #define SWBB_READ_DELAY 14
+    #define SWBB_READ_DELAY 12
   #endif
 #endif
 
@@ -79,7 +79,7 @@
     #define SWBB_BIT_WIDTH 26
     #define SWBB_BIT_SPACER 64
     #define SWBB_ACCEPTANCE 26
-    #define SWBB_READ_DELAY 12
+    #define SWBB_READ_DELAY 11
   #endif
 #endif
 

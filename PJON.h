@@ -312,9 +312,9 @@ limitations under the License. */
          Don't pass any parameter to count all packets
          Pass a device id to count all it's related packets */
 
-      uint8_t get_packets_count(uint8_t device_id = PJON_NOT_ASSIGNED) const {
-        uint8_t packets_count = 0;
-        for(uint8_t i = 0; i < PJON_MAX_PACKETS; i++) {
+      uint16_t get_packets_count(uint8_t device_id = PJON_NOT_ASSIGNED) const {
+        uint16_t packets_count = 0;
+        for(uint16_t i = 0; i < PJON_MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
           if(
             device_id == PJON_NOT_ASSIGNED ||
@@ -544,7 +544,7 @@ limitations under the License. */
          Pass a device id to delete all it's related packets  */
 
       void remove_all_packets(uint8_t device_id = 0) {
-        for(uint8_t i = 0; i < PJON_MAX_PACKETS; i++) {
+        for(uint16_t i = 0; i < PJON_MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
           if(!device_id || packets[i].content[0] == device_id) remove(i);
         }
@@ -803,7 +803,7 @@ limitations under the License. */
         if(!bus_id_equality(bus_id, localhost)) set_shared_network(true);
         set_error(PJON_dummy_error_handler);
         set_receiver(PJON_dummy_receiver_handler);
-        for(int i = 0; i < PJON_MAX_PACKETS; i++) {
+        for(uint16_t i = 0; i < PJON_MAX_PACKETS; i++) {
           packets[i].state = 0;
           packets[i].timing = 0;
           packets[i].attempts = 0;
@@ -906,9 +906,9 @@ limitations under the License. */
          Check if there are packets to be sent or to be erased if correctly
          delivered. Returns the actual number of packets to be sent. */
 
-      uint8_t update() {
-        uint8_t packets_count = 0;
-        for(uint8_t i = 0; i < PJON_MAX_PACKETS; i++) {
+      uint16_t update() {
+        uint16_t packets_count = 0;
+        for(uint16_t i = 0; i < PJON_MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
           packets_count++;
 
@@ -972,7 +972,7 @@ limitations under the License. */
         PJON_Packet_Info actual_info;
         PJON_Packet_Info tested_info;
         parse((uint8_t *)packets[index].content, actual_info);
-        for(uint8_t i = 0; i < PJON_MAX_PACKETS; i++) {
+        for(uint16_t i = 0; i < PJON_MAX_PACKETS; i++) {
           parse((uint8_t *)packets[i].content, tested_info);
           if(
             actual_info.receiver_id == tested_info.receiver_id &&

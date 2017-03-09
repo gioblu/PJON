@@ -290,9 +290,9 @@ limitations under the License. */
         uint16_t p_id = 0,
         uint16_t p_index = PJON_FAIL
       ) {
-        bool index = (p_index != PJON_FAIL);
-        for(uint8_t i = (index) ? p_index : 0; i < PJON_MAX_PACKETS; i++)
-          if(packets[i].state == 0 || p_index) {
+        bool req_index = (p_index != PJON_FAIL);
+        for(uint16_t i = ((req_index) ? p_index : 0); i < PJON_MAX_PACKETS; i++)
+          if(packets[i].state == 0 || req_index) {
             if(!(length = compose_packet(
               id, b_id, packets[i].content, packet, length, header, p_id
             ))) return PJON_FAIL;
@@ -504,7 +504,7 @@ limitations under the License. */
 
       bool handle_asynchronous_acknowledgment(PJON_Packet_Info packet_info) {
         PJON_Packet_Info actual_info;
-        for(uint8_t i = 0; i < PJON_MAX_PACKETS; i++) {
+        for(uint16_t i = 0; i < PJON_MAX_PACKETS; i++) {
           parse((uint8_t *)packets[i].content, actual_info);
           if(actual_info.id == packet_info.id)
             if(actual_info.receiver_id == packet_info.sender_id && (
@@ -526,6 +526,7 @@ limitations under the License. */
                   packets[i].length - offset,
                   packets[i].timing,
                   actual_info.header,
+                  new_packet_id(),
                   i
                 );
                 return true;

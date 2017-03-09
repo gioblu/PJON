@@ -287,10 +287,12 @@ limitations under the License. */
         uint16_t length,
         uint32_t timing,
         uint16_t header = PJON_NOT_ASSIGNED,
-        uint16_t p_id = 0
+        uint16_t p_id = 0,
+        uint16_t p_index = PJON_FAIL
       ) {
-        for(uint8_t i = 0; i < PJON_MAX_PACKETS; i++)
-          if(packets[i].state == 0) {
+        bool index = (p_index != PJON_FAIL);
+        for(uint8_t i = (index) ? p_index : 0; i < PJON_MAX_PACKETS; i++)
+          if(packets[i].state == 0 || p_index) {
             if(!(length = compose_packet(
               id, b_id, packets[i].content, packet, length, header, p_id
             ))) return PJON_FAIL;
@@ -523,8 +525,10 @@ limitations under the License. */
                   packets[i].content + (offset - crc_offset),
                   packets[i].length - offset,
                   packets[i].timing,
-                  actual_info.header
+                  actual_info.header,
+                  i
                 );
+                return true;
               }
               remove(i);
               return true;

@@ -135,10 +135,10 @@ limitations under the License. */
       void begin() {
         uint8_t device_id_seed =
           (_device_id != PJON_NOT_ASSIGNED) ? _device_id : 0;
-        randomSeed(analogRead(_random_seed) + device_id_seed);
+        PJON_RANDOM_SEED(PJON_ANALOG_READ(_random_seed) + device_id_seed);
         strategy.begin(device_id_seed);
         #if(PJON_INCLUDE_ASYNC_ACK)
-          _packet_id_seed = random(65535) + device_id_seed;
+          _packet_id_seed = PJON_RANDOM(65535) + device_id_seed;
         #endif
       };
 
@@ -265,7 +265,7 @@ limitations under the License. */
             ))) return PJON_FAIL;
             packets[i].length = length;
             packets[i].state = PJON_TO_BE_SENT;
-            packets[i].registration = micros();
+            packets[i].registration = PJON_MICROS();
             packets[i].timing = timing;
             return i;
           }
@@ -447,8 +447,8 @@ limitations under the License. */
 
       uint16_t receive(uint32_t duration) {
         uint16_t response;
-        uint32_t time = micros();
-        while((uint32_t)(micros() - time) <= duration) {
+        uint32_t time = PJON_MICROS();
+        while((uint32_t)(PJON_MICROS() - time) <= duration) {
           response = receive();
           if(response == PJON_ACK)
             return PJON_ACK;
@@ -688,17 +688,17 @@ limitations under the License. */
         ))) return PJON_FAIL;
         uint16_t state = PJON_FAIL;
         uint32_t attempts = 0;
-        uint32_t time = micros(), start = time;
+        uint32_t time = PJON_MICROS(), start = time;
         while(
           (state != PJON_ACK) && (attempts <= strategy.get_max_attempts()) &&
-          (uint32_t)(micros() - start) <= timeout
+          (uint32_t)(PJON_MICROS() - start) <= timeout
         ) {
           state = send_packet((char*)data, length);
           if(state == PJON_ACK) return state;
           attempts++;
           if(state != PJON_FAIL) strategy.handle_collision();
-          while((uint32_t)(micros() - time) < strategy.back_off(attempts));
-          time = micros();
+          while((uint32_t)(PJON_MICROS() - time) < strategy.back_off(attempts));
+          time = PJON_MICROS();
         }
         return state;
       };
@@ -887,7 +887,7 @@ limitations under the License. */
             (packets[i].content[1] & PJON_TX_INFO_BIT);
 
           if(
-            (uint32_t)(micros() - packets[i].registration) >
+            (uint32_t)(PJON_MICROS() - packets[i].registration) >
             (uint32_t)(packets[i].timing + strategy.back_off(packets[i].attempts))
           ) packets[i].state = send_packet(packets[i].content, packets[i].length);
           else continue;
@@ -907,7 +907,7 @@ limitations under the License. */
             } else {
               if(!async_ack) {
                 packets[i].attempts = 0;
-                packets[i].registration = micros();
+                packets[i].registration = PJON_MICROS();
                 packets[i].state = PJON_TO_BE_SENT;
               }
             } if(!async_ack) continue;
@@ -924,7 +924,7 @@ limitations under the License. */
               }
             } else {
               packets[i].attempts = 0;
-              packets[i].registration = micros();
+              packets[i].registration = PJON_MICROS();
               packets[i].state = PJON_TO_BE_SENT;
             }
           }

@@ -53,7 +53,7 @@
 
   #if !defined(PJON_IO_PULL_DOWN)
     #define PJON_IO_PULL_DOWN(P) { \
-      PJON_IO_MODE(p, INPUT); \
+      PJON_IO_MODE(P, INPUT); \
       pullUpDnControl(P, PUD_DOWN); \
     }
   #endif

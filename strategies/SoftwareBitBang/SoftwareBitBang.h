@@ -60,7 +60,7 @@ class SoftwareBitBang {
        (returns always true) */
 
     bool begin(uint8_t additional_randomness = 0) {
-      delay(random(SWBB_INITIAL_DELAY) + additional_randomness);
+      delay(PJON_RANDOM(SWBB_INITIAL_DELAY) + additional_randomness);
       PJON_IO_PULL_DOWN(_input_pin);
       if(_output_pin != _input_pin)
         PJON_IO_PULL_DOWN(_output_pin);
@@ -73,18 +73,18 @@ class SoftwareBitBang {
 
     bool can_start() {
       PJON_IO_MODE(_input_pin, INPUT);
-      delayMicroseconds(SWBB_BIT_SPACER / 2);
+      PJON_DELAY_MICROSECONDS(SWBB_BIT_SPACER / 2);
       if(PJON_IO_READ(_input_pin)) return false;
-      delayMicroseconds((SWBB_BIT_SPACER / 2));
+      PJON_DELAY_MICROSECONDS((SWBB_BIT_SPACER / 2));
       if(PJON_IO_READ(_input_pin)) return false;
-      delayMicroseconds(SWBB_BIT_WIDTH / 2);
+      PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH / 2);
       for(uint8_t i = 0; i < 9; i++) {
         if(PJON_IO_READ(_input_pin))
           return false;
-        delayMicroseconds(SWBB_BIT_WIDTH);
+        PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH);
       }
       if(PJON_IO_READ(_input_pin)) return false;
-      delayMicroseconds(random(SWBB_COLLISION_DELAY));
+      PJON_DELAY_MICROSECONDS(PJON_RANDOM(SWBB_COLLISION_DELAY));
       if(PJON_IO_READ(_input_pin)) return false;
       return true;
     };
@@ -100,7 +100,7 @@ class SoftwareBitBang {
     /* Handle a collision: */
 
     void handle_collision() {
-      delayMicroseconds(random(SWBB_COLLISION_DELAY));
+      PJON_DELAY_MICROSECONDS(PJON_RANDOM(SWBB_COLLISION_DELAY));
     };
 
 
@@ -109,17 +109,17 @@ class SoftwareBitBang {
     uint8_t read_byte() {
       uint8_t byte_value = B00000000;
       /* Delay until the center of the first bit */
-      delayMicroseconds(SWBB_BIT_WIDTH / 2);
+      PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH / 2);
       for(uint8_t i = 0; i < 7; i++) {
         /* Read in the center of the n one */
         byte_value += PJON_IO_READ(_input_pin) << i;
         /* Delay until the center of the next one */
-        delayMicroseconds(SWBB_BIT_WIDTH);
+        PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH);
       }
       /* Read in the center of the last one */
       byte_value += PJON_IO_READ(_input_pin) << 7;
       /* Delay until the end of the bit */
-      delayMicroseconds(SWBB_BIT_WIDTH / 2);
+      PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH / 2);
       return byte_value;
     };
 
@@ -177,7 +177,7 @@ class SoftwareBitBang {
         if(response == PJON_FAIL) {
           PJON_IO_MODE(_output_pin, OUTPUT);
           PJON_IO_WRITE(_output_pin, HIGH);
-          delayMicroseconds(SWBB_BIT_WIDTH / 4);
+          PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH / 4);
           PJON_IO_PULL_DOWN(_output_pin);
         }
       }
@@ -205,12 +205,12 @@ class SoftwareBitBang {
 
     void send_byte(uint8_t b) {
       PJON_IO_WRITE(_output_pin, HIGH);
-      delayMicroseconds(SWBB_BIT_SPACER);
+      PJON_DELAY_MICROSECONDS(SWBB_BIT_SPACER);
       PJON_IO_WRITE(_output_pin, LOW);
-      delayMicroseconds(SWBB_BIT_WIDTH);
+      PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH);
       for(uint8_t mask = 0x01; mask; mask <<= 1) {
         PJON_IO_WRITE(_output_pin, b & mask);
-        delayMicroseconds(SWBB_BIT_WIDTH);
+        PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH);
       }
     };
 
@@ -251,9 +251,9 @@ class SoftwareBitBang {
      executed by the next read_byte function */
 
     uint8_t syncronization_bit() {
-      delayMicroseconds((SWBB_BIT_WIDTH / 2) - SWBB_READ_DELAY);
+      PJON_DELAY_MICROSECONDS((SWBB_BIT_WIDTH / 2) - SWBB_READ_DELAY);
       uint8_t bit_value = PJON_IO_READ(_input_pin);
-      delayMicroseconds(SWBB_BIT_WIDTH / 2);
+      PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH / 2);
       return bit_value;
     };
 

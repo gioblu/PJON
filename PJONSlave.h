@@ -99,15 +99,15 @@ limitations under the License. */
         if(limit >= PJON_MAX_ACQUIRE_ID_COLLISIONS)
           return _slave_error(PJON_ID_ACQUISITION_FAIL, PJON_FAIL);
 
-        delay(random(PJON_ACQUIRE_ID_DELAY * 0.25, PJON_ACQUIRE_ID_DELAY));
-        uint32_t time = micros();
+        PJON_DELAY_MICROSECONDS(PJON_RANDOM(PJON_ACQUIRE_ID_DELAY));
+        uint32_t time = PJON_MICROS();
         char msg = PJON_ID_ACQUIRE;
         char head = this->config | PJON_ADDRESS_BIT | PJON_ACK_REQ_BIT;
         this->_device_id = PJON_NOT_ASSIGNED;
 
         for(
           uint8_t id = generate_random_byte();
-          (uint32_t)(micros() - time) < PJON_ID_SCAN_TIME;
+          (uint32_t)(PJON_MICROS() - time) < PJON_ID_SCAN_TIME;
           id++
         )
           if(id == PJON_BROADCAST || id == PJON_NOT_ASSIGNED || id == PJON_MASTER_ID) continue;
@@ -116,9 +116,7 @@ limitations under the License. */
             break;
           }
 
-        receive(
-          (random(PJON_ACQUIRE_ID_DELAY * 0.25, PJON_ACQUIRE_ID_DELAY)) * 1000
-        );
+        receive(PJON_RANDOM(PJON_ACQUIRE_ID_DELAY) * 1000);
         if(this->send_packet_blocking(this->_device_id, this->bus_id, &msg, 1, head) == PJON_ACK)
           acquire_id_multi_master(limit++);
       };
@@ -205,7 +203,7 @@ limitations under the License. */
 
 
       uint8_t generate_random_byte() {
-        return (analogRead(A0) ^ ~(micros()) ^ ~(millis())) % 255;
+        return (PJON_ANALOG_READ(A0) ^ ~(PJON_MICROS()) ^ ~(millis())) % 255;
       };
 
 
@@ -253,10 +251,10 @@ limitations under the License. */
           if(this->data[overhead - CRC_overhead] == PJON_ID_LIST)
             if(this->_device_id != PJON_NOT_ASSIGNED)
               if(
-                (uint32_t)(micros() - _last_request_time) >
+                (uint32_t)(PJON_MICROS() - _last_request_time) >
                 (PJON_ADDRESSING_TIMEOUT * 1.125)
               ) {
-                _last_request_time = micros();
+                _last_request_time = PJON_MICROS();
                 response[0] = PJON_ID_REFRESH;
                 response[5] = this->_device_id;
                 this->send(
@@ -297,8 +295,8 @@ limitations under the License. */
       /* Try to receive a packet repeatedly with a maximum duration: */
 
       uint16_t receive(uint32_t duration) {
-        uint32_t time = micros();
-        while((uint32_t)(micros() - time) <= duration)
+        uint32_t time = PJON_MICROS();
+        while((uint32_t)(PJON_MICROS() - time) <= duration)
           if(receive() == PJON_ACK) return PJON_ACK;
         return PJON_FAIL;
       };

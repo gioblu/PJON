@@ -144,7 +144,7 @@ limitations under the License. */
      Maximum number of device id collisions during auto-addressing */
   #define PJON_MAX_ACQUIRE_ID_COLLISIONS 10
   /* Delay between device id acquisition and self request */
-  #define PJON_ACQUIRE_ID_DELAY        1250
+  #define PJON_ACQUIRE_ID_DELAY        1000
   /* Maximum id scan time (6 seconds) */
   #define PJON_ID_SCAN_TIME         6000000
   /* Master free id broadcast response interval (0.1 seconds) */

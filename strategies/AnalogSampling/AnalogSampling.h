@@ -71,11 +71,11 @@ class AnalogSampling {
        (returns always true) */
 
     bool begin(uint8_t additional_randomness = 0) {
-      delay(random(AS_INITIAL_DELAY) + additional_randomness);
+      delay(PJON_RANDOM(AS_INITIAL_DELAY) + additional_randomness);
       PJON_IO_PULL_DOWN(_input_pin);
       if(_output_pin != _input_pin)
         PJON_IO_PULL_DOWN(_output_pin);
-      uint32_t time = micros();
+      uint32_t time = PJON_MICROS();
       compute_analog_read_duration();
       return true;
     };
@@ -87,26 +87,26 @@ class AnalogSampling {
 
     bool can_start() {
       if(read_byte() != B00000000) return false;
-      delayMicroseconds(AS_BIT_SPACER / 2);
-      if(analogRead(_input_pin) > threshold) return false;
-      delayMicroseconds(AS_BIT_SPACER / 2);
-      if(analogRead(_input_pin) > threshold) return false;
-      delayMicroseconds(random(AS_COLLISION_DELAY));
-      if(analogRead(_input_pin) > threshold) return false;
+      PJON_DELAY_MICROSECONDS(AS_BIT_SPACER / 2);
+      if(PJON_ANALOG_READ(_input_pin) > threshold) return false;
+      PJON_DELAY_MICROSECONDS(AS_BIT_SPACER / 2);
+      if(PJON_ANALOG_READ(_input_pin) > threshold) return false;
+      PJON_DELAY_MICROSECONDS(PJON_RANDOM(AS_COLLISION_DELAY));
+      if(PJON_ANALOG_READ(_input_pin) > threshold) return false;
       return true;
     };
 
 
-    /* compute analogRead duration: */
+    /* compute PJON_ANALOG_READ duration: */
 
     void compute_analog_read_duration() {
-      uint32_t time = micros();
-      analogRead(_input_pin);
-      _analog_read_time = (uint32_t)(micros() - time);
+      uint32_t time = PJON_MICROS();
+      PJON_ANALOG_READ(_input_pin);
+      _analog_read_time = (uint32_t)(PJON_MICROS() - time);
       for(uint8_t i = 0; i < 10; i++) {
-        time = micros();
-        analogRead(_input_pin);
-        _analog_read_time = (_analog_read_time * 0.75) + ((uint32_t)(micros() - time) * 0.25);
+        time = PJON_MICROS();
+        PJON_ANALOG_READ(_input_pin);
+        _analog_read_time = (_analog_read_time * 0.75) + ((uint32_t)(PJON_MICROS() - time) * 0.25);
         // TODO - check for granularity
       }
     };
@@ -122,7 +122,7 @@ class AnalogSampling {
     /* Handle a collision: */
 
     void handle_collision() {
-      delayMicroseconds(random(AS_COLLISION_DELAY));
+      PJON_DELAY_MICROSECONDS(PJON_RANDOM(AS_COLLISION_DELAY));
     };
 
 
@@ -134,16 +134,16 @@ class AnalogSampling {
       int low_bit = 0;
       uint8_t byte_value = 0;
       for(int i = 0; i < 8; i++) {
-        long time = micros();
-        delayMicroseconds((AS_BIT_WIDTH / 2) - AS_READ_DELAY);
-        bit_value = analogRead(_input_pin);
+        long time = PJON_MICROS();
+        PJON_DELAY_MICROSECONDS((AS_BIT_WIDTH / 2) - AS_READ_DELAY);
+        bit_value = PJON_ANALOG_READ(_input_pin);
         byte_value += (bit_value > threshold) << i;
         high_bit = (((bit_value > threshold) ? bit_value : high_bit) + high_bit) / 2;
         low_bit  = (((bit_value < threshold) ? bit_value : low_bit) + low_bit) / 2;
-        delayMicroseconds(AS_BIT_WIDTH - (uint32_t)(micros() - time));
+        PJON_DELAY_MICROSECONDS(AS_BIT_WIDTH - (uint32_t)(PJON_MICROS() - time));
       }
       threshold = (high_bit + low_bit) / 2;
-      _last_update = micros();
+      _last_update = PJON_MICROS();
       return byte_value;
     };
 
@@ -167,24 +167,24 @@ class AnalogSampling {
       PJON_IO_PULL_DOWN(_input_pin);
       if(_output_pin != PJON_NOT_ASSIGNED && _output_pin != _input_pin)
         PJON_IO_PULL_DOWN(_output_pin);
-      uint32_t time = micros();
+      uint32_t time = PJON_MICROS();
 
       if(
-        ((uint32_t)(micros() - _last_update) > AS_THRESHOLD_DECREASE_INTERVAL) &&
+        ((uint32_t)(PJON_MICROS() - _last_update) > AS_THRESHOLD_DECREASE_INTERVAL) &&
         threshold
       ) {
         threshold *= 0.25;
-        _last_update = micros();
+        _last_update = PJON_MICROS();
       }
 
       while(
-        (analogRead(_input_pin) > threshold) &&
-        ((uint32_t)(micros() - time) <= AS_BIT_SPACER)
+        (PJON_ANALOG_READ(_input_pin) > threshold) &&
+        ((uint32_t)(PJON_MICROS() - time) <= AS_BIT_SPACER)
       ); // Do nothing
 
-      time  = micros() - time;
+      time  = PJON_MICROS() - time;
       if(time >= AS_BIT_SPACER * 0.75 && time <= AS_BIT_SPACER * 1.25) {
-        delayMicroseconds(AS_BIT_WIDTH);
+        PJON_DELAY_MICROSECONDS(AS_BIT_WIDTH);
         return read_byte();
       }
       return PJON_FAIL;
@@ -198,11 +198,11 @@ class AnalogSampling {
       if(_output_pin != PJON_NOT_ASSIGNED && _output_pin != _input_pin)
         PJON_IO_WRITE(_output_pin, LOW);
       uint16_t response = PJON_FAIL;
-      uint32_t time = micros();
+      uint32_t time = PJON_MICROS();
       while(
         (response != PJON_ACK) &&
         (response != PJON_NAK) &&
-        (uint32_t)(micros() - AS_TIMEOUT) <= time
+        (uint32_t)(PJON_MICROS() - AS_TIMEOUT) <= time
       ) response = receive_byte();
       return response;
     };
@@ -228,12 +228,12 @@ class AnalogSampling {
 
     void send_byte(uint8_t b) {
       PJON_IO_WRITE(_output_pin, HIGH);
-      delayMicroseconds(AS_BIT_SPACER);
+      PJON_DELAY_MICROSECONDS(AS_BIT_SPACER);
       PJON_IO_WRITE(_output_pin, LOW);
-      delayMicroseconds(AS_BIT_WIDTH);
+      PJON_DELAY_MICROSECONDS(AS_BIT_WIDTH);
       for(uint8_t mask = 0x01; mask; mask <<= 1) {
         PJON_IO_WRITE(_output_pin, b & mask);
-        delayMicroseconds(AS_BIT_WIDTH);
+        PJON_DELAY_MICROSECONDS(AS_BIT_WIDTH);
       }
     };
 
@@ -241,7 +241,7 @@ class AnalogSampling {
     /* Send byte response to package transmitter */
 
     void send_response(uint8_t response) {
-      delayMicroseconds(AS_BIT_WIDTH);
+      PJON_DELAY_MICROSECONDS(AS_BIT_WIDTH);
       PJON_IO_PULL_DOWN(_input_pin);
       PJON_IO_MODE(_output_pin, OUTPUT);
       send_byte(response);

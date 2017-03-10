@@ -137,12 +137,12 @@ public:
       empty_buffer();
       // TODO: Improve robustness by ignoring packets not from the previous receiver
       // (Perhaps not that important as long as ACK/NAK responses are directed, not broadcast)
-      uint32_t start = micros();
+      uint32_t start = PJON_MICROS();
       uint16_t result = PJON_FAIL;
       do {
         result = receive_byte();
         if (result == PJON_ACK || result == PJON_NAK) return result;
-     } while ((uint32_t)(micros() - start) < LUDP_RESPONSE_TIMEOUT);
+     } while ((uint32_t)(PJON_MICROS() - start) < LUDP_RESPONSE_TIMEOUT);
       return result;
     };
 

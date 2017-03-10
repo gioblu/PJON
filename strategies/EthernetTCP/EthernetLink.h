@@ -575,11 +575,11 @@ public:
 
   // Keep trying to send for a maximum duration
   int16_t send_with_duration(uint8_t id, const char *packet, uint16_t length, uint32_t duration_us) {
-   uint32_t start = micros();
+   uint32_t start = PJON_MICROS();
     int16_t result = PJON_FAIL;
     do {
       result = send(id, packet, length);
-    } while(result != PJON_ACK && (uint32_t)(micros() - start) <= duration_us);
+    } while(result != PJON_ACK && (uint32_t)(PJON_MICROS() - start) <= duration_us);
     return result;
   }
 
@@ -623,11 +623,11 @@ public:
   }
 
   uint16_t receive(uint32_t duration_us) {
-    uint32_t start = micros();
+    uint32_t start = PJON_MICROS();
     int16_t result = PJON_FAIL;
     do {
       result = receive();
-    } while(result != PJON_ACK && (uint32_t)(micros() - start) <= duration_us);
+    } while(result != PJON_ACK && (uint32_t)(PJON_MICROS() - start) <= duration_us);
     return result;
   }
 

@@ -42,7 +42,7 @@ class ThroughSerial {
        (returns always true) */
 
     bool begin(uint8_t additional_randomness = 0) {
-      delay(random(TS_INITIAL_DELAY) + additional_randomness);
+      delay(PJON_RANDOM(TS_INITIAL_DELAY) + additional_randomness);
       return true;
     };
 
@@ -50,9 +50,9 @@ class ThroughSerial {
     /* Check if the channel is free for transmission: */
 
     bool can_start() {
-      delayMicroseconds(random(TS_COLLISION_DELAY));
+      delayMicroseconds(PJON_RANDOM(TS_COLLISION_DELAY));
       if(serial->available()) return false;
-      if((uint32_t)(micros() - _last_reception_time) < TS_FREE_TIME_BEFORE_START)
+      if((uint32_t)(PJON_MICROS() - _last_reception_time) < TS_FREE_TIME_BEFORE_START)
         return false;
       return (serial != NULL);
     };
@@ -68,17 +68,17 @@ class ThroughSerial {
     /* Handle a collision: */
 
     void handle_collision() {
-      delayMicroseconds(random(TS_COLLISION_DELAY));
+      delayMicroseconds(PJON_RANDOM(TS_COLLISION_DELAY));
     };
 
 
     /* Try to receive a byte with a maximum waiting time */
 
     uint16_t receive_byte() {
-      uint32_t time = micros();
-      while((uint32_t)(micros() - time) < TS_MAX_BYTE_TIME)
+      uint32_t time = PJON_MICROS();
+      while((uint32_t)(PJON_MICROS() - time) < TS_MAX_BYTE_TIME)
         if(serial->available()) {
-          _last_reception_time = micros();
+          _last_reception_time = PJON_MICROS();
           return (uint8_t)serial->read();
         }
       return PJON_FAIL;

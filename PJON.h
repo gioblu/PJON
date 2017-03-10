@@ -73,8 +73,7 @@ limitations under the License. */
 
 #ifndef PJON_h
   #define PJON_h
-  #include <Arduino.h>
-  #include <PJONDefines.h>
+  #include "PJONDefines.h"
   #include "interfaces/PJON_Interfaces.h"
   #include "strategies/PJON_Strategies.h"
 

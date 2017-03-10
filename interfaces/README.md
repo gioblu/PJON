@@ -1,6 +1,6 @@
 
 #### What is an interface?
-PJON uses interfaces to agnostically reach low level methods, abstracting all architecture/hardware related stuff and enhancing portability. An interface is simply a file containing a set of macros pointing to the necessary methods. This part of the PJON framework enables users to easily get PJON running on virtually every device able to execute a compiled C++ program.
+PJON uses interfaces to agnostically reach low level methods using the preprocessor, abstracting all architecture related stuff and enhancing portability with no additional memory consumption. An interface is simply a file containing a set of macros pointing to the necessary methods. Interfaces provide users with an easy way to get PJON running on virtually every device able to execute a compiled C++ program, compiling a simple list of method definitions:
 
 #### Input-Output interfaces
 - `PJON_IO_ANALOG_READ` like `analogRead`, it receives 1 parameter, the pin to read
@@ -16,7 +16,7 @@ PJON uses interfaces to agnostically reach low level methods, abstracting all ar
 #### Serial interfaces
 - `PJON_SERIAL_AVAILABLE` returns `true` if data was received, `false` if not
 - `PJON_SERIAL_WRITE` sends a byte over Serial, receives 1 parameter, the byte to send
-- `PJON_SERIAL_READ` returns `true` if data was received, `false` if not
+- `PJON_SERIAL_READ` returns data if received, or -1 if  not
 - `PJON_SERIAL_FLUSH` waits for dispatched data to be transmitted
 
 #### Timing interfaces

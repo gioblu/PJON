@@ -4,7 +4,7 @@
 
 SoftwareBitBang is the default data link layer strategy used by PJON. This implementation is based on `micros()` and `delayMicroseconds()`. It is totally software emulated and makes no use of dedicated timers or interrupt driven strategies to handle communication. It is designed to have a small memory footprint and to be extremely resilient to interference and timing inaccuracies. Thanks to the use of a dedicated `PJON_IO` library, can be achieved fast and reliable cross-architecture communication through one or two pins. It complies with [PJDL v1.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) Data link layer specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=Vg5aSlD-VCU) for a brief showcase of its features.
 
-####Compatibility
+#### Compatibility
 - ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
 - ATmega2560 16Mhz (Arduino Mega)
 - ATmega16u4/32u4 16Mhz (Arduino Leonardo)
@@ -14,7 +14,7 @@ SoftwareBitBang is the default data link layer strategy used by PJON. This imple
 - ESP8266 NodeMCU v0.9-1.0 80Mhz, see https://github.com/esp8266/Arduino
 - MK20DX256 96Mhz (Teensy 3.1)
 
-####Performance
+#### Performance
 PJON works in 3 different communication modes, `STANDARD`, `FAST` and `OVERDRIVE`:
 - `STANDARD` runs at 16944Bd or 2.12kB/s cross-architecture, promiscuous clock/architecture compatible.
 - `FAST` runs at 25157Bd or 3.15kB/s cross-architecture, promiscuous clock/architecture compatible.
@@ -24,7 +24,7 @@ When including and using SoftwareBitBang, as data link layer of a PJON bus, you 
 
 Single wire simplicity let you to experiment quickly and with creativity. The first suggested test, at the tester's risk, is to let two arduino boards communicate through a living body touching with the left hand the digital port of the first board (5v 40ma, harmless) and with the right the port of the other one. It is stunning to see highly accurate digital communication running inside a living biological body. This opens the mind to possible creative solutions.
 
-####How to use SoftwareBitBang
+#### How to use SoftwareBitBang
 Pass the `SoftwareBitBang` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy. All the other necessary information is present in the general [Documentation](/documentation).
 ```cpp  
   /* The default SoftwareBitBang mode is _SWBB_STANDARD
@@ -67,14 +67,14 @@ Pass the `SoftwareBitBang` type as PJON template parameter to instantiate a PJON
 ```
 After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance.
 
-####Why not interrupts?
+#### Why not interrupts?
 The use of libraries is really extensive in the Arduino environment and often the end user is not able to go over collisions. Very often a library is using hardware resources of the microcontroller as timers or interrupts, colliding or interrupting other libraries. This happens because in general Arduino boards have limited hardware resources. To have a universal and reliable communication medium in this sort of environment, software emulated bit-banging, is a good, stable and reliable solution that leads to "more predictable" results than interrupt driven systems coexisting on small microcontrollers without the original developer and the end user knowing about it.
 
 ![PJON - Michael Teeuw application example](http://33.media.tumblr.com/0065c3946a34191a2836c405224158c8/tumblr_inline_nvrbxkXo831s95p1z_500.gif)
 
 PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl/post/130558526217/pjon-my-son)
 
-####Known issues
+#### Known issues
 - A pull down resistor in the order of mega ohms could be necessary on the bus to reduce interference, see [deal with interference](https://github.com/gioblu/PJON/wiki/Deal-with-interference). In late november 2016 a bug has been discovered, it was on many devices creating a slight inconsistency in the channel state during transitions, most of the times
 disappearing with the use of a pull-down resistor ([120b2c](https://github.com/gioblu/PJON/commit/120b2c72f1435519e7712adfd2c3f1eecc38557c)), with this bugfix the channel is much more reliable and in most cases there is no more need of a pull-down resistor to have nominal communication speed.
 - Consider that this is not an interrupt driven system and so all the time passed

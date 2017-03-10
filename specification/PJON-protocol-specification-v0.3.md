@@ -18,11 +18,11 @@ New feature: Header driven dynamical configuration proposed and implemented by F
 */
 ```
 
-###PJON™ Protocol specification v0.3
+### PJON™ Protocol specification v0.3
 A third draft of the PJON protocol has been released with the addition of a 1 byte header designed to contain the configuration for the packet's communication procedure and its meta-data. In versions 0.1 and 0.2, the PJON communication procedure configuration was static and the header not present, for this reason two differently configured devices, could not establish nominal communication, without configuration pairing. It is now possible for the packet's receiver to read the header, react as transmitter requested and parse the packet and its info correctly.
 
 
-###Network protocol stack model
+### Network protocol stack model
 The actual PJON network protocol stack model lacks **segmentation** and **routing** procedures, dedicated to higher level layers to be added during development.
 ```cpp  
  ___________________________________________
@@ -38,7 +38,7 @@ The actual PJON network protocol stack model lacks **segmentation** and **routin
 |___________________________________________|
 ```
 
-###Basic concepts
+### Basic concepts
 * Every bus has a unique IPv4 like 4 bytes id
 * Many buses can coexist on the same medium
 * Every device has a unique 1 byte id
@@ -50,7 +50,7 @@ The actual PJON network protocol stack model lacks **segmentation** and **routin
 
 The PJON protocol v0.3 handles internal bus connectivity and unique addressing for 254 devices, through bus communication with unique bus addressing for 4.294.967.295 buses, supporting up to 1.090.921.692.930 devices.
 
-###Bus
+### Bus
 A PJON bus is made by a group of up to 255 devices transmitting and receiving on the same medium. Communication between devices occurs through packets and it is based on democracy: every device has the right to transmit on the common medium for up to `(1000 / devices number) milliseconds / second`.
 ```cpp  
     _______     _______     _______     _______     _______
@@ -64,7 +64,7 @@ A PJON bus is made by a group of up to 255 devices transmitting and receiving on
          |_______|   |_______|   |_______|   |_______|    
 ```
 
-###Packet transmission
+### Packet transmission
 A packet transmission is the exchange of a string to one of the devices connected to the bus with optional correct reception certainty. A packet contains the recipient id, its length, its header, its content and the CRC. In this example is shown a packet transmission in a local bus to device id 12 containing the string @ (decimal 64):
 ```cpp  
 
@@ -98,7 +98,7 @@ Channel analysis           Transmission                   Response
                          |RXINFO| TX INFO |
 ```
 
-###Header configuration
+### Header configuration
 The header bitmask let the packet's receiver handle the exchange as transmitter requested.
 ```cpp
  _______________________________________________________________________
@@ -116,7 +116,7 @@ The header bitmask let the packet's receiver handle the exchange as transmitter 
 As you can see for now, only the uppermost bit states are used for packet transmission exchange configuration, the unused bits may be used in future to extend or optimize the PJON Standard, so it is suggested not make use of them on application level.
 
 
-###Bus network
+### Bus network
 A PJON bus network is the result of n PJON buses sharing the same medium and or interconnection of PJON buses using routers. A router is a device connected to n PJON buses with n dedicated pins on n dedicated media, able to route a packet from a bus to anotherone. Thanks to this rule is not only possible to share a medium with neighbours, but also network with them and enhance connectivity for free.
 ```cpp  
    TWO BUSES CONNECTED THROUGH A ROUTER

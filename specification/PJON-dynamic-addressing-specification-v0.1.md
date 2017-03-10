@@ -20,10 +20,10 @@ Master Thesis, IT University of Copenhagen, Denmark, September 2016
 */
 ```
 
-###PJON™ dynamic addressing specification v0.1
+### PJON™ dynamic addressing specification v0.1
 This draft defines the dynamic addressing procedure used by a device in multi-master configuration or the one imposed and regulated by the master in a master-slave configuration.
 
-###Master-slave dynamic addressing
+### Master-slave dynamic addressing
 ```cpp  
   SLAVES
    _________     _________     _________     _________
@@ -37,7 +37,7 @@ ______|_____________|_____________|_____________|___________| ID   254 |
      |_________|   |_________|   |_________|   |_________|                 
 ```
 
-####Master features
+#### Master features
 * The master id is `PJON_MASTER_ID` (value 254)
 * Master has a caducous internal device archive
 * Broadcasts `PJON_ID_LIST` to get `PJON_ID_REFRESH` requests from already approved devices
@@ -45,7 +45,7 @@ ______|_____________|_____________|_____________|___________| ID   254 |
 * Sends `PJON_ID_NEGATE` request to colliding or inconsistent devices
 * Handles `PJON_ID_NEGATE` requests from slaves who are leaving the bus  
 
-####Slave features
+#### Slave features
 * The slave initial device id is `PJON_NOT_ASSIGNED` (value 255)
 * Slaves have a unique random generated 4 bytes id or rid
 * Sends `PJON_ID_REFRESH` request to master if required by master `PJON_ID_LIST` broadcast
@@ -54,7 +54,7 @@ ______|_____________|_____________|_____________|___________| ID   254 |
 * Sends `PJON_ID_NEGATE` before shut down / leaving the bus
 * Fall back to multi-master procedure if no master is present
 
-####Procedure
+#### Procedure
 Slave sends an `PJON_ID_REQUEST` to get a new device id:
 ```cpp  
   _________ ________ ______ __________ ___ ___ ___ ___ ___     ___
@@ -128,7 +128,7 @@ If slave wants to leave the bus must send a `PJON_ID_NEGATE` request to the mast
  |_________|________|______|_________|___|___|___|___|__|___|   |___|
 ```
 
-###Multi-master dynamic addressing
+### Multi-master dynamic addressing
 ```cpp  
     _______     _______     _______     _______     _______
    |       |   |       |   |       |   |       |   |       |  
@@ -141,7 +141,7 @@ If slave wants to leave the bus must send a `PJON_ID_NEGATE` request to the mast
          |_______|   |_______|   |_______|   |_______|    
 ```
 
-####Procedure
+#### Procedure
 In a multi-master scenario, the device actively looks for a free device id and make no use of its rid for this procedure:
 
 1. The device extracts a random device id and tries to contact that device

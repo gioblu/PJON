@@ -5,10 +5,10 @@
 With ThroughSerial data link layer strategy, PJON can run through a software emulated or hardware Serial port. Thanks to this choice it is possible to leverage of virtually all the arduino compatible serial transceivers, like RS485, radio or infrared modules, still having PJON unchanged on top. Take a look at the [video introduction](https://www.youtube.com/watch?v=H4jUsgvM-lw) for a brief showcase of its features.
 
 
-####Why PJON over Serial?
+#### Why PJON over Serial?
 Serial communication is an hardware integrated or software emulated data communication that can reach very fast communication speed but it includes only the data link layer; adding PJON on top of the Serial data link layer it is possible to leverage of the PJON protocol layer features like acknowledge, addressing, multiplexing, packet handling, 8-bit CRC and traffic control.
 
-####How to use ThroughSerial
+#### How to use ThroughSerial
 Pass the `ThroughSerial` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
 ```cpp  
   PJON<ThroughSerial> bus; // 2 pin over-sampled data link layer
@@ -77,5 +77,5 @@ For a simple use with RS485 serial modules a transmission enable pin setter has 
 
 All the other necessary information is present in the general [Documentation](/documentation).
 
-####Known issues
+#### Known issues
 - Being PJON not an interrupt driven, its communication can be affected and potentially disrupted by long delays added in the user's sketch. Try to reduce as possible the interval between every `receive` call. A delay between every receive call higher than 100 millisseconds can disurpt the synchronous acknowledment transmission phase, higher `TS_MAX_BYTE_TIME` in `ThroughSerial.h` if necessary.

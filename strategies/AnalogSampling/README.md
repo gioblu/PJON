@@ -4,14 +4,14 @@
 
 AnalogSampling is designed to sample digital data using analog readings. It can be used to communicate data wirelessly through light. It is able to use a single LED for both photo-emission and photo-reception phases enabling an half-duplex connection between two devices with a range of maximum 5 meters in ideal conditions using only a pair of LEDs (visible light, infrared or ultraviolet) or with two pairs of any sort of tuned photo-emitters and photo-receivers. It was originally implemented it in the far 2011, here you can see the first [video documented experiment](https://www.youtube.com/watch?v=-Ul2j6ixbmE). It has been recently debugged and updated to act as a PJON Strategy. Take a look at the [video introduction](https://www.youtube.com/watch?v=yIncPe8OPpg) for a brief showcase of its features.
 
-####Compatibility
+#### Compatibility
 - ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
 
-####Performance
+#### Performance
 PJON works in 1 communication mode, `STANDARD`:
 - `STANDARD` runs at 1024Bd or 128B/s
 
-####How to use AnalogSampling
+#### How to use AnalogSampling
 Pass the `AnalogSampling` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy. All the other necessary information is present in the general [Documentation](/documentation).
 ```cpp  
   /* Acknowledge latency maximum duration (1000 microseconds default).
@@ -45,7 +45,7 @@ Pass the `AnalogSampling` type as PJON template parameter to instantiate a PJON 
 ```
 After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance.
 
-####What can be done?
+#### What can be done?
 The most basic example is to connect two devices using a couple of visible light LEDs connected to the A0 pin used as wireless transceivers.
 
 ![PJON AnalogSampling LED wireless communication](http://www.pjon.org/assets/images/PJON-AnalogSampling-half-duplex-led-communication.png)
@@ -67,6 +67,6 @@ The obtained range is related to:
 
 With the necessary hardware choices and timing configuration `AnalogSampling` can be used to experiment with short range infrared or visible light communication (i.e. micro-robot swarm, DIY remote), medium range using lighting as transcevers (i.e. cars transmitting data through head and backlights) or long range laser communication (i.e. data between ground and LEO).  
 
-####Known issues
+#### Known issues
 - Direct sunlight or other light sources can affect receiver's sensitivity and maximum communication range
 - A pull-down resistor can be necessary to obtain nominal functionality, see above

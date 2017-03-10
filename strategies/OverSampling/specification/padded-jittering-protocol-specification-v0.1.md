@@ -15,15 +15,15 @@ Related work: /strategies/SoftwareBitBang/
 Compliant implementation versions: PJON 1.0-5.0
 */
 ```
-###The Padded jittering data link layer
+### Padded jittering data link layer
 The first experimental specification of the Padded jittering data link layer has been drafted to propose a new way to transmit data with cheap and low performance microcontrollers without the necessity of hardware interrupts for its working procedure. Extended tests proved its effectiveness on different media like electricity, radio frequency and light.
 
-###Basic concepts
+### Basic concepts
 * Use a pattern of predefined initial padding bits to identify a byte transmission
 * Use the falling edge from 1 to 0, present in padding bits, to achieve byte level synchronization
 * Detect interference or absence of communication at byte level
 
-####Byte transmission
+#### Byte transmission
 Every byte is prepended with 2 synchronization padding bits and transmission occurs LSB-first. The first is a longer than standard logic 1 followed by a standard logic 0. The reception tecnique is based on finding a logic 1 as long as the first padding bit within a certain threshold, synchronizing to its falling edge and checking if it is followed by a logic 0. If this pattern is detected, reception starts, if not, interference, synchronization loss or simply absence of communication is detected at byte level.
 ```cpp  
  __________ ___________________________

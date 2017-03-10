@@ -3,14 +3,14 @@
 
 With the `EthernetTCP` PJON strategy, multiple devices with Ethernet ports can use PJON to communicate with each other on a LAN, WAN or across the Internet. Take a look at the [video introduction](https://www.youtube.com/watch?v=DQzcAv38yxM) for a brief showcase of its features.
 
-####Why PJON over Ethernet TCP/IP?
+#### Why PJON over Ethernet TCP/IP?
 If a cabled or wireless Ethernet network exists, using this to let devices communicate can be easier than to pull new wires or utilize other radio communication modules.
 
 It can also be useful for connecting physically separate clusters of devices that are connected wired with the SoftwareBitBang strategy, or wirelessly with the Oversampling strategy, when an Ethernet network is connecting the locations.
 
 It also enables devices to be connected through the Internet if firewalls are configured to allow this.
 
-####How to use EthernetTCP
+#### How to use EthernetTCP
 Pass the `EthernetTCP` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
 ```cpp  
   PJON<EthernetTCP> bus(44); // Use EthernetTCP strategy with PJON device id 44
@@ -34,10 +34,10 @@ Note that the device id of each PJON device to communicate with must be added wi
 
 If the device will only talk to other devices with the single-socket configuration (calling `bus.strategy.link.single_socket(true)`) it can have a DHCP assigned IP address itself.
 
-####Keep connection
+#### Keep connection
 If this option is set, a socket connection is not closed after a packet has been transferred. Instead it will remain open as long as possible to speed up the packet delivery, as establishing a new socket connection takes time. The Ethernet shields used with Arduino cards have a very limited number of simultaneous socket connections (1, 4 or 8), limiting the usefulness of these persistent connections. So only when communicating with very few devices will it give maximum performance.
 
-####Single socket
+#### Single socket
 By default, each device will listen for incoming socket connections on one port while creating outgoing connections to other devices for outgoing packets. So there is one connection in each direction, allowing packets to be sent in parallel in different directions, as far as that goes with single-threaded programs. Establishing sockets in both directions requires both devices to have fixed IP addresses, and if there are firewalls in between, there must be openings or port-forwarding in both directions.
 
 To simplify traffic crossing firewalls, the use of a single-socket configuration, calling `bus.strategy.link.single_socket(true)` is available. It makes one device create a connection to another devices with a fixed IP and a firewall opening / port forwarding. Packets can be send in both directions on this single socket, even if one device has dynamic IP address and no incoming firewall openings.
@@ -46,12 +46,12 @@ A use case for this is having a master device and a collection of slave devices 
 
 Using the single-socket configuration, calling `bus.strategy.link.single_socket(true)`, will roughly halve the effective bandwidth compared to keeping one connection in each direction, and it will cause some traffic (poll requests) to flow each time PJON update() or receive() are called even when no packets are being sent.
 
-####Use-cases
+#### Use-cases
 When communicating on a LAN, maximum performance is obtained by using multiple sockets and keeping them open as long as possible. This is obtained by setting `bus.strategy.link.keep_connection(true)` and `bus.strategy.link.single_socket(false)`.
 
 When communicating through firewalls, or only one of the devices having a fixed IP address, the configuration should be single-socket or `bus.strategy.link.single_socket(true)`.
 
-####EthernetLink worker class
+#### EthernetLink worker class
 The `EthernetTCP` strategy looks simple because most of the implementation is present in a worker class named `EthernetLink`. This class can be used standalone in some contexts.
 
 All the other necessary information is present in the general [Documentation](/documentation).

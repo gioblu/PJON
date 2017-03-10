@@ -35,7 +35,11 @@
   #include "SoftwareBitBang/SoftwareBitBang.h"
 #endif
 #if defined(PJON_INCLUDE_TS)
-  #include "ThroughSerial/ThroughSerial.h"
+  #if defined(RPI)
+    #include "ThroughSerial/ThroughSerial_RPI.h"
+  #else
+    #include "ThroughSerial/ThroughSerial.h"
+  #endif
 #endif
 #if defined(PJON_INCLUDE_NONE)
   /* None for custom strategy inclusion */

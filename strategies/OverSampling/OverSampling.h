@@ -103,7 +103,7 @@ class OverSampling {
     /* Read a byte from the pin */
 
     uint8_t read_byte() {
-      uint8_t byte_value = B00000000;
+      uint8_t byte_value = 0B00000000;
       for(uint8_t i = 0; i < 8; i++) {
         unsigned long time = PJON_MICROS();
         float value = 0.5;

@@ -86,7 +86,7 @@ class AnalogSampling {
     there is no active transmission */
 
     bool can_start() {
-      if(read_byte() != B00000000) return false;
+      if(read_byte() != 0B00000000) return false;
       PJON_DELAY_MICROSECONDS(AS_BIT_SPACER / 2);
       if(PJON_ANALOG_READ(_input_pin) > threshold) return false;
       PJON_DELAY_MICROSECONDS(AS_BIT_SPACER / 2);

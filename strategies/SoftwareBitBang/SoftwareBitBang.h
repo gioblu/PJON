@@ -107,7 +107,7 @@ class SoftwareBitBang {
     /* Read a byte from the pin */
 
     uint8_t read_byte() {
-      uint8_t byte_value = B00000000;
+      uint8_t byte_value = 0B00000000;
       /* Delay until the center of the first bit */
       PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH / 2);
       for(uint8_t i = 0; i < 7; i++) {

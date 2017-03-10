@@ -320,28 +320,4 @@ inform the reader of their definition as macros in the global scope.
         digitalWrite(P, LOW); \
         pinMode(P, INPUT); \
     } while(0)
-
-#else
-
-  /* Fallback to digitalWrite --------------------------------------------- */
-
-  #if !defined(PJON_IO_WRITE)
-    #define PJON_IO_WRITE digitalWrite
-  #endif
-
-  #if !defined(PJON_IO_READ)
-    #define PJON_IO_READ digitalRead
-  #endif
-
-  #if !defined(PJON_IO_MODE)
-    #define PJON_IO_MODE pinMode
-  #endif
-
-  #if !defined(PJON_IO_PULL_DOWN)
-    #define PJON_IO_PULL_DOWN(P) \
-      do { \
-        digitalWrite(P, LOW); \
-        pinMode(P, INPUT); \
-      } while(0)
-  #endif
 #endif

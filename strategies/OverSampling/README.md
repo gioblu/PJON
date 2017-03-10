@@ -2,7 +2,7 @@
 **Media:** Radio, Wire |
 **Pins used:** 1 / 2
 
-Oversampling strategy was initially developed in the [PJON_ASK](https://github.com/gioblu/PJON_ASK) repository, and it was integrated in the PJON repository from version 3.0 beta, as a data link layer strategy. Bits are over-sampled to have high resilience in high interference scenarios, like using an ASK/FSK cheap radio transceivers in an urban environment. It is tested effectively with many versions of the ASK/FSK 315/433Mhz modules available on the market, but it works nominally also through wires and the human body. It complies with [PJDLR v1.0](https://github.com/gioblu/PJON/blob/master/strategies/OverSampling/specification/PJDLR-specification-v1.0.md) Data link layer specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=G1ckfsMzPns) for a brief showcase of its features. 
+Oversampling strategy was initially developed in the [PJON_ASK](https://github.com/gioblu/PJON_ASK) repository, and it was integrated in the PJON repository from version 3.0 beta, as a data link layer strategy. Bits are over-sampled to have high resilience in high interference scenarios, like using an ASK/FSK cheap radio transceivers in an urban environment. It is tested effectively with many versions of the ASK/FSK 315/433Mhz modules available on the market, but it works nominally also through wires and the human body. It complies with [PJDLR v1.0](/strategies/OverSampling/specification/PJDLR-specification-v1.0.md) Data link layer specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=G1ckfsMzPns) for a brief showcase of its features.
 
 ####Compatibility
 - ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
@@ -15,7 +15,7 @@ Oversampling strategy was initially developed in the [PJON_ASK](https://github.c
 - Range: 250 meters in urban environment / 5km with line of sight and ideal atmospheric conditions
 
 ####How to use OverSampling
-Pass the `OverSampling` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy. All the other necessary information is present in the general [Documentation](https://github.com/gioblu/PJON/wiki/Documentation).
+Pass the `OverSampling` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy. All the other necessary information is present in the general [Documentation](/wiki/Documentation).
 ```cpp  
   /* Maximum latency can be set defining OS_LATENCY before PJON.h inclusion
      (Default 4 milliseconds) */
@@ -74,4 +74,4 @@ A more directional, compact and long range antenna design is the wip antenna. Ca
 ```
 
 ####Known issues
-- In older versions, OverSampling was affected by ineffective and short range if used in `PJON_HALF_DUPLEX` mode. This issue has been fixed by handling the gain refresh (see issue [91](https://github.com/gioblu/PJON/issues/91)).
+- In older versions, OverSampling was affected by ineffective and short range if used in `PJON_HALF_DUPLEX` mode. This issue has been fixed by handling the gain refresh (see issue [91](/issues/91)).

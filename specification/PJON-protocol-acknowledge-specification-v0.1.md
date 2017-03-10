@@ -1,9 +1,9 @@
 - PJDL (Padded Jittering Data Link) specification:
-[PJDL v0.1](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/padded-jittering-protocol-specification-v0.1.md) - [PJDL v1.0](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) - [PJDLR v1.0](https://github.com/gioblu/PJON/blob/master/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
+[PJDL v0.1](/strategies/SoftwareBitBang/specification/padded-jittering-protocol-specification-v0.1.md) - [PJDL v1.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) - [PJDLR v1.0](/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
 - PJON (Padded Jittering Operative Network) Protocol specification:
-[v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md) - [v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md) - [v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md) - [v1.0](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v1.0.md)
-- Acknowledge specification: **[v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-acknowledge-specification-v0.1.md)**
-- Dynamic addressing specification: [v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md)
+[v0.1](/specification/PJON-protocol-specification-v0.1.md) - [v0.2](/specification/PJON-protocol-specification-v0.2.md) - [v0.3](/specification/PJON-protocol-specification-v0.3.md) - [v1.0](/specification/PJON-protocol-specification-v1.0.md)
+- Acknowledge specification: **[v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md)**
+- Dynamic addressing specification: [v0.1](/specification/PJON-dynamic-addressing-specification-v0.1.md)
 
 ```cpp
 /*
@@ -29,7 +29,7 @@ Channel analysis  Transmission                                 Response
    |_____|        |____|__________|________|_________|_____|     |_____|
 ```
 
-The graph above contains a standard packet transmission with synchronous acknowledge request where the character `@` or `64` is sent to device id `12` with `00000100` header. As defined by the [PJON protocol layer specification v1.0](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v1.0.md) the third bit from right up in the header requests to transmitter a synchronous acknowledge response. How the synchronous acknowledgement procedure works depends on the medium and the strategy used, see [PJDL v1.0](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) or [PJDLR v1.0](https://github.com/gioblu/PJON/blob/master/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)) specification.
+The graph above contains a standard packet transmission with synchronous acknowledge request where the character `@` or `64` is sent to device id `12` with `00000100` header. As defined by the [PJON protocol layer specification v1.0](/specification/PJON-protocol-specification-v1.0.md) the third bit from right up in the header requests to transmitter a synchronous acknowledge response. How the synchronous acknowledgement procedure works depends on the medium and the strategy used, see [PJDL v1.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) or [PJDLR v1.0](/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)) specification.
 
 ####Asynchronous acknowledge
 
@@ -42,7 +42,7 @@ Channel analysis                     Transmission
 |_____|  |____|__________|________|___________|___________|_________|_____|
 
 ```
-The graph above contains a standard packet transmission with asynchronous acknowledge request where the character `@` or `64` is sent to device id `12` with `0001110` header containing its packet id `99`. As defined by the [PJON protocol layer specification v1.0](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v1.0.md) the fourth bit from right up in the header requests to transmitter an asynchronous acknowledge response and the presence of the packet id. The second bit from right up signals the inclusion of the sender's info necessary to send back an asynchronous acknowledge packet when received.
+The graph above contains a standard packet transmission with asynchronous acknowledge request where the character `@` or `64` is sent to device id `12` with `0001110` header containing its packet id `99`. As defined by the [PJON protocol layer specification v1.0](/specification/PJON-protocol-specification-v1.0.md) the fourth bit from right up in the header requests to transmitter an asynchronous acknowledge response and the presence of the packet id. The second bit from right up signals the inclusion of the sender's info necessary to send back an asynchronous acknowledge packet when received.
 
 ####PJON™ recursive acknowledgement pattern
 In a scenario where there is no direct communication between two devices, a synchronous acknowledgement can't be obtained successfully, so an asynchronous acknowledgement packet has to be sent back from receiver to the packet's transmitter to inform of the correct packet reception.

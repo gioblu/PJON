@@ -1,7 +1,7 @@
 
 **Medium:** Ethernet port, wired or WiFi
 
-With the LocalUDP PJON strategy, multiple devices with Ethernet ports can use PJON to communicate with each other on a local subnet, wired or over WiFi or both. Take a look at the [video introduction](https://www.youtube.com/watch?v=cxEUqkK5BQg) for a brief showcase of its features. 
+With the LocalUDP PJON strategy, multiple devices with Ethernet ports can use PJON to communicate with each other on a local subnet, wired or over WiFi or both. Take a look at the [video introduction](https://www.youtube.com/watch?v=cxEUqkK5BQg) for a brief showcase of its features.
 
 ####Why PJON over UDP?
 If a cabled or wireless Ethernet network exists, using this to let devices communicate can be easier than to pull new wires or utilize other radio communication modules.
@@ -24,4 +24,4 @@ The IP address used is irrelevant as long as it is on a subnet common with the o
 Using DHCP assigned IP addresses is fine, and the strategy does not need to relate to it.
 The strategy will broadcast the packets, and the correct receiver will pick them up and ACK if requested. Other devices will observe but ignore packets not meant for them.
 
-All the other necessary information is present in the general [Documentation](https://github.com/gioblu/PJON/wiki/Documentation).
+All the other necessary information is present in the general [Documentation](/wiki/Documentation).

@@ -2,7 +2,7 @@
 **Medium:** Hardware/Software Serial port |
 **Pins used:** 1 or 2
 
-With ThroughSerial data link layer strategy, PJON can run through a software emulated or hardware Serial port. Thanks to this choice it is possible to leverage of virtually all the arduino compatible serial transceivers, like RS485, radio or infrared modules, still having PJON unchanged on top. Take a look at the [video introduction](https://www.youtube.com/watch?v=H4jUsgvM-lw) for a brief showcase of its features. 
+With ThroughSerial data link layer strategy, PJON can run through a software emulated or hardware Serial port. Thanks to this choice it is possible to leverage of virtually all the arduino compatible serial transceivers, like RS485, radio or infrared modules, still having PJON unchanged on top. Take a look at the [video introduction](https://www.youtube.com/watch?v=H4jUsgvM-lw) for a brief showcase of its features.
 
 
 ####Why PJON over Serial?
@@ -75,7 +75,7 @@ For a simple use with RS485 serial modules a transmission enable pin setter has 
   bus.strategy.set_enable_RS485_pin(11);
 ```
 
-All the other necessary information is present in the general [Documentation](https://github.com/gioblu/PJON/wiki/Documentation).
+All the other necessary information is present in the general [Documentation](/wiki/Documentation).
 
 ####Known issues
 - Being PJON not an interrupt driven, its communication can be affected and potentially disrupted by long delays added in the user's sketch. Try to reduce as possible the interval between every `receive` call. A delay between every receive call higher than 100 millisseconds can disurpt the synchronous acknowledment transmission phase, higher `TS_MAX_BYTE_TIME` in `ThroughSerial.h` if necessary.

@@ -1,7 +1,7 @@
 
 **Medium:** Ethernet port, wired or WiFi
 
-With the `EthernetTCP` PJON strategy, multiple devices with Ethernet ports can use PJON to communicate with each other on a LAN, WAN or across the Internet. Take a look at the [video introduction](https://www.youtube.com/watch?v=DQzcAv38yxM) for a brief showcase of its features. 
+With the `EthernetTCP` PJON strategy, multiple devices with Ethernet ports can use PJON to communicate with each other on a LAN, WAN or across the Internet. Take a look at the [video introduction](https://www.youtube.com/watch?v=DQzcAv38yxM) for a brief showcase of its features.
 
 ####Why PJON over Ethernet TCP/IP?
 If a cabled or wireless Ethernet network exists, using this to let devices communicate can be easier than to pull new wires or utilize other radio communication modules.
@@ -54,4 +54,4 @@ When communicating through firewalls, or only one of the devices having a fixed 
 ####EthernetLink worker class
 The `EthernetTCP` strategy looks simple because most of the implementation is present in a worker class named `EthernetLink`. This class can be used standalone in some contexts.
 
-All the other necessary information is present in the general [Documentation](https://github.com/gioblu/PJON/wiki/Documentation).
+All the other necessary information is present in the general [Documentation](/wiki/Documentation).

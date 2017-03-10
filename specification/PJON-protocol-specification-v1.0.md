@@ -1,9 +1,9 @@
 - PJDL (Padded Jittering Data Link) specification:
-[PJDL v0.1](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/padded-jittering-protocol-specification-v0.1.md) - [PJDL v1.0](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) - [PJDLR v1.0](https://github.com/gioblu/PJON/blob/master/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
+[PJDL v0.1](/strategies/SoftwareBitBang/specification/padded-jittering-protocol-specification-v0.1.md) - [PJDL v1.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) - [PJDLR v1.0](/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
 - PJON (Padded Jittering Operative Network) Protocol specification:
-[v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md) - [v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md) - [v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md) - **[v1.0](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v1.0.md)**
-- Acknowledge specification: [v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-acknowledge-specification-v0.1.md)
-- Dynamic addressing specification: [v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md)
+[v0.1](/specification/PJON-protocol-specification-v0.1.md) - [v0.2](/specification/PJON-protocol-specification-v0.2.md) - [v0.3](/specification/PJON-protocol-specification-v0.3.md) - **[v1.0](/specification/PJON-protocol-specification-v1.0.md)**
+- Acknowledge specification: [v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md)
+- Dynamic addressing specification: [v0.1](/specification/PJON-dynamic-addressing-specification-v0.1.md)
 
 ```cpp
 /*
@@ -62,11 +62,11 @@ In the graph below is shown the protocol stack model proposed. The differences b
 * Every device has an equal right to transmit and receive
 * Every device can be connected to n PJON buses
 * Every device has a unique 1 byte id
-* Every device can obtain an id if available (see [Dynamic addressing specification v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md))
+* Every device can obtain an id if available (see [Dynamic addressing specification v0.1](/specification/PJON-dynamic-addressing-specification-v0.1.md))
 * Transmission occurs only if the communication medium is not in use
 * Devices communicate through packets with a maximum length of 255 or 65535 bytes
 * Packet transmission is regulated by a 1, 2 or 3 byte header
-* Synchronous and or asynchronous acknowledgement can be requested  (see [Acknowledge specification v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-acknowledge-specification-v0.1.md))
+* Synchronous and or asynchronous acknowledgement can be requested  (see [Acknowledge specification v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md))
 
 The PJON protocol v1.0 handles internal bus connectivity and unique addressing for 254 devices, through bus communication with unique bus addressing for 4.294.967.295 buses and supports up to 1.090.921.692.930 devices. It regulates the exchange of packets with a configurable set of features driven by its header. Depending on the packet configuration a certain overhead is added to information varying from 3 up to 19 bytes.
 

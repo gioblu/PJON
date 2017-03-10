@@ -75,9 +75,9 @@ limitations under the License. */
   #define PJON_h
   #include <Arduino.h>
   #include <PJONDefines.h>
-  #include "strategies/PJON_Strategies.h"
   #include "interfaces/PJON_Interfaces.h"
-  
+  #include "strategies/PJON_Strategies.h"
+
   template<typename Strategy>
   class PJON {
     public:

@@ -29,10 +29,14 @@
   #include <time.h>
   #include <errno.h>
 
+  #ifndef A0
+    #define A0 0
+  #endif
+
   /* Fallback to WiringPi core functions ------------------------------------ */
 
   #if !defined(PJON_ANALOG_READ)
-    #define PJON_ANALOG_READ analogRead
+    #define PJON_ANALOG_READ(P) analogRead(P)
   #endif
 
   #if !defined(PJON_IO_WRITE)

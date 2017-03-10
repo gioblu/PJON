@@ -3,10 +3,10 @@
 PJON uses interfaces to agnostically reach low level methods, abstracting all architecture/hardware related stuff and enhancing portability. An interface is simply a file containing a set of macros pointing to the necessary methods. This part of the PJON framework enables users to easily get PJON running on virtually every device able to execute a compiled C++ program.
 
 #### Input-Output interfaces
-- `PJON_IO_ANALOG_READ` like `analogRead`, it receives 1 parameter, the pin to read
+- `PJON_IO_ANALOG_READ` -> `analogRead`, it receives 1 parameter, the pin to read
 - `PJON_IO_WRITE` like `digitalWrite` receives 2 parameters, the pin to set and the value (0 or 1)
 - `PJON_IO_READ` like `digitalRead` receives 1 parameter, the pin to read
-- `PJON_IO_MODE` like `pinMode` receives 2 parameters, the pin, and its mode (`INPUT`, `OUTPUT` or `INPUT_PULLUP`)
+- `PJON_IO_MODE` like `pinMode` receives 2 parameters, the pin, and its mode (`INPUT` or `OUTPUT`)
 - `PJON_IO_PULL_DOWN` it receives 1 parameter, the pin to set input low state
 
 #### Random number generator interfaces

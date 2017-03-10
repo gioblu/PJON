@@ -61,7 +61,7 @@ class SoftwareBitBang {
        (returns always true) */
 
     bool begin(uint8_t additional_randomness = 0) {
-      delay(random(0, SWBB_INITIAL_DELAY) + additional_randomness);
+      delay(random(SWBB_INITIAL_DELAY) + additional_randomness);
       PJON_IO_PULL_DOWN(_input_pin);
       if(_output_pin != _input_pin)
         PJON_IO_PULL_DOWN(_output_pin);
@@ -85,7 +85,7 @@ class SoftwareBitBang {
         delayMicroseconds(SWBB_BIT_WIDTH);
       }
       if(PJON_IO_READ(_input_pin)) return false;
-      delayMicroseconds(random(0, SWBB_COLLISION_DELAY));
+      delayMicroseconds(random(SWBB_COLLISION_DELAY));
       if(PJON_IO_READ(_input_pin)) return false;
       return true;
     };
@@ -101,7 +101,7 @@ class SoftwareBitBang {
     /* Handle a collision: */
 
     void handle_collision() {
-      delayMicroseconds(random(0, SWBB_COLLISION_DELAY));
+      delayMicroseconds(random(SWBB_COLLISION_DELAY));
     };
 
 

@@ -72,7 +72,7 @@ class AnalogSampling {
        (returns always true) */
 
     bool begin(uint8_t additional_randomness = 0) {
-      delay(random(0, AS_INITIAL_DELAY) + additional_randomness);
+      delay(random(AS_INITIAL_DELAY) + additional_randomness);
       PJON_IO_PULL_DOWN(_input_pin);
       if(_output_pin != _input_pin)
         PJON_IO_PULL_DOWN(_output_pin);
@@ -92,7 +92,7 @@ class AnalogSampling {
       if(analogRead(_input_pin) > threshold) return false;
       delayMicroseconds(AS_BIT_SPACER / 2);
       if(analogRead(_input_pin) > threshold) return false;
-      delayMicroseconds(random(0, AS_COLLISION_DELAY));
+      delayMicroseconds(random(AS_COLLISION_DELAY));
       if(analogRead(_input_pin) > threshold) return false;
       return true;
     };
@@ -123,7 +123,7 @@ class AnalogSampling {
     /* Handle a collision: */
 
     void handle_collision() {
-      delayMicroseconds(random(0, AS_COLLISION_DELAY));
+      delayMicroseconds(random(AS_COLLISION_DELAY));
     };
 
 

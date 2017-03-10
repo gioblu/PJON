@@ -45,7 +45,7 @@ class ThroughSerial {
        (returns always true) */
 
     bool begin(uint8_t additional_randomness = 0) {
-      delay(random(0, TS_INITIAL_DELAY) + additional_randomness);
+      delay(random(TS_INITIAL_DELAY) + additional_randomness);
       return true;
     };
 
@@ -53,7 +53,7 @@ class ThroughSerial {
     /* Check if the channel is free for transmission: */
 
     bool can_start() {
-      delayMicroseconds(random(0, TS_COLLISION_DELAY));
+      delayMicroseconds(random(TS_COLLISION_DELAY));
       if(serial->available()) return false;
       if((uint32_t)(micros() - _last_reception_time) < TS_FREE_TIME_BEFORE_START)
         return false;
@@ -71,7 +71,7 @@ class ThroughSerial {
     /* Handle a collision: */
 
     void handle_collision() {
-      delayMicroseconds(random(0, TS_COLLISION_DELAY));
+      delayMicroseconds(random(TS_COLLISION_DELAY));
     };
 
 

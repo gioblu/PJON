@@ -56,7 +56,7 @@ class OverSampling {
        (returns always true) */
 
     bool begin(uint8_t additional_randomness = 0) {
-      delay(random(0, OS_INITIAL_DELAY) + additional_randomness);
+      delay(random(OS_INITIAL_DELAY) + additional_randomness);
       PJON_IO_PULL_DOWN(_input_pin);
       if(_output_pin != _input_pin)
         PJON_IO_PULL_DOWN(_output_pin);
@@ -69,7 +69,7 @@ class OverSampling {
     there is no active transmission */
 
     bool can_start() {
-      delayMicroseconds(random(0, OS_COLLISION_DELAY));
+      delayMicroseconds(random(OS_COLLISION_DELAY));
       float value = 0.5;
       unsigned long time = micros();
       PJON_IO_MODE(_input_pin, INPUT);
@@ -97,7 +97,7 @@ class OverSampling {
     /* Handle a collision: */
 
     void handle_collision() {
-      delayMicroseconds(random(0, OS_COLLISION_DELAY));
+      delayMicroseconds(random(OS_COLLISION_DELAY));
     };
 
 

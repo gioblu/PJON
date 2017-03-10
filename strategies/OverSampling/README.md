@@ -15,7 +15,7 @@ Oversampling strategy was initially developed in the [PJON_ASK](https://github.c
 - Range: 250 meters in urban environment / 5km with line of sight and ideal atmospheric conditions
 
 ####How to use OverSampling
-Pass the `OverSampling` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy. All the other necessary information is present in the general [Documentation](/wiki/Documentation).
+Pass the `OverSampling` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy. All the other necessary information is present in the general [Documentation](/documentation).
 ```cpp  
   /* Maximum latency can be set defining OS_LATENCY before PJON.h inclusion
      (Default 4 milliseconds) */
@@ -74,4 +74,4 @@ A more directional, compact and long range antenna design is the wip antenna. Ca
 ```
 
 ####Known issues
-- In older versions, OverSampling was affected by ineffective and short range if used in `PJON_HALF_DUPLEX` mode. This issue has been fixed by handling the gain refresh (see issue [91](/issues/91)).
+- In older versions, OverSampling was affected by ineffective and short range if used in `PJON_HALF_DUPLEX` mode. This issue has been fixed by handling the gain refresh (see issue [91](https://github.com/gioblu/PJON/issues/91)).

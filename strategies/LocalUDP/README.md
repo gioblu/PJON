@@ -24,4 +24,4 @@ The IP address used is irrelevant as long as it is on a subnet common with the o
 Using DHCP assigned IP addresses is fine, and the strategy does not need to relate to it.
 The strategy will broadcast the packets, and the correct receiver will pick them up and ACK if requested. Other devices will observe but ignore packets not meant for them.
 
-All the other necessary information is present in the general [Documentation](/wiki/Documentation).
+All the other necessary information is present in the general [Documentation](/documentation).

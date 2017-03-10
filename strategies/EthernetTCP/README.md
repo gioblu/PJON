@@ -54,4 +54,4 @@ When communicating through firewalls, or only one of the devices having a fixed 
 ####EthernetLink worker class
 The `EthernetTCP` strategy looks simple because most of the implementation is present in a worker class named `EthernetLink`. This class can be used standalone in some contexts.
 
-All the other necessary information is present in the general [Documentation](/wiki/Documentation).
+All the other necessary information is present in the general [Documentation](/documentation).

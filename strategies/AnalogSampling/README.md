@@ -12,7 +12,7 @@ PJON works in 1 communication mode, `STANDARD`:
 - `STANDARD` runs at 1024Bd or 128B/s
 
 ####How to use AnalogSampling
-Pass the `AnalogSampling` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy. All the other necessary information is present in the general [Documentation](/wiki/Documentation).
+Pass the `AnalogSampling` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy. All the other necessary information is present in the general [Documentation](/documentation).
 ```cpp  
   /* Acknowledge latency maximum duration (1000 microseconds default).
      Could be necessary to higher SWBB_LATENCY if sending long packets because

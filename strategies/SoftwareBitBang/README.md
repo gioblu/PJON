@@ -25,7 +25,7 @@ When including and using SoftwareBitBang, as data link layer of a PJON bus, you 
 Single wire simplicity let you to experiment quickly and with creativity. The first suggested test, at the tester's risk, is to let two arduino boards communicate through a living body touching with the left hand the digital port of the first board (5v 40ma, harmless) and with the right the port of the other one. It is stunning to see highly accurate digital communication running inside a living biological body. This opens the mind to possible creative solutions.
 
 ####How to use SoftwareBitBang
-Pass the `SoftwareBitBang` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy. All the other necessary information is present in the general [Documentation](/wiki/Documentation).
+Pass the `SoftwareBitBang` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy. All the other necessary information is present in the general [Documentation](/documentation).
 ```cpp  
   /* The default SoftwareBitBang mode is _SWBB_STANDARD
      (Transfer speed: 16.944kBb or 2.12kB/s) */
@@ -75,8 +75,8 @@ The use of libraries is really extensive in the Arduino environment and often th
 PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl/post/130558526217/pjon-my-son)
 
 ####Known issues
-- A pull down resistor in the order of mega ohms could be necessary on the bus to reduce interference, see [deal with interference](/wiki/Deal-with-interference). In late november 2016 a bug has been discovered, it was on many devices creating a slight inconsistency in the channel state during transitions, most of the times
-disappearing with the use of a pull-down resistor ([120b2c](/commit/120b2c72f1435519e7712adfd2c3f1eecc38557c)), with this bugfix the channel is much more reliable and in most cases there is no more need of a pull-down resistor to have nominal communication speed.
+- A pull down resistor in the order of mega ohms could be necessary on the bus to reduce interference, see [deal with interference](https://github.com/gioblu/PJON/wiki/Deal-with-interference). In late november 2016 a bug has been discovered, it was on many devices creating a slight inconsistency in the channel state during transitions, most of the times
+disappearing with the use of a pull-down resistor ([120b2c](https://github.com/gioblu/PJON/commit/120b2c72f1435519e7712adfd2c3f1eecc38557c)), with this bugfix the channel is much more reliable and in most cases there is no more need of a pull-down resistor to have nominal communication speed.
 - Consider that this is not an interrupt driven system and so all the time passed
 in delay or executing something a certain amount of packets could be potentially
 lost not received, the packet manager of PJON will do its job scheduling the packet

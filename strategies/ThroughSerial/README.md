@@ -75,7 +75,7 @@ For a simple use with RS485 serial modules a transmission enable pin setter has 
   bus.strategy.set_enable_RS485_pin(11);
 ```
 
-All the other necessary information is present in the general [Documentation](/wiki/Documentation).
+All the other necessary information is present in the general [Documentation](/documentation).
 
 ####Known issues
 - Being PJON not an interrupt driven, its communication can be affected and potentially disrupted by long delays added in the user's sketch. Try to reduce as possible the interval between every `receive` call. A delay between every receive call higher than 100 millisseconds can disurpt the synchronous acknowledment transmission phase, higher `TS_MAX_BYTE_TIME` in `ThroughSerial.h` if necessary.

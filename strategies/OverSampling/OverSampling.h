@@ -37,7 +37,6 @@
 #endif
 
 #include "Timing.h"
-#include "../../utils/PJON_IO.h" // Dedicated version of digitalWriteFast
 
 class OverSampling {
   public:

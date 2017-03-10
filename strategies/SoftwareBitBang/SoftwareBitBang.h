@@ -43,7 +43,6 @@ STANDARD transmission mode performance:
 #endif
 
 #include "Timing.h"
-#include "../../utils/PJON_IO.h" // Dedicated version of digitalWriteFast
 
 class SoftwareBitBang {
   public:

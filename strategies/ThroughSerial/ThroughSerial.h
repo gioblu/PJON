@@ -23,10 +23,7 @@
    See the License for the specific language governing permissions and
    limitations under the License. */
 
-#include <Arduino.h>
 #include "Timing.h"
-#include "../../utils/PJON_IO.h" // Dedicated version of digitalWriteFast
-
 
 class ThroughSerial {
   public:

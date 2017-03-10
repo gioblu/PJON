@@ -1,3 +1,4 @@
+
 /* Faster digitalWrite, digitalRead, pinMode for Arduino
    https://codebender.cc/library/digitalWriteFast#bonus%2FdigitalWrite%2Fdigital_write_macros.h
    - Basic scheme was developed by Paul Stoffregen with digitalWrite.

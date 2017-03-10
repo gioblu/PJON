@@ -30,6 +30,7 @@ PJON™ Standard compliant tools:
 
 Credits to contributors:
 - Fred Larsen (Systems engineering, header driven communication, debugging)
+- 4ib3r github user (Memory optimization configurable strategies inclusion)
 - budaics github user (ATtiny85 16Mhz external clock testing and wiki page)
 - Pantovich github user (update returning number of packets to be delivered)
 - Adrian Sławiński (Fix to enable SimpleModbusMasterV2 compatibility)

@@ -1,9 +1,10 @@
 
 #### What is an interface?
-PJON uses interfaces to agnostically handle low level methods using the preprocessor, abstracting all architecture related stuff and enhancing portability without affecting the memory footprint. An interface is simply a file containing a set of macros pointing to the necessary methods. Interfaces provide users with an easy way to port PJON on virtually every architecture able to execute a compiled C++ program, simply filling a list of method definitions. Here as an example the Arduino interface:
+PJON uses interfaces to agnostically handle low level methods using the preprocessor, abstracting all architecture related stuff and enhancing portability without affecting the memory footprint. An interface is simply a file containing a set of common macros pointing to the methods related to the architecture. Interfaces provide users with an easy way to port PJON on virtually every architecture able to execute a compiled C++ program, simply filling a list of method definitions.
 
+Here as an example, the Arduino interface already present in PJON:
 ```cpp
-// Use a architecture related constant to conditionally include the interface
+// Use an architecture related constant to conditionally include the interface
 #if defined(ARDUINO)
   #include <Arduino.h>
   #include "PJON_IO.h"

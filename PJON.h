@@ -915,7 +915,7 @@ limitations under the License. */
           if(packets[i].state != PJON_FAIL) strategy.handle_collision();
 
           if(packets[i].attempts > strategy.get_max_attempts()) {
-            _error(PJON_CONNECTION_LOST, packets[i].content[0]);
+            _error(PJON_CONNECTION_LOST, i);
             if(!packets[i].timing) {
               if(_auto_delete) {
                 remove(i);

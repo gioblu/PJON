@@ -8,7 +8,7 @@
 PJON is designed to inform the user if an error is detected. A `void function` has to be defined as the error handler, it receives 2 parameters the first is the error code and the second is 1 byte additional data related to the error.
 
 Error types:
-- `PJON_CONNECTION_LOST` (value 101), `data` parameter contains lost device's id.
+- `PJON_CONNECTION_LOST` (value 101), `data` parameter contains lost packet's id.
 - `PJON_PACKETS_BUFFER_FULL` (value 102), `data` parameter contains buffer length.
 - `PJON_CONTENT_TOO_LONG` (value 104), `data` parameter contains content length.
 
@@ -16,7 +16,7 @@ Error types:
 void error_handler(uint8_t code, uint8_t data) {
   if(code == PJON_CONNECTION_LOST) {
     Serial.print("Connection with device ID ");
-    Serial.print(data);
+    Serial.print(bus.packets[data].content[0], DEC);
     Serial.println(" is lost.");
   }
   if(code == PJON_PACKETS_BUFFER_FULL) {

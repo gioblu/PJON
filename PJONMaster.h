@@ -178,7 +178,7 @@ limitations under the License. */
 
       void error_handler(uint8_t code, uint8_t data) {
         if(code == PJON_CONNECTION_LOST)
-          delete_id_reference(data);
+          delete_id_reference(PJON<Strategy>::packets[data].content[0]);
         _master_error(code, data);
       };
 

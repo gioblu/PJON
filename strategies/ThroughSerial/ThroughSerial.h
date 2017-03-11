@@ -27,8 +27,11 @@
 
 class ThroughSerial {
   public:
-    Stream *serial = NULL;
-
+    #if defined(RPI)
+      int16_t serial = 0;
+    #elif defined(ARDUINO)
+      Stream *serial = NULL;
+    #endif
     /* Returns the suggested delay related to the attempts passed as parameter: */
 
     uint32_t back_off(uint8_t attempts) {
@@ -42,7 +45,7 @@ class ThroughSerial {
        (returns always true) */
 
     bool begin(uint8_t additional_randomness = 0) {
-      delay(PJON_RANDOM(TS_INITIAL_DELAY) + additional_randomness);
+      PJON_DELAY_MICROSECONDS(PJON_RANDOM(TS_INITIAL_DELAY) + additional_randomness);
       return true;
     };
 
@@ -50,11 +53,11 @@ class ThroughSerial {
     /* Check if the channel is free for transmission: */
 
     bool can_start() {
-      delayMicroseconds(PJON_RANDOM(TS_COLLISION_DELAY));
-      if(serial->available()) return false;
+      PJON_DELAY_MICROSECONDS(PJON_RANDOM(TS_COLLISION_DELAY));
+      if(PJON_SERIAL_AVAILABLE(serial)) return false;
       if((uint32_t)(PJON_MICROS() - _last_reception_time) < TS_FREE_TIME_BEFORE_START)
         return false;
-      return (serial != NULL);
+      return true;
     };
 
 
@@ -68,7 +71,7 @@ class ThroughSerial {
     /* Handle a collision: */
 
     void handle_collision() {
-      delayMicroseconds(PJON_RANDOM(TS_COLLISION_DELAY));
+      PJON_DELAY_MICROSECONDS(PJON_RANDOM(TS_COLLISION_DELAY));
     };
 
 
@@ -77,9 +80,9 @@ class ThroughSerial {
     uint16_t receive_byte() {
       uint32_t time = PJON_MICROS();
       while((uint32_t)(PJON_MICROS() - time) < TS_MAX_BYTE_TIME)
-        if(serial->available()) {
+        if(PJON_SERIAL_AVAILABLE(serial)) {
           _last_reception_time = PJON_MICROS();
-          return (uint8_t)serial->read();
+          return (uint8_t)PJON_SERIAL_READ(serial);
         }
       return PJON_FAIL;
     };
@@ -95,7 +98,7 @@ class ThroughSerial {
     /* Send a byte and wait for its transmission end */
 
     void send_byte(uint8_t b) {
-      serial->write(b);
+      PJON_SERIAL_WRITE(serial, b);
     };
 
 
@@ -106,7 +109,7 @@ class ThroughSerial {
         PJON_IO_WRITE(_enable_RS485_pin, HIGH);
 
       send_byte(response);
-      serial->flush();
+      PJON_SERIAL_FLUSH(serial);
 
       if(_enable_RS485_pin != PJON_NOT_ASSIGNED)
         PJON_IO_WRITE(_enable_RS485_pin, LOW);
@@ -121,16 +124,18 @@ class ThroughSerial {
 
       for(uint8_t b = 0; b < length; b++)
         send_byte(string[b]);
-      serial->flush();
+      PJON_SERIAL_FLUSH(serial);
 
       if(_enable_RS485_pin != PJON_NOT_ASSIGNED)
         PJON_IO_WRITE(_enable_RS485_pin, LOW);
     };
 
-
     /* Pass the Serial port where you want to operate with */
-
+  #if defined(RPI)
+    void set_serial(int16_t serial_port) {
+  #elif defined(ARDUINO)
     void set_serial(Stream *serial_port) {
+  #endif
       serial = serial_port;
     };
 

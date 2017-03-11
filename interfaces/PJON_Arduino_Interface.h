@@ -61,19 +61,19 @@
   /* Serial ----------------------------------------------------------------- */
 
   #ifndef PJON_SERIAL_AVAILABLE
-    #define PJON_SERIAL_AVAILABLE Serial.available
+    #define PJON_SERIAL_AVAILABLE(S) S->available()
   #endif
 
   #ifndef PJON_SERIAL_WRITE
-    #define PJON_SERIAL_WRITE Serial.write
+    #define PJON_SERIAL_WRITE(S, C) S->write(C)
   #endif
 
   #ifndef PJON_SERIAL_READ
-    #define PJON_SERIAL_READ Serial.read
+    #define PJON_SERIAL_READ(S) S->read()
   #endif
 
   #ifndef PJON_SERIAL_FLUSH
-    #define PJON_SERIAL_FLUSH Serial.flush
+    #define PJON_SERIAL_FLUSH(S) S->flush()
   #endif
 
   /* Timing ----------------------------------------------------------------- */

@@ -1,24 +1,76 @@
 
 #### What is an interface?
-PJON uses interfaces to agnostically reach low level methods using the preprocessor, abstracting all architecture related stuff and enhancing portability with no additional memory consumption. An interface is simply a file containing a set of macros pointing to the necessary methods. Interfaces provide users with an easy way to get PJON running on virtually every device able to execute a compiled C++ program, compiling a simple list of method definitions:
+PJON uses interfaces to agnostically handle low level methods using the preprocessor, abstracting all architecture related stuff and enhancing portability without affecting the memory footprint. An interface is simply a file containing a set of macros pointing to the necessary methods. Interfaces provide users with an easy way to port PJON on virtually every architecture able to execute a compiled C++ program, simply filling a list of method definitions. Here as an example the Arduino interface:
 
-#### Input-Output interfaces
-- `PJON_IO_ANALOG_READ` like `analogRead`, it receives 1 parameter, the pin to read
-- `PJON_IO_WRITE` like `digitalWrite` receives 2 parameters, the pin to set and the value (0 or 1)
-- `PJON_IO_READ` like `digitalRead` receives 1 parameter, the pin to read
-- `PJON_IO_MODE` like `pinMode` receives 2 parameters, the pin, and its mode (`INPUT` or `OUTPUT`)
-- `PJON_IO_PULL_DOWN` it receives 1 parameter, the pin to set input low state
+```cpp
+// Use a architecture related constant to conditionally include the interface
+#if defined(ARDUINO)
+  #include <Arduino.h>
+  #include "PJON_IO.h"
+  // Architecture related necessary files inclusion
 
-#### Random number generator interfaces
-- `PJON_RANDOM` receives 1 parameter, the maximum value, returns a random number
-- `PJON_RANDOM_SEED` receives 1 parameter, sets the random seed
+  /* IO methods definition ------------------------------------------------- */
 
-#### Serial interfaces
-- `PJON_SERIAL_AVAILABLE` returns `true` if data was received, `false` if not
-- `PJON_SERIAL_WRITE` sends a byte over Serial, receives 1 parameter, the byte to send
-- `PJON_SERIAL_READ` returns data if received, or -1 if  not
-- `PJON_SERIAL_FLUSH` waits for dispatched data to be transmitted
+  #if !defined(PJON_ANALOG_READ)
+    #define PJON_ANALOG_READ analogRead
+  #endif
 
-#### Timing interfaces
-- `PJON_DELAY_MICROSECONDS` receives 1 parameter, the number of microseconds to delay
-- `PJON_MICROS` returns the number of microseconds since startup
+  #if !defined(PJON_IO_WRITE)
+    #define PJON_IO_WRITE digitalWrite
+  #endif
+
+  #if !defined(PJON_IO_READ)
+    #define PJON_IO_READ digitalRead
+  #endif
+
+  #if !defined(PJON_IO_MODE)
+    #define PJON_IO_MODE pinMode
+  #endif
+
+  #if !defined(PJON_IO_PULL_DOWN)
+    #define PJON_IO_PULL_DOWN(P) \
+      do { \
+        digitalWrite(P, LOW); \
+        pinMode(P, INPUT); \
+      } while(0)
+  #endif
+
+  /* Random ----------------------------------------------------------------- */
+
+  #ifndef PJON_RANDOM
+    #define PJON_RANDOM random
+  #endif
+
+  #ifndef PJON_RANDOM_SEED
+    #define PJON_RANDOM_SEED randomSeed
+  #endif
+
+  /* Serial ----------------------------------------------------------------- */
+
+  #ifndef PJON_SERIAL_AVAILABLE
+    #define PJON_SERIAL_AVAILABLE(S) S->available()
+  #endif
+
+  #ifndef PJON_SERIAL_WRITE
+    #define PJON_SERIAL_WRITE(S, C) S->write(C)
+  #endif
+
+  #ifndef PJON_SERIAL_READ
+    #define PJON_SERIAL_READ(S) S->read()
+  #endif
+
+  #ifndef PJON_SERIAL_FLUSH
+    #define PJON_SERIAL_FLUSH(S) S->flush()
+  #endif
+
+  /* Timing ----------------------------------------------------------------- */
+
+  #ifndef PJON_DELAY_MICROSECONDS
+    #define PJON_DELAY_MICROSECONDS delayMicroseconds
+  #endif
+
+  #ifndef PJON_MICROS
+    #define PJON_MICROS micros
+  #endif
+#endif
+```

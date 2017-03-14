@@ -10,7 +10,6 @@ PJON™ (Padded Jittering Operative Network) is an Arduino compatible, multi-mas
 #### Features
 - Configurable 2 level addressing (device and bus id) for scalable applications
 - Multi-media support with the data link layer abstraction or [Strategy](strategies) framework
-- Configurable strategies inclusion (for memory optimization)
 - Configurable 1 or 2 bytes packet length (max 255 or 65535 bytes)
 - Master-slave or multi-master [dynamic addressing](specification/PJON-dynamic-addressing-specification-v0.1.md)
 - Configurable synchronous and/or asynchronous [acknowledgement](specification/PJON-protocol-acknowledge-specification-v0.1.md) of correct packet sending

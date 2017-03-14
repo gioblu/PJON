@@ -80,7 +80,7 @@ limitations under the License. */
   template<typename Strategy>
   class PJON {
     public:
-      /* Abstract data-link layer class */
+      /* Abstract data link layer class */
       Strategy strategy;
 
       uint16_t config = PJON_TX_INFO_BIT | PJON_ACK_REQ_BIT;

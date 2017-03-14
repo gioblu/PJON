@@ -16,7 +16,7 @@ Compliant implementation versions: PJON 1.0-5.0
 */
 ```
 ###The Padded jittering data link layer
-The first experimental specification of the Padded jittering data link layer has been drafted to propose a new way to transmit data with cheap and low performance microcontrollers without the necessity of hardware interrupts for its working procedure. Thanks to the imposed requirement of non-concurrent and single-task execution, the Padded jittering data-link has a strong resilience also if the communication medium is affected by interference, high capacitance and resistance. Extended tests proved its effectiveness on different media like electricity, radio frequency and light.
+The first experimental specification of the Padded jittering data link layer has been drafted to propose a new way to transmit data with cheap and low performance microcontrollers without the necessity of hardware interrupts for its working procedure. Thanks to the imposed requirement of non-concurrent and single-task execution, the Padded jittering data link has a strong resilience also if the communication medium is affected by interference, high capacitance and resistance. Extended tests proved its effectiveness on different media like electricity, radio frequency and light.
 
 ###Basic concepts
 * Use a pattern of predefined initial padding bits to identify a potential byte transmission

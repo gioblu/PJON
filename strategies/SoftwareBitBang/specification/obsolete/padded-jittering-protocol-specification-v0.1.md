@@ -1,9 +1,9 @@
-- PJDL (Padded Jittering Data Link) specification:
-**[PJDL v0.1](/strategies/SoftwareBitBang/specification/padded-jittering-protocol-specification-v0.1.md)** - [PJDL v1.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) - [PJDLR v1.0](/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
 - PJON (Padded Jittering Operative Network) Protocol specification:
 [v0.1](/specification/PJON-protocol-specification-v0.1.md) - [v0.2](/specification/PJON-protocol-specification-v0.2.md) - [v0.3](/specification/PJON-protocol-specification-v0.3.md) - [v1.0](/specification/PJON-protocol-specification-v1.0.md)
 - Acknowledge specification: [v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md)
 - Dynamic addressing specification: [v0.1](/specification/PJON-dynamic-addressing-specification-v0.1.md)
+- PJDL (Padded Jittering Data Link) specification:
+**[PJDL v0.1](/strategies/SoftwareBitBang/specification/padded-jittering-protocol-specification-v0.1.md)** - [PJDL v1.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) - [PJDLR v1.0](/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
 
 ```cpp
 /*

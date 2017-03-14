@@ -1,9 +1,7 @@
-- PJDL (Padded Jittering Data Link) specification:
-[PJDL v0.1](/strategies/SoftwareBitBang/specification/padded-jittering-protocol-specification-v0.1.md) - [PJDL v1.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) - [PJDLR v1.0](/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
-- PJON (Padded Jittering Operative Network) Protocol specification:
-[v0.1](/specification/PJON-protocol-specification-v0.1.md) - [v0.2](/specification/PJON-protocol-specification-v0.2.md) - [v0.3](/specification/PJON-protocol-specification-v0.3.md) - [v1.0](/specification/PJON-protocol-specification-v1.0.md)
+- PJON (Padded Jittering Operative Network) Protocol specification: [v1.0](/specification/PJON-protocol-specification-v1.0.md)
 - Acknowledge specification: **[v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md)**
 - Dynamic addressing specification: [v0.1](/specification/PJON-dynamic-addressing-specification-v0.1.md)
+- PJDL (Padded Jittering Data Link) specification: [PJDL v1.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) - [PJDLR v1.0](/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
 
 ```cpp
 /*
@@ -100,7 +98,7 @@ TX END-------ACK-><-0-00001111-15-0001-0002-0-99-CRC-<-ACK-><-0-00001111-15-0001
  |ID| HEADER |LENGTH|BUS ID |BUS ID |ID|PACKET ID|CONTENT|CRC|   |ACK|
 >|0 |00001111|  16  |0.0.0.2|0.0.0.1|0 |   99    |  64   |   |> <| 6 |
  |__|________|______|_______|_______|__|_________|_______|___|   |___|
-                     |RX INFO| TX INFO  |
+                    |RX INFO| TX INFO  |
 ```
 3) Device `0` of bus `0.0.0.2` sends an asynchronous acknowledgement packet to device `0` of bus `0.0.0.1`. Router has a route to device `0` of bus `0.0.0.1` so responds with a synchronous acknowledgement and device `0` of bus `0.0.0.2` ends the transaction after receiving a synchronous acknowledgement by the router
 ```cpp

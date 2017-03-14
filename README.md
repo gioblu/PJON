@@ -21,18 +21,18 @@ PJON™ (Padded Jittering Operative Network) is an Arduino compatible, multi-mas
 - Error handling
 
 #### PJON (Padded Jittering Operative Network) Protocol specification
-- PJON [v0.1](specification/PJON-protocol-specification-v0.1.md)  - [v0.2](specification/PJON-protocol-specification-v0.2.md) - [v0.3](specification/PJON-protocol-specification-v0.3.md) - [v1.0](specification/PJON-protocol-specification-v1.0.md)
+- PJON [v1.0](specification/PJON-protocol-specification-v1.0.md)
 - PJON Acknowledge [v0.1](specification/PJON-protocol-acknowledge-specification-v0.1.md)
 - PJON Dynamic addressing [v0.1](specification/PJON-dynamic-addressing-specification-v0.1.md)
 
 #### PJDL (Padded Jittering Data Link) specification
-- PJDL [v0.1](strategies/SoftwareBitBang/specification/padded-jittering-protocol-specification-v0.1.md) - [v1.0](strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md)
+- PJDL [v1.0](strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md)
 - PJDLR [v1.0](strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
 
 #### Compliant tools
-- [saleae-pjon-protocol-analyzer](https://github.com/aperepel/saleae-pjon-protocol-analyzer) by Andrew Grande
-- [PJON-python](https://github.com/Girgitt/PJON-python) by Zbigniew Zasieczny
 - [ModuleInterface](https://github.com/fredilarsen/ModuleInterface) by Fred Larsen
+- [PJON-python](https://github.com/Girgitt/PJON-python) by Zbigniew Zasieczny
+- [saleae-pjon-protocol-analyzer](https://github.com/aperepel/saleae-pjon-protocol-analyzer) by Andrew Grande
 
 PJON™ is a self-funded, no-profit open-source project created (in 2010) and mantained by Giovanni Blu Mitolo with the support ot the internet community if you want to see the PJON project growing with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
 

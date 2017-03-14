@@ -2,7 +2,7 @@
 **Medium:** Wire |
 **Pins used:** 1 / 2
 
-SoftwareBitBang is the default data link layer strategy used by PJON. This implementation is based on `micros()` and `delayMicroseconds()`. It is totally software emulated and makes no use of dedicated timers or interrupt driven strategies to handle communication. It is designed to have a small memory footprint and to be extremely resilient to interference and timing inaccuracies. Thanks to the use of a dedicated `PJON_IO` library, can be achieved fast and reliable cross-architecture communication through one or two pins. It complies with [PJDL v1.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) Data link layer specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=Vg5aSlD-VCU) for a brief showcase of its features.
+SoftwareBitBang is the default data link layer used by PJON and it is based on `micros` and `delayMicroseconds`. It needs 1 or optionally 2 wires and no additional hardware to handle communication with a software emulated implementation. It supports a star configuration network with many devices transmitting and receiving over the same 1 or 2 wires. It is designed to work with most of the Arduino compatible boards, have a small memory footprint and to be extremely resilient to interference. Thanks to the use of a dedicated `PJON_IO` library, can be achieved fast and reliable cross-architecture communication through one or two pins. It complies with [PJDL v1.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) Data link layer specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=Vg5aSlD-VCU) for a brief showcase of its features.
 
 #### Compatibility
 - ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
@@ -22,7 +22,7 @@ PJON works in 3 different communication modes, `STANDARD`, `FAST` and `OVERDRIVE
 
 When including and using SoftwareBitBang, as data link layer of a PJON bus, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because SoftwareBitBang is completely software emulated strategy with a non blocking implementation, transforming a painfull walk to the hill in a nice flight.
 
-Single wire simplicity let you to experiment quickly and with creativity. The first suggested test, at the tester's risk, is to let two arduino boards communicate through a living body touching with the left hand the digital port of the first board (5v 40ma, harmless) and with the right the port of the other one. It is stunning to see highly accurate digital communication running inside a living biological body. This opens the mind to possible creative solutions.
+Single wire simplicity let you to experiment quickly and with creativity. The first suggested test, at the tester's risk, is to let two arduino boards communicate [through a living body](https://www.youtube.com/watch?v=caMit7nzJsM) touching with the left hand the digital port of the first board (5v 40ma, harmless) and with the right the port of the other one. It is stunning to see highly accurate digital communication running inside a living biological body. This opens the mind to possible creative solutions.
 
 #### How to use SoftwareBitBang
 Pass the `SoftwareBitBang` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy. All the other necessary information is present in the general [Documentation](/documentation).
@@ -84,6 +84,5 @@ to be sent again in future until is received or `PJON_MAX_ATTEMPTS` sending atte
 reached, but a certain amount of bandwidth can be wasted. Structure intelligently
 your loop cycle to avoid huge blind timeframes.
 - `SoftwareBitBang` strategy can have compatibility issues with codebases that
-are using interrupts in their procedure, like for example the Servo library.
-Reliability or bandwidth loss can be experienced because of the cyclical
-interruptions made by third party interrupt driven software to the PJON code.
+are using interrupts, reliability or bandwidth loss can be experienced because of the cyclical
+interruptions made by third party software to the PJON procedure.

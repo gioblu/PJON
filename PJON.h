@@ -495,6 +495,7 @@ limitations under the License. */
                   new_packet_id(),
                   i
                 );
+                packets[i].attempts = 0;
                 return true;
               }
               remove(i);

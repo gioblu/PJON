@@ -20,12 +20,14 @@ Templates can be scary at first sight, but they are quite straight-forward and e
 ```
 The PJON bus runs by default through the [SoftwareBitBang](/wiki/SoftwareBitBang) strategy. There are 5 strategies available to communicate data with PJON on various media:
 
-- [SoftwareBitBang](/strategies/SoftwareBitBang) | **Medium:** Wire | **Pins used:** 1 or 2
-- [AnalogSampling](/strategies/AnalogSampling)** | **Medium:** Light | **Pins used:** 1 (analog) or 2 (analog + digital)
-- [EthernetTCP](/strategies/EthernetTCP) | **Medium:** Ethernet port, wired or WiFi
-- [LocalUDP](/strategies/LocalUDP) | **Medium:** Ethernet port, wired or WiFi
-- [OverSampling](/strategies/OverSampling) | **Medium:** Radio, Wire | **Pins used:** 1 or 2
-- [ThroughSerial](/strategies/ThroughSerial) | **Medium:** Hardware Serial port | **Pins used:** 2
+| Strategy      | Medium        | Pins needed   |
+| ------------- | ------------- | ------------- |
+| [SoftwareBitBang](/strategies/SoftwareBitBang)  | wire   | 1 or 2 |
+| [AnalogSampling](/strategies/AnalogSampling)  | light  | 1 or 2  |
+| [EthernetTCP](/strategies/EthernetTCP)  | wired or WiFi  | Ethernet port  |
+| [LocalUDP](/strategies/LocalUDP)  | wired or WiFi  | Ethernet port  |
+| [OverSampling](/strategies/OverSampling)  | radio, wire  | 1 or 2 |
+| [ThroughSerial](/strategies/ThroughSerial)  | serial port  | 1 or 2 |
 
 By default all strategies files are included. To reduce memory footprint simply add for example `#define PJON_INCLUDE_SWBB` before PJON include. You can define more than one strategy related constant if necessary.
 

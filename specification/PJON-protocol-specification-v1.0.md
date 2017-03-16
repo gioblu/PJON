@@ -39,10 +39,10 @@ In the graph below is shown the protocol stack model proposed. The differences b
 | 5 Session layer                               |
 | Session                                       |
 |-----------------------------------------------|
-| 4 Network layer                               |
+| 4 Transport layer                             |
 | Routing, segmentation                         |
 |-----------------------------------------------|
-| 3 Protocol layer: PJON                        |
+| 3 Network layer: PJON                         |
 | Addressing, reliable packet transmission,     |
 | multiplexing, traffic control,                |
 | asynchronous acknowledgement                  |

@@ -20,37 +20,21 @@ Templates can be scary at first sight, but they are quite straight-forward and e
 ```
 The PJON bus runs by default through the [SoftwareBitBang](/wiki/SoftwareBitBang) strategy. There are 5 strategies available to communicate data with PJON on various media:
 
-**[EthernetTCP](/strategies/EthernetTCP)** | **Medium:** Ethernet port, wired or WiFi
-
-With the EthernetTCP PJON strategy, multiple devices with Ethernet ports can use PJON to communicate with each other on a LAN, WAN or across the Internet.
-
-**[LocalUDP](/strategies/LocalUDP)** | **Medium:** Ethernet port, wired or WiFi
-
-With the LocalUDP PJON strategy, multiple devices with Ethernet ports can use PJON to communicate with each other on a local subnet, wired or over WiFi or both.
-
-**[OverSampling](/strategies/OverSampling)** | **Medium:** Radio, Wire |
-**Pins used:** 1 or 2
-
-Oversampling strategy comes from the [PJON_ASK](https://github.com/gioblu/PJON_ASK) repository, and it was integrated in the PJON repository from version 3.0 beta, as a data link layer strategy. Bits are over-sampled to have high resilience in high interference scenarios, like using an ASK/FSK cheap radio transceivers in an urban environment. It is tested effectively with many versions of the ASK/FSK 315/433Mhz modules available on the market with up to 5km range, but it works nominally also through wires and the human body.
-
-**[SoftwareBitBang](/strategies/SoftwareBitBang)** | **Medium:** Wire | **Pins used:** 1 or 2
-
-SoftwareBitBang is the default data link layer strategy used by the PJON template object. This implementation is based on `micros()` and `delayMicroseconds()`. It makes no use of dedicated timers or interrupt driven strategies to handle communication. It is designed to have a small memory footprint and to be extremely resilient to interference and timing inaccuracies. Thanks to the use of a dedicated PJON_IO library, can be achieved fast and reliable cross-architecture communication through one or two pins.
-
-**[ThroughSerial](/strategies/ThroughSerial)** | **Medium:** Hardware Serial port |
-**Pins used:** 2
-
-With ThroughSerial data link layer strategy, PJON can run through a software emulated or hardware Serial port. Thanks to this choice it is possible to leverage of virtually all the arduino compatible serial transceivers, like RS485, radio or infrared modules, still having PJON unchanged on top.
-
+- [SoftwareBitBang](/strategies/SoftwareBitBang) | **Medium:** Wire | **Pins used:** 1 or 2
+- [AnalogSampling](/strategies/AnalogSampling)** | **Medium:** Light | **Pins used:** 1 (analog) or 2 (analog + digital)
+- [EthernetTCP](/strategies/EthernetTCP) | **Medium:** Ethernet port, wired or WiFi
+- [LocalUDP](/strategies/LocalUDP) | **Medium:** Ethernet port, wired or WiFi
+- [OverSampling](/strategies/OverSampling) | **Medium:** Radio, Wire | **Pins used:** 1 or 2
+- [ThroughSerial](/strategies/ThroughSerial) | **Medium:** Hardware Serial port | **Pins used:** 2
 
 By default all strategies files are included. To reduce memory footprint simply add for example `#define PJON_INCLUDE_SWBB` before PJON include. You can define more than one strategy related constant if necessary.
 
 Supported definitions:
+- `PJON_INCLUDE_SWBB` includes SoftwareBitBang
 - `PJON_INCLUDE_AS` includes AnalogSampling
 - `PJON_INCLUDE_ETCP` includes EthernetTCP
 - `PJON_INCLUDE_LUDP` includes LocalUDP
 - `PJON_INCLUDE_OS` includes OverSampling
-- `PJON_INCLUDE_SWBB` includes SoftwareBitBang
 - `PJON_INCLUDE_TS` includes ThroughSerial
 - `PJON_INCLUDE_NONE` no strategy file included
 

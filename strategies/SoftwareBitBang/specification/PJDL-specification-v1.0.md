@@ -15,17 +15,17 @@ Related work: /strategies/SoftwareBitBang/
 Compliant implementation versions: PJON 6.0 and following
 */
 ```
-###PJDL (Padded Jittering Data Link)
+### PJDL (Padded Jittering Data Link)
 PJDL (Padded Jittering Data Link) has been specified to enable a new way to transmit data in simplex and half-duplex mode using cheap and low performance microcontrollers, totally software emulated, without the need of hardware interrupts for its working procedure. It is designed to support many devices sharing the same medium, to avoid collisions and operate in spite of interference. Extended tests proved its effectiveness on different media like electricity, radio frequency and light.
 
-###Basic concepts
+### Basic concepts
 * Use a pattern of predefined initial padding bits to identify a potential byte transmission
 * Use the falling edge from 1 to 0, present in padding bits, to achieve byte level synchronization
 * Detect interference or absence of communication at byte level
 * Enable channel analysis and collision avoidance
 * Enable a collision free synchronous acknowledgement pattern
 
-####Byte transmission
+#### Byte transmission
 Every byte is prepended with 2 synchronization padding bits and transmission occurs LSB-first. The first is a longer than standard logic 1 followed by a standard logic 0. The reception tecnique is based on finding a logic 1 as long as the first padding bit within a certain threshold, synchronizing to its falling edge and checking if it is followed by a logic 0. If this pattern is detected, reception starts, if not, interference, synchronization loss or simply absence of communication is detected at byte level.
 ```cpp  
  __________ ___________________________
@@ -51,7 +51,7 @@ Before a packet transmission, the medium is analyzed to detect ongoing communica
 ```
 In a scenario where a stream of bytes is coming, low performance or clock inaccurate microcontrollers can be correctly synchronized back with transmitter every byte (thanks to padding bits) and easily detect interference or the end of transmission.
 
-####Synchronous acknowledgement
+#### Synchronous acknowledgement
 After packet reception, CRC is calculated and a single character is transmitted: `PJON_ACK` (value 6) if the packet's content is correct or `PJON_NAK` (value 21) if an error is detected.
 ```cpp  
 Transmission                                               Response

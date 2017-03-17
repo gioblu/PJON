@@ -14,11 +14,16 @@ Before approaching to the PJON class it is possible to define the packets and co
 /* PJON can store up to 1 packet of up to
    20 characters - packet overhead (from 4 to 13 depending by configuration) */
 ```
-Templates can be scary at first sight, but they are quite straight-forward and efficient. Lets start coding, looking how to instantiate in the simplest way the `PJON` object that in the example is called bus with a wire compatible physical layer:
+Templates can be scary at first sight, but they are quite straight-forward and efficient:
 ```cpp  
   PJON<SoftwareBitBang> bus;
 ```
-The PJON bus runs by default through the [SoftwareBitBang](/wiki/SoftwareBitBang) strategy. There are 5 strategies available to communicate data with PJON on various media:
+In the example above the PJON object is instanced passing [SoftwareBitBang](/wiki/SoftwareBitBang) strategy as template parameter. Strategies are classes abstracting the data-link layer, making PJON easy to be uses on different media. It is possible to instance more than one PJON object with different strategies:
+```cpp  
+  PJON<SoftwareBitBang> wiredBus;
+  PJON<EthernetTCP>     tcpBus;
+```
+There are 5 strategies available to communicate data with PJON:
 
 | Strategy      | Medium        | Pins needed   |
 | ------------- | ------------- | ------------- |
@@ -29,7 +34,7 @@ The PJON bus runs by default through the [SoftwareBitBang](/wiki/SoftwareBitBang
 | [OverSampling](/strategies/OverSampling)  | radio, wire  | 1 or 2 |
 | [ThroughSerial](/strategies/ThroughSerial)  | serial port  | 1 or 2 |
 
-By default all strategies files are included. To reduce memory footprint simply add for example `#define PJON_INCLUDE_SWBB` before PJON include. You can define more than one strategy related constant if necessary.
+By default all strategies are included. To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before PJON inclusion, to include only `SoftwareBitBang` strategy. You can define more than one strategy related constant if necessary.
 
 Supported definitions:
 - `PJON_INCLUDE_SWBB` includes SoftwareBitBang
@@ -40,7 +45,7 @@ Supported definitions:
 - `PJON_INCLUDE_TS` includes ThroughSerial
 - `PJON_INCLUDE_NONE` no strategy file included
 
-Configure network state (local or shared). If local, so if passing `false`, the PJON protol layer procedure is based on a single byte device id to univocally communicate with a device; if in shared mode, so passing `true`, the protocol adopts a 4 byte bus id to univocally communicate with a device in a certain bus:
+Configure network state (local or shared). If local (passing `false`), the PJON protol layer procedure is based on a single byte device id to univocally communicate with a device; if in shared mode (passing `true`) the protocol adopts also a 4 byte bus id to univocally communicate with a device in a certain bus:
 ```cpp  
   bus.set_shared_network(true);
 ```

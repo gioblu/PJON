@@ -32,7 +32,7 @@ void error_handler(uint8_t code, uint8_t data) {
 }
 ```
 
-Now inform the bus to call the error handler function in case of error:
+Now inform the instance to call `error_handler` in case of error:
 ```cpp
 bus.set_error(error_handler);
 ```

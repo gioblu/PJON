@@ -25,4 +25,4 @@ If you don't need bidirectional communication and you have only the transmitter 
  bus.strategy.set_pins(11, PJON_NOT_ASSIGNED); // Only receiver
 ```
 
-See other strategies readme to have additional information on their dedicated physical layer configuration.
+See the readme of the strategy you are using to have additional information on its dedicated physical layer configuration.

@@ -6,7 +6,7 @@
 - [IO setup](/documentation/io-setup.md)
 
 
-Before approaching to the PJON class it is possible to define the packets and content buffer length.  Pre-defining `PJON_MAX_PACKETS` and `PJON_PACKET_MAX_LENGTH` it is possible to configure this constants to reach the project and memory requirements. Obviously, the less memory is dedicated to this buffers, the more memory can be used for something else.
+Before instantiating the PJON class it is possible to define the packets and content buffer length.  Predefining `PJON_MAX_PACKETS` and `PJON_PACKET_MAX_LENGTH` it is possible to configure this constraints to reach the project memory requirements. Obviously, the less memory is dedicated to this buffers, the more memory can be used for something else.
 ```cpp  
 #define PJON_MAX_PACKETS 1
 #define PJON_PACKET_MAX_LENGTH 20
@@ -18,12 +18,11 @@ Templates can be scary at first sight, but they are quite straight-forward and e
 ```cpp  
   PJON<SoftwareBitBang> bus;
 ```
-In the example above the PJON object is instanced passing [SoftwareBitBang](/wiki/SoftwareBitBang) strategy as template parameter. Strategies are classes abstracting the data-link layer, making PJON easy to be uses on different media. It is possible to instance more than one PJON object with different strategies:
+In the example above the PJON object is instantiated passing [SoftwareBitBang](/wiki/SoftwareBitBang) strategy as template parameter. Strategies are classes abstracting the data-link layer, making PJON easy to be uses on different media. It is possible to instantiate more than one PJON object with different strategies in the same sketch:
 ```cpp  
   PJON<SoftwareBitBang> wiredBus;
   PJON<EthernetTCP>     tcpBus;
 ```
-There are 5 strategies available to communicate data with PJON:
 
 | Strategy      | Medium        | Pins needed   |
 | ------------- | ------------- | ------------- |
@@ -63,7 +62,7 @@ If you are interested in including the asynchronous acknowledgement feature in y
 #define PJON_INCLUDE_ASYNC_ACK true
 #include <PJON.h>
 ```
-Configure asynchronous acknowledge:
+Configure asynchronous acknowledgment:
 ```cpp  
   bus.set_asynchronous_acknowledge(true); // Enable async ack
 ```

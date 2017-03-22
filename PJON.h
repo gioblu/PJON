@@ -168,8 +168,13 @@ limitations under the License. */
           if(!p_id && async_ack) p_id = new_packet_id();
         #endif
 
+        if(new_length > 15 && !(header & PJON_CRC_BIT)) {
+          header |= PJON_CRC_BIT;
+          new_length = (uint16_t)(length + packet_overhead(header));
+        }
+
         if(new_length > 255 && !extended_length) {
-          header |= (PJON_EXT_LEN_BIT | PJON_CRC_BIT);
+          header |= PJON_EXT_LEN_BIT;
           new_length = (uint16_t)(length + packet_overhead(header));
         }
 

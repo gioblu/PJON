@@ -372,12 +372,12 @@ limitations under the License. */
               ( // Avoid mode conflicting config packet if not a router
                 ((data[i] & PJON_MODE_BIT) != (config & PJON_MODE_BIT)) &&
                 !_router
-              ) || ( // Avoid synchronous acknowledgement request if broadcast
+              ) || ( // Avoid acknowledgement request if broadcast
                 data[0] == PJON_BROADCAST &&
-                (!(data[i] & PJON_ACK_MODE_BIT) && (data[i] & PJON_ACK_REQ_BIT))
+                ((data[i] & PJON_ACK_MODE_BIT) || (data[i] & PJON_ACK_REQ_BIT))
               ) || ( // Avoid asynchronous acknowledgement conflicting config
                 ((data[i] & PJON_ACK_MODE_BIT) && !(data[i] & PJON_TX_INFO_BIT))
-              ) || ( // Avoid conflicting length/CRC config, use CRC32 if l > 15)
+              ) || ( // Avoid length/CRC conflicting config, use CRC32 if l > 15
                 ((data[i] & PJON_EXT_LEN_BIT) && !(data[i] & PJON_CRC_BIT))
               )
             ) return PJON_BUSY;

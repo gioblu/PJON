@@ -334,7 +334,7 @@ limitations under the License. */
             #if(PJON_INCLUDE_ASYNC_ACK)
               if(packet_info.header & PJON_ACK_MODE_BIT)
                 packet_info.id =
-                  packet[13 + offset] << 8 | packet[12 + offset] & 0xFF;
+                  (packet[13 + offset] << 8) | (packet[12 + offset] & 0xFF);
             #endif
           }
         } else if((packet_info.header & PJON_TX_INFO_BIT) != 0) {
@@ -342,7 +342,7 @@ limitations under the License. */
           #if(PJON_INCLUDE_ASYNC_ACK)
             if(packet_info.header & PJON_ACK_MODE_BIT)
               packet_info.id =
-                packet[5 + offset] << 8 | packet[4 + offset] & 0xFF;
+                (packet[5 + offset] << 8) | (packet[4 + offset] & 0xFF);
           #endif
         }
       };

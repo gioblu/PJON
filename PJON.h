@@ -391,7 +391,7 @@ limitations under the License. */
           }
 
           if((i == (3 + extended_header)) && extended_length) {
-            length = data[i - 1] << 8 | data[i] & 0xFF;
+            length = (data[i - 1] << 8) | (data[i] & 0xFF);
             if(length < 5 || length > PJON_PACKET_MAX_LENGTH) return PJON_FAIL;
           }
 

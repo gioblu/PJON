@@ -108,7 +108,7 @@ limitations under the License. */
   #define PJON_ID_ACQUISITION_FAIL 105
   #define PJON_DEVICES_BUFFER_FULL 254
 
-  /* CONSTRAINTS:
+  /* CONSTRAINTS: */
 
   /* Packet buffer length, if full PJON_PACKETS_BUFFER_FULL error is thrown.
      The packet buffer is preallocated, so its length strongly affects

@@ -177,9 +177,9 @@ limitations under the License. */
       /* Master error handler: */
 
       void error_handler(uint8_t code, uint8_t data) {
+        _master_error(code, data);
         if(code == PJON_CONNECTION_LOST)
           delete_id_reference(PJON<Strategy>::packets[data].content[0]);
-        _master_error(code, data);
       };
 
       static void static_error_handler(uint8_t code, uint8_t data) {

@@ -93,14 +93,14 @@ public:
     /* Begin method, to be called before transmission or reception:
        (returns always true) */
 
-    boolean begin(uint8_t additional_randomness = 0) {
+    bool begin(uint8_t additional_randomness = 0) {
       return true;
     };
 
 
     /* Check if the channel is free for transmission */
 
-    boolean can_start() {
+    bool can_start() {
       check_udp();
       return true;
     };
@@ -137,12 +137,12 @@ public:
       empty_buffer();
       // TODO: Improve robustness by ignoring packets not from the previous receiver
       // (Perhaps not that important as long as ACK/NAK responses are directed, not broadcast)
-      uint32_t start = micros();
+      uint32_t start = PJON_MICROS();
       uint16_t result = PJON_FAIL;
       do {
         result = receive_byte();
         if (result == PJON_ACK || result == PJON_NAK) return result;
-     } while ((uint32_t)(micros() - start) < LUDP_RESPONSE_TIMEOUT);
+     } while ((uint32_t)(PJON_MICROS() - start) < LUDP_RESPONSE_TIMEOUT);
       return result;
     };
 

@@ -1,9 +1,9 @@
 
-####What is a Strategy?
+#### What is a Strategy?
 PJON codebase uses strategies to physically communicate through the medium used, abstracting the data link layer from its procedure. We propose 6 strategies to communicate data through various media, take a look at the [strategies video introduction](https://www.youtube.com/watch?v=yPu45xoAHGg) for a brief showcase of their features. A Strategy is a class containing the back-off configuration and a set of methods able to send and receive messages:
 
 ```cpp
-boolean begin(uint8_t additional_randomness = 0)
+bool begin(uint8_t additional_randomness = 0)
 ```
 Returns `true` if the strategy is correctly initialized (receives a optional uint8_t used for randomness)
 
@@ -13,7 +13,7 @@ uint32_t back_off(uint8_t attempts)
 Returns the suggested delay related to the attempts passed as parameter
 
 ```cpp
-boolean can_start()
+bool can_start()
 ```
 Returns `true` if the medium is free for use and `false` if the medium is in use by some other device
 
@@ -64,8 +64,8 @@ directory and write the necessary file `YourStrategyName.h`:
 class YourStrategyName {
   public:
     uint32_t back_off(uint8_t attempts) { ... };
-    boolean  begin(uint8_t additional_randomness) { ... };
-    boolean  can_start() { ... };
+    bool  begin(uint8_t additional_randomness) { ... };
+    bool  can_start() { ... };
     uint8_t  get_max_attempts() { ... };
     uint16_t receive_byte() { ... };
     uint16_t receive_response() { ... };

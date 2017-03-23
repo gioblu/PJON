@@ -1,11 +1,11 @@
-- [Addressing](https://github.com/gioblu/PJON/tree/7.0/documentation/addressing.md)
-- [Configuration](https://github.com/gioblu/PJON/tree/7.0/documentation/configuration.md)
-- **[Data reception](https://github.com/gioblu/PJON/tree/7.0/documentation/data-reception.md)**
-- [Data transmission](https://github.com/gioblu/PJON/tree/7.0/documentation/data-transmission.md)
-- [Error handling](https://github.com/gioblu/PJON/tree/7.0/documentation/error-handling.md)
-- [IO setup](https://github.com/gioblu/PJON/tree/7.0/documentation/io-setup.md)
+- [Addressing](/documentation/addressing.md)
+- [Configuration](/documentation/configuration.md)
+- **[Data reception](/documentation/data-reception.md)**
+- [Data transmission](/documentation/data-transmission.md)
+- [Error handling](/documentation/error-handling.md)
+- [IO setup](/documentation/io-setup.md)
 
-Define a `void function` that will be called if a correct message is received. This function receives 3 parameters: the transmission content, its length and a pointer to a `PJON_Packet_Info` data structure that contains all the info contained in the packet metadata:
+Define a function of type `void` that will be called if a correct message is received. This function receives 3 parameters: the received payload, its length and a pointer to a data structure of type `PJON_Packet_Info` that contains all packet's metadata:
 ```cpp
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   /* Make use of the payload before sending something, the buffer where payload points to is
@@ -43,7 +43,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
   Serial.println(length);
 };
 ```
-Inform the bus to call `receiver_function` when a correct message is received:
+Inform the instance to call `receiver_function` when a correct message is received:
 ```cpp
 bus.set_receiver(receiver_function);
 ```

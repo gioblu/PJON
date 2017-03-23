@@ -1,7 +1,7 @@
 
  /*-O//\           __     __
    |-gfo\         |__| | |  | |\ | ™
-   |!y°o:\        |  __| |__| | \| v7.0
+   |!y°o:\        |  __| |__| | \| v7.1
    |y"s§+`\       multi-master, multi-media communications bus system framework
   /so+:-..`\      Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
@@ -84,14 +84,14 @@ limitations under the License. */
   #define PJON_TO_BE_SENT 74
 
   /* HEADER BITS DEFINITION: */
-  #define PJON_MODE_BIT     B00000001 // 1 - Shared | 0 - Local
-  #define PJON_TX_INFO_BIT  B00000010 // 1 - Sender device id + Sender bus id if shared | 0 - No info inclusion
-  #define PJON_ACK_REQ_BIT  B00000100 // 1 - Request acknowledge | 0 - Do not request acknowledge
-  #define PJON_ACK_MODE_BIT B00001000 // 1 - Asynchronous acknowledge | 0 - Synchronous acknowledge
-  #define PJON_ADDRESS_BIT  B00010000 // 1 - Addressing related | 0 - Not addressing related
-  #define PJON_CRC_BIT      B00100000 // 1 - CRC32 | 0 - CRC8
-  #define PJON_EXT_LEN_BIT  B01000000 // 1 - 2 bytes length | 0 - 1 byte length
-  #define PJON_EXT_HEAD_BIT B10000000 // 1 - 2 bytes header | 0 - 1 byte header
+  #define PJON_MODE_BIT       0B00000001 // 1 - Shared | 0 - Local
+  #define PJON_TX_INFO_BIT    0B00000010 // 1 - Sender device id + Sender bus id if shared | 0 - No info inclusion
+  #define PJON_ACK_REQ_BIT    0B00000100 // 1 - Request acknowledge | 0 - Do not request acknowledge
+  #define PJON_ACK_MODE_BIT   0B00001000 // 1 - Asynchronous acknowledge | 0 - Synchronous acknowledge
+  #define PJON_ADDRESS_BIT    0B00010000 // 1 - Addressing related | 0 - Not addressing related
+  #define PJON_CRC_BIT        0B00100000 // 1 - CRC32 | 0 - CRC8
+  #define PJON_EXT_LEN_BIT    0B01000000 // 1 - 2 bytes length | 0 - 1 byte length
+  #define PJON_EXT_HEAD_BIT   0B10000000 // 1 - 2 bytes header | 0 - 1 byte header
   /* EXTENDED HEADER BITS DEFINITION: */
   #define PJON_ROUTING_BIT    0B0100000000000000 // 1 - Routing request 0 - No routing requested
   #define PJON_SEGM_BIT       0B0010000000000000 // 1 - Segmentated | 0 - Not segmented
@@ -108,7 +108,7 @@ limitations under the License. */
   #define PJON_ID_ACQUISITION_FAIL 105
   #define PJON_DEVICES_BUFFER_FULL 254
 
-  /* CONSTRAINTS:
+  /* CONSTRAINTS: */
 
   /* Packet buffer length, if full PJON_PACKETS_BUFFER_FULL error is thrown.
      The packet buffer is preallocated, so its length strongly affects
@@ -144,7 +144,7 @@ limitations under the License. */
      Maximum number of device id collisions during auto-addressing */
   #define PJON_MAX_ACQUIRE_ID_COLLISIONS 10
   /* Delay between device id acquisition and self request */
-  #define PJON_ACQUIRE_ID_DELAY        1250
+  #define PJON_ACQUIRE_ID_DELAY        1000
   /* Maximum id scan time (6 seconds) */
   #define PJON_ID_SCAN_TIME         6000000
   /* Master free id broadcast response interval (0.1 seconds) */

@@ -30,7 +30,7 @@ void error_handler(uint8_t code, uint8_t data) {
   }
   if(code == PJON_PACKETS_BUFFER_FULL) {
     Serial.print("Packet buffer is full, has now a length of ");
-    Serial.println(data, DEC);
+    Serial.println(bus.packets[data].content[0], DEC);
     Serial.println("Possible wrong bus configuration!");
     Serial.println("higher PJON_MAX_PACKETS if necessary.");
   }

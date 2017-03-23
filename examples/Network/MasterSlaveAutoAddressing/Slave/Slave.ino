@@ -21,7 +21,7 @@ void setup() {
 void error_handler(uint8_t code, uint8_t data) {
   if(code == PJON_CONNECTION_LOST) {
     Serial.print("Connection lost with master ");
-    Serial.println(data);
+    Serial.println(bus.packets[data].content[0], DEC);
   }
   if(code == PJON_ID_ACQUISITION_FAIL) {
     Serial.print("Unable to acquire an id: ");

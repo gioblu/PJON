@@ -37,7 +37,6 @@
 #endif
 
 #include "Timing.h"
-#include "../../utils/PJON_IO.h" // Dedicated version of digitalWriteFast
 
 class OverSampling {
   public:
@@ -55,8 +54,8 @@ class OverSampling {
     /* Begin method, to be called before transmission or reception:
        (returns always true) */
 
-    boolean begin(uint8_t additional_randomness = 0) {
-      delay(random(0, OS_INITIAL_DELAY) + additional_randomness);
+    bool begin(uint8_t additional_randomness = 0) {
+      delay(PJON_RANDOM(OS_INITIAL_DELAY) + additional_randomness);
       PJON_IO_PULL_DOWN(_input_pin);
       if(_output_pin != _input_pin)
         PJON_IO_PULL_DOWN(_output_pin);
@@ -68,18 +67,18 @@ class OverSampling {
     If receiving 10 bits no 1s are detected
     there is no active transmission */
 
-    boolean can_start() {
-      delayMicroseconds(random(0, OS_COLLISION_DELAY));
+    bool can_start() {
+      PJON_DELAY_MICROSECONDS(PJON_RANDOM(OS_COLLISION_DELAY));
       float value = 0.5;
-      unsigned long time = micros();
+      unsigned long time = PJON_MICROS();
       PJON_IO_MODE(_input_pin, INPUT);
-      while((uint32_t)(micros() - time) < OS_BIT_SPACER)
+      while((uint32_t)(PJON_MICROS() - time) < OS_BIT_SPACER)
         value = PJON_IO_READ(_input_pin);
       if(value > 0.5) return false;
       value = 0.5;
       for(uint8_t i = 0; i < 10; i++, value = 0.5) {
-        time = micros();
-        while((uint32_t)(micros() - time) < OS_BIT_WIDTH)
+        time = PJON_MICROS();
+        while((uint32_t)(PJON_MICROS() - time) < OS_BIT_WIDTH)
           value = (value * 0.999)  + (PJON_IO_READ(_input_pin) * 0.001);
         if(value > 0.5) return false;
       }
@@ -97,18 +96,18 @@ class OverSampling {
     /* Handle a collision: */
 
     void handle_collision() {
-      delayMicroseconds(random(0, OS_COLLISION_DELAY));
+      PJON_DELAY_MICROSECONDS(PJON_RANDOM(OS_COLLISION_DELAY));
     };
 
 
     /* Read a byte from the pin */
 
     uint8_t read_byte() {
-      uint8_t byte_value = B00000000;
+      uint8_t byte_value = 0B00000000;
       for(uint8_t i = 0; i < 8; i++) {
-        unsigned long time = micros();
+        unsigned long time = PJON_MICROS();
         float value = 0.5;
-        while((uint32_t)(micros() - time) < OS_BIT_WIDTH)
+        while((uint32_t)(PJON_MICROS() - time) < OS_BIT_WIDTH)
           value = ((value * 0.999) + (PJON_IO_READ(_input_pin) * 0.001));
         byte_value += (value > 0.5) << i;
       }
@@ -135,19 +134,19 @@ class OverSampling {
       if(_output_pin != PJON_NOT_ASSIGNED && _output_pin != _input_pin)
         PJON_IO_PULL_DOWN(_output_pin);
       float value = 0.5;
-      unsigned long time = micros();
+      unsigned long time = PJON_MICROS();
       /* Update pin value until the pin stops to be HIGH or passed more time than
          BIT_SPACER duration */
-      while(((uint32_t)(micros() - time) < OS_BIT_SPACER) && PJON_IO_READ(_input_pin))
+      while(((uint32_t)(PJON_MICROS() - time) < OS_BIT_SPACER) && PJON_IO_READ(_input_pin))
         value = (value * 0.999)  + (PJON_IO_READ(_input_pin) * 0.001);
       /* Save how much time passed */
-      time = micros();
+      time = PJON_MICROS();
       /* If pin value is in average more than 0.5, is a 1, and if is more than
          ACCEPTANCE (a minimum HIGH duration) and what is coming after is a LOW bit
          probably a byte is coming so try to receive it. */
       if(value > 0.5) {
         value = 0.5;
-        while((uint32_t)(micros() - time) < OS_BIT_WIDTH)
+        while((uint32_t)(PJON_MICROS() - time) < OS_BIT_WIDTH)
           value = (value * 0.999)  + (PJON_IO_READ(_input_pin) * 0.001);
         if(value < 0.5) return read_byte();
       }
@@ -161,12 +160,12 @@ class OverSampling {
       if(_output_pin != PJON_NOT_ASSIGNED && _output_pin != _input_pin)
         PJON_IO_WRITE(_output_pin, LOW);
       uint16_t response = PJON_FAIL;
-      uint32_t time = micros();
+      uint32_t time = PJON_MICROS();
       while(
         (response != PJON_ACK) &&
         (response != PJON_NAK) &&
         (uint32_t)(
-          micros() -
+          PJON_MICROS() -
           (OS_TIMEOUT + OS_PREAMBLE_PULSE_WIDTH + (OS_TIMEOUT - OS_BIT_WIDTH))
         ) <= time
       ) response = receive_byte();
@@ -194,12 +193,12 @@ class OverSampling {
 
     void send_byte(uint8_t b) {
       PJON_IO_WRITE(_output_pin, HIGH);
-      delayMicroseconds(OS_BIT_SPACER);
+      PJON_DELAY_MICROSECONDS(OS_BIT_SPACER);
       PJON_IO_WRITE(_output_pin, LOW);
-      delayMicroseconds(OS_BIT_WIDTH);
+      PJON_DELAY_MICROSECONDS(OS_BIT_WIDTH);
       for(uint8_t mask = 0x01; mask; mask <<= 1) {
         PJON_IO_WRITE(_output_pin, b & mask);
-        delayMicroseconds(OS_BIT_WIDTH);
+        PJON_DELAY_MICROSECONDS(OS_BIT_WIDTH);
       }
     };
 
@@ -208,10 +207,10 @@ class OverSampling {
 
     void send_preamble() {
       PJON_IO_WRITE(_output_pin, HIGH);
-      uint32_t time = micros();
-      while((uint32_t)(micros() - time) < OS_PREAMBLE_PULSE_WIDTH);
+      uint32_t time = PJON_MICROS();
+      while((uint32_t)(PJON_MICROS() - time) < OS_PREAMBLE_PULSE_WIDTH);
       PJON_IO_WRITE(_output_pin, LOW);
-      delayMicroseconds(OS_TIMEOUT - OS_BIT_WIDTH);
+      PJON_DELAY_MICROSECONDS(OS_TIMEOUT - OS_BIT_WIDTH);
     };
 
 

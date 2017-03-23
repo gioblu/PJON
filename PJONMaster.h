@@ -1,7 +1,7 @@
 
  /*-O//\             __     __
    |-gfo\           |__| | |  | |\ | ™
-   |!y°o:\          |  __| |__| | \| v7.0
+   |!y°o:\          |  __| |__| | \| v7.1
    |y"s§+`\         multi-master, multi-media communications bus system framework
   /so+:-..`\        Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
@@ -135,7 +135,7 @@ limitations under the License. */
 
       bool confirm_id(uint32_t rid, uint8_t id) {
         if(ids[id - 1].rid == rid && !ids[id - 1].state) {
-          if((uint32_t)(micros() - ids[id - 1].registration) < PJON_ADDRESSING_TIMEOUT) {
+          if((uint32_t)(PJON_MICROS() - ids[id - 1].registration) < PJON_ADDRESSING_TIMEOUT) {
             ids[id - 1].state = true;
             PJON<Strategy>::remove(ids[id - 1].packet_index);
             return true;
@@ -177,9 +177,9 @@ limitations under the License. */
       /* Master error handler: */
 
       void error_handler(uint8_t code, uint8_t data) {
-        if(code == PJON_CONNECTION_LOST)
-          delete_id_reference(data);
         _master_error(code, data);
+        if(code == PJON_CONNECTION_LOST)
+          delete_id_reference(PJON<Strategy>::packets[data].content[0]);
       };
 
       static void static_error_handler(uint8_t code, uint8_t data) {
@@ -193,9 +193,18 @@ limitations under the License. */
       void free_reserved_ids_expired() {
         for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++)
           if(!ids[i].state && ids[i].rid)
-            if((uint32_t)(micros() - ids[i].registration) < PJON_ADDRESSING_TIMEOUT)
+            if((uint32_t)(PJON_MICROS() - ids[i].registration) < PJON_ADDRESSING_TIMEOUT)
               continue;
             else delete_id_reference(i + 1);
+      };
+
+
+      /* Get DEVICE ID from RID: */
+
+      uint8_t get_id_from_rid(uint32_t rid) {
+        for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++)
+          if(rid == ids[i].rid) return i + 1;
+        return PJON_NOT_ASSIGNED;
       };
 
 
@@ -211,9 +220,9 @@ limitations under the License. */
       /* Broadcast a PJON_ID_LIST request to all devices: */
 
       void list_ids() {
-        uint32_t time = micros();
+        uint32_t time = PJON_MICROS();
         char request = PJON_ID_LIST;
-        while((uint32_t)(micros() - time) < PJON_ADDRESSING_TIMEOUT) {
+        while((uint32_t)(PJON_MICROS() - time) < PJON_ADDRESSING_TIMEOUT) {
           PJON<Strategy>::send_packet(
             PJON_BROADCAST, this->bus_id, &request, 1, PJON<Strategy>::config | PJON_ADDRESS_BIT
           );
@@ -243,7 +252,7 @@ limitations under the License. */
         if(!unique_rid(rid)) return PJON_FAIL;
         for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++)
           if(!ids[i].state && !ids[i].rid) {
-            ids[i].registration = micros();
+            ids[i].registration = PJON_MICROS();
             ids[i].rid = rid;
             ids[i].state = false;
             return i + 1;
@@ -298,8 +307,8 @@ limitations under the License. */
       /* Try to receive a packet repeatedly with a maximum duration: */
 
       uint16_t receive(uint32_t duration) {
-        uint32_t time = micros();
-        while((uint32_t)(micros() - time) <= duration)
+        uint32_t time = PJON_MICROS();
+        while((uint32_t)(PJON_MICROS() - time) <= duration)
           if(receive() == PJON_ACK) return PJON_ACK;
         return PJON_FAIL;
       };

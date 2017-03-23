@@ -1,8 +1,8 @@
+- PJON (Padded Jittering Operative Network) Protocol specification: **[v0.1](/specification/PJON-protocol-specification-v0.1.md)** - [v0.2](/specification/PJON-protocol-specification-v0.2.md) - [v0.3](/specification/PJON-protocol-specification-v0.3.md) - [v1.0](/specification/PJON-protocol-specification-v1.0.md)
+- Acknowledge specification: [v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md)
+- Dynamic addressing specification: [v0.1](/specification/PJON-dynamic-addressing-specification-v0.1.md)
 - PJDL (Padded Jittering Data Link) specification:
-[PJDL v0.1](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/padded-jittering-protocol-specification-v0.1.md) - [PJDL v1.0](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) - [PJDLR v1.0](https://github.com/gioblu/PJON/blob/master/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
-- PJON (Padded Jittering Operative Network) Protocol specification: **[v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md)** - [v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md) - [v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md) - [v1.0](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v1.0.md)
-- Acknowledge specification: [v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-acknowledge-specification-v0.1.md)
-- Dynamic addressing specification: [v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md)
+[PJDL v1.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) - [PJDLR v1.0](/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
 
 ```cpp
 /*
@@ -15,10 +15,10 @@ Compliant implementation versions: PJON 1.0-3.0-beta
 */
 ```
 
-###PJON™ Protocol specification v0.1
+### PJON™ Protocol specification v0.1
 The first experimental specification of the PJON protocol has been drafted with the goal of offering a new open-source, multi-master communications bus system Standard. Its more common applications are in the field of internet of things and embedded systems. Extended tests proved its effectiveness on different media like electricity, radio frequency and light.
 
-###Basic concepts
+### Basic concepts
 * Every device has an unique 1 byte ID (0-255)
 * Every device transmits and receives on the same common medium
 * Every device has an equal right to transmit and receive on the common medium
@@ -27,7 +27,7 @@ The first experimental specification of the PJON protocol has been drafted with 
 * Synchronization occurs every byte
 * Devices communicate through packets
 
-###Packet transmission
+### Packet transmission
 The concept of packet enables to send a communication payload to every connected device with correct reception certainty. A packet contains the recipient id, the length of the packet, its content and the CRC. Here is an example of a packet sending to device id 12 containing the string "@":
 ```cpp
  ID 12       LENGTH 4    CONTENT 64  CRC 130
@@ -51,7 +51,7 @@ A standard packet transmission is a bidirectional communication between two devi
 
 In the first phase the bus is analyzed by transmitter reading 10 logical bits, if any logical high is detected, the channel is considered free and transmission phase starts in which the packet is entirely transmitted. Receiver calculates CRC and starts the response phase transmitting a single byte, `PJON_ACK` (dec 6) in case of correct reception or `PJON_NAK` (dec 21) if an error in the packet's content is detected. If transmitter receives no answer or `PJON_NAK` the packet sending has to be scheduled with a delay of `ATTEMPTS` * `ATTEMPTS` with a maximum of 250 `ATTEMPTS` to obtain data transmission quadratic back-off.
 
-###Bus
+### Bus
 A PJON Bus is made by a group of up to 255 devices transmitting and receiving on the same medium. Communication between devices occurs through packets and it is based on democracy: every device has the right to transmit on the common medium for up to (1000 / devices number) milliseconds / second.
 ```cpp
     _______     _______     _______     _______    _______

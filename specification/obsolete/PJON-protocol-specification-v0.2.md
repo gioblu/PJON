@@ -1,9 +1,9 @@
-- PJDL (Padded Jittering Data Link) specification:
-[PJDL v0.1](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/padded-jittering-protocol-specification-v0.1.md) - [PJDL v1.0](https://github.com/gioblu/PJON/blob/master/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) - [PJDLR v1.0](https://github.com/gioblu/PJON/blob/master/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
 - PJON (Padded Jittering Operative Network) Protocol specification:
-[v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.1.md) - **[v0.2](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.2.md)** - [v0.3](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v0.3.md) - [v1.0](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v1.0.md)
-- Acknowledge specification: [v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-acknowledge-specification-v0.1.md)
-- Dynamic addressing specification: [v0.1](https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md)
+[v0.1](/specification/PJON-protocol-specification-v0.1.md) - **[v0.2](/specification/PJON-protocol-specification-v0.2.md)** - [v0.3](/specification/PJON-protocol-specification-v0.3.md) - [v1.0](/specification/PJON-protocol-specification-v1.0.md)
+- Acknowledge specification: [v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md)
+- Dynamic addressing specification: [v0.1](/specification/PJON-dynamic-addressing-specification-v0.1.md)
+- PJDL (Padded Jittering Data Link) specification:
+[PJDL v0.1](/strategies/SoftwareBitBang/specification/padded-jittering-protocol-specification-v0.1.md) - [PJDL v1.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) - [PJDLR v1.0](/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
 
 ```cpp
 /*
@@ -18,10 +18,10 @@ New feature: Bus identification
 */
 ```
 
-###PJON™ Protocol Specification v0.2
+### PJON™ Protocol Specification v0.2
 After more than 4 years of testing, a second, experimental draft of the PJON protocol specification has been released to continue to pursue the goal of providing a new and open-source, multi-master communications bus system Standard. The main changes contains the addition of a IPv4 like 4 byte bus id. This extends the network capabilities of the PJON protocol from 254 devices of the 0.1 version to 1.090.921.692.930 devices supported by the 0.2 version. It is created to provide the community with a new and easy way to communicate data and build a network of devices. Its more common applications are in the field of the internet of things and embedded systems. Extended tests proved its effectiveness on different media like electricity, radio and light.
 
-###Basic concepts
+### Basic concepts
 * Every bus has a unique IPv4 like 4 bytes id
 * Many buses can coexist on the same medium
 * Every device has a unique 1 byte id
@@ -34,7 +34,7 @@ After more than 4 years of testing, a second, experimental draft of the PJON pro
 
 The PJON protocol v0.2 handles internal bus connectivity and unique addressing for 254 devices, through bus communication with unique bus addressing for 4.294.967.295 buses, supporting up to 1.090.921.692.930 devices.
 
-###Bus
+### Bus
 A PJON bus is made by a group of up to 254 devices transmitting and receiving on the same medium. Communication between devices occurs through packets and it is based on democracy: every device has the right to transmit on the common medium for up to (1000 / devices number) milliseconds / second.
 ```cpp
     _______     _______     _______     _______     _______
@@ -48,7 +48,7 @@ A PJON bus is made by a group of up to 254 devices transmitting and receiving on
          |_______|   |_______|   |_______|   |_______|    
 ```
 
-###Packet transmission
+### Packet transmission
 The concept of packet enables to send a communication payload to every connected device with correct reception certainty. A packet contains the recipient id, the length of the packet, its content and the CRC. In this example is shown a packet sending to device id 12 on a local bus containing the string "@":
 ```cpp
  ID 12       LENGTH 4    CONTENT 64  CRC 130
@@ -83,7 +83,7 @@ Channel analysis  Transmission                                Response
 ```
 Thanks to this rule it is not only possible to share a medium with neighbors, but also network with them and enhance connectivity for free.
 
-###Bus network
+### Bus network
 A PJON bus network is the result of n PJON buses sharing the same medium and or interconnection of PJON buses using routers. A router is a device connected to n PJON buses with n dedicated pins on n dedicated media, able to route a packet from a bus to anotherone.
 
 ```cpp  

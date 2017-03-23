@@ -1,7 +1,7 @@
 
  /*-O//\           __     __
    |-gfo\         |__| | |  | |\ | ™
-   |!y°o:\        |  __| |__| | \| v7.0
+   |!y°o:\        |  __| |__| | \| v7.1
    |y"s§+`\       multi-master, multi-media communications bus system framework
   /so+:-..`\      Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
@@ -30,6 +30,7 @@ PJON™ Standard compliant tools:
 
 Credits to contributors:
 - Fred Larsen (Systems engineering, header driven communication, debugging)
+- 4ib3r github user (Memory optimization configurable strategies inclusion)
 - budaics github user (ATtiny85 16Mhz external clock testing and wiki page)
 - Pantovich github user (update returning number of packets to be delivered)
 - Adrian Sławiński (Fix to enable SimpleModbusMasterV2 compatibility)
@@ -72,49 +73,14 @@ limitations under the License. */
 
 #ifndef PJON_h
   #define PJON_h
-  #include <Arduino.h>
-  #include <PJONDefines.h>
-  /* Strategy related constant predefinition memory optimization */
-  #if defined(PJON_INCLUDE_AS)
-    #include "strategies/AnalogSampling/AnalogSampling.h"
-  #endif
-  #if defined(PJON_INCLUDE_ETCP)
-    #include "strategies/EthernetTCP/EthernetTCP.h"
-  #endif
-  #if defined(PJON_INCLUDE_LUPD)
-    #include "strategies/LocalUDP/LocalUDP.h"
-  #endif
-  #if defined(PJON_INCLUDE_OS)
-    #include "strategies/OverSampling/OverSampling.h"
-  #endif
-  #if defined(PJON_INCLUDE_SWBB)
-    #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
-  #endif
-  #if defined(PJON_INCLUDE_TS)
-    #include "strategies/ThroughSerial/ThroughSerial.h"
-  #endif
-  #if defined(PJON_INCLUDE_NONE)
-    /* None for custom strategy inclusion */
-  #endif
-  #if !defined(PJON_INCLUDE_AS) && !defined(PJON_INCLUDE_ETCP) && \
-      !defined(PJON_INCLUDE_LUPD) && !defined(PJON_INCLUDE_OS) && \
-      !defined(PJON_INCLUDE_SWBB) && !defined(PJON_INCLUDE_TS) && \
-      !defined(PJON_INCLUDE_NONE)
-    #include "strategies/AnalogSampling/AnalogSampling.h"
-    #include "strategies/OverSampling/OverSampling.h"
-    #include "strategies/SoftwareBitBang/SoftwareBitBang.h"
-    #include "strategies/ThroughSerial/ThroughSerial.h"
-    /* Avoid ATtiny 45/85 error missing inclusion error */
-    #if !defined(__AVR_ATtiny45__) && !defined(__AVR_ATtiny85__)
-      #include "strategies/EthernetTCP/EthernetTCP.h"
-      #include "strategies/LocalUDP/LocalUDP.h"
-    #endif
-  #endif
+  #include "PJONDefines.h"
+  #include "interfaces/PJON_Interfaces.h"
+  #include "strategies/PJON_Strategies.h"
 
   template<typename Strategy>
   class PJON {
     public:
-      /* Abstract data-link layer class */
+      /* Abstract data link layer class */
       Strategy strategy;
 
       uint16_t config = PJON_TX_INFO_BIT | PJON_ACK_REQ_BIT;
@@ -168,10 +134,10 @@ limitations under the License. */
       void begin() {
         uint8_t device_id_seed =
           (_device_id != PJON_NOT_ASSIGNED) ? _device_id : 0;
-        randomSeed(analogRead(_random_seed) + device_id_seed);
+        PJON_RANDOM_SEED(PJON_ANALOG_READ(_random_seed) + device_id_seed);
         strategy.begin(device_id_seed);
         #if(PJON_INCLUDE_ASYNC_ACK)
-          _packet_id_seed = random(65535) + device_id_seed;
+          _packet_id_seed = PJON_RANDOM(65535) + device_id_seed;
         #endif
       };
 
@@ -202,8 +168,13 @@ limitations under the License. */
           if(!p_id && async_ack) p_id = new_packet_id();
         #endif
 
+        if(new_length > 15 && !(header & PJON_CRC_BIT)) {
+          header |= PJON_CRC_BIT;
+          new_length = (uint16_t)(length + packet_overhead(header));
+        }
+
         if(new_length > 255 && !extended_length) {
-          header |= (PJON_EXT_LEN_BIT | PJON_CRC_BIT);
+          header |= PJON_EXT_LEN_BIT;
           new_length = (uint16_t)(length + packet_overhead(header));
         }
 
@@ -287,16 +258,18 @@ limitations under the License. */
         uint16_t length,
         uint32_t timing,
         uint16_t header = PJON_NOT_ASSIGNED,
-        uint16_t p_id = 0
+        uint16_t p_id = 0,
+        uint16_t p_index = PJON_FAIL
       ) {
-        for(uint8_t i = 0; i < PJON_MAX_PACKETS; i++)
-          if(packets[i].state == 0) {
+        bool req_index = (p_index != PJON_FAIL);
+        for(uint16_t i = ((req_index) ? p_index : 0); i < PJON_MAX_PACKETS; i++)
+          if(packets[i].state == 0 || req_index) {
             if(!(length = compose_packet(
               id, b_id, packets[i].content, packet, length, header, p_id
             ))) return PJON_FAIL;
             packets[i].length = length;
             packets[i].state = PJON_TO_BE_SENT;
-            packets[i].registration = micros();
+            packets[i].registration = PJON_MICROS();
             packets[i].timing = timing;
             return i;
           }
@@ -310,9 +283,9 @@ limitations under the License. */
          Don't pass any parameter to count all packets
          Pass a device id to count all it's related packets */
 
-      uint8_t get_packets_count(uint8_t device_id = PJON_NOT_ASSIGNED) const {
-        uint8_t packets_count = 0;
-        for(uint8_t i = 0; i < PJON_MAX_PACKETS; i++) {
+      uint16_t get_packets_count(uint8_t device_id = PJON_NOT_ASSIGNED) const {
+        uint16_t packets_count = 0;
+        for(uint16_t i = 0; i < PJON_MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
           if(
             device_id == PJON_NOT_ASSIGNED ||
@@ -366,7 +339,7 @@ limitations under the License. */
             #if(PJON_INCLUDE_ASYNC_ACK)
               if(packet_info.header & PJON_ACK_MODE_BIT)
                 packet_info.id =
-                  packet[13 + offset] << 8 | packet[12 + offset] & 0xFF;
+                  (packet[13 + offset] << 8) | (packet[12 + offset] & 0xFF);
             #endif
           }
         } else if((packet_info.header & PJON_TX_INFO_BIT) != 0) {
@@ -374,7 +347,7 @@ limitations under the License. */
           #if(PJON_INCLUDE_ASYNC_ACK)
             if(packet_info.header & PJON_ACK_MODE_BIT)
               packet_info.id =
-                packet[5 + offset] << 8 | packet[4 + offset] & 0xFF;
+                (packet[5 + offset] << 8) | (packet[4 + offset] & 0xFF);
           #endif
         }
       };
@@ -396,8 +369,17 @@ limitations under the License. */
 
           if(i == 1) {
             if(
-              ((data[i] & PJON_MODE_BIT) != (config & PJON_MODE_BIT)) &&
-              !_router
+              ( // Avoid mode conflicting config packet if not a router
+                ((data[i] & PJON_MODE_BIT) != (config & PJON_MODE_BIT)) &&
+                !_router
+              ) || ( // Avoid acknowledegement request if broadcast
+                data[0] == PJON_BROADCAST &&
+                ((data[i] & PJON_ACK_MODE_BIT) || (data[i] & PJON_ACK_REQ_BIT))
+              ) || ( // Avoid asynchronous acknowledegement conflicting config
+                ((data[i] & PJON_ACK_MODE_BIT) && !(data[i] & PJON_TX_INFO_BIT))
+              ) || ( // Avoid length/CRC conflicting config, use CRC32 if l > 15
+                ((data[i] & PJON_EXT_LEN_BIT) && !(data[i] & PJON_CRC_BIT))
+              )
             ) return PJON_BUSY;
             extended_length = data[i] & PJON_EXT_LEN_BIT;
             extended_header = data[i] & PJON_EXT_HEAD_BIT;
@@ -409,7 +391,7 @@ limitations under the License. */
           }
 
           if((i == (3 + extended_header)) && extended_length) {
-            length = data[i - 1] << 8 | data[i] & 0xFF;
+            length = (data[i - 1] << 8) | (data[i] & 0xFF);
             if(length < 5 || length > PJON_PACKET_MAX_LENGTH) return PJON_FAIL;
           }
 
@@ -440,8 +422,8 @@ limitations under the License. */
         parse(data, last_packet_info);
 
         #if(PJON_INCLUDE_ASYNC_ACK)
-          /* If a packet requesting asynchronous acknowledment is received
-             send the acknowledment packet back to the packet's transmitter */
+          /* If a packet requesting asynchronous acknowledegement is received
+             send the acknowledegement packet back to the packet's transmitter */
           if((data[1] & PJON_ACK_MODE_BIT) && (data[1] & PJON_TX_INFO_BIT)) {
             if(_auto_delete && length == packet_overhead(data[1]))
               if(handle_asynchronous_acknowledgment(last_packet_info))
@@ -478,8 +460,8 @@ limitations under the License. */
 
       uint16_t receive(uint32_t duration) {
         uint16_t response;
-        uint32_t time = micros();
-        while((uint32_t)(micros() - time) <= duration) {
+        uint32_t time = PJON_MICROS();
+        while((uint32_t)(PJON_MICROS() - time) <= duration) {
           response = receive();
           if(response == PJON_ACK)
             return PJON_ACK;
@@ -500,9 +482,9 @@ limitations under the License. */
 
       /* Remove a packet from the packet's buffer passing its id as reference: */
 
-      boolean handle_asynchronous_acknowledgment(PJON_Packet_Info packet_info) {
+      bool handle_asynchronous_acknowledgment(PJON_Packet_Info packet_info) {
         PJON_Packet_Info actual_info;
-        for(uint8_t i = 0; i < PJON_MAX_PACKETS; i++) {
+        for(uint16_t i = 0; i < PJON_MAX_PACKETS; i++) {
           parse((uint8_t *)packets[i].content, actual_info);
           if(actual_info.id == packet_info.id)
             if(actual_info.receiver_id == packet_info.sender_id && (
@@ -523,8 +505,12 @@ limitations under the License. */
                   packets[i].content + (offset - crc_offset),
                   packets[i].length - offset,
                   packets[i].timing,
-                  actual_info.header
+                  actual_info.header,
+                  new_packet_id(),
+                  i
                 );
+                packets[i].attempts = 0;
+                return true;
               }
               remove(i);
               return true;
@@ -539,7 +525,7 @@ limitations under the License. */
          Pass a device id to delete all it's related packets  */
 
       void remove_all_packets(uint8_t device_id = 0) {
-        for(uint8_t i = 0; i < PJON_MAX_PACKETS; i++) {
+        for(uint16_t i = 0; i < PJON_MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
           if(!device_id || packets[i].content[0] == device_id) remove(i);
         }
@@ -716,17 +702,17 @@ limitations under the License. */
         ))) return PJON_FAIL;
         uint16_t state = PJON_FAIL;
         uint32_t attempts = 0;
-        uint32_t time = micros(), start = time;
+        uint32_t time = PJON_MICROS(), start = time;
         while(
           (state != PJON_ACK) && (attempts <= strategy.get_max_attempts()) &&
-          (uint32_t)(micros() - start) <= timeout
+          (uint32_t)(PJON_MICROS() - start) <= timeout
         ) {
           state = send_packet((char*)data, length);
           if(state == PJON_ACK) return state;
           attempts++;
           if(state != PJON_FAIL) strategy.handle_collision();
-          while((uint32_t)(micros() - time) < strategy.back_off(attempts));
-          time = micros();
+          while((uint32_t)(PJON_MICROS() - time) < strategy.back_off(attempts));
+          time = PJON_MICROS();
         }
         return state;
       };
@@ -751,7 +737,7 @@ limitations under the License. */
 
       /* Set the config bit state: */
 
-      void set_config_bit(boolean new_state, uint16_t bit) {
+      void set_config_bit(bool new_state, uint16_t bit) {
         if(new_state) config |= bit;
         else config &= ~bit;
       };
@@ -761,7 +747,7 @@ limitations under the License. */
          TRUE: Send synchronous acknowledge when a packet is correctly received
          FALSE: Avoid acknowledge transmission */
 
-      void set_synchronous_acknowledge(boolean state) {
+      void set_synchronous_acknowledge(bool state) {
         set_config_bit(state, PJON_ACK_REQ_BIT);
       };
 
@@ -770,7 +756,7 @@ limitations under the License. */
          TRUE: Send back asynchronous acknowledge packet
          FALSE: Avoid acknowledge packet transmission */
 
-      void set_asynchronous_acknowledge(boolean state) {
+      void set_asynchronous_acknowledge(bool state) {
         set_config_bit(state, PJON_ACK_MODE_BIT);
       };
 
@@ -779,7 +765,7 @@ limitations under the License. */
          TRUE:  CRC32
          FALSE: CRC8 */
 
-      void set_crc_32(boolean state) {
+      void set_crc_32(bool state) {
         set_config_bit(state, PJON_CRC_BIT);
       };
 
@@ -798,7 +784,7 @@ limitations under the License. */
         if(!bus_id_equality(bus_id, localhost)) set_shared_network(true);
         set_error(PJON_dummy_error_handler);
         set_receiver(PJON_dummy_receiver_handler);
-        for(int i = 0; i < PJON_MAX_PACKETS; i++) {
+        for(uint16_t i = 0; i < PJON_MAX_PACKETS; i++) {
           packets[i].state = 0;
           packets[i].timing = 0;
           packets[i].attempts = 0;
@@ -845,7 +831,7 @@ limitations under the License. */
          TRUE: Enable devices part of other bus ids (shared medium).
          FALSE: Isolate from external/third-party communication. */
 
-      void set_shared_network(boolean state) {
+      void set_shared_network(bool state) {
         set_config_bit(state, PJON_MODE_BIT);
       };
 
@@ -854,7 +840,7 @@ limitations under the License. */
          TRUE: Automatic deletion
          FALSE: No packet deletion from buffer, (deletion from buffer by user) */
 
-      void set_packet_auto_deletion(boolean state) {
+      void set_packet_auto_deletion(bool state) {
         _auto_delete = state;
       };
 
@@ -892,7 +878,7 @@ limitations under the License. */
          FALSE: device receives messages only for its bus and device id
          TRUE:  The receiver function is always called if data is received */
 
-      void set_router(boolean state) {
+      void set_router(bool state) {
         _router = state;
       };
 
@@ -901,9 +887,9 @@ limitations under the License. */
          Check if there are packets to be sent or to be erased if correctly
          delivered. Returns the actual number of packets to be sent. */
 
-      uint8_t update() {
-        uint8_t packets_count = 0;
-        for(uint8_t i = 0; i < PJON_MAX_PACKETS; i++) {
+      uint16_t update() {
+        uint16_t packets_count = 0;
+        for(uint16_t i = 0; i < PJON_MAX_PACKETS; i++) {
           if(packets[i].state == 0) continue;
           packets_count++;
 
@@ -915,7 +901,7 @@ limitations under the License. */
             (packets[i].content[1] & PJON_TX_INFO_BIT);
 
           if(
-            (uint32_t)(micros() - packets[i].registration) >
+            (uint32_t)(PJON_MICROS() - packets[i].registration) >
             (uint32_t)(packets[i].timing + strategy.back_off(packets[i].attempts))
           ) packets[i].state = send_packet(packets[i].content, packets[i].length);
           else continue;
@@ -935,7 +921,7 @@ limitations under the License. */
             } else {
               if(!async_ack) {
                 packets[i].attempts = 0;
-                packets[i].registration = micros();
+                packets[i].registration = PJON_MICROS();
                 packets[i].state = PJON_TO_BE_SENT;
               }
             } if(!async_ack) continue;
@@ -944,7 +930,7 @@ limitations under the License. */
           if(packets[i].state != PJON_FAIL) strategy.handle_collision();
 
           if(packets[i].attempts > strategy.get_max_attempts()) {
-            _error(PJON_CONNECTION_LOST, packets[i].content[0]);
+            _error(PJON_CONNECTION_LOST, i);
             if(!packets[i].timing) {
               if(_auto_delete) {
                 remove(i);
@@ -952,7 +938,7 @@ limitations under the License. */
               }
             } else {
               packets[i].attempts = 0;
-              packets[i].registration = micros();
+              packets[i].registration = PJON_MICROS();
               packets[i].state = PJON_TO_BE_SENT;
             }
           }
@@ -963,11 +949,11 @@ limitations under the License. */
 
       /* Check if the packet index passed is the first to be sent: */
 
-      boolean first_packet_to_be_sent(uint8_t index) {
+      bool first_packet_to_be_sent(uint8_t index) {
         PJON_Packet_Info actual_info;
         PJON_Packet_Info tested_info;
         parse((uint8_t *)packets[index].content, actual_info);
-        for(uint8_t i = 0; i < PJON_MAX_PACKETS; i++) {
+        for(uint16_t i = 0; i < PJON_MAX_PACKETS; i++) {
           parse((uint8_t *)packets[i].content, tested_info);
           if(
             actual_info.receiver_id == tested_info.receiver_id &&
@@ -982,7 +968,7 @@ limitations under the License. */
       };
 
 
-      /* Check if the packet id and its transmitter info are already present in the
+      /* Check if the packet id and its transmitter info are already present in
          buffer of recently received packets, if not add it to the buffer. */
 
       bool known_packet_id(PJON_Packet_Info info) {
@@ -1023,7 +1009,7 @@ limitations under the License. */
 
       /* Check equality between two bus ids */
 
-      static boolean bus_id_equality(const uint8_t *n_one, const uint8_t *n_two) {
+      static bool bus_id_equality(const uint8_t *n_one, const uint8_t *n_two) {
         for(uint8_t i = 0; i < 4; i++)
           if(n_one[i] != n_two[i])
             return false;
@@ -1038,13 +1024,13 @@ limitations under the License. */
       };
 
     private:
-      boolean       _auto_delete = true;
+      bool          _auto_delete = true;
       PJON_Error    _error;
       uint8_t       _mode;
       uint16_t      _packet_id_seed = 0;
       uint8_t       _random_seed = A0;
       PJON_Receiver _receiver;
-      boolean       _router = false;
+      bool          _router = false;
     protected:
       uint8_t       _device_id;
   };

@@ -49,7 +49,7 @@ In the graph below is shown the protocol stack model proposed. The differences b
 |-----------------------------------------------|
 | 2 Data link layer: PJDL/PJDLR                 |
 | Data link, collision avoidance,               |
-| synchronous acknowledgment                    |
+| synchronous acknowledgement                   |
 |-----------------------------------------------|
 | 1 Physical layer: Cables, transceivers ecc.   |
 |_______________________________________________|

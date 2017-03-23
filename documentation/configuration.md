@@ -62,7 +62,7 @@ If you are interested in including the asynchronous acknowledgement feature in y
 #define PJON_INCLUDE_ASYNC_ACK true
 #include <PJON.h>
 ```
-Configure asynchronous acknowledgment:
+Configure asynchronous acknowledgement:
 ```cpp  
   bus.set_asynchronous_acknowledge(true); // Enable async ack
 ```

@@ -372,10 +372,10 @@ limitations under the License. */
               ( // Avoid mode conflicting config packet if not a router
                 ((data[i] & PJON_MODE_BIT) != (config & PJON_MODE_BIT)) &&
                 !_router
-              ) || ( // Avoid acknowledgement request if broadcast
+              ) || ( // Avoid acknowledegement request if broadcast
                 data[0] == PJON_BROADCAST &&
                 ((data[i] & PJON_ACK_MODE_BIT) || (data[i] & PJON_ACK_REQ_BIT))
-              ) || ( // Avoid asynchronous acknowledgement conflicting config
+              ) || ( // Avoid asynchronous acknowledegement conflicting config
                 ((data[i] & PJON_ACK_MODE_BIT) && !(data[i] & PJON_TX_INFO_BIT))
               ) || ( // Avoid length/CRC conflicting config, use CRC32 if l > 15
                 ((data[i] & PJON_EXT_LEN_BIT) && !(data[i] & PJON_CRC_BIT))
@@ -422,8 +422,8 @@ limitations under the License. */
         parse(data, last_packet_info);
 
         #if(PJON_INCLUDE_ASYNC_ACK)
-          /* If a packet requesting asynchronous acknowledgement is received
-             send the acknowledgement packet back to the packet's transmitter */
+          /* If a packet requesting asynchronous acknowledegement is received
+             send the acknowledegement packet back to the packet's transmitter */
           if((data[1] & PJON_ACK_MODE_BIT) && (data[1] & PJON_TX_INFO_BIT)) {
             if(_auto_delete && length == packet_overhead(data[1]))
               if(handle_asynchronous_acknowledgment(last_packet_info))

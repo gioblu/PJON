@@ -199,6 +199,15 @@ limitations under the License. */
       };
 
 
+      /* Get DEVICE ID from RID: */
+
+      uint8_t get_id_from_rid(uint32_t rid) {
+        for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++)
+          if(rid == ids[i].rid) return i + 1;
+        return PJON_NOT_ASSIGNED;
+      };
+
+
       /* Check for device rid uniqueness in the reference buffer: */
 
       bool unique_rid(uint32_t rid) {

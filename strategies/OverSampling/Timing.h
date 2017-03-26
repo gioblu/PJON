@@ -10,7 +10,7 @@
    faster speed. Probably you need experience, time and an oscilloscope. */
 
 #if defined(__AVR_ATmega88__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
-  #if OS_MODE == _STXRX882_STANDARD
+  #if OS_MODE == STXRX882_STANDARD
     #if F_CPU == 16000000L
       #define OS_BIT_WIDTH   512
       #define OS_BIT_SPACER  328
@@ -20,7 +20,7 @@
 
 /* ATmega1280/2560 - Arduino Mega/Mega-nano --------------------------------- */
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-  #if OS_MODE == _STXRX882_STANDARD
+  #if OS_MODE == STXRX882_STANDARD
     #define OS_BIT_WIDTH     508
     #define OS_BIT_SPACER    332
   #endif
@@ -28,7 +28,7 @@
 
 /* ATmega16/32U4 - Arduino Leonardo/Micro ----------------------------------- */
 #if defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__)
-  #if OS_MODE == _STXRX882_STANDARD
+  #if OS_MODE == STXRX882_STANDARD
     #define OS_BIT_WIDTH     508
     #define OS_BIT_SPACER    332
   #endif
@@ -36,7 +36,7 @@
 
 /* NodeMCU, generic ESP8266 ------------------------------------------------- */
 #if defined(ESP8266)
-  #if OS_MODE == _STXRX882_STANDARD
+  #if OS_MODE == STXRX882_STANDARD
     #if F_CPU == 80000000L
       #define OS_BIT_WIDTH   520
       #define OS_BIT_SPACER  332

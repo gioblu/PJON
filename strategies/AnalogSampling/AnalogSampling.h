@@ -47,11 +47,11 @@
    Transfer speed: 1024Bb or 128B/s
    Absolute  communication speed: 128B/s (data length 20 of characters)
    Data throughput: 100B/s (data length 20 of characters) */
-#define _AS_STANDARD  1
+#define AS_STANDARD  1
 
 /* Set here the selected transmission mode - default STANDARD */
 #ifndef AS_MODE
-  #define AS_MODE _AS_STANDARD
+  #define AS_MODE AS_STANDARD
 #endif
 
 class AnalogSampling {
@@ -202,7 +202,7 @@ class AnalogSampling {
       while(
         (response != PJON_ACK) &&
         (response != PJON_NAK) &&
-        (uint32_t)(PJON_MICROS() - AS_TIMEOUT) <= time
+        (uint32_t)(PJON_MICROS() - AS_RESPONSE_TIMEOUT) <= time
       ) response = receive_byte();
       return response;
     };

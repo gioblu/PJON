@@ -30,20 +30,18 @@
   #endif
   #if SWBB_MODE == _SWBB_FAST
     #if F_CPU == 16000000L
-      #define SWBB_BIT_WIDTH 28
-      #define SWBB_BIT_SPACER 66
-      #define SWBB_ACCEPTANCE 28
+      #define SWBB_BIT_WIDTH 32
+      #define SWBB_BIT_SPACER 84
+      #define SWBB_ACCEPTANCE 32
       #define SWBB_READ_DELAY 4
     #endif
   #endif
   #if SWBB_MODE == _SWBB_OVERDRIVE
     #if F_CPU == 16000000L
-    /* Transfer speed: 39.02kBd or 4.87kB/s
-       Absolute communication speed: 3.35kB/s
-       Data throughput (default conf. sending 20 bytes): 2.56kB/s */
-      #define SWBB_BIT_WIDTH 17
-      #define SWBB_BIT_SPACER 52
-      #define SWBB_ACCEPTANCE 17
+    /* Speed: 31.250kBd or 3.906kB/s */
+      #define SWBB_BIT_WIDTH  20
+      #define SWBB_BIT_SPACER 76
+      #define SWBB_ACCEPTANCE 20
       #define SWBB_READ_DELAY 8
     #endif
   #endif
@@ -104,9 +102,9 @@
   #if SWBB_MODE == _SWBB_FAST
     #if F_CPU == 16000000L
       /* External 16MHz oscillator */
-      #define SWBB_BIT_WIDTH  28
-      #define SWBB_BIT_SPACER 66
-      #define SWBB_ACCEPTANCE 28
+      #define SWBB_BIT_WIDTH 32
+      #define SWBB_BIT_SPACER 84
+      #define SWBB_ACCEPTANCE 32
       #define SWBB_READ_DELAY 4
     #endif
   #endif

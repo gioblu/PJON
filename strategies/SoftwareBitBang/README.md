@@ -15,10 +15,10 @@ SoftwareBitBang is the default data link layer used by PJON and it is based on `
 - MK20DX256 96Mhz (Teensy 3.1)
 
 #### Performance
-PJON works in 3 different communication modes, `STANDARD`, `FAST` and `OVERDRIVE`:
-- `STANDARD` runs at 16944Bd or 2.12kB/s cross-architecture, promiscuous clock/architecture compatible.
-- `FAST` runs at 25157Bd or 3.15kB/s cross-architecture, promiscuous clock/architecture compatible.
-- `OVERDRIVE` runs a specific architecture at its maximum limits (non cross-architecture compatible). Every architecture has its own limits, Arduino Duemilanove for example runs at 33898Bd or 4.23kB/s, Arduino Zero can reach 48000Bd or 6.00kB/s.
+`SWBB_MODE` can be configured in 3 different modes, `SWBB_STANDARD`, `SWBB_FAST` and `SWBB_OVERDRIVE`:
+- `SWBB_STANDARD` (1) runs at 16944Bd or 2.12kB/s cross-architecture, promiscuous clock/architecture compatible.
+- `SWBB_FAST` (2) runs at 21504Bd or 2.68kB/s cross-architecture, promiscuous clock/architecture compatible.
+- `SWBB_OVERDRIVE` (3) runs a specific architecture at its maximum limits (non cross-architecture compatible). Every architecture has its own limits, Arduino Duemilanove for example runs at 31250Bd or 3.906kB/s, Arduino Zero can reach 48000Bd or 6kB/s.
 
 When including and using SoftwareBitBang, as data link layer of a PJON bus, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because SoftwareBitBang is completely software emulated strategy with a non blocking implementation, transforming a painful walk to the hill in a nice flight.
 
@@ -27,14 +27,16 @@ Single wire simplicity let you to experiment quickly and with creativity. The fi
 #### How to use SoftwareBitBang
 Pass the `SoftwareBitBang` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy. All the other necessary information is present in the general [Documentation](/documentation).
 ```cpp  
-  /* The default SoftwareBitBang mode is _SWBB_STANDARD
+  /* The default SoftwareBitBang mode is SWBB_STANDARD
      (Transfer speed: 16.944kBb or 2.12kB/s) */
 
-  /* Set SoftwareBitBang mode to _SWBB_FAST before PJON.h inclusion
-     (Transfer speed: 25.157kBd or 3.15kB/s) */
+  /* Set SoftwareBitBang mode to SWBB_FAST before PJON.h inclusion
+     (Transfer speed: 21.504kBd or 3.15kB/s)
+     When used with a group of different devices a pull-down resistor is
+     suggested to have optimal channel reliability */
   #define SWBB_MODE 2
 
-  /* Set SoftwareBitBang mode to _SWBB_OVERDRIVE before PJON.h inclusion
+  /* Set SoftwareBitBang mode to SWBB_OVERDRIVE before PJON.h inclusion
      (Architecture / Toolchain dependant) */
   #define SWBB_MODE 3
 

@@ -354,15 +354,12 @@ limitations under the License. */
 
 
       uint16_t receive() {
-        uint16_t state;
-        uint16_t length = PJON_PACKET_MAX_LENGTH;
         bool computed_crc = 0;
         bool extended_header = false;
         bool extended_length = false;
+        uint16_t length = strategy.receive_string(data, PJON_PACKET_MAX_LENGTH);
+        if(length < 5 || length > PJON_PACKET_MAX_LENGTH) return PJON_FAIL;
         for(uint16_t i = 0; i < length; i++) {
-          data[i] = state = strategy.receive_byte();
-          if(state == PJON_FAIL) return PJON_FAIL;
-
           if(i == 0)
             if(data[i] != _device_id && data[i] != PJON_BROADCAST && !_router)
               return PJON_BUSY;

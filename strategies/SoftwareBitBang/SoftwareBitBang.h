@@ -193,6 +193,19 @@ class SoftwareBitBang {
     };
 
 
+    /* Receive a string: */
+
+    uint16_t receive_string(uint8_t *string, uint16_t max_length) {
+      uint16_t result;
+      for(uint16_t b = 0; b < max_length; b++) {
+        result = receive_byte();
+        if(result == PJON_FAIL) return b;
+        string[b] = result;
+      }
+      return max_length;
+    };
+
+
     /* Every byte is prepended with 2 synchronization padding bits. The first
        is a longer than standard logic 1 followed by a standard logic 0.
        __________ ___________________________

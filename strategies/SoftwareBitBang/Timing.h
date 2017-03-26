@@ -203,16 +203,14 @@
   #endif
 #endif
 
-/* The default response timeout setup dedicates the transmission time of 1 byte plus
-   1 millisecond to latency and CRC computation. If receiver needs more than
-   SWBB_TIMEOUT to compute CRC and answer back ACK, transmitter will not receive
-   the incoming synchronous ACK. Higher or lower if necessary! */
+/* Synchronous acknowledgement response timeout. (1.5 milliseconds default).
+   If (latency + CRC computation) > SWBB_RESPONSE_TIMEOUT synchronous
+   acknowledgement reliability could be affected or disrupted higher
+   SWBB_RESPONSE_TIMEOUT if necessary. */
 
-#ifndef SWBB_LATENCY
-  #define SWBB_LATENCY 1000
+#ifndef SWBB_RESPONSE_TIMEOUT
+  #define SWBB_RESPONSE_TIMEOUT 1500
 #endif
-
-#define SWBB_TIMEOUT ((SWBB_BIT_WIDTH * 9) + SWBB_BIT_SPACER + SWBB_LATENCY)
 
 /* Maximum initial delay in milliseconds: */
 

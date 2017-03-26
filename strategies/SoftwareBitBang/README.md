@@ -38,21 +38,11 @@ Pass the `SoftwareBitBang` type as PJON template parameter to instantiate a PJON
      (Architecture / Toolchain dependant) */
   #define SWBB_MODE 3
 
-  /* Acknowledge latency maximum duration (1000 microseconds default).
-     Could be necessary to higher SWBB_LATENCY if sending long packets because
-     of the CRC computation time needed by receiver before transmitting its acknowledge  */
-  #define SWBB_LATENCY 1000
-
-  /* Set the back-off exponential degree */
-  #define SWBB_BACK_OFF_DEGREE 4
-
-  /* Set the maximum sending attempts */
-  #define SWBB_MAX_ATTEMPTS 20
-
-  /* The values set above are the default producing a 3.2 seconds
-     back-off timeout with 20 attempts. Higher SWBB_MAX_ATTEMPTS to higher
-     the back-off timeout, higher SWBB_BACK_OFF_DEGREE to higher the interval
-     between every attempt. */
+  /* Synchronous acknowledgement response timeout (1.5 milliseconds by default)
+     If (latency + CRC computation) > SWBB_RESPONSE_TIMEOUT synchronous
+     acknowledgement reliability could be affected or disrupted higher
+     SWBB_RESPONSE_TIMEOUT if necessary. */
+  #define SWBB_RESPONSE_TIMEOUT 1500
 
   #include <PJON.h>
 

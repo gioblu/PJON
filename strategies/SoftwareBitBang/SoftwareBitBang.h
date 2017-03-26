@@ -168,10 +168,13 @@ class SoftwareBitBang {
       uint16_t response = PJON_FAIL;
       uint32_t time = micros();
       /* Transmitter emits a bit SWBB_BIT_WIDTH / 4 long and tries
-         to get a response cyclically for SWBB_TIMEOUT microseconds.
+         to get a response cyclically for SWBB_RESPONSE_TIMEOUT microseconds.
          Receiver synchronizes to the falling edge of the last incoming
          bit and transmits PJON_ACK or PJON_NAK */
-      while(response == PJON_FAIL && (uint32_t)(micros() - SWBB_TIMEOUT) <= time) {
+      while(
+        response == PJON_FAIL &&
+        (uint32_t)(micros() - SWBB_RESPONSE_TIMEOUT) <= time
+      ) {
         PJON_IO_WRITE(_input_pin, LOW);
         response = receive_byte();
         if(response == PJON_FAIL) {

@@ -19,7 +19,7 @@ Master Thesis, IT University of Copenhagen, Denmark, September 2016
 ```
 
 ### PJON™ dynamic addressing specification v0.1
-This draft defines the dynamic addressing procedure used by a device in multi-master configuration or the one imposed and regulated by the master in a master-slave configuration.
+This draft defines the dynamic addressing procedure used by a device in multi-master configuration or the one imposed and regulated by master in a master-slave configuration.
 
 ### Master-slave dynamic addressing
 ```cpp  
@@ -36,7 +36,7 @@ ______|_____________|_____________|_____________|___________| ID   254 |
 ```
 
 #### Master features
-* The master id is `PJON_MASTER_ID` (value 254)
+* Master's id is `PJON_MASTER_ID` (value 254)
 * Master has a caducous internal device archive
 * Broadcasts `PJON_ID_LIST` to get `PJON_ID_REFRESH` requests from already approved devices
 * Handles `PJON_ID_REQUEST` requests from devices asking for device id assignment
@@ -44,7 +44,7 @@ ______|_____________|_____________|_____________|___________| ID   254 |
 * Handles `PJON_ID_NEGATE` requests from slaves who are leaving the bus  
 
 #### Slave features
-* The slave initial device id is `PJON_NOT_ASSIGNED` (value 255)
+* Slave's initial device id is `PJON_NOT_ASSIGNED` (value 255)
 * Slaves have a unique random generated 4 bytes id or rid
 * Sends `PJON_ID_REFRESH` request to master if required by master `PJON_ID_LIST` broadcast
 * Sends `PJON_ID_REQUEST` to master if device id assignment is necessary
@@ -53,7 +53,7 @@ ______|_____________|_____________|_____________|___________| ID   254 |
 * Fall back to multi-master procedure if no master is present
 
 #### Procedure
-Slave sends an `PJON_ID_REQUEST` to get a new device id:
+Slave sends a `PJON_ID_REQUEST` to get a new device id:
 ```cpp  
   _________ ________ ______ __________ ___ ___ ___ ___ ___     ___
  |         | HEADER |      |          |RID|RID|RID|RID|   |   |   |
@@ -82,16 +82,15 @@ Slave device id acquisition confirmation:
 >|MASTER_ID|00010100|LENGTH|ID_CONFIRM| 1 | 2 | 3 | 4 |ID|CRC|> <|ACK|
  |_________|________|______|__________|___|___|___|___|__|___|   |___|
 ```
-If master detects reference inconsistencies at this stage, sends a `PJON_ID_NEGATE` request to the slave id
-to force the device requesting `ID_CONFIRM` to regenerate a rid and try again:
+If master detects reference a requester's rid already present in its reference, sends a `PJON_ID_NEGATE` request to the slave id requesting `ID_CONFIRM` to force it to regenerate a rid and try again:
 ```cpp  
   __ ________ ______ _________ ___ ___ ___ ___ ___     ___
  |  | HEADER |      |         |RID|RID|RID|RID|   |   |   |
 >|ID|00010100|LENGTH|ID_NEGATE| 1 | 2 | 3 | 4 |CRC|> <|ACK|
  |__|________|______|_________|___|___|___|___|___|   |___|
 ```
-If master experience temporary disconnection / malfunction on startup sends a `PJON_ID_LIST` broadcast request.
-Slaves will receive the broadcast and dispatch an `PJON_ID_REFRESH` request for the master:
+If master experiences temporary disconnection or reboot, on startup sends a `PJON_ID_LIST` broadcast request.
+Slaves will receive the broadcast and dispatch a `PJON_ID_REFRESH` request for master:
 
 Master broadcast `PJON_ID_LIST` request:
 ```cpp  
@@ -107,18 +106,18 @@ Slave device `PJON_ID_REFRESH` request:
 >|MASTER_ID|00010100|LENGTH|ID_REFRESH| 1 | 2 | 3 | 4 |ID|CRC|> <|ACK|
  |_________|________|______|__________|___|___|___|___|__|___|   |___|
 ```
-If the id requested by the slave is free in the reference, id is approved by the master and the exchange ends.
-If the id is found already in use, the master sends an `PJON_ID_NEGATE` request forcing the slave to
-acquire a new id through an `PJON_ID_REQUEST`:
+If the id requested by the slave is free in master's reference, id is approved and the exchange ends.
+If the id is found already in use, master sends a `PJON_ID_NEGATE` request forcing the slave to
+acquire a new id through a `PJON_ID_REQUEST`:
 
-Master sends `PJON_ID_NEGATE` request to the slave:
+Master sends `PJON_ID_NEGATE` request to slave:
 ```cpp  
   _____ ________ ______ _________ ___ ___ ___ ___ ___     ___
  |SLAVE| HEADER |      |         |RID|RID|RID|RID|   |   |   |
 >| ID  |00010100|LENGTH|ID_NEGATE| 1 | 2 | 3 | 4 |CRC|> <|ACK|
  |_____|________|______|_________|___|___|___|___|___|   |___|
 ```
-If slave wants to leave the bus must send a `PJON_ID_NEGATE` request to the master:
+If slave disconnect from the bus must send a `PJON_ID_NEGATE` request to the master:
 ```cpp  
   _________ ________ ______ _________ ___ ___ ___ ___ __ ___     ___
  |         | HEADER |      |         |RID|RID|RID|RID|  |   |   |   |
@@ -140,10 +139,10 @@ If slave wants to leave the bus must send a `PJON_ID_NEGATE` request to the mast
 ```
 
 #### Procedure
-In a multi-master scenario, the device actively looks for a free device id and make no use of its rid for this procedure:
+In a multi-master setup, all devices, are actively looking for a free device id:
 
 1. The device extracts a random device id and tries to contact that device
 2. If an answer is received, it adds one to the id and tries again
-3. If any answer is obtained from a device id, that is reserved
+3. If no answer is obtained from a device id, that is reserved
 4. The device receives for a random time to be able to answer to other devices interested in that device id
 5. The device tries to contact itself to probe collision, if no answer is received the device id is taken.

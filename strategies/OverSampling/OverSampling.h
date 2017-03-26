@@ -18,9 +18,9 @@
    See the License for the specific language governing permissions and
    limitations under the License. */
 
-#define _STXRX882_STANDARD 1
+#define STXRX882_STANDARD 1
 
-/* _STXRX882_STANDARD:
+/* STXRX882_STANDARD:
    Medium: STX882/SRX882 433Mhz ASK/FSK modules or 315/433 MHz modules (green)
     RX http://nicerf.com/manage/upfile/indexbanner/635331970881921250.pdf
     TX http://nicerf.com/manage/upfile/indexbanner/635169453223382155.pdf
@@ -33,7 +33,7 @@
     Range: 250m with no direct line of sight, 5km with direct line of sight  */
 
 #ifndef OS_MODE
-  #define OS_MODE _STXRX882_STANDARD
+  #define OS_MODE STXRX882_STANDARD
 #endif
 
 #include "Timing.h"
@@ -170,6 +170,19 @@ class OverSampling {
         ) <= time
       ) response = receive_byte();
       return response;
+    };
+
+
+    /* Receive a string: */
+
+    uint16_t receive_string(uint8_t *string, uint16_t max_length) {
+      uint16_t result;
+      for(uint16_t b = 0; b < max_length; b++) {
+        result = receive_byte();
+        if(result == PJON_FAIL) return b;
+        string[b] = result;
+      }
+      return max_length;
     };
 
 

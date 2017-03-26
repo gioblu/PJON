@@ -24,22 +24,22 @@ STANDARD transmission mode performance:
    Absolute  communication speed: 1.81kB/s (data length 20 of characters)
    Data throughput: 1.51kB/s (data length 20 of characters)
    Promiscuous architecture/clock compatible */
-#define _SWBB_STANDARD  1
+#define SWBB_STANDARD  1
 
 /* FAST transmission mode performance:
    Transfer speed: 25.157kBd or 3.15kB/s
    Absolute  communication speed: 2.55kB/s (data length 20 of characters)
    Data throughput: 2.13kB/s (data length 20 of characters)
    Promiscuous architecture/clock compatible */
-#define _SWBB_FAST      2
+#define SWBB_FAST      2
 
 /* OVERDRIVE transmission mode performance:
    Architecture / setup dependant, see Timing.h */
-#define _SWBB_OVERDRIVE 3
+#define SWBB_OVERDRIVE 3
 
 /* Set here the selected transmission mode - default STANDARD */
 #ifndef SWBB_MODE
-  #define SWBB_MODE _SWBB_STANDARD
+  #define SWBB_MODE SWBB_STANDARD
 #endif
 
 #include "Timing.h"
@@ -141,7 +141,6 @@ class SoftwareBitBang {
     uint16_t receive_byte() {
       /* Initialize the pin and set it to LOW to reduce interference */
       PJON_IO_PULL_DOWN(_input_pin);
-
       if(_output_pin != _input_pin && _output_pin != PJON_NOT_ASSIGNED)
         PJON_IO_PULL_DOWN(_output_pin);
 
@@ -153,8 +152,13 @@ class SoftwareBitBang {
       /* is for sure equal or less than SWBB_BIT_SPACER, and if is more than ACCEPTANCE
          (a minimum HIGH duration) and what is coming after is a LOW bit
          probably a byte is coming so try to receive it. */
-      if(time >= SWBB_ACCEPTANCE && !syncronization_bit())
-        return (uint8_t)read_byte();
+      if(time >= SWBB_ACCEPTANCE) {
+        PJON_DELAY_MICROSECONDS((SWBB_BIT_WIDTH / 2) - SWBB_READ_DELAY);
+        if(!PJON_IO_READ(_input_pin)) {
+          PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH / 2);
+          return (uint8_t)read_byte();
+        }
+      }
       return PJON_FAIL;
     };
 
@@ -168,10 +172,13 @@ class SoftwareBitBang {
       uint16_t response = PJON_FAIL;
       uint32_t time = micros();
       /* Transmitter emits a bit SWBB_BIT_WIDTH / 4 long and tries
-         to get a response cyclically for SWBB_TIMEOUT microseconds.
+         to get a response cyclically for SWBB_RESPONSE_TIMEOUT microseconds.
          Receiver synchronizes to the falling edge of the last incoming
          bit and transmits PJON_ACK or PJON_NAK */
-      while(response == PJON_FAIL && (uint32_t)(micros() - SWBB_TIMEOUT) <= time) {
+      while(
+        response == PJON_FAIL &&
+        (uint32_t)(micros() - SWBB_RESPONSE_TIMEOUT) <= time
+      ) {
         PJON_IO_WRITE(_input_pin, LOW);
         response = receive_byte();
         if(response == PJON_FAIL) {
@@ -182,6 +189,19 @@ class SoftwareBitBang {
         }
       }
       return response;
+    };
+
+
+    /* Receive a string: */
+
+    uint16_t receive_string(uint8_t *string, uint16_t max_length) {
+      uint16_t result;
+      for(uint16_t b = 0; b < max_length; b++) {
+        result = receive_byte();
+        if(result == PJON_FAIL) return b;
+        string[b] = result;
+      }
+      return max_length;
     };
 
 
@@ -221,12 +241,21 @@ class SoftwareBitBang {
       PJON_IO_PULL_DOWN(_input_pin);
       uint32_t time = micros();
       /* Transmitter emits a bit SWBB_BIT_WIDTH / 4 long and tries
-         to get a response cyclically for SWBB_TIMEOUT microseconds.
-         Receiver synchronizes to the falling edge of the last incoming
-         bit and transmits PJON_ACK or PJON_NAK */
-      while((uint32_t)(micros() - time) < (SWBB_BIT_WIDTH) && !PJON_IO_READ(_input_pin))
-        time = micros(); // Wait for the last high ending
-      while((uint32_t)(micros() - time) < (SWBB_BIT_WIDTH / 2.25) && PJON_IO_READ(_input_pin));
+         to get a response cyclically for SWBB_RESPONSE_TIMEOUT microseconds.
+         Here Receiver synchronizes to the falling edge of the last incoming
+         bit and transmits response variable */
+
+      // If initially low Wait for the next high
+      while(
+        (uint32_t)(micros() - time) < (SWBB_BIT_WIDTH) &&
+        !PJON_IO_READ(_input_pin)
+      );
+      time = micros();
+      // If high Wait for low
+      while(
+        (uint32_t)(micros() - time) < (SWBB_BIT_WIDTH / 2.25) &&
+        PJON_IO_READ(_input_pin)
+      );
       PJON_IO_MODE(_output_pin, OUTPUT);
       send_byte(response);
       PJON_IO_PULL_DOWN(_output_pin);
@@ -240,21 +269,6 @@ class SoftwareBitBang {
       for(uint16_t b = 0; b < length; b++)
         send_byte(string[b]);
       PJON_IO_PULL_DOWN(_output_pin);
-    };
-
-
-    /* Syncronize with transmitter:
-     This function is used only in byte syncronization.
-     READ_DELAY has to be tuned to correctly send and
-     receive transmissions because this variable shifts
-     in which portion of the bit, the reading will be
-     executed by the next read_byte function */
-
-    uint8_t syncronization_bit() {
-      PJON_DELAY_MICROSECONDS((SWBB_BIT_WIDTH / 2) - SWBB_READ_DELAY);
-      uint8_t bit_value = PJON_IO_READ(_input_pin);
-      PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH / 2);
-      return bit_value;
     };
 
 

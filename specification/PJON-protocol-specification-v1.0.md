@@ -127,7 +127,7 @@ A packet transmission is an exchange of a string to one or many of the devices c
 |    |  |  ||     | |  ||     | | | || | |      || | |  | |   |
 |0000|11|00||00000|1|00||00000|1|0|1||0|1|000000||0|1|00|1|000|
 |____|__|__||_____|_|__||_____|_|_|_||_|_|______||_|_|__|_|___|
-```
+```       
 A default local packet transmission is a optionally bidirectional communication between two devices that can be divided in 3 different phases: **channel analysis**, **transmission** and optional **response**. The packet transmission procedure is regulated by its header:
 ```cpp
 HEADER BITMASK

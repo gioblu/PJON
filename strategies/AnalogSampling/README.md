@@ -8,16 +8,16 @@ AnalogSampling is designed to sample digital data using analog readings. It can 
 - ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
 
 #### Performance
-PJON works in 1 communication mode, `STANDARD`:
-- `STANDARD` runs at 1024Bd or 128B/s
+PJON works in 1 communication mode, `AS_STANDARD`:
+- `AS_STANDARD` runs at 1024Bd or 128B/s
 
 #### How to use AnalogSampling
 Pass the `AnalogSampling` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy. All the other necessary information is present in the general [Documentation](/documentation).
 ```cpp  
-  /* Acknowledge latency maximum duration (1000 microseconds default).
-     Could be necessary to higher SWBB_LATENCY if sending long packets because
+  /* Acknowledge latency maximum duration (15000 microseconds default).
+     Could be necessary to higher AS_RESPONSE_TIMEOUT if sending long packets because
      of the CRC computation time needed by receiver before transmitting its acknowledge  */
-  #define AS_LATENCY 1000
+  #define AS_RESPONSE_TIMEOUT 15000
 
   /* Set the back-off exponential degree */
   #define AS_BACK_OFF_DEGREE 5

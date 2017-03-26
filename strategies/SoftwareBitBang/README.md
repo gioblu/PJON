@@ -15,10 +15,10 @@ SoftwareBitBang is the default data link layer used by PJON and it is based on `
 - MK20DX256 96Mhz (Teensy 3.1)
 
 #### Performance
-PJON works in 3 different communication modes, `STANDARD`, `FAST` and `OVERDRIVE`:
-- `STANDARD` runs at 16944Bd or 2.12kB/s cross-architecture, promiscuous clock/architecture compatible.
-- `FAST` runs at 25157Bd or 3.15kB/s cross-architecture, promiscuous clock/architecture compatible.
-- `OVERDRIVE` runs a specific architecture at its maximum limits (non cross-architecture compatible). Every architecture has its own limits, Arduino Duemilanove for example runs at 33898Bd or 4.23kB/s, Arduino Zero can reach 48000Bd or 6.00kB/s.
+`SWBB_MODE` can be configured in 3 different modes, `SWBB_STANDARD`, `SWBB_FAST` and `SWBB_OVERDRIVE`:
+- `SWBB_STANDARD` (1) runs at 16944Bd or 2.12kB/s cross-architecture, promiscuous clock/architecture compatible.
+- `SWBB_FAST` (2) runs at 21504Bd or 2.68kB/s cross-architecture, promiscuous clock/architecture compatible.
+- `SWBB_OVERDRIVE` (3) runs a specific architecture at its maximum limits (non cross-architecture compatible). Every architecture has its own limits, Arduino Duemilanove for example runs at 31250Bd or 3.906kB/s, Arduino Zero can reach 48000Bd or 6kB/s.
 
 When including and using SoftwareBitBang, as data link layer of a PJON bus, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because SoftwareBitBang is completely software emulated strategy with a non blocking implementation, transforming a painful walk to the hill in a nice flight.
 
@@ -27,32 +27,24 @@ Single wire simplicity let you to experiment quickly and with creativity. The fi
 #### How to use SoftwareBitBang
 Pass the `SoftwareBitBang` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy. All the other necessary information is present in the general [Documentation](/documentation).
 ```cpp  
-  /* The default SoftwareBitBang mode is _SWBB_STANDARD
+  /* The default SoftwareBitBang mode is SWBB_STANDARD
      (Transfer speed: 16.944kBb or 2.12kB/s) */
 
-  /* Set SoftwareBitBang mode to _SWBB_FAST before PJON.h inclusion
-     (Transfer speed: 25.157kBd or 3.15kB/s) */
+  /* Set SoftwareBitBang mode to SWBB_FAST before PJON.h inclusion
+     (Transfer speed: 21.504kBd or 3.15kB/s)
+     When used with a group of different devices a pull-down resistor is
+     suggested to have optimal channel reliability */
   #define SWBB_MODE 2
 
-  /* Set SoftwareBitBang mode to _SWBB_OVERDRIVE before PJON.h inclusion
+  /* Set SoftwareBitBang mode to SWBB_OVERDRIVE before PJON.h inclusion
      (Architecture / Toolchain dependant) */
   #define SWBB_MODE 3
 
-  /* Acknowledge latency maximum duration (1000 microseconds default).
-     Could be necessary to higher SWBB_LATENCY if sending long packets because
-     of the CRC computation time needed by receiver before transmitting its acknowledge  */
-  #define SWBB_LATENCY 1000
-
-  /* Set the back-off exponential degree */
-  #define SWBB_BACK_OFF_DEGREE 4
-
-  /* Set the maximum sending attempts */
-  #define SWBB_MAX_ATTEMPTS 20
-
-  /* The values set above are the default producing a 3.2 seconds
-     back-off timeout with 20 attempts. Higher SWBB_MAX_ATTEMPTS to higher
-     the back-off timeout, higher SWBB_BACK_OFF_DEGREE to higher the interval
-     between every attempt. */
+  /* Synchronous acknowledgement response timeout (1.5 milliseconds by default)
+     If (latency + CRC computation) > SWBB_RESPONSE_TIMEOUT synchronous
+     acknowledgement reliability could be affected or disrupted higher
+     SWBB_RESPONSE_TIMEOUT if necessary. */
+  #define SWBB_RESPONSE_TIMEOUT 1500
 
   #include <PJON.h>
 
@@ -78,10 +70,9 @@ PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl
 - A pull down resistor in the order of mega ohms could be necessary on the bus to reduce interference, see [deal with interference](https://github.com/gioblu/PJON/wiki/Deal-with-interference). In late november 2016 a bug has been discovered, it was on many devices creating a slight inconsistency in the channel state during transitions, most of the times
 disappearing with the use of a pull-down resistor ([120b2c](https://github.com/gioblu/PJON/commit/120b2c72f1435519e7712adfd2c3f1eecc38557c)), with this bugfix the channel is much more reliable and in most cases there is no more need of a pull-down resistor to have nominal communication speed.
 - Consider that this is not an interrupt driven system and so all the time passed
-in delay or executing something a certain amount of packets could be potentially
+in delay or executing other tasks a certain amount of packets could be potentially
 lost not received, the packet manager of PJON will do its job scheduling the packet
-to be sent again in future until is received or `PJON_MAX_ATTEMPTS` sending attempts is
-reached, but a certain amount of bandwidth can be wasted. Structure intelligently
+to be sent again in future but a certain amount of bandwidth can be wasted. Structure intelligently
 your loop cycle to avoid huge blind timeframes.
 - `SoftwareBitBang` strategy can have compatibility issues with codebases that
 are using interrupts, reliability or bandwidth loss can be experienced because of the cyclical

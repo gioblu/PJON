@@ -2,7 +2,7 @@
 /* PJON AnalogSampling strategy Transmission Timing table
    Copyright (c) 2017, Giovanni Blu Mitolo All rights reserved.
 
-    _AS_STANDARD transmission mode performance:
+    AS_STANDARD transmission mode performance:
     Transfer speed: 1024Bb or 128B/s
     Absolute  communication speed: 128B/s (data length 20 of characters)
     Data throughput: 100B/s (data length 20 of characters)
@@ -10,7 +10,7 @@
    All benchmarks should be executed with NetworkAnalysis and SpeedTest examples. */
 
 #if defined(__AVR_ATmega88__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
-  #if AS_MODE == _AS_STANDARD
+  #if AS_MODE == AS_STANDARD
     #if F_CPU == 16000000L
       #define AS_BIT_WIDTH   750
       #define AS_BIT_SPACER  1050
@@ -21,21 +21,21 @@
 
 /* ATmega1280/2560 - Arduino Mega/Mega-nano --------------------------------- */
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-  #if AS_MODE == _AS_STANDARD
+  #if AS_MODE == AS_STANDARD
     /* TODO - define dedicated timing */
   #endif
 #endif
 
 /* ATmega16/32U4 - Arduino Leonardo/Micro ----------------------------------- */
 #if defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__)
-  #if AS_MODE == _AS_STANDARD
+  #if AS_MODE == AS_STANDARD
     /* TODO - define dedicated timing */
   #endif
 #endif
 
 /* NodeMCU, generic ESP8266 ------------------------------------------------- */
 #if defined(ESP8266)
-  #if AS_MODE == _AS_STANDARD
+  #if AS_MODE == AS_STANDARD
     #if F_CPU == 80000000L
       /* TODO - define dedicated timing */
     #endif
@@ -54,16 +54,14 @@
   #define AS_READ_DELAY         0
 #endif
 
-/* The default response timeout setup dedicates the transmission time of 1 byte plus
-  1 millisecond to latency and CRC computation. If receiver needs more than
-  OS_TIMEOUT to compute CRC and answer back ACK, transmitter will not receive
-  the incoming synchronous ACK, Higher or lower if necessary! */
+/* Synchronous acknowledgement response timeout. (15 milliseconds default).
+   If (latency + CRC computation) > AS_RESPONSE_TIMEOUT synchronous
+   acknowledgement reliability could be affected or disrupted higher
+   AS_RESPONSE_TIMEOUT if necessary. */
 
-#ifndef AS_LATENCY
-  #define AS_LATENCY         4000
+#ifndef AS_RESPONSE_TIMEOUT
+  #define AS_RESPONSE_TIMEOUT 15000
 #endif
-
-#define AS_TIMEOUT ((AS_BIT_WIDTH * 9) + AS_BIT_SPACER + AS_LATENCY)
 
 /* Maximum initial delay in milliseconds: */
 

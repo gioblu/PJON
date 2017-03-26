@@ -56,7 +56,7 @@ void send_response(uint8_t response) {
 };
 ```
 
-####How to define a new strategy
+#### How to define a new strategy
 To define your new strategy you have only to create a new folder named for example `YourStrategyName` in `strategies`
 directory and write the necessary file `YourStrategyName.h`:
 

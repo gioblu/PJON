@@ -70,10 +70,9 @@ PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl
 - A pull down resistor in the order of mega ohms could be necessary on the bus to reduce interference, see [deal with interference](https://github.com/gioblu/PJON/wiki/Deal-with-interference). In late november 2016 a bug has been discovered, it was on many devices creating a slight inconsistency in the channel state during transitions, most of the times
 disappearing with the use of a pull-down resistor ([120b2c](https://github.com/gioblu/PJON/commit/120b2c72f1435519e7712adfd2c3f1eecc38557c)), with this bugfix the channel is much more reliable and in most cases there is no more need of a pull-down resistor to have nominal communication speed.
 - Consider that this is not an interrupt driven system and so all the time passed
-in delay or executing something a certain amount of packets could be potentially
+in delay or executing other tasks a certain amount of packets could be potentially
 lost not received, the packet manager of PJON will do its job scheduling the packet
-to be sent again in future until is received or `PJON_MAX_ATTEMPTS` sending attempts is
-reached, but a certain amount of bandwidth can be wasted. Structure intelligently
+to be sent again in future but a certain amount of bandwidth can be wasted. Structure intelligently
 your loop cycle to avoid huge blind timeframes.
 - `SoftwareBitBang` strategy can have compatibility issues with codebases that
 are using interrupts, reliability or bandwidth loss can be experienced because of the cyclical

@@ -153,8 +153,13 @@ class SoftwareBitBang {
       /* is for sure equal or less than SWBB_BIT_SPACER, and if is more than ACCEPTANCE
          (a minimum HIGH duration) and what is coming after is a LOW bit
          probably a byte is coming so try to receive it. */
-      if(time >= SWBB_ACCEPTANCE && !syncronization_bit())
-        return (uint8_t)read_byte();
+      if(time >= SWBB_ACCEPTANCE) {
+        PJON_DELAY_MICROSECONDS((SWBB_BIT_WIDTH / 2) - SWBB_READ_DELAY);
+        if(!PJON_IO_READ(_input_pin)) {
+          PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH / 2);
+          return (uint8_t)read_byte();
+        }
+      }
       return PJON_FAIL;
     };
 
@@ -243,21 +248,6 @@ class SoftwareBitBang {
       for(uint16_t b = 0; b < length; b++)
         send_byte(string[b]);
       PJON_IO_PULL_DOWN(_output_pin);
-    };
-
-
-    /* Syncronize with transmitter:
-     This function is used only in byte syncronization.
-     READ_DELAY has to be tuned to correctly send and
-     receive transmissions because this variable shifts
-     in which portion of the bit, the reading will be
-     executed by the next read_byte function */
-
-    uint8_t syncronization_bit() {
-      PJON_DELAY_MICROSECONDS((SWBB_BIT_WIDTH / 2) - SWBB_READ_DELAY);
-      uint8_t bit_value = PJON_IO_READ(_input_pin);
-      PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH / 2);
-      return bit_value;
     };
 
 

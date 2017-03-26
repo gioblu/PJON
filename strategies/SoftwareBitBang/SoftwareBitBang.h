@@ -24,22 +24,22 @@ STANDARD transmission mode performance:
    Absolute  communication speed: 1.81kB/s (data length 20 of characters)
    Data throughput: 1.51kB/s (data length 20 of characters)
    Promiscuous architecture/clock compatible */
-#define _SWBB_STANDARD  1
+#define SWBB_STANDARD  1
 
 /* FAST transmission mode performance:
    Transfer speed: 25.157kBd or 3.15kB/s
    Absolute  communication speed: 2.55kB/s (data length 20 of characters)
    Data throughput: 2.13kB/s (data length 20 of characters)
    Promiscuous architecture/clock compatible */
-#define _SWBB_FAST      2
+#define SWBB_FAST      2
 
 /* OVERDRIVE transmission mode performance:
    Architecture / setup dependant, see Timing.h */
-#define _SWBB_OVERDRIVE 3
+#define SWBB_OVERDRIVE 3
 
 /* Set here the selected transmission mode - default STANDARD */
 #ifndef SWBB_MODE
-  #define SWBB_MODE _SWBB_STANDARD
+  #define SWBB_MODE SWBB_STANDARD
 #endif
 
 #include "Timing.h"

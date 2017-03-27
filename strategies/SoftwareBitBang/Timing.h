@@ -9,7 +9,7 @@
    and SpeedTest examples.
 
    SWBB_STANDARD mode: 16.944kBb or 2.12kB/s
-   SWBB_FAST mode: 21.504kBd or 2.68kB/s
+   SWBB_FAST mode: 21.505kBd or 2.68kB/s
    SWBB_OVERDRIVE mode: Architecture / Toolchain dependant */
 
 /* ATmega88/168/328 - Arduino Duemilanove, Uno, Nano, Mini, Pro, Pro mini --- */
@@ -32,10 +32,10 @@
   #endif
   #if SWBB_MODE == SWBB_OVERDRIVE
     #if F_CPU == 16000000L
-    /* Speed: 31.250kBd or 3.906kB/s */
-      #define SWBB_BIT_WIDTH  20
-      #define SWBB_BIT_SPACER 76
-      #define SWBB_ACCEPTANCE 20
+    /* Speed: 39.800kBd or 4.975kB/s */
+      #define SWBB_BIT_WIDTH  17
+      #define SWBB_BIT_SPACER 48
+      #define SWBB_ACCEPTANCE 17
       #define SWBB_READ_DELAY 8
     #endif
   #endif
@@ -176,7 +176,7 @@
     #define SWBB_BIT_WIDTH 17
   #endif
   #ifndef SWBB_BIT_SPACER
-    #define SWBB_BIT_SPACER 52
+    #define SWBB_BIT_SPACER 48
   #endif
   #ifndef SWBB_ACCEPTANCE
     #define SWBB_ACCEPTANCE 17

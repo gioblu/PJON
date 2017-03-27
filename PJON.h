@@ -903,8 +903,12 @@ limitations under the License. */
 
           if(
             (uint32_t)(PJON_MICROS() - packets[i].registration) >
-            (uint32_t)(packets[i].timing + strategy.back_off(packets[i].attempts))
-          ) packets[i].state = send_packet(packets[i].content, packets[i].length);
+            (uint32_t)(
+              packets[i].timing +
+              strategy.back_off(packets[i].attempts)
+            )
+          ) packets[i].state =
+            send_packet(packets[i].content, packets[i].length);
           else continue;
 
           packets[i].attempts++;
@@ -977,17 +981,19 @@ limitations under the License. */
           for(uint8_t i = 0; i < PJON_MAX_RECENT_PACKET_IDS; i++)
             if(
               info.id == recent_packet_ids[i].id &&
-              info.sender_id == recent_packet_ids[i].sender_id &&
-              ((
-                (info.header & PJON_MODE_BIT) &&
-                (recent_packet_ids[i].header & PJON_MODE_BIT) && bus_id_equality(
-                  (uint8_t *)info.sender_bus_id,
-                  (uint8_t *)recent_packet_ids[i].sender_bus_id
-                )
-              ) || !(info.header & PJON_MODE_BIT) &&
-                   !(recent_packet_ids[i].header & PJON_MODE_BIT))
+              info.sender_id == recent_packet_ids[i].sender_id && (
+                (
+                  (info.header & PJON_MODE_BIT) &&
+                  (recent_packet_ids[i].header & PJON_MODE_BIT) &&
+                  bus_id_equality(
+                    (uint8_t *)info.sender_bus_id,
+                    (uint8_t *)recent_packet_ids[i].sender_bus_id
+                  )
+                ) ||
+                !(info.header & PJON_MODE_BIT) &&
+                !(recent_packet_ids[i].header & PJON_MODE_BIT)
+              )
             ) return true;
-
           save_packet_id(info);
           return false;
         #endif

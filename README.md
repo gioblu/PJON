@@ -1,20 +1,21 @@
 
 ![PJON](http://www.gioblu.com/PJON/PJON-github-header-tiny.png)
 ## PJON v7.1
-PJON™ (Padded Jittering Operative Network) is an Arduino compatible, multi-master, multi-media communications bus system. It proposes a Standard, it is designed as a framework and implements a totally software-emulated network protocol stack. It is a valid alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. Visit the [Wiki](wiki), [Documentation](wiki/Documentation) and [Troubleshooting](wiki/Troubleshooting) wiki pages to know more about the PJON Standard.
+PJON™ (Padded Jittering Operative Network) is an Arduino compatible, multi-master, multi-media communications bus system. It proposes a Standard, it is designed as a framework and implements a totally software-emulated network protocol stack that can be easily cross-compiled on many architectures like ATtiny, ATmega, ESP8266 and Raspberry Pi. It is a valid alternative to i2c, 1-Wire, Serial and other Arduino compatible protocols. Visit the [Wiki](wiki), [Documentation](wiki/Documentation) and [Troubleshooting](wiki/Troubleshooting) wiki pages to know more about the PJON Standard.
 
 [![Get PJON bus id](https://img.shields.io/badge/GET-PJON%20bus%20id-lightgrey.svg)](http://www.pjon.org/get-bus-id.php)
 [![Video introduction](https://img.shields.io/badge/PJON-video%20introduction-blue.svg)](https://www.youtube.com/watch?v=vjc4ZF5own8)
 [![Join the chat at https://gitter.im/gioblu/PJON](https://badges.gitter.im/gioblu/PJON.svg)](https://gitter.im/gioblu/PJON?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Donate](http://img.shields.io/paypal/donate.png?color=brightgreen)](https://www.paypal.me/PJON)
 
 #### Features
-- Configurable 2 level addressing (device and bus id) for scalable applications
+- Supports cross-compilation with [interfaces](interfaces) abstraction to system calls
 - Multi-media support with the data link layer abstraction or [Strategy](strategies) framework
-- Configurable 1 or 2 bytes packet length (max 255 or 65535 bytes)
 - Master-slave or multi-master [dynamic addressing](specification/PJON-dynamic-addressing-specification-v0.1.md)
 - Configurable synchronous and/or asynchronous [acknowledgement](specification/PJON-protocol-acknowledge-specification-v0.1.md) of correct packet sending
+- Configurable 2 level addressing (device and bus id) for scalable applications
+- Configurable 1 or 2 bytes packet length (max 255 or 65535 bytes)
 - Collision avoidance to enable multi-master capability
-- Selectable CRC8 or CRC32 table-less cyclic redundancy check
+- Configurable CRC8 or CRC32 table-less cyclic redundancy check
 - Packet manager to handle, track and if necessary retransmit a packet sending in background
 - Optional ordered packet sending
 - Error handling

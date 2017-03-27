@@ -155,7 +155,7 @@ limitations under the License. */
       ) {
         if(header == PJON_NOT_ASSIGNED) header = config;
         if(header > 255) header |= PJON_EXT_HEAD_BIT;
-        if(length > 255) header |= (PJON_EXT_LEN_BIT | PJON_CRC_BIT);
+        if(length > 255) header |= PJON_EXT_LEN_BIT;
         if(id == PJON_BROADCAST)
           header &= ~(PJON_ACK_REQ_BIT | PJON_ACK_MODE_BIT);
         uint16_t new_length = length + packet_overhead(header);

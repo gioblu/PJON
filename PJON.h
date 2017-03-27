@@ -423,8 +423,8 @@ limitations under the License. */
         parse(data, last_packet_info);
 
         #if(PJON_INCLUDE_ASYNC_ACK)
-          /* If a packet requesting asynchronous acknowledegement is received
-             send the acknowledegement packet back to the packet's transmitter */
+          /* If a packet requesting asynchronous acknowledgement is received
+             send the acknowledgement packet back to the packet's transmitter */
           if((data[1] & PJON_ACK_MODE_BIT) && (data[1] & PJON_TX_INFO_BIT)) {
             if(_auto_delete && length == packet_overhead(data[1]))
               if(handle_asynchronous_acknowledgment(last_packet_info))

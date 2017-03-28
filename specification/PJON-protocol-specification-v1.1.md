@@ -132,14 +132,14 @@ HEADER BITMASK
 |________|________|_______|_______|_______|______|_______|_______|
 ```
 #### Header byte 1 bits roles
-* **EXT. HEADER** or extended header bit informs if the header is composed by 1 (value 0) or 2 bytes (value 1)
-* **EXT. LENGTH** or extended length bit informs if the packet contains 1 (value 0) or 2 (value 1) bytes length
-* **CRC** bit informs the receiver which CRC was used as check for the packet, CRC 8 (value 0) or CRC 32 (value 1)
-* **ADDR.** or addressing bit informs if the packet is part of an addressing procedure (value 1) or not (value 0)
-* **ACK MODE** or acknowledge mode bit requests synchronous (value 0) or asynchronous (value 1) acknowledge mode
-* **ACK** or acknowledge bit informs if acknowledge is requested (value 1) or not (value 0)
-* **TX INFO** or transmitter info bit informs if the sender info are included (value 1) or not (value 0)
-* **MODE** bit informs if the packet is a shared mode (value 1) or if local mode formatted (value 0)
+* `EXT. HEADER` or extended header bit informs if the header is composed by 1 (value 0) or 2 bytes (value 1)
+* `EXT. LENGTH` or extended length bit informs if the packet contains 1 (value 0) or 2 (value 1) bytes length
+* `CRC` bit informs the receiver which CRC was used as check for the packet, CRC 8 (value 0) or CRC 32 (value 1)
+* `ADDR.` or addressing bit informs if the packet is part of an addressing procedure (value 1) or not (value 0)
+* `ACK MODE` or acknowledge mode bit requests synchronous (value 0) or asynchronous (value 1) acknowledge mode
+* `ACK` or acknowledge bit informs if acknowledge is requested (value 1) or not (value 0)
+* `TX INFO` or transmitter info bit informs if the sender info are included (value 1) or not (value 0)
+* `MODE` bit informs if the packet is a shared mode (value 1) or if local mode formatted (value 0)
 
 #### Unacceptable header configuration states for standard transmission
 * `----1-0-` or `ACK MODE` bit up, and `TX INFO` down (asynchronous acknowledgement needs transmitter info)
@@ -153,14 +153,14 @@ HEADER BITMASK
 `-` symbol means irrelevant bit value
 
 #### Header byte 2 bits roles
-* **EXT. HEADER** bit informs if the header is composed by 2 (value 0) or 3 bytes (value 1)
-* **ROUT.** or routing bit informs if routing meta-data is included (value 1) or not (value 0)
-* **SEGM.** or segmentation bit informs if part of a segmented transmission (value 1) or not (value 0)
-* **SESS.** or session bit informs if session meta-data is included (value 1) or not (value 0)
-* **PAR.** or parity bit informs if parity information for auto-correction is included (value 1) or not (value 0)
-* **ENCODING** bit informs if encoding meta-data is included (value 1) or not (value 0)
-* **DATA COMP.** or data compression bit informs if data compression meta-data is included (value 1) or not (value 0)
-* **ENCRYPTION** bit informs if encryption meta-data is included (value 1) or not (value 0)
+* `EXT. HEADER` bit informs if the header is composed by 2 (value 0) or 3 bytes (value 1)
+* `ROUT.` or routing bit informs if routing meta-data is included (value 1) or not (value 0)
+* `SEGM.` or segmentation bit informs if part of a segmented transmission (value 1) or not (value 0)
+* `SESS.` or session bit informs if session meta-data is included (value 1) or not (value 0)
+* `PAR.` or parity bit informs if parity information for auto-correction is included (value 1) or not (value 0)
+* `ENCODING` bit informs if encoding meta-data is included (value 1) or not (value 0)
+* `DATA COMP.` or data compression bit informs if data compression meta-data is included (value 1) or not (value 0)
+* `ENCRYPTION` bit informs if encryption meta-data is included (value 1) or not (value 0)
 
 
 ### Packet transmission
@@ -230,4 +230,4 @@ Channel analysis        Transmission                         Response
 |___|  |__|________|______|______|______|__|_________|_____|   |___|
                           |RXINFO| TX INFO |          
 ```
-See the [Acknowledge specification v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md) to have more detailed info of its procedure. 
+See the [Acknowledge specification v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md) to have more detailed info of its procedure.

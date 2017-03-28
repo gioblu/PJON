@@ -21,7 +21,7 @@ PJON™ (Padded Jittering Operative Network) is an Arduino compatible, multi-mas
 - Error handling
 
 #### PJON (Padded Jittering Operative Network) Protocol specification
-- PJON [v1.0](specification/PJON-protocol-specification-v1.0.md)
+- PJON [v1.1](specification/PJON-protocol-specification-v1.1.md)
 - PJON Acknowledge [v0.1](specification/PJON-protocol-acknowledge-specification-v0.1.md)
 - PJON Dynamic addressing [v0.1](specification/PJON-dynamic-addressing-specification-v0.1.md)
 

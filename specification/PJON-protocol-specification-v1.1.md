@@ -1,4 +1,4 @@
-- PJON (Padded Jittering Operative Network) Protocol specification: **[v1.0](/specification/PJON-protocol-specification-v1.0.md)**
+- PJON (Padded Jittering Operative Network) Protocol specification: **[v1.1](/specification/PJON-protocol-specification-v1.1.md)**
 - Acknowledge specification: [v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md)
 - Dynamic addressing specification: [v0.1](/specification/PJON-dynamic-addressing-specification-v0.1.md)
 - PJDL (Padded Jittering Data Link) specification:
@@ -6,24 +6,20 @@
 
 ```cpp
 /*
-Milan, Italy - 3/10/2016
+Milan, Italy - 28/03/2017
 The PJON™ protocol layer specification is an invention and intellectual property
-of Giovanni Blu Mitolo - Copyright 2010-2016 All rights reserved
+of Giovanni Blu Mitolo - Copyright 2010-2017 All rights reserved
 
 Related work: https://github.com/gioblu/PJON/
 Compliant implementation versions: PJON 6.0 and following
 
-New features:
-- Header switched position with length to enable more than one byte length
-- Optional extended header by Fred Larsen
-- Header bits function definition
-- Configurable 1 or 2 bytes length (max packet length 255/65535 bytes)
-- Configurable CRC used (8/32 bit)
-- Configurable auto-addressing
+Changelog:
+- Avoid sending NAK
+- Added unacceptable header configuration list
 */
 ```
 
-### PJON™ Protocol specification v1.0
+### PJON™ Protocol specification v1.1
 With this release, the PJON protocol layer has been vastly extended and generalized aiming to interoperability and to offer a real and complete alternative to the actual set of standards used for networking today. The strong plus of the approach used by the protocol mechanism is high efficiency and low overhead thanks to the configuration driven packet format, enabling easy constrain to application needs.
 
 ### Network protocol stack model
@@ -167,6 +163,16 @@ Header byte 2 bits roles:
 * **DATA COMP.** or data compression bit informs if data compression meta-data is included (value 1) or not (value 0)
 * **ENCRYPTION** bit informs if encryption meta-data is included (value 1) or not (value 0)
 
+List of unacceptable header configuration states sending a BROADCAST:
+* `-----1--` or `ACK` bit up
+* `----1---` or `ACK MODE` bit up
+* `-10-----` or `EXT. LENGTH` bit up and `CRC` down
+List of unacceptable header configuration states sending to a certain device:
+* `----10--` or `ACK MODE` bit up, `ACK` bit
+* `----1-0-` or `ACK MODE` bit up, and `TX INFO` down
+* `-10-----` or `EXT. LENGTH` bit up and `CRC` down
+`-` symbol means irrelevant bit value 
+
 ```cpp  
 Channel analysis  Transmission                                  Response
     _____          ________________________________________        _____
@@ -175,7 +181,7 @@ Channel analysis  Transmission                                  Response
    |  0  |        | 12 | 00000100 |   5    |    64   |  72 |      |  6  |
    |_____|        |____|__________|________|_________|_____|      |_____|
 ```
-In the first phase the bus is analyzed by transmitter reading 10 logical bits, if any logical 1 is detected the channel is considered free and transmission phase starts in which the packet is entirely transmitted. Receiver calculates CRC and starts the response phase transmitting a single byte, `PJON_ACK` (decimal 6) in case of correct reception or `PJON_NAK` (decimal 21) if an error in the packet's content is detected. If transmitter receives no answer or `PJON_NAK` the packet sending is scheduled with a delay of `ATTEMPTS * ATTEMPTS * ATTEMPTS * ATTEMPTS` with a maximum of 42 `ATTEMPTS` to obtain data transmission 4rd degree polynomial back-off.
+In the first phase the bus is analyzed by transmitter reading 10 logical bits, if any logical 1 is detected the channel is considered free and transmission phase starts in which the packet is entirely transmitted. Receiver calculates CRC and starts the response phase transmitting a single byte, `PJON_ACK` (decimal 6) in case of correct reception. If transmitter receives no answer the packet sending is scheduled with a delay of `ATTEMPTS * ATTEMPTS * ATTEMPTS * ATTEMPTS` with a maximum of 42 `ATTEMPTS` to obtain data transmission 4rd degree polynomial back-off.
 
 Below is shown the same local transmission used as an example before, formatted to be sent over a shared medium, where device id `12` of bus `0.0.0.1` sends @ (decimal 64) to device id `11` in bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient, and optionally the sender's bus and device id:
 ```cpp  

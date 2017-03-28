@@ -167,11 +167,13 @@ List of unacceptable header configuration states sending a BROADCAST:
 * `-----1--` or `ACK` bit up
 * `----1---` or `ACK MODE` bit up
 * `-10-----` or `EXT. LENGTH` bit up and `CRC` down
+
 List of unacceptable header configuration states sending to a certain device:
 * `----10--` or `ACK MODE` bit up, `ACK` bit
 * `----1-0-` or `ACK MODE` bit up, and `TX INFO` down
 * `-10-----` or `EXT. LENGTH` bit up and `CRC` down
-`-` symbol means irrelevant bit value 
+
+`-` symbol means irrelevant bit value
 
 ```cpp  
 Channel analysis  Transmission                                  Response

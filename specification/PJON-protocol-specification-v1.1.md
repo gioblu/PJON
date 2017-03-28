@@ -153,6 +153,18 @@ Header byte 1 bits roles:
 * **TX INFO** or transmitter info bit informs if the sender info are included (value 1) or not (value 0)
 * **MODE** bit informs if the packet is a shared mode (value 1) or if local mode formatted (value 0)
 
+List of unacceptable header configuration states sending a BROADCAST:
+* `-----1--` or `ACK` bit up (no acknowledgement supported if BROADCAST)
+* `----1---` or `ACK MODE` bit up (no acknowledgement supported if BROADCAST)
+* `-10-----` or `EXT. LENGTH` bit up and `CRC` down (CRC32 forced for packet length > 15)
+
+List of unacceptable header configuration states sending to a certain device:
+* `----10--` or `ACK MODE` bit up, `ACK` bit down (not meaningful)
+* `----1-0-` or `ACK MODE` bit up, and `TX INFO` down (asynchronous acknowledgement needs transmitter info)
+* `-10-----` or `EXT. LENGTH` bit up and `CRC` down (CRC32 forced for packet length > 15)
+
+`-` symbol means irrelevant bit value
+
 Header byte 2 bits roles:
 * **EXT. HEADER** bit informs if the header is composed by 2 (value 0) or 3 bytes (value 1)
 * **ROUT.** or routing bit informs if routing meta-data is included (value 1) or not (value 0)
@@ -162,18 +174,6 @@ Header byte 2 bits roles:
 * **ENCODING** bit informs if encoding meta-data is included (value 1) or not (value 0)
 * **DATA COMP.** or data compression bit informs if data compression meta-data is included (value 1) or not (value 0)
 * **ENCRYPTION** bit informs if encryption meta-data is included (value 1) or not (value 0)
-
-List of unacceptable header configuration states sending a BROADCAST:
-* `-----1--` or `ACK` bit up
-* `----1---` or `ACK MODE` bit up
-* `-10-----` or `EXT. LENGTH` bit up and `CRC` down
-
-List of unacceptable header configuration states sending to a certain device:
-* `----10--` or `ACK MODE` bit up, `ACK` bit
-* `----1-0-` or `ACK MODE` bit up, and `TX INFO` down
-* `-10-----` or `EXT. LENGTH` bit up and `CRC` down
-
-`-` symbol means irrelevant bit value
 
 ```cpp  
 Channel analysis  Transmission                                  Response

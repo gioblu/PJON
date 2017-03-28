@@ -143,7 +143,7 @@ HEADER BITMASK
 |        |        |       |       |       |      |       |       |
 |________|________|_______|_______|_______|______|_______|_______|
 ```
-Header byte 1 bits roles:
+#### Header byte 1 bits roles
 * **EXT. HEADER** or extended header bit informs if the header is composed by 1 (value 0) or 2 bytes (value 1)
 * **EXT. LENGTH** or extended length bit informs if the packet contains 1 (value 0) or 2 (value 1) bytes length
 * **CRC** bit informs the receiver which CRC was used as check for the packet, CRC 8 (value 0) or CRC 32 (value 1)
@@ -153,19 +153,19 @@ Header byte 1 bits roles:
 * **TX INFO** or transmitter info bit informs if the sender info are included (value 1) or not (value 0)
 * **MODE** bit informs if the packet is a shared mode (value 1) or if local mode formatted (value 0)
 
-List of unacceptable header configuration states sending a BROADCAST:
-* `-----1--` or `ACK` bit up (no acknowledgement supported if BROADCAST)
-* `----1---` or `ACK MODE` bit up (no acknowledgement supported if BROADCAST)
-* `-10-----` or `EXT. LENGTH` bit up and `CRC` down (CRC32 forced for packet length > 15)
-
-List of unacceptable header configuration states sending to a certain device:
+#### Unacceptable header configuration states for standard transmission
 * `----10--` or `ACK MODE` bit up, `ACK` bit down (not meaningful)
 * `----1-0-` or `ACK MODE` bit up, and `TX INFO` down (asynchronous acknowledgement needs transmitter info)
 * `-10-----` or `EXT. LENGTH` bit up and `CRC` down (CRC32 forced for packet length > 15)
 
+#### Unacceptable header configuration states sending a BROADCAST
+* `-----1--` or `ACK` bit up (no acknowledgement supported if BROADCAST)
+* `----1---` or `ACK MODE` bit up (no acknowledgement supported if BROADCAST)
+* `-10-----` or `EXT. LENGTH` bit up and `CRC` down (CRC32 forced for packet length > 15)
+
 `-` symbol means irrelevant bit value
 
-Header byte 2 bits roles:
+#### Header byte 2 bits roles
 * **EXT. HEADER** bit informs if the header is composed by 2 (value 0) or 3 bytes (value 1)
 * **ROUT.** or routing bit informs if routing meta-data is included (value 1) or not (value 0)
 * **SEGM.** or segmentation bit informs if part of a segmented transmission (value 1) or not (value 0)

@@ -52,15 +52,15 @@ In the graph below is shown the protocol stack model proposed. The differences b
 ```
 
 ### Basic concepts
-* Every bus has a unique IPv4 like 4 bytes id
-* Many buses can coexist on the same medium
+* Transmission occurs only if the communication medium is not in use
+* Packet transmission is regulated by a 1, 2 or 3 byte header
+* Devices communicate through packets with a maximum length of 255 or 65535 bytes
 * Every device has an equal right to transmit and receive
-* Every device can be connected to n PJON buses
 * Every device has a unique 1 byte id
 * Every device can obtain an id if available (see [Dynamic addressing specification v0.1](/specification/PJON-dynamic-addressing-specification-v0.1.md))
-* Transmission occurs only if the communication medium is not in use
-* Devices communicate through packets with a maximum length of 255 or 65535 bytes
-* Packet transmission is regulated by a 1, 2 or 3 byte header
+* Every bus has a unique IPv4 like 4 bytes id
+* Every device can be connected to n PJON buses
+* Many buses can coexist on the same medium
 * Synchronous and or asynchronous acknowledgement can be requested  (see [Acknowledge specification v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md))
 
 The PJON protocol v1.0 handles internal bus connectivity and unique addressing for 254 devices, through bus communication with unique bus addressing for 4.294.967.295 buses and supports up to 1.090.921.692.930 devices. It regulates the exchange of packets with a configurable set of features driven by its header. Depending on the packet configuration a certain overhead is added to information varying from 4 up to 19 bytes.
@@ -113,16 +113,16 @@ In a shared medium it is defined a IPv4 like bus id to isolate devices from outc
 ```
 
 ### Packet transmission
-A packet transmission is an exchange of a string to one or many of the devices connected to the bus with optional correct reception certainty. The simplest form of packet is constructed by a recipient id, a header, the length, the content and its CRC. In this example is shown a packet transmission in a local bus to device id 12 containing the string @ (decimal 64):
+A packet transmission is an exchange of a string to one or many of the devices connected to the bus with optional correct reception certainty. The simplest form of packet is constructed by a recipient id, a header, the length, the content and its CRC. In this example is shown a packet transmission in a local bus to device id 12 containing the string @ (decimal 64) with no acknowledgement request:
 ```cpp  
 
- ID 12       HEADER 1    LENGTH 5     CONTENT 64  CRC 72
- __________  __________  ___________  __________  ____________
-| Byte     || Byte     || Byte      || Byte     || Byte       |
-|     __   ||      _   ||      _   _||  _       ||  _    _    |
-|    |  |  ||     | |  ||     | | | || | |      || | |  | |   |
-|0000|11|00||00000|1|00||00000|1|0|1||0|1|000000||0|1|00|1|000|
-|____|__|__||_____|_|__||_____|_|_|_||_|_|______||_|_|__|_|___|
+ ID 12       HEADER 1  LENGTH 5     CONTENT 64  CRC 72
+ __________  ________  ___________  __________  ____________
+| Byte     || Byte   || Byte      || Byte     || Byte       |
+|     __   ||        ||      _   _||  _       ||  _    _    |
+|    |  |  ||        ||     | | | || | |      || | |  | |   |
+|0000|11|00||00000000||00000|1|0|1||0|1|000000||0|1|00|1|000|
+|____|__|__||________||_____|_|_|_||_|_|______||_|_|__|_|___|
 ```       
 A default local packet transmission is a optionally bidirectional communication between two devices that can be divided in 3 different phases: **channel analysis**, **transmission** and optional **response**. The packet transmission procedure is regulated by its header:
 ```cpp

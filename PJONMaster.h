@@ -1,9 +1,9 @@
 
- /*-O//\             __     __
-   |-gfo\           |__| | |  | |\ | ™
-   |!y°o:\          |  __| |__| | \| v7.1
-   |y"s§+`\         multi-master, multi-media communications bus system framework
-  /so+:-..`\        Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
+ /*-O//\          __     __
+   |-gfo\        |__| | |  | |\ | ™
+   |!y°o:\       |  __| |__| | \| v7.1
+   |y"s§+`\      multi-master, multi-media communications bus system framework
+  /so+:-..`\     Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
   |5/:%&-a3f.:;\
   \+//u/+g%{osv,,\
@@ -15,11 +15,12 @@
 
 PJONMaster has been created by Giovanni Blu Mitolo with the support
 of Fred Larsen and is inspired by the work of Thomas Snaidero:
-"Modular components for eye tracking, in the interest of helping persons with severely impaired motor skills."
+"Modular components for eye tracking, in the interest of helping persons
+with severely impaired motor skills."
 Master Thesis, IT University of Copenhagen, Denmark, September 2016
 
 PJON™ Dynamic addressing specification:
-- v0.1 https://github.com/gioblu/PJON/blob/master/specification/PJON-dynamic-addressing-specification-v0.1.md
+- v0.1 specification/PJON-dynamic-addressing-specification-v0.1.md
 
 PJON™ is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
 with the support ot the internet community if you want to see the PJON project growing
@@ -97,7 +98,7 @@ limitations under the License. */
 
 
       /* Confirm a device id sending a repeated broadcast containing:
-         PJON_ID_REQUEST - RID (4 byte random id) - DEVICE ID (the new one assigned) */
+      PJON_ID_REQUEST - RID (4 byte random id) - DEVICE ID (the new assigned) */
 
       void approve_id(uint8_t id, uint8_t *b_id, uint32_t rid) {
         char response[6];
@@ -135,7 +136,10 @@ limitations under the License. */
 
       bool confirm_id(uint32_t rid, uint8_t id) {
         if(ids[id - 1].rid == rid && !ids[id - 1].state) {
-          if((uint32_t)(PJON_MICROS() - ids[id - 1].registration) < PJON_ADDRESSING_TIMEOUT) {
+          if(
+            (uint32_t)(PJON_MICROS() - ids[id - 1].registration) <
+            PJON_ADDRESSING_TIMEOUT
+          ) {
             ids[id - 1].state = true;
             PJON<Strategy>::remove(ids[id - 1].packet_index);
             return true;
@@ -188,13 +192,15 @@ limitations under the License. */
       };
 
 
-      /* Remove reserved id which expired (Remove never confirmed id requests): */
+      /* Remove reserved id which expired (Remove never confirmed ids): */
 
       void free_reserved_ids_expired() {
         for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++)
           if(!ids[i].state && ids[i].rid)
-            if((uint32_t)(PJON_MICROS() - ids[i].registration) < PJON_ADDRESSING_TIMEOUT)
-              continue;
+            if(
+              (uint32_t)(PJON_MICROS() - ids[i].registration) <
+              PJON_ADDRESSING_TIMEOUT
+            ) continue;
             else delete_id_reference(i + 1);
       };
 
@@ -224,7 +230,11 @@ limitations under the License. */
         char request = PJON_ID_LIST;
         while((uint32_t)(PJON_MICROS() - time) < PJON_ADDRESSING_TIMEOUT) {
           PJON<Strategy>::send_packet(
-            PJON_BROADCAST, this->bus_id, &request, 1, PJON<Strategy>::config | PJON_ADDRESS_BIT
+            PJON_BROADCAST,
+            this->bus_id,
+            &request,
+            1,
+            PJON<Strategy>::config | PJON_ADDRESS_BIT
           );
           receive(PJON_LIST_IDS_TIME);
         }
@@ -272,7 +282,10 @@ limitations under the License. */
         uint8_t overhead = PJON<Strategy>::packet_overhead(this->data[1]);
         uint8_t CRC_overhead = (this->data[1] & PJON_CRC_BIT) ? 4 : 1;
 
-        if(this->last_packet_info.header & PJON_ADDRESS_BIT && this->data[2] > 4) {
+        if(
+          this->last_packet_info.header & PJON_ADDRESS_BIT &&
+          this->data[2] > 4
+        ) {
           uint8_t request = this->data[overhead - CRC_overhead];
           uint32_t rid =
             (uint32_t)(this->data[(overhead - CRC_overhead) + 1] << 24) |
@@ -281,25 +294,47 @@ limitations under the License. */
             (uint32_t)(this->data[(overhead - CRC_overhead) + 4]);
 
           if(request == PJON_ID_REQUEST)
-            approve_id(this->last_packet_info.sender_id, this->last_packet_info.sender_bus_id, rid);
+            approve_id(
+              this->last_packet_info.sender_id,
+              this->last_packet_info.sender_bus_id,
+              rid
+            );
 
           if(request == PJON_ID_CONFIRM)
             if(!confirm_id(rid, this->data[(overhead - CRC_overhead) + 5]))
-              negate_id(this->last_packet_info.sender_id, this->last_packet_info.sender_bus_id, rid);
+              negate_id(
+                this->last_packet_info.sender_id,
+                this->last_packet_info.sender_bus_id,
+                rid
+              );
 
           if(request == PJON_ID_REFRESH)
             if(!add_id(this->data[(overhead - CRC_overhead) + 5], rid, 1))
-              negate_id(this->last_packet_info.sender_id, this->last_packet_info.sender_bus_id, rid);
+              negate_id(
+                this->last_packet_info.sender_id,
+                this->last_packet_info.sender_bus_id,
+                rid
+              );
 
           if(request == PJON_ID_NEGATE)
-            if(this->data[(overhead - CRC_overhead) + 5] == this->last_packet_info.sender_id)
+            if(
+              this->data[(overhead - CRC_overhead) + 5] ==
+              this->last_packet_info.sender_id
+            )
               if(rid == ids[this->last_packet_info.sender_id - 1].rid)
-                if(this->bus_id_equality(this->last_packet_info.sender_bus_id, this->bus_id))
-                  delete_id_reference(this->last_packet_info.sender_id);
-
+                if(
+                  this->bus_id_equality(
+                    this->last_packet_info.sender_bus_id,
+                    this->bus_id
+                  )
+                ) delete_id_reference(this->last_packet_info.sender_id);
         }
 
-        _master_receiver(this->data + (overhead - CRC_overhead), this->data[2] - overhead, this->last_packet_info);
+        _master_receiver(
+          this->data + (overhead - CRC_overhead),
+          this->data[2] - overhead,
+          this->last_packet_info
+        );
         return PJON_ACK;
       };
 

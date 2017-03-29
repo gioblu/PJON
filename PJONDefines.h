@@ -84,22 +84,56 @@ limitations under the License. */
   #define PJON_TO_BE_SENT 74
 
   /* HEADER BITS DEFINITION: */
-  #define PJON_MODE_BIT       0B00000001 // 1 - Shared | 0 - Local
-  #define PJON_TX_INFO_BIT    0B00000010 // 1 - Sender device id + Sender bus id if shared | 0 - No info inclusion
-  #define PJON_ACK_REQ_BIT    0B00000100 // 1 - Request acknowledge | 0 - Do not request acknowledge
-  #define PJON_ACK_MODE_BIT   0B00001000 // 1 - Asynchronous acknowledge | 0 - Synchronous acknowledge
-  #define PJON_ADDRESS_BIT    0B00010000 // 1 - Addressing related | 0 - Not addressing related
-  #define PJON_CRC_BIT        0B00100000 // 1 - CRC32 | 0 - CRC8
-  #define PJON_EXT_LEN_BIT    0B01000000 // 1 - 2 bytes length | 0 - 1 byte length
-  #define PJON_EXT_HEAD_BIT   0B10000000 // 1 - 2 bytes header | 0 - 1 byte header
+
+  /* 0 - Local network
+     1 - Shared  network */
+  #define PJON_MODE_BIT       0B00000001
+  /* 0 - No info inclusion
+     1 - Local:  Sender device id included
+         Shared: Sender device id + Sender bus id if shared */
+  #define PJON_TX_INFO_BIT    0B00000010
+  /* 0 - Acknowledgement disabled
+     1 - Acknowledgement enabled */
+  #define PJON_ACK_REQ_BIT    0B00000100
+  /* 0 - Synchronous acknowledgement requested
+     1 - Asynchronous acknowledgement requested */
+  #define PJON_ACK_MODE_BIT   0B00001000
+  /* 0 - Not addressing related
+     1 - Addressing related */
+  #define PJON_ADDRESS_BIT    0B00010000
+  /* 0 - CRC8 (1 byte) included at the end of the packet
+     1 - CRC32 (4 bytes) included at the end of the packet */
+  #define PJON_CRC_BIT        0B00100000
+  /* 0 - 1 byte length (max 255 characters)
+     1 - 2 bytes length (max 65535 characters) */
+  #define PJON_EXT_LEN_BIT    0B01000000
+  /* 0 - 1 byte header
+     1 - 2 bytes header */
+  #define PJON_EXT_HEAD_BIT   0B10000000
+
   /* EXTENDED HEADER BITS DEFINITION: */
-  #define PJON_ROUTING_BIT    0B0100000000000000 // 1 - Routing request 0 - No routing requested
-  #define PJON_SEGM_BIT       0B0010000000000000 // 1 - Segmentated | 0 - Not segmented
-  #define PJON_SESSION_BIT    0B0001000000000000 // 1 - Session | 0 - Not including Session
-  #define PJON_PARITY_BIT     0B0000100000000000 // 1 - Parity redundant info | 0 - No parity included
-  #define PJON_ENCODING_BIT   0B0000010000000000 // 1 - Encoding info | 0 - Not including encoding ingo
-  #define PJON_DATA_COMP_BIT  0B0000001000000000 // 1 - Data compression | 0 - No data compression
-  #define PJON_ENCRYPTION_BIT 0B0000000100000000 // 1 - Encrypted data | 0 - Not encrypted data
+
+  /* 0 - No routing
+     1 - Routing */
+  #define PJON_ROUTING_BIT    0B0100000000000000
+  /* 0 - No segmentation
+     1 - Segmentation */
+  #define PJON_SEGM_BIT       0B0010000000000000
+  /* 0 - Not including session
+     1 - Including session */
+  #define PJON_SESSION_BIT    0B0001000000000000
+  /* 0 - No parity included
+     1 - Parity included */
+  #define PJON_PARITY_BIT     0B0000100000000000
+  /* 0 - Not encoded
+     1 - Encoded */
+  #define PJON_ENCODING_BIT   0B0000010000000000
+  /* 0 - No data compression
+     1 - Data compression */
+  #define PJON_DATA_COMP_BIT  0B0000001000000000
+  /* 0 - Not encrypted
+     1 - Encrypted */
+  #define PJON_ENCRYPTION_BIT 0B0000000100000000
 
   /* ERRORS: */
   #define PJON_CONNECTION_LOST     101

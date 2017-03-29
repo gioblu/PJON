@@ -155,7 +155,7 @@ limitations under the License. */
       ) {
         if(header == PJON_NOT_ASSIGNED) header = config;
         if(header > 255) header |= PJON_EXT_HEAD_BIT;
-        if(length > 255) header |= (PJON_EXT_LEN_BIT | PJON_CRC_BIT);
+        if(length > 255) header |= PJON_EXT_LEN_BIT;
         if(id == PJON_BROADCAST)
           header &= ~(PJON_ACK_REQ_BIT | PJON_ACK_MODE_BIT);
         uint16_t new_length = length + packet_overhead(header);
@@ -358,46 +358,33 @@ limitations under the License. */
         bool extended_header = false;
         bool extended_length = false;
         uint16_t length = strategy.receive_string(data, PJON_PACKET_MAX_LENGTH);
-        if(length < 5 || length > PJON_PACKET_MAX_LENGTH) return PJON_FAIL;
-        for(uint16_t i = 0; i < length; i++) {
-          if(i == 0)
-            if(data[i] != _device_id && data[i] != PJON_BROADCAST && !_router)
-              return PJON_BUSY;
+        if(length < 5 || length > PJON_PACKET_MAX_LENGTH)
+          return PJON_FAIL;
+        if(data[0] != _device_id && data[0] != PJON_BROADCAST && !_router)
+          return PJON_BUSY;
+        if(
+          ( // Avoid mode conflicting config packet if not a router
+            ((data[1] & PJON_MODE_BIT) != (config & PJON_MODE_BIT)) &&
+            !_router
+          ) || ( // Avoid acknowledgement request if broadcast
+            data[0] == PJON_BROADCAST &&
+            ((data[1] & PJON_ACK_MODE_BIT) || (data[1] & PJON_ACK_REQ_BIT))
+          ) || ( // Avoid asynchronous acknowledgement conflicting config
+            ((data[1] & PJON_ACK_MODE_BIT) && !(data[1] & PJON_TX_INFO_BIT))
+          ) || ( // Avoid length/CRC conflicting config, use CRC32 if l > 15
+            ((data[1] & PJON_EXT_LEN_BIT) && !(data[1] & PJON_CRC_BIT))
+          )
+        ) return PJON_BUSY;
 
-          if(i == 1) {
-            if(
-              ( // Avoid mode conflicting config packet if not a router
-                ((data[i] & PJON_MODE_BIT) != (config & PJON_MODE_BIT)) &&
-                !_router
-              ) || ( // Avoid acknowledegement request if broadcast
-                data[0] == PJON_BROADCAST &&
-                ((data[i] & PJON_ACK_MODE_BIT) || (data[i] & PJON_ACK_REQ_BIT))
-              ) || ( // Avoid asynchronous acknowledegement conflicting config
-                ((data[i] & PJON_ACK_MODE_BIT) && !(data[i] & PJON_TX_INFO_BIT))
-              ) || ( // Avoid length/CRC conflicting config, use CRC32 if l > 15
-                ((data[i] & PJON_EXT_LEN_BIT) && !(data[i] & PJON_CRC_BIT))
-              )
-            ) return PJON_BUSY;
-            extended_length = data[i] & PJON_EXT_LEN_BIT;
-            extended_header = data[i] & PJON_EXT_HEAD_BIT;
-          }
+        extended_length = data[1] & PJON_EXT_LEN_BIT;
+        extended_header = data[1] & PJON_EXT_HEAD_BIT;
 
-          if((i == (2 + extended_header)) && !extended_length) {
-            length = data[i];
-            if(length < 5 || length > PJON_PACKET_MAX_LENGTH) return PJON_FAIL;
-          }
-
-          if((i == (3 + extended_header)) && extended_length) {
-            length = (data[i - 1] << 8) | (data[i] & 0xFF);
-            if(length < 5 || length > PJON_PACKET_MAX_LENGTH) return PJON_FAIL;
-          }
-
-          if((config & PJON_MODE_BIT) && (data[1] & PJON_MODE_BIT) && !_router)
-            if((i > (2 + extended_header + extended_length)))
-              if((i < (7 + extended_header + extended_length)))
-                if(bus_id[i - 3 - extended_header - extended_length] != data[i])
-                  return PJON_BUSY;
-        }
+        if((config & PJON_MODE_BIT) && (data[1] & PJON_MODE_BIT) && !_router)
+          if(
+            !bus_id_equality(
+              &data[3 + extended_header + extended_length], bus_id
+            )
+          ) return PJON_BUSY;
 
         if(data[1] & PJON_CRC_BIT)
           computed_crc = PJON_crc32::compare(
@@ -423,8 +410,8 @@ limitations under the License. */
         parse(data, last_packet_info);
 
         #if(PJON_INCLUDE_ASYNC_ACK)
-          /* If a packet requesting asynchronous acknowledegement is received
-             send the acknowledegement packet back to the packet's transmitter */
+          /* If a packet requesting asynchronous acknowledgement is received
+             send the acknowledgement packet back to the packet's transmitter */
           if((data[1] & PJON_ACK_MODE_BIT) && (data[1] & PJON_TX_INFO_BIT)) {
             if(_auto_delete && length == packet_overhead(data[1]))
               if(handle_asynchronous_acknowledgment(last_packet_info))
@@ -903,8 +890,12 @@ limitations under the License. */
 
           if(
             (uint32_t)(PJON_MICROS() - packets[i].registration) >
-            (uint32_t)(packets[i].timing + strategy.back_off(packets[i].attempts))
-          ) packets[i].state = send_packet(packets[i].content, packets[i].length);
+            (uint32_t)(
+              packets[i].timing +
+              strategy.back_off(packets[i].attempts)
+            )
+          ) packets[i].state =
+            send_packet(packets[i].content, packets[i].length);
           else continue;
 
           packets[i].attempts++;
@@ -977,17 +968,19 @@ limitations under the License. */
           for(uint8_t i = 0; i < PJON_MAX_RECENT_PACKET_IDS; i++)
             if(
               info.id == recent_packet_ids[i].id &&
-              info.sender_id == recent_packet_ids[i].sender_id &&
-              ((
-                (info.header & PJON_MODE_BIT) &&
-                (recent_packet_ids[i].header & PJON_MODE_BIT) && bus_id_equality(
-                  (uint8_t *)info.sender_bus_id,
-                  (uint8_t *)recent_packet_ids[i].sender_bus_id
-                )
-              ) || !(info.header & PJON_MODE_BIT) &&
-                   !(recent_packet_ids[i].header & PJON_MODE_BIT))
+              info.sender_id == recent_packet_ids[i].sender_id && (
+                (
+                  (info.header & PJON_MODE_BIT) &&
+                  (recent_packet_ids[i].header & PJON_MODE_BIT) &&
+                  bus_id_equality(
+                    (uint8_t *)info.sender_bus_id,
+                    (uint8_t *)recent_packet_ids[i].sender_bus_id
+                  )
+                ) ||
+                !(info.header & PJON_MODE_BIT) &&
+                !(recent_packet_ids[i].header & PJON_MODE_BIT)
+              )
             ) return true;
-
           save_packet_id(info);
           return false;
         #endif

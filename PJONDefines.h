@@ -90,7 +90,7 @@ limitations under the License. */
   #define PJON_MODE_BIT       0B00000001
   /* 0 - No info inclusion
      1 - Local:  Sender device id included
-         Shared: Sender device id + Sender bus id if shared */
+         Shared: Sender device id + Sender bus id */
   #define PJON_TX_INFO_BIT    0B00000010
   /* 0 - Acknowledgement disabled
      1 - Acknowledgement enabled */

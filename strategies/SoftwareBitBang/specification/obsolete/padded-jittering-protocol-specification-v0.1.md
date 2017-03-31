@@ -48,28 +48,3 @@ Padding bits are adding a certain overhead to information but are reducing the n
 |___|_|____|__|__|___|_|_____|_|_|_|___|_|_____|_|__|___|_|_|_|______|___|_|_|_|__|_|___|
 ```
 In a scenario where a stream of byte is coming, following this approach a low performance or clock inaccurate microcontroller can be correctly synchronized back with the transmitter every byte and easily detect an interference or the end of transmission.
-
-
-#### Synchronous acknowledgement
-After packet reception, the CRC is calculated and a single character is transmitted, `PJON_ACK` (value 6) if the packet's content is correct or `PJON_NAK` (value 21) if an error is detected.
-```cpp  
-Transmission                                               Response
- ________________________________________                   _____
-| ID |  HEADER  | LENGTH | CONTENT | CRC | CRC COMPUTATION | ACK |
-|----|----------|--------|---------|-----|-------> <-------|-----|
-| 12 | 00000100 |   5    |    64   |  72 | LATENCY         |  6  |
-|____|__________|________|_________|_____|                 |_____|
-```
-
-Between a packet transmission and a synchronous acknowledgement transmission from the packet's receiver there is a variable timeframe influenced in its duration by medium latency and CRC computation time. In order to avoid other devices to consider the medium free and start transmitting in the middle of a transmission and a response, the packet's transmitter cyclically transmits a `BIT_WIDTH / 4` HIGH bit and consequently attempts to receive a response. On the other side the receiver can synchronize its acknowledgement transmission after the last incoming HIGH bit and try more than once if necessary.
-```cpp  
-Transmission                                                         Response
- ________________________________________   _   _   _   _   _   _   _ _____
-| ID |  HEADER  | LENGTH | CONTENT | CRC | | | | | | | | | | | | | | | ACK |
-|----|----------|--------|---------|-----| | | | | | | | | | | | | | |-----|
-| 12 | 00000100 |  500   |         |  72 | | | | | | | | | | | | | | |  6  |
-|____|__________|________|_________|_____|_| |_| |_| |_| |_| |_| |_| |_____|
-
-```
-
-The maximum time dedicated to potential acknowledgement reception and consequent channel jittering is defined by the use case constrains like maximum packet length and devices distance.

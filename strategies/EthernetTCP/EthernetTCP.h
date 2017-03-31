@@ -25,7 +25,7 @@
 
 /* Maximum transmission attempts */
 #ifndef ETCP_MAX_ATTEMPTS
-  #define ETCP_MAX_ATTEMPTS   20
+  #define ETCP_MAX_ATTEMPTS   1
 #endif
 
 /* Back-off exponential degree */
@@ -40,17 +40,16 @@ class EthernetTCP {
 
     /* Caching of incoming packet to make it possible to deliver it byte for byte */
 
-    uint8_t incoming_packet_buf[PJON_PACKET_MAX_LENGTH];
+    uint8_t *incoming_packet_buf_ptr = NULL;
+    uint16_t current_buffer_size = 0;
     uint16_t incoming_packet_size = 0;
-    uint16_t incoming_packet_pos = 0;
     static void static_receiver(uint8_t id, const uint8_t *payload, uint16_t length, void *callback_object) {
       if (callback_object) ((EthernetTCP*)callback_object)->receiver(id, payload, length);
     }
     void receiver(uint8_t id, const uint8_t *payload, uint16_t length) {
-      if (length <= PJON_PACKET_MAX_LENGTH) {
-        memcpy(incoming_packet_buf, payload, length);
+      if (length <= current_buffer_size && incoming_packet_buf_ptr != NULL) {
+        memcpy(incoming_packet_buf_ptr, payload, length);
         incoming_packet_size = length;
-        incoming_packet_pos = 0;
       }
     }
 
@@ -96,17 +95,24 @@ class EthernetTCP {
     void handle_collision() { };
 
 
-    uint16_t receive_byte() {
-      // Must receive a new packet, or is there more to serve from the last one?
-      if (incoming_packet_pos >= incoming_packet_size) link.receive();
+    /* Receive a string: */
 
-      // Deliver the next byte from the last received packet if any
-      if (incoming_packet_pos < incoming_packet_size) {
-        return incoming_packet_buf[incoming_packet_pos++];
-      }
-      return PJON_FAIL;
-    };
+    uint16_t receive_string(uint8_t *string, uint16_t max_length) {
+      // Register supplied buffer as target for EthernetLink callback function
+      incoming_packet_buf_ptr = string;
+      current_buffer_size = max_length;
+      incoming_packet_size = 0;
 
+      // Receive a packet  
+      uint16_t result = link.receive();
+      
+      // Forget about buffer and return result size
+      uint16_t received_packet_size = incoming_packet_size;
+      incoming_packet_buf_ptr = NULL;
+      incoming_packet_size = 0;      
+      return result == PJON_ACK ? received_packet_size : PJON_FAIL;
+    }    
+    
 
     /* Receive byte response */
 

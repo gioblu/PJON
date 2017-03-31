@@ -57,7 +57,7 @@ Infact, leveraging the duality of LEDs:
 
 it is possibile to use them as wireless (bidirectional) transceivers!
 
-In most cases it is necessary to add a pull-down resistor with a value around 1 mega-ohm connecting the A0 pin with ground to reduce the LED capacitance and so reduce bit transition slopes. Higher resistance can higher the range but can also higher background noise. Consider that depending on the default voltage of your system LEDs could be overpowered. Because of the non continuous power supply also if using a 5v system most LEDs should survive.  
+In most cases it is necessary to add a pull-down resistor with a value around 1-5 MΩ connecting the A0 pin with ground to reduce the LED capacitance and so reduce bit transition slopes. Higher resistance can higher the range but can also higher background noise. Consider that depending on the default voltage of your system LEDs could be overpowered. Because of the non continuous power supply also if using a 5v system most LEDs should survive.  
 
 The obtained range is related to:
 - **Resolution** - use `analogReference` wiring method to configure `analogRead` resolution as necessary taking care that the input voltage is not higher than the configured voltage reference

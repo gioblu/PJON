@@ -372,15 +372,15 @@ class PJON {
 
         if(i == 1) {
           if(
-            ( // Avoid mode conflicting config packet if not a router
+            (
               ((data[1] & PJON_MODE_BIT) != (config & PJON_MODE_BIT)) &&
               !_router
-            ) || ( // Avoid acknowledgement request if broadcast
+            ) || (
               data[0] == PJON_BROADCAST &&
               ((data[1] & PJON_ACK_MODE_BIT) || (data[1] & PJON_ACK_REQ_BIT))
-            ) || ( // Avoid asynchronous acknowledgement conflicting config
+            ) || (
               ((data[1] & PJON_ACK_MODE_BIT) && !(data[1] & PJON_TX_INFO_BIT))
-            ) || ( // Avoid length/CRC conflicting config, use CRC32 if l > 15
+            ) || (
               ((data[1] & PJON_EXT_LEN_BIT) && !(data[1] & PJON_CRC_BIT))
             )
           ) return PJON_BUSY;

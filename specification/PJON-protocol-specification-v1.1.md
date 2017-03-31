@@ -65,7 +65,7 @@ In the graph below is shown the protocol stack model proposed. The differences b
 * Many buses can coexist on the same medium
 * Synchronous and or asynchronous acknowledgement can be requested  (see [Acknowledge specification v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md))
 
-The PJON protocol v1.0 handles internal bus connectivity and unique addressing for 254 devices, through bus communication with unique bus addressing for 4.294.967.295 buses and supports up to 1.090.921.692.930 devices. It regulates the exchange of packets with a configurable set of features driven by its header. Depending on the packet configuration a certain overhead is added to information varying from 4 up to 19 bytes.
+The PJON protocol v1.1 handles internal bus connectivity and unique addressing for 254 devices, through bus communication with unique bus addressing for 4.294.967.295 buses and supports up to 1.090.921.692.930 devices. It regulates the exchange of packets with a configurable set of features driven by its header. Depending on the packet configuration a certain overhead is added to information varying from 4 up to 19 bytes.
 
 ### Bus
 A PJON bus is made by a group of up to 254 devices transmitting and receiving on the same medium. Communication between devices occurs through packets and it is based on democracy: every device has the right to transmit on the common medium for up to `(1000 / devices number) milliseconds / second`.

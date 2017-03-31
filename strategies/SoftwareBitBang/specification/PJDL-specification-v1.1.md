@@ -26,10 +26,11 @@ PJDL (Padded Jittering Data Link) has been specified to enable a new software em
     |______|   |______|    |______|    |______|    |______|    
  ______|___________|___________|___________|___________|___ SINGLE WIRE BUS
           ___|__     ___|__     ___|__     ___|__  |
-         |      |   |      |   |      |   |      | | PULL DOWN RESISTOR   
-         |DEVICE|   |DEVICE|   |DEVICE|   |DEVICE| |--\/\/\/\/\/-- GND     
-         |______|   |______|   |______|   |______|      1-5 MΩ
+         |      |   |      |   |      |   |      | |      
+         |DEVICE|   |DEVICE|   |DEVICE|   |DEVICE| |___/\/\/\___ GND     
+         |______|   |______|   |______|   |______|     1-5 MΩ
 ```
+It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to protect MCU pins and to reduce interference.
 
 ### Basic concepts
 * Use a pattern of predefined initial padding bits to identify a potential byte transmission

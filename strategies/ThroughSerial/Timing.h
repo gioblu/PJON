@@ -22,6 +22,8 @@
    See the License for the specific language governing permissions and
    limitations under the License. */
 
+#pragma once
+
 /* Maximum 1 second random initial delay */
 #ifndef TS_INITIAL_DELAY
   #define TS_INITIAL_DELAY      1000

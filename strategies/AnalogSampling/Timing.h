@@ -9,6 +9,8 @@
 
    All benchmarks should be executed with NetworkAnalysis and SpeedTest examples. */
 
+#pragma once
+
 #if defined(__AVR_ATmega88__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
   #if AS_MODE == AS_STANDARD
     #if F_CPU == 16000000L

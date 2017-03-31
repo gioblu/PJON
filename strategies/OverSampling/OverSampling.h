@@ -18,6 +18,8 @@
    See the License for the specific language governing permissions and
    limitations under the License. */
 
+#pragma once
+
 #define STXRX882_STANDARD 1
 
 /* STXRX882_STANDARD:

@@ -12,6 +12,8 @@
    SWBB_FAST mode: 21.505kBd or 2.68kB/s
    SWBB_OVERDRIVE mode: Architecture / Toolchain dependant */
 
+#pragma once
+
 /* ATmega88/168/328 - Arduino Duemilanove, Uno, Nano, Mini, Pro, Pro mini --- */
 #if defined(__AVR_ATmega88__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
   #if SWBB_MODE == SWBB_STANDARD

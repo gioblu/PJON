@@ -9,6 +9,8 @@
    tweaking values and analysing results. Theese can be changed to obtain
    faster speed. Probably you need experience, time and an oscilloscope. */
 
+#pragma once
+
 #if defined(__AVR_ATmega88__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
   #if OS_MODE == STXRX882_STANDARD
     #if F_CPU == 16000000L

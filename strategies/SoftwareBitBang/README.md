@@ -2,7 +2,7 @@
 **Medium:** Wire |
 **Pins used:** 1 / 2
 
-SoftwareBitBang is the default data link layer used by PJON and it is based on `micros` and `delayMicroseconds`. It needs 1 or optionally 2 wires and no additional hardware to handle communication with a software emulated implementation. It supports many devices to transmit and or receive through the same 1 or 2 wires. It is designed to work with many Arduino compatible boards, to have a small memory footprint and to be extremely resilient to interference. Its maximum communication range is still unknown, but is tested and well performing through up to 50 meters long high quality insulated wires. Thanks to the use of the `PJON_IO` set of macros, can be achieved fast and reliable cross-architecture communication through 1 or 2 pins. It complies with [PJDL v1.1](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.1.md) data link layer specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=Vg5aSlD-VCU) for a brief showcase of its features.
+SoftwareBitBang is the default data link layer used by PJON and it is based on `micros` and `delayMicroseconds`. It needs 1 or optionally 2 wires and no additional hardware to handle one or many to many communication on a single channel or bus. It can be run on cheap and low performance microcontrollers. The main limit to the bus maximum length is its electric resistance (if at destination a high bit voltage is lower than the input-output port threshold voltage, its value can be detected erroneously). It has been tested with up to 50m long insulated wire of different qualities demonstrating the ability to achieve reliable communication also in this scenario. It complies with [PJDL v1.1](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.1.md) data link layer specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=Vg5aSlD-VCU) for a brief showcase of its features.
 ```cpp  
      ______     ______      ______      ______      ______
     |      |   |      |    |      |    |      |    |      |  
@@ -10,10 +10,11 @@ SoftwareBitBang is the default data link layer used by PJON and it is based on `
     |______|   |______|    |______|    |______|    |______|    
  ______|___________|___________|___________|___________|___ SINGLE WIRE BUS
           ___|__     ___|__     ___|__     ___|__  |
-         |      |   |      |   |      |   |      | | PULL DOWN RESISTOR   
-         |DEVICE|   |DEVICE|   |DEVICE|   |DEVICE| |--\/\/\/\/\/-- GND     
-         |______|   |______|   |______|   |______|      1-5 MΩ
+         |      |   |      |   |      |   |      | |      
+         |DEVICE|   |DEVICE|   |DEVICE|   |DEVICE| |___/\/\/\___ GND     
+         |______|   |______|   |______|   |______|     1-5 MΩ
 ```
+It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to protect MCU pins and to reduce interference.
 
 #### Compatibility
 - ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)

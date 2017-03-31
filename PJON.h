@@ -919,10 +919,12 @@ limitations under the License. */
                 packets[i].registration = PJON_MICROS();
                 packets[i].state = PJON_TO_BE_SENT;
               }
-            } if(!async_ack) continue;
+            }
+            if(!async_ack) continue;
           }
 
-          if(packets[i].state != PJON_FAIL) strategy.handle_collision();
+          if(packets[i].state != PJON_FAIL && packets[i].state != PJON_ACK)
+            strategy.handle_collision();
 
           if(packets[i].attempts > strategy.get_max_attempts()) {
             _error(PJON_CONNECTION_LOST, i);

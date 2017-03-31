@@ -13,6 +13,8 @@ of Giovanni Blu Mitolo - Copyright 2010-2017 All rights reserved
 Related work: https://github.com/gioblu/PJON/
 Compliant implementation versions: PJON 6.0 and following
 
+Header driven configuration proposed by Fred Larsen
+
 Changelog:
 - Avoid sending NAK
 - Added unacceptable header configuration list

@@ -46,6 +46,12 @@ Pass the `SoftwareBitBang` type as PJON template parameter to instantiate a PJON
      SWBB_RESPONSE_TIMEOUT if necessary. */
   #define SWBB_RESPONSE_TIMEOUT 1500
 
+  /* Set the back-off exponential degree (default 4) */
+  #define SWBB_BACK_OFF_DEGREE     4
+
+  /* Set the maximum sending attempts (default 20) */
+  #define SWBB_MAX_ATTEMPTS       20
+
   #include <PJON.h>
 
   PJON<SoftwareBitBang> bus;

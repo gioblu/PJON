@@ -30,6 +30,12 @@ Call the `begin` method on the `Serial` or `SoftwareSerial`  object you want to 
        bus.set_synchronous_acknowledge(false);
        bus.set_asynchronous_acknowledge(true); */
 
+  /* Set the back-off exponential degree (default 4) */
+  #define TS_BACK_OFF_DEGREE 4
+
+  /* Set the maximum sending attempts (default 20) */
+  #define TS_MAX_ATTEMPTS   20
+
   #include <PJON.h>
 
   PJON<ThroughSerial> bus;

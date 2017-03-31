@@ -211,10 +211,10 @@
 
 /* Maximum transmission attempts */
 #ifndef SWBB_MAX_ATTEMPTS
-  #define SWBB_MAX_ATTEMPTS 20
+  #define SWBB_MAX_ATTEMPTS    20
 #endif
 
 /* Back-off exponential degree */
 #ifndef SWBB_BACK_OFF_DEGREE
-  #define SWBB_BACK_OFF_DEGREE 4
+  #define SWBB_BACK_OFF_DEGREE  4
 #endif

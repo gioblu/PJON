@@ -17,15 +17,15 @@ Oversampling strategy was initially developed in the [PJON_ASK](https://github.c
 #### How to use OverSampling
 Pass the `OverSampling` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy. All the other necessary information is present in the general [Documentation](/documentation).
 ```cpp  
-  /* Maximum latency can be set defining OS_LATENCY before PJON.h inclusion
-     (Default 4 milliseconds) */
-  #define OS_LATENCY 4000
+  /* Maximum latency can be set defining OS_LATENCY
+     before PJON.h inclusion (default 4 milliseconds) */
+  #define OS_LATENCY      4000
 
-  /* Set the back-off exponential degree */
+  /* Set the back-off exponential degree (default 4) */
   #define OS_BACK_OFF_DEGREE 4
 
-  /* Set the maximum sending attempts */
-  #define OS_MAX_ATTEMPTS 20
+  /* Set the maximum sending attempts (default 20) */
+  #define OS_MAX_ATTEMPTS   20
 
   /* The values set above are the default producing a 3.2 seconds
      back-off timeout with 20 attempts. Higher OS_MAX_ATTEMPTS to higher

@@ -19,11 +19,11 @@ Pass the `AnalogSampling` type as PJON template parameter to instantiate a PJON 
      of the CRC computation time needed by receiver before transmitting its acknowledge  */
   #define AS_RESPONSE_TIMEOUT 15000
 
-  /* Set the back-off exponential degree */
-  #define AS_BACK_OFF_DEGREE 5
+  /* Set the back-off exponential degree (default 5) */
+  #define AS_BACK_OFF_DEGREE      5
 
-  /* Set the maximum sending attempts */
-  #define AS_MAX_ATTEMPTS 10
+  /* Set the maximum sending attempts (default 10) */
+  #define AS_MAX_ATTEMPTS        10
 
   /* The values set above are the default producing a 3.2 seconds
      back-off timeout with 20 attempts. Higher SWBB_MAX_ATTEMPTS to higher

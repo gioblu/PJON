@@ -185,8 +185,8 @@ limitations under the License. */
   #define PJON_ID_REQUEST_INTERVAL   100000
   /* Master ID_REQUEST and ID_NEGATE timeout */
   #define PJON_ADDRESSING_TIMEOUT   2900000
-  /* Master reception time during LIST_ID request broadcast (20 milliseconds) */
-  #define PJON_LIST_IDS_TIME          20000
+  /* Master reception time during LIST_ID broadcast (75 milliseconds) */
+  #define PJON_LIST_IDS_TIME          75000
 
   struct PJON_Packet {
     uint8_t  attempts;

@@ -887,6 +887,7 @@ limitations under the License. */
 
           bool async_ack = (packets[i].content[1] & PJON_ACK_MODE_BIT) &&
             (packets[i].content[1] & PJON_TX_INFO_BIT);
+          bool sync_ack = (packets[i].content[1] & PJON_ACK_REQ_BIT);
 
           if(
             (uint32_t)(PJON_MICROS() - packets[i].registration) >
@@ -894,9 +895,11 @@ limitations under the License. */
               packets[i].timing +
               strategy.back_off(packets[i].attempts)
             )
-          ) packets[i].state =
-            send_packet(packets[i].content, packets[i].length);
-          else continue;
+          ) {
+            if(!(sync_ack && async_ack && packets[i].state == PJON_ACK))
+              packets[i].state = // Avoid resending sync-acked async ack packets
+                send_packet(packets[i].content, packets[i].length);
+          } else continue;
 
           packets[i].attempts++;
 

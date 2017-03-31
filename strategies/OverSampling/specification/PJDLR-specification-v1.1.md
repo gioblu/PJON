@@ -40,7 +40,7 @@ Every byte is prepended with 2 synchronization padding bits and transmission occ
 ```
 Padding bits add a certain overhead but are reducing the need of precise timing because synchronization is renewed every byte. All the first high padding bit duration minus `OS_ACCEPTANCE` is the synchronization timeframe the receiver has to synchronize and correctly receive a byte. If the length of the first padding bit is less than `OS_ACCEPTANCE` the received signal is considered interference.
 
-#### string transmission
+#### String transmission
 Before a packet transmission, the medium is analyzed to detect ongoing communication and avoid collision. Thanks to the presence of padding bits, also a packet composed by 100 bytes, all with a decimal value of 0, can be transmitted safely without risk of third-party collision. After assessed that the medium is free to use, a packet preamble, composed of a long 1 and a long 0, is transmitted to let a potential receiver to adjust its gain to the transmitted signal magnitude. The duration of the preamble bits have to be adjusted to match hardware sensitivity, gain refresh time and signal to noise ratio.
 
 ```cpp   

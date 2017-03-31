@@ -22,65 +22,47 @@
    See the License for the specific language governing permissions and
    limitations under the License. */
 
-/* Maximum time to wait for a potentially coming byte.
-   Should always be slightly higher than the other tasks loop time */
-
-#ifndef TS_MAX_BYTE_TIME
-  #define TS_MAX_BYTE_TIME         100000
-#endif
-
-/* Maximum timeframe between every receive call in any of the connected devices.
-   If this timeframe is in average exceeded by some of the connected devices
-   communication reliability could drop or be disrupted. */
-
-#ifndef TS_FREE_TIME_BEFORE_START
-  #define TS_FREE_TIME_BEFORE_START   500
-#endif
-
-/* 0.5 milliseconds minimum timeframe of free port before transmitting
-
-   The proposed default timing configuration is ok for a master-slave setup, but
-   could lead to collisions if used in a multi-master setup.
-
-   If using ThroughSerial in a multi-master setup with synchronous acknowledgment
-   NEVER set TS_FREE_TIME_BEFORE_START < TS_MAX_BYTE_TIME or a device could start
-   transmitting while a couple is still exchanging an acknowledge
-
-   i.e.
-   #define THROUGH_SERIAL_MAX_BYTE_TIME           100000
-   #define THROUGH_SERIAL_FREE_TIME_BEFORE_START  110000
-
-   Above is shown multi-master compatible setup able to receive a synchronous
-   acknowledgment with a maximum delay 100 milliseconds. Channel analysis before
-   transmission is set to 110 milliseconds to avoid collisions.
-
-   Which is the correct value for your setup depends on the maximum average time
-   interval between every receive call in your system. TS_MAX_BYTE_TIME
-   should be around the same duration. So in a sketch where there is only a
-   delay(10) between every receive call at least 10000 should be the correct
-   value for TS_MAX_BYTE_TIME.
-
-   If your tasks timing are long and a satisfactory setup can't be reached
-   consider to drop the use of the synchronous acknowledge and start using the
-   asynchronous acknowledgment instead. */
-
-
 /* Maximum 1 second random initial delay */
 #ifndef TS_INITIAL_DELAY
-  #define TS_INITIAL_DELAY            1000
+  #define TS_INITIAL_DELAY      1000
 #endif
 
-/* Mamimum 16 microseconds random delay in case of collision */
+/* Mamimum 32 microseconds random delay in case of collision */
 #ifndef TS_COLLISION_DELAY
-  #define TS_COLLISION_DELAY            16
+  #define TS_COLLISION_DELAY      32
+#endif
+
+/* Set 10 milliseconds as the maximum timeframe between transmission and
+   synchronous acknowledgement response. This value is strictly related to
+   the maximum time needed by receiver to receive and compute the packet */
+#ifndef TS_RESPONSE_TIME_OUT
+  #define TS_RESPONSE_TIME_OUT 10000
+#endif
+/* If it leads to unacceptable loop time duration consider to use asynchronous
+   acknowledgement instead, setting TS_RESPONSE_TIME_OUT to 0 and setting
+   configuration as follows:
+   bus.set_synchronous_acknowledge(false);
+   bus.set_asynchronous_acknowledge(true); */
+
+/* Minum timeframe with channel free for use before transmission.
+   (Avoid disrupting synchronous acknowledgement exchange) */
+#ifndef TS_TIME_IN
+  #define TS_TIME_IN  TS_RESPONSE_TIME_OUT + TS_COLLISION_DELAY
+#endif
+
+/* Set 5 milliseconds as the maximum timeframe for byte reception.
+   This value depends on the latency, baud rate and computation time.
+   Always set TS_BYTE_TIME_OUT > (byte transmission time + latency) */
+#ifndef TS_BYTE_TIME_OUT
+  #define TS_BYTE_TIME_OUT      5000
 #endif
 
 /* Maximum transmission attempts */
 #ifndef TS_MAX_ATTEMPTS
-  #define TS_MAX_ATTEMPTS 20
+  #define TS_MAX_ATTEMPTS         20
 #endif
 
 /* Back-off exponential degree */
 #ifndef TS_BACK_OFF_DEGREE
-  #define TS_BACK_OFF_DEGREE 4
+  #define TS_BACK_OFF_DEGREE       4
 #endif

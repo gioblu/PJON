@@ -2,11 +2,10 @@
 **Medium:** Hardware/Software Serial port |
 **Pins used:** 1 or 2
 
-With ThroughSerial data link layer strategy, PJON can run through a software emulated or hardware Serial port. Thanks to this choice it is possible to leverage of virtually all the arduino compatible serial transceivers, like RS485, radio or infrared modules, still having PJON unchanged on top. Take a look at the [video introduction](https://www.youtube.com/watch?v=H4jUsgvM-lw) for a brief showcase of its features.
-
+With `ThroughSerial` strategy, PJON can run through a software or hardware Serial port working out of the box with many Arduino compatible serial transceivers, like RS485 or radio modules available on the market. Take a look at the [video introduction](https://www.youtube.com/watch?v=H4jUsgvM-lw) for a brief showcase of its features.
 
 #### Why PJON over Serial?
-Serial communication is an hardware integrated or software emulated data communication that can reach very fast communication speed but it includes only the data link layer; adding PJON on top of the Serial data link layer it is possible to leverage of the PJON protocol layer features like acknowledge, addressing, multiplexing, packet handling, 8-bit CRC and traffic control.
+Serial communication is fast and quite reliable but it is often useless without all the features PJON contains. `ThroughSerial` has been developed to enable PJON to run through a serial data-link. Adding PJON on top of Serial it is possible to leverage of the PJON protocol layer features like acknowledge, addressing, multiplexing, packet handling, 8 or 32-bit CRC and traffic control.
 
 #### How to use ThroughSerial
 Pass the `ThroughSerial` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
@@ -53,4 +52,4 @@ For a simple use with RS485 serial modules a transmission enable pin setter has 
 All the other necessary information is present in the general [Documentation](/documentation).
 
 #### Known issues
-- Being PJON not an interrupt driven, its communication can be affected and potentially disrupted by long delays added in the user's sketch. Try to reduce as possible the interval between every `receive` call. A delay between every receive call higher than 100 millisseconds can disurpt the synchronous acknowledment transmission phase, higher `TS_MAX_BYTE_TIME` in `ThroughSerial.h` if necessary.
+- Being PJON not an interrupt driven, its communication can be affected and potentially disrupted by long delays added in the user's sketch. Try to reduce as possible the interval between every `receive` call.

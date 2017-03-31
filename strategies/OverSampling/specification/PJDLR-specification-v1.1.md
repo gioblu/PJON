@@ -44,12 +44,12 @@ Padding bits add a certain overhead but are reducing the need of precise timing 
 Before a packet transmission, the medium is analyzed to detect ongoing communication and avoid collision. Thanks to the presence of padding bits, also a packet composed by 100 bytes, all with a decimal value of 0, can be transmitted safely without risk of third-party collision. After assessed that the medium is free to use, a packet preamble, composed of a long 1 and a long 0, is transmitted to let a potential receiver to adjust its gain to the transmitted signal magnitude. The duration of the preamble bits have to be adjusted to match hardware sensitivity, gain refresh time and signal to noise ratio.
 
 ```cpp   
- _________ ______________ _______________ ______________ ______________ ________________
-|Preamble |Pad| Byte     |Pad| Byte      |Pad| Byte     |Pad| Byte     |Pad| Byte       |
-|_____    |_  |     __   |_  |      _   _|_  |      _   |_  |  _       |_  |  _    _    |
-|     |   | | |    |  |  | | |     | | | | | |     | |  | | | | |      | | | | |  | |   |
-|  1  | 0 |1|0|0000|11|00|1|0|00000|1|0|1|1|0|00000|1|00|1|0|0|1|000000|1|0|0|1|00|1|000|
-|_____|___|_|_|____|__|__|_|_|_____|_|_|_|_|_|_____|_|__|_|_|_|_|______|_|_|_|_|__|_|___|
+ _________ ______________ _______________ ______________ ______________
+|Preamble |Pad| Byte     |Pad| Byte      |Pad| Byte     |Pad| Byte     |
+|_____    |_  |     __   |_  |      _   _|_  |      _   |_  |  _       |
+|     |   | | |    |  |  | | |     | | | | | |     | |  | | | | |      |
+|  1  | 0 |1|0|0000|11|00|1|0|00000|1|0|1|1|0|00000|1|00|1|0|0|1|000000|
+|_____|___|_|_|____|__|__|_|_|_____|_|_|_|_|_|_____|_|__|_|_|_|_|______|
 ```
 In a scenario where a stream of bytes is coming, low performance or clock inaccurate microcontrollers can be correctly synchronized back with transmitter every byte (thanks to padding bits) and easily detect interference or the end of transmission.
 
@@ -57,12 +57,12 @@ In a scenario where a stream of bytes is coming, low performance or clock inaccu
 #### Synchronous response
 A string transmission can be optionally followed by a synchronous response by its recipient.
 ```cpp  
- Transmission                                                        Response
- ________ ______  ______  ______  ______  ______                   ________ _____
-|PREAMBLE| BYTE || BYTE || BYTE || BYTE || BYTE | CRC COMPUTATION |PREAMBLE| ACK |
-|____    |------||------||------||------||------|-------> <-------|____    |     |
-|    |   |      ||      ||      ||      ||      | LATENCY         |    |   |  6  |
-|____|___|______||______||______||______||______|                 |____|___|_____|
+ Transmission                                                  Response
+ ________ ______  ______  ______  ______                   ________ _____
+|PREAMBLE| BYTE || BYTE || BYTE || BYTE | CRC COMPUTATION |PREAMBLE| ACK |
+|____    |------||------||------||------|-------> <-------|____    |     |
+|    |   |      ||      ||      ||      | LATENCY         |    |   |  6  |
+|____|___|______||______||______||______|                 |____|___|_____|
 ```
 
 The maximum time dedicated to potential acknowledgement reception has to be same for all connected devices, and it is defined by the use case constrains like maximum packet length and latency or physical distance between devices.

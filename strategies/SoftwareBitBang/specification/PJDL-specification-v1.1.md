@@ -24,11 +24,11 @@ PJDL (Padded Jittering Data Link) has been specified to enable a new software em
     |      |   |      |    |      |    |      |    |      |  
     |DEVICE|   |DEVICE|    |DEVICE|    |DEVICE|    |DEVICE|  
     |______|   |______|    |______|    |______|    |______|    
- ______|___________|___________|___________|___________|______  SINGLE WIRE BUS
-          ___|__     ___|__     ___|__     ___|__           |   
-         |      |   |      |   |      |   |      |          |--\/\/\/\/\/-- GND   
-         |DEVICE|   |DEVICE|   |DEVICE|   |DEVICE|               1-5 MΩ
-         |______|   |______|   |______|   |______|    
+ ______|___________|___________|___________|___________|___ SINGLE WIRE BUS
+          ___|__     ___|__     ___|__     ___|__  |
+         |      |   |      |   |      |   |      | | PULL DOWN RESISTOR   
+         |DEVICE|   |DEVICE|   |DEVICE|   |DEVICE| |--\/\/\/\/\/-- GND     
+         |______|   |______|   |______|   |______|      1-5 MΩ
 ```
 
 ### Basic concepts
@@ -56,12 +56,12 @@ Padding bits add a certain overhead but are reducing the need of precise timing 
 #### String transmission
 Before a packet transmission, the medium is analyzed to detect ongoing communication and avoid collision. Thanks to the presence of padding bits, also a packet composed by 100 bytes, all with a decimal value of 0, can be transmitted safely without risk of third-party collision.   
 ```cpp  
- ________________ _________________ ________________ ________________ __________________
-|Sync | Byte     |Sync | Byte      |Sync | Byte     |Sync | Byte     |Sync | Byte       |
-|___  |     __   |___  |      _   _|___  |      _   |___  |  _       |___  |  _    _    |
-|   | |    |  |  |   | |     | | | |   | |     | |  |   | | | |      |   | | | |  | |   |
-| 1 |0|0000|11|00| 1 |0|00000|1|0|1| 1 |0|00000|1|00| 1 |0|0|1|000000| 1 |0|0|1|00|1|000|
-|___|_|____|__|__|___|_|_____|_|_|_|___|_|_____|_|__|___|_|_|_|______|___|_|_|_|__|_|___|
+ ________________ _________________ ________________ ________________
+|Sync | Byte     |Sync | Byte      |Sync | Byte     |Sync | Byte     |
+|___  |     __   |___  |      _   _|___  |      _   |___  |  _       |
+|   | |    |  |  |   | |     | | | |   | |     | |  |   | | | |      |
+| 1 |0|0000|11|00| 1 |0|00000|1|0|1| 1 |0|00000|1|00| 1 |0|0|1|000000|
+|___|_|____|__|__|___|_|_____|_|_|_|___|_|_____|_|__|___|_|_|_|______|
 ```
 In a scenario where a stream of bytes is coming, low performance or clock inaccurate microcontrollers can be correctly synchronized back with transmitter every byte (thanks to padding bits) and easily detect interference or the end of transmission.
 

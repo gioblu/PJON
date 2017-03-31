@@ -27,7 +27,7 @@ PJON™ (Padded Jittering Operative Network) is an Arduino compatible, multi-mas
 
 #### PJDL (Padded Jittering Data Link) specification
 - PJDL [v1.1](strategies/SoftwareBitBang/specification/PJDL-specification-v1.1.md)
-- PJDLR [v1.0](strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
+- PJDLR [v1.1](strategies/OverSampling/specification/PJDLR-specification-v1.1.md)
 
 #### Compliant tools
 - [ModuleInterface](https://github.com/fredilarsen/ModuleInterface) by Fred Larsen

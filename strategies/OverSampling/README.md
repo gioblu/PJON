@@ -2,7 +2,7 @@
 **Media:** Radio, Wire |
 **Pins used:** 1 / 2
 
-Oversampling strategy was initially developed in the [PJON_ASK](https://github.com/gioblu/PJON_ASK) repository, and it was integrated in the PJON repository from version 3.0 beta, as a data link layer strategy. Bits are over-sampled to have high resilience in high interference scenarios, like using an ASK/FSK cheap radio transceivers in an urban environment. It is tested effectively with many versions of the ASK/FSK 315/433Mhz modules available on the market, but it works nominally also through wires and the human body. It complies with [PJDLR v1.0](/strategies/OverSampling/specification/PJDLR-specification-v1.0.md) Data link layer specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=G1ckfsMzPns) for a brief showcase of its features.
+Oversampling strategy was initially developed in the [PJON_ASK](https://github.com/gioblu/PJON_ASK) repository, and it was integrated in the PJON repository from version 3.0 beta, as a data link layer strategy. Bits are over-sampled to have high resilience in high interference scenarios, like using an ASK/FSK cheap radio transceivers in an urban environment. It is tested effectively with many versions of the ASK/FSK 315/433Mhz modules available on the market, but it works nominally also through wires and the human body. It complies with [PJDLR v1.1](/strategies/OverSampling/specification/PJDLR-specification-v1.1.md) Data link layer specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=G1ckfsMzPns) for a brief showcase of its features.
 
 #### Compatibility
 - ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)

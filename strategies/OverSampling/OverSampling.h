@@ -163,7 +163,6 @@ class OverSampling {
       uint32_t time = PJON_MICROS();
       while(
         (response != PJON_ACK) &&
-        (response != PJON_NAK) &&
         (uint32_t)(
           PJON_MICROS() -
           (OS_TIMEOUT + OS_PREAMBLE_PULSE_WIDTH + (OS_TIMEOUT - OS_BIT_WIDTH))

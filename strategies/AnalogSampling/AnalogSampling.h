@@ -201,7 +201,6 @@ class AnalogSampling {
       uint32_t time = PJON_MICROS();
       while(
         (response != PJON_ACK) &&
-        (response != PJON_NAK) &&
         (uint32_t)(PJON_MICROS() - AS_RESPONSE_TIMEOUT) <= time
       ) response = receive_byte();
       return response;

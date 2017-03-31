@@ -7,18 +7,18 @@
 
 ```cpp
 /*
-Milan, Italy - 18/01/2017
+Milan, Italy - 31/03/2017
 PJDLR (Padded jittering data link) specification is an invention and intellectual property
 of Giovanni Blu Mitolo - Copyright 2010-2017 All rights reserved
 
 Related work: /strategies/SoftwareBitBang/
-Compliant implementation versions: PJON 7.0 and following
+Compliant implementation versions: PJON 8.0 and following
 
-New feature: Packet preamble by Fred Larsen
+Changelog: Response generalization / refactoring
 */
 ```
 ### PJDLR (Padded jittering data link / R version)
-PJDLR (Padded jittering data link) has been specified to enable a new way to transmit data in simplex and half-duplex mode using cheap and low performance microcontrollers without the need of hardware interrupts for its working procedure. It is designed to support many devices sharing the same medium, to avoid collisions and operate in spite of interference. Extended tests proved its effectiveness on different media like electricity, radio frequency and light.
+PJDLR (Padded jittering data link) has been specified to enable a new a new software emulated simplex or half-duplex data-link layer supporting one or many to many communication on a single channel or medium. It can be run on cheap and low performance microcontrollers, it supports communication for many devices connected to the same medium and stable operation in spite of interference. Its procedure has been specified to obtain long range and high reliability using FSK/ASK/OOK radio transceivers as physical layer.
 
 ### Basic concepts
 * Use a pattern of predefined initial padding bits to identify a potential byte transmission

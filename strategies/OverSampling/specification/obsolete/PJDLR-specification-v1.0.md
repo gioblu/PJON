@@ -12,7 +12,7 @@ PJDLR (Padded jittering data link) specification is an invention and intellectua
 of Giovanni Blu Mitolo - Copyright 2010-2017 All rights reserved
 
 Related work: /strategies/SoftwareBitBang/
-Compliant implementation versions: PJON 7.0 and following
+Compliant implementation versions: PJON 7.0-7.1
 
 New feature: Packet preamble by Fred Larsen
 */

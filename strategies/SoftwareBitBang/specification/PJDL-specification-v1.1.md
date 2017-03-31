@@ -13,6 +13,8 @@ of Giovanni Blu Mitolo - Copyright 2010-2017 All rights reserved
 
 Related work: /strategies/SoftwareBitBang/
 Compliant implementation versions: PJON 8.0 and following
+
+Changelog: Response generalization / refactoring
 */
 ```
 ### PJDL (Padded Jittering Data Link)

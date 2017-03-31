@@ -14,9 +14,9 @@
 #if defined(__AVR_ATmega88__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
   #if AS_MODE == AS_STANDARD
     #if F_CPU == 16000000L
-      #define AS_BIT_WIDTH   750
+      #define AS_BIT_WIDTH    750
       #define AS_BIT_SPACER  1050
-      #define AS_READ_DELAY  0
+      #define AS_READ_DELAY     0
     #endif
   #endif
 #endif
@@ -45,15 +45,15 @@
 #endif
 
 #ifndef AS_BIT_WIDTH
-  #define AS_BIT_WIDTH       750
+  #define AS_BIT_WIDTH          750
 #endif
 
 #ifndef AS_BIT_SPACER
-  #define AS_BIT_SPACER      1050
+  #define AS_BIT_SPACER        1050
 #endif
 
 #ifndef AS_READ_DELAY
-  #define AS_READ_DELAY         0
+  #define AS_READ_DELAY          0
 #endif
 
 /* Synchronous acknowledgement response timeout. (15 milliseconds default).
@@ -68,25 +68,25 @@
 /* Maximum initial delay in milliseconds: */
 
 #ifndef AS_INITIAL_DELAY
-  #define AS_INITIAL_DELAY  1000
+  #define AS_INITIAL_DELAY     1000
 #endif
 
 /* Maximum delay in case of collision in microseconds: */
 
 #ifndef AS_COLLISION_DELAY
-  #define AS_COLLISION_DELAY  64
+  #define AS_COLLISION_DELAY     64
 #endif
 
 /* Maximum transmission attempts */
 
 #ifndef AS_MAX_ATTEMPTS
-  #define AS_MAX_ATTEMPTS    10
+  #define AS_MAX_ATTEMPTS        10
 #endif
 
 /* Back-off exponential degree */
 
 #ifndef AS_BACK_OFF_DEGREE
-  #define AS_BACK_OFF_DEGREE 5
+  #define AS_BACK_OFF_DEGREE      5
 #endif
 
 /* Threshold decrease interval (750 millis) */

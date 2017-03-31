@@ -34,7 +34,7 @@
     #if F_CPU == 16000000L
     /* Speed: 39.800kBd or 4.975kB/s */
       #define SWBB_BIT_WIDTH  17
-      #define SWBB_BIT_SPACER 48
+      #define SWBB_BIT_SPACER 52
       #define SWBB_ACCEPTANCE 17
       #define SWBB_READ_DELAY 8
     #endif

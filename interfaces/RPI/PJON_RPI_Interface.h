@@ -19,15 +19,11 @@
 #pragma once
 
 #if defined(RPI)
-  #include <wiringPi.h>
-  #include <wiringSerial.h>
   #include <inttypes.h>
-  #include <stdio.h>
-  #include <stdint.h>
   #include <stdlib.h>
   #include <string.h>
-  #include <time.h>
-  #include <errno.h>
+  #include <wiringPi.h>
+  #include <wiringSerial.h>
 
   #ifndef A0
     #define A0 0

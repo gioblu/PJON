@@ -2,7 +2,19 @@
 **Medium:** Wire |
 **Pins used:** 1 / 2
 
-SoftwareBitBang is the default data link layer used by PJON and it is based on `micros` and `delayMicroseconds`. It needs 1 or optionally 2 wires and no additional hardware to handle communication with a software emulated implementation. It supports many devices to transmit and or receive through the same 1 or 2 wires. It is designed to work with many Arduino compatible boards, to have a small memory footprint and to be extremely resilient to interference. Its maximum communication range is still unknown, but is tested and well performing through up to 50 meters long high quality insulated wires. Thanks to the use of the `PJON_IO` set of macros, can be achieved fast and reliable cross-architecture communication through 1 or 2 pins. It complies with [PJDL v1.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) data link layer specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=Vg5aSlD-VCU) for a brief showcase of its features.
+`SoftwareBitBang` is based on `micros` and `delayMicroseconds`, needs 1 or optionally 2 wires and no additional hardware to handle one or many to many communication on a single channel or bus. It can be run on cheap and low performance microcontrollers. Bus maximum length is mostly limited by the resistance of the common conductive element used. It has been tested with up to 50m long insulated wires, results demonstrate the same high performance achieved with shorter lengths. It complies with [PJDL v1.1](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.1.md) data link layer specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=Vg5aSlD-VCU) for a brief showcase of its features.
+```cpp  
+     ______     ______      ______      ______      ______
+    |      |   |      |    |      |    |      |    |      |  
+    |DEVICE|   |DEVICE|    |DEVICE|    |DEVICE|    |DEVICE|  
+    |______|   |______|    |______|    |______|    |______|    
+ ______|___________|___________|___________|___________|___ SINGLE WIRE BUS
+          ___|__     ___|__     ___|__     ___|__  |
+         |      |   |      |   |      |   |      | |      
+         |DEVICE|   |DEVICE|   |DEVICE|   |DEVICE| |___/\/\/\___ GND     
+         |______|   |______|   |______|   |______|     1-5 MΩ
+```
+It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to protect MCU pins and to reduce interference.
 
 #### Compatibility
 - ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
@@ -20,7 +32,7 @@ SoftwareBitBang is the default data link layer used by PJON and it is based on `
 - `SWBB_FAST` (2) runs at 21504Bd or 2.68kB/s cross-architecture, promiscuous clock/architecture compatible.
 - `SWBB_OVERDRIVE` (3) runs a specific architecture at its maximum limits (non cross-architecture compatible). Every architecture has its own limits, Arduino Duemilanove for example runs at 31250Bd or 3.906kB/s, Arduino Zero can reach 48000Bd or 6kB/s.
 
-When including and using SoftwareBitBang, as data link layer of a PJON bus, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because SoftwareBitBang is completely software emulated strategy with a non blocking implementation, transforming a painful walk to the hill in a nice flight.
+When including and using `SoftwareBitBang`, as data link layer of a PJON bus, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because `SoftwareBitBang` is completely software emulated strategy with a non blocking implementation, transforming a painful walk to the hill in a nice flight.
 
 Single wire simplicity let you to experiment quickly and with creativity. The first suggested test, at the tester's risk, is to let two arduino boards communicate [through a living body](https://www.youtube.com/watch?v=caMit7nzJsM) touching with the left hand the digital port of the first board (5v 40ma, harmless) and with the right the port of the other one. It is stunning to see highly accurate digital communication running inside a living biological body. This opens the mind to possible creative solutions.
 
@@ -46,6 +58,12 @@ Pass the `SoftwareBitBang` type as PJON template parameter to instantiate a PJON
      SWBB_RESPONSE_TIMEOUT if necessary. */
   #define SWBB_RESPONSE_TIMEOUT 1500
 
+  /* Set the back-off exponential degree (default 4) */
+  #define SWBB_BACK_OFF_DEGREE     4
+
+  /* Set the maximum sending attempts (default 20) */
+  #define SWBB_MAX_ATTEMPTS       20
+
   #include <PJON.h>
 
   PJON<SoftwareBitBang> bus;
@@ -67,11 +85,10 @@ The use of libraries is really extensive in the Arduino environment and often th
 PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl/post/130558526217/pjon-my-son)
 
 #### Known issues
-- A pull down resistor in the order of mega ohms could be necessary on the bus to reduce interference, see [deal with interference](https://github.com/gioblu/PJON/wiki/Deal-with-interference). In late november 2016 a bug has been discovered, it was on many devices creating a slight inconsistency in the channel state during transitions, most of the times
-disappearing with the use of a pull-down resistor ([120b2c](https://github.com/gioblu/PJON/commit/120b2c72f1435519e7712adfd2c3f1eecc38557c)), with this bugfix the channel is much more reliable and in most cases there is no more need of a pull-down resistor to have nominal communication speed.
-- Consider that this is not an interrupt driven system and so all the time passed
+- A 1-5 MΩ pull down resistor could be necessary to reduce interference, see [deal with interference](https://github.com/gioblu/PJON/wiki/Deal-with-interference).
+- Consider that this is not an interrupt driven system, during the time passed
 in delay or executing other tasks a certain amount of packets could be potentially
-lost not received, the packet manager of PJON will do its job scheduling the packet
+lost, PJON does its job scheduling the packet
 to be sent again in future but a certain amount of bandwidth can be wasted. Structure intelligently
 your loop cycle to avoid huge blind timeframes.
 - `SoftwareBitBang` strategy can have compatibility issues with codebases that

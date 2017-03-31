@@ -3,7 +3,7 @@
 /* Use a couple of visible light / IR / UV LEDs as wireless bidirectional transceivers
    Connect LED + to A0
    Connect LED - to GND
-   Place a pull down resistor in the range of megaohms between A0 and GND
+   Place a 1-5 MΩ pull down resistor between A0 and GND
    Try different resistor values to find the optimal to maximize range
    Higher resistance can higher the range but can also higher background noise.  */
 

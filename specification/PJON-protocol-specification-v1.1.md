@@ -2,7 +2,7 @@
 - Acknowledge specification: [v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md)
 - Dynamic addressing specification: [v0.1](/specification/PJON-dynamic-addressing-specification-v0.1.md)
 - PJDL (Padded Jittering Data Link) specification:
-[PJDL v1.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) - [PJDLR v1.0](/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
+[PJDL v1.1](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.1.md) - [PJDLR v1.1](/strategies/OverSampling/specification/PJDLR-specification-v1.1.md)
 
 ```cpp
 /*
@@ -12,6 +12,8 @@ of Giovanni Blu Mitolo - Copyright 2010-2017 All rights reserved
 
 Related work: https://github.com/gioblu/PJON/
 Compliant implementation versions: PJON 6.0 and following
+
+Header driven configuration proposed by Fred Larsen
 
 Changelog:
 - Avoid sending NAK

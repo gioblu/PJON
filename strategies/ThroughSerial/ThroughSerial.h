@@ -23,6 +23,8 @@
    See the License for the specific language governing permissions and
    limitations under the License. */
 
+#pragma once
+
 #include "Timing.h"
 
 class ThroughSerial {
@@ -55,7 +57,7 @@ class ThroughSerial {
     bool can_start() {
       PJON_DELAY_MICROSECONDS(PJON_RANDOM(TS_COLLISION_DELAY));
       if(PJON_SERIAL_AVAILABLE(serial)) return false;
-      if((uint32_t)(PJON_MICROS() - _last_reception_time) < TS_FREE_TIME_BEFORE_START)
+      if((uint32_t)(PJON_MICROS() - _last_reception_time) < TS_TIME_IN)
         return false;
       return true;
     };
@@ -77,12 +79,13 @@ class ThroughSerial {
 
     /* Try to receive a byte with a maximum waiting time */
 
-    uint16_t receive_byte() {
+    uint16_t receive_byte(uint32_t time_out = TS_BYTE_TIME_OUT) {
       uint32_t time = PJON_MICROS();
-      while((uint32_t)(PJON_MICROS() - time) < TS_MAX_BYTE_TIME)
+      while((uint32_t)(PJON_MICROS() - time) < time_out)
         if(PJON_SERIAL_AVAILABLE(serial)) {
           _last_reception_time = PJON_MICROS();
-          return (uint8_t)PJON_SERIAL_READ(serial);
+          uint16_t read = (uint8_t)PJON_SERIAL_READ(serial);
+          if(read >= 0) return read;
         }
       return PJON_FAIL;
     };
@@ -91,7 +94,17 @@ class ThroughSerial {
     /* Receive byte response */
 
     uint16_t receive_response() {
-      return receive_byte();
+      return receive_byte(TS_RESPONSE_TIME_OUT);
+    };
+
+
+    /* Receive a string: */
+
+    uint16_t receive_string(uint8_t *string, uint16_t max_length) {
+      uint16_t result = receive_byte();
+      if(result == PJON_FAIL) return PJON_FAIL;
+      *string = result;
+      return 1;
     };
 
 
@@ -121,7 +134,6 @@ class ThroughSerial {
     void send_string(uint8_t *string, uint8_t length) {
       if(_enable_RS485_pin != PJON_NOT_ASSIGNED)
         PJON_IO_WRITE(_enable_RS485_pin, HIGH);
-
       for(uint8_t b = 0; b < length; b++)
         send_byte(string[b]);
       PJON_SERIAL_FLUSH(serial);
@@ -129,6 +141,7 @@ class ThroughSerial {
       if(_enable_RS485_pin != PJON_NOT_ASSIGNED)
         PJON_IO_WRITE(_enable_RS485_pin, LOW);
     };
+
 
     /* Pass the Serial port where you want to operate with */
   #if defined(RPI)

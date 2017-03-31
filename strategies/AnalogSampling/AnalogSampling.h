@@ -35,6 +35,8 @@
    See the License for the specific language governing permissions and
    limitations under the License. */
 
+#pragma once
+
 #include "Timing.h"
 
 /* Default reading state threshold: */
@@ -201,7 +203,6 @@ class AnalogSampling {
       uint32_t time = PJON_MICROS();
       while(
         (response != PJON_ACK) &&
-        (response != PJON_NAK) &&
         (uint32_t)(PJON_MICROS() - AS_RESPONSE_TIMEOUT) <= time
       ) response = receive_byte();
       return response;
@@ -211,13 +212,10 @@ class AnalogSampling {
     /* Receive a string: */
 
     uint16_t receive_string(uint8_t *string, uint16_t max_length) {
-      uint16_t result;
-      for(uint16_t b = 0; b < max_length; b++) {
-        result = receive_byte();
-        if(result == PJON_FAIL) return b;
-        string[b] = result;
-      }
-      return max_length;
+      uint16_t result = receive_byte();
+      if(result == PJON_FAIL) return PJON_FAIL;
+      *string = result;
+      return 1;
     };
 
 

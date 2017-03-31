@@ -17,9 +17,11 @@
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
-    limitations under the License.
+    limitations under the License. */
 
-STANDARD transmission mode performance:
+#pragma once
+
+/* STANDARD transmission mode performance:
    Transfer speed: 16.944kBb or 2.12kB/s
    Absolute  communication speed: 1.81kB/s (data length 20 of characters)
    Data throughput: 1.51kB/s (data length 20 of characters)
@@ -195,13 +197,10 @@ class SoftwareBitBang {
     /* Receive a string: */
 
     uint16_t receive_string(uint8_t *string, uint16_t max_length) {
-      uint16_t result;
-      for(uint16_t b = 0; b < max_length; b++) {
-        result = receive_byte();
-        if(result == PJON_FAIL) return b;
-        string[b] = result;
-      }
-      return max_length;
+      uint16_t result = receive_byte();
+      if(result == PJON_FAIL) return PJON_FAIL;
+      *string = result;
+      return 1;
     };
 
 

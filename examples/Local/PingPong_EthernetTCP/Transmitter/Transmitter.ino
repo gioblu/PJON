@@ -12,6 +12,7 @@ PJON<EthernetTCP> bus(45);
 
 void setup() {
   Serial.begin(115200);
+  Serial.println("Transmitter started.");
   Ethernet.begin(mac, local_ip, gateway, gateway, subnet);
 
   bus.strategy.link.set_id(bus.device_id());
@@ -22,7 +23,7 @@ void setup() {
 
   bus.set_receiver(receiver_function);
   bus.begin();
-  bus.send_repeatedly(44, "P", 1, 1000); // Send B to device 44 every second
+  bus.send_repeatedly(44, "P", 1, 100000); // Send P to device 44 repeatedly
 }
 
 uint32_t cnt = 0;
@@ -31,17 +32,16 @@ uint32_t start = millis();
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   /* Make use of the payload before sending something, the buffer where payload points to is
      overwritten when a new message is dispatched */
-  if (payload[0] == 'P') {
-    cnt++;
-    if (millis() - start > 1000) {
-      start = millis();
-      Serial.print("PONG/s: "); Serial.println(cnt);
-      cnt = 0;
-    }
-  }
+  if (payload[0] == 'P') cnt++;
 }
 
 void loop() {
   bus.update();
   bus.receive();
+
+  if (millis() - start > 1000) {
+    start = millis();
+    Serial.print("PONG/s: "); Serial.println(cnt);
+    cnt = 0;
+  }  
 };

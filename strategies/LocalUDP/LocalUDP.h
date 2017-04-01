@@ -25,17 +25,17 @@
 #include <PJONDefines.h>
 
 #define LUDP_DEFAULT_PORT      7100
-#define LUDP_RESPONSE_TIMEOUT  (uint32_t) 10000
+#define LUDP_RESPONSE_TIMEOUT  (uint32_t) 20000
 #define LUDP_MAGIC_HEADER      0x0DFAC3D0
 
 /* Maximum transmission attempts */
 #ifndef LUDP_MAX_ATTEMPTS
-  #define LUDP_MAX_ATTEMPTS          20
+  #define LUDP_MAX_ATTEMPTS          1
 #endif
 
 /* Back-off exponential degree */
 #ifndef LUDP_BACK_OFF_DEGREE
-  #define LUDP_BACK_OFF_DEGREE       4
+  #define LUDP_BACK_OFF_DEGREE       3
 #endif
 
 class LocalUDP {
@@ -46,35 +46,12 @@ class LocalUDP {
 
     EthernetUDP udp;
 
-    /* Caching of incoming packet to make it possible to deliver it byte for byte */
-
-    uint8_t incoming_packet_buf[PJON_PACKET_MAX_LENGTH];
-    uint16_t incoming_packet_size = 0;
-    uint16_t incoming_packet_pos = 0;
-
-    bool receive_telegram() {
-      int packetSize = udp.parsePacket();
-      if (packetSize > 4 && packetSize <= PJON_PACKET_MAX_LENGTH) {
-        uint32_t header = 0;
-        udp.read((char *) &header, 4);
-        if (header != _magic_header) return false; // Not a LocalUDP packet
-        udp.read(incoming_packet_buf, PJON_PACKET_MAX_LENGTH);
-        incoming_packet_size = packetSize;
-        incoming_packet_pos = 0;
-        return true;
-      }
-      return false;
-    }
-
-    void empty_buffer() {
-      incoming_packet_size = incoming_packet_pos = 0;
-    };
-
-    void check_udp() {
+    bool check_udp() {
       if (!_udp_initialized) {
         udp.begin(_port);
         _udp_initialized = true;
       }
+      return _udp_initialized;
     };
 
 public:
@@ -93,57 +70,54 @@ public:
     /* Begin method, to be called before transmission or reception:
        (returns always true) */
 
-    bool begin(uint8_t additional_randomness = 0) {
-      return true;
-    };
+    bool begin(uint8_t additional_randomness = 0) { return check_udp(); };
 
 
     /* Check if the channel is free for transmission */
 
-    bool can_start() {
-      check_udp();
-      return true;
-    };
+    bool can_start() { return check_udp(); };
 
 
     /* Returns the maximum number of attempts for each transmission: */
 
-    static uint8_t get_max_attempts() {
-      return LUDP_MAX_ATTEMPTS;
-    };
+    static uint8_t get_max_attempts() { return LUDP_MAX_ATTEMPTS; };
 
 
     /* Handle a collision (empty because handled on Ethernet level): */
 
     void handle_collision() { };
 
-
-    uint16_t receive_byte() {
-      check_udp();
-      // Must receive a new packet, or is there more to serve from the last one?
-      if (incoming_packet_pos >= incoming_packet_size)
-        receive_telegram();
-      // Deliver the next byte from the last received packet if any
-      if (incoming_packet_pos < incoming_packet_size)
-        return incoming_packet_buf[incoming_packet_pos++];
+    
+    /* Receive a string: */
+        
+    uint16_t receive_string(uint8_t *string, uint16_t max_length) {
+      uint16_t packetSize = udp.parsePacket();
+      if (packetSize > 4 && packetSize <= 4 + max_length) {
+        uint32_t header = 0;
+        udp.read((char *) &header, 4);
+        if (header != _magic_header) return false; // Not a LocalUDP packet
+        udp.read(string, packetSize - 4);
+        return packetSize - 4;
+      }
       return PJON_FAIL;
-    };
-
+    }
+    
 
     /* Receive byte response */
 
     uint16_t receive_response() {
-      // This should not be needed, but empty buffer so that we are sure to pick up a new packet.
-      empty_buffer();
       // TODO: Improve robustness by ignoring packets not from the previous receiver
       // (Perhaps not that important as long as ACK/NAK responses are directed, not broadcast)
       uint32_t start = PJON_MICROS();
-      uint16_t result = PJON_FAIL;
+      uint8_t result[2];
+      uint16_t reply_length = 0;
       do {
-        result = receive_byte();
-        if (result == PJON_ACK || result == PJON_NAK) return result;
+        reply_length = receive_string(result, 2); // We expect 1, if packet is larger it is not our ACK
+        if (reply_length == 1) {
+          if (result[0] == PJON_ACK || result[0] == PJON_NAK) return result;
+        }
      } while ((uint32_t)(PJON_MICROS() - start) < LUDP_RESPONSE_TIMEOUT);
-      return result;
+      return PJON_FAIL;
     };
 
 

@@ -34,11 +34,6 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
      overwritten when a new message is dispatched */
   if(payload[0] == 'P') {
     cnt++;
-    if (millis() - start > 1000) {
-      start = millis();
-      Serial.print("PING/s: "); Serial.println(cnt);
-      cnt = 0;
-    }
     bus.reply("P", 1);
   }
 }
@@ -46,4 +41,10 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 void loop() {
   bus.update();
   bus.receive();
+
+  if (millis() - start > 1000) {
+    start = millis();
+    Serial.print("PING/s: "); Serial.println(cnt);
+    cnt = 0;
+  }  
 };

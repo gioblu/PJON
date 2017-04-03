@@ -650,7 +650,6 @@ class PJON {
       uint16_t response = strategy.receive_response();
       if(
         response == PJON_ACK ||
-        response == PJON_NAK ||
         response == PJON_FAIL
       ) return response;
       else return PJON_BUSY;

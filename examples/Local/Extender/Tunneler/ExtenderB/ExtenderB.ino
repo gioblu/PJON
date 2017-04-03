@@ -1,26 +1,27 @@
-/* This sketch will allow a local bus to be segmented. It can be used for:
-   
-   1. Extending a media like a repeater. For example if SWBB wires are getting too long,
-      it can connect two SWBB wires, extending the range. This can be repeated to enable 
-      really long distances.
-   
-   2. Having devices on different media types communicate with each other transparently,
-      for example having devices on a SWBB wire communicate with devices using the LocalUDP
-      strategy on a LAN. Or wired <-> wireless.
-   
-   3. Tunnel packets through another media type by using two extenders mirroring each other. 
-      For example, two SWBB buses that are far from each other can be joined transparently 
-      through a LAN using the LocalUDP strategy, or through a WAN or Internet using the 
-      EthernetTCP strategy. Or join two SWBB local bus segments wirelessly using the OS strategy.
+/* This sketch allows a local bus to be segmented. It can be used for:
 
-   4. Extend (3) to let packets flow freely between multiple SWBB buses on different media
-      with multiple extenders exchanging the packets on a common media like a LAN with
-      LocalUDP. The buses being connected this way can use a common strategy like SWBB,
-      or different strategies.
+1. Extending its medium as a repeater, for example if SoftwareBitBang bus
+wires are getting too long, they can be splitted in two sections connected by
+a repeater, extending range. This scheme can be repeated to enable really
+long distances.
 
-   A non-local version of this sketch, connecting two buses with different bus ids,
-   is available as the "Router" sketch among the Network examples.
-*/
+2. Let devices on different media communicate with each other transparently, for
+example to let devices on a SoftwareBitBang bus wire communicate with devices
+using the LocalUDP strategy on a LAN.
+
+3. Tunnel packets through another medium using two extenders mirroring each
+other. For example, two SoftwareBitBang buses that are far from each other
+can be joined transparently through a LAN using the LocalUDP strategy, or
+through a WAN or Internet using the EthernetTCP strategy.
+
+4. Extend (3) to let packets flow freely between multiple SoftwareBitBang
+buses on different media with multiple extenders exchanging packets on a common
+medium like a LAN using LocalUDP strategy.
+
+A non-local version of this sketch, connecting two buses with different bus
+ids, is available as the "Router" sketch among the Network examples.
+
+Extender examples contributed by Fred Larsen. */
 
 #include <PJON.h>
 

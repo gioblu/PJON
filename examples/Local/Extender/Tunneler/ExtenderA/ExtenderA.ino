@@ -32,7 +32,7 @@ PJON<SoftwareBitBang> busA(DEVICE_ID);
 PJON<LocalUDP> busB(DEVICE_ID);
 
 // All packets to devices listed here will be forwarded to bus B
-const uint8_t device_id_ranges_on_B_side[] = {10, 19, 
+const uint8_t device_id_ranges_on_B_side[] = {10, 19,
                                               80, 89};
 const uint8_t single_device_ids_on_B_side[] = {30, 33, 37, 44, 46};
 
@@ -46,12 +46,12 @@ byte ip[] = { 192, 1, 1, 185 };
 void setup() {
   Serial.begin(115200);
   Ethernet.begin(mac, ip, gateway, gateway, subnet);
-  
+
   busA.strategy.set_pin(7);
   busA.set_receiver(receiver_functionA);
   busA.set_router(true);
   busA.begin();
-  
+
   busB.set_receiver(receiver_functionB);
   busB.set_router(true);
   busB.begin();
@@ -61,7 +61,7 @@ void receiver_functionA(uint8_t *payload, uint16_t length, const PJON_Packet_Inf
   // Forward packet to B segment of local bus
   if (is_device_on_B_side(packet_info.receiver_id)) {
     busA.strategy.send_response(PJON_ACK);
-    busB.send_from_id(packet_info.sender_id, packet_info.sender_bus_id, 
+    busB.send_from_id(packet_info.sender_id, packet_info.sender_bus_id,
       packet_info.receiver_id, packet_info.receiver_bus_id, payload, length, packet_info.header);
   }
 }
@@ -70,7 +70,7 @@ void receiver_functionB(uint8_t *payload, uint16_t length, const PJON_Packet_Inf
   // Forward packet to A segment of local bus
   if (!is_device_on_B_side(packet_info.receiver_id)) {
     busB.strategy.send_response(PJON_ACK);
-    busA.send_from_id(packet_info.sender_id, packet_info.sender_bus_id, 
+    busA.send_from_id(packet_info.sender_id, packet_info.sender_bus_id,
       packet_info.receiver_id, packet_info.receiver_bus_id, payload, length, packet_info.header);
   }
 }
@@ -80,12 +80,12 @@ bool is_device_on_B_side(uint8_t device_id) {
   for (uint8_t i = 0; i < sizeof device_id_ranges_on_B_side - 1; i += 2)
     if (device_id_ranges_on_B_side[i] <= device_id && device_id <= device_id_ranges_on_B_side[i+1])
       return true;
-      
-  // Check if one of the individually registered B side devices    
-  for (uint8_t i = 0; i < sizeof single_device_ids_on_B_side; i++) 
+
+  // Check if one of the individually registered B side devices
+  for (uint8_t i = 0; i < sizeof single_device_ids_on_B_side; i++)
     if (single_device_ids_on_B_side[i] == device_id) return true;
-    
-  return false;  
+
+  return false;
 }
 
 void loop() {

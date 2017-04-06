@@ -2,7 +2,7 @@
 **Media:** Radio, Wire |
 **Pins used:** 1 / 2
 
-OverSampling has been developed to enable a new a new software emulated simplex or half-duplex data-link supporting one or many to many communication on a single channel or medium. It can be run on cheap and low performance microcontrollers, it supports communication for many devices connected to the same medium and stable operation in spite of interference. Its procedure has been specified to obtain long range and high reliability using FSK/ASK/OOK 315/433Mhz radio transceivers available on the market. It complies with [PJDLR v1.1](/strategies/OverSampling/specification/PJDLR-specification-v1.1.md) specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=G1ckfsMzPns) for a brief showcase of its features.
+OverSampling has been developed to enable a new software emulated simplex or half-duplex data-link supporting one or many to many communication on a single channel or medium. It can be run on cheap and low performance microcontrollers, it supports communication for many devices connected to the same medium and stable operation in spite of interference. Its procedure has been specified to obtain long range and high reliability using FSK/ASK/OOK 315/433Mhz radio transceivers available on the market. It complies with [PJDLR v1.1](/strategies/OverSampling/specification/PJDLR-specification-v1.1.md) specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=G1ckfsMzPns) for a brief showcase of its features.
 
 #### Compatibility
 - ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)

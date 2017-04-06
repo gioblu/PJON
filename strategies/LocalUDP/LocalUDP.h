@@ -113,10 +113,11 @@ public:
       uint8_t result[2];
       uint16_t reply_length = 0;
       do {
-        reply_length = receive_string(result, 2); // We expect 1, if packet is larger it is not our ACK
-        if (reply_length == 1) {
-          if (result[0] == PJON_ACK || result[0] == PJON_NAK) return result;
-        }
+        reply_length = receive_string(result, 2);
+        // We expect 1, if packet is larger it is not our ACK
+        if(reply_length == 1)
+          if(result[0] == PJON_ACK)
+            return result[0];
      } while ((uint32_t)(PJON_MICROS() - start) < LUDP_RESPONSE_TIMEOUT);
       return PJON_FAIL;
     };

@@ -15,16 +15,17 @@
 
 PJONMaster has been created by Giovanni Blu Mitolo with the support
 of Fred Larsen and is inspired by the work of Thomas Snaidero:
-"Modular components for eye tracking, in the interest of helping persons
-with severely impaired motor skills."
+"Modular components for eye tracking, in the interest of helping persons with
+ severely impaired motor skills."
 Master Thesis, IT University of Copenhagen, Denmark, September 2016
 
 PJON™ Dynamic addressing specification:
 - v0.1 specification/PJON-dynamic-addressing-specification-v0.1.md
 
-PJON™ is a self-funded, no-profit project created and mantained by Giovanni Blu Mitolo
-with the support ot the internet community if you want to see the PJON project growing
-with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
+PJON™ is a self-funded, no-profit open-source project created and mantained by
+Giovanni Blu Mitolo with the support ot the internet community if you want
+to see the PJON project growing with a faster pace, consider a donation
+at the following link: https://www.paypal.me/PJON
  ______________________________________________________________________________
 
 Copyright 2012-2017 by Giovanni Blu Mitolo gioscarab@gmail.com

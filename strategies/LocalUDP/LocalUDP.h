@@ -24,18 +24,18 @@
 #include <EthernetUdp.h>
 #include <PJONDefines.h>
 
-#define LUDP_DEFAULT_PORT      7100
+#define LUDP_DEFAULT_PORT                  7100
 #define LUDP_RESPONSE_TIMEOUT  (uint32_t) 20000
-#define LUDP_MAGIC_HEADER      0x0DFAC3D0
+#define LUDP_MAGIC_HEADER            0x0DFAC3D0
 
 /* Maximum transmission attempts */
 #ifndef LUDP_MAX_ATTEMPTS
-  #define LUDP_MAX_ATTEMPTS          1
+  #define LUDP_MAX_ATTEMPTS                   1
 #endif
 
 /* Back-off exponential degree */
 #ifndef LUDP_BACK_OFF_DEGREE
-  #define LUDP_BACK_OFF_DEGREE       3
+  #define LUDP_BACK_OFF_DEGREE                3
 #endif
 
 class LocalUDP {
@@ -47,7 +47,7 @@ class LocalUDP {
     EthernetUDP udp;
 
     bool check_udp() {
-      if (!_udp_initialized) {
+      if(!_udp_initialized) {
         udp.begin(_port);
         _udp_initialized = true;
       }
@@ -87,27 +87,28 @@ public:
 
     void handle_collision() { };
 
-    
+
     /* Receive a string: */
-        
+
     uint16_t receive_string(uint8_t *string, uint16_t max_length) {
       uint16_t packetSize = udp.parsePacket();
-      if (packetSize > 4 && packetSize <= 4 + max_length) {
+      if(packetSize > 4 && packetSize <= 4 + max_length) {
         uint32_t header = 0;
         udp.read((char *) &header, 4);
-        if (header != _magic_header) return false; // Not a LocalUDP packet
+        if(header != _magic_header) return false; // Not a LocalUDP packet
         udp.read(string, packetSize - 4);
         return packetSize - 4;
       }
       return PJON_FAIL;
     }
-    
+
 
     /* Receive byte response */
 
     uint16_t receive_response() {
-      // TODO: Improve robustness by ignoring packets not from the previous receiver
-      // (Perhaps not that important as long as ACK/NAK responses are directed, not broadcast)
+      /* TODO: Improve robustness by ignoring packets not from the previous
+         receiver (Perhaps not that important as long as ACK/NAK responses are
+         directed, not broadcast) */
       uint32_t start = PJON_MICROS();
       uint8_t result[2];
       uint16_t reply_length = 0;
@@ -135,7 +136,7 @@ public:
     /* Send a string: */
 
     void send_string(uint8_t *string, uint16_t length) {
-      if (length > 0) {
+      if(length > 0) {
         udp.beginPacket(_broadcast, _port);
         udp.write((const char*) &_magic_header, 4);
         udp.write(string, length);

@@ -71,16 +71,16 @@ limitations under the License. */
 #define PJON_NAK             21
 
 /* Dynamic addressing */
-#define PJON_ID_ACQUIRE 199
-#define PJON_ID_REQUEST 200
-#define PJON_ID_CONFIRM 201
-#define PJON_ID_NEGATE  203
-#define PJON_ID_LIST    204
-#define PJON_ID_REFRESH 205
+#define PJON_ID_ACQUIRE     199
+#define PJON_ID_REQUEST     200
+#define PJON_ID_CONFIRM     201
+#define PJON_ID_NEGATE      203
+#define PJON_ID_LIST        204
+#define PJON_ID_REFRESH     205
 
 /* INTERNAL CONSTANTS */
-#define PJON_FAIL    65535
-#define PJON_TO_BE_SENT 74
+#define PJON_FAIL         65535
+#define PJON_TO_BE_SENT      74
 
 /* HEADER BITS DEFINITION: */
 

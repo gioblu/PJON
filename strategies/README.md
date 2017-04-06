@@ -33,9 +33,9 @@ void send_string(uint8_t *string, uint16_t length)
 Sends a string of a certain length through the medium
 
 ```cpp
-uint16_t receive_byte() { ... };
+uint16_t receive_string(uint8_t *string, uint16_t max_length) { ... };
 ```
-Receives a byte though the medium
+Receives a pointer where to store received information and unsigned integer signaling the maximum string length. It should return the number of bytes received or `PJON_FAIL`.
 
 ```cpp
 void send_response(uint8_t response) { ... };
@@ -47,7 +47,7 @@ uint16_t receive_response() { ... };
 ```
 Receives a response from the packet's receiver
 
-You can define your own set of 5 methods to use PJON with your personal strategy on the media you prefer. If you need other custom configuration or functions, those can be defined in your personal Strategy class. Other communication protocols could be used inside those methods to transmit data.
+You can define your own set of methods to use PJON with your own strategy on the medium you prefer. If you need other custom configuration or functions, those can be defined in your Strategy class. Other communication protocols could be used inside those methods to transmit and receive data:
 
 ```cpp
 // Simple Serial data link layer implementation example
@@ -57,17 +57,17 @@ void send_response(uint8_t response) {
 ```
 
 #### How to define a new strategy
-To define your new strategy you have only to create a new folder named for example `YourStrategyName` in `strategies`
+To define the strategy you have only to create a new folder named for example `YourStrategyName` in `strategies`
 directory and write the necessary file `YourStrategyName.h`:
 
 ```cpp
 class YourStrategyName {
   public:
     uint32_t back_off(uint8_t attempts) { ... };
-    bool  begin(uint8_t additional_randomness) { ... };
-    bool  can_start() { ... };
+    bool     begin(uint8_t additional_randomness) { ... };
+    bool     can_start() { ... };
     uint8_t  get_max_attempts() { ... };
-    uint16_t receive_byte() { ... };
+    uint16_t receive_string(uint8_t *string, uint16_t max_length) { ... };
     uint16_t receive_response() { ... };
     void     send_response(uint8_t response) { ... };
     void     send_string(uint8_t *string, uint16_t length) { ... };

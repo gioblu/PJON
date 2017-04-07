@@ -147,13 +147,17 @@ class SoftwareBitBang {
         PJON_IO_PULL_DOWN(_output_pin);
 
       uint32_t time = micros();
-      /* Do nothing until the pin goes LOW or passed more time than SWBB_BIT_SPACER duration */
-      while(PJON_IO_READ(_input_pin) && (uint32_t)(micros() - time) <= SWBB_BIT_SPACER);
+      /* Do nothing until the pin goes LOW or passed more time than
+         SWBB_BIT_SPACER duration */
+      while(
+        PJON_IO_READ(_input_pin) &&
+        (uint32_t)(micros() - time) <= SWBB_BIT_SPACER
+      );
       /* Save how much time passed */
       time = micros() - time;
-      /* is for sure equal or less than SWBB_BIT_SPACER, and if is more than ACCEPTANCE
-         (a minimum HIGH duration) and what is coming after is a LOW bit
-         probably a byte is coming so try to receive it. */
+      /* is for sure equal or less than SWBB_BIT_SPACER, and if is more
+         than ACCEPTANCE (a minimum HIGH duration) and what is coming after is
+         a LOW bit probably a byte is coming so try to receive it. */
       if(time >= SWBB_ACCEPTANCE) {
         PJON_DELAY_MICROSECONDS((SWBB_BIT_WIDTH / 2) - SWBB_READ_DELAY);
         if(!PJON_IO_READ(_input_pin)) {

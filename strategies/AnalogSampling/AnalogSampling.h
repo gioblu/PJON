@@ -9,8 +9,9 @@
    of visible light LEDs connected to the A0 pin used as wireless transceivers
    infact, leveraging the duality of LEDs:
    - Ability to emit photons if electrons are travelling through the junction
-   - Ability to emit electrons if photons are hitting the junction (photo-electric effect)
-   it is possibile to use them as wireless (bidirectional) transceivers!
+   - Ability to emit electrons if photons are hitting the junction
+     (photo-electric effect) it is possibile to use them as
+     wireless (bidirectional) transceivers!
 
    The obtained range is related to:
    - Analog reference (voltage reading resolution)
@@ -59,7 +60,7 @@
 class AnalogSampling {
   public:
 
-    /* Returns the suggested delay related to the attempts passed as parameter: */
+    /* Returns the suggested delay related to attempts passed as parameter: */
 
     uint32_t back_off(uint8_t attempts) {
       uint32_t result = attempts;
@@ -108,7 +109,9 @@ class AnalogSampling {
       for(uint8_t i = 0; i < 10; i++) {
         time = PJON_MICROS();
         PJON_ANALOG_READ(_input_pin);
-        _analog_read_time = (_analog_read_time * 0.75) + ((uint32_t)(PJON_MICROS() - time) * 0.25);
+        _analog_read_time =
+          (_analog_read_time * 0.75) +
+          ((uint32_t)(PJON_MICROS() - time) * 0.25);
         // TODO - check for granularity
       }
     };
@@ -140,9 +143,16 @@ class AnalogSampling {
         PJON_DELAY_MICROSECONDS((AS_BIT_WIDTH / 2) - AS_READ_DELAY);
         bit_value = PJON_ANALOG_READ(_input_pin);
         byte_value += (bit_value > threshold) << i;
-        high_bit = (((bit_value > threshold) ? bit_value : high_bit) + high_bit) / 2;
-        low_bit  = (((bit_value < threshold) ? bit_value : low_bit) + low_bit) / 2;
-        PJON_DELAY_MICROSECONDS(AS_BIT_WIDTH - (uint32_t)(PJON_MICROS() - time));
+
+        high_bit =
+          (((bit_value > threshold) ? bit_value : high_bit) + high_bit) / 2;
+
+        low_bit  =
+          (((bit_value < threshold) ? bit_value : low_bit) + low_bit) / 2;
+
+        PJON_DELAY_MICROSECONDS(
+          AS_BIT_WIDTH - (uint32_t)(PJON_MICROS() - time)
+        );
       }
       threshold = (high_bit + low_bit) / 2;
       _last_update = PJON_MICROS();
@@ -172,8 +182,10 @@ class AnalogSampling {
       uint32_t time = PJON_MICROS();
 
       if(
-        ((uint32_t)(PJON_MICROS() - _last_update) > AS_THRESHOLD_DECREASE_INTERVAL) &&
-        threshold
+        (
+          (uint32_t)(PJON_MICROS() - _last_update) >
+          AS_THRESHOLD_DECREASE_INTERVAL
+        ) && threshold
       ) {
         threshold *= 0.25;
         _last_update = PJON_MICROS();

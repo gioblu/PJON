@@ -14,6 +14,7 @@ struct PJON_crc8 {
     return crc;
   };
 
+
   static inline uint8_t compute(const uint8_t *input_byte, uint16_t length) {
     uint8_t crc = 0;
     for(uint16_t b = 0; b < length; b++)

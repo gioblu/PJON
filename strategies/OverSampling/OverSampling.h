@@ -1,5 +1,5 @@
 
-/* OverSampling 1 or 2 wires interrupts-less digital communication data link layer
+/* OverSampling 1 or 2 wires interrupts-less digital communication data-link
    used as a Strategy by the PJON framework (included in version v3.0)
    Compliant with the Padded jittering data link layer specification v0.1
    ____________________________________________________________________________
@@ -139,13 +139,15 @@ class OverSampling {
       unsigned long time = PJON_MICROS();
       /* Update pin value until the pin stops to be HIGH or passed more time than
          BIT_SPACER duration */
-      while(((uint32_t)(PJON_MICROS() - time) < OS_BIT_SPACER) && PJON_IO_READ(_input_pin))
-        value = (value * 0.999)  + (PJON_IO_READ(_input_pin) * 0.001);
+      while(
+        ((uint32_t)(PJON_MICROS() - time) < OS_BIT_SPACER) &&
+        PJON_IO_READ(_input_pin)
+      ) value = (value * 0.999) + (PJON_IO_READ(_input_pin) * 0.001);
       /* Save how much time passed */
       time = PJON_MICROS();
       /* If pin value is in average more than 0.5, is a 1, and if is more than
-         ACCEPTANCE (a minimum HIGH duration) and what is coming after is a LOW bit
-         probably a byte is coming so try to receive it. */
+         ACCEPTANCE (a minimum HIGH duration) and what is coming after is a LOW
+         bit probably a byte is coming so try to receive it. */
       if(value > 0.5) {
         value = 0.5;
         while((uint32_t)(PJON_MICROS() - time) < OS_BIT_WIDTH)

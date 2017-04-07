@@ -4,7 +4,8 @@
    Compliant with the PJON protocol layer specification v0.3
    _____________________________________________________________________________
 
-    EthernetTCP strategy and EthernetLink proposed and developed by Fred Larsen 02/10/2016
+    EthernetTCP strategy and EthernetLink proposed and developed by Fred Larsen
+    02/10/2016
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -28,20 +29,30 @@ class EthernetTCP {
     EthernetLink link;
     uint16_t last_send_result = PJON_FAIL;
 
-    /* Caching of incoming packet to make it possible to deliver it byte for byte */
+    /* Caching incoming packet to enable byte for byte delivery */
 
     uint8_t *incoming_packet_buf_ptr = NULL;
     uint16_t current_buffer_size = 0;
     uint16_t incoming_packet_size = 0;
-    static void static_receiver(uint8_t id, const uint8_t *payload, uint16_t length, void *callback_object) {
-      if (callback_object) ((EthernetTCP*)callback_object)->receiver(id, payload, length);
-    }
+
+    static void static_receiver(
+      uint8_t id,
+      const uint8_t *payload,
+      uint16_t length,
+      void *callback_object
+    ) {
+      if(callback_object)
+        ((EthernetTCP*)callback_object)->receiver(id, payload, length);
+    };
+
+
     void receiver(uint8_t id, const uint8_t *payload, uint16_t length) {
-      if (length <= current_buffer_size && incoming_packet_buf_ptr != NULL) {
+      if(length <= current_buffer_size && incoming_packet_buf_ptr != NULL) {
         memcpy(incoming_packet_buf_ptr, payload, length);
         incoming_packet_size = length;
       }
-    }
+    };
+
 
     EthernetTCP() {
       link.set_receiver(static_receiver, this);
@@ -117,7 +128,8 @@ class EthernetTCP {
     /* Send a string: */
 
     void send_string(uint8_t *string, uint16_t length) {
-      if (length > 0)
-        last_send_result = link.send((uint8_t)string[0], (const char*)string, length);
+      if(length > 0)
+        last_send_result =
+          link.send((uint8_t)string[0], (const char*)string, length);
     };
 };

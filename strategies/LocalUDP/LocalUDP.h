@@ -1,6 +1,6 @@
 
 /* LocalUDP is a Strategy for the PJON framework (included in version v5.2)
-   It supports delivering PJON packets over Ethernet UDP on the local network (LAN).
+   It supports delivering PJON packets over Ethernet UDP on local network (LAN).
    Compliant with the PJON protocol layer specification v0.3
    _____________________________________________________________________________
 

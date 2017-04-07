@@ -247,6 +247,7 @@ private:
 
   bool _keep_connection = false;
   // Keep sockets permanently open instead of reconnecting for each transfer
+
   bool _single_socket = false;
   // Do bidirectional transfer on a single socket
 
@@ -257,28 +258,54 @@ private:
       memset(_remote_ip[i], 0, 4);
       _remote_port[i] = 0;
     }
-  }
+  };
+
 
   int16_t find_remote_node(uint8_t id) {
-    for(uint8_t i = 0; i < ETCP_MAX_REMOTE_NODES; i++) if(_remote_id[i] == id) return i;
+    for(uint8_t i = 0; i < ETCP_MAX_REMOTE_NODES; i++)
+      if(_remote_id[i] == id)
+        return i;
     return -1;
-  }
+  };
 
-  int16_t read_bytes(EthernetClient &client, uint8_t *contents, uint16_t length) {
+
+  int16_t read_bytes(
+    EthernetClient &client,
+    uint8_t *contents,
+    uint16_t length
+  ) {
     uint16_t total_bytes_read = 0, bytes_read;
     uint32_t start_ms = millis();
     int16_t avail;
-    // NOTE: The recv/read functions return -1 if no data waiting, and 0 if socket closed!
+    /* NOTE: The recv/read functions returns
+       -1 if no data waiting
+        0 if socket closed */
     do {
-      while((avail = client.available()) <= 0 && client.connected() && (uint32_t)(millis() - start_ms) < 10000) ;
-      bytes_read = client.read(&contents[total_bytes_read], constrain(avail, 0, length - total_bytes_read));
-      if (bytes_read > 0) total_bytes_read += bytes_read;
-    } while(bytes_read != ETCP_ERROR_READ && total_bytes_read < length && millis() - start_ms < 10000);
-    if (bytes_read == ETCP_ERROR_READ) stop(client); // Lost connection
+      while(
+        (avail = client.available()) <= 0 &&
+        client.connected() &&
+        (uint32_t)(millis() - start_ms) < 10000
+      );
+
+      bytes_read = client.read(
+        &contents[total_bytes_read],
+        constrain(avail, 0, length - total_bytes_read)
+      );
+
+      if(bytes_read > 0)
+        total_bytes_read += bytes_read;
+    } while(
+      bytes_read != ETCP_ERROR_READ &&
+      total_bytes_read < length &&
+      (uint32_t)(millis() - start_ms) < 10000
+    );
+    if(bytes_read == ETCP_ERROR_READ) stop(client); // Lost connection
     return total_bytes_read;
-  }
+  };
+
 
   // Read a package from a connected client (incoming or outgoing) and send ACK
+
   uint16_t receive(EthernetClient &client) {
     int16_t return_value = PJON_FAIL;
     if(client.available() > 0) {
@@ -304,7 +331,7 @@ private:
         else {
           memcpy(&sender_id, buf, 1);
           memcpy(&content_length, &buf[1], 4);
-          if (content_length == 0) ok = 0;
+          if(content_length == 0) ok = 0;
         }
       }
 
@@ -332,20 +359,22 @@ private:
       int8_t acklen = 0;
       if(ok) {
         acklen = client.write((byte*) &return_value, 2);
-        if (acklen == 2) client.flush();
+        if(acklen == 2) client.flush();
       }
 
       #ifdef ETCP_DEBUG_PRINT
         Serial.print("Sent ");
-        Serial.print(ok ? "PJON_ACK: " : "PJON_NAK: "); 
+        Serial.print(ok ? "PJON_ACK: " : "PJON_NAK: ");
         Serial.println(acklen);
       #endif
 
       // Call receiver callback function
-      if(ok && content_length > 0) _receiver(sender_id, buf, content_length, _callback_object);
+      if(ok && content_length > 0)
+        _receiver(sender_id, buf, content_length, _callback_object);
     }
     return return_value;
-  }
+  };
+
 
   bool connect(uint8_t id) {
     // Locate the node's IP address and port number
@@ -357,7 +386,8 @@ private:
 
     // Break existing connection if not connected to the wanted server
     bool connected = _client_out.connected();
-    if (connected && _current_device != id) { // Connected, but to the wrong device
+    if(connected && _current_device != id) {
+      // Connected, but to the wrong device
       #ifdef ETCP_DEBUG_PRINT
         //if(_keep_connection && _current_device != -1)
         Serial.println("Switch conn to another srv");
@@ -386,9 +416,14 @@ private:
     }
 
     return connected;
-  }
+  };
 
-  void stop(EthernetClient &client) { client.stop(); }
+
+  void stop(EthernetClient &client) {
+    client.stop();
+  };
+
+
   bool accept() {
     // Accept new incoming connection if connection has been lost
     bool connected = _client_in.connected();
@@ -401,29 +436,37 @@ private:
       #endif
     }
     return connected;
-  }
+  };
+
 
   void disconnect_out_if_needed(int16_t result) {
-    if (result != PJON_ACK || !_keep_connection) {
+    if(result != PJON_ACK || !_keep_connection) {
       stop(_client_out);
       #ifdef ETCP_DEBUG_PRINT
         Serial.print("Disconn outcl. OK=");
         Serial.println(result == PJON_ACK);
       #endif
     }
-  }
+  };
+
 
   bool disconnect_in_if_needed() {
     bool connected = _client_in.connected();
     if(!_keep_connection || !connected) {
       #ifdef ETCP_DEBUG_PRINT
-        if (connected) Serial.println("Disc. inclient.");
+        if(connected) Serial.println("Disc. inclient.");
       #endif
       stop(_client_in);
     }
-  }
+  };
 
-  uint16_t send(EthernetClient &client, uint8_t id, const char *packet, uint16_t length) {
+
+  uint16_t send(
+    EthernetClient &client,
+    uint8_t id,
+    const char *packet,
+    uint16_t length
+  ) {
     // Assume we are connected. Try to deliver the package
     uint32_t head = ETCP_HEADER, foot = ETCP_FOOTER, len = length;
     byte buf[9];
@@ -431,25 +474,26 @@ private:
     memcpy(&buf[4], &id, 1);
     memcpy(&buf[5], &len, 4);
     bool ok = client.write(buf, 9) == 9;
-    if (ok) ok = client.write((byte*) packet, length) == length;
-    if (ok) ok = client.write((byte*) &foot, 4) == 4;
-    if (ok) client.flush();
+    if(ok) ok = client.write((byte*) packet, length) == length;
+    if(ok) ok = client.write((byte*) &foot, 4) == 4;
+    if(ok) client.flush();
 
     #ifdef ETCP_DEBUG_PRINT
       Serial.print("Write stat: ");
       Serial.println(ok);
     #endif
 
-    // If the other side is sending as well, we need to allow it to be read and ACKed,
-    // otherwise we have a deadlock where both are waiting for ACK and will time out unsuccessfully.
-    if (!_single_socket && _server) receive();
+    /* If the other side is sending as well, we need to allow it to be read and
+       acknowledged, otherwise we have a deadlock where both are waiting for ACK
+       and will time out unsuccessfully */
+    if(!_single_socket && _server) receive();
 
     // Read ACK
     int16_t result = PJON_FAIL;
-    if (ok) {
+    if(ok) {
       uint16_t code = 0;
       ok = read_bytes(client, (byte*) &code, 2) == 2;
-      if (ok && (code == PJON_ACK || code == PJON_NAK)) result = code;
+      if(ok && (code == PJON_ACK || code == PJON_NAK)) result = code;
     }
 
     #ifdef ETCP_DEBUG_PRINT
@@ -458,24 +502,35 @@ private:
     #endif
 
     return result;  // PJON_FAIL, PJON_ACK or PJON_NAK
-  }
+  };
 
-  // Do bidirectional transfer of packets over a single socket connection by using a master-slave mode
-// where the master connects and delivers packets or a placeholder, then reads packets or placeholder back
-// before closing the connection (unless letting it stay open).
-  uint16_t single_socket_transfer(EthernetClient &client, int16_t id, bool master, const char *contents, uint16_t length) {
+
+  /* Do bidirectional transfer of packets over a single socket connection by
+     using a master-slave mode where the master connects and delivers packets
+     or a placeholder, then reads packets or placeholder back before closing
+     the connection (unless letting it stay open). */
+
+  uint16_t single_socket_transfer(
+    EthernetClient &client,
+    int16_t id,
+    bool master,
+    const char *contents,
+    uint16_t length
+  ) {
     #ifndef NO_SINGLE_SOCKET
     #ifdef ETCP_DEBUG_PRINT
-  //    Serial.print("Single-socket transfer, id="); Serial.print(id);
-  //    Serial.print(", master="); Serial.println(master);
+      // Serial.print("Single-socket transfer, id=");
+      // Serial.print(id);
+      // Serial.print(", master=");
+      // Serial.println(master);
     #endif
-    if (master) { // Creating outgoing connections
+    if(master) { // Creating outgoing connections
       // Connect or check that we are already connected to the correct server
       bool connected = id == -1 ? _client_out.connected() : connect(id);
       #ifdef ETCP_DEBUG_PRINT
         Serial.println(connected ? "Out conn" : "No out conn");
       #endif
-      if (!connected) return PJON_FAIL;
+      if(!connected) return PJON_FAIL;
 
       // Send singlesocket header and number of outgoing packets
       bool ok = true;
@@ -484,11 +539,11 @@ private:
       char buf[5];
       memcpy(buf, &head, 4);
       memcpy(&buf[4], &numpackets_out, 1);
-      if (ok) ok = client.write((byte*) &buf, 5) == 5;
-      if (ok) client.flush();
+      if(ok) ok = client.write((byte*) &buf, 5) == 5;
+      if(ok) client.flush();
 
       // Send the packet and read PJON_ACK
-      if (ok && numpackets_out > 0) {
+      if(ok && numpackets_out > 0) {
          ok = send(client, id, contents, length) == PJON_ACK;
          #ifdef ETCP_DEBUG_PRINT
            Serial.print("Sent p, ok=");
@@ -516,8 +571,8 @@ private:
 
       // Write singlesocket footer ("PJON_ACK" for the whole thing)
       uint32_t foot = ETCP_SINGLE_SOCKET_FOOTER;
-      if (ok) ok = client.write((byte*) &foot, 4) == 4;
-      if (ok) client.flush();
+      if(ok) ok = client.write((byte*) &foot, 4) == 4;
+      if(ok) client.flush();
       #ifdef ETCP_DEBUG_PRINT
         Serial.print("Sent ss foot, ok=");
         Serial.println(ok);
@@ -531,9 +586,9 @@ private:
       // Wait for and accept connection
       bool connected = accept();
       #ifdef ETCP_DEBUG_PRINT
-  //      Serial.println(connected ? "In conn" : "No in conn");
+        // Serial.println(connected ? "In conn" : "No in conn");
       #endif
-      if (!connected) return PJON_FAIL;
+      if(!connected) return PJON_FAIL;
 
       // Read singlesocket header
       bool ok = read_until_header(client, ETCP_SINGLE_SOCKET_HEADER);
@@ -592,27 +647,47 @@ private:
     }
     #endif
     return PJON_FAIL;
-  }
+  };
 
-  // Read until a specific 4 byte value is found. This will resync if stream position is lost.
+
+  /* Read until a specific 4 byte value is found.
+     This will resync if stream position is lost. */
+
   bool read_until_header(EthernetClient &client, uint32_t header) {
     uint32_t head = 0;
     int8_t bytes_read = 0;
     bytes_read = read_bytes(client, (byte*) &head, 4);
-    if(bytes_read != 4 || head != header) { // Did not get header. Lost position in stream?
-      do { // Try to resync if we lost position in the stream (throw avay all until ETCP_HEADER found)
-        head = head >> 8; // Make space for 8 bits to be read into the most significant byte
+    if(bytes_read != 4 || head != header) {
+      // Did not get header. Lost position in stream?
+      do { /* Try to resync if we lost position in the stream
+              (throw avay all until ETCP_HEADER found) */
+        head = head >> 8;
+        // Make space for 8 bits to be read into the most significant byte
         bytes_read = read_bytes(client, &((byte*) &head)[3], 1);
         if(bytes_read != 1) break;
       } while(head != header);
     }
     return head == header;
-  }
-public:
-  EthernetLink() { init(); };
-  EthernetLink(uint8_t id) { init(); set_id(id); };
+  };
 
-  int16_t add_node(uint8_t remote_id, const uint8_t remote_ip[], uint16_t port_number = ETCP_DEFAULT_PORT) {
+public:
+
+  EthernetLink() {
+    init();
+  };
+
+
+  EthernetLink(uint8_t id) {
+    init();
+    set_id(id);
+  };
+
+
+  int16_t add_node(
+    uint8_t remote_id,
+    const uint8_t remote_ip[],
+    uint16_t port_number = ETCP_DEFAULT_PORT
+  ) {
     // Find free slot
     int16_t remote_id_index = find_remote_node(0);
     if(remote_id_index < 0) return remote_id_index; // All slots taken
@@ -621,9 +696,11 @@ public:
     _remote_port[remote_id_index] = port_number;
     _remote_node_count++;
     return remote_id_index;
-  }
+  };
 
-  void start_listening(uint16_t port_number = ETCP_DEFAULT_PORT) { // Do not call for single_socket initiator
+
+  void start_listening(uint16_t port_number = ETCP_DEFAULT_PORT) {
+    // Do not call for single_socket initiator
     if(_server != NULL) return; // Already started
 
     #ifdef ETCP_DEBUG_PRINT
@@ -632,55 +709,87 @@ public:
     #endif
     _server = new EthernetServer(port_number);
     _server->begin();
-  }
+  };
 
-  // Whether to keep outgoing connection live until we need connect to another EthernetLink node
-  void keep_connection(bool keep) { _keep_connection = keep; };
 
-  // Whether to do bidirectional data transfer on a single socket or use one socket for each direction.
-  // Single socket transfer is slower but more firewall-friendly. Client connects to server, and packets are
-  // exchanged in both directions on the same socket. If using this, _only one_ of the sides should call
-  // start_listening, and that side will be receiver with the other initiator (establishing connections)
-  void single_socket(bool single_socket) { _single_socket = single_socket; }
+  /* Whether to keep outgoing connection live until we need connect to
+     another EthernetLink node */
+
+  void keep_connection(bool keep) {
+    _keep_connection = keep;
+  };
+
+
+  /* Whether to do bidirectional data transfer on a single socket or use one
+     socket for each direction. Single socket transfer is slower but more
+     firewall-friendly. Client connects to server, and packets are exchanged in
+     both directions on the same socket. If using this, _only one_ of the sides
+     should call start_listening, and that side will be receiver with the other
+     initiator (establishing connections) */
+
+  void single_socket(bool single_socket) {
+    _single_socket = single_socket;
+  };
+
 
   // Keep trying to send for a maximum duration
-  int16_t send_with_duration(uint8_t id, const char *packet, uint16_t length, uint32_t duration_us) {
+
+  int16_t send_with_duration(
+    uint8_t id,
+    const char *packet,
+    uint16_t length,
+    uint32_t duration_us
+  ) {
    uint32_t start = PJON_MICROS();
     int16_t result = PJON_FAIL;
     do {
       result = send(id, packet, length);
-    } while(result != PJON_ACK && (uint32_t)(PJON_MICROS() - start) <= duration_us);
+    } while(
+      result != PJON_ACK &&
+      (uint32_t)(PJON_MICROS() - start) <= duration_us
+    );
     return result;
-  }
+  };
 
-  // In single-socket mode and acting as initiator, connect and check for incoming packets from a specific device
+
+  /* In single-socket mode and acting as initiator, connect and check for
+     incoming packets from a specific device */
+
   uint16_t poll_receive(uint8_t remote_id) {
-    // Create connection if needed but only poll for incoming packet without delivering any
+    /* Create connection if needed but only poll for incoming packet
+       without delivering any */
     if(_single_socket) {
-      if(!_server) return single_socket_transfer(_client_out, remote_id, true, NULL, 0);
+      if(!_server)
+        return single_socket_transfer(_client_out, remote_id, true, NULL, 0);
     } else { // Just do an ordinary receive without using the id
       return receive();
     }
     return PJON_FAIL;
-  }
-
-  uint8_t get_id() const { return _local_id; }
+  };
 
 
-  //**************** Overridden functions below *******************
+  uint8_t get_id() const {
+    return _local_id;
+  };
+
+
+  // Overridden functions below -----------------------------------------------
 
   // Connect to a server if needed, then read incoming package and send ACK
+
   uint16_t receive() {
     if(_server == NULL) { // Not listening for incoming connections
       if(_single_socket) { // Single-socket mode.
-        // Only read from already established outgoing socket, or create connection if there is only one
-        // remote node configured (no doubt about which node to connect to).
+        /* Only read from already established outgoing socket, or create
+        connection if there is only one remote node configured (no doubt about
+        which node to connect to). */
         int16_t remote_id = _remote_node_count == 1 ? _remote_id[0] : -1;
         return single_socket_transfer(_client_out, remote_id, true, NULL, 0);
       }
     } else {
       // Accept new incoming connection if connection has been lost
-      if(_single_socket) return single_socket_transfer(_client_in, -1, false, NULL, 0);
+      if(_single_socket)
+        return single_socket_transfer(_client_in, -1, false, NULL, 0);
       else {
         // Accept incoming connected and receive a single incoming packet
         if(!accept()) return PJON_FAIL;
@@ -690,21 +799,37 @@ public:
       }
     }
     return PJON_FAIL;
-  }
+  };
+
 
   uint16_t receive(uint32_t duration_us) {
     uint32_t start = PJON_MICROS();
     int16_t result = PJON_FAIL;
     do {
       result = receive();
-    } while(result != PJON_ACK && (uint32_t)(PJON_MICROS() - start) <= duration_us);
+    } while(
+      result != PJON_ACK &&
+      (uint32_t)(PJON_MICROS() - start) <= duration_us
+    );
     return result;
-  }
+  };
 
-  uint16_t send(uint8_t id, const char *packet, uint16_t length, uint32_t timing_us = 0) {
+
+  uint16_t send(
+    uint8_t id,
+    const char *packet,
+    uint16_t length,
+    uint32_t timing_us = 0
+  ) {
     // Special algorithm for single-socket transfers
     if(_single_socket)
-      return single_socket_transfer(_server ? _client_in : _client_out, id, _server ? false : true, packet, length);
+      return single_socket_transfer(
+        _server ? _client_in : _client_out,
+        id,
+        _server ? false : true,
+        packet,
+        length
+      );
 
     // Connect or check that we are already connected to the correct server
     bool connected = connect(id);
@@ -717,20 +842,35 @@ public:
     disconnect_out_if_needed(result);
 
     return result;
-  }
+  };
 
-  uint8_t device_id() { return _local_id; };
 
-  uint8_t acquire_id() { return 0; }; // Not supported yet
+  uint8_t device_id() {
+    return _local_id;
+  };
 
-  void set_error(link_error e) { _error = e; };
 
-  void set_id(uint8_t id) { _local_id = id; };
+  uint8_t acquire_id() { // Not supported yet
+    return 0;
+  };
+
+
+  void set_error(link_error e) {
+    _error = e;
+  };
+
+
+  void set_id(uint8_t id) {
+    _local_id = id;
+  };
+
 
   void set_receiver(link_receiver r, void *callback_object) {
     _receiver = r;
     _callback_object = callback_object;
   };
 
+
   void update() { };
+
 };

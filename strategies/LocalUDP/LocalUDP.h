@@ -28,16 +28,6 @@
 #define LUDP_RESPONSE_TIMEOUT  (uint32_t) 20000
 #define LUDP_MAGIC_HEADER            0x0DFAC3D0
 
-/* Maximum transmission attempts */
-#ifndef LUDP_MAX_ATTEMPTS
-  #define LUDP_MAX_ATTEMPTS                   1
-#endif
-
-/* Back-off exponential degree */
-#ifndef LUDP_BACK_OFF_DEGREE
-  #define LUDP_BACK_OFF_DEGREE                3
-#endif
-
 class LocalUDP {
     bool _udp_initialized = false;
     uint16_t _port = LUDP_DEFAULT_PORT;
@@ -60,10 +50,7 @@ public:
     /* Returns the suggested delay related to the attempts passed as parameter: */
 
     uint32_t back_off(uint8_t attempts) {
-      uint32_t result = attempts;
-      for(uint8_t d = 0; d < LUDP_BACK_OFF_DEGREE; d++)
-        result *= (uint32_t)(attempts);
-      return result;
+      return 1;
     };
 
 
@@ -80,7 +67,7 @@ public:
 
     /* Returns the maximum number of attempts for each transmission: */
 
-    static uint8_t get_max_attempts() { return LUDP_MAX_ATTEMPTS; };
+    static uint8_t get_max_attempts() { return 1; };
 
 
     /* Handle a collision (empty because handled on Ethernet level): */

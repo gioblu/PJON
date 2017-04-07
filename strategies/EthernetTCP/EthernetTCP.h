@@ -23,16 +23,6 @@
 #include "EthernetLink.h"
 #include <PJONDefines.h>
 
-/* Maximum transmission attempts */
-#ifndef ETCP_MAX_ATTEMPTS
-  #define ETCP_MAX_ATTEMPTS   1
-#endif
-
-/* Back-off exponential degree */
-#ifndef ETCP_BACK_OFF_DEGREE
-  #define ETCP_BACK_OFF_DEGREE 4
-#endif
-
 class EthernetTCP {
   public:
     EthernetLink link;
@@ -61,10 +51,7 @@ class EthernetTCP {
     /* Returns the suggested delay related to the attempts passed as parameter: */
 
     uint32_t back_off(uint8_t attempts) {
-      uint32_t result = attempts;
-      for(uint8_t d = 0; d < ETCP_BACK_OFF_DEGREE; d++)
-        result *= (uint32_t)(attempts);
-      return result;
+      return 1;
     };
 
 
@@ -86,7 +73,7 @@ class EthernetTCP {
     /* Returns the maximum number of attempts for each transmission: */
 
     static uint8_t get_max_attempts() {
-      return ETCP_MAX_ATTEMPTS;
+      return 1;
     };
 
 
@@ -103,16 +90,16 @@ class EthernetTCP {
       current_buffer_size = max_length;
       incoming_packet_size = 0;
 
-      // Receive a packet  
+      // Receive a packet
       uint16_t result = link.receive();
-      
+
       // Forget about buffer and return result size
       uint16_t received_packet_size = incoming_packet_size;
       incoming_packet_buf_ptr = NULL;
-      incoming_packet_size = 0;      
+      incoming_packet_size = 0;
       return result == PJON_ACK ? received_packet_size : PJON_FAIL;
-    }    
-    
+    }
+
 
     /* Receive byte response */
 

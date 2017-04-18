@@ -39,7 +39,7 @@ Every byte is prepended with 2 synchronization padding bits and transmission occ
 ```
 Padding bits are adding a certain overhead to information but are reducing the need of precise timing because synchronization is renewed every byte. All the first padding bit duration minus `SWBB_ACCEPTANCE` is the synchronization window the receiver has for every incoming byte. If the length of the first padding bit is less than `SWBB_ACCEPTANCE` the received signal is considered interference.
 
-####Packet transmission
+#### Packet transmission
 Before a packet transmission, the medium is analyzed to detect ongoing communication and avoid collision. Thanks to the presence of padding bits, also a packet composed by 100 bytes, all with a decimal value of 0, can be transmitted safely without risk of third-party collision.   
 ```cpp  
  ________________ _________________ ________________ ________________ __________________

@@ -33,6 +33,8 @@ class ThroughSerial {
       int16_t serial = 0;
     #elif defined(ARDUINO)
       Stream *serial = NULL;
+    #elif defined(WINX86)
+      Serial *serial = NULL;
     #endif
     /* Returns the suggested delay related to the attempts passed as parameter: */
 
@@ -150,6 +152,8 @@ class ThroughSerial {
     void set_serial(int16_t serial_port) {
   #elif defined(ARDUINO)
     void set_serial(Stream *serial_port) {
+  #elif defined(WINX86)
+    void set_serial(Serial *serial_port) {
   #endif
       serial = serial_port;
     };

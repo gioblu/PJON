@@ -18,160 +18,132 @@ using namespace std;
 #include "Serial.h"
 #include <sstream>
 
-Serial::Serial(tstring &commPortName, int bitRate, bool testOnStartup, bool cycleDtrOnStartup)
-{
-	commHandle = CreateFile(commPortName.c_str(), GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING,
-		0, NULL);
 
-	if (commHandle == INVALID_HANDLE_VALUE)
-	{
-		throw("ERROR: Could not open com port");
-	}
-	else
-	{
-		// set timeouts
-		COMMTIMEOUTS timeouts;
+Serial::Serial(tstring &commPortName, int bitRate, bool testOnStartup, bool cycleDtrOnStartup) {
+  commHandle =
+    CreateFile(
+      commPortName.c_str(),
+      GENERIC_READ | GENERIC_WRITE,
+      0,
+      NULL,
+      OPEN_EXISTING,
+      0,
+      NULL
+    );
 
-		/*
-		// blocking
-		timeouts.ReadIntervalTimeout = MAXDWORD;
-		timeouts.ReadTotalTimeoutConstant = 0;
-		timeouts.ReadTotalTimeoutMultiplier = 0;
-		*/
+  if(commHandle == INVALID_HANDLE_VALUE)
+    throw("ERROR: Could not open com port");
+  else {
+    // set timeouts
+    COMMTIMEOUTS timeouts;
 
-		/*
-		// non-blocking
-		timeouts = { MAXDWORD, 0, 0, 0, 0};
-		*/
+    /* Blocking:
+        timeouts.ReadIntervalTimeout = MAXDWORD;
+        timeouts.ReadTotalTimeoutConstant = 0;
+        timeouts.ReadTotalTimeoutMultiplier = 0;
+       Non-blocking:
+        timeouts = { MAXDWORD, 0, 0, 0, 0}; */
 
-		// non-blocking with short timeouts
-		timeouts.ReadIntervalTimeout = 1;
-		timeouts.ReadTotalTimeoutMultiplier = 1;
-		timeouts.ReadTotalTimeoutConstant = 1;
-		timeouts.WriteTotalTimeoutMultiplier = 1;
-		timeouts.WriteTotalTimeoutConstant = 1;
+    // Non-blocking with short timeouts
+    timeouts.ReadIntervalTimeout = 1;
+    timeouts.ReadTotalTimeoutMultiplier = 1;
+    timeouts.ReadTotalTimeoutConstant = 1;
+    timeouts.WriteTotalTimeoutMultiplier = 1;
+    timeouts.WriteTotalTimeoutConstant = 1;
 
-		DCB dcb;
-		if (!SetCommTimeouts(commHandle, &timeouts))
-		{
-			Serial::~Serial();
-			throw("ERROR: Could not set com port time-outs");
-		}
-
-		// set DCB; disabling harware flow control; setting 1N8 mode
-		memset(&dcb, 0, sizeof(dcb));
-		dcb.DCBlength = sizeof(dcb);
-		dcb.BaudRate = bitRate;
-		dcb.fBinary = 1;
-		dcb.fDtrControl = DTR_CONTROL_DISABLE;
-		dcb.fRtsControl = RTS_CONTROL_DISABLE;
-
-		dcb.Parity = NOPARITY;
-		dcb.StopBits = ONESTOPBIT;
-		dcb.ByteSize = 8;
-
-		if (!SetCommState(commHandle, &dcb))
-		{
-			Serial::~Serial();
-			throw("ERROR: Could not set com port parameters");
-		}
-	}
-
-	if (cycleDtrOnStartup) {
-		if (!EscapeCommFunction(commHandle, CLRDTR))
-			throw("ERROR: clearing DTR");
-		Sleep(200);
-		if (!EscapeCommFunction(commHandle, SETDTR))
-			throw("ERROR: setting DTR");
+    DCB dcb;
+    if(!SetCommTimeouts(commHandle, &timeouts)) {
+      Serial::~Serial();
+      throw("ERROR: Could not set com port time-outs");
     }
 
-	if (testOnStartup) {
-		DWORD numWritten;
-		char init[] = "PJON-python init";
+    // set DCB; disabling harware flow control; setting 1N8 mode
+    memset(&dcb, 0, sizeof(dcb));
+    dcb.DCBlength = sizeof(dcb);
+    dcb.BaudRate = bitRate;
+    dcb.fBinary = 1;
+    dcb.fDtrControl = DTR_CONTROL_DISABLE;
+    dcb.fRtsControl = RTS_CONTROL_DISABLE;
+    dcb.Parity = NOPARITY;
+    dcb.StopBits = ONESTOPBIT;
+    dcb.ByteSize = 8;
 
-		if (!WriteFile(commHandle, init, sizeof(init), &numWritten, NULL))
-			throw("writing initial data to port failed");
+    if(!SetCommState(commHandle, &dcb)) {
+      Serial::~Serial();
+      throw("ERROR: Could not set com port parameters");
+    }
+  }
 
-		if (numWritten != sizeof(init))
-			throw("ERROR: not all test data written to port");
-	}
-}
+  if(cycleDtrOnStartup) {
+    if(!EscapeCommFunction(commHandle, CLRDTR))
+      throw("ERROR: clearing DTR");
+    Sleep(200);
+    if(!EscapeCommFunction(commHandle, SETDTR))
+      throw("ERROR: setting DTR");
+  }
 
-Serial::~Serial()
-{
-	CloseHandle(commHandle);
-}
-
-int Serial::write(const char *buffer)
-{
-	DWORD numWritten;
-	WriteFile(commHandle, buffer, strlen(buffer), &numWritten, NULL); 
-
-	return numWritten;
-}
-
-int Serial::write(char *buffer, int buffLen)
-{
-	DWORD numWritten;
-
-	if (!WriteFile(commHandle, buffer, buffLen, &numWritten, NULL))
-		;// printf("serial port write failed\n");
-
-    return numWritten;
-}
-
-int Serial::putChar(char *buffer)
-{
-	return write(buffer, 1);
-}
-
-char Serial::getChar()
-{
-	char buff;
-	read(&buff, 1, false);
-
-	return buff;
-}
-
-int Serial::read(char *buffer, int buffLen, bool nullTerminate)
-{
-	DWORD numRead;
-	if(nullTerminate)
-	{
-		--buffLen;
-	}
-
-	BOOL ret = ReadFile(commHandle, buffer, buffLen, &numRead, NULL);
-
-	if(!ret)
-	{
-		return 0;
-	}
-
-	if(nullTerminate)
-	{
-		buffer[numRead] = '\0';
-	}
-
-	return numRead;
-}
+  if(testOnStartup) {
+    DWORD numWritten;
+    char init[] = "PJON-python init";
+    if(!WriteFile(commHandle, init, sizeof(init), &numWritten, NULL))
+      throw("writing initial data to port failed");
+    if(numWritten != sizeof(init))
+      throw("ERROR: not all test data written to port");
+  }
+};
 
 
-bool Serial::serialDataAvail()
-{
-	COMSTAT stats;
-	DWORD error;
-	
+Serial::~Serial() {
+  CloseHandle(commHandle);
+};
+
+
+int Serial::write(const char *buffer) {
+  DWORD numWritten;
+  WriteFile(commHandle, buffer, strlen(buffer), &numWritten, NULL);
+  return numWritten;
+};
+
+
+int Serial::write(char *buffer, int buffLen) {
+  DWORD numWritten;
+  WriteFile(commHandle, buffer, buffLen, &numWritten, NULL);
+  return numWritten;
+};
+
+
+int Serial::putChar(char *buffer) {
+  return write(buffer, 1);
+};
+
+
+char Serial::getChar() {
+  char buff;
+  read(&buff, 1, false);
+  return buff;
+};
+
+
+int Serial::read(char *buffer, int buffLen, bool nullTerminate) {
+  DWORD numRead;
+  if(nullTerminate) --buffLen;
+  BOOL ret = ReadFile(commHandle, buffer, buffLen, &numRead, NULL);
+  if(!ret) return 0;
+  if(nullTerminate) buffer[numRead] = '\0';
+  return numRead;
+};
+
+
+bool Serial::serialDataAvail() {
+  COMSTAT stats;
+  DWORD error;
   ClearCommError(commHandle, &error, &stats);
-	
-	if (stats.cbInQue > 0) 
-    return true;
-	
-	return false;
-}
+  if(stats.cbInQue > 0) return true;
+  return false;
+};
 
-void Serial::flush()
-{
-	PurgeComm(commHandle, PURGE_RXCLEAR | PURGE_TXCLEAR);
-	return;
-}
+
+void Serial::flush() {
+  PurgeComm(commHandle, PURGE_RXCLEAR | PURGE_TXCLEAR);
+  return;
+};

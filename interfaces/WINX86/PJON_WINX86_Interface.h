@@ -35,50 +35,46 @@
   #define LSBFIRST 1
   #define MSBFIRST 2
 
-  void pinMode(byte pin, byte m) { ; }
+  void pinMode(byte pin, byte m) { ; };
 
-  void digitalWrite(byte, byte) { ; }
+  void digitalWrite(byte, byte) { ; };
 
-  int analogRead(int){
-  return 0;
-  }
+  int analogRead(int) {
+    return 0;
+  };
 
   auto start_ts = std::chrono::high_resolution_clock::now();
 
-  uint32_t micros()
-  {
-	  auto elapsed_usec = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start_ts).count();
-	
-	  if (elapsed_usec >= UINT32_MAX)
-	  {
-		  start_ts = std::chrono::high_resolution_clock::now();
-		  return 0;
-	  } 
-	  else {
-		  return elapsed_usec;
-	  }
-  }
+  uint32_t micros() {
+    auto elapsed_usec =
+      std::chrono::duration_cast<std::chrono::microseconds>(
+        std::chrono::high_resolution_clock::now() - start_ts
+      ).count();
 
-  void delayMicroseconds(uint32_t delay_value)
-  {
-	  auto begin_ts = std::chrono::high_resolution_clock::now();
+    if(elapsed_usec >= UINT32_MAX) {
+      start_ts = std::chrono::high_resolution_clock::now();
+      return 0;
+    } else return elapsed_usec;
+  };
 
-	  while (true) 
-	  {
-		  auto elapsed_usec = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - begin_ts).count();
-		
-		  if (elapsed_usec >= delay_value) 
-        break;
 
-		  std::this_thread::sleep_for(std::chrono::microseconds(1));
-	  }
-  }
+  void delayMicroseconds(uint32_t delay_value) {
+    auto begin_ts = std::chrono::high_resolution_clock::now();
+    while(true) {
+      auto elapsed_usec =
+        std::chrono::duration_cast<std::chrono::microseconds>(
+          std::chrono::high_resolution_clock::now() - begin_ts
+        ).count();
+      if(elapsed_usec >= delay_value) break;
+      std::this_thread::sleep_for(std::chrono::microseconds(1));
+    }
+  };
 
   #ifndef A0
     #define A0 0
   #endif
 
-  /* Fallback to WINDOWS-specific functions ------------------------------------ */
+  /* Fallback to WINDOWS-specific functions -------------------------------- */
 
   #if !defined(PJON_ANALOG_READ)
     #define PJON_ANALOG_READ(P) analogRead(P)

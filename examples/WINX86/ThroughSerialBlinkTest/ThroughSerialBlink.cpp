@@ -36,7 +36,7 @@ int main() {
   bool resetComOnStratup = false;
   bool testComOnStartup = false;
   tstring commPortName(TEXT("COM3"));
-  int bitRate = 115200;
+  int bitRate = 9600;
 
   try {
     printf("Opening serial... \n");

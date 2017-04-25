@@ -21,7 +21,7 @@ int main() {
   PJON<ThroughSerial> bus(45);
 
   printf("Opening serial... \n");
-  int s = serialOpen("/dev/ttyAMA0", 115200);
+  int s = serialOpen("/dev/ttyAMA0", 9600);
   if(s < 0) printf("Serial open fail!");
   if(wiringPiSetup() == -1) printf("WiringPi setup fail");
   printf("Setting serial... \n");

@@ -10,12 +10,14 @@ To correctly receive data on Raspberry Pi it may be necessary to disable the ser
 
 Be sure to include in your project directory the PJON library directory.
 
-Now it is necessary to compile `PJON/examples/RPI/ThroughSerialBlink.cpp` typing:
+Now it is necessary to compile `PJON/examples/RPI/ThroughSerialBlinkTest/ThroughSerialBlinkTest.cpp` reaching your project directory with the terminal and typing:
 
-`gcc PJON/examples/RPI/ThroughSerialBlink.cpp -o compiled_program -std=c++11 -lwiringPi`
+`gcc PJON/examples/RPI/ThroughSerialBlinkTest/ThroughSerialBlinkTest.cpp -o compiled_program -std=c++11 -lwiringPi`
 
 You should see a new file called `compiled_program`.
 
 Typing `sudo ./compiled_program` the program is executed and some logging info should appear.
 
-Now program the receiving Arduino compatible device, using `PJON/examples/ARDUINO/ThroughSerialBlink.cpp`, the Arduino should blink as soon as you type `sudo ./compiled_program` and hit enter.
+Now program the receiving Arduino compatible device, using `PJON/examples/ARDUINO/local/ThroughSerialBlinkTest/Receiver.ino` [sketch](../../ARDUINO/local/ThroughSerialBlinkTest/Receiver.ino) and the Arduino IDE.
+
+The Arduino should blink as soon as you type `sudo ./compiled_program` and hit enter.

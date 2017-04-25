@@ -29,10 +29,10 @@
 
 class ThroughSerial {
   public:
-    #if defined(RPI)
-      int16_t serial = 0;
-    #elif defined(ARDUINO)
+    #if defined(ARDUINO)
       Stream *serial = NULL;
+    #elif defined(RPI)
+      int16_t serial = 0;
     #elif defined(WINX86)
       Serial *serial = NULL;
     #endif
@@ -148,10 +148,11 @@ class ThroughSerial {
 
 
     /* Pass the Serial port where you want to operate with */
-  #if defined(RPI)
-    void set_serial(int16_t serial_port) {
-  #elif defined(ARDUINO)
+
+  #if defined(ARDUINO)
     void set_serial(Stream *serial_port) {
+  #elif defined(RPI)
+    void set_serial(int16_t serial_port) {
   #elif defined(WINX86)
     void set_serial(Serial *serial_port) {
   #endif

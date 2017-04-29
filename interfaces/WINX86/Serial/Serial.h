@@ -17,70 +17,73 @@
 
 #pragma once
 
-#include <string>
-#include <windows.h>
+#if defined(WINX86)
+  #include <string>
+  #include <windows.h>
 
-typedef std::basic_string<TCHAR> tstring;
+  typedef std::basic_string<TCHAR> tstring;
 
-class Serial {
+  class Serial {
 
-private:
-  HANDLE commHandle;
+  private:
+    HANDLE commHandle;
 
-public:
-  Serial(
-    tstring &commPortName,
-    int bitRate = 115200,
-    bool testOnStartup = false,
-    bool cycleDtrOnStartup = false
-  );
+  public:
+    Serial(
+      tstring &commPortName,
+      int bitRate = 115200,
+      bool testOnStartup = false,
+      bool cycleDtrOnStartup = false
+    );
 
-  virtual ~Serial();
+    virtual ~Serial();
 
-  /** Writes a NULL terminated string.
-   *
-   * @param buffer the string to send
-   *
-   * @return int the number of characters written
-   */
-  int write(const char buffer[]);
+    /** Writes a NULL terminated string.
+     *
+     * @param buffer the string to send
+     *
+     * @return int the number of characters written
+     */
+    int write(const char buffer[]);
 
-  /** Writes a string of bytes to the serial port.
-   *
-   * @param buffer pointer to the buffer containing the bytes
-   * @param buffLen the number of bytes in the buffer
-   *
-   * @return int the number of bytes written
-   */
-  int write(char *buffer, int buffLen);
+    /** Writes a string of bytes to the serial port.
+     *
+     * @param buffer pointer to the buffer containing the bytes
+     * @param buffLen the number of bytes in the buffer
+     *
+     * @return int the number of bytes written
+     */
+    int write(char *buffer, int buffLen);
 
-  /** Reads a string of bytes from the serial port.
-   *
-   * @param buffer pointer to the buffer to be written to
-   * @param buffLen the size of the buffer
-   * @param nullTerminate if set to true it will null terminate the string
-   *
-   * @return int the number of bytes read
-   */
-  int read(char *buffer, int buffLen, bool nullTerminate = true);
+    /** Reads a string of bytes from the serial port.
+     *
+     * @param buffer pointer to the buffer to be written to
+     * @param buffLen the size of the buffer
+     * @param nullTerminate if set to true it will null terminate the string
+     *
+     * @return int the number of bytes read
+     */
+    int read(char *buffer, int buffLen, bool nullTerminate = true);
 
-  /** Writes a single character to the serial port
-  *
-  * @param buffer pointer to the buffer to be written to
-  *
-  * @return int the number of bytes written (should be always 1)
-  */
-  int putChar(char *buffer);
+    /** Writes a single character to the serial port
+    *
+    * @param buffer pointer to the buffer to be written to
+    *
+    * @return int the number of bytes written (should be always 1)
+    */
+    int putChar(char *buffer);
 
-  /** Returns single character from the receive buffer
-  */
-  char getChar();
+    /** Returns single character from the receive buffer
+    */
+    char getChar();
 
-  /** Returns true if there is data available in receive buffer
-  */
-  bool serialDataAvail();
+    /** Returns true if there is data available in receive buffer
+    */
+    bool serialDataAvail();
 
-  /** Flushes everything from the serial port's read buffer
-   */
-  void flush();
-};
+    /** Flushes everything from the serial port's read buffer
+     */
+    void flush();
+  };
+  
+#endif

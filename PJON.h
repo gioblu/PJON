@@ -21,40 +21,42 @@ at the following link: https://www.paypal.me/PJON
 For the PJON™ Protocol specification see the specification directory.
 
 PJON™ Standard compliant tools:
-- Logic analyzer by Andrew Grande
-  https://github.com/aperepel/saleae-pjon-protocol-analyzer
-- PJON running on Python by Zbigniew Zasieczny
-  https://github.com/Girgitt/PJON-python
-- Easy config and value sync between IOT modules
+- ModuleInterface - Easy config and value sync between IOT modules
   https://github.com/fredilarsen/ModuleInterface
+- PJON-python - PJON running on Python by Zbigniew Zasieczny (obsolete)
+  https://github.com/Girgitt/PJON-python
+- Logic analyzer by Andrew Grande (obsolete)
+  https://github.com/aperepel/saleae-pjon-protocol-analyzer
 
 Credits to contributors:
-- Fred Larsen (Systems engineering, header driven communication, debugging)
-- 4ib3r github user (Memory optimization configurable strategies inclusion)
-- budaics github user (ATtiny85 16Mhz external clock testing and wiki page)
-- Pantovich github user (update returning number of packets to be delivered)
-- Adrian Sławiński (Fix to enable SimpleModbusMasterV2 compatibility)
-- SticilFace github user (Teensy porting)
-- Esben Soeltoft (Arduino Zero porting)
-- Alex Grishin (ESP8266 porting)
-- Andrew Grande (Testing, support, bugfix)
-- Mauro Zancarlin (Systems engineering, testing, bugfix)
-- Michael Teeww (Callback based reception, debugging)
-- PaoloP74 github user (Library conversion to 1.x Arduino IDE)
+- Fred Larsen. Systems engineering, header driven communication, debugging
+- Zbigniew Zasieczny. WINX86 interface
+- 4ib3r github user. Memory optimization configurable strategies inclusion
+- budaics github user. ATtiny85 16Mhz external clock testing and wiki page
+- Pantovich github user. Update returning number of packets to be delivered
+- Adrian Sławiński. Fix to enable SimpleModbusMasterV2 compatibility
+- SticilFace github user. Teensy porting
+- Esben Soeltoft. Arduino Zero porting
+- Alex Grishin. ESP8266 porting
+- Andrew Grande. Testing, support, bugfix
+- Mauro Zancarlin. Systems engineering, testing, bugfix
+- Michael Teeww. Callback based reception, debugging
+- PaoloP74 github user. Library conversion to 1.x Arduino IDE
 
 Bug reports:
-- pacproduct github user (Added missing mode configuration PJON_SIMPLEX example)
-- elusive-code github user (PJONMaster reset bug)
-- Franketto arduino forum user (PJON ThroughSerial over RS485 delay issue)
-- Zbigniew Zasieczny (header reference inconsistency report)
-- DanRoad reddit user (can_start ThroughSerial bugfix)
-- Remo Kallio (Packet index 0 bugfix)
-- Emanuele Iannone (Forcing PJON_SIMPLEX in OverSamplingSimplex)
-- Christian Pointner (Fixed compiler warnings)
-- Andrew Grande (ESP8266 example watchdog error bug fix)
-- Fabian Gärtner (receive function and big packets bugfix)
-- Mauro Mombelli (Code cleanup)
-- Shachar Limor (Blink example pinMode bugfix)
+- bryant1410 github user. Debug readme format
+- pacproduct github user. Added missing mode configuration PJON_SIMPLEX example
+- elusive-code github user. PJONMaster reset bug
+- Franketto arduino forum user. PJON ThroughSerial over RS485 delay issue
+- Zbigniew Zasieczny. Header reference inconsistency report
+- DanRoad reddit user. can_start ThroughSerial bugfix
+- Remo Kallio. Packet index 0 bugfix
+- Emanuele Iannone. Forcing PJON_SIMPLEX in OverSamplingSimplex
+- Christian Pointner. Fixed compiler warnings
+- Andrew Grande. ESP8266 example watchdog error bug fix
+- Fabian Gärtner. receive function and big packets bugfix
+- Mauro Mombelli. Code cleanup
+- Shachar Limor. Blink example pinMode bugfix
  ______________________________________________________________________________
 
 Copyright 2012-2017 by Giovanni Blu Mitolo gioscarab@gmail.com

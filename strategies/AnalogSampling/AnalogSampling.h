@@ -1,5 +1,5 @@
 
-/* AnalogSampling data link layer
+/* AnalogSampling data link layer 18/02/2017
    used as a Strategy by the PJON framework
    Compliant with the Padded jittering data link layer specification v0.1
 
@@ -22,7 +22,7 @@
    suggested. It may be necessary to teak timing constants in Timing.h.
    ____________________________________________________________________________
 
-   Copyright 2012-2017 Giovanni Blu Mitolo gioscarab@gmail.com
+   Copyright 2010-2017 Giovanni Blu Mitolo gioscarab@gmail.com
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

@@ -29,7 +29,7 @@ PJON™ Standard compliant tools:
  https://github.com/aperepel/saleae-pjon-protocol-analyzer
  ______________________________________________________________________________
 
-Copyright 2012-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
+Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

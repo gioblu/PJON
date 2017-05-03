@@ -18,7 +18,7 @@
 
 #pragma once
 
-#if defined(WINX86)
+#if defined(_WIN32)
   #include <inttypes.h>
   #include <stdlib.h>
   #include <string.h>

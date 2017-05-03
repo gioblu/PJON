@@ -17,7 +17,7 @@
 
 #pragma once
 
-#if defined(WINX86)
+#if defined(_WIN32)
   #include <string>
   #include <windows.h>
 

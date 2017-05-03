@@ -74,8 +74,8 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 #pragma once
-#include "PJONDefines.h"
 #include "interfaces/PJON_Interfaces.h"
+#include "PJONDefines.h"
 #include "strategies/PJON_Strategies.h"
 
 template<typename Strategy>

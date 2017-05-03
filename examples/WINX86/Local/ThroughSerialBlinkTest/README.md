@@ -1,6 +1,6 @@
-In this example is described how to connect a Windows x86 machine with an Arduino compatible device using the `ThroughSerial` strategy, the USB port of both devices and a USB cable.
+In this example is described how to connect a Windows x86 machine with an Arduino compatible device using the `ThroughSerial` strategy, the USB port of both devices and a USB cable; the Arduino compatible device is used as a receiver and will blink repeatedly every second if all works fine.
 
-The Arduino compatible device is used as a receiver and will blink repeatedly every second if all works fine. Program the Arduino with the `PJON\examples\ARDUINO\Local\ThroughSerialBlinkTest\Receiver.cpp` sketch and remember the device COM port assigned to that particular Arduino board (the COM selected to program the device in the Arduino IDE) because will be useful later.
+Program the Arduino with the `PJON\examples\ARDUINO\Local\ThroughSerialBlinkTest\Receiver.cpp` sketch and remember the device COM port assigned to that particular Arduino board (the COM selected to program the device in the Arduino IDE) because will be useful later.
 
 Visual Studio 2017 Community is used to compile the program on the Windows x86 machine, to do so follow the following steps:
 

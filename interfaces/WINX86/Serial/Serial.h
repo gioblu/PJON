@@ -85,5 +85,5 @@
      */
     void flush();
   };
-  
+
 #endif

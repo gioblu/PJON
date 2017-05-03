@@ -1,9 +1,16 @@
-In this example is possible to connect a Windows X86 compatible device with an Arduino compatible device using the `ThroughSerial` strategy. Visual Studio 2016 Express is used to compile the program on the Windows X86 machine, to do so open the `PJON\examples\WINX86\Local\ThroughSerialBlinkTest\Transmitter.cpp` example.
+In this example is shown how to connect a Windows x86 machine with an Arduino compatible device using the `ThroughSerial` strategy and simply the USB port of both devices and a USB cable.
 
-Now is necessary to right click on the `cpp` files branch in the project structure and choose option to "add existing resource" and browse for `serial.cpp` in `PJON\interfaces\WINX86\Serial\serial.cpp`.
+The Arduino compatible device is used as receiver and will blink repeatedly every second if all works fine. Program the Arduino with the `PJON\examples\ARDUINO\Local\ThroughSerialBlinkTest\Receiver.cpp` sketch, remember the device COM port assigned to that particular Arduino board (the COM selected to program the device in the Arduino IDE) because will be useful later and leave it connected to the computer.
 
-Now save the project, change the COM port to match your configuration.
+Visual Studio 2017 Community is used to compile the program on the Windows x86 machine, to do so follow the following steps:
 
-The last step is to program the Arduino compatible device using the `PJON\examples\ARDUINO\Local\ThroughSerialBlinkTest\Receiver\Receiver.ino` [receiver's sketch](https://github.com/gioblu/PJON/blob/master/examples/ARDUINO/Local/ThroughSerialBlinkTest/Receiver/Receiver.ino) and the Arduino IDE.
+- Create a new project and select the `Win32 Console Application` application type, then continue
+- When in the application wizard, click next, be sure to deactivate the `Precomplied header` option and press the finish button
+- When the project is created, locate its directory, by default should be in `Documents\Visual Studio 2017\Projects\Transmitter\Transmitter`, and clone/copy there the PJON directory
+- Locate the `Solution explorer` right sidebar, right click on `Source files`, then `add` -> `existing item`, search for and select  `Serial.cpp` in `PJON\interfaces\WINX86\Serial\Serial.cpp`  
+- Copy the content of `PJON\examples\WINX86\Local\ThroughSerialBlinkTest\Transmitter.cpp` example
+ in `Documents\Visual Studio 2017\Projects\Transmitter\Transmitter\Transmitter.cpp`, edit the COM port number (at line 38) according to the one assigned to the receiver device and save the file
+- Press `Build` in the top bar, then select `Batch build` and click the checkboxes of the two release configurations to generate an executable file
+- If the building process ended positively, navigate using a console to `Documents\Visual Studio 2017\Projects\Transmitter\Release` and execute `Transmitter.exe`
 
-Executing the program on the Windows X86 machine you should see the Arduino compatible device blinking.
+You should see the Arduino blinking every second and a related log coming out the console.

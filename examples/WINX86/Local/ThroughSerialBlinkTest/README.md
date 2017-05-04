@@ -2,7 +2,7 @@ In this example is described how to connect a Windows x86 machine with an Arduin
 
 Program the Arduino with the `PJON\examples\ARDUINO\Local\ThroughSerialBlinkTest\Receiver.cpp` sketch and remember the device COM port assigned to that particular Arduino board (the COM selected to program the device in the Arduino IDE) because will be useful later.
 
-Visual Studio 2017 Community is used to compile the program on the Windows x86 machine, to do so follow those steps:
+Visual Studio 2017 Community is used to compile the program on the Windows x86 machine:
 
 - Create a new project and select the `Win32 Console Application` application type and continue
 - In the application wizard, click next, be sure to deactivate the `Precomplied header` option and press finish

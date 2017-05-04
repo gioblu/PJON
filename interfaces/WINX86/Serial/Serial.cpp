@@ -15,13 +15,28 @@
 #pragma once
 #include <iostream>
 using namespace std;
+
 #include "Serial.h"
 #include <sstream>
 
-Serial::Serial(tstring &commPortName, int bitRate, bool testOnStartup, bool cycleDtrOnStartup) {
+std::wstring s2ws(const std::string& s){
+  int len;
+  int slength = (int)s.length() + 1;
+  len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0);
+  wchar_t* buf = new wchar_t[len];
+  MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
+  std::wstring r(buf);
+  delete[] buf;
+  return r;
+};
+
+
+Serial::Serial(std::string &commPortName, int bitRate, bool testOnStartup, bool cycleDtrOnStartup) {
+  std::wstring com_name_ws = s2ws(commPortName);
+
   commHandle =
     CreateFile(
-      commPortName.c_str(),
+      com_name_ws.c_str(),
       GENERIC_READ | GENERIC_WRITE,
       0,
       NULL,

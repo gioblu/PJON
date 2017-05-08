@@ -12,7 +12,8 @@
   #define WINX86 true
 #endif
 
-#define TS_RESPONSE_TIME_OUT 25000
+#define TS_RESPONSE_TIME_OUT 60000
+#define TS_COLLISION_DELAY 3000
 /* WINX86 machine generally needs longer response timeout to correctly
    receive a response */
 

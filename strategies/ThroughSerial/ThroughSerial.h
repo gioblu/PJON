@@ -33,7 +33,7 @@ class ThroughSerial {
       Stream *serial = NULL;
     #elif defined(RPI)
       int16_t serial = 0;
-    #elif defined(WINX86)
+    #elif defined(_WIN32)
       Serial *serial = NULL;
     #endif
     /* Returns the suggested delay related to the attempts passed as parameter: */
@@ -153,7 +153,7 @@ class ThroughSerial {
     void set_serial(Stream *serial_port) {
   #elif defined(RPI)
     void set_serial(int16_t serial_port) {
-  #elif defined(WINX86)
+  #elif defined(_WIN32)
     void set_serial(Serial *serial_port) {
   #endif
       serial = serial_port;

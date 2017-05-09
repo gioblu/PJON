@@ -23,6 +23,8 @@ For the PJON™ Protocol specification see the specification directory.
 PJON™ Standard compliant tools:
 - ModuleInterface - Easy config and value sync between IOT modules
  https://github.com/fredilarsen/ModuleInterface
+- Command line PJON wrapper over unnamed pipes by Zbigniew Zasieczny
+ https://github.com/Girgitt/PJON-piper
 - PJON-python - PJON running on Python by Zbigniew Zasieczny (obsolete)
  https://github.com/Girgitt/PJON-python
 - Logic analyzer by Andrew Grande (obsolete)

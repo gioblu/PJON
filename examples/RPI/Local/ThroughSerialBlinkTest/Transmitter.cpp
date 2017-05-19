@@ -36,5 +36,11 @@ int main() {
   printf("Attempting to receive from bus... \n");
   bus.receive();
   printf("Success! \n");
+
+  while(true) {
+    bus.update();
+    bus.receive();
+  }
+
   return 0;
 };

@@ -22,8 +22,8 @@ Master Thesis, IT University of Copenhagen, Denmark, September 2016
 PJON™ Dynamic addressing specification:
 - v0.1 specification/PJON-dynamic-addressing-specification-v0.1.md
 
-PJON™ is a self-funded, no-profit open-source project created and mantained by
-Giovanni Blu Mitolo with the support ot the internet community if you want
+PJON™ is a self-funded, no-profit open-source project created and maintained by
+Giovanni Blu Mitolo with the support of the internet community if you want
 to see the PJON project growing with a faster pace, consider a donation
 at the following link: https://www.paypal.me/PJON
  ______________________________________________________________________________

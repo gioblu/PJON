@@ -35,6 +35,6 @@ PJON™ (Padded Jittering Operative Network) is an Arduino compatible, multi-mas
 - [PJON-python](https://github.com/Girgitt/PJON-python) by Zbigniew Zasieczny
 - [saleae-pjon-protocol-analyzer](https://github.com/aperepel/saleae-pjon-protocol-analyzer) by Andrew Grande
 
-PJON™ is a self-funded, no-profit open-source project created (in 2010) and mantained by Giovanni Blu Mitolo with the support ot the internet community if you want to see the PJON project growing with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
+PJON™ is a self-funded, no-profit open-source project created (in 2010) and maintained by Giovanni Blu Mitolo with the support of the internet community if you want to see the PJON project growing with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
 
 PJON™ and its brand are unregistered trademarks, property of Giovanni Blu Mitolo gioscarab@gmail.com

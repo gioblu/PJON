@@ -4,15 +4,15 @@
 
 `SoftwareBitBang` is based on `micros` and `delayMicroseconds`, needs 1 or optionally 2 wires and no additional hardware to handle one or many to many communication on a single channel or bus. It can be run on cheap and low performance microcontrollers. Bus maximum length is mostly limited by the resistance of the common conductive element used. It has been tested with up to 50m long insulated wires, results demonstrate the same high performance achieved with shorter lengths. It complies with [PJDL v1.1](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.1.md) data link layer specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=Vg5aSlD-VCU) for a brief showcase of its features.
 ```cpp  
-     ______     ______      ______      ______      ______
-    |      |   |      |    |      |    |      |    |      |  
-    |DEVICE|   |DEVICE|    |DEVICE|    |DEVICE|    |DEVICE|  
-    |______|   |______|    |______|    |______|    |______|    
- ______|___________|___________|___________|___________|___ SINGLE WIRE BUS
-          ___|__     ___|__     ___|__     ___|__  |
-         |      |   |      |   |      |   |      | |      
-         |DEVICE|   |DEVICE|   |DEVICE|   |DEVICE| |___/\/\/\___ GND     
-         |______|   |______|   |______|   |______|     1-5 MΩ
+ ______     ______      ______      ______      ______
+|      |   |      |    |      |    |      |    |      |
+|DEVICE|   |DEVICE|    |DEVICE|    |DEVICE|    |DEVICE|
+|______|   |______|    |______|    |______|    |______|
+___|___________|___________|___________|___________|___
+ ___|__     ___|__    ___|__     ___|__  | SINGLE WIRE BUS
+|      |   |      |  |      |   |      | |
+|DEVICE|   |DEVICE|  |DEVICE|   |DEVICE| |___/\/\/\___ GND
+|______|   |______|  |______|   |______|     1-5 MΩ
 ```
 It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to protect MCU pins and to reduce interference.
 

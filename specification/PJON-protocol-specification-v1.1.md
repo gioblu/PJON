@@ -61,7 +61,7 @@ In the graph below is shown the protocol stack model proposed. The differences b
 * Every device has an equal right to transmit and receive
 * Every device has a unique 1 byte id
 * Every device can obtain an id if available (see [Dynamic addressing specification v0.1](/specification/PJON-dynamic-addressing-specification-v0.1.md))
-* Every bus has a unique IPv4 like 4 bytes id
+* Every bus has a unique 4 bytes id
 * Every device can be connected to n PJON buses
 * Many buses can coexist on the same medium
 * Synchronous and or asynchronous acknowledgement can be requested  (see [Acknowledge specification v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md))
@@ -83,22 +83,7 @@ ____|___________|___________|___________|___________|___
 ```
 
 ### Bus network
-A PJON bus network is the result of n PJON buses sharing the same medium and or being interconnected to other PJON buses through routers. A router is a device connected to n PJON buses with n dedicated, potentially different, data link layers on n dedicated media, able to route a packet from a bus to another. Thanks to this rule is not only possible to share the same medium with neighbours, but also network with them and enhance connectivity.
-```cpp  
-   TWO BUSES CONNECTED THROUGH A ROUTER
-
-       BUS ID 0.0.0.1                  BUS ID 0.0.0.2
-    _______     _______              _______     _______
-   |       |   |       |            |       |   |       |
-   | ID 0  |   | ID 1  |            | ID 0  |   | ID 1  |
-   |_______|   |_______|  ________  |_______|   |_______|
- ______|___________|_____| ROUTER |_____|___________|______
-          ___|___        |  ID 3  |        ___|___
-         |       |       |________|       |       |
-         | ID 2  |                        | ID 2  |
-         |_______|                        |_______|
-```
-In a shared medium it is defined a IPv4 like bus id to isolate devices from outcoming communication of other buses nearby, enabling many to coexist on the same communication medium.
+A PJON bus network is the result of n PJON buses sharing the same medium and or being interconnected to other PJON buses through routers. In a shared medium scenario it is suggested to use the 4 byte bus id to isolate devices from outcoming communication of other buses nearby, enabling many to coexist on the same communication medium.
 ```cpp  
    TWO BUSES SHARING THE SAME MEDIUM
 
@@ -113,6 +98,22 @@ In a shared medium it is defined a IPv4 like bus id to isolate devices from outc
          | ID 2  |                        | ID 2  |
          |_______|                        |_______|
 
+```
+### Router
+A router is a device connected to n PJON buses with n dedicated, potentially different, data link layers on n dedicated media, able to route a packet from a bus to another. Thanks to this rule is not only possible to share the same medium with neighbours, but also network with them and enhance connectivity.
+```cpp
+TWO BUSES CONNECTED THROUGH A ROUTER
+
+   BUS ID 0.0.0.1                   BUS ID 0.0.0.2
+ _______     _______               _______     _______
+|       |   |       |             |       |   |       |
+| ID 0  |   | ID 1  |             | ID 0  |   | ID 1  |
+|_______|   |_______|   ________  |_______|   |_______|
+_____|___________|_____| ROUTER |_____|___________|____
+       ___|___         |  ID 3  |        ___|___
+      |       |        |________|       |       |
+      | ID 2  |                         | ID 2  |
+      |_______|                         |_______|
 ```
 
 ### Header configuration
@@ -165,7 +166,6 @@ HEADER BITMASK
 ### Packet transmission
 A packet transmission is an exchange of a string to one or many of the devices connected to the bus with optional correct reception certainty. The simplest form of packet is constructed by a recipient id, a header, length, content and CRC. In the graph below is shown a packet transmission in a local bus to device id `12` containing the string `@` (decimal 64) with no acknowledgement request:
 ```cpp  
-
  ID 12       HEADER 1  LENGTH 5     CONTENT 64  CRC 72
  __________  ________  ___________  __________  ____________
 | Byte     || Byte   || Byte      || Byte     || Byte       |

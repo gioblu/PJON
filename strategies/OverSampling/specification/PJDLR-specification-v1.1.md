@@ -39,6 +39,9 @@ Every byte is prepended with 2 synchronization padding bits and transmission occ
 | |   |   |     |   |   |     |   |
 |1| 0 | 1 | 0 0 | 1 | 0 | 1 1 | 0 |
 |_|___|___|_____|___|___|_____|___|
+  |
+OS_ACCEPTANCE
+(or minimum acceptable HIGH padding bit duration)
 ```
 Padding bits add a certain overhead but are reducing the need of precise timing because synchronization is renewed every byte. All the first high padding bit duration minus `OS_ACCEPTANCE` is the synchronization timeframe the receiver has to synchronize and correctly receive a byte. If the length of the first padding bit is less than `OS_ACCEPTANCE` the received signal is considered interference.
 
@@ -59,10 +62,10 @@ In a scenario where a stream of bytes is coming, low performance or clock inaccu
 #### Synchronous response
 A string transmission can be optionally followed by a synchronous response by its recipient.
 ```cpp  
- Transmission                                                  Response
+Transmission                                                      Response
  ________ ______  ______  ______  ______                   ________ _____
 |PREAMBLE| BYTE || BYTE || BYTE || BYTE | CRC COMPUTATION |PREAMBLE| ACK |
-|____    |------||------||------||------|-------> <-------|____    |     |
+|____    |------||------||------||------|-----------------|____    |     |
 |    |   |      ||      ||      ||      | LATENCY         |    |   |  6  |
 |____|___|______||______||______||______|                 |____|___|_____|
 ```

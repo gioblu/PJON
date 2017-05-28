@@ -69,16 +69,16 @@ The PJON protocol v1.1 handles internal bus connectivity and unique addressing f
 
 ### Bus
 A PJON bus is made by a group of up to 254 devices transmitting and receiving on the same medium. Communication between devices occurs through packets and it is based on democracy: every device has the right to transmit on the common medium for up to `(1000 / devices number) milliseconds / second`.
-```cpp  
-    _______     _______     _______     _______     _______
-   |       |   |       |   |       |   |       |   |       |  
-   | ID 0  |   | ID 1  |   | ID 2  |   | ID 3  |   | ID 4  |  
-   |_______|   |_______|   |_______|   |_______|   |_______|    
- ______|___________|___________|___________|___________|______
-          ___|___     ___|___     ___|___     ___|___
-         |       |   |       |   |       |   |       |   
-         | ID 5  |   | ID 6  |   | ID 7  |   | ID 8  |
-         |_______|   |_______|   |_______|   |_______|    
+```cpp
+ _______     _______     _______     _______     _______
+|       |   |       |   |       |   |       |   |       |
+| ID 0  |   | ID 1  |   | ID 2  |   | ID 3  |   | ID 4  |
+|_______|   |_______|   |_______|   |_______|   |_______|
+____|___________|___________|___________|___________|___
+       ___|___     ___|___     ___|___     ___|___
+      |       |   |       |   |       |   |       |
+      | ID 5  |   | ID 6  |   | ID 7  |   | ID 8  |
+      |_______|   |_______|   |_______|   |_______|
 ```
 
 ### Bus network
@@ -117,21 +117,17 @@ In a shared medium it is defined a IPv4 like bus id to isolate devices from outc
 ### Header configuration
 ```cpp
 HEADER BITMASK
-
-     1       2        3       4       5      6       7       8
- ________ ________ _______ _______ _______ ______ _______ _______
-|        |        |       |       |       |      |       |       | byte 1
-| EXT.   | EXT.   |  CRC  | ADDR. |  ACK  | ACK  |  TX   |  MODE |
-| HEADER | LENGTH |       |       |  MODE |      | INFO  |       |
-|________|________|_______|_______|_______|______|_______|_______|
-|        |        |       |       |       |      |       |       | byte 2
-| EXT.   | ROUT.  | SEGM. | SESS. | PAR.  | ENCO | DATA  | ENCRY | OPTIONAL
-| HEADER |        |       |       |       | DING | COMP. | PTION |
-|________|________|_______|_______|_______|______|_______|_______|
-|        |        |       |       |       |      |       |       | byte 3
-|  N/A   |  N/A   |  N/A  |  N/A  |  N/A  | N/A  |  N/A  |  N/A  | OPTIONAL
-|        |        |       |       |       |      |       |       |
-|________|________|_______|_______|_______|______|_______|_______|
+    1      2     3     4     5     6     7     8
+ ______ ______ _____ _____ _____ _____ _____ _____
+|EXT.  |EXT.  |CRC  |ADDR.|ACK  |ACK  |TX   |MODE |
+|HEADER|LENGTH|     |     |MODE |     |INFO |     |
+|______|______|_____|_____|_____|_____|_____|_____|
+|EXT.  |ROUT. |SEGM.|SESS.|PAR. |ENCO |DATA |ENCRY|
+|HEADER|      |     |     |     |DING |COMP.|PTION|
+|______|______|_____|_____|_____|_____|_____|_____|
+|      |      |     |     |     |     |     |     |
+| N/A  | N/A  | N/A | N/A | N/A | N/A | N/A | N/A |
+|______|______|_____|_____|_____|_____|_____|_____|
 ```
 #### Header byte 1 bits roles
 * `EXT. HEADER` or extended header bit informs if the header is composed by 1 (value 0) or 2 bytes (value 1)
@@ -179,57 +175,57 @@ A packet transmission is an exchange of a string to one or many of the devices c
 ```       
 A default local packet transmission is an optionally bidirectional communication between two devices that can be divided in 3 different phases: **channel analysis**, **transmission** and optional **response**. The packet transmission procedure is regulated by its header.
 
-```cpp  
-Channel analysis  Transmission                                  Response
-    _____          ________________________________________        _____
-   | C-A |        | ID |  HEADER  | LENGTH | CONTENT | CRC |      | ACK |
-<--|-----|---< >--|----|----------|--------|---------|-----|-> <--|-----|
-   |  0  |        | 12 | 00000100 |   5    |    64   |  72 |      |  6  |
-   |_____|        |____|__________|________|_________|_____|      |_____|
+```cpp
+Channel analysis       Transmission             Response
+ _____  ________________________________________  _____
+| C-A || ID |  HEADER  | LENGTH | CONTENT | CRC || ACK |
+|-----||----|----------|--------|---------|-----||-----|
+|  0  || 12 | 00000100 |   5    |    64   |  72 ||  6  |
+|_____||____|__________|________|_________|_____||_____|
 ```
 In the first phase the bus is analyzed by transmitter reading 10 logical bits, if no logical 1 is detected the channel is considered free and transmission phase starts in which the packet is entirely transmitted. Receiver calculates CRC and starts the response phase transmitting a single byte, `PJON_ACK` (decimal 6) in case of correct reception. If transmitter receives no answer the packet sending is scheduled with a delay of `ATTEMPTS * ATTEMPTS * ATTEMPTS * ATTEMPTS` with a maximum of 42 `ATTEMPTS` to obtain data transmission 4rd degree polynomial back-off.
 
 Below is shown the same local transmission used as an example before, formatted to be sent over a shared medium, where device id `12` of bus `0.0.0.1` sends @ (decimal 64) to device id `11` in bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient, and optionally the sender's bus and device id:
-```cpp  
-Channel analysis             Transmission                   Response
- ___     _______________________________________________     ___
-|C-A|   |ID| HEADER |LENGTH|BUS ID|BUS ID|ID|CONTENT|CRC|   |ACK|
-|---|< >|--|--------|------|------|------|--|-------|---|> <|---|
-| 0 |   |12|00000111|  14  | 0001 | 0001 |11|  64   |   |   | 6 |
-|___|   |__|________|______|______|______|__|_______|___|   |___|
-                           |RXINFO| TX INFO |
+```cpp
+Channel analysis            Transmission           Response
+ ___  _______________________________________________  ___
+|C-A||ID| HEADER |LENGTH|BUS ID|BUS ID|ID|CONTENT|CRC||ACK|
+|---||--|--------|------|------|------|--|-------|---||---|
+| 0 ||12|00000111|  14  | 0001 | 0001 |11|  64   |   || 6 |
+|___||__|________|______|______|______|__|_______|___||___|
+                        |RXINFO| TX INFO |
 ```
 
 Configuring the header it is possible to leverage of the extended features of the protocol:
 
-```cpp  
-Channel analysis                     Transmission                     Response
- ___    ____________________________________________________________     ___
-|C-A|  |ID| HEADER |LENGTH 1|LENGTH 2|BUS ID|BUS ID|ID|CONT.| CRC32 |   |ACK|
-|---|<>|--|--------|--------|--------|------|------|--|-----|-------|> <|---|
-| 0 |  |12|01100111| byte 1 | byte 2 | 0001 | 0001 |11|     |1|2|3|4|   | 6 |
-|___|  |__|________|________|________|______|______|__|_____|_|_|_|_|   |___|
-                                     |RXINFO| TX INFO |          
+```cpp
+Channel analysis            Transmission                       Response
+ ___  ___________________________________________________________  ___
+|C-A||ID| HEADER |LENGTH 1|LENGTH 2|BUS ID|BUS ID|ID|CONT| CRC32 ||ACK|
+|---||--|--------|--------|--------|------|------|--|----|-------||---|
+| 0 ||12|01100111| byte 1 | byte 2 | 0001 | 0001 |11|    |1|2|3|4|| 6 |
+|___||__|________|________|________|______|______|__|____|_|_|_|_||___|
+                                   |RXINFO| TX INFO |
 ```
 The graph above shows a packet transmission where the length is of 2 bytes supporting up to 65.535kB packet length. Receiver is able to parse the packet correctly reading the header, where `B01000000` up signals a 2 bytes length format and `B00100000` up signals CRC32 use.
 
-```cpp  
-Channel analysis        Transmission                               Response
- ___    _________________________________________________________     ___
-|C-A|  |ID| HEADER |LENGTH|BUS ID|BUS ID|ID|PACKET ID|CONT.| CRC |   |ACK|
-|---|<>|--|--------|------|------|------|--|---------|-----|-----|> <|---|
-| 0 |  |12|00001111|  16  | 0002 | 0001 |11|   999   | 64  |     |   | 6 |
-|___|  |__|________|______|______|______|__|_________|_____|_____|   |___|
-                          |RXINFO| TX INFO |          
+```cpp
+Channel analysis            Transmission                  Response
+ ___  ______________________________________________________  ___
+|C-A||ID| HEADER |LENGTH|BUS ID|BUS ID|ID|PACKET ID|CONT|CRC||ACK|
+|---||--|--------|------|------|------|--|---------|----|---||---|
+| 0 ||12|00001111|  16  | 0002 | 0001 |11|   999   | 64 |   || 6 |
+|___||__|________|______|______|______|__|_________|____|___||___|
+                        |RXINFO| TX INFO |       
 ```
 The graph above shows a packet transmission where the [recursive acknowledgement ](/specification/PJON-protocol-acknowledge-specification-v0.1.md#pjon-recursive-acknowledgement-pattern) pattern is applied: device `11` sends to device `12` of bus `0.0.0.2` a packet with header `ACK MODE` bit up requesting an asynchronous acknowledgement response, and so identifying the packet with the unique id `999` and `ACK` bit up requesting a synchronous acknowledgement response. `12` receives the packet and replies with a synchronous acknowledgement, or sending `PJON_ACK` (decimal 6), subsequently `12` sends also an asynchronous acknowledgement, that is instead an entire packet, back to device `11` containing only packet id `999` and the necessary configuration, that will be also synchronously acknowledged by device `11`:
-```cpp  
-Channel analysis        Transmission                         Response
- ___    ___________________________________________________     ___
-|C-A|  |ID| HEADER |LENGTH|BUS ID|BUS ID|ID|PACKET ID| CRC |   |ACK|
-|---|<>|--|--------|------|------|------|--|---------|-----|> <|---|
-| 0 |  |11|00001111|  15  | 0001 | 0002 |12|   999   |     |   | 6 |
-|___|  |__|________|______|______|______|__|_________|_____|   |___|
-                          |RXINFO| TX INFO |          
+```cpp
+Channel analysis            Transmission               Response
+ ___  ___________________________________________________  ___
+|C-A||ID| HEADER |LENGTH|BUS ID|BUS ID|ID|PACKET ID| CRC ||ACK|
+|---||--|--------|------|------|------|--|---------|-----||---|
+| 0 ||11|00001111|  15  | 0001 | 0002 |12|   999   |     || 6 |
+|___||__|________|______|______|______|__|_________|_____||___|
+                        |RXINFO| TX INFO |        
 ```
 See the [Acknowledge specification v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md) to have more detailed info of its procedure.

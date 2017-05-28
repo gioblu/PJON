@@ -8,8 +8,9 @@
 ```cpp
 /*
 Milan, Italy - 31/03/2017
-PJDL (Padded jittering data link) specification is an invention and intellectual property
-of Giovanni Blu Mitolo - Copyright 2010-2017 All rights reserved
+PJDL (Padded jittering data link) specification
+is an invention and intellectual property of Giovanni Blu Mitolo
+Copyright 2010-2017 All rights reserved
 
 Related work: /strategies/SoftwareBitBang/
 Compliant implementation versions: PJON 8.0 and following

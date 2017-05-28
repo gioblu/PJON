@@ -6,15 +6,18 @@
 ```cpp
 /*
 Milan, Italy - 02/10/2016
-The PJON™ dynamic addressing specification is an invention and intellectual property
-of Giovanni Blu Mitolo - Copyright 2010-2017 All rights reserved
+The PJON™ dynamic addressing specification is an invention
+and intellectual property of Giovanni Blu Mitolo
+Copyright 2010-2017 All rights reserved
 
 Related work: https://github.com/gioblu/PJON/
 Compliant implementation versions: PJON 5.2 and following
 
 Inspired by the thesis of Thomas Snaidero:
-"Modular components for eye tracking, in the interest of helping persons with severely impaired motor skills."
-Master Thesis, IT University of Copenhagen, Denmark, September 2016
+"Modular components for eye tracking, in the interest of
+helping persons with severely impaired motor skills."
+Master Thesis, IT University of Copenhagen
+Denmark, September 2016
 */
 ```
 

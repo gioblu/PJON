@@ -23,13 +23,13 @@ Changelog: Response generalization / refactoring
 ### PJDLR (Padded jittering data link / R version)
 PJDLR (Padded jittering data link) has been specified to enable a new software emulated simplex or half-duplex data-link layer supporting one or many to many communication on a single channel or medium. It can be run on cheap and low performance microcontrollers, it supports communication for many devices connected to the same medium and stable operation in spite of interference. Its procedure has been specified to obtain long range and high reliability using FSK/ASK/OOK radio transceivers as physical layer.
 
-### Basic concepts
+#### Basic concepts
 * Use a pattern of predefined initial padding bits to identify a byte
 * Use the falling edge from 1 to 0, present in padding bits, to achieve byte level synchronization
 * Detect interference or absence of communication at byte level
 * Support string transmission using a preamble symbol
 * Support collision avoidance
-* Support 1 byte synchronous string transmission response (for acknowledgement)
+* Support 1 byte synchronous response to string transmission
 
 #### Byte transmission
 Every byte is prepended with 2 synchronization padding bits and transmission occurs LSB-first. The first is a shorter than standard logic 1 followed by a standard logic 0. The reception method is based on finding a logic 1 as long as the first padding bit within a certain threshold, synchronizing to its falling edge and checking if it is followed by a logic 0. If this pattern is detected, reception starts, if not, interference, synchronization loss or simply absence of communication is detected at byte level.  

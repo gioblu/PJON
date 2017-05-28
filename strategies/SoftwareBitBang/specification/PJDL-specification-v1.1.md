@@ -19,7 +19,7 @@ Changelog: Response generalization / refactoring
 */
 ```
 ### PJDL (Padded Jittering Data Link)
-PJDL (Padded Jittering Data Link) has been specified to enable a new software emulated simplex or half-duplex data-link layer supporting one or many to many communication on a single channel or medium. It can be run on cheap and low performance microcontrollers, it supports communication for many devices connected to the same wire and stable operation in spite of interference. The main limit to the bus maximum length is its electric resistance, if at destination a high bit voltage is lower than the input-output port threshold voltage, its value can be detected erroneously. It has been tested with up to 50 meters long insulated wire of different qualities demonstrating the ability to achieve reliable communication also in this scenario.   
+PJDL (Padded Jittering Data Link) has been specified to enable a new software emulated simplex or half-duplex data-link layer supporting one or many to many communication on a single channel or medium. It can be run on cheap and low performance microcontrollers, it supports communication for many devices connected to the same wire and stable operation in spite of interference. The main bus maximum length limit is related to its electric resistance, if at destination a high bit voltage is lower than the input-output port threshold voltage, its value can be detected erroneously. It has been tested with up to 50 meters long insulated wire of different qualities demonstrating the ability to achieve reliable communication also in this scenario.   
 ```cpp  
  ______     ______      ______      ______      ______
 |      |   |      |    |      |    |      |    |      |
@@ -39,7 +39,7 @@ It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to
 * Detect interference or absence of communication at byte level
 * Support collision avoidance
 * Support string transmission
-* Support 1 byte synchronous string transmission response (for acknowledgement)
+* Support 1 byte synchronous response to string transmission
 
 #### Byte transmission
 Every byte is prepended with 2 synchronization padding bits and transmission occurs LSB-first. The first is a longer than standard logic 1 followed by a standard logic 0. The reception method is based on finding a logic 1 as long as the first padding bit within a certain threshold, synchronizing to its falling edge and checking if it is followed by a logic 0. If this pattern is detected, reception starts, if not, interference, synchronization loss or simply absence of communication is detected at byte level.    

@@ -648,7 +648,7 @@ class PJON {
       strategy.send_string((uint8_t *)string, length);
       if(
         string[0] == PJON_BROADCAST ||
-        !(config & PJON_ACK_REQ_BIT) ||
+        !(string[1] & PJON_ACK_REQ_BIT) ||
         _mode == PJON_SIMPLEX
       ) return PJON_ACK;
       uint16_t response = strategy.receive_response();

@@ -8,10 +8,10 @@ PJON™ (Padded Jittering Operative Network) is an Arduino compatible, multi-mas
 [![Join the chat at https://gitter.im/gioblu/PJON](https://badges.gitter.im/gioblu/PJON.svg)](https://gitter.im/gioblu/PJON?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Donate](https://img.shields.io/badge/DONATE-Paypal-green.svg)](https://www.paypal.me/PJON)
 
 #### Features
-- Supports cross-compilation with [interfaces](interfaces) abstraction to system calls
-- Multi-media support with the data link layer abstraction or [Strategy](strategies) framework
+- Supports cross-compilation with the [interfaces](interfaces) system calls abstraction   
+- Multi-media support with the [strategies](strategies) data link layer abstraction
 - Master-slave or multi-master [dynamic addressing](specification/PJON-dynamic-addressing-specification-v0.1.md)
-- Configurable synchronous and/or asynchronous [acknowledgement](specification/PJON-protocol-acknowledge-specification-v0.1.md) of correct packet sending
+- Configurable synchronous and/or asynchronous [acknowledgement](specification/PJON-protocol-acknowledge-specification-v0.1.md)
 - Configurable 2 level addressing (device and bus id) for scalable applications
 - Configurable 1 or 2 bytes packet length (max 255 or 65535 bytes)
 - Collision avoidance to enable multi-master capability
@@ -35,6 +35,6 @@ PJON™ (Padded Jittering Operative Network) is an Arduino compatible, multi-mas
 - [PJON-python](https://github.com/Girgitt/PJON-python) by Zbigniew Zasieczny
 - [saleae-pjon-protocol-analyzer](https://github.com/aperepel/saleae-pjon-protocol-analyzer) by Andrew Grande
 
-PJON™ is a self-funded, no-profit open-source project created (in 2010) and maintained by Giovanni Blu Mitolo with the support of the internet community if you want to see the PJON project growing with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
+PJON™ is a self-funded, no-profit open-source project created in 2010 and maintained by Giovanni Blu Mitolo with the support of the internet community. If you want to see the PJON project growing with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
 
 PJON™ and its brand are unregistered trademarks, property of Giovanni Blu Mitolo gioscarab@gmail.com

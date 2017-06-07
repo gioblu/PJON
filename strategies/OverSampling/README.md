@@ -2,7 +2,7 @@
 **Media:** Radio, Wire |
 **Pins used:** 1 / 2
 
-OverSampling has been developed to enable a new software emulated simplex or half-duplex data-link supporting one or many to many communication on a single channel or medium. It can be run on cheap and low performance microcontrollers, it supports communication for many devices connected to the same medium and stable operation in spite of interference. Its procedure has been specified to obtain long range and high reliability using FSK/ASK/OOK 315/433Mhz radio transceivers available on the market. It complies with [PJDLR v1.1](/strategies/OverSampling/specification/PJDLR-specification-v1.1.md) specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=G1ckfsMzPns) for a brief showcase of its features.
+OverSampling strategy has been developed to enable a new software emulated simplex or half-duplex data link supporting one or many to many communication on a single channel or medium. It can be run on cheap and low performance microcontrollers, it supports communication for many devices connected to the same medium and stable operation in spite of interference. Its procedure has been specified to obtain long range and high reliability using FSK/ASK/OOK 315/433Mhz radio transceivers available on the market. It complies with [PJDLR v1.1](/strategies/OverSampling/specification/PJDLR-specification-v1.1.md) specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=G1ckfsMzPns) for a brief showcase of its features.
 
 #### Compatibility
 - ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
@@ -51,7 +51,7 @@ To build a real open-source PJON packet radio able to communicate up to 5km you 
 
 The maximum detected range was experimented with a small packet radio transmitting its position every minute. The maximum range obtained was slightly more than 5 kilometers in line of sight in open area. Testing it instead in an urban environment the range is down to 250 meters. Two couples of STX882 and SRX882 were used as transceivers. If you choose these modules, remember to set `HIGH` the pin `CS` on the receiver before starting reception.
 
-If Using `OverSampling`, the asynchronous acknowledgement is suggested as acknowledgement mechanism because includes in the packet's meta-info a packet id, avoiding duplicated receptions.
+If using `OverSampling`, the asynchronous acknowledgement is suggested as acknowledgement mechanism because includes in the packet's meta-info a packet id, avoiding duplicated receptions.
 
 #### Antenna design
 Experiments in `PJON_HALF_DUPLEX` mode have shown that it seems better to keep isolated the two antennas, using two different, not connected elements to transmit and receive. The first suggested antenna design is a wide beam dipole antenna made by two 173mm (quarter wavelength) or 345mm (half wavelength) long conductive elements, one connected to ground and the other connected to the input or output pin:

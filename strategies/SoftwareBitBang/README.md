@@ -2,7 +2,7 @@
 **Medium:** Wire |
 **Pins used:** 1 / 2
 
-`SoftwareBitBang` is based on `micros` and `delayMicroseconds`, needs 1 or optionally 2 wires and no additional hardware to handle one or many to many communication on a single channel or bus. It can be run on cheap and low performance microcontrollers. Bus maximum length is mostly limited by the resistance of the common conductive element used. It has been tested with up to 50m long insulated wires, results demonstrate the same high performance achieved with shorter lengths. It complies with [PJDL v1.1](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.1.md) data link layer specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=Vg5aSlD-VCU) for a brief showcase of its features.
+`SoftwareBitBang` is a strategy or data link based on `micros` and `delayMicroseconds`, needs 1 or optionally 2 wires and no additional hardware to handle one or many to many communication on a single channel or bus. It can be run on cheap and low performance microcontrollers. Bus maximum length is mostly limited by the resistance of the common conductive element used. It has been tested with up to 50m long insulated wires, results demonstrate the same high performance achieved with shorter lengths. It complies with [PJDL v1.1](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.1.md) data link layer specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=Vg5aSlD-VCU) for a brief showcase of its features.
 ```cpp  
  ______     ______      ______      ______      ______
 |      |   |      |    |      |    |      |    |      |
@@ -32,7 +32,7 @@ It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to
 - `SWBB_FAST` (2) runs at 21504Bd or 2.68kB/s cross-architecture, promiscuous clock/architecture compatible.
 - `SWBB_OVERDRIVE` (3) runs a specific architecture at its maximum limits (non cross-architecture compatible). Every architecture has its own limits, Arduino Duemilanove for example runs at 31250Bd or 3.906kB/s, Arduino Zero can reach 48000Bd or 6kB/s.
 
-When including and using `SoftwareBitBang`, as data link layer of a PJON bus, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because `SoftwareBitBang` is completely software emulated strategy with a non blocking implementation, transforming a painful walk to the hill in a nice flight.
+When including and using `SoftwareBitBang`, as data link layer of a PJON bus, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because `SoftwareBitBang` is completely software emulated strategy with a non blocking implementation, transforming a painful walk in a nice flight.
 
 Single wire simplicity let you to experiment quickly and with creativity. The first suggested test, at the tester's risk, is to let two arduino boards communicate [through a living body](https://www.youtube.com/watch?v=caMit7nzJsM) touching with the left hand the digital port of the first board (5v 40ma, harmless) and with the right the port of the other one. It is stunning to see highly accurate digital communication running inside a living biological body. This opens the mind to possible creative solutions.
 

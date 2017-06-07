@@ -1,7 +1,7 @@
 #pragma once
 
- /* CRC32 table-less implementation
-    See: http://www.hackersdelight.org/hdcodetxt/crc.c.txt */
+/* CRC32 table-less implementation
+   See: http://www.hackersdelight.org/hdcodetxt/crc.c.txt */
 
 struct PJON_crc32 {
 

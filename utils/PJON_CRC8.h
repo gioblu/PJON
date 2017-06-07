@@ -1,7 +1,7 @@
 
 #pragma once
 
-  /* Compute CRC8 with a table-less implementation: */
+/* Compute CRC8 with a table-less implementation: */
 
 struct PJON_crc8 {
 

@@ -21,7 +21,7 @@ Changelog: Response generalization / refactoring
 */
 ```
 ### PJDLR (Padded jittering data link / R version)
-PJDLR (Padded jittering data link) has been specified to enable a new software emulated simplex or half-duplex data-link layer supporting one or many to many communication on a single channel or medium. It can be run on cheap and low performance microcontrollers, it supports communication for many devices connected to the same medium and stable operation in spite of interference. Its procedure has been specified to obtain long range and high reliability using FSK/ASK/OOK radio transceivers as physical layer.
+PJDLR (Padded jittering data link) has been specified to enable a new software emulated simplex or half-duplex data link layer supporting one or many to many communication on a single channel or medium. It can be run on cheap and low performance microcontrollers, it supports communication for many devices connected to the same medium and stable operation in spite of interference. Its procedure has been specified to obtain long range and high reliability using FSK/ASK/OOK radio transceivers as physical layer.
 
 #### Basic concepts
 * Use a pattern of predefined initial padding bits to identify a byte

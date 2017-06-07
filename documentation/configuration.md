@@ -18,7 +18,7 @@ Templates can be scary at first sight, but they are quite straight-forward and e
 ```cpp  
   PJON<SoftwareBitBang> bus;
 ```
-In the example above the PJON object is instantiated passing [SoftwareBitBang](/wiki/SoftwareBitBang) strategy as template parameter. Strategies are classes abstracting the data-link layer, making PJON easy to be uses on different media. It is possible to instantiate more than one PJON object with different strategies in the same sketch:
+In the example above the PJON object is instantiated passing [SoftwareBitBang](/wiki/SoftwareBitBang) strategy as template parameter. Strategies are classes abstracting the data link layer, making PJON easy to be uses on different media. It is possible to instantiate more than one PJON object with different strategies in the same sketch:
 ```cpp  
   PJON<SoftwareBitBang> wiredBus;
   PJON<EthernetTCP>     tcpBus;

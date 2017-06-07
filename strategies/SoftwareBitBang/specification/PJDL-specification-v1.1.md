@@ -19,7 +19,7 @@ Changelog: Response generalization / refactoring
 */
 ```
 ### PJDL (Padded Jittering Data Link)
-PJDL (Padded Jittering Data Link) has been specified to enable a new software emulated simplex or half-duplex data-link layer supporting one or many to many communication on a single channel or medium. It can be run on cheap and low performance microcontrollers, it supports communication for many devices connected to the same wire and stable operation in spite of interference. The main bus maximum length limit is related to its electric resistance, if at destination a high bit voltage is lower than the input-output port threshold voltage, its value can be detected erroneously. It has been tested with up to 50 meters long insulated wire of different qualities demonstrating the ability to achieve reliable communication also in this scenario.   
+PJDL (Padded Jittering Data Link) has been specified to enable a new software emulated simplex or half-duplex data link layer supporting one or many to many communication on a single channel or medium. It can be run on cheap and low performance microcontrollers, it supports communication for many devices connected to the same wire and stable operation in spite of interference. The main bus maximum length limit is related to its electric resistance, if at destination a high bit voltage is lower than the input-output port threshold voltage, its value can be detected erroneously. It has been tested with up to 50 meters long insulated wire of different qualities demonstrating the ability to achieve reliable communication also in this scenario.   
 ```cpp  
  ______     ______      ______      ______      ______
 |      |   |      |    |      |    |      |    |      |

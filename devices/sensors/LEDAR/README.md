@@ -3,7 +3,7 @@
 
 ![PJON](images/LEDAR-wired.jpg)
 
-The LEDAR is a 23x23mm open-source, stand-alone, programmable reflectometer/proximity sensor based on ATtiny85. It is engineered to be easily configurable, have a range of 6 meters in ideal conditions and to be easily crafted at home with common DIP components. To make this device accessible to many at a really low cost, the photodiode chosen for detection is the same used for emission, a simple visible light, infrared or ultraviolet LED.
+The LEDAR is a 23x23mm open-source, stand-alone, programmable reflectometer/proximity smart sensor based on ATtiny85. It is engineered to be easily configurable, have a range of 6 meters in ideal conditions and to be easily crafted at home with common DIP components. To make this device accessible to many at a really low cost, the photodiode chosen for detection is the same used for emission, a simple visible light, infrared or ultraviolet LED. It needs only 3 pins (PJON, 5v, GND) to operate transmitting samples and receiving incoming configuration on the same PJON IO pin.
 
 ```cpp  
  _______   _______   _______   _______   _______
@@ -14,7 +14,7 @@ The LEDAR is a 23x23mm open-source, stand-alone, programmable reflectometer/prox
  ____||________||________||________||________||______ +5v
  _____|_________|_________|_________|_________|______ GND
 ```
-Many LEDAR modules can be connected to the same [SoftwareBitBang](../../../strategies/SoftwareBitBang/README.md) bus.
+Many LEDARs can be connected to the same [SoftwareBitBang](../../../strategies/SoftwareBitBang/README.md) bus. Each LEDAR is running an instance of the PJON protocol stack with its own configurable device id, so many can coexist on the same medium.
 
 Its detection method is based on the interesting ability of LEDs, if hit by light, to produce a tiny amount of electricity thanks to the photo-electric effect, and a usable voltage range for the ATtiny85's ADC.
 

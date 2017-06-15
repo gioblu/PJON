@@ -6,13 +6,13 @@
 The LEDAR is a 23x23mm open-source, stand-alone, programmable reflectometer/proximity smart sensor based on ATtiny85. It is engineered to be easily configurable, have a range of 6 meters in ideal conditions and to be easily crafted at home with common DIP components. To make this device accessible to many at a really low cost, the photodiode chosen for detection is the same used for emission, a simple visible light, infrared or ultraviolet LED. It needs only 3 pins (PJON, 5v, GND) to operate transmitting samples and receiving incoming configuration on the same PJON IO pin.
 
 ```cpp  
- _______   _______   _______   _______   _______
-|       | |       | |       | |       | |       |   ___/\/\/\___ GND
-| LEDAR | | LEDAR | | LEDAR | | LEDAR | | LEDAR |  |   1-5 MΩ
-|_______| |_______| |_______| |_______| |_______|  |  
- ___|||_______|||_______|||_______|||_______|||____|_ SoftwareBitBang bus
- ____||________||________||________||________||______ +5v
- _____|_________|_________|_________|_________|______ GND
+ _______   _______   _______
+|       | |       | |       |   ___/\/\/\___ GND
+| LEDAR | | LEDAR | | LEDAR |  |   1-5 MΩ
+|_______| |_______| |_______|  |  
+____|||_______|||_______|||____|_ SoftwareBitBang bus
+_____||________||________||______ +5v
+______|_________|_________|______ GND
 ```
 Many LEDARs can be connected to the same [SoftwareBitBang](../../../strategies/SoftwareBitBang/README.md) bus. Each LEDAR is running an instance of the PJON protocol stack with its own configurable device id, so many can coexist on the same medium.
 

@@ -1,5 +1,5 @@
 
-#### LEDAR
+### LEDAR
 
 ![PJON](images/LEDAR-wired.jpg)
 
@@ -26,26 +26,6 @@ Reflex intensity or `R` is estimated simply subtracting the background noise sam
 
 To higher reflex detection resolution, it is used the internal 1.1v analog reference and analog readings integration. A LEDAR module can be used for reflectometry/proximity/presence detection, although could be used also for wireless communication using the [AnalogSampling](../../../strategies/AnalogSampling/README.md) strategy and a custom made sketch. Its detection mode can be set to `0` (passive mode), where only presence detection is transmitted if threshold is reached or `1` (active mode) where the sensor cyclically transmits data. The operation mode, reading iterations, detection threshold and transmission interval are configurable using a simple set of commands using the [SoftwareBitBang](../../../strategies/SoftwareBitBang/README.md) bus used also for data output.
 
-##### List of materials
-- 1x breadboard or proto-board or PCB    
-- 1x 4 pin DIP socket                    
-- 1x ATtiny85                            
-- 1x 16Mhz crystal oscillator            
-- 1x Photodiode / LED (also normal LED emitters can be used as photodetectors)   
-- 1x Resistor to set correct emitter LED's supply voltage                     
-- 1x LED chosen to match photodiode's peak spectrum sensitivity          
-- 1x 1-10MΩ resistor used to pull down detector's output                 
-- 1x 3 pin 2.54mm interface                                              
-
-#### Circuit
-The circuit is quite simple and can be tested quickly on a breadboard. It is composed by 6 elements, the MCU, its clock, a couple of resistors and a couple of LEDs. Here you can see a more advanced version with its own dedicated printed circuit board and a 3d printed case, used to higher sensitivity and avoid direct line of sight between the emitter and the sensor.
-
-![PJON](images/LEDAR-front.jpg)
-
-![PJON](images/LEDAR-front-2.jpg)
-
-The mounting holes distance is 37mm center to center, as well as Sharp sensors like GP2D12, to be compatible with many mounts already available on the market.
-
 #### Configuration
 A standard program is proposed to let users easily configure LEDARs using only a series of commands on its PJON [SoftwareBitBang](../../../strategies/SoftwareBitBang/README.md) bus, and automatically save its result in the EPROM to avoid the tedious need of flashing the chip multiple times:
 
@@ -63,6 +43,33 @@ A standard program is proposed to let users easily configure LEDARs using only a
 |  `X` Configuration reset        | none          | Sets configuration to default |
 
 Using the proposed [Console](software/Console/Console.ino) example and an Arduino compatible device it is possible to input configuration with an easy to use console interface.
+
+
+##### List of materials
+- 1x breadboard or proto-board or PCB    
+- 1x 4 pin DIP socket                    
+- 1x ATtiny85                            
+- 1x 16Mhz crystal oscillator            
+- 1x Photodiode / LED (also normal LED emitters can be used as photodetectors)   
+- 1x Resistor to set correct emitter LED's supply voltage                     
+- 1x LED chosen to match photodiode's peak spectrum sensitivity          
+- 1x 1-10MΩ resistor used to pull down detector's output                 
+- 1x 3 pin 2.54mm interface                                              
+
+#### Circuit
+The circuit is quite simple and can be tested quickly on a breadboard. It is composed by 6 elements, the MCU, its clock, a couple of resistors and a couple of LEDs. Take a look at the [fritzing project](hardware/fritzing/LEDARv5.fzz) if you need more details.
+
+Here you can see a more advanced version with its own dedicated printed circuit board and a 3d printed case, used to higher sensitivity and avoid direct line of sight between the emitter and the sensor.
+
+![PJON](images/LEDAR-PCB.jpg)
+
+The mounting holes distance is 37mm center to center, as well as Sharp sensors like GP2D12, to be compatible with many mounts already available on the market.
+
+![PJON](images/LEDAR-front.jpg)
+
+The case is made by two elements and it has been printed using a customized Prusa i3 with a 0.2mm diameter nozzle with a print speed of 45mm/s  and travel speed 120mm/s. The whole sensor weights around 6.5 grams.
+
+![PJON](images/LEDAR-front-2.jpg)
 
 This device has been engineered with the strong feeling that, in future, "smart houses" will not necessarily host a moltitude of inefficient and convoluted embedded real-time operative systems in whatever "thing", consuming a lot of power and exposing vulnerabilities also outside the physical perimeter of houses running Ethernet over WiFi; but more probably, will host many small dedicated microcontrollers connected to a wired, common, open-source, lightweight and less power consuming communication bus, unhackable without direct physical access to its wiring.
 

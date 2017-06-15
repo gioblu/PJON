@@ -40,6 +40,8 @@ The circuit is quite simple and can be tested quickly on a breadboard. It is com
 ![PJON](images/LEDAR-front.jpg)
 ![PJON](images/LEDAR-front-2.jpg)
 
+The mounting holes distance is 37mm center to center, as well as many standard Sharp sensors like GP2D12, to be compatible with many mounts already available on the market.
+
 #### Configuration
 A standard program is proposed to let users easily configure LEDARs using only a series of commands on its PJON [SoftwareBitBang](../../../strategies/SoftwareBitBang/README.md) bus, and automatically save its result in the EPROM to avoid the tedious need of flashing the chip multiple times:
 
@@ -60,4 +62,4 @@ Using the proposed [Console](software/Console/Console.ino) example and an Arduin
 
 This device has been engineered with the strong feeling that, in future, "smart houses" will not necessarily host a moltitude of inefficient and convoluted embedded real-time operative systems in whatever "thing", consuming a lot of power and exposing vulnerabilities also outside the physical perimeter of houses running Ethernet over WiFi; but more probably, will host many small dedicated microcontrollers connected to a wired, common, open-source, lightweight and less power consuming communication bus, unhackable without direct physical access to its wiring.
 
-LEDAR should be considered as a general "guideline" on how PJON compatible devices can be published and shared with other PJON users through the devices directory. Feel free to make a pull request proposing a new device you have engineered.   
+LEDAR should be considered as a general "guideline" on how PJON compatible devices can be published and shared with other PJON users through the [devices](../../README.md) directory. Feel free to make a pull request proposing a new device you have engineered.   

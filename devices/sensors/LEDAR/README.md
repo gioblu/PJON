@@ -11,7 +11,7 @@ The LEDAR is a 23x23mm open-source, stand-alone, programmable reflectometer/prox
  ____||________||________||________||________||______ +5v
  _____|_________|_________|_________|_________|______ GND
 ```
-Many LEDAR modules can be connected to the same `SoftwareBitBang` bus.
+Many LEDAR modules can be connected to the same [SoftwareBitBang](../../../strategies/SoftwareBitBang/README.md) bus.
 
 Its detection method is based on the interesting ability of LEDs, if hit by light, to produce a tiny amount of electricity thanks to the photo-electric effect, and a usable voltage range for the ATtiny85's ADC.
 
@@ -21,7 +21,7 @@ Its sampling method is based on reflectometry and on two different samples:
 
 Reflex intensity or `R` is estimated simply subtracting the background noise sample to the active one `(R = E - B)`.
 
-To higher reflex detection resolution, it is used the internal 1.1v analog reference and analog readings integration. A LEDAR module can be used for reflectometry/proximity/presence detection, although could be used also for wireless communication using the `AnalogSampling` strategy and a custom made sketch. Its detection mode can be set to `0` (passive mode), where only presence detection is transmitted if threshold is reached or `1` (active mode) where the sensor cyclically transmits data. The operation mode, reading iterations, detection threshold and transmission interval are configurable using a simple set of commands using the `SoftwareBitBang` bus used also for data output. Many LEDAR modules can be connected to the same `SoftwareBitBang` bus.  
+To higher reflex detection resolution, it is used the internal 1.1v analog reference and analog readings integration. A LEDAR module can be used for reflectometry/proximity/presence detection, although could be used also for wireless communication using the [AnalogSampling](../../../strategies/AnalogSampling/README.md) strategy and a custom made sketch. Its detection mode can be set to `0` (passive mode), where only presence detection is transmitted if threshold is reached or `1` (active mode) where the sensor cyclically transmits data. The operation mode, reading iterations, detection threshold and transmission interval are configurable using a simple set of commands using the [SoftwareBitBang](../../../strategies/SoftwareBitBang/README.md) bus used also for data output.
 
 ##### List of materials
 - 1x breadboard or proto-board or PCB    
@@ -41,7 +41,7 @@ The circuit is quite simple and can be tested quickly on a breadboard. It is com
 ![PJON](images/LEDAR-front-2.jpg)
 
 #### Configuration
-A standard program is proposed to let users easily configure LEDARs using only a series of commands on its PJON SoftwareBitBang bus, and automatically save its result in the EPROM to avoid the tedious need of flashing the chip multiple times:
+A standard program is proposed to let users easily configure LEDARs using only a series of commands on its PJON [SoftwareBitBang](../../../strategies/SoftwareBitBang/README.md) bus, and automatically save its result in the EPROM to avoid the tedious need of flashing the chip multiple times:
 
 | COMMAND                         | PARAMETER     | EFFECT                        |
 | --------------------------------| --------------| ------------------------------|
@@ -58,6 +58,6 @@ A standard program is proposed to let users easily configure LEDARs using only a
 
 Using the proposed [Console](software/Console/Console.ino) example and an Arduino compatible device it is possible to input configuration with an easy to use console interface.
 
-This device has been engineered with the strong feeling that, in future, "smart houses" will not necessarily host a moltitude of inefficient and convoluted embedded real-time operative systems in whatever "thing", consuming a lot of power and exposing vulnerabilities also outside the physical perimeter of houses running Ethernet over WiFi; but more probably, will host a moltitude of small dedicated microcontrollers connected to a wired, common, open-source, lightweight and less power consuming communication bus, unhackable without direct physical access to its wiring.
+This device has been engineered with the strong feeling that, in future, "smart houses" will not necessarily host a moltitude of inefficient and convoluted embedded real-time operative systems in whatever "thing", consuming a lot of power and exposing vulnerabilities also outside the physical perimeter of houses running Ethernet over WiFi; but more probably, will host many small dedicated microcontrollers connected to a wired, common, open-source, lightweight and less power consuming communication bus, unhackable without direct physical access to its wiring.
 
 LEDAR should be considered as a general "guideline" on how PJON compatible devices can be published and shared with other PJON users through the devices directory. Feel free to make a pull request proposing a new device you have engineered.   

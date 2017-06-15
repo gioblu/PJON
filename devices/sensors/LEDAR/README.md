@@ -47,7 +47,7 @@ A standard program is proposed to let users easily configure LEDARs using only a
 - `D` Threshold can be set in passive mode or `M0` to activate a reading sending only if a certain value is reached
 - `M` Detection mode can be set to `0` (passive mode), where only presence detection is transmitted if threshold is reached or `1` (active mode) where the sensor cyclically transmits data depending on transmission interval configuration or `T`
 - `L` Reading iteration count affects reading resolution and duration, setting a higher amount of readings will higher reading duration as well as resolution. Consider that for now LEDAR supports an output of up to 65535, transmitting data in a 2 bytes fixed format. Dynamic data length related to data magnitude will be added in the next software versions
-- `Q` For security reasons it is possible to block incoming configuration, although further configuration will be possible only flashing the the [LEDAR](software/LEDAR/LEDAR.ino) sketch on the ATtiny85 using an ISP programmer.
+- `Q` For security reasons it is possible to block incoming configuration, although further configuration is possible flashing the [LEDAR](software/LEDAR/LEDAR.ino) sketch on the ATtiny85 using an ISP programmer.
 
 Using the proposed [Console](software/Console/Console.ino) example and an Arduino compatible device it is possible to input configuration with an easy to use console interface.
 

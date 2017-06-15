@@ -44,8 +44,8 @@ A standard program is proposed to let users easily configure LEDARs using only a
 |  `T` Transmission interval      | `uint16_t`    | Sets transmission interval    |
 |  `X` Configuration reset        | none          | Sets configuration to default |
 
-- `D` Threshold can be set in passive mode or `M0` to activate a reading sending only if a certain value is reached
 - `M` Detection mode can be set to `0` (passive mode), where only presence detection is transmitted if threshold is reached or `1` (active mode) where the sensor cyclically transmits data depending on transmission interval configuration or `T`
+- `D` Threshold can be set when in passive mode or `M0` to activate a sending only if a certain value is reached
 - `L` Reading iteration count affects reading resolution and duration, setting a higher amount of readings will higher reading duration as well as resolution. Consider that for now LEDAR supports an output of up to 65535, transmitting data in a 2 bytes fixed format. Dynamic data length related to data magnitude will be added in the next software versions
 - `Q` For security reasons it is possible to block incoming configuration, although further configuration is possible flashing the [LEDAR](software/LEDAR/LEDAR.ino) sketch on the ATtiny85 using an ISP programmer.
 
@@ -63,7 +63,7 @@ Using the proposed [Console](software/Console/Console.ino) example and an Arduin
 - 1x 3 pin 2.54mm interface                                              
 
 #### Circuit
-The circuit is quite simple and can be tested quickly on a breadboard. It is composed by 6 elements, the MCU, its clock, a couple of resistors and a couple of LEDs. This particular LEDAR was built with NOS (new old stock) components and infrared LEDs. The emittter LED is connected to PB0 through a current limit resistor selected depending on its forward voltage, the other LED used as a detector, is connected to PB2 using ADC1 with a pull-down resistor connected to ground with a value of 1-10MΩ related to the amount of current produced by the detector. XTAL1 and 2 pins are connected to the crystal oscillator and PB1 is used for communication and configuration. Take a look at the [fritzing project](hardware/fritzing/LEDARv5.fzz) if you need more details.
+The circuit is quite simple and can be tested quickly on a breadboard. It is composed by 6 elements, the MCU, its clock, a couple of resistors and a couple of LEDs. This particular LEDAR was built with NOS (new old stock) components and infrared LEDs. The emitter LED is connected to PB0 through a current limiting resistor selected depending on its forward voltage, the other LED used as a detector, is connected to PB2 using ADC1 with a pull-down resistor connected to ground with a value of 1-10MΩ related to the amount of current produced by the detector. XTAL1 and 2 pins are connected to the crystal oscillator and PB1 is used for communication and configuration. Take a look at the [Fritzing project](hardware/fritzing/LEDARv5.fzz) if you need more details.
 
 ![PJON](images/LEDAR-PCB.jpg)
 
@@ -79,6 +79,6 @@ The case is made by two elements and it has been printed using a customized Prus
 
 Once crafted, ATtiny85 has to be flashed with the [LEDAR](software/LEDAR/LEDAR.ino) sketch using an ISP programmer, see [ATtiny85 interfacing](https://github.com/gioblu/PJON/wiki/ATtiny-interfacing)
 
-LEDAR has been engineered with the strong feeling that, in the future, "smart houses" will not necessarily host a multitude of inefficient and convoluted embedded real-time operative systems, in whatever "thing", consuming a lot of power running Ethernet over WiFi and exposing vulnerabilities also out of the physical boundaries of houses, but more probably, will host many dedicated microcontrollers connected to a wired, common, open-source, lightweight and less power consuming communication bus, unhackable without direct physical access to its wiring.
+LEDAR has been engineered with the strong feeling that, in the future, "smart houses" will not necessarily host a multitude of inefficient and convoluted embedded real-time operative systems, in whatever "thing", consuming a lot of power running Ethernet over WiFi and exposing vulnerabilities also out of the physical boundaries of houses. Otherwise, more probably, will host many dedicated microcontrollers connected to a wired, common, open-source, lightweight and less power consuming communication bus, unhackable without direct physical access to its wiring.
 
 LEDAR should be considered as a general "guideline" on how PJON compatible devices can be published and shared with other PJON users through the [devices](../../README.md) directory. Feel free to make a pull request proposing a new device you have engineered.   

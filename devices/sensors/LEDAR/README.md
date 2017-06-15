@@ -31,7 +31,7 @@ A LEDAR module can be used for reflectometry/proximity/presence detection, altho
 #### Configuration
 A standard program is proposed to let users easily configure LEDARs using only a series of commands on its PJON [SoftwareBitBang](../../../strategies/SoftwareBitBang/README.md) bus, and automatically save its result in the EPROM to avoid the tedious need of flashing the chip multiple times. LEDAR accepts incoming configuration if sent by `MASTER_ID` and its configured recipient id.
 
-| COMMAND                         | PARAMETER     | EFFECT                        |
+| Command                         | Parameter     | Effect                        |
 | --------------------------------| --------------| ------------------------------|
 |  `C` Header configuration       | `uint8_t`     | Sets header configuration     |
 |  `D` Detection threshold        | `uint16_t`    | Sets detection threshold      |
@@ -63,7 +63,7 @@ Using the proposed [Console](software/Console/Console.ino) example and an Arduin
 - 1x 3 pin 2.54mm interface                                              
 
 #### Circuit
-The circuit is quite simple and can be tested quickly on a breadboard. It is composed by 6 elements, the MCU, its clock, a couple of resistors and a couple of LEDs. Take a look at the [fritzing project](hardware/fritzing/LEDARv5.fzz) if you need more details. This particular LEDAR was built with NOS (new old stock) components and infrared LEDs.
+The circuit is quite simple and can be tested quickly on a breadboard. It is composed by 6 elements, the MCU, its clock, a couple of resistors and a couple of LEDs. This particular LEDAR was built with NOS (new old stock) components and infrared LEDs. The emittter LED is connected to PB0 through a current limit resistor selected depending on its forward voltage, the other LED used as a detector, is connected to PB2 using ADC1 with a pull-down resistor connected to ground with a value of 1-10MΩ related to the amount of current produced by the detector. XTAL1 and 2 pins are connected to the crystal oscillator and PB1 is used for communication and configuration. Take a look at the [fritzing project](hardware/fritzing/LEDARv5.fzz) if you need more details.
 
 ![PJON](images/LEDAR-PCB.jpg)
 

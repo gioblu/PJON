@@ -1,6 +1,8 @@
 
 #### LEDAR
+
 ![PJON](images/LEDAR-wired.jpg)
+
 The LEDAR is a 23x23mm open-source, stand-alone, programmable reflectometer/proximity sensor based on ATtiny85. It is engineered to be easily configurable, have a range of 6 meters in ideal conditions and to be easily crafted at home with common DIP components. To make this device accessible to many at a really low cost, the photodiode chosen for detection is the same used for emission, a simple visible light, infrared or ultraviolet LED.
 
 ```cpp  
@@ -39,6 +41,7 @@ To higher reflex detection resolution, it is used the internal 1.1v analog refer
 The circuit is quite simple and can be tested quickly on a breadboard. It is composed by 6 elements, the MCU, its clock, a couple of resistors and a couple of LEDs. Here you can see a more advanced version with its own dedicated printed circuit board and a 3d printed case, used to higher sensitivity and avoid direct line of sight between the emitter and the sensor.
 
 ![PJON](images/LEDAR-front.jpg)
+
 ![PJON](images/LEDAR-front-2.jpg)
 
 The mounting holes distance is 37mm center to center, as well as Sharp sensors like GP2D12, to be compatible with many mounts already available on the market.

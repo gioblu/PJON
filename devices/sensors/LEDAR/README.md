@@ -67,7 +67,7 @@ The circuit is quite simple and can be tested quickly on a breadboard. It is com
 
 ![PJON](images/LEDAR-PCB.jpg)
 
-Here you can see a more advanced version with its own dedicated printed circuit board and a 3d printed case, used to higher sensitivity and avoid direct line of sight between the emitter and the sensor.
+This is its dedicated printed circuit board produced by the [Fritzing FAB](https://go.aisler.net/fritzing) and a 3d printed case, used to higher sensitivity and avoid direct line of sight between the emitter and the sensor.
 
 ![PJON](images/LEDAR-front.jpg)
 

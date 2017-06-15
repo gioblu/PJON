@@ -16,7 +16,9 @@ The LEDAR is a 23x23mm open-source, stand-alone, programmable reflectometer/prox
 ```
 Many LEDARs can be connected to the same [SoftwareBitBang](../../../strategies/SoftwareBitBang/README.md) bus. Each LEDAR is running an instance of the PJON protocol stack with its own configurable device id, so many can coexist on the same medium.
 
-Its detection method is based on the interesting ability of LEDs, if hit by light, to produce a tiny amount of electricity, thanks to the photo-electric effect, and a usable voltage range for the ATtiny85's ADC.
+Its detection method is based on two interesting characteristics of LEDs:
+- If hit by light, LEDs produce a tiny amount of electricity, thanks to the photo-electric effect.
+- LEDs used as detectors are generally more sensitive to the frequency they emit if used as emitters, making a couple of identical LEDs generally used for lighting, in two extremely efficient wireless transceivers that can be used for reflectometry and for wireless communication.  
 
 Its sampling method is based on reflectometry and on two different samples:
 - Background noise or ambient light sample `B`
@@ -75,8 +77,8 @@ The mounting holes distance is 37mm center to center, as well as Sharp sensors l
 
 ![PJON](images/LEDAR-front-2.jpg)
 
-The case is made by two elements and it has been printed using a customized Prusa i3 with a 0.2mm diameter nozzle with a print speed of 45mm/s  and travel speed 120mm/s (I hate to wait) using black, eco sustainable, corn derived PLA. The whole sensor weights around 6.5 grams.
+The case is made by two elements and it has been printed using a customized Prusa i3 with a 0.2mm diameter nozzle with a print speed of 45mm/s  and travel speed 120mm/s (I hate to wait) using black, eco-sustainable, corn derived PLA. The whole sensor weights around 6.5 grams.
 
-LEDAR has been engineered with the strong feeling that, in future, "smart houses" will not necessarily host a moltitude of inefficient and convoluted embedded real-time operative systems, in whatever "thing", consuming a lot of power running Ethernet over WiFi and exposing vulnerabilities also out of the physical boundaries of houses, but more probably, will host many dedicated microcontrollers connected to a wired, common, open-source, lightweight and less power consuming communication bus, unhackable without direct physical access to its wiring.
+LEDAR has been engineered with the strong feeling that, in the future, "smart houses" will not necessarily host a multitude of inefficient and convoluted embedded real-time operative systems, in whatever "thing", consuming a lot of power running Ethernet over WiFi and exposing vulnerabilities also out of the physical boundaries of houses, but more probably, will host many dedicated microcontrollers connected to a wired, common, open-source, lightweight and less power consuming communication bus, unhackable without direct physical access to its wiring.
 
 LEDAR should be considered as a general "guideline" on how PJON compatible devices can be published and shared with other PJON users through the [devices](../../README.md) directory. Feel free to make a pull request proposing a new device you have engineered.   

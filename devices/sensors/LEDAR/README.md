@@ -17,18 +17,16 @@ The LEDAR is a 23x23mm open-source, stand-alone, programmable reflectometer/prox
 Many LEDARs can be connected to the same [SoftwareBitBang](../../../strategies/SoftwareBitBang/README.md) bus. Each LEDAR is running an instance of the PJON protocol stack with its own configurable device id, so many can coexist on the same medium.
 
 Its detection method is based on two interesting characteristics of LEDs:
-- If hit by light, LEDs produce a tiny amount of electricity, thanks to the photo-electric effect.
-- LEDs used as detectors are generally more sensitive to the frequency they emit if used as emitters, making a couple of identical LEDs generally used for lighting, in two extremely efficient wireless transceivers that can be used for reflectometry and for wireless communication.  
+- If hit by light, LEDs produce a tiny amount of electricity, thanks to the photo-electric effect
+- LEDs used as detectors are generally more sensitive to the frequency they emit if used as emitters, making a couple of identical LEDs generally used for lighting, in two extremely efficient wireless transceivers that can be used for reflectometry or also for wireless communication using the [AnalogSampling](../../../strategies/AnalogSampling/README.md) strategy
 
-Its sampling method is based on reflectometry and on two different samples:
+Its sampling method is based on two different samples:
 - Background noise or ambient light sample `B`
 - Sampling while emitting light `E`
 
 Reflex intensity or `R` is estimated simply subtracting the background noise sample to the active one `(R = E - B)`.
 
 To higher reflex detection resolution, it is used the internal 1.1v analog reference and analog readings integration.
-
-A LEDAR module can be used for reflectometry/proximity/presence detection, although could be used also for wireless communication using the [AnalogSampling](../../../strategies/AnalogSampling/README.md) strategy and a custom made sketch.
 
 #### Configuration
 A standard program is proposed to let users easily configure LEDARs using only a series of commands on its PJON [SoftwareBitBang](../../../strategies/SoftwareBitBang/README.md) bus, and automatically save its result in the EPROM to avoid the tedious need of flashing the chip multiple times. LEDAR accepts incoming configuration if sent by `MASTER_ID` and its configured recipient id.
@@ -78,6 +76,8 @@ The mounting holes distance is 37mm center to center, as well as Sharp sensors l
 ![PJON](images/LEDAR-front-2.jpg)
 
 The case is made by two elements and it has been printed using a customized Prusa i3 with a 0.2mm diameter nozzle with a print speed of 45mm/s  and travel speed 120mm/s (I hate to wait) using black, eco-sustainable, corn derived PLA. The whole sensor weights around 6.5 grams.
+
+Once crafted, ATtiny85 has to be flashed with the [LEDAR](software/LEDAR/LEDAR.ino) sketch using an ISP programmer, see [ATtiny85 interfacing](https://github.com/gioblu/PJON/wiki/ATtiny-interfacing)
 
 LEDAR has been engineered with the strong feeling that, in the future, "smart houses" will not necessarily host a multitude of inefficient and convoluted embedded real-time operative systems, in whatever "thing", consuming a lot of power running Ethernet over WiFi and exposing vulnerabilities also out of the physical boundaries of houses, but more probably, will host many dedicated microcontrollers connected to a wired, common, open-source, lightweight and less power consuming communication bus, unhackable without direct physical access to its wiring.
 

@@ -135,12 +135,10 @@ class PJON {
     /* Begin function to be called in setup: */
 
     void begin() {
-      uint8_t device_id_seed =
-        (_device_id != PJON_NOT_ASSIGNED) ? _device_id : 0;
-      PJON_RANDOM_SEED(PJON_ANALOG_READ(_random_seed) + device_id_seed);
-      strategy.begin(device_id_seed);
+      PJON_RANDOM_SEED(PJON_ANALOG_READ(_random_seed) + _device_id);
+      strategy.begin(_device_id);
       #if(PJON_INCLUDE_ASYNC_ACK)
-        _packet_id_seed = PJON_RANDOM(65535) + device_id_seed;
+        _packet_id_seed = PJON_RANDOM(65535) + _device_id;
       #endif
     };
 

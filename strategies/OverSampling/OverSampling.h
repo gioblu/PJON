@@ -57,7 +57,9 @@ class OverSampling {
        (returns always true) */
 
     bool begin(uint8_t additional_randomness = 0) {
-      delay(PJON_RANDOM(OS_INITIAL_DELAY) + additional_randomness);
+      PJON_DELAY_MICROSECONDS(
+        (PJON_RANDOM(OS_INITIAL_DELAY) + additional_randomness) * 1000
+      );
       PJON_IO_PULL_DOWN(_input_pin);
       if(_output_pin != _input_pin)
         PJON_IO_PULL_DOWN(_output_pin);

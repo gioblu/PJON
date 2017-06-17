@@ -12,14 +12,14 @@
 #define LEDAR_EMITTER_PIN       0
 #define LEDAR_RECEIVER_PIN     A1
 
-// LEDAR by default in active mode
+// LEDAR default mode 1 or active
 #define LEDAR_MODE              1
-// Transmission interval by default 0.1 seconds
+// Transmission interval
 #define LEDAR_INTERVAL        100
-// Reading iterations by default 500
+// Reading iterations
 #define LEDAR_READINGS        500
-// Presence detection threshold 2500
-#define LEDAR_THRESHOLD      5000
+// Presence detection threshold
+#define LEDAR_THRESHOLD      2500
 // Block incoming configuration
 #define LEDAR_ACCEPT_CONFIG  true
 
@@ -45,7 +45,7 @@ void setup() {
     EEPROM.read(15) != 'R' ||
     EEPROM.read(16) != LEDAR_VERSION
   ) EEPROM_write_default_configuration();
-  else EEPROM_read_configuration();
+  EEPROM_read_configuration();
   // Emitter and receiver pin mode configuration
   pinMode(LEDAR_EMITTER_PIN, OUTPUT);
   digitalWrite(LEDAR_EMITTER_PIN, LOW);
@@ -57,7 +57,6 @@ void setup() {
   bus.strategy.set_pin(1);
   bus.begin();
   bus.set_receiver(receiver_function);
-  // Initial long reception timeframe to accept incoming configuration
   bus.receive(2000000);
 };
 
@@ -139,7 +138,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
       mode = payload[1];
       EEPROM.update(0, mode);
     }
-    // STOP ACCEPTING INCONMING CONFIGURATION UPDATE
+    // STOP ACCEPTING INCOMING CONFIGURATION UPDATE
     if(payload[0] == 'Q') {
       EEPROM.update(10, payload[1]);
       accept_config_change = payload[1];

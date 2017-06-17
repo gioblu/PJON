@@ -26,7 +26,7 @@ Its sampling method is based on two different samples:
 
 Reflex intensity or `R` is estimated simply subtracting the background noise sample to the active one `(R = E - B)`.
 
-To higher reflex detection resolution, it is used the internal 1.1v analog reference and analog readings integration.
+The internal 1.1v analog reference and analog readings integration are used to higher reflex detection resolution.
 
 #### Configuration
 A standard program is proposed to let users easily configure LEDARs using only a series of commands on its PJON [SoftwareBitBang](../../../strategies/SoftwareBitBang/README.md) bus, and automatically save its result in the EPROM to avoid the tedious need of flashing the chip multiple times. LEDAR accepts incoming configuration if sent by `MASTER_ID` and its configured recipient id.

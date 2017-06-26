@@ -21,13 +21,9 @@ Call the `begin` method on the `Serial` or `SoftwareSerial`  object you want to 
 
   /* Set 10 milliseconds as the maximum timeframe between transmission and
      synchronous acknowledgement response. This value is strictly related to
-     the maximum time needed by receiver to receive and compute the packet. */
+     the maximum time needed by receiver to receive and compute the packet.
+     Higher if necessary. */
   #define TS_RESPONSE_TIME_OUT 10000
-  /* If it leads to unacceptable loop time duration consider to use asynchronous
-     acknowledgement instead, set TS_RESPONSE_TIME_OUT to 0 and call the
-     following methods in the setup:
-       bus.set_synchronous_acknowledge(false);
-       bus.set_asynchronous_acknowledge(true); */
 
   /* Set the back-off exponential degree (default 4) */
   #define TS_BACK_OFF_DEGREE 4

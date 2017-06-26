@@ -35,16 +35,12 @@
 #endif
 
 /* Set 10 milliseconds as the maximum timeframe between transmission and
-   synchronous acknowledgement response. This value is strictly related to
-   the maximum time needed by receiver to receive and compute the packet */
+   synchronous acknowledgement response. This value is strictly related to the
+   maximum time needed by receiver to receive, compute and transmit a response.
+   Higher if necessary. */
 #ifndef TS_RESPONSE_TIME_OUT
   #define TS_RESPONSE_TIME_OUT 10000
 #endif
-/* If it leads to unacceptable loop time duration consider to use asynchronous
-   acknowledgement instead, setting TS_RESPONSE_TIME_OUT to 0 and setting
-   configuration as follows:
-   bus.set_synchronous_acknowledge(false);
-   bus.set_asynchronous_acknowledge(true); */
 
 /* Minum timeframe with channel free for use before transmission.
    (Avoid disrupting synchronous acknowledgement exchange) */

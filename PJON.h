@@ -881,7 +881,7 @@ class PJON {
     };
 
 
-    /* Set the pin used as a seed for random generator: */
+    /* Set the analog pin used as a seed for random generator: */
 
     void set_random_seed(uint8_t random_seed) {
       _random_seed = random_seed;

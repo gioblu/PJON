@@ -280,6 +280,33 @@ class PJON {
     };
 
 
+    /* Check if a packet id is already dispatched in buffer: */
+
+    bool dispatched(PJON_Packet_Info info) {
+      PJON_Packet_Info actual_info;
+      for(uint16_t i = 0; i < PJON_MAX_PACKETS; i++) {
+        parse((uint8_t *)packets[i].content, actual_info);
+        if(
+          packets[i].state && packets[i].state != PJON_ACK &&
+          (actual_info.header & PJON_ACK_MODE_BIT) &&
+          (actual_info.header & PJON_TX_INFO_BIT)
+        )
+          if(
+            actual_info.id == info.id &&
+            info.sender_id == actual_info.receiver_id &&
+            (
+              !(info.header & PJON_MODE_BIT) ? true :
+              bus_id_equality(
+                info.receiver_bus_id,
+                actual_info.receiver_bus_id
+              )
+            )
+          ) return true;
+      }
+      return false;
+    };
+
+
     /* Get count of the packets for a device_id:
        Don't pass any parameter to count all packets
        Pass a device id to count all it's related packets */
@@ -437,18 +464,19 @@ class PJON {
           if(_auto_delete && length == packet_overhead(data[1]))
             if(handle_asynchronous_acknowledgment(last_packet_info))
               return PJON_ACK;
-
           if(length > packet_overhead(data[1])) {
-            dispatch(
-              last_packet_info.sender_id,
-              (uint8_t *)last_packet_info.sender_bus_id,
-              NULL,
-              0,
-              0,
-              config | PJON_ACK_MODE_BIT | PJON_TX_INFO_BIT,
-              last_packet_info.id
-            );
-            update();
+            if(!dispatched(last_packet_info)) {
+              dispatch(
+                last_packet_info.sender_id,
+                (uint8_t *)last_packet_info.sender_bus_id,
+                NULL,
+                0,
+                0,
+                config | PJON_ACK_MODE_BIT | PJON_TX_INFO_BIT,
+                last_packet_info.id
+              );
+              update();
+            }
             if(known_packet_id(last_packet_info))
               return PJON_ACK;
           }

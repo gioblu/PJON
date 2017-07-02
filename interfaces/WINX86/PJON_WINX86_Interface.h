@@ -67,7 +67,7 @@
           std::chrono::high_resolution_clock::now() - begin_ts
         ).count();
       if(elapsed_usec >= delay_value) break;
-      std::this_thread::sleep_for(std::chrono::microseconds(1));
+      std::this_thread::sleep_for(std::chrono::microseconds(50));
     }
   };
 

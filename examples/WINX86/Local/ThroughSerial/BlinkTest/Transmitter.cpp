@@ -12,9 +12,12 @@
 #endif
 
 #define TS_RESPONSE_TIME_OUT 60000
+/* Maximum accepted timeframe between transmission and synchronous
+   acknowledgement. This timeframe is affected by latency and CRC computation.
+   Could be necessary to higher this value if devices are separated by long
+   physical distance and or if transmitting long packets. */
+   
 #define TS_COLLISION_DELAY 3000
-/* WINX86 machine generally needs longer response timeout to correctly
-   receive a response */
 
 #define PJON_INCLUDE_TS true
 #include "PJON\PJON.h"

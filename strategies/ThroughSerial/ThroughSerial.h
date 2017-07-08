@@ -85,12 +85,14 @@ class ThroughSerial {
 
     uint16_t receive_byte(uint32_t time_out = TS_BYTE_TIME_OUT) {
       uint32_t time = PJON_MICROS();
-      while((uint32_t)(PJON_MICROS() - time) < time_out)
+      while((uint32_t)(PJON_MICROS() - time) < time_out) {
         if(PJON_SERIAL_AVAILABLE(serial)) {
           _last_reception_time = PJON_MICROS();
           uint16_t read = (uint8_t)PJON_SERIAL_READ(serial);
           if(read >= 0) return read;
         }
+        delayMicroseconds(time_out / 10);
+      }
       return PJON_FAIL;
     };
 

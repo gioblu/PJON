@@ -91,7 +91,9 @@ class ThroughSerial {
           uint16_t read = (uint8_t)PJON_SERIAL_READ(serial);
           if(read >= 0) return read;
         }
-        delayMicroseconds(time_out / 10);
+        #if defined(_WIN32)
+          PJON_DELAY_MICROSECONDS(time_out / 10);
+        #endif
       }
       return PJON_FAIL;
     };

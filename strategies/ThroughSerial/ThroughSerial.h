@@ -7,6 +7,7 @@
     - Zbigniew Zasieczny, collision avoidance multi-drop RS485 (latency)
       and SoftwareSerial compatibility
     - Franketto (Arduino forum user) RS485 TX enable pin compatibility
+    - Endre Karlson separate RS485 enable pins handling
    ____________________________________________________________________________
 
    ThroughSerial, copyright 2016-2017 by Giovanni Blu Mitolo All rights reserved

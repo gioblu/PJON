@@ -184,8 +184,8 @@ class ThroughSerial {
     };
 
     void set_RS485_rxe_pin(uint8_t pin) {
-      _enable_RS485_txe_pin = pin;
-      PJON_IO_MODE(_enable_RS485_txe_pin, OUTPUT);
+      _enable_RS485_rxe_pin = pin;
+      PJON_IO_MODE(_enable_RS485_rxe_pin, OUTPUT);
     }
 
     void set_RS485_txe_pin(uint8_t pin) {

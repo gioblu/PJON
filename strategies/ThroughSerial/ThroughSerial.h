@@ -127,25 +127,21 @@ class ThroughSerial {
     /* Send byte response to the packet's transmitter */
 
     void send_response(uint8_t response) {
-      _start_tx();
-
+      start_tx();
       send_byte(response);
       PJON_SERIAL_FLUSH(serial);
-
-      _end_tx();
+      end_tx();
     };
 
 
     /* Send a string: */
 
     void send_string(uint8_t *string, uint8_t length) {
-      _start_tx();
-
+      start_tx();
       for(uint8_t b = 0; b < length; b++)
         send_byte(string[b]);
       PJON_SERIAL_FLUSH(serial);
-
-      _end_tx();
+      end_tx();
     };
 
 
@@ -161,25 +157,27 @@ class ThroughSerial {
       serial = serial_port;
     };
 
-    void _start_tx() {
+
+    /* RS485 enable pins handling: */
+
+    void start_tx() {
       if(_enable_RS485_txe_pin != PJON_NOT_ASSIGNED) {
         PJON_IO_WRITE(_enable_RS485_txe_pin, HIGH);
-
-        if (_enable_RS485_rxe_pin != PJON_NOT_ASSIGNED) {
+        if(_enable_RS485_rxe_pin != PJON_NOT_ASSIGNED)
           PJON_IO_WRITE(_enable_RS485_rxe_pin, HIGH);
-        }
       }
     }
 
-    void _end_tx() {
+    void end_tx() {
       if(_enable_RS485_txe_pin != PJON_NOT_ASSIGNED) {
         PJON_IO_WRITE(_enable_RS485_txe_pin, LOW);
-
-        if (_enable_RS485_rxe_pin != PJON_NOT_ASSIGNED) {
+        if(_enable_RS485_rxe_pin != PJON_NOT_ASSIGNED)
           PJON_IO_WRITE(_enable_RS485_rxe_pin, LOW);
-        }
       }
     }
+
+
+    /* RS485 enable pins setters: */
 
     void set_enable_RS485_pin(uint8_t pin) {
       set_RS485_txe_pin(pin);

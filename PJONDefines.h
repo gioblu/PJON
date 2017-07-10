@@ -25,7 +25,7 @@ PJON™ Standard compliant tools:
  https://github.com/fredilarsen/ModuleInterface
 - Command line PJON wrapper over unnamed pipes by Zbigniew Zasieczny
  https://github.com/Girgitt/PJON-piper
-- PJON-python - PJON running on Python by Zbigniew Zasieczny (obsolete)
+- PJON-python - PJON running on Python by Zbigniew Zasieczny
  https://github.com/Girgitt/PJON-python
 - Logic analyzer by Andrew Grande (obsolete)
  https://github.com/aperepel/saleae-pjon-protocol-analyzer

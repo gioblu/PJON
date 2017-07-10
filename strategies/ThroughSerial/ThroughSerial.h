@@ -126,28 +126,25 @@ class ThroughSerial {
     /* Send byte response to the packet's transmitter */
 
     void send_response(uint8_t response) {
-      if(_enable_RS485_pin != PJON_NOT_ASSIGNED)
-        PJON_IO_WRITE(_enable_RS485_pin, HIGH);
+      _start_tx();
 
       send_byte(response);
       PJON_SERIAL_FLUSH(serial);
 
-      if(_enable_RS485_pin != PJON_NOT_ASSIGNED)
-        PJON_IO_WRITE(_enable_RS485_pin, LOW);
+      _end_tx();
     };
 
 
     /* Send a string: */
 
     void send_string(uint8_t *string, uint8_t length) {
-      if(_enable_RS485_pin != PJON_NOT_ASSIGNED)
-        PJON_IO_WRITE(_enable_RS485_pin, HIGH);
+      _start_tx();
+
       for(uint8_t b = 0; b < length; b++)
         send_byte(string[b]);
       PJON_SERIAL_FLUSH(serial);
 
-      if(_enable_RS485_pin != PJON_NOT_ASSIGNED)
-        PJON_IO_WRITE(_enable_RS485_pin, LOW);
+      _end_tx();
     };
 
 
@@ -163,15 +160,42 @@ class ThroughSerial {
       serial = serial_port;
     };
 
+    void _start_tx() {
+      if(_enable_RS485_txe_pin != PJON_NOT_ASSIGNED) {
+        PJON_IO_WRITE(_enable_RS485_txe_pin, HIGH);
 
-    /* Pass the enable transmission pin for RS485 if in use */
+        if (_enable_RS485_rxe_pin != PJON_NOT_ASSIGNED) {
+          PJON_IO_WRITE(_enable_RS485_rxe_pin, HIGH);
+        }
+      }
+    }
+
+    void _end_tx() {
+      if(_enable_RS485_txe_pin != PJON_NOT_ASSIGNED) {
+        PJON_IO_WRITE(_enable_RS485_txe_pin, LOW);
+
+        if (_enable_RS485_rxe_pin != PJON_NOT_ASSIGNED) {
+          PJON_IO_WRITE(_enable_RS485_rxe_pin, LOW);
+        }
+      }
+    }
 
     void set_enable_RS485_pin(uint8_t pin) {
-      _enable_RS485_pin = pin;
-      PJON_IO_MODE(_enable_RS485_pin, OUTPUT);
+      set_RS485_txe_pin(pin);
     };
+
+    void set_RS485_rxe_pin(uint8_t pin) {
+      _enable_RS485_txe_pin = pin;
+      PJON_IO_MODE(_enable_RS485_txe_pin, OUTPUT);
+    }
+
+    void set_RS485_txe_pin(uint8_t pin) {
+      _enable_RS485_txe_pin = pin;
+      PJON_IO_MODE(_enable_RS485_txe_pin, OUTPUT);
+    }
 
   private:
     uint32_t _last_reception_time;
-    uint8_t  _enable_RS485_pin = PJON_NOT_ASSIGNED;
+    uint8_t  _enable_RS485_rxe_pin = PJON_NOT_ASSIGNED;
+    uint8_t  _enable_RS485_txe_pin = PJON_NOT_ASSIGNED;
 };

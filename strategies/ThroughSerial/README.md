@@ -44,6 +44,11 @@ For a simple use with RS485 serial modules a transmission enable pin setter has 
 ```cpp  
   bus.strategy.set_enable_RS485_pin(11);
 ```
+If separate enable setters are needed use:
+```cpp  
+  bus.strategy.set_RS485_rxe_pin(11); // Set RS485 reception enable pin
+  bus.strategy.set_RS485_txe_pin(12); // Set RS485 transmission enable pin
+```
 
 All the other necessary information is present in the general [Documentation](/documentation).
 

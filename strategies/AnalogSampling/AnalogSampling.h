@@ -38,7 +38,6 @@
 
 #pragma once
 
-#include "Timing.h"
 
 /* Default reading state threshold: */
 
@@ -56,6 +55,8 @@
 #ifndef AS_MODE
   #define AS_MODE AS_STANDARD
 #endif
+
+#include "Timing.h"
 
 class AnalogSampling {
   public:

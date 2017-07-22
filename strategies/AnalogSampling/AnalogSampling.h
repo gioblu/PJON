@@ -56,6 +56,14 @@
   #define AS_MODE AS_STANDARD
 #endif
 
+#ifndef cbi
+  #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
+#endif
+
+#ifndef sbi
+  #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
+#endif
+
 #include "Timing.h"
 
 class AnalogSampling {
@@ -75,6 +83,20 @@ class AnalogSampling {
        (returns always true) */
 
     bool begin(uint8_t additional_randomness = 0) {
+      #if AS_PRESCALE ==    8
+        cbi(ADCSRA, ADPS2);
+        sbi(ADCSRA, ADPS1);
+        sbi(ADCSRA, ADPS0);
+      #elif AS_PRESCALE == 16
+        sbi(ADCSRA, ADPS2);
+        cbi(ADCSRA, ADPS1);
+        cbi(ADCSRA, ADPS0);
+      #elif AS_PRESCALE == 32
+        sbi(ADCSRA, ADPS2);
+        cbi(ADCSRA, ADPS1);
+        sbi(ADCSRA, ADPS0);
+      #endif
+
       PJON_DELAY_MICROSECONDS(
         (PJON_RANDOM(AS_INITIAL_DELAY) + additional_randomness) * 1000
       );

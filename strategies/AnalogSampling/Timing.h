@@ -1,13 +1,24 @@
 
 /* PJON AnalogSampling strategy Transmission Timing table
    Copyright (c) 2017, Giovanni Blu Mitolo All rights reserved.
+   _______________________________________________________
+  | AS_STANDARD      | Transmission speed 1024Bb - 128B/s |
+  | ADC prescale 128 |                                    |
+  |------------------|------------------------------------|
+  | AS_FAST          | Transmission speed 1361Bb - 170B/s |
+  | ADC prescale 128 |                                    |
+  |------------------|------------------------------------|
+  | AS_OVERDRIVE_32  | Transmission speed 3352Bb - 419B/s |
+  | ADC prescale 32  |                                    |
+  |------------------|------------------------------------|
+  | AS_OVERDRIVE_16  | Transmission speed 5069Bb - 633B/s |
+  | ADC prescale 16  |                                    |
+  |------------------|------------------------------------|
+  | AS_OVERDRIVE_8   | Transmission speed 6153Bb - 769B/s |
+  | ADC prescale 8   | (Caution out of specification)     |
+  |__________________|____________________________________|
 
-    AS_STANDARD transmission mode performance:
-    Transfer speed: 1024Bb or 128B/s
-    Absolute  communication speed: 128B/s (data length 20 of characters)
-    Data throughput: 100B/s (data length 20 of characters)
-
-   All benchmarks should be executed with NetworkAnalysis and SpeedTest examples. */
+  All benchmarks are obtained with NetworkAnalysis and SpeedTest examples. */
 
 #pragma once
 
@@ -16,6 +27,39 @@
     #if F_CPU == 16000000L
       #define AS_BIT_WIDTH    750
       #define AS_BIT_SPACER  1050
+      #define AS_READ_DELAY     0
+    #endif
+  #elif AS_MODE == AS_FAST
+    #if F_CPU == 16000000L
+      #define AS_BIT_WIDTH    572
+      #define AS_BIT_SPACER   728
+      #define AS_READ_DELAY     0
+    #endif
+  #elif AS_MODE == AS_OVERDRIVE_32
+    #ifndef AS_PRESCALE
+      #define AS_PRESCALE 32
+    #endif
+    #if F_CPU == 16000000L
+      #define AS_BIT_WIDTH    188
+      #define AS_BIT_SPACER   694
+      #define AS_READ_DELAY     0
+    #endif
+  #elif AS_MODE == AS_OVERDRIVE_16
+    #ifndef AS_PRESCALE
+      #define AS_PRESCALE 16
+    #endif
+    #if F_CPU == 16000000L
+      #define AS_BIT_WIDTH    132
+      #define AS_BIT_SPACER   390
+      #define AS_READ_DELAY     0
+    #endif
+  #elif AS_MODE == AS_OVERDRIVE_8
+    #ifndef AS_PRESCALE
+      #define AS_PRESCALE 8
+    #endif
+    #if F_CPU == 16000000L
+      #define AS_BIT_WIDTH    104
+      #define AS_BIT_SPACER   364
       #define AS_READ_DELAY     0
     #endif
   #endif

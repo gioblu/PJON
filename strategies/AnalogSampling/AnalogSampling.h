@@ -38,18 +38,32 @@
 
 #pragma once
 
-
 /* Default reading state threshold: */
 
 #ifndef AS_THRESHOLD
-  #define AS_THRESHOLD    1
+  #define AS_THRESHOLD  1
 #endif
 
 /* _AS_STANDARD transmission mode performance:
-   Transfer speed: 1024Bb or 128B/s
-   Absolute  communication speed: 128B/s (data length 20 of characters)
-   Data throughput: 100B/s (data length 20 of characters) */
-#define AS_STANDARD  1
+   Transfer speed: 1024Bb or 128B/s */
+#define AS_STANDARD     1
+
+/* AS_FAST transmission mode performance:
+   Transfer speed: 1361Bb or 170B/s */
+#define AS_FAST         2
+
+/* AS_OVERDRIVE_32 transmission mode performance:
+   Transfer speed: 3352Bb or 419B/s */
+#define AS_OVERDRIVE_32 3
+
+/* AS_OVERDRIVE_16 transmission mode performance:
+   Transfer speed: 5069Bb or 633B/s */
+#define AS_OVERDRIVE_16 4
+
+/* AS_OVERDRIVE_8 transmission mode performance:
+   Transfer speed: 6153Bb or 769B/s
+   ADC prescale 8 (Caution out of specification) */
+#define AS_OVERDRIVE_8  5
 
 /* Set here the selected transmission mode - default STANDARD */
 #ifndef AS_MODE

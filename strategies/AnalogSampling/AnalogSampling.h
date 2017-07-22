@@ -145,14 +145,6 @@ class AnalogSampling {
       uint32_t time = PJON_MICROS();
       PJON_ANALOG_READ(_input_pin);
       _analog_read_time = (uint32_t)(PJON_MICROS() - time);
-      for(uint8_t i = 0; i < 10; i++) {
-        time = PJON_MICROS();
-        PJON_ANALOG_READ(_input_pin);
-        _analog_read_time =
-          (_analog_read_time * 0.75) +
-          ((uint32_t)(PJON_MICROS() - time) * 0.25);
-        // TODO - check for granularity
-      }
     };
 
 

@@ -85,4 +85,15 @@
   #ifndef PJON_MICROS
     #define PJON_MICROS micros
   #endif
+
+  /* Set ADC prescale functions ------------------------------------------- */
+
+  #ifndef cbi
+    #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
+  #endif
+
+  #ifndef sbi
+    #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
+  #endif
+
 #endif

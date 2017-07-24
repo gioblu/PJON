@@ -70,14 +70,6 @@
   #define AS_MODE AS_STANDARD
 #endif
 
-#ifndef cbi
-  #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
-#endif
-
-#ifndef sbi
-  #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
-#endif
-
 #include "Timing.h"
 
 class AnalogSampling {

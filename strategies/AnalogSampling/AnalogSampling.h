@@ -1,25 +1,33 @@
 
 /* AnalogSampling data link layer 18/02/2017
    used as a Strategy by the PJON framework
-   Compliant with the Padded jittering data link layer specification v0.1
+   It complies with PJDL v1.1 data link specification
 
-   It is designed to sample digital data using analog readings.
-   It can be effectively used to communicate data wirelessly, through
-   any sort of radiation transceiver. The most basic example is to use a couple
-   of visible light LEDs connected to the A0 pin used as wireless transceivers
-   infact, leveraging the duality of LEDs:
-   - Ability to emit photons if electrons are travelling through the junction
-   - Ability to emit electrons if photons are hitting the junction
-     (photo-electric effect) it is possibile to use them as
-     wireless (bidirectional) transceivers!
+   AnalogSampling is designed to sample digital data using analog readings.
+   It can be effectively used to communicate data wirelessly through any
+   sort of radiation transceiver.
+
+   The most basic example is to use a couple of visible light LEDs as wireless
+   transceivers connecting to the A0 pin of 2 Arduino boards.
+
+   Leveraging the interesting characteristics of LEDs:
+   - Emit photons if electrons are travelling through the junction
+   - Emit electrons if photons are hitting the junction, thanks to the
+     photo-electric effect
+
+   It is possibile to use them as wireless (bidirectional) transceivers!
 
    The obtained range is related to:
    - Analog reference (voltage reading resolution)
    - LED sensitivity to the signal
    - Available current for transmitter
 
-   For a long range use case a couple of photodiodes and laser emitters is
-   suggested. It may be necessary to teak timing constants in Timing.h.
+   It is possible to use this strategy with a couple of LEDs and an optic fiber
+   cable to have a safe EM interference free data link.
+
+   It is possible to use this strategy to also communicate long range wirelessly
+   using a couple of photodiodes and laser emitters. It may be necessary to
+   tweak timing constants in Timing.h.
    ____________________________________________________________________________
 
    Copyright 2010-2017 Giovanni Blu Mitolo gioscarab@gmail.com
@@ -61,7 +69,7 @@
 #define AS_OVERDRIVE_16 4
 
 /* AS_OVERDRIVE_8 transmission mode performance:
-   Transfer speed: 6153Bb or 769B/s
+   Transfer speed: 12658Bb or 1582B/s
    ADC prescale 8 (Caution out of specification) */
 #define AS_OVERDRIVE_8  5
 
@@ -89,7 +97,8 @@ class AnalogSampling {
        (returns always true) */
 
     bool begin(uint8_t additional_randomness = 0) {
-      #if AS_PRESCALE ==    8
+      // Set ADC clock prescale
+      #if AS_PRESCALE ==  8
         cbi(ADCSRA, ADPS2);
         sbi(ADCSRA, ADPS1);
         sbi(ADCSRA, ADPS0);

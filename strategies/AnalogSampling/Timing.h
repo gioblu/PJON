@@ -1,22 +1,24 @@
 
 /* PJON AnalogSampling strategy Transmission Timing table
    Copyright (c) 2017, Giovanni Blu Mitolo All rights reserved.
-   _______________________________________________________
-  | AS_STANDARD      | Transmission speed 1024Bb - 128B/s |
-  | ADC prescale 128 |                                    |
-  |------------------|------------------------------------|
-  | AS_FAST          | Transmission speed 1361Bb - 170B/s |
-  | ADC prescale 128 |                                    |
-  |------------------|------------------------------------|
-  | AS_OVERDRIVE_32  | Transmission speed 3352Bb - 419B/s |
-  | ADC prescale 32  |                                    |
-  |------------------|------------------------------------|
-  | AS_OVERDRIVE_16  | Transmission speed 5069Bb - 633B/s |
-  | ADC prescale 16  |                                    |
-  |------------------|------------------------------------|
-  | AS_OVERDRIVE_8   | Transmission speed 6153Bb - 769B/s |
-  | ADC prescale 8   | (Caution out of specification)     |
-  |__________________|____________________________________|
+   __________________________________________________________
+  | 1 AS_STANDARD     | Transmission speed 1024Bb - 128B/s   |
+  | ADC prescale 128  |                                      |
+  |-------------------|--------------------------------------|
+  | 2 AS_FAST         | Transmission speed 1361Bb - 170B/s   |
+  | ADC prescale 128  |                                      |
+  |-------------------|--------------------------------------|
+  | 3 AS_OVERDRIVE_32 | Transmission speed 3773Bb - 471B/s   |
+  | ADC prescale 32   |                                      |
+  |-------------------|--------------------------------------|
+  | 4 AS_OVERDRIVE_16 | Transmission speed 5547Bb - 639B/s   |
+  | ADC prescale 16   |                                      |
+  |-------------------|--------------------------------------|
+  | 5 AS_OVERDRIVE_8  | Transmission speed 12658Bb - 1582B/s |
+  | ADC prescale 8    | Caution, ADC clocked faster than     |
+  |                   | manifacturer raccomends as maximum   |
+  |                   | ADC sample rate (prescale 16)        |
+  |___________________|______________________________________|
 
   All benchmarks are obtained with NetworkAnalysis and SpeedTest examples. */
 

@@ -43,7 +43,7 @@
     #endif
     #if F_CPU == 16000000L
       #define AS_BIT_WIDTH    188
-      #define AS_BIT_SPACER   694
+      #define AS_BIT_SPACER   428
       #define AS_READ_DELAY     0
     #endif
   #elif AS_MODE == AS_OVERDRIVE_16
@@ -51,8 +51,8 @@
       #define AS_PRESCALE 16
     #endif
     #if F_CPU == 16000000L
-      #define AS_BIT_WIDTH    132
-      #define AS_BIT_SPACER   390
+      #define AS_BIT_WIDTH    128
+      #define AS_BIT_SPACER   290
       #define AS_READ_DELAY     0
     #endif
   #elif AS_MODE == AS_OVERDRIVE_8
@@ -60,9 +60,9 @@
       #define AS_PRESCALE 8
     #endif
     #if F_CPU == 16000000L
-      #define AS_BIT_WIDTH    104
-      #define AS_BIT_SPACER   364
-      #define AS_READ_DELAY     0
+      #define AS_BIT_WIDTH     56
+      #define AS_BIT_SPACER   128
+      #define AS_READ_DELAY    16
     #endif
   #endif
 #endif

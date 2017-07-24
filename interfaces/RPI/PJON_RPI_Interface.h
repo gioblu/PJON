@@ -84,6 +84,13 @@
     #define PJON_SERIAL_FLUSH(S) serialFlush(S)
   #endif
 
+  /* Timing offset in microseconds between expected and real serial
+     byte transmission: */
+
+  #ifndef TS_FLUSH_OFFSET
+    #define TS_FLUSH_OFFSET        152
+  #endif
+
   /* Timing ----------------------------------------------------------------- */
 
   #ifndef PJON_DELAY_MICROSECONDS

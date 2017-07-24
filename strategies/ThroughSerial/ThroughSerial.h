@@ -7,7 +7,7 @@
     - Zbigniew Zasieczny, collision avoidance multi-drop RS485 (latency)
       and SoftwareSerial compatibility
     - Franketto (Arduino forum user) RS485 TX enable pin compatibility
-    - Endre Karlson separate RS485 enable pins handling
+    - Endre Karlson separate RS485 enable pins handling, flush timing hack
    ____________________________________________________________________________
 
    ThroughSerial, copyright 2016-2017 by Giovanni Blu Mitolo All rights reserved
@@ -141,6 +141,13 @@ class ThroughSerial {
       for(uint8_t b = 0; b < length; b++)
         send_byte(string[b]);
       PJON_SERIAL_FLUSH(serial);
+      /* On RPI flush fails to wait until all bytes are transmitted
+         here RPI forced to wait blocking using delayMicroseconds */
+      #if defined(RPI)
+        PJON_DELAY_MICROSECONDS(
+          ((1000000 / (_bd / 8)) * length) + _flush_offset
+        );
+      #endif
       end_tx();
     };
 
@@ -174,7 +181,23 @@ class ThroughSerial {
         if(_enable_RS485_rxe_pin != PJON_NOT_ASSIGNED)
           PJON_IO_WRITE(_enable_RS485_rxe_pin, LOW);
       }
-    }
+    };
+
+
+    /* Pass baudrate to ThroughSerial
+       (needed only for RPI flush hack): */
+
+    void set_baud_rate(uint32_t baud) {
+      _bd = baud;
+    };
+
+
+    /* Set flush timing offset in microseconds between expected and real serial
+       byte transmission: */
+
+    void set_flush_offset(uint16_t offset) {
+      _flush_offset = offset;
+    };
 
 
     /* RS485 enable pins setters: */
@@ -194,6 +217,8 @@ class ThroughSerial {
     }
 
   private:
+    uint16_t _flush_offset = TS_FLUSH_OFFSET;
+    uint32_t _bd;
     uint32_t _last_reception_time;
     uint8_t  _enable_RS485_rxe_pin = PJON_NOT_ASSIGNED;
     uint8_t  _enable_RS485_txe_pin = PJON_NOT_ASSIGNED;

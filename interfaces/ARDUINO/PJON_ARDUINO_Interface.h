@@ -1,6 +1,6 @@
 
 /* PJON Arduino Interface
-   _____________________________________________________________________________
+   ___________________________________________________________________________
 
     Copyright 2017 Giovanni Blu Mitolo gioscarab@gmail.com
 
@@ -48,7 +48,7 @@
       } while(0)
   #endif
 
-  /* Random ----------------------------------------------------------------- */
+  /* Random --------------------------------------------------------------- */
 
   #ifndef PJON_RANDOM
     #define PJON_RANDOM random
@@ -58,7 +58,7 @@
     #define PJON_RANDOM_SEED randomSeed
   #endif
 
-  /* Serial ----------------------------------------------------------------- */
+  /* Serial --------------------------------------------------------------- */
 
   #ifndef PJON_SERIAL_AVAILABLE
     #define PJON_SERIAL_AVAILABLE(S) S->available()
@@ -76,7 +76,7 @@
     #define PJON_SERIAL_FLUSH(S) S->flush()
   #endif
 
-  /* Timing ----------------------------------------------------------------- */
+  /* Timing --------------------------------------------------------------- */
 
   #ifndef PJON_DELAY_MICROSECONDS
     #define PJON_DELAY_MICROSECONDS delayMicroseconds

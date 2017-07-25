@@ -183,7 +183,7 @@ class ThroughSerial {
       }
     };
 
-
+  #if defined(RPI)
     /* Pass baudrate to ThroughSerial
        (needed only for RPI flush hack): */
 
@@ -198,7 +198,7 @@ class ThroughSerial {
     void set_flush_offset(uint16_t offset) {
       _flush_offset = offset;
     };
-
+  #endif
 
     /* RS485 enable pins setters: */
 
@@ -217,8 +217,10 @@ class ThroughSerial {
     }
 
   private:
+  #if defined(RPI)
     uint16_t _flush_offset = TS_FLUSH_OFFSET;
     uint32_t _bd;
+  #endif
     uint32_t _last_reception_time;
     uint8_t  _enable_RS485_rxe_pin = PJON_NOT_ASSIGNED;
     uint8_t  _enable_RS485_txe_pin = PJON_NOT_ASSIGNED;

@@ -138,16 +138,17 @@ class ThroughSerial {
 
     void send_string(uint8_t *string, uint8_t length) {
       start_tx();
-      for(uint8_t b = 0; b < length; b++)
+      for(uint8_t b = 0; b < length; b++) {
         send_byte(string[b]);
+        /* On RPI flush fails to wait until all bytes are transmitted
+           here RPI forced to wait blocking using delayMicroseconds */
+        #if defined(RPI)
+          PJON_DELAY_MICROSECONDS(
+            (1000000 / (_bd / 8)) + _flush_offset
+          );
+        #endif
+      }
       PJON_SERIAL_FLUSH(serial);
-      /* On RPI flush fails to wait until all bytes are transmitted
-         here RPI forced to wait blocking using delayMicroseconds */
-      #if defined(RPI)
-        PJON_DELAY_MICROSECONDS(
-          ((1000000 / (_bd / 8)) * length) + _flush_offset
-        );
-      #endif
       end_tx();
     };
 

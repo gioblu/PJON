@@ -39,7 +39,7 @@
     #endif
   #elif AS_MODE == AS_OVERDRIVE_32
     #ifndef AS_PRESCALE
-      #define AS_PRESCALE 32
+      #define AS_PRESCALE      32
     #endif
     #if F_CPU == 16000000L
       #define AS_BIT_WIDTH    188
@@ -48,7 +48,7 @@
     #endif
   #elif AS_MODE == AS_OVERDRIVE_16
     #ifndef AS_PRESCALE
-      #define AS_PRESCALE 16
+      #define AS_PRESCALE      16
     #endif
     #if F_CPU == 16000000L
       #define AS_BIT_WIDTH    128
@@ -57,7 +57,7 @@
     #endif
   #elif AS_MODE == AS_OVERDRIVE_8
     #ifndef AS_PRESCALE
-      #define AS_PRESCALE 8
+      #define AS_PRESCALE       8
     #endif
     #if F_CPU == 16000000L
       #define AS_BIT_WIDTH     56
@@ -70,7 +70,34 @@
 /* ATmega1280/2560 - Arduino Mega/Mega-nano --------------------------------- */
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
   #if AS_MODE == AS_STANDARD
-    /* TODO - define dedicated timing */
+    #if F_CPU == 16000000L
+      /* Standard timing is applied below */
+    #endif
+  #elif AS_MODE == AS_FAST
+    #if F_CPU == 16000000L
+      /* Standard timing is applied below */
+    #endif
+  #elif AS_MODE == AS_OVERDRIVE_32
+    #ifndef AS_PRESCALE
+      #define AS_PRESCALE 32
+    #endif
+    #if F_CPU == 16000000L
+      /* Standard timing is applied below */
+    #endif
+  #elif AS_MODE == AS_OVERDRIVE_16
+    #ifndef AS_PRESCALE
+      #define AS_PRESCALE 16
+    #endif
+    #if F_CPU == 16000000L
+      /* Standard timing is applied below */
+    #endif
+  #elif AS_MODE == AS_OVERDRIVE_8
+    #ifndef AS_PRESCALE
+      #define AS_PRESCALE 8
+    #endif
+    #if F_CPU == 16000000L
+      /* TODO - define dedicated timing */
+    #endif
   #endif
 #endif
 
@@ -90,16 +117,58 @@
   #endif
 #endif
 
-#ifndef AS_BIT_WIDTH
-  #define AS_BIT_WIDTH          750
-#endif
+/* Fallback to standard timing if not previously defined: */
 
-#ifndef AS_BIT_SPACER
-  #define AS_BIT_SPACER        1050
-#endif
-
-#ifndef AS_READ_DELAY
-  #define AS_READ_DELAY          0
+#if AS_MODE == AS_STANDARD
+  #ifndef AS_BIT_WIDTH
+    #define AS_BIT_WIDTH    750
+  #endif
+  #ifndef AS_BIT_SPACER
+    #define AS_BIT_SPACER  1050
+  #endif
+  #ifndef AS_READ_DELAY
+    #define AS_READ_DELAY     0
+  #endif
+#elif AS_MODE == AS_FAST
+  #ifndef AS_BIT_WIDTH
+    #define AS_BIT_WIDTH    572
+  #endif
+  #ifndef AS_BIT_SPACER
+    #define AS_BIT_SPACER   728
+  #endif
+  #ifndef AS_READ_DELAY
+    #define AS_READ_DELAY     0
+  #endif
+#elif AS_MODE == AS_OVERDRIVE_32
+  #ifndef AS_BIT_WIDTH
+    #define AS_BIT_WIDTH    188
+  #endif
+  #ifndef AS_BIT_SPACER
+    #define AS_BIT_SPACER   428
+  #endif
+  #ifndef AS_READ_DELAY
+    #define AS_READ_DELAY     0
+  #endif
+#elif AS_MODE == AS_OVERDRIVE_16
+  #ifndef AS_BIT_WIDTH
+    #define AS_BIT_WIDTH    128
+  #endif
+  #ifndef AS_BIT_SPACER
+    #define AS_BIT_SPACER   290
+  #endif
+  #ifndef AS_READ_DELAY
+    #define AS_READ_DELAY     0
+  #endif
+#elif AS_MODE == AS_OVERDRIVE_8
+  #ifndef AS_BIT_WIDTH
+    #define AS_BIT_WIDTH     56
+  #endif
+  #ifndef AS_BIT_SPACER
+    #define AS_BIT_SPACER   128
+  #endif
+  #ifndef AS_READ_DELAY
+    #define AS_READ_DELAY    16
+  #endif
 #endif
 
 /* Synchronous acknowledgement response timeout. (15 milliseconds default).

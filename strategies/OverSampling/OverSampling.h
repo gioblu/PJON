@@ -23,7 +23,7 @@
 #define STXRX882_STANDARD 1
 
 /* STXRX882_STANDARD:
-   Medium: STX882/SRX882 433Mhz ASK/FSK modules or 315/433 MHz modules (green)
+   Medium: STX882/SRX882 433MHz ASK/FSK modules or 315/433 MHz modules (green)
     RX http://nicerf.com/manage/upfile/indexbanner/635331970881921250.pdf
     TX http://nicerf.com/manage/upfile/indexbanner/635169453223382155.pdf
     Timing for other hardware can be easily implemented in Timing.h

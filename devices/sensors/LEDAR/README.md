@@ -55,7 +55,7 @@ Using the proposed [Console](software/Console/Console.ino) example and an Arduin
 - 1x breadboard or proto-board or PCB    
 - 1x 4 pin DIP socket                    
 - 1x ATtiny85                            
-- 1x 16Mhz crystal oscillator            
+- 1x 16MHz crystal oscillator            
 - 1x Photodiode / LED (also normal LED emitters can be used as photodetectors)   
 - 1x Resistor to set correct emitter LED's supply voltage                     
 - 1x LED chosen to match photodiode's peak spectrum sensitivity          

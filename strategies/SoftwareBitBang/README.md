@@ -17,14 +17,14 @@ ___|___________|___________|___________|___________|___
 It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to protect MCU pins and to reduce interference.
 
 #### Compatibility
-- ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
-- ATmega2560 16Mhz (Arduino Mega)
-- ATmega16u4/32u4 16Mhz (Arduino Leonardo)
-- ATtiny45/85 16Mhz external oscillator, see [ATtiny interfacing](https://github.com/gioblu/PJON/wiki/ATtiny-interfacing)
+- ATmega88/168/328 16MHz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
+- ATmega2560 16MHz (Arduino Mega)
+- ATmega16u4/32u4 16MHz (Arduino Leonardo)
+- ATtiny45/85 16MHz external oscillator, see [ATtiny interfacing](https://github.com/gioblu/PJON/wiki/ATtiny-interfacing)
 - SAMD (Arduino Zero)
-- ESP8266 v.1-7 80Mhz "AI-THINKER AT" firmware, see [Arduino](https://github.com/esp8266/Arduino)
-- ESP8266 NodeMCU v0.9-1.0 80Mhz, see [Arduino](https://github.com/esp8266/Arduino)
-- MK20DX256 96Mhz (Teensy 3.1)
+- ESP8266 v.1-7 80MHz "AI-THINKER AT" firmware, see [Arduino](https://github.com/esp8266/Arduino)
+- ESP8266 NodeMCU v0.9-1.0 80MHz, see [Arduino](https://github.com/esp8266/Arduino)
+- MK20DX256 96MHz (Teensy 3.1)
 
 #### Performance
 `SWBB_MODE` can be configured in 3 different modes, `SWBB_STANDARD`, `SWBB_FAST` and `SWBB_OVERDRIVE`:

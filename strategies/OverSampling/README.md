@@ -2,12 +2,12 @@
 **Media:** Radio, Wire |
 **Pins used:** 1 / 2
 
-OverSampling strategy has been developed to enable a new software emulated simplex or half-duplex data link supporting one or many to many communication on a single channel or medium. It can be run on cheap and low performance microcontrollers, it supports communication for many devices connected to the same medium and stable operation in spite of interference. Its procedure has been specified to obtain long range and high reliability using FSK/ASK/OOK 315/433Mhz radio transceivers available on the market. It complies with [PJDLR v1.1](/strategies/OverSampling/specification/PJDLR-specification-v1.1.md) specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=G1ckfsMzPns) for a brief showcase of its features.
+OverSampling strategy has been developed to enable a new software emulated simplex or half-duplex data link supporting one or many to many communication on a single channel or medium. It can be run on cheap and low performance microcontrollers, it supports communication for many devices connected to the same medium and stable operation in spite of interference. Its procedure has been specified to obtain long range and high reliability using FSK/ASK/OOK 315/433MHz radio transceivers available on the market. It complies with [PJDLR v1.1](/strategies/OverSampling/specification/PJDLR-specification-v1.1.md) specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=G1ckfsMzPns) for a brief showcase of its features.
 
 #### Compatibility
-- ATmega88/168/328 16Mhz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
-- ATmega2560 16Mhz (Arduino Mega)
-- ATmega16u4/32u4 16Mhz (Arduino Leonardo)
+- ATmega88/168/328 16MHz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
+- ATmega2560 16MHz (Arduino Mega)
+- ATmega16u4/32u4 16MHz (Arduino Leonardo)
 
 #### Performance
 - Transfer speed: 202 B/s or 1620 Baud
@@ -44,8 +44,8 @@ Pass the `OverSampling` type as PJON template parameter to instantiate a new PJO
 ```
 After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance.
 
-#### Use OverSampling with cheap 433Mhz transceivers
-To build a real open-source PJON packet radio able to communicate up to 5km you need only a couple (for `PJON_SIMPLEX` mode) or two couples (for `PJON_HALF_DUPLEX` mode) of cheap 315/433Mhz ASK/FSK/OOK transmitter and receiver modules (with a cost around 2/3 dollars each). Please be sure of the regulations your government imposes on radio transmission over these frequencies before use.
+#### Use OverSampling with cheap 433MHz transceivers
+To build a real open-source PJON packet radio able to communicate up to 5km you need only a couple (for `PJON_SIMPLEX` mode) or two couples (for `PJON_HALF_DUPLEX` mode) of cheap 315/433MHz ASK/FSK/OOK transmitter and receiver modules (with a cost around 2/3 dollars each). Please be sure of the regulations your government imposes on radio transmission over these frequencies before use.
 
 ![PJON Oversampling packet radio](http://www.gioblu.com/PJON/PJON-OverSampling-packet-radio-STX882-SRX882.jpg)
 

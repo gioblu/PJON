@@ -204,8 +204,8 @@
   #define AS_BACK_OFF_DEGREE      5
 #endif
 
-/* Threshold decrease interval (750 millis) */
+/* Threshold decrease interval (10 millis) */
 
 #ifndef AS_THRESHOLD_DECREASE_INTERVAL
-  #define AS_THRESHOLD_DECREASE_INTERVAL 750000
+  #define AS_THRESHOLD_DECREASE_INTERVAL 100000
 #endif

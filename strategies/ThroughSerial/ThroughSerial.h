@@ -174,7 +174,7 @@ class ThroughSerial {
         if(_enable_RS485_rxe_pin != PJON_NOT_ASSIGNED)
           PJON_IO_WRITE(_enable_RS485_rxe_pin, HIGH);
       }
-    }
+    };
 
     void end_tx() {
       if(_enable_RS485_txe_pin != PJON_NOT_ASSIGNED) {

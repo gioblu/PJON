@@ -7,7 +7,7 @@ PJON™ (Padded Jittering Operative Network) is an Arduino compatible, multi-mas
 [![Video introduction](https://img.shields.io/badge/PJON-video%20introduction-blue.svg)](https://www.youtube.com/watch?v=vjc4ZF5own8)
 [![Join the chat at https://gitter.im/gioblu/PJON](https://badges.gitter.im/gioblu/PJON.svg)](https://gitter.im/gioblu/PJON?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Donate](https://img.shields.io/badge/DONATE-Paypal-green.svg)](https://www.paypal.me/PJON)
 
-PJON is now operating in thousands of devices and it is applied all over the world because of the following 5 key factors:
+PJON is now operating in thousands of devices and its community has spread worldwide because of the following 5 key factors:
 - **New data link technologies**: PJON, while supporting TCP, UDP and Serial, implements and specifies the [PJDL data link](strategies/SoftwareBitBang/specification/PJDL-specification-v1.1.md) able to communicate data through a single common conductive element shared by up to 255 devices, either using a single LED as a wireless or optic fiber transceiver and also supporting many ASK/FSK radio modules available on the market, easing integration and enabling a lot of applications which were before unimaginable.
 - **Fast portability**: PJON is totally "software emulated", or better executed by software without the use of dedicated hardware. This engineering choice, the system calls abstraction and its simplicity makes it easy to be ported on virtually any computer or microcontroller.
 - **High flexibility**: The PJON network protocol stack is modular enabling the use of the same network protocol implementation on different data links or media simply changing its configuration.

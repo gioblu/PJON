@@ -9,6 +9,7 @@
 PJON KEYWORD1
 PJONMaster KEYWORD1
 PJONSlave KEYWORD1
+AnalogSampling KEYWORD1
 SoftwareBitBang KEYWORD1
 OverSampling KEYWORD1
 ThroughSerial KEYWORD1
@@ -33,6 +34,7 @@ include_sender_info KEYWORD2
 receive KEYWORD2
 remove KEYWORD2
 remove_all KEYWORD2
+reply KEYWORD2
 send KEYWORD2
 send_repeatedly KEYWORD2
 send_packet KEYWORD2

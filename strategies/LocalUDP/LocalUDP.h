@@ -114,7 +114,7 @@ public:
        We have the IP so we can skip broadcasting and reply directly. */
 
     void send_response(uint8_t response) { // Empty, PJON_ACK is always sent
-      udp.beginPacket(udp.remoteIP(), _port);
+      udp.beginPacket(udp.remoteIP(), udp.remotePort());
       udp.write((const char*) &_magic_header, 4);
       udp.write((const char*) &response, 1);
       udp.endPacket();

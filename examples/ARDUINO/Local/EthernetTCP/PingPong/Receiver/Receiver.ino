@@ -1,4 +1,3 @@
-//#define NO_SINGLE_SOCKET
 #include <PJON.h>
 
 // Ethernet configuration for this device
@@ -18,12 +17,10 @@ void setup() {
 
   bus.strategy.link.set_id(bus.device_id());
   bus.strategy.link.add_node(45, remote_ip);
-  bus.strategy.link.keep_connection(true);
-  bus.strategy.link.single_socket(false);
-  bus.strategy.link.start_listening(); // Do not call this if SINGLE_SOCKET and transmitter
-
+  bus.strategy.link.start_listening();
+  
+  bus.set_receiver(receiver_function);  
   bus.begin();
-  bus.set_receiver(receiver_function);
 };
 
 uint32_t cnt = 0;

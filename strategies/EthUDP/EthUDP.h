@@ -1,10 +1,12 @@
 
-/* LocalUDP is a Strategy for the PJON framework (included in version v5.2)
-   It supports delivering PJON packets over Ethernet UDP on local network (LAN).
+/* EthernetUDP is a Strategy for the PJON framework.
+   It supports delivering PJON packets over Ethernet UDP to a registered list
+   of devices on the LAN, WAN or Internet. Each device must be registered with its
+   device id, IP address and listening port number.
    Compliant with the PJON protocol layer specification v0.3
    _____________________________________________________________________________
 
-    LocalUDP strategy proposed and developed by Fred Larsen 02/10/2016
+    EthernetUDP strategy proposed and developed by Fred Larsen 01/09/2017
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -24,15 +26,24 @@
 #include <EthernetUdp.h>
 #include <PJONDefines.h>
 
-#define LUDP_DEFAULT_PORT                  7100
-#define LUDP_RESPONSE_TIMEOUT  (uint32_t) 20000
-#define LUDP_MAGIC_HEADER            0x0DFAC3D0
+#define EUDP_DEFAULT_PORT                  7000
+#define EUDP_RESPONSE_TIMEOUT  (uint32_t) 20000
+#define EUDP_MAGIC_HEADER            0x0DFAC3FF
 
-class LocalUDP {
+#ifndef EUDP_MAX_REMOTE_NODES
+  #define EUDP_MAX_REMOTE_NODES                10
+#endif
+
+class EthUDP {
     bool _udp_initialized = false;
-    uint16_t _port = LUDP_DEFAULT_PORT;
-    const uint32_t _magic_header = LUDP_MAGIC_HEADER;
-    const uint8_t _broadcast[4] = { 0xFF, 0xFF, 0xFF, 0xFF };
+    uint16_t _port = EUDP_DEFAULT_PORT;
+    const uint32_t _magic_header = EUDP_MAGIC_HEADER;
+
+    // Remote nodes
+    uint8_t  _remote_node_count = 0;
+    uint8_t  _remote_id[EUDP_MAX_REMOTE_NODES];
+    uint8_t  _remote_ip[EUDP_MAX_REMOTE_NODES][4];
+    uint16_t _remote_port[EUDP_MAX_REMOTE_NODES];
 
     EthernetUDP udp;
 
@@ -44,8 +55,32 @@ class LocalUDP {
       return _udp_initialized;
     };
 
+    int16_t find_remote_node(uint8_t id) {
+      for(uint8_t i = 0; i < _remote_node_count; i++)
+        if(_remote_id[i] == id)
+          return i;
+      return -1;
+    };
+
 public:
-    LocalUDP() { };
+    EthUDP() { };
+
+
+    /* Register each device we want to send to */
+
+    int16_t add_node(
+      uint8_t remote_id,
+      const uint8_t remote_ip[],
+      uint16_t port_number = EUDP_DEFAULT_PORT
+    ) {
+      if (_remote_node_count == EUDP_MAX_REMOTE_NODES) return -1;
+      _remote_id[_remote_node_count] = remote_id;
+      memcpy(_remote_ip[_remote_node_count], remote_ip, 4);
+      _remote_port[_remote_node_count] = port_number;
+      _remote_node_count++;
+      return _remote_node_count - 1;
+    };
+
 
     /* Returns the suggested delay related to the attempts passed as parameter: */
 
@@ -82,7 +117,7 @@ public:
       if(packetSize > 4 && packetSize <= 4 + max_length) {
         uint32_t header = 0;
         udp.read((char *) &header, 4);
-        if(header != _magic_header) return false; // Not a LocalUDP packet
+        if(header != _magic_header) return false; // Not a EthUDP packet
         udp.read(string, packetSize - 4);
         return packetSize - 4;
       }
@@ -105,13 +140,13 @@ public:
         if(reply_length == 1)
           if(result[0] == PJON_ACK)
             return result[0];
-     } while ((uint32_t)(PJON_MICROS() - start) < LUDP_RESPONSE_TIMEOUT);
+     } while ((uint32_t)(PJON_MICROS() - start) < EUDP_RESPONSE_TIMEOUT);
       return PJON_FAIL;
     };
 
 
     /* Send byte response to package transmitter.
-       We have the IP so we can skip broadcasting and reply directly. */
+       We have the IP so we can reply directly. */
 
     void send_response(uint8_t response) { // Empty, PJON_ACK is always sent
       udp.beginPacket(udp.remoteIP(), udp.remotePort());
@@ -125,17 +160,21 @@ public:
 
     void send_string(uint8_t *string, uint16_t length) {
       if(length > 0) {
-        udp.beginPacket(_broadcast, _port);
-        udp.write((const char*) &_magic_header, 4);
-        udp.write(string, length);
-        udp.endPacket();
+        uint8_t id = string[0],
+                pos = find_remote_node(id); // Package always starts with a receiver id byte
+        if (pos != -1) {
+          udp.beginPacket(_remote_ip[pos], _remote_port[pos]);
+          udp.write((const char*) &_magic_header, 4);
+          udp.write(string, length);
+          udp.endPacket();
+        }
       }
     };
 
 
     /* Set the UDP port: */
 
-    void set_port(uint16_t port = LUDP_DEFAULT_PORT) {
+    void set_port(uint16_t port = EUDP_DEFAULT_PORT) {
       _port = port;
     };
 };

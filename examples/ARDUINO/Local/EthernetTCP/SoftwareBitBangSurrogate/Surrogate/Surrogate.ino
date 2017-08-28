@@ -23,10 +23,10 @@ PJON<SoftwareBitBang> busA(DEVICE_ID);
 PJON<EthernetTCP> busB(1);
 
 // Ethernet configuration for this device
-const byte gateway[] = { 192, 1, 1, 1 };
-const byte subnet[] = { 255, 255, 255, 0 };
-const byte mac[] = {0xDF, 0xCF, 0x4F, 0xEF, 0xFE, 0xED};
-const byte ip[] = { 192, 1, 1, 144 };
+uint8_t gateway[] = { 192, 1, 1, 1 };
+uint8_t subnet[] = { 255, 255, 255, 0 };
+uint8_t mac[] = {0xDF, 0xCF, 0x4F, 0xEF, 0xFE, 0xED};
+uint8_t ip[] = { 192, 1, 1, 144 };
 
 // Ethernet configuration for remote device
 const byte remote_ip[] = { 192, 1, 1, 145 };
@@ -61,7 +61,7 @@ void receiver_functionA(uint8_t *payload, uint16_t length, const PJON_Packet_Inf
     packet_info.sender_bus_id,
     DEVICE_ID,
     busB.localhost,
-    payload,
+    (char *)payload,
     length,
     packet_info.header
   );
@@ -74,7 +74,7 @@ void receiver_functionB(uint8_t *payload, uint16_t length, const PJON_Packet_Inf
   busA.send_packet_blocking(
     packet_info.receiver_id,
     packet_info.receiver_bus_id,
-    payload,
+    (char *)payload,
     length,
     packet_info.header
   );

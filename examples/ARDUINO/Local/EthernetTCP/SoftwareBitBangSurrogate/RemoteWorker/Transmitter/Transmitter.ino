@@ -29,10 +29,10 @@
 PJON<EthernetTCP> bus(45);
 
 // Ethernet configuration for this device
-const byte gateway[] = { 192, 1, 1, 1 };
-const byte subnet[] = { 255, 255, 255, 0 };
-const byte mac[] = {0xD4, 0xED, 0x4C, 0xCF, 0xFE, 0xED};
-const byte ip[] = { 192, 1, 1, 145 };
+uint8_t gateway[] = { 192, 1, 1, 1 };
+uint8_t subnet[] = { 255, 255, 255, 0 };
+uint8_t mac[] = {0xD4, 0xED, 0x4C, 0xCF, 0xFE, 0xED};
+uint8_t ip[] = { 192, 1, 1, 145 };
 
 void setup() {
   Serial.begin(115200);

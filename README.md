@@ -18,7 +18,7 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 - Cross-compilation support with the [interfaces](interfaces) system calls abstraction   
 - Multi-media support with the [strategies](strategies) data link layer abstraction
 - Master-slave or multi-master [dynamic addressing](specification/PJON-dynamic-addressing-specification-v0.1.md)
-- Hot-swap support, replacing or adding devices with no need of system reset or shut down
+- Hot-swap support, no need of system reset or shut down when replacing or adding devices 
 - Configurable synchronous and/or asynchronous [acknowledgement](specification/PJON-protocol-acknowledge-specification-v0.1.md)
 - Configurable 2 level addressing (device and bus id) for scalable applications
 - Configurable 1 or 2 bytes packet length (max 255 or 65535 bytes)

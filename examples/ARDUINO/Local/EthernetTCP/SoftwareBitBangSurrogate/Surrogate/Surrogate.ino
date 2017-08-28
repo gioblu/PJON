@@ -1,10 +1,11 @@
-/* This sketch lets a RemoteWorker device connected through Ethernet TCP act as if it
- * is present on the SoftwareBitBang bus connected to this Surrogate device.
- *
- *  The RemoteWorker sketch can the run on a device not capable of SWBB but
- *  with Ethernet support, like a PC or a Raspberry PI.
- *
- * Surrogate and RemoteWorker examples contributed by Fred Larsen. */
+/* This sketch lets a RemoteWorker device connected through Ethernet TCP act
+   as if it is present on the SoftwareBitBang bus connected to this Surrogate
+   device.
+
+   The RemoteWorker sketch can the run on a device not capable of SWBB but
+   with Ethernet support, like a PC or a Raspberry PI.
+
+ Surrogate and RemoteWorker examples contributed by Fred Larsen. */
 
 #define PJON_PACKET_MAX_LENGTH 50
 #define PJON_MAX_PACKETS 3

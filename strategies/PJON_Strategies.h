@@ -28,8 +28,8 @@
 #if defined(PJON_INCLUDE_LUDP)
   #include "LocalUDP/LocalUDP.h"
 #endif
-#if defined(PJON_INCLUDE_EUPD)
-  #include "LocalUDP/EthUDP.h"
+#if defined(PJON_INCLUDE_GUDP)
+  #include "LocalUDP/GlobalUDP.h"
 #endif
 #if defined(PJON_INCLUDE_OS)
   #include "OverSampling/OverSampling.h"
@@ -55,6 +55,6 @@
   #if !defined(__AVR_ATtiny45__) && !defined(__AVR_ATtiny85__)
     #include "EthernetTCP/EthernetTCP.h"
     #include "LocalUDP/LocalUDP.h"
-    #include "EthUDP/EthUDP.h"
+    #include "GlobalUDP/GlobalUDP.h"
   #endif
 #endif

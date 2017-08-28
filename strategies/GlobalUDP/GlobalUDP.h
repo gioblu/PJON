@@ -3,7 +3,7 @@
    It supports delivering PJON packets through Ethernet UDP to a registered list
    of devices on the LAN, WAN or Internet. Each device must be registered with
    its device id, IP address and listening port number.
-   _____________________________________________________________________________
+   ___________________________________________________________________________
 
     EthernetUDP strategy proposed and developed by Fred Larsen 01/09/2017
 
@@ -64,7 +64,6 @@ class GlobalUDP {
 public:
     GlobalUDP() { };
 
-
     /* Register each device we want to send to */
 
     int16_t add_node(
@@ -81,7 +80,7 @@ public:
     };
 
 
-    /* Returns the suggested delay related to the attempts passed as parameter: */
+    /* Returns the suggested delay related to attempts passed as parameter: */
 
     uint32_t back_off(uint8_t attempts) {
       return 1;
@@ -159,8 +158,8 @@ public:
 
     void send_string(uint8_t *string, uint16_t length) {
       if(length > 0) {
-        uint8_t id = string[0],
-                pos = find_remote_node(id); // Package always starts with a receiver id byte
+        uint8_t id = string[0], pos = find_remote_node(id);
+        // Package always starts with a receiver id byte
         if (pos != -1) {
           udp.beginPacket(_remote_ip[pos], _remote_port[pos]);
           udp.write((const char*) &_magic_header, 4);

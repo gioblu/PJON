@@ -42,7 +42,7 @@ void setup() {
   Ethernet.begin(mac, ip, gateway, gateway, subnet);
 
   bus.strategy.link.set_id(bus.device_id());
-  busB.strategy.link.keep_connection(true);
+  bus.strategy.link.keep_connection(true);
   #ifdef ETCP_SINGLE_DIRECTION
     bus.strategy.link.single_initiate_direction(true);
   #else if ETCP_SINGLE_SOCKET_WITH_ACK

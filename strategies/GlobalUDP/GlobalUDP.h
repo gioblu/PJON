@@ -1,10 +1,9 @@
 
 /* EthernetUDP is a Strategy for the PJON framework.
-   It supports delivering PJON packets over Ethernet UDP to a registered list
-   of devices on the LAN, WAN or Internet. Each device must be registered with its
-   device id, IP address and listening port number.
-   Compliant with the PJON protocol layer specification v0.3
-   _____________________________________________________________________________
+   It supports delivering PJON packets through Ethernet UDP to a registered list
+   of devices on the LAN, WAN or Internet. Each device must be registered with
+   its device id, IP address and listening port number.
+   ___________________________________________________________________________
 
     EthernetUDP strategy proposed and developed by Fred Larsen 01/09/2017
 
@@ -31,10 +30,10 @@
 #define EUDP_MAGIC_HEADER            0x0DFAC3FF
 
 #ifndef EUDP_MAX_REMOTE_NODES
-  #define EUDP_MAX_REMOTE_NODES                10
+  #define EUDP_MAX_REMOTE_NODES              10
 #endif
 
-class EthUDP {
+class GlobalUDP {
     bool _udp_initialized = false;
     uint16_t _port = EUDP_DEFAULT_PORT;
     const uint32_t _magic_header = EUDP_MAGIC_HEADER;
@@ -63,8 +62,7 @@ class EthUDP {
     };
 
 public:
-    EthUDP() { };
-
+    GlobalUDP() { };
 
     /* Register each device we want to send to */
 
@@ -82,7 +80,7 @@ public:
     };
 
 
-    /* Returns the suggested delay related to the attempts passed as parameter: */
+    /* Returns the suggested delay related to attempts passed as parameter: */
 
     uint32_t back_off(uint8_t attempts) {
       return 1;
@@ -117,7 +115,7 @@ public:
       if(packetSize > 4 && packetSize <= 4 + max_length) {
         uint32_t header = 0;
         udp.read((char *) &header, 4);
-        if(header != _magic_header) return false; // Not a EthUDP packet
+        if(header != _magic_header) return false; // Not a GlobalUDP packet
         udp.read(string, packetSize - 4);
         return packetSize - 4;
       }
@@ -160,8 +158,8 @@ public:
 
     void send_string(uint8_t *string, uint16_t length) {
       if(length > 0) {
-        uint8_t id = string[0],
-                pos = find_remote_node(id); // Package always starts with a receiver id byte
+        uint8_t id = string[0], pos = find_remote_node(id);
+        // Package always starts with a receiver id byte
         if (pos != -1) {
           udp.beginPacket(_remote_ip[pos], _remote_port[pos]);
           udp.write((const char*) &_magic_header, 4);

@@ -25,11 +25,11 @@
 #if defined(PJON_INCLUDE_ETCP)
   #include "EthernetTCP/EthernetTCP.h"
 #endif
-#if defined(PJON_INCLUDE_LUPD)
+#if defined(PJON_INCLUDE_LUDP)
   #include "LocalUDP/LocalUDP.h"
 #endif
-#if defined(PJON_INCLUDE_EUPD)
-  #include "LocalUDP/EthUDP.h"
+#if defined(PJON_INCLUDE_GUDP)
+  #include "LocalUDP/GlobalUDP.h"
 #endif
 #if defined(PJON_INCLUDE_OS)
   #include "OverSampling/OverSampling.h"
@@ -43,10 +43,10 @@
 #if defined(PJON_INCLUDE_NONE)
   /* None for custom strategy inclusion */
 #endif
-#if !defined(PJON_INCLUDE_AS) && !defined(PJON_INCLUDE_ETCP) && \
-    !defined(PJON_INCLUDE_LUPD) && !defined(PJON_INCLUDE_OS) && \
-    !defined(PJON_INCLUDE_SWBB) && !defined(PJON_INCLUDE_TS) && \
-    !defined(PJON_INCLUDE_NONE)
+#if !defined(PJON_INCLUDE_AS)   && !defined(PJON_INCLUDE_ETCP) && \
+    !defined(PJON_INCLUDE_GUDP) && !defined(PJON_INCLUDE_LUDP) && \
+    !defined(PJON_INCLUDE_OS)   && !defined(PJON_INCLUDE_SWBB) && \
+    !defined(PJON_INCLUDE_TS)   && !defined(PJON_INCLUDE_NONE)
   #include "AnalogSampling/AnalogSampling.h"
   #include "OverSampling/OverSampling.h"
   #include "SoftwareBitBang/SoftwareBitBang.h"
@@ -55,6 +55,6 @@
   #if !defined(__AVR_ATtiny45__) && !defined(__AVR_ATtiny85__)
     #include "EthernetTCP/EthernetTCP.h"
     #include "LocalUDP/LocalUDP.h"
-    #include "EthUDP/EthUDP.h"
+    #include "GlobalUDP/GlobalUDP.h"
   #endif
 #endif

@@ -1,10 +1,11 @@
-/* This sketch lets a RemoteWorker device connected through Ethernet TCP act as if it 
- * is present on the SoftwareBitBang bus connected to this Surrogate device. 
- *  
- *  The RemoteWorker sketch can the run on a device not capable of SWBB but
- *  with Ethernet support, like a PC or a Raspberry PI.
- *  
- * Surrogate and RemoteWorker examples contributed by Fred Larsen. */
+/* This sketch lets a RemoteWorker device connected through Ethernet TCP act
+   as if it is present on the SoftwareBitBang bus connected to this Surrogate
+   device.
+
+   The RemoteWorker sketch can the run on a device not capable of SWBB but
+   with Ethernet support, like a PC or a Raspberry PI.
+
+ Surrogate and RemoteWorker examples contributed by Fred Larsen. */
 
 #define PJON_PACKET_MAX_LENGTH 50
 #define PJON_MAX_PACKETS 3
@@ -15,17 +16,18 @@
 
 #include <PJON.h>
 
-const uint8_t DEVICE_ID = 45;    // SWBB Device ID for this device and the RemoteWorker
+const uint8_t DEVICE_ID = 45;
+// SWBB Device ID for this device and the RemoteWorker
 
 // <Strategy name> bus(selected device id)
 PJON<SoftwareBitBang> busA(DEVICE_ID);
 PJON<EthernetTCP> busB(1);
 
 // Ethernet configuration for this device
-const byte gateway[] = { 192, 1, 1, 1 };
-const byte subnet[] = { 255, 255, 255, 0 };
-const byte mac[] = {0xDF, 0xCF, 0x4F, 0xEF, 0xFE, 0xED};
-const byte ip[] = { 192, 1, 1, 144 };
+uint8_t gateway[] = { 192, 1, 1, 1 };
+uint8_t subnet[] = { 255, 255, 255, 0 };
+uint8_t mac[] = {0xDF, 0xCF, 0x4F, 0xEF, 0xFE, 0xED};
+uint8_t ip[] = { 192, 1, 1, 144 };
 
 // Ethernet configuration for remote device
 const byte remote_ip[] = { 192, 1, 1, 145 };
@@ -42,7 +44,7 @@ void setup() {
 
   busB.strategy.link.set_id(1);
   busB.strategy.link.add_node(DEVICE_ID, remote_ip, remote_port);
-  busB.strategy.link.keep_connection(true);  
+  busB.strategy.link.keep_connection(true);
   #ifdef ETCP_SINGLE_DIRECTION
     busB.strategy.link.single_initiate_direction(true);
   #else if ETCP_SINGLE_SOCKET_WITH_ACK
@@ -55,16 +57,28 @@ void setup() {
 
 void receiver_functionA(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   // Forward packet to RemoteWorker on bus B, preserving the original sender id
-  busB.send_from_id(packet_info.sender_id, packet_info.sender_bus_id,
-    DEVICE_ID, busB.localhost, payload, length, packet_info.header);
+  busB.send_from_id(
+    packet_info.sender_id,
+    packet_info.sender_bus_id,
+    DEVICE_ID,
+    busB.localhost,
+    (char *)payload,
+    length,
+    packet_info.header
+  );
 }
 
 void receiver_functionB(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
-  // All packets sent by the RemoteWorker is delivered to this device, when in the 
+  // All packets sent by the RemoteWorker is delivered to this device, when in the
   // single_initiate_direction listening mode.
-
   // Forward packet to specified target device on bus A
-  busA.send_packet_blocking(packet_info.receiver_id, packet_info.receiver_bus_id, payload, length, packet_info.header);
+  busA.send_packet_blocking(
+    packet_info.receiver_id,
+    packet_info.receiver_bus_id,
+    (char *)payload,
+    length,
+    packet_info.header
+  );
 }
 
 void loop() {
@@ -72,12 +86,13 @@ void loop() {
   busB.update();
   busB.receive(1000);
   busA.update();
-  
+
   // Show the number of sockets created after startup
   // (Try disconnecting the Ethernet cable for a while to see it increase when reconnected.)
   static uint32_t last = millis();
   if (millis() - last > 5000) {
     last = millis();
-    Serial.print(F("CONNECT COUNT: ")); Serial.println(busB.strategy.link.get_connection_count());
-  }  
+    Serial.print(F("CONNECT COUNT: "));
+    Serial.println(busB.strategy.link.get_connection_count());
+  }
 };

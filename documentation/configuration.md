@@ -39,6 +39,7 @@ Supported definitions:
 - `PJON_INCLUDE_SWBB` includes SoftwareBitBang
 - `PJON_INCLUDE_AS` includes AnalogSampling
 - `PJON_INCLUDE_ETCP` includes EthernetTCP
+- `PJON_INCLUDE_GUDP` includes GlobalUDP
 - `PJON_INCLUDE_LUDP` includes LocalUDP
 - `PJON_INCLUDE_OS` includes OverSampling
 - `PJON_INCLUDE_TS` includes ThroughSerial

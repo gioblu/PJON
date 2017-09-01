@@ -10,7 +10,7 @@ uint8_t local_ip[] = { 192, 1, 1, 150 };
 uint8_t remote_ip[] = { 192, 1, 1, 151 };
 
 // <Strategy name> bus(selected device id)
-PJON<EthUDP> bus(45);
+PJON<GlobalUDP> bus(45);
 
 void setup() {
   Serial.begin(115200);
@@ -33,7 +33,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 void loop() {
   bus.update();
   bus.receive();
-  
+
   if (millis() - start > 1000) {
     start = millis();
     Serial.print("PONG/s: "); Serial.println(cnt);

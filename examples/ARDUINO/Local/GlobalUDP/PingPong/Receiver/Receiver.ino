@@ -7,7 +7,7 @@ byte mac[] = {0xDA, 0x5A, 0x4E, 0xEF, 0xAE, 0xED};
 uint8_t local_ip[] = { 192, 1, 1, 151 };
 
 // <Strategy name> bus(selected device id)
-PJON<EthUDP> bus(44);
+PJON<GlobalUDP> bus(44);
 
 void setup() {
   Serial.begin(115200);
@@ -33,10 +33,10 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 void loop() {
   bus.receive();
   bus.update();
-  
+
   if (millis() - start > 1000) {
     start = millis();
     Serial.print("PING/s: "); Serial.println(cnt);
     cnt = 0;
-  }  
+  }
 };

@@ -29,7 +29,7 @@
   #include "LocalUDP/LocalUDP.h"
 #endif
 #if defined(PJON_INCLUDE_GUDP)
-  #include "LocalUDP/GlobalUDP.h"
+  #include "GlobalUDP/GlobalUDP.h"
 #endif
 #if defined(PJON_INCLUDE_OS)
   #include "OverSampling/OverSampling.h"

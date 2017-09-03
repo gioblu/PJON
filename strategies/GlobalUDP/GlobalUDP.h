@@ -21,35 +21,38 @@
 
 #pragma once
 
-#include <Ethernet.h>
-#include <EthernetUdp.h>
+#ifdef HAS_ETHERNETUDP
+#include <interfaces/interface_utils/UDPHelper_ARDUINO.h>
+#else
+#include <interfaces/interface_utils/UDPHelper_POSIX.h>
+#endif
 #include <PJONDefines.h>
 
-#define EUDP_DEFAULT_PORT                  7000
-#define EUDP_RESPONSE_TIMEOUT  (uint32_t) 20000
-#define EUDP_MAGIC_HEADER            0x0DFAC3FF
+#define GUDP_DEFAULT_PORT                    7000
+#define GUDP_RESPONSE_TIMEOUT  (uint32_t) 2000000
+#define GUDP_MAGIC_HEADER   (uint32_t) 0x0DFAC3FF
 
-#ifndef EUDP_MAX_REMOTE_NODES
-  #define EUDP_MAX_REMOTE_NODES              10
+#ifndef GUDP_MAX_REMOTE_NODES
+  #define GUDP_MAX_REMOTE_NODES              10
 #endif
 
 class GlobalUDP {
     bool _udp_initialized = false;
-    uint16_t _port = EUDP_DEFAULT_PORT;
-    const uint32_t _magic_header = EUDP_MAGIC_HEADER;
+    uint16_t _port = GUDP_DEFAULT_PORT;
+    const uint32_t _magic_header = GUDP_MAGIC_HEADER;
 
     // Remote nodes
     uint8_t  _remote_node_count = 0;
-    uint8_t  _remote_id[EUDP_MAX_REMOTE_NODES];
-    uint8_t  _remote_ip[EUDP_MAX_REMOTE_NODES][4];
-    uint16_t _remote_port[EUDP_MAX_REMOTE_NODES];
+    uint8_t  _remote_id[GUDP_MAX_REMOTE_NODES];
+    uint8_t  _remote_ip[GUDP_MAX_REMOTE_NODES][4];
+    uint16_t _remote_port[GUDP_MAX_REMOTE_NODES];
 
-    EthernetUDP udp;
+    UDPHelper udp;
 
     bool check_udp() {
       if(!_udp_initialized) {
-        udp.begin(_port);
-        _udp_initialized = true;
+        udp.set_magic_header(_magic_header);
+        if (udp.begin(_port)) _udp_initialized = true;
       }
       return _udp_initialized;
     };
@@ -62,16 +65,15 @@ class GlobalUDP {
     };
 
 public:
-    GlobalUDP() { };
 
     /* Register each device we want to send to */
 
     int16_t add_node(
       uint8_t remote_id,
       const uint8_t remote_ip[],
-      uint16_t port_number = EUDP_DEFAULT_PORT
+      uint16_t port_number = GUDP_DEFAULT_PORT
     ) {
-      if (_remote_node_count == EUDP_MAX_REMOTE_NODES) return -1;
+      if (_remote_node_count == GUDP_MAX_REMOTE_NODES) return -1;
       _remote_id[_remote_node_count] = remote_id;
       memcpy(_remote_ip[_remote_node_count], remote_ip, 4);
       _remote_port[_remote_node_count] = port_number;
@@ -111,15 +113,7 @@ public:
     /* Receive a string: */
 
     uint16_t receive_string(uint8_t *string, uint16_t max_length) {
-      uint16_t packetSize = udp.parsePacket();
-      if(packetSize > 4 && packetSize <= 4 + max_length) {
-        uint32_t header = 0;
-        udp.read((char *) &header, 4);
-        if(header != _magic_header) return false; // Not a GlobalUDP packet
-        udp.read(string, packetSize - 4);
-        return packetSize - 4;
-      }
-      return PJON_FAIL;
+      return udp.receive_string(string, max_length);
     }
 
 
@@ -130,15 +124,16 @@ public:
          receiver (Perhaps not that important as long as ACK/NAK responses are
          directed, not broadcast) */
       uint32_t start = PJON_MICROS();
-      uint8_t result[2];
+      uint8_t result[8];
       uint16_t reply_length = 0;
       do {
-        reply_length = receive_string(result, 2);
+        reply_length = receive_string(result, sizeof result);
         // We expect 1, if packet is larger it is not our ACK
         if(reply_length == 1)
           if(result[0] == PJON_ACK)
             return result[0];
-     } while ((uint32_t)(PJON_MICROS() - start) < EUDP_RESPONSE_TIMEOUT);
+      } while ((uint32_t)(PJON_MICROS() - start) < GUDP_RESPONSE_TIMEOUT);
+      printf("END receive_response LOOP with FAIL, waited %u\n", PJON_MICROS() - start);
       return PJON_FAIL;
     };
 
@@ -147,10 +142,7 @@ public:
        We have the IP so we can reply directly. */
 
     void send_response(uint8_t response) { // Empty, PJON_ACK is always sent
-      udp.beginPacket(udp.remoteIP(), udp.remotePort());
-      udp.write((const char*) &_magic_header, 4);
-      udp.write((const char*) &response, 1);
-      udp.endPacket();
+      udp.send_response(response);
     };
 
 
@@ -161,10 +153,7 @@ public:
         uint8_t id = string[0], pos = find_remote_node(id);
         // Package always starts with a receiver id byte
         if (pos != -1) {
-          udp.beginPacket(_remote_ip[pos], _remote_port[pos]);
-          udp.write((const char*) &_magic_header, 4);
-          udp.write(string, length);
-          udp.endPacket();
+          udp.send_string(string, length, *(uint32_t *)_remote_ip[pos], _remote_port[pos]);
         }
       }
     };
@@ -172,7 +161,7 @@ public:
 
     /* Set the UDP port: */
 
-    void set_port(uint16_t port = EUDP_DEFAULT_PORT) {
+    void set_port(uint16_t port = GUDP_DEFAULT_PORT) {
       _port = port;
     };
 };

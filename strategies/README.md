@@ -1,6 +1,6 @@
 
 #### What is a Strategy?
-PJON codebase uses strategies to physically communicate through the medium used, abstracting the data link layer from its procedure. We propose 6 strategies to communicate data through various media, take a look at the [strategies video introduction](https://www.youtube.com/watch?v=yPu45xoAHGg) for a brief showcase of their features. A Strategy is a class containing the back-off configuration and a set of methods able to send and receive messages:
+PJON codebase uses strategies to physically communicate through the medium used, abstracting the data link layer from its procedure. We propose 7 strategies to communicate data through various media, take a look at the [strategies video introduction](https://www.youtube.com/watch?v=yPu45xoAHGg) for a brief showcase of their features. A Strategy is a class containing the back-off configuration and a set of methods able to send and receive messages:
 
 ```cpp
 bool begin(uint8_t additional_randomness = 0)

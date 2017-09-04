@@ -1,8 +1,8 @@
 
-/* PJON Windows x86 Interface
-   _____________________________________________________________________________
+/* PJON Linux Interface
+   ___________________________________________________________________________
 
-    Copyright 2017 Zbigniew Zasieczny z.zasieczny@gmail.com
+    Copyright 2017 Fred Larsen
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@
   #include <chrono>
   #include <thread>
   #include <sstream>
-  #include "Serial/Serial.h"
 
   #define OUTPUT 1
   #define INPUT 0
@@ -40,7 +39,6 @@
   typedef char byte;
 //  typedef unsigned char uint8_t;
 //  typedef unsigned word uint16_t;
-
 
   void pinMode(byte pin, byte m) { ; };
 
@@ -81,31 +79,7 @@
     #define A0 0
   #endif
 
-  /* Fallback to WINDOWS-specific functions -------------------------------- */
-
-  #if !defined(PJON_ANALOG_READ)
-    #define PJON_ANALOG_READ(P) analogRead(P)
-  #endif
-
-  #if !defined(PJON_IO_WRITE)
-    #define PJON_IO_WRITE digitalWrite
-  #endif
-
-  #if !defined(PJON_IO_READ)
-    #define PJON_IO_READ digitalRead
-  #endif
-
-  #if !defined(PJON_IO_MODE)
-    #define PJON_IO_MODE pinMode
-  #endif
-
-  #if !defined(PJON_IO_PULL_DOWN)
-    #define PJON_IO_PULL_DOWN(P) { \
-      PJON_IO_MODE(P, INPUT); \
-      pullUpDnControl(P, PUD_DOWN); \
-    }
-  #endif
-
+  /* LINUX IO functions -------------------------------- */
 
   /* Random ----------------------------------------------------------------- */
 
@@ -122,23 +96,6 @@
 
   /* Serial ----------------------------------------------------------------- */
 
-  #ifndef PJON_SERIAL_AVAILABLE
-    #define PJON_SERIAL_AVAILABLE(S) S->serialDataAvail()
-  #endif
-
-  #ifndef PJON_SERIAL_WRITE
-    #define PJON_SERIAL_WRITE(S, C) S->putChar((char*)&C)
-  #endif
-
-  #ifndef PJON_SERIAL_READ
-    #define PJON_SERIAL_READ(S) S->getChar()
-  #endif
-
-  #ifndef PJON_SERIAL_FLUSH
-    #define PJON_SERIAL_FLUSH(S) S->flush()
-  #endif
-
-
   /* Timing ----------------------------------------------------------------- */
 
   #ifndef PJON_DELAY_MICROSECONDS
@@ -150,6 +107,6 @@
   #endif
 
   #ifndef millis
-    #define millis() PJON_MICROS()/1000
+    #define millis() PJON_MICROS() / 1000
   #endif
 #endif

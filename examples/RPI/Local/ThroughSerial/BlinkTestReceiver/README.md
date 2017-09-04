@@ -17,6 +17,6 @@ You should see a new file called `compiled_program`.
 
 Typing `sudo ./compiled_program` the program is executed and some logging info should appear.
 
-Now program the transmitter Arduino compatible device, using `PJON/examples/ARDUINO/Local/ThroughSerial/BlinkTest/Transmitter/Transmitter.ino` [receiver's sketch](https://github.com/gioblu/PJON/blob/master/examples/ARDUINO/Local/ThroughSerial/BlinkTest/Transmitter/Transmitter.ino) and the Arduino IDE.
+Now program the transmitter Arduino compatible device, using `PJON/examples/ARDUINO/Local/ThroughSerial/BlinkTest/Transmitter/Transmitter.ino` [transmitter's sketch](https://github.com/gioblu/PJON/blob/master/examples/ARDUINO/Local/ThroughSerial/BlinkTest/Transmitter/Transmitter.ino) and the Arduino IDE.
 
 As soon as you type `sudo ./compiled_program` and hit enter you should see "BLINK" printed in the console every second; press `control` + `c` to interrupt the process.

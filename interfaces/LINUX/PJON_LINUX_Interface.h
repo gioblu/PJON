@@ -106,7 +106,7 @@
     #define PJON_MICROS micros
   #endif
 
-  #ifndef millis
-    #define millis() PJON_MICROS() / 1000
+  #ifndef PJON_MILLIS
+    #define PJON_MILLIS() (PJON_MICROS() / 1000)
   #endif
 #endif

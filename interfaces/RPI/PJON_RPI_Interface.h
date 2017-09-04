@@ -100,4 +100,8 @@
   #ifndef PJON_MICROS
     #define PJON_MICROS micros
   #endif
+
+  #ifndef PJON_MILLIS
+    #define PJON_MILLIS millis
+  #endif
 #endif

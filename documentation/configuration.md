@@ -30,6 +30,7 @@ In the example above the PJON object is instantiated passing [SoftwareBitBang](/
 | [AnalogSampling](/strategies/AnalogSampling)  | light  | 1 or 2  |
 | [EthernetTCP](/strategies/EthernetTCP)  | wired or WiFi  | Ethernet port  |
 | [LocalUDP](/strategies/LocalUDP)  | wired or WiFi  | Ethernet port  |
+| [GlobalUDP](/strategies/GlobalUDP)  | wired or WiFi  | Ethernet port  |
 | [OverSampling](/strategies/OverSampling)  | radio, wire  | 1 or 2 |
 | [ThroughSerial](/strategies/ThroughSerial)  | serial port  | 1 or 2 |
 

@@ -9,7 +9,7 @@ Connect the Serial GPIO TX and RX of your Raspberry Pi with an Arduino compatibl
 To correctly receive data on Raspberry Pi it may be necessary to disable the serial console, accessing as root to `boot/cmdline.txt` and removing `console=ttyAMA0, 115200`  or `console=serial0, 115200` if present.
 
 Create a directory where to store your test project files and be sure to include in there the PJON library directory.
-Now it is necessary to compile the `PJON/examples/RPI/Local/ThroughSerial/BlinkTest/Transmitter.cpp` example. Reach your project directory using the console, copy there the example and save it as `test.cpp`, then type:
+Now it is necessary to compile the `PJON/examples/RPI/Local/ThroughSerial/BlinkTestTransmitter/Transmitter.cpp` example. Reach your project directory using the console, copy there the example and save it as `test.cpp`, then type:
 
 `gcc test.cpp -o compiled_program -std=c++11 -lwiringPi`
 

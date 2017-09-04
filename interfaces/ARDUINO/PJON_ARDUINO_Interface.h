@@ -96,4 +96,8 @@
     #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
   #endif
 
+  /* Sockets -------------------------------------------------------------- */
+
+  #define HAS_ETHERNETUDP
+  
 #endif

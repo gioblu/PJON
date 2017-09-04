@@ -107,7 +107,7 @@ TX END-------ACK-><-0-00001111-15-0001-0002-0-99-CRC-<-ACK-><-0-00001111-15-0001
 |__|________|______|_______|_______|__|_________|___||___|
                    |RX INFO| TX INFO  |
 ```
-4) Device `0` of bus `0.0.0.2` ends the transaction after receiving a synchronous acknowledgement by the router. Device `0` of bus `0.0.0.1` receives the asynchronous acknowledgement packet forwarded by the router and responds with a synchronous acknowledgement.
+4) Device `0` of bus `0.0.0.1` receives the asynchronous acknowledgement packet forwarded by the router and responds with a synchronous acknowledgement.
 
 ```cpp
  __ ________ ______ _______ _______ __ _________ ___  ___

@@ -274,7 +274,7 @@ public:
     uint16_t length
   ) {
     uint16_t total_bytes_read = 0, bytes_read;
-    uint32_t start_ms = millis();
+    uint32_t start_ms = PJON_MILLIS();
     int16_t avail;
     /* NOTE: The recv/read functions returns
        -1 if no data waiting
@@ -283,7 +283,7 @@ public:
       while(
         (avail = client.available()) <= 0 &&
         client.connected() &&
-        (uint32_t)(millis() - start_ms) < 10000
+        (uint32_t)(PJON_MILLIS() - start_ms) < 10000
       );
 
       bytes_read = client.read(
@@ -296,7 +296,7 @@ public:
     } while(
       bytes_read != ETCP_ERROR_READ &&
       total_bytes_read < length &&
-      (uint32_t)(millis() - start_ms) < 10000
+      (uint32_t)(PJON_MILLIS() - start_ms) < 10000
     );
     if(bytes_read == ETCP_ERROR_READ) {
       stop(client); // Lost connection
@@ -363,7 +363,7 @@ public:
       #endif
 
       return_value = ok ? PJON_ACK : PJON_FAIL;
-      if (ok) _last_receive_time = millis();
+      if (ok) _last_receive_time = PJON_MILLIS();
       if (_ack_requested) {
         // Write PJON_ACK
         int8_t acklen = 0;
@@ -463,10 +463,10 @@ public:
         #ifdef ETCP_DEBUG_PRINT
           Serial.println("Conn rev..");
         #endif
-        uint32_t start = millis();
+        uint32_t start = PJON_MILLIS();
         do {
           connected_rev = _client_in.connect(_remote_ip[pos], _remote_port[pos]);
-        } while (!connected_rev && (uint32_t)(millis()-start) < 2000);
+        } while (!connected_rev && (uint32_t)(PJON_MILLIS()-start) < 2000);
         #ifdef ETCP_DEBUG_PRINT
           Serial.println(connected_rev ? F("Conn rev to srv") : F("Failed rev conn to srv"));
         #endif
@@ -483,14 +483,14 @@ public:
           // ACK active on both sockets or none in this mode
           _ack_requested = _request_ack;
           did_connect = true;
-          _last_receive_time = millis(); // Count the connection as a receive action
+          _last_receive_time = PJON_MILLIS(); // Count the connection as a receive action
         }
       }
     }
     #endif
 
     if (did_connect) { // Gather a litte connection information
-      _connection_time = millis();
+      _connection_time = PJON_MILLIS();
       _connection_count++;
       if (_single_socket) _ack_requested = _request_ack; // Same mode in both directions
     }
@@ -597,10 +597,10 @@ public:
       _request_ack = _ack_requested;
 
       bool connected_reverse = false;
-      uint32_t start = millis();
+      uint32_t start = PJON_MILLIS();
       do {
         _client_out = _server->available();
-      } while (!_client_out && (uint32_t)(millis()-start) < 2000);
+      } while (!_client_out && (uint32_t)(PJON_MILLIS()-start) < 2000);
 
       if(_client_out) {
         #ifdef ETCP_DEBUG_PRINT
@@ -634,9 +634,9 @@ public:
     #endif
 
     if (did_connect) {
-      _connection_time = millis();
+      _connection_time = PJON_MILLIS();
       _connection_count++;
-      _last_receive_time = millis(); // Count the connection as a receive action
+      _last_receive_time = PJON_MILLIS(); // Count the connection as a receive action
     }
 
     return connected;
@@ -654,7 +654,7 @@ public:
     }
   };
 
-  bool got_receive_timeout() { return (uint32_t)(millis() - _last_receive_time) > ETCP_IDLE_TIMEOUT; }
+  bool got_receive_timeout() { return (uint32_t)(PJON_MILLIS() - _last_receive_time) > ETCP_IDLE_TIMEOUT; }
 
   bool disconnect_in_if_needed() {
     if(_client_in && !_keep_connection) {

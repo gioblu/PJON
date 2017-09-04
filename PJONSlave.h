@@ -110,7 +110,7 @@ class PJONSlave : public PJON<Strategy> {
       this->_device_id = PJON_NOT_ASSIGNED;
 
       for(
-        uint8_t id = generate_random_byte();
+        uint8_t id = PJON_RANDOM(255);
         (uint32_t)(PJON_MICROS() - time) < PJON_ID_SCAN_TIME;
         id++
       )
@@ -217,16 +217,11 @@ class PJONSlave : public PJON<Strategy> {
     /* Generate a new device rid: */
     void generate_rid() {
       _rid = (
-        (uint32_t)((generate_random_byte()) << 24) ^
-        (uint32_t)((generate_random_byte()) << 16) ^
-        (uint32_t)((generate_random_byte()) <<  8) ^
-        (uint32_t)(generate_random_byte())
-      ) ^ (uint32_t)(generate_random_byte());
-    };
-
-
-    uint8_t generate_random_byte() {
-      return (PJON_ANALOG_READ(A0) ^ ~(PJON_MICROS()) ^ ~(millis())) % 255;
+        (uint32_t)((PJON_RANDOM(255)) << 24) ^
+        (uint32_t)((PJON_RANDOM(255)) << 16) ^
+        (uint32_t)((PJON_RANDOM(255)) <<  8) ^
+        (uint32_t)(PJON_RANDOM(255))
+      ) ^ (uint32_t)(PJON_RANDOM(255));
     };
 
 

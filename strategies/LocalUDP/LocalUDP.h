@@ -20,33 +20,32 @@
 
 #pragma once
 
-#include <Ethernet.h>
-#include <EthernetUdp.h>
+#ifdef HAS_ETHERNETUDP
+#include <interfaces/interface_utils/UDPHelper_ARDUINO.h>
+#else
+#include <interfaces/interface_utils/UDPHelper_POSIX.h>
+#endif
 #include <PJONDefines.h>
 
-#define LUDP_DEFAULT_PORT                  7100
-#define LUDP_RESPONSE_TIMEOUT  (uint32_t) 20000
-#define LUDP_MAGIC_HEADER            0x0DFAC3D0
+#define LUDP_DEFAULT_PORT                 7100
+#define LUDP_RESPONSE_TIMEOUT  (uint32_t) 2000000
+#define LUDP_MAGIC_HEADER      (uint32_t) 0x0DFAC3D0
 
 class LocalUDP {
     bool _udp_initialized = false;
     uint16_t _port = LUDP_DEFAULT_PORT;
     const uint32_t _magic_header = LUDP_MAGIC_HEADER;
-    const uint8_t _broadcast[4] = { 0xFF, 0xFF, 0xFF, 0xFF };
-
-    EthernetUDP udp;
+    UDPHelper udp;
 
     bool check_udp() {
       if(!_udp_initialized) {
-        udp.begin(_port);
-        _udp_initialized = true;
+        udp.set_magic_header(_magic_header);
+        if (udp.begin(_port)) _udp_initialized = true;
       }
       return _udp_initialized;
     };
 
 public:
-    LocalUDP() { };
-
     /* Returns the suggested delay related to the attempts passed as parameter: */
 
     uint32_t back_off(uint8_t attempts) {
@@ -78,15 +77,7 @@ public:
     /* Receive a string: */
 
     uint16_t receive_string(uint8_t *string, uint16_t max_length) {
-      uint16_t packetSize = udp.parsePacket();
-      if(packetSize > 4 && packetSize <= 4 + max_length) {
-        uint32_t header = 0;
-        udp.read((char *) &header, 4);
-        if(header != _magic_header) return false; // Not a LocalUDP packet
-        udp.read(string, packetSize - 4);
-        return packetSize - 4;
-      }
-      return PJON_FAIL;
+      return udp.receive_string(string, max_length);
     }
 
 
@@ -97,11 +88,13 @@ public:
          receiver (Perhaps not that important as long as ACK/NAK responses are
          directed, not broadcast) */
       uint32_t start = PJON_MICROS();
-      uint8_t result[2];
+      uint8_t result[6];
       uint16_t reply_length = 0;
       do {
-        reply_length = receive_string(result, 2);
-        // We expect 1, if packet is larger it is not our ACK
+        reply_length = receive_string(result, sizeof result);
+        // We expect 1, if packet is larger it is not our ACK.
+        // When an ACK is received we know it is for us because an ACK
+        // will never be broadcast but directed.
         if(reply_length == 1)
           if(result[0] == PJON_ACK)
             return result[0];
@@ -114,22 +107,14 @@ public:
        We have the IP so we can skip broadcasting and reply directly. */
 
     void send_response(uint8_t response) { // Empty, PJON_ACK is always sent
-      udp.beginPacket(udp.remoteIP(), udp.remotePort());
-      udp.write((const char*) &_magic_header, 4);
-      udp.write((const char*) &response, 1);
-      udp.endPacket();
+      udp.send_response(response);
     };
 
 
     /* Send a string: */
 
     void send_string(uint8_t *string, uint16_t length) {
-      if(length > 0) {
-        udp.beginPacket(_broadcast, _port);
-        udp.write((const char*) &_magic_header, 4);
-        udp.write(string, length);
-        udp.endPacket();
-      }
+      udp.send_string(string, length);
     };
 
 

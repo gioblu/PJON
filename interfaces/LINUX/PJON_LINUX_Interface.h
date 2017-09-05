@@ -62,6 +62,9 @@
     } else return elapsed_usec;
   };
 
+  uint32_t millis() {
+    return (micros() / 1000);
+  };
 
   void delayMicroseconds(uint32_t delay_value) {
     auto begin_ts = std::chrono::high_resolution_clock::now();
@@ -111,6 +114,6 @@
   #endif
 
   #ifndef PJON_MILLIS
-    #define PJON_MILLIS() (PJON_MICROS() / 1000)
+    #define PJON_MILLIS millis
   #endif
 #endif

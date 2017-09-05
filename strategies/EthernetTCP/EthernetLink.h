@@ -145,16 +145,16 @@
 
 #define ETCP_DEFAULT_PORT                 7000
 
-/* The maximum packet size to be transferred, this protects again buffer overflow.
-   Set this to a size that is guaranteed to be available in RAM during runtime,
-   depending on the hardware and software. */
+/* The maximum packet size to be transferred, this protects again buffer
+   overflow. Set this to a size that is guaranteed to be available in RAM
+   during runtime, depending on the hardware and software. */
 #ifndef ETCP_MAX_PACKET_SIZE
   #define ETCP_MAX_PACKET_SIZE             300
 #endif
 
 
-/* If an incoming packet has not arrived for some time, disconnect the socket so
-   it will be reconnected on demand. The timeout is in ms.
+/* If an incoming packet has not arrived for some time, disconnect the socket
+   so it will be reconnected on demand. The timeout is in ms.
    The reason for this is that in some cases an idle socket may have gotten
    disconnected without it being detected, unless trying to write to it.
    So we could be waiting for data that never arrives. */
@@ -167,12 +167,16 @@
 #define ETCP_FOOTER               0x9ABE8873ul
 #define ETCP_SINGLE_SOCKET_HEADER 0x4E92AC90ul
 #define ETCP_SINGLE_SOCKET_FOOTER 0x7BB1E3F4ul
-#define ETCP_CONNECTION_HEADER_A      0xFEDFED67ul  // Primary socket, packets in initiated direction
-#define ETCP_CONNECTION_HEADER_A_ACK  0xFEDFED68ul  // Same, but request ACK for all packets
-#define ETCP_CONNECTION_HEADER_B      0xFEDFED77ul  // Reverse socket, packets in reverse direction
+
+// Primary socket, packets in initiated direction
+#define ETCP_CONNECTION_HEADER_A      0xFEDFED67ul
+// Same, but request ACK for all packets
+#define ETCP_CONNECTION_HEADER_A_ACK  0xFEDFED68ul
+// Reverse socket, packets in reverse direction
+#define ETCP_CONNECTION_HEADER_B      0xFEDFED77ul
 
 /* UIPEthernet library used for the ENC28J60 based Ethernet shields has the
-   correct return value from the read call, while the standard Ethernet library
+   correct return value from the read call while the standard Ethernet library
    does not follow the standard! */
 #ifdef UIPETHERNET_H
   #define ETCP_ERROR_READ                   -1
@@ -208,7 +212,7 @@ private:
   // The id of the remove device/node that we have connected to
   int16_t _current_device = -1;
 
-  // When a socket is received, the connection header specifies if ACKs are wanted
+  // When a socket is received, connection header specifies if ACKs are wanted
   bool _ack_requested = false;
 
   // Remember the connection statistics
@@ -216,8 +220,7 @@ private:
   uint32_t _connection_count = 0;
   uint32_t _last_receive_time = 0;
 
-  // ********* Configuration ************
-
+  // Configuration
   link_receiver _receiver = NULL;
   link_error    _error = NULL;
   void *_callback_object = NULL;
@@ -239,16 +242,16 @@ private:
   // Do bidirectional transfer on a single socket
   bool _single_socket = false;
 
-  // Request an immediate ACK for eack packet delivery to ensure guaranteed delivery
+  // Request immediate ACK for each packet to ensure guaranteed delivery
   bool _request_ack = true;
 
-  // With single_socket = false, there is one socket for each packet direction.
-  // Normally the sockets are initiated from the side sending the packet.
-  // By setting initiate_both_sockets_in_same direction, both sockets can be
-  // initiated from one of the devices, to simplify firewall setup, or for letting
-  // only one of the devices have a static IP address.
-  // This should only be used with _keep_connection = true, and is meant for permanent
-  // one-to-one links.
+  /* With single_socket = false there is one socket for each packet direction.
+     Normally the sockets are initiated from the side sending the packet.
+     By setting initiate_both_sockets_in_same direction, both sockets can be
+     initiated from one of the devices, to simplify firewall setup, or for
+     letting only one of the devices have a static IP address.
+     This should only be used with _keep_connection = true, and is meant for
+     permanent one-to-one links. */
   bool _initiate_both_sockets_in_same_direction = false;
   // Whether to be the side initiating both sockets or not
   bool _initiator = true;

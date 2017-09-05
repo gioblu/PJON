@@ -81,6 +81,10 @@
 
   /* LINUX IO functions -------------------------------- */
 
+  #ifndef PJON_ANALOG_READ
+    #define PJON_ANALOG_READ analogRead
+  #endif
+
   /* Random ----------------------------------------------------------------- */
 
   #ifndef PJON_RANDOM

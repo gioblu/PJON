@@ -9,7 +9,7 @@
   for delivering packages and accept incoming connections and packages for
   bidirectional transfer.
 
-  When establishing connections, the target must be registered with the add_node
+  When establishing connections target must be registered with the add_node
   function for setting the IP and port along with a unique id that is used for
   referring to the target in all other functions.
 
@@ -19,20 +19,20 @@
      keep_connection is recommended because it reduces network activity and
      speeds things up dramatically. In this mode, there are three options:
 
-    A. When running on a firewall-free network one socket can be created in each
-       direction, allowing for bidirectional "full-duplex" (as far as that goes
-       for single-threaded code), with data being buffered in each direction. It
-       requires each side to know about each other's address, but delivers
-       higher throughput than a single_socket approach. An EthernetLink object
-       in this mode has one node added by add_node, and both sides calls
-       start_listening to accept incoming connections. If there are multiple
-       objects on one device, each has to listen to a unique port number
-       (specified in the start_listening function call).
+    A. When running on a firewall-free network one socket can be created in
+       each direction, allowing for bidirectional "full-duplex" (as far as
+       that goes for single-threaded code), with data being buffered in each
+       direction. It requires each side to know about each other's address
+       but delivers higher throughput than a single_socket approach.
+       An EthernetLink object in this mode has one node added by add_node and
+       both sides calls start_listening to accept incoming connections.
+       If there are multiple objects on one device, each has to listen to a
+       unique port number (specified in the start_listening function call).
 
     B. Set single_socket to mave a master-slave scenario where one side, the
        initiator, creates a socket connection and sends any packages it may
        have and then receives any package waiting to be sendt in the opposite
-       direction. This requires the initiator to know where to connect, but not
+       direction. This requires the initiator to know where to connect but not
        the other way around. This is suitable for connections through the
        Internet because a firewall opening only has to be opened in one place.
        An EthernetLink object in this mode has one node added by add_node
@@ -42,7 +42,7 @@
        (specified in the start_listening function call).
 
     C. Set single_initiate_direction to have one device create two sockets to
-       the other device, using one for each packet direction. This is a variant
+       the other device using one for each packet direction. This is a variant
        of B) that is firewall friendly and more efficient, but uses one more
        socket, and cannot be run on the simplest Ethernet cards with only one
        available socket. This mode has 3-4 times the speed of B) and does not
@@ -50,12 +50,12 @@
 
   2. If running a one-to-many or many-to-many scenario the keep_connection
      should be deactivated because then one incoming socket would block others
-     from connecting. Not using keep_connection drops the transfer speed some, though.
+     from connecting. Not using keep_connection drops transfer speed though.
 
-    A. When running on a firewall-free network each packet is delivered through
-       a dedicated connection created for delivering that package. After
-       delivery and ACK the socket is closed. All devices can send to and
-       receive from each other.
+    A. When running on a firewall-free network each packet is delivered
+       through a dedicated connection created for delivering that package.
+       After delivery and ACK the socket is closed. All devices can send to
+       and receive from each other.
 
     B. Using the single_socket approach will use a master-slave like approach
        where only the initiators need to know the address of the receiver(s),
@@ -64,8 +64,8 @@
        is ready for another connection. This requires only _one firewall
        opening_ for bidirectional transfer with 255 others.
 
-  Limitations for the different modes when using the W5100 based Ethernet shield
-  with a 4 socket limit:
+  Limitations for the different modes when using the W5100 based Ethernet
+  shield with a 4 socket limit:
 
   1A. Two EthernetLink objects can be used for bidirectional communication
       with two sites.
@@ -77,8 +77,8 @@
       connections from 255 others, and deliver packets to 255 others. Up to
       two objects can be used in one device, if multiple listening ports are
       needed. Each object can have 1 to 255 nodes added by add_node, and can
-      deliver to all. There can be up to three objects in each device if needed.
-      One socket must remain free for outgoing connections.
+      deliver to all. There can be up to three objects in each device if
+      needed. One socket must remain free for outgoing connections.
   2B. As 2A, each receiver can receive packets from and send packets to 255
       initiators, using a _single listening port_. There can be four receiver
       objects in on device, or three receiver objects and an unlimited number
@@ -93,31 +93,31 @@
       with one site.
   1C. Not available.
   2A. Not available.
-  2B. One receiver can receive from and deliver packets to unlimited initiators,
-      _or_ unlimited initator objects can send to and receive from to up to
-      255 sites each
+  2B. One receiver can receive from and deliver packets to unlimited
+      initiators, _or_ unlimited initator objects can send to and receive
+      from to up to 255 sites each
 
   Note: To use the ENC28J60 shield instead of the WIZ5100 shield, include
   <UIPEthernet.h> before EthernetLink.h.
 
   PJON and EthernetLink
   The EthernetLink can be used standalone for simple delivery between two
-  devices. But the EthernetLink is also used as a tool by the EthernetTCP strategy
-  of PJON. A site consisting of one or more buses of devices communicating
-  through PJON, wired and/or wirelessly, can be connected seamlessly with
-  multiple other similar sites in other places of the world, communicating
-  through Internet with minimal firewall configuration.
+  devices. But the EthernetLink is also used as a tool by the EthernetTCP
+  strategy of PJON. A site consisting of one or more buses of devices
+  communicating through PJON, wired and/or wirelessly, can be connected
+  seamlessly with multiple other similar sites in other places of the
+  world, communicating through Internet with minimal firewall configuration.
 
   NOTE: The W5100 full-size Ethernet shields come in multiple variants. If you
         get a problem where the card is not starting after plugging in the
         power, check if there is small resistor network behind the Ethernet
         outlet, with one resistor having printed "511" on it. If so, try
-        another brand. Even startup delays do not fix this, but it can be solved
-        with a capacitor+resistor, search for it.
+        another brand. Even startup delays do not fix this, but it can be
+        solved with a capacitor + resistor, search for it.
 
   NOTE: If needing single_socket functionality with ACK (polling mode),
-        define ETCP_SINGLE_SOCKET_WITH_ACK. The program size has been reduced by
-        only including this when needed.
+        define ETCP_SINGLE_SOCKET_WITH_ACK. The program size has been reduced
+        by only including this when needed.
 
         The same goes for ETCP_SINGLE_DIRECTION. It is not included by default
         to reduce program size. Define this when needed.

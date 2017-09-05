@@ -86,6 +86,10 @@
     #define PJON_MICROS micros
   #endif
 
+  #ifndef PJON_MILLIS
+    #define PJON_MILLIS millis
+  #endif
+
   /* Set ADC prescale functions ------------------------------------------- */
 
   #ifndef cbi
@@ -99,5 +103,5 @@
   /* Sockets -------------------------------------------------------------- */
 
   #define HAS_ETHERNETUDP
-  
+
 #endif

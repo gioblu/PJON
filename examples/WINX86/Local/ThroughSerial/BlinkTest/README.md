@@ -9,7 +9,7 @@ Visual Studio 2017 Community is used to compile the program on the Windows x86 m
 - When the project is created, locate its directory, by default should be in `Documents\Visual Studio 2017\Projects\Transmitter\Transmitter`, and clone/copy there the PJON directory
 - Locate the `Solution explorer` right sidebar, right click on `Source files`, then `add` -> `existing item`, search for and select  `Serial.cpp` in `PJON\interfaces\WINX86\Serial\`  
 - Copy the content of `PJON\examples\WINX86\Local\ThroughSerial\BlinkTest\Transmitter.cpp` example
- in `Documents\Visual Studio 2017\Projects\Transmitter\Transmitter\Transmitter.cpp`, edit the COM port number (at line 38) according to the one assigned to the receiver device and save the file
+ in `Documents\Visual Studio 2017\Projects\Transmitter\Transmitter\Transmitter.cpp`, edit the COM port number (at line 41) according to the one assigned to the receiver device and save the file
 - Press `Build` in the top bar, then select `Batch build` and click the checkboxes of the two release configurations to generate an executable file
 - If the building process ended positively, navigate using a console to `Documents\Visual Studio 2017\Projects\Transmitter\Release` and execute `Transmitter.exe`
 

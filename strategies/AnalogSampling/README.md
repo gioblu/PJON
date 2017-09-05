@@ -2,16 +2,16 @@
 **Medium:** Light |
 **Pins used:** 1 / 2
 
-AnalogSampling strategy or data link is designed to sample digital data using analog readings and can be used to communicate data wirelessly through light. It is able to use a single LED for both photo-emission and photo-reception phases enabling an half-duplex connection between two or more devices. AnalogSampling can operate wirelessly with a range of maximum 5 meters in ideal conditions using only a pair of LEDs (visible light, infrared or ultraviolet) or can be used along with single channel optic fiber cables enabling point-to-point bidirectional connection between two devices, that can also be branched using optical bidirectional splitters (PLC), enabling an extremely cheap electromagnetic interference free data link.
+`AnalogSampling` strategy or data link is designed to sample digital data using analog readings and can be used to communicate data wirelessly through light. It is able to use a single LED for both photo-emission and photo-reception phases enabling an half-duplex connection between two or more devices. `AnalogSampling` can operate wirelessly with a range of maximum 5 meters in ideal conditions using only a pair of LEDs (visible light, infrared or ultraviolet) or can be used along with single channel optic fiber cables enabling point-to-point bidirectional connection between two devices, that can also be branched using optical bidirectional splitters (PLC), enabling an extremely cheap electromagnetic interference free data link.
 
-AnalogSampling can also be used with two pairs of any sort of tuned photo-emitters and photo-receivers enabling for example long range laser wireless communication. It was originally implemented it in the far 2011, here you can see the first [video documented experiment](https://www.youtube.com/watch?v=-Ul2j6ixbmE). It has been recently debugged and updated to act as a PJON Strategy. Take a look at the [video introduction](https://www.youtube.com/watch?v=yIncPe8OPpg) for a brief showcase of its features.
+`AnalogSampling` can also be used with two pairs of any sort of tuned photo-emitters and photo-receivers enabling for example long range laser wireless communication. It was originally implemented it in the far 2011, here you can see the first [video documented experiment](https://www.youtube.com/watch?v=-Ul2j6ixbmE). It has been recently debugged and updated to act as a PJON Strategy. Take a look at the [video introduction](https://www.youtube.com/watch?v=yIncPe8OPpg) for a brief showcase of its features.
 
 #### Compatibility
 - ATmega88/168/328 16MHz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
 - ATmega1280/2560 16MHz (Arduino Mega)
 
 #### Performance
-PJON works with the following communication modes:
+`AnalogSampling` works with the following communication modes:
 - `AS_STANDARD` runs at 1024Bd or 128B/s
 - `AS_FAST` runs at 1361Bd or 170B/s
 - `AS_OVERDRIVE_32` runs at 3773Bb or 471B/s

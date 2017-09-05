@@ -9,7 +9,7 @@
   for delivering packages and accept incoming connections and packages for
   bidirectional transfer.
 
-  When establishing connections, the target must be registered with the add_node
+  When establishing connections target must be registered with the add_node
   function for setting the IP and port along with a unique id that is used for
   referring to the target in all other functions.
 
@@ -19,20 +19,20 @@
      keep_connection is recommended because it reduces network activity and
      speeds things up dramatically. In this mode, there are three options:
 
-    A. When running on a firewall-free network one socket can be created in each
-       direction, allowing for bidirectional "full-duplex" (as far as that goes
-       for single-threaded code), with data being buffered in each direction. It
-       requires each side to know about each other's address, but delivers
-       higher throughput than a single_socket approach. An EthernetLink object
-       in this mode has one node added by add_node, and both sides calls
-       start_listening to accept incoming connections. If there are multiple
-       objects on one device, each has to listen to a unique port number
-       (specified in the start_listening function call).
+    A. When running on a firewall-free network one socket can be created in
+       each direction, allowing for bidirectional "full-duplex" (as far as
+       that goes for single-threaded code), with data being buffered in each
+       direction. It requires each side to know about each other's address
+       but delivers higher throughput than a single_socket approach.
+       An EthernetLink object in this mode has one node added by add_node and
+       both sides calls start_listening to accept incoming connections.
+       If there are multiple objects on one device, each has to listen to a
+       unique port number (specified in the start_listening function call).
 
     B. Set single_socket to mave a master-slave scenario where one side, the
        initiator, creates a socket connection and sends any packages it may
        have and then receives any package waiting to be sendt in the opposite
-       direction. This requires the initiator to know where to connect, but not
+       direction. This requires the initiator to know where to connect but not
        the other way around. This is suitable for connections through the
        Internet because a firewall opening only has to be opened in one place.
        An EthernetLink object in this mode has one node added by add_node
@@ -42,7 +42,7 @@
        (specified in the start_listening function call).
 
     C. Set single_initiate_direction to have one device create two sockets to
-       the other device, using one for each packet direction. This is a variant
+       the other device using one for each packet direction. This is a variant
        of B) that is firewall friendly and more efficient, but uses one more
        socket, and cannot be run on the simplest Ethernet cards with only one
        available socket. This mode has 3-4 times the speed of B) and does not
@@ -50,12 +50,12 @@
 
   2. If running a one-to-many or many-to-many scenario the keep_connection
      should be deactivated because then one incoming socket would block others
-     from connecting. Not using keep_connection drops the transfer speed some, though.
+     from connecting. Not using keep_connection drops transfer speed though.
 
-    A. When running on a firewall-free network each packet is delivered through
-       a dedicated connection created for delivering that package. After
-       delivery and ACK the socket is closed. All devices can send to and
-       receive from each other.
+    A. When running on a firewall-free network each packet is delivered
+       through a dedicated connection created for delivering that package.
+       After delivery and ACK the socket is closed. All devices can send to
+       and receive from each other.
 
     B. Using the single_socket approach will use a master-slave like approach
        where only the initiators need to know the address of the receiver(s),
@@ -64,8 +64,8 @@
        is ready for another connection. This requires only _one firewall
        opening_ for bidirectional transfer with 255 others.
 
-  Limitations for the different modes when using the W5100 based Ethernet shield
-  with a 4 socket limit:
+  Limitations for the different modes when using the W5100 based Ethernet
+  shield with a 4 socket limit:
 
   1A. Two EthernetLink objects can be used for bidirectional communication
       with two sites.
@@ -77,8 +77,8 @@
       connections from 255 others, and deliver packets to 255 others. Up to
       two objects can be used in one device, if multiple listening ports are
       needed. Each object can have 1 to 255 nodes added by add_node, and can
-      deliver to all. There can be up to three objects in each device if needed.
-      One socket must remain free for outgoing connections.
+      deliver to all. There can be up to three objects in each device if
+      needed. One socket must remain free for outgoing connections.
   2B. As 2A, each receiver can receive packets from and send packets to 255
       initiators, using a _single listening port_. There can be four receiver
       objects in on device, or three receiver objects and an unlimited number
@@ -93,31 +93,31 @@
       with one site.
   1C. Not available.
   2A. Not available.
-  2B. One receiver can receive from and deliver packets to unlimited initiators,
-      _or_ unlimited initator objects can send to and receive from to up to
-      255 sites each
+  2B. One receiver can receive from and deliver packets to unlimited
+      initiators, _or_ unlimited initator objects can send to and receive
+      from to up to 255 sites each
 
   Note: To use the ENC28J60 shield instead of the WIZ5100 shield, include
   <UIPEthernet.h> before EthernetLink.h.
 
   PJON and EthernetLink
   The EthernetLink can be used standalone for simple delivery between two
-  devices. But the EthernetLink is also used as a tool by the EthernetTCP strategy
-  of PJON. A site consisting of one or more buses of devices communicating
-  through PJON, wired and/or wirelessly, can be connected seamlessly with
-  multiple other similar sites in other places of the world, communicating
-  through Internet with minimal firewall configuration.
+  devices. But the EthernetLink is also used as a tool by the EthernetTCP
+  strategy of PJON. A site consisting of one or more buses of devices
+  communicating through PJON, wired and/or wirelessly, can be connected
+  seamlessly with multiple other similar sites in other places of the
+  world, communicating through Internet with minimal firewall configuration.
 
   NOTE: The W5100 full-size Ethernet shields come in multiple variants. If you
         get a problem where the card is not starting after plugging in the
         power, check if there is small resistor network behind the Ethernet
         outlet, with one resistor having printed "511" on it. If so, try
-        another brand. Even startup delays do not fix this, but it can be solved
-        with a capacitor+resistor, search for it.
+        another brand. Even startup delays do not fix this, but it can be
+        solved with a capacitor + resistor, search for it.
 
   NOTE: If needing single_socket functionality with ACK (polling mode),
-        define ETCP_SINGLE_SOCKET_WITH_ACK. The program size has been reduced by
-        only including this when needed.
+        define ETCP_SINGLE_SOCKET_WITH_ACK. The program size has been reduced
+        by only including this when needed.
 
         The same goes for ETCP_SINGLE_DIRECTION. It is not included by default
         to reduce program size. Define this when needed.
@@ -145,16 +145,16 @@
 
 #define ETCP_DEFAULT_PORT                 7000
 
-/* The maximum packet size to be transferred, this protects again buffer overflow.
-   Set this to a size that is guaranteed to be available in RAM during runtime,
-   depending on the hardware and software. */
+/* The maximum packet size to be transferred, this protects again buffer
+   overflow. Set this to a size that is guaranteed to be available in RAM
+   during runtime, depending on the hardware and software. */
 #ifndef ETCP_MAX_PACKET_SIZE
   #define ETCP_MAX_PACKET_SIZE             300
 #endif
 
 
-/* If an incoming packet has not arrived for some time, disconnect the socket so
-   it will be reconnected on demand. The timeout is in ms.
+/* If an incoming packet has not arrived for some time, disconnect the socket
+   so it will be reconnected on demand. The timeout is in ms.
    The reason for this is that in some cases an idle socket may have gotten
    disconnected without it being detected, unless trying to write to it.
    So we could be waiting for data that never arrives. */
@@ -167,12 +167,16 @@
 #define ETCP_FOOTER               0x9ABE8873ul
 #define ETCP_SINGLE_SOCKET_HEADER 0x4E92AC90ul
 #define ETCP_SINGLE_SOCKET_FOOTER 0x7BB1E3F4ul
-#define ETCP_CONNECTION_HEADER_A      0xFEDFED67ul  // Primary socket, packets in initiated direction
-#define ETCP_CONNECTION_HEADER_A_ACK  0xFEDFED68ul  // Same, but request ACK for all packets
-#define ETCP_CONNECTION_HEADER_B      0xFEDFED77ul  // Reverse socket, packets in reverse direction
+
+// Primary socket, packets in initiated direction
+#define ETCP_CONNECTION_HEADER_A      0xFEDFED67ul
+// Same, but request ACK for all packets
+#define ETCP_CONNECTION_HEADER_A_ACK  0xFEDFED68ul
+// Reverse socket, packets in reverse direction
+#define ETCP_CONNECTION_HEADER_B      0xFEDFED77ul
 
 /* UIPEthernet library used for the ENC28J60 based Ethernet shields has the
-   correct return value from the read call, while the standard Ethernet library
+   correct return value from the read call while the standard Ethernet library
    does not follow the standard! */
 #ifdef UIPETHERNET_H
   #define ETCP_ERROR_READ                   -1
@@ -195,7 +199,7 @@ typedef void (*link_error)(
 
 class EthernetLink {
 private:
-  // ********* Dynamic members ************
+  // Dynamic members
 
   EthernetServer *_server = NULL;
 
@@ -208,7 +212,7 @@ private:
   // The id of the remove device/node that we have connected to
   int16_t _current_device = -1;
 
-  // When a socket is received, the connection header specifies if ACKs are wanted
+  // When a socket is received, connection header specifies if ACKs are wanted
   bool _ack_requested = false;
 
   // Remember the connection statistics
@@ -216,8 +220,7 @@ private:
   uint32_t _connection_count = 0;
   uint32_t _last_receive_time = 0;
 
-  // ********* Configuration ************
-
+  // Configuration
   link_receiver _receiver = NULL;
   link_error    _error = NULL;
   void *_callback_object = NULL;
@@ -239,16 +242,16 @@ private:
   // Do bidirectional transfer on a single socket
   bool _single_socket = false;
 
-  // Request an immediate ACK for eack packet delivery to ensure guaranteed delivery
+  // Request immediate ACK for each packet to ensure guaranteed delivery
   bool _request_ack = true;
 
-  // With single_socket = false, there is one socket for each packet direction.
-  // Normally the sockets are initiated from the side sending the packet.
-  // By setting initiate_both_sockets_in_same direction, both sockets can be
-  // initiated from one of the devices, to simplify firewall setup, or for letting
-  // only one of the devices have a static IP address.
-  // This should only be used with _keep_connection = true, and is meant for permanent
-  // one-to-one links.
+  /* With single_socket = false there is one socket for each packet direction.
+     Normally the sockets are initiated from the side sending the packet.
+     By setting initiate_both_sockets_in_same direction, both sockets can be
+     initiated from one of the devices, to simplify firewall setup, or for
+     letting only one of the devices have a static IP address.
+     This should only be used with _keep_connection = true, and is meant for
+     permanent one-to-one links. */
   bool _initiate_both_sockets_in_same_direction = false;
   // Whether to be the side initiating both sockets or not
   bool _initiator = true;
@@ -274,7 +277,7 @@ public:
     uint16_t length
   ) {
     uint16_t total_bytes_read = 0, bytes_read;
-    uint32_t start_ms = millis();
+    uint32_t start_ms = PJON_MILLIS();
     int16_t avail;
     /* NOTE: The recv/read functions returns
        -1 if no data waiting
@@ -283,7 +286,7 @@ public:
       while(
         (avail = client.available()) <= 0 &&
         client.connected() &&
-        (uint32_t)(millis() - start_ms) < 10000
+        (uint32_t)(PJON_MILLIS() - start_ms) < 10000
       );
 
       bytes_read = client.read(
@@ -296,7 +299,7 @@ public:
     } while(
       bytes_read != ETCP_ERROR_READ &&
       total_bytes_read < length &&
-      (uint32_t)(millis() - start_ms) < 10000
+      (uint32_t)(PJON_MILLIS() - start_ms) < 10000
     );
     if(bytes_read == ETCP_ERROR_READ) {
       stop(client); // Lost connection
@@ -308,7 +311,7 @@ public:
   };
 
 
-  // Read a package from a connected client (incoming or outgoing) and send ACK
+  // Read package from a connected client (incoming or outgoing) and send ACK
   uint16_t receive(EthernetClient &client) {
     int16_t return_value = PJON_FAIL;
     if(client.available() > 0) {
@@ -339,7 +342,7 @@ public:
       }
 
       // Protect against too large packets
-      if (content_length > ETCP_MAX_PACKET_SIZE) return PJON_FAIL;
+      if(content_length > ETCP_MAX_PACKET_SIZE) return PJON_FAIL;
 
       // Read contents and footer
       uint8_t buf[content_length];
@@ -363,8 +366,8 @@ public:
       #endif
 
       return_value = ok ? PJON_ACK : PJON_FAIL;
-      if (ok) _last_receive_time = millis();
-      if (_ack_requested) {
+      if(ok) _last_receive_time = PJON_MILLIS();
+      if(_ack_requested) {
         // Write PJON_ACK
         int8_t acklen = 0;
         if(ok) {
@@ -383,7 +386,7 @@ public:
       if(ok && content_length > 0)
         _receiver(sender_id, buf, content_length, _callback_object);
 
-      if (!ok) disconnect_in();
+      if(!ok) disconnect_in();
     }
     return return_value;
   };
@@ -408,23 +411,26 @@ public:
      }
 
     // Check if established sockets have been disconnected
-    if (!disconnect && _client_out && !_client_out.connected()) disconnect = true;
+    if(!disconnect && _client_out && !_client_out.connected())
+      disconnect = true;
     #ifdef ETCP_SINGLE_DIRECTION
-    if (!disconnect && reverse && _client_in && !_client_in.connected()) disconnect = true;
-    if (!disconnect && reverse && (!_client_in || !_client_out)) disconnect = true;
-    if (!disconnect && reverse && _client_in && got_receive_timeout()) {
+    if(!disconnect && reverse && _client_in && !_client_in.connected())
+      disconnect = true;
+    if(!disconnect && reverse && (!_client_in || !_client_out))
+      disconnect = true;
+    if(!disconnect && reverse && _client_in && got_receive_timeout()) {
       #ifdef ETCP_DEBUG_PRINT
         Serial.println(F("Receive timeout, disconn."));
       #endif
       disconnect = true;
     }
     #endif
-    if (disconnect) disconnect_out();
+    if(disconnect) disconnect_out();
     // NOTE: From this point we can avoid using the expensive connected() call
 
     bool connected = _client_out;
     #ifdef ETCP_DEBUG_PRINT
-    if (!connected) {
+    if(!connected) {
       Serial.print(F("Conn to srv pos="));
       Serial.println(pos);
     }
@@ -444,58 +450,66 @@ public:
       #endif
       if(connected) {
         // Adjust connection header A to include ACK request flag
-        uint32_t conn_header = _request_ack ? ETCP_CONNECTION_HEADER_A_ACK : ETCP_CONNECTION_HEADER_A;
-        if (_client_out.write((uint8_t*) &conn_header, 4) != 4) {
+        uint32_t conn_header =
+          _request_ack ?
+            ETCP_CONNECTION_HEADER_A_ACK :
+            ETCP_CONNECTION_HEADER_A;
+        if(_client_out.write((uint8_t*) &conn_header, 4) != 4) {
           connected = false;
           #ifdef ETCP_DEBUG_PRINT
             Serial.println(F("Disconn. failed write connhead"));
           #endif
         }
       }
-      if (!connected) stop(_client_out); else did_connect = true;
+      if(!connected) stop(_client_out); else did_connect = true;
     }
 
     bool connected_rev = false;
     #ifdef ETCP_SINGLE_DIRECTION
-    if (connected && reverse) {
+    if(connected && reverse) {
       connected_rev = _client_in;
-      if (!connected_rev) {
+      if(!connected_rev) {
         #ifdef ETCP_DEBUG_PRINT
           Serial.println("Conn rev..");
         #endif
-        uint32_t start = millis();
+        uint32_t start = PJON_MILLIS();
         do {
-          connected_rev = _client_in.connect(_remote_ip[pos], _remote_port[pos]);
-        } while (!connected_rev && (uint32_t)(millis()-start) < 2000);
+          connected_rev =
+            _client_in.connect(_remote_ip[pos], _remote_port[pos]);
+        } while (!connected_rev && (uint32_t)(PJON_MILLIS()-start) < 2000);
         #ifdef ETCP_DEBUG_PRINT
-          Serial.println(connected_rev ? F("Conn rev to srv") : F("Failed rev conn to srv"));
+          Serial.println(
+            connected_rev ? F("Conn rev to srv") : F("Failed rev conn to srv")
+          );
         #endif
         if(connected_rev) {
            uint32_t conn_header = ETCP_CONNECTION_HEADER_B;
-           if (_client_in.write((uint8_t*) &conn_header, 4) != 4) {
+           if(_client_in.write((uint8_t*) &conn_header, 4) != 4) {
              connected_rev = false;
              #ifdef ETCP_DEBUG_PRINT
                Serial.println(F("Disconn rev. failed write connhead"));
              #endif
            }
         }
-        if (connected_rev) {
+        if(connected_rev) {
           // ACK active on both sockets or none in this mode
           _ack_requested = _request_ack;
           did_connect = true;
-          _last_receive_time = millis(); // Count the connection as a receive action
+          // Count the connection as a receive action
+          _last_receive_time = PJON_MILLIS();
         }
       }
     }
     #endif
 
-    if (did_connect) { // Gather a litte connection information
-      _connection_time = millis();
+    if(did_connect) { // Gather a litte connection information
+      _connection_time = PJON_MILLIS();
       _connection_count++;
-      if (_single_socket) _ack_requested = _request_ack; // Same mode in both directions
+      if(_single_socket)
+        _ack_requested = _request_ack; // Same mode in both directions
     }
 
-    if (!connected || (reverse && !connected_rev)) {
+    if(!connected || (reverse && !connected_rev)) {
       #ifdef ETCP_DEBUG_PRINT
         Serial.print(F("Fail conn, closing "));
         Serial.print(connected);
@@ -518,23 +532,29 @@ public:
 
   void disconnect_in() {
     #ifdef ETCP_DEBUG_PRINT
-      if (_client_in || (_initiate_both_sockets_in_same_direction && _client_out))
-        Serial.println(F("Disconn in&rev"));
+      if(
+        _client_in ||
+        (_initiate_both_sockets_in_same_direction && _client_out)
+      ) Serial.println(F("Disconn in&rev"));
     #endif
     #ifdef ETCP_SINGLE_DIRECTION
-    if (_initiate_both_sockets_in_same_direction && _client_out) stop(_client_out);
+    if(_initiate_both_sockets_in_same_direction && _client_out)
+      stop(_client_out);
     #endif
-    if (_client_in) stop(_client_in);
+    if(_client_in) stop(_client_in);
   }
 
   void disconnect_out() {
     #ifdef ETCP_DEBUG_PRINT
-      if (_client_out || (_initiate_both_sockets_in_same_direction && _client_in))
-        Serial.println(F("Disconn out&rev"));
+      if(
+        _client_out ||
+        (_initiate_both_sockets_in_same_direction && _client_in)
+      ) Serial.println(F("Disconn out&rev"));
     #endif
-    if (_client_out) stop(_client_out);
+    if(_client_out) stop(_client_out);
     #ifdef ETCP_SINGLE_DIRECTION
-    if (_initiate_both_sockets_in_same_direction && _client_in) stop(_client_in);
+    if(_initiate_both_sockets_in_same_direction && _client_in)
+      stop(_client_in);
     #endif
   }
 
@@ -542,41 +562,44 @@ public:
     // Determine if to disconnect
     bool disconnect = !_keep_connection,
          reverse = _initiate_both_sockets_in_same_direction && !_initiator;
-    if (!disconnect && _client_in && !_client_in.connected()) disconnect = true;
+    if(!disconnect && _client_in && !_client_in.connected())
+      disconnect = true;
     #ifdef ETCP_SINGLE_DIRECTION
-    if (!disconnect && reverse && _client_out && !_client_out.connected()) disconnect = true;
-    if (!disconnect && reverse && (!_client_in || !_client_out)) disconnect = true;
+    if(!disconnect && reverse && _client_out && !_client_out.connected())
+      disconnect = true;
+    if(!disconnect && reverse && (!_client_in || !_client_out))
+      disconnect = true;
     #endif
-    if (!disconnect && _client_in && got_receive_timeout()) {
+    if(!disconnect && _client_in && got_receive_timeout()) {
       #ifdef ETCP_DEBUG_PRINT
         Serial.println(F("Receive timeout, disconn."));
       #endif
       disconnect = true;
     }
-    if (disconnect) disconnect_in();
+    if(disconnect) disconnect_in();
     // NOTE: From this point we can avoid using the expensive connected() call
 
     // Accept new incoming connection
     bool did_connect = false, connected = _client_in;
-    if (!connected) {
+    if(!connected) {
       _client_in = _server->available();
       connected = _client_in;
       #ifdef ETCP_DEBUG_PRINT
         if(connected) Serial.println(F("Accepted"));
       #endif
-      if (connected) {
+      if(connected) {
         uint32_t connection_header = 0;
         bool header_ok = false;
-        if (read_bytes(_client_in, (uint8_t*) &connection_header, 4) == 4) {
-          if (connection_header == ETCP_CONNECTION_HEADER_A) {
+        if(read_bytes(_client_in, (uint8_t*) &connection_header, 4) == 4) {
+          if(connection_header == ETCP_CONNECTION_HEADER_A) {
             header_ok = true;
             _ack_requested = false;
-          } else if (connection_header == ETCP_CONNECTION_HEADER_A_ACK) {
+          } else if(connection_header == ETCP_CONNECTION_HEADER_A_ACK) {
             header_ok = true;
             _ack_requested = true;
           }
         }
-        if (header_ok) did_connect = true;
+        if(header_ok) did_connect = true;
         else {
           disconnect_in();
           connected = false;
@@ -589,7 +612,7 @@ public:
 
     // Accept reverse connection if relevant
     #ifdef ETCP_SINGLE_DIRECTION
-    if (connected && reverse && !_client_out) {
+    if(connected && reverse && !_client_out) {
       #ifdef ETCP_DEBUG_PRINT
         Serial.println(F("Lst rev"));
       #endif
@@ -597,18 +620,20 @@ public:
       _request_ack = _ack_requested;
 
       bool connected_reverse = false;
-      uint32_t start = millis();
+      uint32_t start = PJON_MILLIS();
       do {
         _client_out = _server->available();
-      } while (!_client_out && (uint32_t)(millis()-start) < 2000);
+      } while (!_client_out && (uint32_t)(PJON_MILLIS()-start) < 2000);
 
       if(_client_out) {
         #ifdef ETCP_DEBUG_PRINT
           Serial.println("Accept rev OK");
         #endif
         uint32_t connection_header = 0;
-        if (read_bytes(_client_out, (uint8_t*) &connection_header, 4) == 4 && connection_header == ETCP_CONNECTION_HEADER_B)
-          connected_reverse = true;
+        if(
+          read_bytes(_client_out, (uint8_t*) &connection_header, 4) == 4 &&
+          connection_header == ETCP_CONNECTION_HEADER_B
+        ) connected_reverse = true;
         else {
           #ifdef ETCP_DEBUG_PRINT
             Serial.println(F("Disconn. rev no connhead"));
@@ -620,7 +645,7 @@ public:
         #endif
       }
 
-      if (connected_reverse) did_connect = true;
+      if(connected_reverse) did_connect = true;
       else {
         #ifdef ETCP_DEBUG_PRINT
           Serial.print(F("Fail accept, closing, "));
@@ -633,10 +658,11 @@ public:
     }
     #endif
 
-    if (did_connect) {
-      _connection_time = millis();
+    if(did_connect) {
+      _connection_time = PJON_MILLIS();
       _connection_count++;
-      _last_receive_time = millis(); // Count the connection as a receive action
+      // Count the connection as a receive action
+      _last_receive_time = PJON_MILLIS();
     }
 
     return connected;
@@ -654,7 +680,9 @@ public:
     }
   };
 
-  bool got_receive_timeout() { return (uint32_t)(millis() - _last_receive_time) > ETCP_IDLE_TIMEOUT; }
+  bool got_receive_timeout() {
+    return (uint32_t)(PJON_MILLIS() - _last_receive_time) > ETCP_IDLE_TIMEOUT;
+  };
 
   bool disconnect_in_if_needed() {
     if(_client_in && !_keep_connection) {
@@ -690,13 +718,13 @@ public:
       Serial.println(ok);
     #endif
 
-    /* If the other side is sending as well, we need to allow it to be read and
-       acknowledged, otherwise we have a deadlock where both are waiting for ACK
-       and will time out unsuccessfully */
+    /* If the other side is sending as well, we need to allow it to be read
+       and acknowledged, otherwise we have a deadlock where both are waiting
+       for ACK and will time out unsuccessfully */
     if(!_single_socket) while (receive() == PJON_ACK) ;
 
     int16_t result = PJON_FAIL;
-    if (_request_ack) {
+    if(_request_ack) {
       // Read ACK
       if(ok) {
         uint16_t code = 0;
@@ -715,10 +743,10 @@ public:
   };
 
 
-  /* Do ACKed bidirectional transfer of packets over a single socket connection by
-     using a master-slave mode where the master connects and delivers packets
-     or a placeholder, then reads packets or placeholder back before closing
-     the connection (unless letting it stay open). */
+  /* Do ACKed bidirectional transfer of packets over a single socket
+     connection by using a master-slave mode where the master connects and
+     delivers packets or a placeholder, then reads packets or placeholder
+     back before closing the connection (unless letting it stay open). */
 
   uint16_t single_socket_transfer(
     EthernetClient &client,
@@ -765,7 +793,7 @@ public:
       uint8_t numpackets_in = 0;
       if(ok) ok = read_bytes(client, &numpackets_in, 1) == 1;
       #ifdef ETCP_DEBUG_PRINT
-        if (!ok || numpackets_in > 0) {
+        if(!ok || numpackets_in > 0) {
           Serial.print("Read np_in: ");
           Serial.print(numpackets_in);
           Serial.println(ok ? " OK" : " FAIL");
@@ -796,14 +824,18 @@ public:
       disconnect_out_if_needed(result);
 
       #ifdef ETCP_DEBUG_PRINT
-      if (numpackets_in > 0 || numpackets_out > 0) {
-        Serial.print("INOUTm "); Serial.print(numpackets_in); Serial.print(numpackets_out);
+      if(numpackets_in > 0 || numpackets_out > 0) {
+        Serial.print("INOUTm ");
+        Serial.print(numpackets_in);
+        Serial.print(numpackets_out);
         Serial.println(ok ? " OK" : " FAIL");
       }
       #endif
 
       // Return PJON_ACK if successfully sent or received a packet
-      return contents == NULL ? (numpackets_in > 0 ? result : PJON_FAIL) : result;
+      return contents == NULL ?
+        (numpackets_in > 0 ? result : PJON_FAIL) :
+        result;
 
     } else { // Receiving incoming connections and packets and request
 
@@ -825,7 +857,7 @@ public:
       uint8_t numpackets_in = 0;
       if(ok) ok = read_bytes(client, (byte*) &numpackets_in, 1) == 1;
       #ifdef ETCP_DEBUG_PRINT
-        if (!ok || numpackets_in > 0) {
+        if(!ok || numpackets_in > 0) {
           Serial.print("Read np_in: ");
           Serial.print(numpackets_in);
           Serial.println(ok ? " OK" : " FAIL");
@@ -837,7 +869,9 @@ public:
         while(client.available() < 1 && client.connected()) ;
         ok = receive(client) == PJON_ACK;
         #ifdef ETCP_DEBUG_PRINT
-          Serial.print(F("Read p ")); Serial.print(i); Serial.print(F(", ok="));
+          Serial.print(F("Read p "));
+          Serial.print(i);
+          Serial.print(F(", ok="));
           Serial.println(ok);
         #endif
       }
@@ -871,15 +905,19 @@ public:
       disconnect_in_if_needed();
 
       #ifdef ETCP_DEBUG_PRINT
-      if (numpackets_in > 0 || numpackets_out > 0) {
-        Serial.print("INOUT "); Serial.print(numpackets_in); Serial.print(numpackets_out);
+      if(numpackets_in > 0 || numpackets_out > 0) {
+        Serial.print("INOUT ");
+        Serial.print(numpackets_in);
+        Serial.print(numpackets_out);
         Serial.println(ok ? " OK" : " FAIL");
       }
       #endif
 
       // Return PJON_ACK if successfully sent or received a packet
       uint16_t result = ok ? PJON_ACK : PJON_FAIL;
-      return contents == NULL ? (numpackets_in > 0 ? result : PJON_FAIL) : result;
+      return contents == NULL ?
+        (numpackets_in > 0 ? result : PJON_FAIL) :
+        result;
     }
     #endif
     return PJON_FAIL;
@@ -921,7 +959,7 @@ public:
   #ifndef ARDUINO
   // Destructor not needed on Arduino, uses a lot of program space
   ~EthernetLink() {
-    if (_server) delete _server;
+    if(_server) delete _server;
   }
   #endif
 
@@ -930,7 +968,7 @@ public:
     const uint8_t remote_ip[],
     uint16_t port_number = ETCP_DEFAULT_PORT
   ) {
-    if (_remote_node_count == ETCP_MAX_REMOTE_NODES) return -1;
+    if(_remote_node_count == ETCP_MAX_REMOTE_NODES) return -1;
     _remote_id[_remote_node_count] = remote_id;
     memcpy(_remote_ip[_remote_node_count], remote_ip, 4);
     _remote_port[_remote_node_count] = port_number;
@@ -948,7 +986,10 @@ public:
   void start_listening(uint16_t port_number = ETCP_DEFAULT_PORT) {
     _local_port = port_number;
     _initiator = false; // If we are listening, we are not the initiator
-    if(_server == NULL && (!_initiate_both_sockets_in_same_direction || !_initiator)) {
+    if(
+      _server == NULL &&
+      (!_initiate_both_sockets_in_same_direction || !_initiator)
+    ) {
       #ifdef ETCP_DEBUG_PRINT
         Serial.print("Lst on port ");
         Serial.println(port_number);
@@ -969,23 +1010,23 @@ public:
 
   /* Whether to do bidirectional data transfer on a single socket or use one
      socket for each direction. Single socket transfer is slower but more
-     firewall-friendly. Client connects to server, and packets are exchanged in
-     both directions on the same socket. If using this, _only one_ of the sides
-     should call start_listening, and that side will be receiver with the other
-     initiator (establishing connections) */
+     firewall-friendly. Client connects to server, and packets are exchanged
+     in both directions on the same socket. If using this, _only one_ of the
+     sides should call start_listening, and that side will be receiver with
+     the other initiator (establishing connections) */
   #ifdef ETCP_SINGLE_SOCKET_WITH_ACK
   void single_socket(bool single_socket) {
     _single_socket = single_socket;
   };
   #endif
 
-  /* With single_socket = false, there is one socket for each packet direction.
-    Normally the sockets are initiated from the side sending the packet.
-    By setting initiate_both_sockets_in_same direction, both sockets can be
-    initiated from one of the devices, to simplify firewall setup, or for letting
-    only one of the devices have a static IP address.
-    This should only be used with _keep_connection = true, and is meant for permanent
-    one-to-one links. */
+  /* With single_socket = false, there is one socket for each packet
+     direction. Normally the sockets are initiated from the side sending the
+     packet. By setting initiate_both_sockets_in_same direction, both sockets
+     can be initiated from one of the devices, to simplify firewall setup, or
+     for letting only one of the devices have a static IP address.
+     This should only be used with _keep_connection = true, and is meant for
+     permanent one-to-one links. */
   #ifdef ETCP_SINGLE_DIRECTION
   void single_initiate_direction(bool single_initiate_direction) {
     _initiate_both_sockets_in_same_direction = single_initiate_direction;
@@ -1047,7 +1088,7 @@ public:
   };
 
 
-  // Overridden functions below -----------------------------------------------
+  // Overridden functions below ----------------------------------------------
 
   // Connect to a server if needed, then read incoming package and send ACK
 
@@ -1061,10 +1102,11 @@ public:
         return single_socket_transfer(_client_out, remote_id, true, NULL, 0);
       }
       #ifdef ETCP_SINGLE_DIRECTION
-      else if (_initiate_both_sockets_in_same_direction && _initiator) {
+      else if(_initiate_both_sockets_in_same_direction && _initiator) {
         bool connected = connect(remote_id);
         uint16_t result = receive(_client_in);
-        disconnect_out_if_needed(PJON_ACK); // Do not disconnect if nothing to read
+        // Do not disconnect if nothing to read
+        disconnect_out_if_needed(PJON_ACK);
         disconnect_in_if_needed();
         return result;
       }
@@ -1079,7 +1121,8 @@ public:
 
         uint16_t result = receive(_client_in);
         disconnect_in_if_needed();
-        disconnect_out_if_needed(PJON_ACK); // Do not disconnect if nothing to read
+        // Do not disconnect if nothing to read
+        disconnect_out_if_needed(PJON_ACK);
         return result;
       }
     }
@@ -1119,7 +1162,8 @@ public:
     // Connect or check that we are already connected to the correct server
     bool connected = false;
     #ifdef ETCP_SINGLE_DIRECTION
-    if (_initiate_both_sockets_in_same_direction && !_initiator) connected = accept();
+    if(_initiate_both_sockets_in_same_direction && !_initiator)
+      connected = accept();
     else
     #endif
     connected = connect(id);

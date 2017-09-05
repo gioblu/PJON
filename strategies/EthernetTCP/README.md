@@ -6,7 +6,7 @@ With the `EthernetTCP` PJON strategy, multiple devices with Ethernet ports can u
 #### Why PJON over Ethernet TCP/IP?
 If a cabled or wireless Ethernet network exists, using this to let devices communicate can be easier than to pull new wires or utilize other radio communication modules.
 
-It can also be useful for connecting physically separate clusters of devices that are connected wired with the SoftwareBitBang strategy, or wirelessly with the Oversampling strategy, when an Ethernet network is connecting the locations.
+It can also be useful for connecting physically separate clusters of devices that are connected wired with the `SoftwareBitBang` strategy, or wirelessly with the `Oversampling` strategy, when an Ethernet network is connecting the locations.
 
 It also enables devices to be connected through the Internet if firewalls are configured to allow this.
 
@@ -30,7 +30,7 @@ Set up the Ethernet card in the usual manner by calling `Ethernet.begin`, then c
     bus.begin();
   }
 ```
-Note that the device id of each PJON device to communicate with must be added with the `add_node` function along with the device's IP address. The IP addresses can be completely unrelated, allowing it to communicate with devices all over the world as if they were on a local bus. DNS is currently not supported (and would lower the reliability because communication would be depending on the DNS server to be reachable), so all devices to be reached must have static IP addresses. Usually a static IP addresse can be leased for an Internet connection, sometimes for as low as $1 a month.
+Note that the device id of each PJON device to communicate with must be added with the `add_node` function along with the device's IP address. The IP addresses can be completely unrelated, allowing it to communicate with devices all over the world as if they were on a local bus. DNS is currently not supported (and would lower the reliability because communication would be depending on the DNS server to be reachable), so all devices to be reached must have static IP addresses. Usually a static IP address can be leased for an Internet connection, sometimes for as low as $1 a month.
 
 If the device will only talk to other devices with the single-socket configuration (calling `bus.strategy.link.single_socket(true)`) it can have a DHCP assigned IP address itself.
 

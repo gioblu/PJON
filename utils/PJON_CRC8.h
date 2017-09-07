@@ -6,7 +6,7 @@
 struct PJON_crc8 {
 
   static inline uint8_t roll(char input_byte, uint8_t crc) {
-    for (uint8_t i = 8; i; i--, input_byte >>= 1) {
+    for(uint8_t i = 8; i; i--, input_byte >>= 1) {
       uint8_t result = (crc ^ input_byte) & 0x01;
       crc >>= 1;
       if(result) crc ^= 0x8C;

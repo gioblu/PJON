@@ -73,4 +73,4 @@ Transmission                                                         Response
 
 ```
 
-The maximum time dedicated to potential acknowledgement reception and consequent channel jittering is defined by the use case constrains like maximum packet length and devices distance. Thanks to the presence of the jittering wave, many differently configured devices can coexist on the same medium with no risk of collision.
+The maximum time dedicated to potential acknowledgement reception and consequent channel jittering is defined by the use case constraints like maximum packet length and devices distance. Thanks to the presence of the jittering wave, many differently configured devices can coexist on the same medium with no risk of collision.

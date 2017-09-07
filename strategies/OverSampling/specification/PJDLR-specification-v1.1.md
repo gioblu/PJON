@@ -71,4 +71,4 @@ Transmission                                                      Response
 |____|___|______||______||______||______|                 |____|___|_____|
 ```
 
-The maximum time dedicated to potential acknowledgement reception has to be same for all connected devices, and it is defined by the use case constrains like maximum packet length and latency or physical distance between devices.
+The maximum time dedicated to potential acknowledgement reception has to be same for all connected devices, and it is defined by the use case constraints like maximum packet length and latency or physical distance between devices.

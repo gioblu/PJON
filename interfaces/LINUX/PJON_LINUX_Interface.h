@@ -37,8 +37,6 @@
   #define MSBFIRST 2
 
   typedef char byte;
-//  typedef unsigned char uint8_t;
-//  typedef unsigned word uint16_t;
 
   void pinMode(byte pin, byte m) { ; };
 

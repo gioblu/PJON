@@ -384,9 +384,11 @@ class PJON {
     uint16_t receive() {
       uint16_t length = PJON_PACKET_MAX_LENGTH;
       uint16_t batch_length = 0;
+      uint8_t  overhead = 0;
       bool computed_crc = 0;
       bool extended_header = false;
       bool extended_length = false;
+      bool async_ack = false;
       for(uint16_t i = 0; i < length; i++) {
         if(!batch_length) {
           batch_length = strategy.receive_string(data + i, length - i);
@@ -415,6 +417,12 @@ class PJON {
           ) return PJON_BUSY;
           extended_length = data[i] & PJON_EXT_LEN_BIT;
           extended_header = data[i] & PJON_EXT_HEAD_BIT;
+          overhead = packet_overhead(data[i]);
+          async_ack = (
+            PJON_INCLUDE_ASYNC_ACK &&
+            (data[1] & PJON_ACK_MODE_BIT) &&
+            (data[1] & PJON_TX_INFO_BIT)
+          );
         }
 
         if((i == (2 + extended_header)) && !extended_length) {
@@ -460,11 +468,11 @@ class PJON {
       #if(PJON_INCLUDE_ASYNC_ACK)
         /* If a packet requesting asynchronous acknowledgement is received
            send the acknowledgement packet back to the packet's transmitter */
-        if((data[1] & PJON_ACK_MODE_BIT) && (data[1] & PJON_TX_INFO_BIT)) {
-          if(_auto_delete && length == packet_overhead(data[1]))
+        if(async_ack) {
+          if(_auto_delete && length == overhead)
             if(handle_asynchronous_acknowledgment(last_packet_info))
               return PJON_ACK;
-          if(length > packet_overhead(data[1])) {
+          if(length > overhead) {
             if(!dispatched(last_packet_info)) {
               dispatch(
                 last_packet_info.sender_id,
@@ -484,8 +492,8 @@ class PJON {
       #endif
 
       _receiver(
-        data + (packet_overhead(data[1]) - (data[1] & PJON_CRC_BIT ? 4 : 1)),
-        length - packet_overhead(data[1]),
+        data + (overhead - (data[1] & PJON_CRC_BIT ? 4 : 1)),
+        length - overhead,
         last_packet_info
       );
 

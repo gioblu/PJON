@@ -427,12 +427,18 @@ class PJON {
 
         if((i == (2 + extended_header)) && !extended_length) {
           length = data[i];
-          if(length < 5 || length > PJON_PACKET_MAX_LENGTH) return PJON_FAIL;
+          if(
+            length < (overhead + !async_ack) ||
+            length >= PJON_PACKET_MAX_LENGTH
+          ) return PJON_FAIL;
         }
 
         if((i == (3 + extended_header)) && extended_length) {
           length = (data[i - 1] << 8) | (data[i] & 0xFF);
-          if(length < 5 || length > PJON_PACKET_MAX_LENGTH) return PJON_FAIL;
+          if(
+            length < (overhead + !async_ack) ||
+            length >= PJON_PACKET_MAX_LENGTH
+          ) return PJON_FAIL;
         }
 
         if((config & PJON_MODE_BIT) && (data[1] & PJON_MODE_BIT) && !_router)

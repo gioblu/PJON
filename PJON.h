@@ -433,6 +433,7 @@ class PJON {
             length < (overhead + !async_ack) ||
             length >= PJON_PACKET_MAX_LENGTH
           ) return PJON_FAIL;
+          if(length > 15 && !(data[1] & PJON_CRC_BIT)) return PJON_BUSY;
         }
 
         if((i == (3 + extended_header)) && extended_length) {
@@ -441,6 +442,7 @@ class PJON {
             length < (overhead + !async_ack) ||
             length >= PJON_PACKET_MAX_LENGTH
           ) return PJON_FAIL;
+          if(length > 15 && !(data[1] & PJON_CRC_BIT)) return PJON_BUSY;
         }
 
         if((config & PJON_MODE_BIT) && (data[1] & PJON_MODE_BIT) && !_router)

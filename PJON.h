@@ -432,7 +432,7 @@ class PJON {
           if(
             length < (overhead + !async_ack) ||
             length >= PJON_PACKET_MAX_LENGTH
-          ) return PJON_FAIL;
+          ) return PJON_BUSY;
           if(length > 15 && !(data[1] & PJON_CRC_BIT)) return PJON_BUSY;
         }
 
@@ -441,7 +441,7 @@ class PJON {
           if(
             length < (overhead + !async_ack) ||
             length >= PJON_PACKET_MAX_LENGTH
-          ) return PJON_FAIL;
+          ) return PJON_BUSY;
           if(length > 15 && !(data[1] & PJON_CRC_BIT)) return PJON_BUSY;
         }
 

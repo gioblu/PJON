@@ -461,15 +461,17 @@ class PJON {
       if(data[1] & PJON_ACK_REQ_BIT && data[0] != PJON_BROADCAST)
         if(_mode != PJON_SIMPLEX && !_router)
           if(
-            !(config & PJON_MODE_BIT) ||
-            (
-              (config & PJON_MODE_BIT) &&
-              (data[1] & PJON_MODE_BIT) &&
-              bus_id_equality(
-                data + 3 + extended_length + extended_header,
-                bus_id
+            computed_crc && (
+              !(config & PJON_MODE_BIT) ||
+              (
+                (config & PJON_MODE_BIT) &&
+                (data[1] & PJON_MODE_BIT) &&
+                bus_id_equality(
+                  data + 3 + extended_length + extended_header,
+                  bus_id
+                )
               )
-            ) && computed_crc
+            )
           ) strategy.send_response(PJON_ACK);
 
       if(!computed_crc) return PJON_NAK;

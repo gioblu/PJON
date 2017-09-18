@@ -288,9 +288,9 @@ class PJONMaster : public PJON<Strategy> {
       ) {
         uint8_t request = this->data[overhead - CRC_overhead];
         uint32_t rid =
-          (uint32_t)(this->data[(overhead - CRC_overhead) + 1] << 24) |
-          (uint32_t)(this->data[(overhead - CRC_overhead) + 2] << 16) |
-          (uint32_t)(this->data[(overhead - CRC_overhead) + 3] <<  8) |
+          (uint32_t)(this->data[(overhead - CRC_overhead) + 1]) << 24 |
+          (uint32_t)(this->data[(overhead - CRC_overhead) + 2]) << 16 |
+          (uint32_t)(this->data[(overhead - CRC_overhead) + 3]) <<  8 |
           (uint32_t)(this->data[(overhead - CRC_overhead) + 4]);
 
         if(request == PJON_ID_REQUEST)

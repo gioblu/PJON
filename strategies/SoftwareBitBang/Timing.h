@@ -34,10 +34,10 @@
   #endif
   #if SWBB_MODE == SWBB_OVERDRIVE
     #if F_CPU == 16000000L
-    /* Speed: 39.800kBd or 4.975kB/s */
-      #define SWBB_BIT_WIDTH   17
+    /* Speed: 35.874kBd or 4.484kB/s */
+      #define SWBB_BIT_WIDTH   19
       #define SWBB_BIT_SPACER  52
-      #define SWBB_ACCEPTANCE  17
+      #define SWBB_ACCEPTANCE  19
       #define SWBB_READ_DELAY   8
     #endif
   #endif
@@ -57,7 +57,7 @@
     #define SWBB_BIT_WIDTH   32
     #define SWBB_BIT_SPACER  84
     #define SWBB_ACCEPTANCE  32
-    #define SWBB_READ_DELAY   9
+    #define SWBB_READ_DELAY  11
   #endif
 #endif
 
@@ -161,13 +161,13 @@
 #endif
 #if SWBB_MODE == SWBB_FAST
   #ifndef SWBB_BIT_WIDTH
-    #define SWBB_BIT_WIDTH   28
+    #define SWBB_BIT_WIDTH   32
   #endif
   #ifndef SWBB_BIT_SPACER
-    #define SWBB_BIT_SPACER  66
+    #define SWBB_BIT_SPACER  84
   #endif
   #ifndef SWBB_ACCEPTANCE
-    #define SWBB_ACCEPTANCE  28
+    #define SWBB_ACCEPTANCE  32
   #endif
   #ifndef SWBB_READ_DELAY
     #define SWBB_READ_DELAY   4
@@ -175,13 +175,13 @@
 #endif
 #if SWBB_MODE == SWBB_OVERDRIVE
   #ifndef SWBB_BIT_WIDTH
-    #define SWBB_BIT_WIDTH   17
+    #define SWBB_BIT_WIDTH   19
   #endif
   #ifndef SWBB_BIT_SPACER
-    #define SWBB_BIT_SPACER  48
+    #define SWBB_BIT_SPACER  52
   #endif
   #ifndef SWBB_ACCEPTANCE
-    #define SWBB_ACCEPTANCE  17
+    #define SWBB_ACCEPTANCE  19
   #endif
   #ifndef SWBB_READ_DELAY
     #define SWBB_READ_DELAY   8

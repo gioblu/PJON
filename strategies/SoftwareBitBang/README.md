@@ -30,7 +30,7 @@ It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to
 `SWBB_MODE` can be configured in 3 different modes, `SWBB_STANDARD`, `SWBB_FAST` and `SWBB_OVERDRIVE`:
 - `SWBB_STANDARD` (1) runs at 16944Bd or 2.12kB/s cross-architecture, promiscuous clock/architecture compatible.
 - `SWBB_FAST` (2) runs at 21504Bd or 2.68kB/s cross-architecture, promiscuous clock/architecture compatible.
-- `SWBB_OVERDRIVE` (3) runs a specific architecture at its maximum limits (non cross-architecture compatible). Every architecture has its own limits, Arduino Duemilanove for example runs at 31250Bd or 3.906kB/s, Arduino Zero can reach 48000Bd or 6kB/s.
+- `SWBB_OVERDRIVE` (3) runs a specific architecture at its maximum limits (non cross-architecture compatible). Every architecture has its own limits, Arduino Duemilanove for example runs at 35874Bd or 4.48kB/s, Arduino Zero can reach 48000Bd or 6kB/s.
 
 When including and using `SoftwareBitBang`, as data link layer of a PJON bus, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because `SoftwareBitBang` is completely software emulated strategy with a non blocking implementation, transforming a painful walk in a nice flight.
 

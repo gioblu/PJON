@@ -37,13 +37,13 @@ When including and using `SoftwareBitBang`, as data link layer of a PJON bus, yo
 Single wire simplicity let you to experiment quickly and with creativity. The first suggested test, at the tester's risk, is to let two arduino boards communicate [through a living body](https://www.youtube.com/watch?v=caMit7nzJsM) touching with the left hand the digital port of the first board (5v 40ma, harmless) and with the right the port of the other one. It is stunning to see highly accurate digital communication running through a living biological body. This opens the mind to possible creative solutions.
 
 #### How to use SoftwareBitBang
-Pass the `SoftwareBitBang` type as PJON template parameter to instantiate a PJON object ready to communicate in this Strategy. All the other necessary information is present in the general [Documentation](/documentation).
+Before including `PJON.h` it is possible to configure `SoftwareBitBang` using predefined constants:
 ```cpp  
   /* The default SoftwareBitBang mode is SWBB_STANDARD
-     (Transfer speed: 16.944kBb or 2.12kB/s) */
+     (Transfer speed: 16.949kBb or 2.11kB/s) */
 
   /* Set SoftwareBitBang mode to SWBB_FAST before PJON.h inclusion
-     (Transfer speed: 21.504kBd or 3.15kB/s)
+     (Transfer speed: 21.505kBd or 2.68kB/s)
      When used with a group of different devices a pull-down resistor is
      suggested to have optimal channel reliability */
   #define SWBB_MODE 2
@@ -75,7 +75,7 @@ Pass the `SoftwareBitBang` type as PJON template parameter to instantiate a PJON
   }
 
 ```
-After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance.
+After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance. All the other necessary information is present in the general [Documentation](/documentation).
 
 #### Why not interrupts?
 In the Arduino environment the use of libraries is really extensive and often the end user is not able to go over collisions. Very often a library is using hardware resources of the microcontroller as timers or interrupts, colliding or interrupting other libraries. This happens because in general Arduino boards have limited hardware resources. To have a universal and reliable communication medium in this sort of environment, software emulated bit-banging, is a good, stable and reliable solution that leads to "more predictable" results than interrupt driven systems coexisting on small microcontrollers without the original developer and the end user knowing about it.

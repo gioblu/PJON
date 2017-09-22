@@ -26,7 +26,7 @@
       /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
       #define SWBB_BIT_WIDTH   40
       #define SWBB_BIT_SPACER 112
-      #define SWBB_ACCEPTANCE  40
+      #define SWBB_ACCEPTANCE  56
       #define SWBB_READ_DELAY   4
     #endif
   #endif
@@ -35,17 +35,17 @@
       /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
       #define SWBB_BIT_WIDTH   32
       #define SWBB_BIT_SPACER  84
-      #define SWBB_ACCEPTANCE  32
+      #define SWBB_ACCEPTANCE  52
       #define SWBB_READ_DELAY   4
     #endif
   #endif
   #if SWBB_MODE == SWBB_OVERDRIVE
     #if F_CPU == 16000000L
-      /* Speed: 35.874kBd or 4.484kB/s
+      /* Speed: 33.472kBd or 4.184kB/s
          Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
       #define SWBB_BIT_WIDTH   19
-      #define SWBB_BIT_SPACER  52
-      #define SWBB_ACCEPTANCE  19
+      #define SWBB_BIT_SPACER  68
+      #define SWBB_ACCEPTANCE  36
       #define SWBB_READ_DELAY   8
     #endif
   #endif
@@ -57,14 +57,14 @@
     /* Working on pin: 2, 4, 8, 12 */
     #define SWBB_BIT_WIDTH   40
     #define SWBB_BIT_SPACER 112
-    #define SWBB_ACCEPTANCE  40
+    #define SWBB_ACCEPTANCE  56
     #define SWBB_READ_DELAY   8
   #endif
   #if SWBB_MODE == SWBB_FAST
     /* Working on pin: 2, 4, 8, 12 */
     #define SWBB_BIT_WIDTH   32
     #define SWBB_BIT_SPACER  84
-    #define SWBB_ACCEPTANCE  32
+    #define SWBB_ACCEPTANCE  52
     #define SWBB_READ_DELAY  12
   #endif
 #endif
@@ -75,14 +75,14 @@
     /* Working on pin: 3, 4, 7, 8, 9, 10, 12 */
     #define SWBB_BIT_WIDTH   38
     #define SWBB_BIT_SPACER 110
-    #define SWBB_ACCEPTANCE  38
+    #define SWBB_ACCEPTANCE  62
     #define SWBB_READ_DELAY  11
   #endif
   #if SWBB_MODE == SWBB_FAST || SWBB_MODE == SWBB_OVERDRIVE
     /* Working on pin: 3, 4, 7, 8, 9, 10, 12 */
     #define SWBB_BIT_WIDTH   30
     #define SWBB_BIT_SPACER  82
-    #define SWBB_ACCEPTANCE  30
+    #define SWBB_ACCEPTANCE  54
     #define SWBB_READ_DELAY  10
   #endif
 #endif

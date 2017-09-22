@@ -311,6 +311,7 @@ class SoftwareBitBang {
           return true;
         }
       }
+      return false;
     };
 
 

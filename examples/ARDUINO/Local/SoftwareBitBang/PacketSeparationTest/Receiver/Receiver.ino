@@ -3,7 +3,7 @@
    Execute SoftwareBitBang packet separation consistency testing
 
    This device attempts to receive packets from pin 12. The other device
-   transmits continuous random bytestram. If an incoming packet is detected
+   transmits a continuous random byte stream. If an incoming packet is detected
    a false positive occurred. */
 
 // Uncomment to run SoftwareBitBang to mode FAST

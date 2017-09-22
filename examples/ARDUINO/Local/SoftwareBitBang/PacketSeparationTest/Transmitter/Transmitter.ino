@@ -1,9 +1,9 @@
 
 /* Giovanni Blu Mitolo 2017 - gioscarab@gmail.com
-   Execute SoftwareBitBang packet separation consistency testing
+   SoftwareBitBang packet separation consistency testing
 
-   This device transmits on pin 12 a continuous random bytestram.
-   The receiver device will attempt to receive packets from pin 12.
+   This device transmits on pin 12 a continuous random byte stream.
+   The receiver device attempts to receive packets from pin 12.
    If an incoming packet is detected a false positive occurred.  */
 
 // Uncomment to run SoftwareBitBang to mode FAST

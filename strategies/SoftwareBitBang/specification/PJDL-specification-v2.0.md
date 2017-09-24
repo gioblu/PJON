@@ -42,7 +42,7 @@ ___|___________|___________|___________|___________|___
 It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to protect MCU pins and to reduce interference. The higher is the proximity of sources of induced interference, the higher is the required resistance of the pull-down resistor.     
 
 #### Byte transmission
-Every byte is prepended with a synchronization pad and transmission occurs LSB-first. The first bit is a longer than standard logic 1 followed by a standard logic 0. The reception method is based on finding a logic 1 as long as the first padding bit within a certain threshold, synchronizing to its falling edge and checking if it is followed by a logic 0. If this pattern is detected, reception starts, if not, interference, synchronization loss or simply absence of communication is detected at byte level.    
+Each byte is prepended with a synchronization pad and transmission occurs LSB-first. The first bit is a longer than standard logic 1 followed by a standard logic 0. The reception method is based on finding a logic 1 as long as the first padding bit within a certain threshold, synchronizing to its falling edge and checking if it is followed by a logic 0. If this pattern is detected, reception starts, if not, interference, synchronization loss or simply absence of communication is detected at byte level.    
 ```cpp  
  __________ ___________________________
 | SyncPad  | Byte                      |
@@ -67,7 +67,7 @@ Before a byte sequence transmission, the communication medium is analysed, if lo
 | 1 |0| 1 |0| 1 |0| 1 |0|0000|11|00| 1 |0|00000|1|0|1|
 |___|_|___|_|___|_|___|_|____|__|__|___|_|_____|_|_|_|
 ```
-In a scenario where a byte sequence is received, low performance microcontrollers with inaccurate clock can correctly synchronize with transmitter during the sequence initializer, and consequently each byte is received. Thanks to the presence of synchronization pads, byte sequence separation, transmission end and error detection can be achieved at byte level.
+In a scenario where a byte sequence is received, low performance microcontrollers with inaccurate clock can correctly synchronize with transmitter during the sequence initializer, and consequently each byte is received. The byte sequence initializer is detected if 3 synchronizations occurred and if its duration is equal or higher than `initializer expected duration - (sync pad bit 1 duration - sync pad bit 1 minimum acceptable duration)`. With a correct bit and synchronization pad ratio and timing configuration, the sequence initializer is 100% reliable, false positives cannot occur if not because of externally induced interference.     
 
 #### Synchronous response
 A byte sequence transmission can be optionally followed by a synchronous response by its recipient.

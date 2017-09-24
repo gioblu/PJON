@@ -123,22 +123,11 @@ class OverSampling {
     };
 
 
-    /* Check if a byte is coming from the pin:
-     This function is looking for padding bits before a byte.
-     If value is 1 for more than ACCEPTANCE and after
-     that comes a 0 probably a byte is coming:
-      ________
-     |  Init  |
-     |--------|
-     |_____   |
-     |  |  |  |
-     |1 |  |0 |
-     |__|__|__|
-        |
-      ACCEPTANCE */
+    /* Try to receive a byte: */
 
     uint16_t receive_byte() {
       if(sync()) return read_byte();
+      return PJON_FAIL;
     };
 
 
@@ -183,22 +172,19 @@ class OverSampling {
 
 
     /* Every byte is prepended with 2 synchronization padding bits. The first
-       is a longer than standard logic 1 followed by a standard logic 0.
-       __________ ___________________________
-      | SyncPad  | Byte                      |
-      |______    |___       ___     _____    |
-      | |    |   |   |     |   |   |     |   |
-      | | 1  | 0 | 1 | 0 0 | 1 | 0 | 1 1 | 0 |
-      |_|____|___|___|_____|___|___|_____|___|
-        |
-       ACCEPTANCE
+       is a shorter than standard logic 1 followed by a standard logic 0.
+       _____ ___________________________
+      |Sync | Byte                      |
+      |_    |___       ___     _____    |
+      | |   |   |     |   |   |     |   |
+      |1| 0 | 1 | 0 0 | 1 | 0 | 1 1 | 0 |
+      |_|___|___|_____|___|___|_____|___|
 
     The reception tecnique is based on finding a logic 1 as long as the
-    first padding bit within a certain threshold, synchronizing to its
-    falling edge and checking if it is followed by a logic 0. If this
-    pattern is recognised, reception starts, if not, interference,
-    synchronization loss or simply absence of communication is
-    detected at byte level. */
+    first padding bit, synchronizing to its falling edge and checking if
+    it is followed by a logic 0. If this pattern is recognised, reception
+    starts, if not, interference, synchronization loss or simply absence
+    of communication is detected at byte level. */
 
     void send_byte(uint8_t b) {
       PJON_IO_WRITE(_output_pin, HIGH);

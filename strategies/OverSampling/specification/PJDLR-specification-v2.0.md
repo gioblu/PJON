@@ -9,13 +9,12 @@
 /*
 Milan, Italy - 31/03/2017
 PJDLR (Padded jittering data link) v2.0
-Invented by Giovanni Blu Mitolo and Fred Larsen
+Invented by Giovanni Blu Mitolo, preamble proposed by Fred Larsen
 released into the public domain
 
 Related implementation: /strategies/OverSampling/
 Compliant implementation versions: PJON 9.0 and following
-
-Changelog: Response generalization / refactoring
+Changelog: Added byte stream initializer
 */
 ```
 ### PJDLR (Padded Jittering Data Link Radio)

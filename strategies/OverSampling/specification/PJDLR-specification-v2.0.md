@@ -7,7 +7,7 @@
 
 ```cpp
 /*
-Milan, Italy - 31/03/2017
+Milan, Italy - 24/09/2017
 PJDLR (Padded jittering data link) v2.0
 Invented by Giovanni Blu Mitolo, preamble proposed by Fred Larsen
 released into the public domain

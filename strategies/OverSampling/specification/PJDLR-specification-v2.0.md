@@ -54,7 +54,7 @@ Before a byte sequence transmission, the communication medium is analysed, if lo
 |  1  | 0 |1|0|1|0|1|0|0000|11|00|1|0|00000|1|0|1|1|0|00000|1|00|
 |_____|___|_|_|_|_|_|_|____|__|__|_|_|_____|_|_|_|_|_|_____|_|__|
 ```
-In a scenario where a byte sequence is received, low performance microcontrollers with inaccurate clock can correctly synchronize with transmitter during the sequence initializer, and consequently each byte is received. Thanks to the presence of synchronization pads, byte sequence separation, transmission end and error detection can be achieved at byte level.
+In a scenario where a byte sequence is received, low performance microcontrollers with inaccurate clock can correctly synchronize with transmitter during the sequence initializer, and consequently each byte is received. The byte sequence initializer is detected if 3 synchronizations occurred and if its duration is coherent with its expected duration. With a correct bit and synchronization pad ratio and timing configuration, the sequence initializer is 100% reliable, false positives cannot occur if not because of externally induced interference.     
 
 #### Synchronous response
 A byte sequence transmission can be optionally followed by a synchronous response by its recipient.

@@ -24,7 +24,8 @@
 
 #pragma once
 
-#if defined(__AVR_ATmega88__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
+#if defined(__AVR_ATmega88__) || defined(__AVR_ATmega168__) || \
+    defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
   #if AS_MODE == AS_STANDARD
     #if F_CPU == 16000000L
       #define AS_BIT_WIDTH    750
@@ -207,5 +208,5 @@
 /* Threshold decrease interval (10 millis) */
 
 #ifndef AS_THRESHOLD_DECREASE_INTERVAL
-  #define AS_THRESHOLD_DECREASE_INTERVAL 100000
+  #define AS_THRESHOLD_DECREASE_INTERVAL 10000
 #endif

@@ -214,11 +214,11 @@ class AnalogSampling {
       uint32_t time = PJON_MICROS();
 
       if(
-        (
-          (uint32_t)(PJON_MICROS() - _last_update) >
-          AS_THRESHOLD_DECREASE_INTERVAL
-        ) && threshold
+        (uint32_t)(PJON_MICROS() - _last_update) <
+        AS_THRESHOLD_DECREASE_INTERVAL
       ) {
+        ; // Avoid micros overflow error
+      } else if(threshold) {
         threshold *= 0.25;
         _last_update = PJON_MICROS();
       }
@@ -228,8 +228,9 @@ class AnalogSampling {
         ((uint32_t)(PJON_MICROS() - time) <= AS_BIT_SPACER)
       ); // Do nothing
 
-      time  = PJON_MICROS() - time;
-      if(time >= AS_BIT_SPACER * 0.75 && time <= AS_BIT_SPACER * 1.25) {
+      time = PJON_MICROS() - time;
+      if(time < AS_BIT_SPACER * 0.75) return PJON_FAIL;
+      if(time <= AS_BIT_SPACER * 1.25) {
         PJON_DELAY_MICROSECONDS(AS_BIT_WIDTH);
         return read_byte();
       }

@@ -37,7 +37,7 @@ int main() {
   uint32_t baud_rate = 9600;
   printf("Opening serial... \n");
   int s = serialOpen("/dev/ttyAMA0", baud_rate);
-  if(s < 0) printf("Serial open fail!");
+  if(int(s) < 0) printf("Serial open fail!");
   if(wiringPiSetup() == -1) printf("WiringPi setup fail");
   printf("Setting serial... \n");
   bus.strategy.set_serial(s);

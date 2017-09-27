@@ -65,4 +65,4 @@ Transmission                                             Response
 |  149  ||  H   ||  I   ||   !  || 234 | LATENCY         |  6  |
 |_______||______||______||______||_____|                 |_____|
 ```
-Between frame transmission and a synchronous response there is a variable timeframe influenced by latency and CRC computation time. The maximum time dedicated to potential acknowledgement reception must be longer than the transmission time-in and it is estimated adding the maximum frame length CRC computation time to the expected latency.
+Between frame transmission and a synchronous response there is a variable timeframe influenced by latency and CRC computation time. The maximum time dedicated to potential acknowledgement reception must be shorter than the transmission time-in, to avoid other devices to disrupt a response exchange, and it is estimated adding the maximum frame length CRC computation time to the expected latency.

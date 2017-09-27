@@ -14,7 +14,7 @@ released into the public domain
 
 Related implementation: /strategies/OverSampling/
 Compliant implementation versions: PJON 9.0 and following
-Changelog: Added byte sequence initializer
+Changelog: Added frame initializer
 */
 ```
 ### PJDLR (Padded Jittering Data Link Radio)
@@ -23,12 +23,12 @@ PJDLR is a simplex or half-duplex data link layer, that can be easily software e
 #### Basic concepts
 * Define a synchronization pad initializer to identify a byte
 * Use synchronization pad's falling edge to achieve byte level synchronization
-* Use 3 consequent synchronization pads identify a byte sequence
-* Use a sequence preamble to support gain regulation before reception
+* Use 3 consequent synchronization pads identify a frame
+* Use a frame preamble to support gain regulation before reception
 * Detect interference or absence of communication at byte level
 * Support collision avoidance and detection
 * Support error detection
-* Support 1 byte synchronous response to byte sequence
+* Support 1 byte synchronous response to frame
 
 #### Byte transmission
 Every byte is prepended with a synchronization pad and transmission occurs LSB-first. The first bit is a shorter than standard logic 1 followed by a standard logic 0. The reception method is based on finding a logic 1 as long as the first padding bit, synchronizing to its falling edge and checking if it is followed by a logic 0. If this pattern is detected, reception starts, if not, interference, synchronization loss or simply absence of communication is detected at byte level.    
@@ -42,8 +42,8 @@ Every byte is prepended with a synchronization pad and transmission occurs LSB-f
 ```
 Padding bits add a certain overhead but are reducing the need of precise timing because synchronization is renewed every byte.
 
-#### Byte sequence transmission
-Before a byte sequence transmission, the communication medium is analysed, if logic 1 is present ongoing communication is detected and collision avoided, if logic 0 is detected for a duration longer than a byte transmission plus its synchronization pad and a small random timeframe, a packet preamble, composed of a long 1 and a long 0, is transmitted to let a potential receiver to adjust its gain to the transmitted signal magnitude. The duration of the preamble bits have to be selected considering hardware sensitivity and gain refresh time. Byte sequence transmission starts after preamble, with 3 synchronization pads, followed by data bytes. The presence of synchronization pads with their logic 1 between each byte ensures that also a sequence composed of a series of bytes with decimal value 0 can be transmitted safely without risk of third-party collision.
+#### Frame transmission
+Before a frame transmission, the communication medium is analysed, if logic 1 is present ongoing communication is detected and collision avoided, if logic 0 is detected for a duration longer than a byte transmission plus its synchronization pad and a small random timeframe, a packet preamble, composed of a long 1 and a long 0, is transmitted to let a potential receiver to adjust its gain to the transmitted signal magnitude. The duration of the preamble bits have to be selected considering hardware sensitivity and gain refresh time. frame transmission starts after preamble, with 3 synchronization pads, followed by data bytes. The presence of synchronization pads with their logic 1 between each byte ensures that also a frame composed of a series of bytes with decimal value 0 can be transmitted safely without risk of third-party collision.
 
 ```cpp     
            INITIALIZER  DATA
@@ -54,14 +54,14 @@ Before a byte sequence transmission, the communication medium is analysed, if lo
 |  1  | 0 |1|0|1|0|1|0|0000|11|00|1|0|00000|1|0|1|1|0|00000|1|00|
 |_____|___|_|_|_|_|_|_|____|__|__|_|_|_____|_|_|_|_|_|_____|_|__|
 ```
-In a scenario where a byte sequence is received, low performance microcontrollers with inaccurate clock can correctly synchronize with transmitter during the sequence initializer, and consequently each byte is received. The byte sequence initializer is detected if 3 synchronizations occurred and if its duration is coherent with its expected duration. With a correct bit and synchronization pad ratio and timing configuration, the sequence initializer is 100% reliable, false positives cannot occur if not because of externally induced interference.     
+In a scenario where a frame is received, low performance microcontrollers with inaccurate clock can correctly synchronize with transmitter during the frame initializer, and consequently each byte is received. The frame initializer is detected if 3 synchronizations occurred and if its duration is coherent with its expected duration. With a correct bit and synchronization pad ratio and timing configuration, the frame initializer is 100% reliable, false positives cannot occur if not because of externally induced interference.     
 
 #### Synchronous response
-A byte sequence transmission can be optionally followed by a synchronous response by its recipient.
+A frame transmission can be optionally followed by a synchronous response by its recipient.
 ```cpp  
 Transmission                                                      Response
  ________ ______  ______  ______  ______                   ________ _____
-|PREAMBLE| BYTE || BYTE || BYTE || BYTE | CRC COMPUTATION |PREAMBLE| ACK |
+|PREAMBLE| INIT || BYTE || BYTE || BYTE | CRC COMPUTATION |PREAMBLE| ACK |
 |____    |------||------||------||------|-----------------|____    |     |
 |    |   |      ||      ||      ||      | LATENCY         |    |   |  6  |
 |____|___|______||______||______||______|                 |____|___|_____|

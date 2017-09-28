@@ -107,18 +107,17 @@ class PJONSlave : public PJON<Strategy> {
       PJON_DELAY_MICROSECONDS(PJON_RANDOM(PJON_ACQUIRE_ID_DELAY));
       uint32_t time = PJON_MICROS();
       char msg = PJON_ID_ACQUIRE;
-      char head = this->config | PJON_ACK_REQ_BIT;
+      char head = this->config | required_config | PJON_ACK_REQ_BIT;
       this->_device_id = PJON_NOT_ASSIGNED;
-
       for(
-        uint8_t id = 1;
-        ((uint32_t)(PJON_MICROS() - time) < PJON_ID_SCAN_TIME) &&
-        id < PJON_MAX_DEVICES;
-        id++
-      )
+        uint8_t id;
+        ((uint32_t)(PJON_MICROS() - time) < PJON_ID_SCAN_TIME);
+      ) {
+        id = PJON_RANDOM(1, PJON_MAX_DEVICES);
         if(
           id == PJON_NOT_ASSIGNED ||
-          id == PJON_MASTER_ID
+          id == PJON_MASTER_ID ||
+          id == PJON_BROADCAST
         ) continue;
         else if(
           this->send_packet_blocking(
@@ -132,7 +131,7 @@ class PJONSlave : public PJON<Strategy> {
           this->_device_id = id;
           break;
         }
-
+      }
       receive(PJON_RANDOM(PJON_ACQUIRE_ID_DELAY) * 1000);
       if(
         this->send_packet_blocking(

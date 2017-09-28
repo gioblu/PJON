@@ -227,10 +227,22 @@ class PJONSlave : public PJON<Strategy> {
 
 
     bool handle_addressing() {
-      if(
-        this->last_packet_info.header & PJON_ADDRESS_BIT &&
-        this->_device_id != PJON_MASTER_ID &&
-        this->last_packet_info.sender_id == PJON_MASTER_ID
+      if( // Detect mult-master dynamic addressing
+        (this->last_packet_info.header & PJON_ADDRESS_BIT) &&
+        (this->last_packet_info.header & PJON_TX_INFO_BIT) &&
+        (this->last_packet_info.header & PJON_CRC_BIT) &&
+        (
+          (this->last_packet_info.sender_id == PJON_NOT_ASSIGNED) ||
+          (this->last_packet_info.sender_id == this->_device_id)
+        )
+      ) return true;
+
+      if( // Handle master-slave dynamic addressing
+        (this->last_packet_info.header & PJON_ADDRESS_BIT) &&
+        (this->last_packet_info.header & PJON_TX_INFO_BIT) &&
+        (this->last_packet_info.header & PJON_CRC_BIT) &&
+        (this->_device_id != PJON_MASTER_ID) &&
+        (this->last_packet_info.sender_id == PJON_MASTER_ID)
       ) {
         uint8_t overhead =
           this->packet_overhead(this->last_packet_info.header);

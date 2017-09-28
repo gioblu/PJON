@@ -57,6 +57,8 @@ template<typename Strategy = SoftwareBitBang>
 class PJONMaster : public PJON<Strategy> {
   public:
     Device_reference ids[PJON_MAX_DEVICES];
+    uint8_t required_config =
+      PJON_ADDRESS_BIT | PJON_TX_INFO_BIT | PJON_CRC_BIT;
 
     /* PJONMaster bus default initialization:
        State: Local (bus_id: 0.0.0.0)
@@ -119,7 +121,7 @@ class PJONMaster : public PJON<Strategy> {
         response,
         6,
         PJON_ID_REQUEST_INTERVAL,
-        PJON<Strategy>::config | PJON_ADDRESS_BIT
+        PJON<Strategy>::config | required_config
       );
     };
 
@@ -164,12 +166,16 @@ class PJONMaster : public PJON<Strategy> {
     void delete_id_reference(uint8_t id = 0) {
       if(!id) {
         for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++) {
+          if(!ids[i].state && ids[i].rid)
+            this->remove(ids[i].packet_index);
           ids[i].packet_index = 0;
           ids[i].registration = 0;
           ids[i].rid = 0;
           ids[i].state = false;
         }
       } else if(id > 0 && id < PJON_MAX_DEVICES) {
+        if(!ids[id - 1].state && ids[id - 1].rid)
+          this->remove(ids[id - 1].packet_index);
         ids[id - 1].packet_index = 0;
         ids[id - 1].registration = 0;
         ids[id - 1].rid   = 0;
@@ -234,24 +240,24 @@ class PJONMaster : public PJON<Strategy> {
           this->bus_id,
           &request,
           1,
-          PJON<Strategy>::config | PJON_ADDRESS_BIT
+          PJON<Strategy>::config | required_config
         );
         receive(PJON_LIST_IDS_TIME);
       }
     };
 
 
-    /* Negate a device id request sending a packet to the device containing ID_NEGATE
-       forcing the slave to make a new request. */
+    /* Negate a device id request sending a packet to the device containing
+       ID_NEGATE forcing the slave to make a new request. */
 
     void negate_id(uint8_t id, uint8_t *b_id, uint32_t rid) {
       char response[5] = { PJON_ID_NEGATE, rid >> 24, rid >> 16, rid >> 8, rid};
-      PJON<Strategy>::send(
+      PJON<Strategy>::send_packet_blocking(
         id,
         b_id,
         response,
         5,
-        PJON<Strategy>::config | PJON_ACK_REQ_BIT | PJON_ADDRESS_BIT
+        PJON<Strategy>::config | PJON_ACK_REQ_BIT | required_config
       );
     };
 

@@ -48,6 +48,8 @@ limitations under the License. */
 template<typename Strategy = SoftwareBitBang>
 class PJONSlave : public PJON<Strategy> {
   public:
+    uint8_t required_config =
+      PJON_ADDRESS_BIT | PJON_TX_INFO_BIT | PJON_CRC_BIT;
 
     /* PJONSlave bus default initialization:
        State: Local (bus_id: 0.0.0.0)
@@ -91,7 +93,6 @@ class PJONSlave : public PJON<Strategy> {
     /* Acquire a device id: */
 
     void acquire_id() {
-      generate_rid();
       if(!acquire_id_master_slave())
         acquire_id_multi_master();
     };
@@ -106,16 +107,16 @@ class PJONSlave : public PJON<Strategy> {
       PJON_DELAY_MICROSECONDS(PJON_RANDOM(PJON_ACQUIRE_ID_DELAY));
       uint32_t time = PJON_MICROS();
       char msg = PJON_ID_ACQUIRE;
-      char head = this->config | PJON_ADDRESS_BIT | PJON_ACK_REQ_BIT;
+      char head = this->config | PJON_ACK_REQ_BIT;
       this->_device_id = PJON_NOT_ASSIGNED;
 
       for(
-        uint8_t id = PJON_RANDOM(255);
-        (uint32_t)(PJON_MICROS() - time) < PJON_ID_SCAN_TIME;
+        uint8_t id = 1;
+        ((uint32_t)(PJON_MICROS() - time) < PJON_ID_SCAN_TIME) &&
+        id < PJON_MAX_DEVICES;
         id++
       )
         if(
-          id == PJON_BROADCAST ||
           id == PJON_NOT_ASSIGNED ||
           id == PJON_MASTER_ID
         ) continue;
@@ -148,6 +149,7 @@ class PJONSlave : public PJON<Strategy> {
     /* Acquire id in master-slave configuration: */
 
     bool acquire_id_master_slave() {
+      generate_rid();
       char response[5];
       response[0] = PJON_ID_REQUEST;
       response[1] = (uint32_t)(_rid) >> 24;
@@ -160,7 +162,7 @@ class PJONSlave : public PJON<Strategy> {
         this->bus_id,
         response,
         5,
-        this->config | PJON_ADDRESS_BIT | PJON_ACK_REQ_BIT | PJON_TX_INFO_BIT
+        this->config | PJON_ACK_REQ_BIT | required_config
       ) == PJON_ACK) return true;
 
       return false;
@@ -193,7 +195,7 @@ class PJONSlave : public PJON<Strategy> {
         this->bus_id,
         request,
         6,
-        this->config | PJON_ADDRESS_BIT | PJON_ACK_REQ_BIT | PJON_TX_INFO_BIT
+        this->config | PJON_ACK_REQ_BIT | required_config
       ) == PJON_ACK) {
         this->_device_id = PJON_NOT_ASSIGNED;
         return true;
@@ -216,12 +218,7 @@ class PJONSlave : public PJON<Strategy> {
 
     /* Generate a new device rid: */
     void generate_rid() {
-      _rid = (
-        (uint32_t)((PJON_RANDOM(255)) << 24) ^
-        (uint32_t)((PJON_RANDOM(255)) << 16) ^
-        (uint32_t)((PJON_RANDOM(255)) <<  8) ^
-        (uint32_t)(PJON_RANDOM(255))
-      ) ^ (uint32_t)(PJON_RANDOM(255));
+      _rid = PJON_RANDOM(65535);
     };
 
 
@@ -233,7 +230,8 @@ class PJONSlave : public PJON<Strategy> {
     bool handle_addressing() {
       if(
         this->last_packet_info.header & PJON_ADDRESS_BIT &&
-        this->_device_id != PJON_MASTER_ID
+        this->_device_id != PJON_MASTER_ID &&
+        this->last_packet_info.sender_id == PJON_MASTER_ID
       ) {
         uint8_t overhead =
           this->packet_overhead(this->last_packet_info.header);
@@ -261,8 +259,7 @@ class PJONSlave : public PJON<Strategy> {
               this->bus_id,
               response,
               6,
-              this->config | PJON_ADDRESS_BIT |
-              PJON_ACK_REQ_BIT | PJON_TX_INFO_BIT
+              this->config | PJON_ACK_REQ_BIT | required_config
             ) != PJON_ACK) {
               this->set_id(PJON_NOT_ASSIGNED);
               _slave_error(PJON_ID_ACQUISITION_FAIL, PJON_ID_CONFIRM);
@@ -291,8 +288,7 @@ class PJONSlave : public PJON<Strategy> {
                 this->bus_id,
                 response,
                 6,
-                this->config | PJON_ADDRESS_BIT |
-                PJON_ACK_REQ_BIT | PJON_TX_INFO_BIT
+                this->config | PJON_ACK_REQ_BIT | required_config
               );
             }
 

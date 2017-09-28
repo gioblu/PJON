@@ -289,8 +289,9 @@ class PJONMaster : public PJON<Strategy> {
       uint8_t CRC_overhead = (this->data[1] & PJON_CRC_BIT) ? 4 : 1;
 
       if(
-        this->last_packet_info.header & PJON_ADDRESS_BIT &&
-        this->data[2] > 4
+        (this->last_packet_info.header & PJON_ADDRESS_BIT) &&
+        (this->last_packet_info.header & PJON_TX_INFO_BIT) &&
+        (this->last_packet_info.header & PJON_CRC_BIT)
       ) {
         uint8_t request = this->data[overhead - CRC_overhead];
         uint32_t rid =

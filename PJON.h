@@ -750,26 +750,30 @@ class PJON {
       uint16_t header = PJON_NOT_ASSIGNED,
       uint32_t timeout = 3000000
     ) {
-      if(!(length = compose_packet(
-        id,
-        b_id,
-        (char *)data,
-        string,
-        length,
-        header
-      ))) return PJON_FAIL;
       uint16_t state = PJON_FAIL;
       uint32_t attempts = 0;
       uint32_t time = PJON_MICROS(), start = time;
+      uint16_t old_length = length;
+
       while(
         (state != PJON_ACK) && (attempts <= strategy.get_max_attempts()) &&
         (uint32_t)(PJON_MICROS() - start) <= timeout
       ) {
+        if(!(length = compose_packet(
+          id,
+          b_id,
+          (char *)data,
+          string,
+          old_length,
+          header
+        ))) return PJON_FAIL;
         state = send_packet((char*)data, length);
         if(state == PJON_ACK) return state;
         attempts++;
         if(state != PJON_FAIL) strategy.handle_collision();
-        while((uint32_t)(PJON_MICROS() - time) < strategy.back_off(attempts));
+        receive(
+          (uint32_t)(PJON_MICROS() - time) < strategy.back_off(attempts)
+        );
         time = PJON_MICROS();
       }
       return state;

@@ -530,10 +530,12 @@ class PJON {
     /* Remove a packet from the send list: */
 
     void remove(uint16_t index) {
-      packets[index].attempts = 0;
-      packets[index].length = 0;
-      packets[index].registration = 0;
-      packets[index].state = 0;
+      if(index >= 0 && (index < PJON_MAX_PACKETS)) {
+        packets[index].attempts = 0;
+        packets[index].length = 0;
+        packets[index].registration = 0;
+        packets[index].state = 0;
+      }
     };
 
 

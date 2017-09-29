@@ -415,6 +415,9 @@ class PJON {
               (data[1] & PJON_EXT_LEN_BIT) && !(data[1] & PJON_CRC_BIT)
             ) || (
               !PJON_INCLUDE_ASYNC_ACK && (data[1] & PJON_ACK_MODE_BIT)
+            ) || (
+              ((data[1] & PJON_ADDRESS_BIT) && !(data[1] & PJON_CRC_BIT)) ||
+              ((data[1] & PJON_ADDRESS_BIT) && !(data[1] & PJON_TX_INFO_BIT))
             )
           ) return PJON_BUSY;
           extended_length = data[i] & PJON_EXT_LEN_BIT;

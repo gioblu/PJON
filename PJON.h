@@ -957,11 +957,6 @@ class PJON {
       for(uint16_t i = 0; i < PJON_MAX_PACKETS; i++) {
         if(packets[i].state == 0) continue;
         packets_count++;
-
-        #if(PJON_ORDERED_SENDING)
-          if(!first_packet_to_be_sent(i)) continue;
-        #endif
-
         bool async_ack = (packets[i].content[1] & PJON_ACK_MODE_BIT) &&
           (packets[i].content[1] & PJON_TX_INFO_BIT);
         bool sync_ack = (packets[i].content[1] & PJON_ACK_REQ_BIT);
@@ -1018,27 +1013,6 @@ class PJON {
         }
       }
       return packets_count;
-    };
-
-
-    /* Check if the packet index passed is the first to be sent: */
-
-    bool first_packet_to_be_sent(uint8_t index) {
-      PJON_Packet_Info actual_info;
-      PJON_Packet_Info tested_info;
-      parse((uint8_t *)packets[index].content, actual_info);
-      for(uint16_t i = 0; i < PJON_MAX_PACKETS; i++) {
-        parse((uint8_t *)packets[i].content, tested_info);
-        if(
-          actual_info.receiver_id == tested_info.receiver_id &&
-          bus_id_equality(
-            actual_info.receiver_bus_id,
-            tested_info.receiver_bus_id
-          )
-        ) if(packets[i].registration < packets[index].registration)
-          return false;
-      }
-      return true;
     };
 
 

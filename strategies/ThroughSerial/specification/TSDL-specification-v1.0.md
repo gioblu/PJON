@@ -50,7 +50,7 @@ Before a frame transmission, the serial buffer is read, if not empty ongoing com
 
 START:  10010101 - 0x95 - 
 END:    11101010 - 0xea - ê
-ESC:    01001100 - 0x4c - L
+ESC:    10111011 - 0xBB - »
 ```
 `START` and `END` flag bytes are special characters that signal when a frame begins and ends.
 Whenever any of the special character appears in the data, transmitter inserts a special `ESC` character before it, that will be ignored and excluded from data during the reception process. Any corrupted special character or data byte causes the receiver to discard the frame and be ready to receive the next one nominally.   

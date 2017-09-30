@@ -25,7 +25,6 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 - Collision avoidance to enable multi-master capability
 - Configurable CRC8 or CRC32 table-less cyclic redundancy check
 - Packet manager to handle, track and if necessary retransmit a packet sending in background
-- Optional ordered packet sending
 - Error handling
 
 #### PJON (Padded Jittering Operative Network) Protocol specification

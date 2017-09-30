@@ -170,11 +170,6 @@ limitations under the License. */
   #define PJON_MAX_RECENT_PACKET_IDS 10
 #endif
 
-/* If set to true ensures packet ordered sending */
-#ifndef PJON_ORDERED_SENDING
-  #define PJON_ORDERED_SENDING false
-#endif
-
 /* Dynamic addressing timing constants:
    Maximum number of device id collisions during auto-addressing */
 #define PJON_MAX_ACQUIRE_ID_COLLISIONS 10

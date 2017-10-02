@@ -42,6 +42,12 @@
   #define OS_MODE STXRX882_STANDARD
 #endif
 
+// Used to signal communication failure
+#define OS_FAIL       65535
+
+// Used for pin handling
+#define OS_NOT_ASSIGNED 255
+
 #include "Timing.h"
 
 class OverSampling {
@@ -127,16 +133,16 @@ class OverSampling {
 
     uint16_t receive_byte() {
       if(sync()) return read_byte();
-      return PJON_FAIL;
+      return OS_FAIL;
     };
 
 
     /* Receive byte response */
 
     uint16_t receive_response() {
-      if(_output_pin != PJON_NOT_ASSIGNED && _output_pin != _input_pin)
+      if(_output_pin != OS_NOT_ASSIGNED && _output_pin != _input_pin)
         PJON_IO_WRITE(_output_pin, LOW);
-      uint16_t response = PJON_FAIL;
+      uint16_t response = OS_FAIL;
       uint32_t time = PJON_MICROS();
       while(
         (response != PJON_ACK) &&
@@ -156,16 +162,16 @@ class OverSampling {
       if(max_length == PJON_PACKET_MAX_LENGTH) {
         uint32_t time = PJON_MICROS();
         // Look for string initializer
-        if(!sync() || !sync() || !sync()) return PJON_FAIL;
+        if(!sync() || !sync() || !sync()) return OS_FAIL;
         // Check its timing consistency
         if(
           (uint32_t)(PJON_MICROS() - time) <
           ((OS_BIT_WIDTH * 3) + (OS_BIT_SPACER * 3))
-        ) return PJON_FAIL;
+        ) return OS_FAIL;
       }
       // Receive incoming bytes
       result = receive_byte();
-      if(result == PJON_FAIL) return PJON_FAIL;
+      if(result == OS_FAIL) return OS_FAIL;
       *string = result;
       return 1;
     };
@@ -242,7 +248,7 @@ class OverSampling {
 
     bool sync() {
       PJON_IO_PULL_DOWN(_input_pin);
-      if(_output_pin != PJON_NOT_ASSIGNED && _output_pin != _input_pin)
+      if(_output_pin != OS_NOT_ASSIGNED && _output_pin != _input_pin)
         PJON_IO_PULL_DOWN(_output_pin);
       float value = 0.5;
       uint32_t time = PJON_MICROS();
@@ -279,8 +285,8 @@ class OverSampling {
     /* Set a pair of communication pins: */
 
     void set_pins(
-      uint8_t input_pin = PJON_NOT_ASSIGNED,
-      uint8_t output_pin = PJON_NOT_ASSIGNED
+      uint8_t input_pin = OS_NOT_ASSIGNED,
+      uint8_t output_pin = OS_NOT_ASSIGNED
     ) {
       _input_pin = input_pin;
       _output_pin = output_pin;

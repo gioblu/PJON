@@ -40,6 +40,12 @@
   #define SWBB_MODE SWBB_STANDARD
 #endif
 
+// Used to signal communication failure
+#define SWBB_FAIL       65535
+
+// Used for pin handling
+#define SWBB_NOT_ASSIGNED 255
+
 #include "Timing.h"
 
 class SoftwareBitBang {
@@ -128,29 +134,29 @@ class SoftwareBitBang {
 
     uint16_t receive_byte() {
       if(sync()) return read_byte();
-      return PJON_FAIL;
+      return SWBB_FAIL;
     };
 
 
     /* Receive byte response */
 
     uint16_t receive_response() {
-      if(_output_pin != _input_pin && _output_pin != PJON_NOT_ASSIGNED)
+      if(_output_pin != _input_pin && _output_pin != SWBB_NOT_ASSIGNED)
         PJON_IO_WRITE(_output_pin, LOW);
 
-      uint16_t response = PJON_FAIL;
+      uint16_t response = SWBB_FAIL;
       uint32_t time = PJON_MICROS();
       /* Transmitter emits a SWBB_BIT_WIDTH / 4 long bit and tries
          to get a response cyclically for SWBB_RESPONSE_TIMEOUT microseconds.
          Receiver synchronizes to the falling edge of the last incoming
          bit and transmits PJON_ACK or PJON_NAK */
       while(
-        response == PJON_FAIL &&
+        response == SWBB_FAIL &&
         (uint32_t)(PJON_MICROS() - SWBB_RESPONSE_TIMEOUT) <= time
       ) {
         PJON_IO_WRITE(_input_pin, LOW);
         response = receive_byte();
-        if(response == PJON_FAIL) {
+        if(response == SWBB_FAIL) {
           PJON_IO_MODE(_output_pin, OUTPUT);
           PJON_IO_WRITE(_output_pin, HIGH);
           PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH / 4);
@@ -168,16 +174,16 @@ class SoftwareBitBang {
       if(max_length == PJON_PACKET_MAX_LENGTH) {
         uint32_t time = PJON_MICROS();
         // Look for string initializer
-        if(!sync() || !sync() || !sync()) return PJON_FAIL;
+        if(!sync() || !sync() || !sync()) return SWBB_FAIL;
         // Check its timing consistency
         if(
           (uint32_t)(PJON_MICROS() - time) <
           (((SWBB_BIT_WIDTH * 3) + (SWBB_BIT_SPACER * 3)) - SWBB_ACCEPTANCE)
-        ) return PJON_FAIL;
+        ) return SWBB_FAIL;
       }
       // Receive incoming bytes
       result = receive_byte();
-      if(result == PJON_FAIL) return PJON_FAIL;
+      if(result == SWBB_FAIL) return SWBB_FAIL;
       *string = result;
       return 1;
     };
@@ -287,7 +293,7 @@ class SoftwareBitBang {
     bool sync() {
       /* Initialize the pin and set it to LOW to reduce interference */
       PJON_IO_PULL_DOWN(_input_pin);
-      if((_output_pin != _input_pin) && (_output_pin != PJON_NOT_ASSIGNED))
+      if((_output_pin != _input_pin) && (_output_pin != SWBB_NOT_ASSIGNED))
         PJON_IO_PULL_DOWN(_output_pin);
 
       uint32_t time = PJON_MICROS();
@@ -326,8 +332,8 @@ class SoftwareBitBang {
     /* Set a pair of communication pins: */
 
     void set_pins(
-      uint8_t input_pin = PJON_NOT_ASSIGNED,
-      uint8_t output_pin = PJON_NOT_ASSIGNED
+      uint8_t input_pin = SWBB_NOT_ASSIGNED,
+      uint8_t output_pin = SWBB_NOT_ASSIGNED
     ) {
       _input_pin = input_pin;
       _output_pin = output_pin;

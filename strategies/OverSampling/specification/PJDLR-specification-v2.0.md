@@ -1,9 +1,10 @@
 - PJON (Padded Jittering Operative Network) Protocol specification:
 [v1.1](/specification/PJON-protocol-specification-v1.1.md)
 - Acknowledge specification: [v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md)
-- Dynamic addressing specification: [v0.1](/specification/PJON-dynamic-addressing-specification-v0.1.md)
+- Dynamic addressing specification: [v1.0](/specification/PJON-dynamic-addressing-specification-v1.0.md)
 - PJDL (Padded Jittering Data Link) specification:
 [PJDL v2.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) - **[PJDLR v2.0](/strategies/OverSampling/specification/PJDLR-specification-v2.0.md)**
+- TSDL (Tardy Serial Data Link) specification: [TSDL v1.0](/strategies/ThroughSerial/specification/TSDL-specification-v1.0.md)
 
 ```cpp
 /*
@@ -14,7 +15,7 @@ released into the public domain
 
 Related implementation: /strategies/OverSampling/
 Compliant implementation versions: PJON 9.0 and following
-Changelog: Added frame initializer
+Changelog: Added frame separation
 */
 ```
 ### PJDLR (Padded Jittering Data Link Radio)

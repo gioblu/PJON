@@ -68,7 +68,7 @@
   #endif
 #endif
 
-/* ATmega1280/2560 - Arduino Mega/Mega-nano --------------------------------- */
+/* ATmega1280/2560 - Arduino Mega/Mega-nano ------------------------------- */
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
   #if AS_MODE == AS_STANDARD
     #if F_CPU == 16000000L
@@ -102,14 +102,14 @@
   #endif
 #endif
 
-/* ATmega16/32U4 - Arduino Leonardo/Micro ----------------------------------- */
+/* ATmega16/32U4 - Arduino Leonardo/Micro --------------------------------- */
 #if defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__)
   #if AS_MODE == AS_STANDARD
     /* TODO - define dedicated timing */
   #endif
 #endif
 
-/* NodeMCU, generic ESP8266 ------------------------------------------------- */
+/* NodeMCU, generic ESP8266 ----------------------------------------------- */
 #if defined(ESP8266)
   #if AS_MODE == AS_STANDARD
     #if F_CPU == 80000000L

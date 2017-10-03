@@ -1,7 +1,7 @@
 
 /* AnalogSampling data link layer 18/02/2017
    used as a Strategy by the PJON framework
-   It complies with PJDL v1.1 data link specification
+   It complies with PJDLS v1.0 data link specification
 
    AnalogSampling is designed to sample digital data using analog readings.
    It can be effectively used to communicate data wirelessly through any
@@ -78,6 +78,17 @@
   #define AS_MODE AS_STANDARD
 #endif
 
+// Used to signal communication failure
+#define AS_FAIL         65535
+// Used for pin handling
+#define AS_NOT_ASSIGNED   255
+// START frame symbol 10010101 - 0x95 - 
+#define AS_START          149
+// END   frame symbol 11101010 - 0xea - ê
+#define AS_END            234
+// ESCAPE      symbol 10111011 - 0xBB - »
+#define AS_ESC            187
+
 #include "Timing.h"
 
 class AnalogSampling {
@@ -97,21 +108,22 @@ class AnalogSampling {
        (returns always true) */
 
     bool begin(uint8_t additional_randomness = 0) {
-      // Set ADC clock prescale
-      #if AS_PRESCALE ==  8
-        cbi(ADCSRA, ADPS2);
-        sbi(ADCSRA, ADPS1);
-        sbi(ADCSRA, ADPS0);
-      #elif AS_PRESCALE == 16
-        sbi(ADCSRA, ADPS2);
-        cbi(ADCSRA, ADPS1);
-        cbi(ADCSRA, ADPS0);
-      #elif AS_PRESCALE == 32
-        sbi(ADCSRA, ADPS2);
-        cbi(ADCSRA, ADPS1);
-        sbi(ADCSRA, ADPS0);
+      #ifdef ARDUINO
+        // Set ADC clock prescale
+        #if AS_PRESCALE ==  8
+          cbi(ADCSRA, ADPS2);
+          sbi(ADCSRA, ADPS1);
+          sbi(ADCSRA, ADPS0);
+        #elif AS_PRESCALE == 16
+          sbi(ADCSRA, ADPS2);
+          cbi(ADCSRA, ADPS1);
+          cbi(ADCSRA, ADPS0);
+        #elif AS_PRESCALE == 32
+          sbi(ADCSRA, ADPS2);
+          cbi(ADCSRA, ADPS1);
+          sbi(ADCSRA, ADPS0);
+        #endif
       #endif
-
       PJON_DELAY_MICROSECONDS(
         (PJON_RANDOM(AS_INITIAL_DELAY) + additional_randomness) * 1000
       );
@@ -120,6 +132,7 @@ class AnalogSampling {
         PJON_IO_PULL_DOWN(_output_pin);
       uint32_t time = PJON_MICROS();
       compute_analog_read_duration();
+      _last_byte = receive_byte();
       return true;
     };
 
@@ -209,7 +222,7 @@ class AnalogSampling {
 
     uint16_t receive_byte() {
       PJON_IO_PULL_DOWN(_input_pin);
-      if(_output_pin != PJON_NOT_ASSIGNED && _output_pin != _input_pin)
+      if(_output_pin != AS_NOT_ASSIGNED && _output_pin != _input_pin)
         PJON_IO_PULL_DOWN(_output_pin);
       uint32_t time = PJON_MICROS();
 
@@ -219,7 +232,7 @@ class AnalogSampling {
       ) {
         ; // Avoid micros overflow error
       } else if(threshold) {
-        threshold *= 0.25;
+        threshold *= 0.9;
         _last_update = PJON_MICROS();
       }
 
@@ -229,12 +242,12 @@ class AnalogSampling {
       ); // Do nothing
 
       time = PJON_MICROS() - time;
-      if(time < AS_BIT_SPACER * 0.75) return PJON_FAIL;
+      if(time < AS_BIT_SPACER * 0.75) return AS_FAIL;
       if(time <= AS_BIT_SPACER * 1.25) {
         PJON_DELAY_MICROSECONDS(AS_BIT_WIDTH);
         return read_byte();
       }
-      return PJON_FAIL;
+      return AS_FAIL;
     };
 
 
@@ -242,9 +255,9 @@ class AnalogSampling {
 
     uint16_t receive_response() {
       PJON_IO_PULL_DOWN(_input_pin);
-      if(_output_pin != PJON_NOT_ASSIGNED && _output_pin != _input_pin)
+      if(_output_pin != AS_NOT_ASSIGNED && _output_pin != _input_pin)
         PJON_IO_WRITE(_output_pin, LOW);
-      uint16_t response = PJON_FAIL;
+      uint16_t response = AS_FAIL;
       uint32_t time = PJON_MICROS();
       while(
         (response != PJON_ACK) &&
@@ -257,8 +270,26 @@ class AnalogSampling {
     /* Receive a string: */
 
     uint16_t receive_string(uint8_t *string, uint16_t max_length) {
-      uint16_t result = receive_byte();
-      if(result == PJON_FAIL) return PJON_FAIL;
+      uint16_t result;
+      // No initial flag, byte-stuffing violation
+      if(max_length == PJON_PACKET_MAX_LENGTH)
+        if(
+          (receive_byte() != AS_START) ||
+          (_last_byte == AS_ESC)
+        ) return AS_FAIL;
+      result = receive_byte();
+      if(result == AS_FAIL) return AS_FAIL;
+      // Unescaped START byte stuffing violation
+      if(result == AS_START) return AS_FAIL;
+      if(result == AS_ESC) {
+        result = receive_byte();
+        // Escaping byte-stuffing violation
+        if((result != AS_START) && (result != AS_ESC) && (result != AS_END))
+          return AS_FAIL;
+      }
+      // No end flag, byte-stuffing violation
+      if(max_length == 1 && receive_byte() != AS_END)
+        return AS_FAIL;
       *string = result;
       return 1;
     };
@@ -309,8 +340,19 @@ class AnalogSampling {
 
     void send_string(uint8_t *string, uint16_t length) {
       PJON_IO_MODE(_output_pin, OUTPUT);
-      for(uint16_t b = 0; b < length; b++)
+      // Add frame flag
+      send_byte(AS_START);
+      for(uint16_t b = 0; b < length; b++) {
+        // Byte-stuffing
+        if(
+          (string[b] == AS_START) ||
+          (string[b] == AS_ESC) ||
+          (string[b] == AS_END)
+        ) send_byte(AS_ESC);
+        // Transmit data
         send_byte(string[b]);
+      }
+      send_byte(AS_END);
       PJON_IO_PULL_DOWN(_output_pin);
     };
 
@@ -326,8 +368,8 @@ class AnalogSampling {
     /* Set a pair of communication pins: */
 
     void set_pins(
-      uint8_t input_pin = PJON_NOT_ASSIGNED,
-      uint8_t output_pin = PJON_NOT_ASSIGNED
+      uint8_t input_pin = AS_NOT_ASSIGNED,
+      uint8_t output_pin = AS_NOT_ASSIGNED
     ) {
       _input_pin = input_pin;
       _output_pin = output_pin;
@@ -343,6 +385,7 @@ class AnalogSampling {
 
     uint16_t threshold = AS_THRESHOLD;
   private:
+    uint8_t  _last_byte;
     uint16_t _analog_read_time;
     uint8_t  _input_pin;
     uint8_t  _output_pin;

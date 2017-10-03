@@ -63,7 +63,7 @@ ESC:    187 - 10111011 - 0xBB - »
 Whenever any of the special character appears in the data, transmitter inserts a special `ESC` character before it, that will be ignored and excluded from data during the reception process. Any corrupted special character or data byte causes the receiver to discard the frame and be ready to receive the next one nominally.     
 
 #### Synchronous response
-A frame transmission can be optionally followed by a synchronous response by its recipient. This feature is available for both master-slave and multi-master. In multi-master configuration the maximum acceptable acknowledgement overall response time is equal to 1 byte transmission time.
+A frame transmission can be optionally followed by a synchronous response by its recipient. This feature is available for both master-slave and multi-master. In multi-master configuration the maximum acceptable acknowledgement overall response time must be less than the initial channel analysis duration before frame transmission.
 ```cpp  
 Transmission                                             Response
  _______  ______  ______  ______  _____                   _____

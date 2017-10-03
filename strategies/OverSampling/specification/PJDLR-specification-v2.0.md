@@ -3,13 +3,13 @@
 - Acknowledge specification: [v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md)
 - Dynamic addressing specification: [v1.0](/specification/PJON-dynamic-addressing-specification-v1.0.md)
 - PJDL (Padded Jittering Data Link) specification:
-[PJDL v2.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) - **[PJDLR v2.0](/strategies/OverSampling/specification/PJDLR-specification-v2.0.md)**
+[PJDL v2.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) - **[PJDLR v2.0](/strategies/OverSampling/specification/PJDLR-specification-v2.0.md)** - [PJDLS v1.0](/strategies/AnalogSampling/specification/PJDLS-specification-v1.0.md)
 - TSDL (Tardy Serial Data Link) specification: [TSDL v1.0](/strategies/ThroughSerial/specification/TSDL-specification-v1.0.md)
 
 ```cpp
 /*
 Milan, Italy - Originally published: 10/04/2010 - latest revision: 24/09/2017
-PJDLR (Padded jittering data link) v2.0
+PJDLR (Padded jittering data link Radio) v2.0
 Invented by Giovanni Blu Mitolo, preamble proposed by Fred Larsen
 released into the public domain
 

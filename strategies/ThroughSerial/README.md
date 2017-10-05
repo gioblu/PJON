@@ -2,7 +2,7 @@
 **Medium:** Hardware/Software Serial port |
 **Pins used:** 1 or 2
 
-With `ThroughSerial` strategy, PJON can run through a software or hardware Serial port working out of the box with many Arduino compatible serial transceivers, like RS485 or radio modules available on the market. Take a look at the [video introduction](https://www.youtube.com/watch?v=H4jUsgvM-lw) for a brief showcase of its features.
+With `ThroughSerial` strategy, PJON can run through a software or hardware Serial port working out of the box with many Arduino compatible serial transceivers, like RS485 or radio modules like HC-12 (HCMODU0054). Take a look at the [video introduction](https://www.youtube.com/watch?v=H4jUsgvM-lw) for a brief showcase of its features.
 
 #### Why PJON over Serial?
 Serial communication is fast and quite reliable but it is often useless without all the features PJON contains. `ThroughSerial` has been developed to enable PJON communication through a serial data link. Adding PJON on top of Serial it is possible to leverage of the PJON protocol layer features like acknowledge, addressing, multiplexing, packet handling, 8 or 32-bit CRC and traffic control.
@@ -53,4 +53,5 @@ If separate enable setters are needed use:
 All the other necessary information is present in the general [Documentation](/documentation).
 
 #### Known issues
+- HC-12 (HCMODU0054) radio transceiver does not support synchronous or asynchronous acknowledgement, for this reason it is mandatory to disable both features to obtain nominal functionality.
 - Being PJON not an interrupt driven, its communication can be affected and potentially disrupted by long delays added in the user's sketch. Try to reduce as possible the interval between every `receive` call.

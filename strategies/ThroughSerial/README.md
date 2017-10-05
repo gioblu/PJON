@@ -50,7 +50,7 @@ If separate enable setters are needed use:
   bus.strategy.set_RS485_txe_pin(12); // Set RS485 transmission enable pin
 ```
 
-For HC-12 wireless module see [HC-12-Blink](examples/ARDUINO/Local/ThroughSerial/HC-12-Blink), [HC-12-SendAndReceive](examples/ARDUINO/Local/ThroughSerial/HC-12-SendAndReceive) and [HC-12-AsyncAck](examples/ARDUINO/Local/ThroughSerial/HC-12-AsyncAck) examples.
+For HC-12 wireless module see [HC-12-Blink](../../examples/ARDUINO/Local/ThroughSerial/HC-12-Blink), [HC-12-SendAndReceive](../../examples/ARDUINO/Local/ThroughSerial/HC-12-SendAndReceive) and [HC-12-AsyncAck](../../examples/ARDUINO/Local/ThroughSerial/HC-12-AsyncAck) examples.
 
 All the other necessary information is present in the general [Documentation](/documentation).
 

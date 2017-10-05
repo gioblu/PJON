@@ -10,7 +10,7 @@ Serial communication is fast and quite reliable but it is often useless without 
 #### How to use ThroughSerial
 Pass the `ThroughSerial` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
 ```cpp  
-  PJON<ThroughSerial> bus; // 2 pin over-sampled data link layer
+  PJON<ThroughSerial> bus;
 ```
 Call the `begin` method on the `Serial` or `SoftwareSerial`  object you want to use for PJON communication and pass it to the `set_serial` method:
 ```cpp  

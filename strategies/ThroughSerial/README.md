@@ -49,11 +49,9 @@ If separate enable setters are needed use:
   bus.strategy.set_RS485_rxe_pin(11); // Set RS485 reception enable pin
   bus.strategy.set_RS485_txe_pin(12); // Set RS485 transmission enable pin
 ```
-
-For HC-12 wireless module see [HC-12-Blink](../../examples/ARDUINO/Local/ThroughSerial/HC-12-Blink), [HC-12-SendAndReceive](../../examples/ARDUINO/Local/ThroughSerial/HC-12-SendAndReceive) and [HC-12-AsyncAck](../../examples/ARDUINO/Local/ThroughSerial/HC-12-AsyncAck) examples.
+HC-12 wireless module supports both synchronous and asynchronous acknowledgement, see [HC-12-Blink](../../examples/ARDUINO/Local/ThroughSerial/HC-12-Blink), [HC-12-SendAndReceive](../../examples/ARDUINO/Local/ThroughSerial/HC-12-SendAndReceive) and [HC-12-AsyncAck](../../examples/ARDUINO/Local/ThroughSerial/HC-12-AsyncAck) examples.
 
 All the other necessary information is present in the general [Documentation](/documentation).
 
 #### Known issues
-- HC-12 (HCMODU0054) radio transceiver supports only asynchronous acknowledgement, for this reason it is mandatory to disable synchronous acknowledgement using `set_synchronous_acknowledge(false)` to obtain nominal functionality.
 - Being PJON not an interrupt driven, its communication can be affected and potentially disrupted by long delays added in the user's sketch. Try to reduce as possible the interval between every `receive` call.

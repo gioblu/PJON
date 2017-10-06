@@ -2,8 +2,12 @@
 /* Giovanni Blu Mitolo 2017 - gioscarab@gmail.com
    With this example it is possible to test HC-12 433MHz wireless serial
    module (HCMODU0054) along with PJON and ThroughSerial strategy. A software
-   emulated Serial port is used on pin 2 and 3 to communicate with HC12. The
-   receiver device should blink every second.*/
+   emulated Serial port is used on pin 2 and 3 to communicate with HC12. Both
+   devices should start blinking when programmed. */
+
+/* Set synchronous response timeout to 100 milliseconds.
+   If operating at less than 9600Bd TS_RESPONSE_TIME_OUT should be longer */
+#define TS_RESPONSE_TIME_OUT 100000
 
 #include <PJON.h>
 #include <SoftwareSerial.h>
@@ -26,9 +30,6 @@ void setup() {
 
   // Pass the HC12 Serial instance you want to use for PJON communication
   bus.strategy.set_serial(&HC12);
-
-  // Avoid synchronous acknowledgement
-  bus.set_synchronous_acknowledge(false);
 
   bus.begin();
   bus.set_error(error_handler);

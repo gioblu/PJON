@@ -1,4 +1,5 @@
-/* Include Async ACK code setting PJON_INCLUDE_ASYNC_ACK as true before including PJON.h */
+
+// Include asynchronous acknowledgement feature
 #define PJON_INCLUDE_ASYNC_ACK true
 
 #include <PJON.h>
@@ -11,8 +12,8 @@ uint8_t bus_id[] = {0, 0, 0, 1};
 PJON<ThroughSerial> bus(bus_id, 45);
 
 int latency = 1000;
-/* 1 millisecond maximum expected latency using short
-   wires for bare testing, higher if necessary */
+/* 1 millisecond maximum expected latency having modules in close proximity
+   higher latency if communication fails when modules are physically distant */
 
 void setup() {
   // Initialize LED 13 to be off
@@ -24,8 +25,8 @@ void setup() {
 
   bus.strategy.set_serial(&HC12);
 
-  /* Set configuration to send packet requesting
-     asynchronous acknowledgement response */
+  /* Set configuration to send packet disabling synchronous and
+     enabling asynchronous acknowledgement response */
   bus.set_synchronous_acknowledge(false);
   bus.set_asynchronous_acknowledge(true);
 

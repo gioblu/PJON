@@ -1,6 +1,7 @@
 
-/* Include Async ACK code setting PJON_INCLUDE_ASYNC_ACK as true before including PJON.h */
+// Include asynchronous acknowledgement feature
 #define PJON_INCLUDE_ASYNC_ACK true
+
 #include <PJON.h>
 #include <SoftwareSerial.h>
 
@@ -18,7 +19,6 @@ void setup() {
   HC12.begin(9600);
 
   bus.strategy.set_serial(&HC12);
-  bus.set_synchronous_acknowledge(false);
   bus.begin();
   bus.set_receiver(receiver_function);
 };

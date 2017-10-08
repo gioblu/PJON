@@ -132,8 +132,8 @@ class ThroughSerial {
       // No initial flag, byte-stuffing violation
       if(max_length == PJON_PACKET_MAX_LENGTH)
         if(
-          (_last_byte != TS_ESC) &&
-          (receive_byte() != TS_START)
+          (receive_byte() != TS_START) ||
+          (_last_byte == TS_ESC)
         ) return TS_FAIL;
 
       result = receive_byte();
@@ -150,7 +150,7 @@ class ThroughSerial {
       }
 
       // No end flag, byte-stuffing violation
-      if(max_length == 1 && receive_byte() != TS_END)
+      if((max_length == 1) && (receive_byte() != TS_END))
         return TS_FAIL;
       *string = result;
       return 1;

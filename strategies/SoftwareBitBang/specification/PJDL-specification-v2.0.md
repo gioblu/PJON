@@ -58,23 +58,23 @@ Padding bits add a certain overhead but are reducing the need of precise timing 
 #### Frame transmission
 Before a frame transmission, the communication medium is analysed, if logic 1 is present ongoing communication is detected and collision avoided, if logic 0 is detected for a duration longer than a byte transmission plus its synchronization pad and a small random timeframe, frame transmission starts with 3 synchronization pads, followed by data bytes. The presence of synchronization pads with their logic 1 between each byte ensures that also a frame composed of a series of bytes with decimal value 0 can be transmitted safely without risk of third-party collision.
 ```cpp  
- _________________ __________________________________
-|   FRAME INIT    | DATA 1-65535 bytes               |
-|_____ _____ _____|________________ _________________|
-|Sync |Sync |Sync |Sync | Byte     |Sync | Byte      |
-|___  |___  |___  |___  |     __   |___  |      _   _|
-|   | |   | |   | |   | |    |  |  |   | |     | | | |
-| 1 |0| 1 |0| 1 |0| 1 |0|0000|11|00| 1 |0|00000|1|0|1|
-|___|_|___|_|___|_|___|_|____|__|__|___|_|_____|_|_|_|
+ __________ _________________ __________________________________
+| ANALYSIS |   FRAME INIT    | DATA 1-65535 bytes               |
+|__________|_____ _____ _____|________________ _________________|
+|          |Sync |Sync |Sync |Sync | Byte     |Sync | Byte      |
+|          |___  |___  |___  |___  |     __   |___  |      _   _|
+|          |   | |   | |   | |   | |    |  |  |   | |     | | | |
+|0000000000| 1 |0| 1 |0| 1 |0| 1 |0|0000|11|00| 1 |0|00000|1|0|1|
+|__________|___|_|___|_|___|_|___|_|____|__|__|___|_|_____|_|_|_|
 ```
 In a scenario where a frame is received, low performance microcontrollers with inaccurate clock can correctly synchronize with transmitter during the frame initializer, and consequently each byte is received. The frame initializer is detected if 3 synchronizations occurred and if its duration is equal or higher than:
 
 `initializer expected duration - (sync pad bit 1 duration - sync pad bit 1 minimum acceptable duration)`
 
-With a correct bit and synchronization pad ratio and timing configuration, the frame initializer is 100% reliable, false positives cannot occur if not because of externally induced interference.     
+To ensure 100% reliability separating frames the sync pad minimum acceptable duration must be higher than 1 standard bit duration. With a correct `sync pad bit 1 / standard bit` ratio, frame initializer is 100% reliable, false positives cannot occur if not because of externally induced interference. Sync pad bit 1 duration must not be an exact multiple of a standard bit, for this reason ratio 2.0, 3.0 or 4.0 must be avoided because consecutive bits can be interpreted as a frame initializer.
 
 #### Synchronous response
-A frame transmission can be optionally followed by a synchronous response by its recipient.
+A frame transmission can be optionally followed by a synchronous response by its recipient. This feature is available for both master-slave and multi-master configuration.
 ```cpp  
 Transmission                                            Response
  ______  ______  ______  ______  ______                   _____

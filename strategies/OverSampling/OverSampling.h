@@ -82,7 +82,6 @@ class OverSampling {
     there is no active transmission */
 
     bool can_start() {
-      PJON_DELAY_MICROSECONDS(PJON_RANDOM(OS_COLLISION_DELAY));
       float value = 0.5;
       uint32_t time = PJON_MICROS();
       PJON_IO_MODE(_input_pin, INPUT);
@@ -96,6 +95,9 @@ class OverSampling {
           value = (value * 0.999)  + (PJON_IO_READ(_input_pin) * 0.001);
         if(value > 0.5) return false;
       }
+      if(PJON_IO_READ(_input_pin)) return false;
+      PJON_DELAY_MICROSECONDS(PJON_RANDOM(OS_COLLISION_DELAY));
+      if(PJON_IO_READ(_input_pin)) return false;
       return true;
     };
 

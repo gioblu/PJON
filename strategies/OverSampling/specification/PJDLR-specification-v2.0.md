@@ -44,7 +44,7 @@ Every byte is prepended with a synchronization pad and transmission occurs LSB-f
 Padding bits add a certain overhead but are reducing the need of precise timing because synchronization is renewed every byte.
 
 #### Frame transmission
-Before a frame transmission, the communication medium is analysed, if logic 1 is present ongoing communication is detected and collision avoided, if logic 0 is detected for a duration longer than a byte transmission plus its synchronization pad and a small random timeframe, a packet preamble, composed of a long 1 and a long 0, is transmitted to let a potential receiver to adjust its gain to the transmitted signal magnitude. The duration of the preamble bits have to be selected considering hardware sensitivity and gain refresh time. frame transmission starts after preamble, with 3 synchronization pads, followed by data bytes. The presence of synchronization pads with their logic 1 between each byte ensures that also a frame composed of a series of bytes with decimal value 0 can be transmitted safely without risk of third-party collision.
+Before a frame transmission, the communication medium is analysed, if logic 1 is present ongoing communication is detected and collision avoided, if logic 0 is detected for a duration longer than a byte transmission plus its synchronization pad and a small random timeframe, a packet preamble is transmitted, composed of a long 1 and a long 0, to let a potential receiver to adjust its gain to the transmitted signal magnitude. The duration of the preamble bits have to be selected considering hardware sensitivity and gain refresh time. Frame transmission starts after preamble, with 3 synchronization pads, followed by data bytes. The presence of synchronization pads with their logic 1 between each byte ensures that also a frame composed of a series of bytes with decimal value 0 can be transmitted safely without risk of third-party collision.
 
 ```cpp     
            INITIALIZER  DATA
@@ -58,7 +58,7 @@ Before a frame transmission, the communication medium is analysed, if logic 1 is
 In a scenario where a frame is received, low performance microcontrollers with inaccurate clock can correctly synchronize with transmitter during the frame initializer, and consequently each byte is received. The frame initializer is detected if 3 synchronizations occurred and if its duration is coherent with its expected duration. With a correct bit and synchronization pad ratio and timing configuration, the frame initializer is 100% reliable, false positives cannot occur if not because of externally induced interference.     
 
 #### Synchronous response
-A frame transmission can be optionally followed by a synchronous response by its recipient.
+A frame transmission can be optionally followed by a synchronous response by its recipient. This feature is available for both master-slave and multi-master. In multi-master configuration the maximum acceptable acknowledgement overall response time is equal to 1 byte transmission time.
 ```cpp  
 Transmission                                                      Response
  ________ ______  ______  ______  ______                   ________ _____
@@ -67,5 +67,4 @@ Transmission                                                      Response
 |    |   |      ||      ||      ||      | LATENCY         |    |   |  6  |
 |____|___|______||______||______||______|                 |____|___|_____|
 ```
-
-The maximum time dedicated to potential acknowledgement reception has to be same for all connected devices, and it is defined by the use case constraints like maximum packet length and latency or physical distance between devices.
+In master-slave configuration the maximum time dedicated to potential acknowledgement reception it is defined by the use case constraints like maximum packet length and latency or physical distance between devices.

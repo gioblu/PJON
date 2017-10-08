@@ -4,7 +4,7 @@
 - Acknowledge specification: [v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md)
 - Dynamic addressing specification: [v1.0](/specification/PJON-dynamic-addressing-specification-v1.0.md)
 - PJDL (Padded Jittering Data Link) specification:
-[PJDL v2.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) - [PJDLR v2.0](/strategies/OverSampling/specification/PJDLR-specification-v2.0.md)
+[PJDL v2.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) - [PJDLR v2.0](/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) - [PJDLS v1.0](/strategies/AnalogSampling/specification/PJDLS-specification-v1.0.md)
 - TSDL (Tardy Serial Data Link) specification: **[TSDL v1.0](/strategies/ThroughSerial/specification/TSDL-specification-v1.0.md)**
 
 ```cpp
@@ -48,9 +48,9 @@ Before a frame transmission, the serial buffer is read, if not empty ongoing com
                              |
                            Flags inside data are escaped
 
-START:  10010101 - 0x95 - 
-END:    11101010 - 0xea - ê
-ESC:    10111011 - 0xBB - »
+START:  149 - 10010101 - 0x95 - 
+END:    234 - 11101010 - 0xea - ê
+ESC:    187 - 10111011 - 0xBB - »
 ```
 `START` and `END` flag bytes are special characters that signal when a frame begins and ends.
 Whenever any of the special character appears in the data, transmitter inserts a special `ESC` character before it, that will be ignored and excluded from data during the reception process. Any corrupted special character or data byte causes the receiver to discard the frame and be ready to receive the next one nominally.   

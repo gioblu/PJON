@@ -62,7 +62,7 @@ class EthernetTCP {
     /* Returns the suggested delay related to the attempts passed as parameter: */
 
     uint32_t back_off(uint8_t attempts) {
-      return 1;
+      return 10000ul*attempts;
     };
 
 
@@ -84,7 +84,7 @@ class EthernetTCP {
     /* Returns the maximum number of attempts for each transmission: */
 
     static uint8_t get_max_attempts() {
-      return 1;
+      return 5;
     };
 
 
@@ -108,6 +108,7 @@ class EthernetTCP {
       uint16_t received_packet_size = incoming_packet_size;
       incoming_packet_buf_ptr = NULL;
       incoming_packet_size = 0;
+
       return result == PJON_ACK ? received_packet_size : PJON_FAIL;
     }
 

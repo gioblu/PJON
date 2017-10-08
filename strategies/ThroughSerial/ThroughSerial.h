@@ -27,15 +27,12 @@
 
 #pragma once
 
-#ifndef TS_START       // START frame symbol
-  #define TS_START 149 // 10010101 - 0x95 - 
-#endif
-#ifndef TS_END         // END frame symbol
-  #define TS_END   234 // 11101010 - 0xea - ê
-#endif
-#ifndef TS_ESC         // ESCAPE symbol
-  #define TS_ESC   187 // 10111011 - 0xBB - »
-#endif
+// START frame symbol 10010101 - 0x95 - 
+#define TS_START 149
+// END   frame symbol 11101010 - 0xea - ê
+#define TS_END   234
+// ESCAPE      symbol 10111011 - 0xBB - »
+#define TS_ESC   187
 
 // Used to signal communication failure
 #define TS_FAIL                     65535

@@ -9,9 +9,10 @@
       and SoftwareSerial compatibility
     - Franketto (Arduino forum user) RS485 TX enable pin compatibility
     - Endre Karlson separate RS485 enable pins handling, flush timing hack
-   ____________________________________________________________________________
+   ___________________________________________________________________________
 
-   ThroughSerial, copyright 2016-2017 by Giovanni Blu Mitolo All rights reserved
+   ThroughSerial,
+   copyright 2016-2017 by Giovanni Blu Mitolo All rights reserved
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -51,7 +52,7 @@ class ThroughSerial {
     #elif defined(_WIN32)
       Serial *serial = NULL;
     #endif
-    /* Returns the suggested delay related to the attempts passed as parameter: */
+    /* Returns suggested delay related to the attempts passed as parameter: */
 
     uint32_t back_off(uint8_t attempts) {
       uint32_t result = attempts;
@@ -247,8 +248,8 @@ class ThroughSerial {
     };
 
 
-    /* Set flush timing offset in microseconds between expected and real serial
-       byte transmission: */
+    /* Set flush timing offset in microseconds between expected and real
+       serial byte transmission: */
 
     void set_flush_offset(uint16_t offset) {
       _flush_offset = offset;

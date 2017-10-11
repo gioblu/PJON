@@ -1,9 +1,11 @@
 
 /* PJON MAX485 serial modules RS485 communication example */
 
-/* Include Async ACK code setting PJON_INCLUDE_ASYNC_ACK as true before including PJON.h */
+// Include async ack defining PJON_INCLUDE_ASYNC_ACK before including PJON.h
 #define PJON_INCLUDE_ASYNC_ACK true
+// Synchronous acknowledgement is not used, set TS_RESPONSE_TIME_OUT to 0
 #define TS_RESPONSE_TIME_OUT 0
+
 #include <PJON.h>
 
 uint8_t bus_id[] = {0, 0, 0, 1};

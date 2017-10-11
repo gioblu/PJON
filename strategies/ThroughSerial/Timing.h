@@ -57,10 +57,10 @@
 
 /* Maximum transmission attempts */
 #ifndef TS_MAX_ATTEMPTS
-  #define TS_MAX_ATTEMPTS         5
+  #define TS_MAX_ATTEMPTS         20
 #endif
 
 /* Back-off exponential degree */
 #ifndef TS_BACK_OFF_DEGREE
-  #define TS_BACK_OFF_DEGREE      5
+  #define TS_BACK_OFF_DEGREE      4
 #endif

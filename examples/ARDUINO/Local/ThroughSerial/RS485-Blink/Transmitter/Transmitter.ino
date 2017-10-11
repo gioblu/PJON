@@ -3,9 +3,8 @@
 
 #include <PJON.h>
 
-uint8_t bus_id[] = {0, 0, 0, 1};
 // <Strategy name> bus(selected device id)
-PJON<ThroughSerial> bus(bus_id, 45);
+PJON<ThroughSerial> bus(45);
 
 void setup() {
   // Initialize LED 13 to be off

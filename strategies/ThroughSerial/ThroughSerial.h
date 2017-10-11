@@ -56,7 +56,7 @@ class ThroughSerial {
     uint32_t back_off(uint8_t attempts) {
       uint32_t result = attempts;
       for(uint8_t d = 0; d < TS_BACK_OFF_DEGREE; d++)
-        result *= (uint32_t)(attempts);
+        result = (result * (uint32_t)(attempts)) + TS_TIME_IN;
       return result;
     };
 

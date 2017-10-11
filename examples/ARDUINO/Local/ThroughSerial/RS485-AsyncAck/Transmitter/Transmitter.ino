@@ -3,6 +3,7 @@
 
 /* Include Async ACK code setting PJON_INCLUDE_ASYNC_ACK as true before including PJON.h */
 #define PJON_INCLUDE_ASYNC_ACK true
+#define TS_RESPONSE_TIME_OUT 0
 #include <PJON.h>
 
 uint8_t bus_id[] = {0, 0, 0, 1};

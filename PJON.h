@@ -98,6 +98,8 @@ class PJON {
       PJON_Packet_Record recent_packet_ids[PJON_MAX_RECENT_PACKET_IDS];
     #endif
 
+    uint8_t random_seed = A0;
+
     /* PJON bus default initialization:
        State: Local (bus_id: 0.0.0.0)
        Acknowledge: true (Acknowledge is requested)
@@ -135,7 +137,7 @@ class PJON {
     /* Begin function to be called in setup: */
 
     void begin() {
-      PJON_RANDOM_SEED(PJON_ANALOG_READ(_random_seed) + _device_id);
+      PJON_RANDOM_SEED(PJON_ANALOG_READ(random_seed) + _device_id);
       strategy.begin(_device_id);
       #if(PJON_INCLUDE_ASYNC_ACK)
         _packet_id_seed = PJON_RANDOM(65535) + _device_id;
@@ -901,8 +903,8 @@ class PJON {
 
     /* Set the analog pin used as a seed for random generator: */
 
-    void set_random_seed(uint8_t random_seed) {
-      _random_seed = random_seed;
+    void set_random_seed(uint8_t seed) {
+      random_seed = seed;
     };
 
 
@@ -1067,7 +1069,6 @@ class PJON {
     PJON_Error    _error;
     uint8_t       _mode;
     uint16_t      _packet_id_seed = 0;
-    uint8_t       _random_seed = A0;
     PJON_Receiver _receiver;
     bool          _router = false;
   protected:

@@ -217,7 +217,11 @@ class PJONSlave : public PJON<Strategy> {
 
     /* Generate a new device rid: */
     void generate_rid() {
-      _rid = PJON_RANDOM(65535);
+      _rid = (
+        (uint32_t)(PJON_RANDOM()) ^
+        (uint32_t)(PJON_ANALOG_READ(this->random_seed)) ^
+        (uint32_t)(PJON_MICROS())
+      ) ^ _rid ^ _last_request_time;
     };
 
 

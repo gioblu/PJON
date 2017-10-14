@@ -20,7 +20,8 @@ It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to
 - ATmega88/168/328 16MHz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
 - ATmega2560 16MHz (Arduino Mega)
 - ATmega16u4/32u4 16MHz (Arduino Leonardo)
-- ATtiny45/85 16MHz external oscillator, see [ATtiny interfacing](https://github.com/gioblu/PJON/wiki/ATtiny-interfacing)
+- ATtiny84 16MHz external oscillator
+- ATtiny85 16MHz external oscillator, see [ATtiny interfacing](https://github.com/gioblu/PJON/wiki/ATtiny-interfacing)
 - SAMD (Arduino Zero)
 - ESP8266 v.1-7 80MHz "AI-THINKER AT" firmware, see [Arduino](https://github.com/esp8266/Arduino)
 - ESP8266 NodeMCU v0.9-1.0 80MHz, see [Arduino](https://github.com/esp8266/Arduino)

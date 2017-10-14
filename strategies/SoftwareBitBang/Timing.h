@@ -109,7 +109,7 @@
   #endif
 #endif
 
-/* ATtiny44/84 -------------------------------------------------------------- */
+/* ATtiny44/84 ------------------------------------------------------------ */
 #if defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__)
   #if SWBB_MODE == SWBB_STANDARD
     #if F_CPU == 16000000L
@@ -131,7 +131,7 @@
   #endif
 #endif
 
-/* Arduino Zero ------------------------------------------------------------- */
+/* Arduino Zero ----------------------------------------------------------- */
 #if defined(ARDUINO_SAMD_ZERO)
   #if SWBB_MODE == SWBB_STANDARD
   /* Added by Esben Soeltoft - 03/09/2016 */

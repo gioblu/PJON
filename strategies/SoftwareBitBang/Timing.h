@@ -109,7 +109,29 @@
   #endif
 #endif
 
-/* Arduino Zero ----------------------------------------------------------- */
+/* ATtiny44/84 -------------------------------------------------------------- */
+#if defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__)
+  #if SWBB_MODE == SWBB_STANDARD
+    #if F_CPU == 16000000L
+      /* External 16MHz oscillator */
+      #define SWBB_BIT_WIDTH   40
+      #define SWBB_BIT_SPACER 112
+      #define SWBB_ACCEPTANCE  40
+      #define SWBB_READ_DELAY   4
+    #endif
+  #endif
+  #if SWBB_MODE == SWBB_FAST
+    #if F_CPU == 16000000L
+      /* External 16MHz oscillator */
+      #define SWBB_BIT_WIDTH   32
+      #define SWBB_BIT_SPACER  84
+      #define SWBB_ACCEPTANCE  32
+      #define SWBB_READ_DELAY   4
+    #endif
+  #endif
+#endif
+
+/* Arduino Zero ------------------------------------------------------------- */
 #if defined(ARDUINO_SAMD_ZERO)
   #if SWBB_MODE == SWBB_STANDARD
   /* Added by Esben Soeltoft - 03/09/2016 */

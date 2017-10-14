@@ -9,16 +9,10 @@
 
   List of supported MCUs:
   - ATmega8/88/168/328/1280/2560 (Duemilanove, Uno, Nano, Mini, Pro, Mega)
-      Added by Giovanni Blu Mitolo
-
   - ATmega16U4/32U4 (Leonardo, Micro)
-      Added by Giovanni Blu Mitolo
-
   - ATtiny45/85 (Trinket, Digispark)
-      Added by Giovanni Blu Mitolo
-
-  - SAMD21G18A (Arduino Zero)
-      Added by Esben Soeltoft 03/09/2016
+  - ATtiny44/84 Added by Wilfried Klaas
+  - SAMD21G18A (Arduino Zero) Added by Esben Soeltoft 03/09/2016
 
 Renamed since v7.0 to avoid naming collisions and so subtle bugs and anomalies
 if used along with third-party software using older/different versions of

@@ -163,9 +163,6 @@ HEADER BITMASK
 #### Unacceptable header configuration states sending a BROADCAST
 * `-----1--` or `ACK` bit up (no acknowledgement supported if BROADCAST)
 * `----1---` or `ACK MODE` bit up (no acknowledgement supported if BROADCAST)
-* `-10-----` or `EXT. LENGTH` bit up and `CRC` down (CRC32 forced for packet length > 15)
-* `--01----` or `ADDR.` bit up and `CRC` bit down (CRC32 forced for addressing)
-* `---1--0-` or `ADDR.` bit up and `TX INFO` bit down (transmitter info necessary for addressing)
 
 `-` symbol means irrelevant bit value
 
@@ -176,7 +173,7 @@ PJON supports both CRC8 and CRC32, to cover a wide range of use cases and packet
 ```cpp
 0x97 = (x + 1)(x^7 + x^6 + x^5 + x^2 + 1)^2
 ```
-`CRC8 C2`, implicit +1 representation, source Baicheva98, selected because it has the largest possible length (119 bit) at which `HD=4` can be achieved with 8-bit CRC. Other protocols specify the use of polynomials with much lower performance like `CRC-8 0xEA` or `DOWCRC 0x8C` used by 1-Wire.
+`CRC8 C2`, implicit +1 notation, source Baicheva98, selected because it has the largest possible length (119 bit) at which `HD=4` can be achieved with 8-bit CRC. Other protocols specify the use of polynomials with much lower performance like `CRC-8 0xEA` or `DOWCRC 0x8C` used by 1-Wire.
 
 #### CRC32 polynomial
 ```cpp

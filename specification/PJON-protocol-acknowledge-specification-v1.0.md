@@ -35,15 +35,15 @@ The graph above contains a standard packet transmission with synchronous acknowl
 #### Asynchronous acknowledge
 
 ```cpp
-Channel analysis                Transmission
- ___   _________________________________________________________
-|C-A| |ID| HEADER |LENGTH|CRC8|SENDER ID|PACKET ID|CONTENT|CRC32|
-|---| |--|--------|------|----|---------|---------|-------|-----|
-| 0 | |12|00001010|  19  |    |   11    |   99    |  64   |     |
-|___| |__|________|______|____|_________|_________|_______|_____|
-
+Channel analysis               Transmission                      Response
+ ___  _____________________________________________________________  ___
+|C-A||ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|PACKET ID|CONT|CRC32||ACK|
+|---||--|--------|------|----|------|------|--|---------|----|-----||---|
+| 0 ||12|00001111|  20  |    | 0002 | 0001 |11|   99    | 64 |     || 6 |
+|___||__|________|______|____|______|______|__|_________|____|_____||___|
+                             |RXINFO| TX INFO |       
 ```
-The graph above contains a standard packet transmission with asynchronous acknowledge request where the character `@` or `64` is sent to device id `12` with `0001110` header containing its packet id `99`. As defined by the [PJON protocol layer specification v2.0](/specification/PJON-protocol-specification-v2.0.md) the fourth bit from right up in the header requests to transmitter an asynchronous acknowledge response and the presence of the packet id. The second bit from right up signals the inclusion of the sender's info necessary to send back an asynchronous acknowledge packet when received.
+The graph above contains a standard packet transmission with asynchronous acknowledge request where the character `@` or `64` is sent to device id `12` with `0001111` header containing its packet id `99`. As defined by the [PJON protocol layer specification v2.0](/specification/PJON-protocol-specification-v2.0.md) the fourth bit from right up in the header requests to transmitter an asynchronous acknowledgment response and the presence of the packet id. The second bit from right up signals the inclusion of the sender's info necessary to send back an asynchronous acknowledgment packet when received.
 
 #### PJON™ recursive acknowledgement pattern
 In a scenario where there is no direct communication between two devices, a synchronous acknowledgement can't be obtained successfully, so an asynchronous acknowledgement packet has to be sent back from receiver to the packet's transmitter to inform of the correct packet reception.
@@ -63,7 +63,7 @@ Channel analysis             Transmission                           Response
  _____  ______________________________________________________________  ___
 | C-A ||ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|PACKET ID|CONTENT|CRC||ACK|
 |-----||--|--------|------|----|------|------|--|---------|-------|---||---|
-|  0  ||0 |00001111|  17  |    | 0002 | 0001 |0 |   99    |  64   |   || 6 |
+|  0  ||0 |00001111|  20  |    | 0002 | 0001 |0 |   99    |  64   |   || 6 |
 |_____||__|________|______|____|______|______|__|_________|_______|___||___|
                                |RXINFO| TX INFO |           
 ```
@@ -89,7 +89,7 @@ TX END-------ACK-><-0-00001111-15-0001-0002-0-99-CRC-<-ACK-><-0-00001111-15-0001
 ```cpp
  __ ________ ______ ____ _______ _______ __ _________ _______ ___  ___
 |ID| HEADER |LENGTH|CRC8|BUS ID |BUS ID |ID|PACKET ID|CONTENT|CRC||ACK|
-|0 |00001111|  17  |    |0.0.0.2|0.0.0.1|0 |   99    |  64   |   || 6 |
+|0 |00001111|  20  |    |0.0.0.2|0.0.0.1|0 |   99    |  64   |   || 6 |
 |__|________|______|____|_______|_______|__|_________|_______|___||___|
                         |RX INFO| TX INFO  |
 ```
@@ -97,7 +97,7 @@ TX END-------ACK-><-0-00001111-15-0001-0002-0-99-CRC-<-ACK-><-0-00001111-15-0001
 ```cpp
  __ ________ ______ ____ _______ _______ __ _________ _______ ___  ___
 |ID| HEADER |LENGTH|CRC8|BUS ID |BUS ID |ID|PACKET ID|CONTENT|CRC||ACK|
-|0 |00001111|  17  |    |0.0.0.2|0.0.0.1|0 |   99    |  64   |   || 6 |
+|0 |00001111|  20  |    |0.0.0.2|0.0.0.1|0 |   99    |  64   |   || 6 |
 |__|________|______|____|_______|_______|__|_________|_______|___||___|
                         |RX INFO| TX INFO  |
 ```
@@ -105,7 +105,7 @@ TX END-------ACK-><-0-00001111-15-0001-0002-0-99-CRC-<-ACK-><-0-00001111-15-0001
 ```cpp
  __ ________ ______ ____ _______ _______ __ _________ ___  ___
 |ID| HEADER |LENGTH|CRC8|BUS ID |BUS ID |ID|PACKET ID|CRC||ACK|
-|0 |00001111|  16  |    |0.0.0.1|0.0.0.2|0 |   99    |   || 6 |
+|0 |00001111|  19  |    |0.0.0.1|0.0.0.2|0 |   99    |   || 6 |
 |__|________|______|____|_______|_______|__|_________|___||___|
                         |RX INFO| TX INFO  |
 ```
@@ -114,7 +114,7 @@ TX END-------ACK-><-0-00001111-15-0001-0002-0-99-CRC-<-ACK-><-0-00001111-15-0001
 ```cpp
  __ ________ ______ ____ _______ _______ __ _________ ___  ___
 |ID| HEADER |LENGTH|CRC8|BUS ID |BUS ID |ID|PACKET ID|CRC||ACK|
-|0 |00001111|  16  |    |0.0.0.1|0.0.0.2|0 |   99    |   || 6 |
+|0 |00001111|  19  |    |0.0.0.1|0.0.0.2|0 |   99    |   || 6 |
 |__|________|______|____|_______|_______|__|_________|___||___|
                         |RX INFO| TX INFO  |
 ```

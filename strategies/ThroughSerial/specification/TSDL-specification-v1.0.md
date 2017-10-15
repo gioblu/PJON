@@ -8,7 +8,7 @@
 
 ```cpp
 /*
-Milan, Italy - 27/09/2017
+Milan, Italy - Originally published: 27/09/2017
 TSDL (Tardy Serial Data Link) v1.0 specification
 Invented by Giovanni Blu Mitolo, released into the public domain
 

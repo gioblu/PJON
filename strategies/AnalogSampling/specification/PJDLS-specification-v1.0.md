@@ -8,7 +8,7 @@
 
 ```cpp
 /*
-Milan, Italy - 02/10/2017
+Milan, Italy - Originally published: 02/10/2017
 PJDLS (Padded Jittering Data Link byte Stuffed) v1.0
 Invented by Giovanni Blu Mitolo released into the public domain
 

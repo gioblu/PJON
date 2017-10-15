@@ -8,7 +8,7 @@
 
 ```cpp
 /*
-Milan, Italy - 02/10/2016
+Milan, Italy - Originally published: 02/10/2016 - Latest revision: 15/10/2017
 PJON™ dynamic addressing specification v1.0
 Invented by Giovanni Blu Mitolo, released into the public domain
 

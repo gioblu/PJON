@@ -1,12 +1,14 @@
+
 - PJON (Padded Jittering Operative Network) Protocol specification: **[v2.0](/specification/PJON-protocol-specification-v2.0.md)**
-- Acknowledge specification: [v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md)
+- Acknowledge specification: [v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md)
 - Dynamic addressing specification: [v1.0](/specification/PJON-dynamic-addressing-specification-v1.0.md)
 - PJDL (Padded Jittering Data Link) specification:
-[PJDL v2.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) - [PJDLR v2.0](/strategies/OverSampling/specification/PJDLR-specification-v2.0.md)
+[PJDL v2.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) - [PJDLR v2.0](/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) - [PJDLS v1.0](/strategies/AnalogSampling/specification/PJDLS-specification-v1.0.md)
 - TSDL (Tardy Serial Data Link) specification: [TSDL v1.0](/strategies/ThroughSerial/specification/TSDL-specification-v1.0.md)
+
 ```cpp
 /*
-Milan, Italy - 28/03/2017
+Milan, Italy - Originally published: 02/10/2016 - latest revision: 15/10/2017
 PJON™ protocol layer specification v2.0
 Invented by Giovanni Blu Mitolo. Header driven configuration proposed
 by Fred Larsen, released into the public domain
@@ -194,7 +196,7 @@ Channel analysis            Transmission                Response
  _____  ________________________________________________  _____
 | C-A || ID |  HEADER  | LENGTH | CRC8 | CONTENT | CRC8 || ACK |
 |-----||----|----------|--------|------|---------|------||-----|
-|  0  || 12 | 00000100 |   5    |      |    64   |      ||  6  |
+|  0  || 12 | 00000100 |   6    |      |    64   |      ||  6  |
 |_____||____|__________|________|______|_________|______||_____|
 ```
 In the channel analysis phase transmitter assess if the medium's state before starting transmission to avoid collision. If the medium is considered free, transmission phase starts where the packet is entirely transmitted. The receiving device calculates CRC and starts the response phase transmitting a single byte, `PJON_ACK` (decimal 6) in case of correct data reception. If no acknowledgement is received, after an exponential back-off delay the transmitter device retries until acknowledgement is received or a maximum number of attempts is reached and packet transmission discarded.     
@@ -205,7 +207,7 @@ Channel analysis              Transmission               Response
  ___  _____________________________________________________  ___
 |C-A||ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|CONTENT|CRC8||ACK|
 |---||--|--------|------|----|------|------|--|-------|----||---|
-| 0 ||12|00000111|  14  |    | 0001 | 0001 |11|  64   |    || 6 |
+| 0 ||12|00000111|  15  |    | 0001 | 0001 |11|  64   |    || 6 |
 |___||__|________|______|____|______|______|__|_______|____||___|
                              |RXINFO| TX INFO |
 ```
@@ -224,22 +226,22 @@ Channel analysis                Transmission                      Response
 The graph above shows a packet transmission where the length is of 2 bytes supporting up to 65535 bytes packet length. Receiver is able to parse the packet correctly reading the header, where `B01000000` up signals a 2 bytes length format and `B00100000` up signals CRC32 use.
 
 ```cpp
-Channel analysis               Transmission                     Response
- ___  ____________________________________________________________  ___
-|C-A||ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|PACKET ID|CONT|CRC8||ACK|
-|---||--|--------|------|----|------|------|--|---------|----|----||---|
-| 0 ||12|00001111|  16  |    | 0002 | 0001 |11|   999   | 64 |    || 6 |
-|___||__|________|______|____|______|______|__|_________|____|____||___|
+Channel analysis               Transmission                      Response
+ ___  _____________________________________________________________  ___
+|C-A||ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|PACKET ID|CONT|CRC32||ACK|
+|---||--|--------|------|----|------|------|--|---------|----|-----||---|
+| 0 ||12|00001111|  17  |    | 0002 | 0001 |11|   999   | 64 |     || 6 |
+|___||__|________|______|____|______|______|__|_________|____|_____||___|
                              |RXINFO| TX INFO |       
 ```
 The graph above shows a packet transmission where the [recursive acknowledgement ](/specification/PJON-protocol-acknowledge-specification-v0.1.md#pjon-recursive-acknowledgement-pattern) pattern is applied: device `11` sends to device `12` of bus `0.0.0.2` a packet with header `ACK MODE` bit up requesting an asynchronous acknowledgement response, and so identifying the packet with the unique id `999` and `ACK` bit up requesting a synchronous acknowledgement response. `12` receives the packet and replies with a synchronous acknowledgement, or sending `PJON_ACK` (decimal 6), subsequently `12` sends also an asynchronous acknowledgement, that is instead an entire packet, back to device `11` containing only packet id `999` and the necessary configuration, that will be also synchronously acknowledged by device `11`:
 ```cpp
-Channel analysis               Transmission                 Response
- ___  ________________________________________________________  ___
-|C-A||ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|PACKET ID| CRC ||ACK|
-|---||--|--------|------|----|------|------|--|---------|-----||---|
-| 0 ||11|00001111|  15  |    | 0001 | 0002 |12|   999   |     || 6 |
-|___||__|________|______|____|______|______|__|_________|_____||___|
+Channel analysis               Transmission                  Response
+ ___  _________________________________________________________  ___
+|C-A||ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|PACKET ID|CRC832||ACK|
+|---||--|--------|------|----|------|------|--|---------|------||---|
+| 0 ||11|00001111|  16  |    | 0001 | 0002 |12|   999   |      || 6 |
+|___||__|________|______|____|______|______|__|_________|______||___|
                              |RXINFO| TX INFO |        
 ```
 See the [Acknowledge specification v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md) to have more detailed info of its procedure.

@@ -1,7 +1,6 @@
-
 - PJON (Padded Jittering Operative Network) Protocol specification:
-[v1.1](/specification/PJON-protocol-specification-v1.1.md)
-- Acknowledge specification: [v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md)
+[v2.0](/specification/PJON-protocol-specification-v2.0.md)
+- Acknowledge specification: [v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md)
 - Dynamic addressing specification: [v1.0](/specification/PJON-dynamic-addressing-specification-v1.0.md)
 - PJDL (Padded Jittering Data Link) specification:
 [PJDL v2.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) - [PJDLR v2.0](/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) - [PJDLS v1.0](/strategies/AnalogSampling/specification/PJDLS-specification-v1.0.md)

@@ -68,7 +68,7 @@ In the graph below it is shown the protocol stack model proposed; only layer 2 a
 * Every bus has a unique 4 bytes id
 * Every device can be connected to n PJON buses
 * Many buses can coexist on the same medium
-* Synchronous and or asynchronous acknowledgement can be requested (see [Acknowledge specification v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md))
+* Synchronous and or asynchronous acknowledgement can be requested (see [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md))
 
 The PJON protocol v2.0 handles internal bus connectivity and unique addressing for 254 devices, through bus communication with unique bus addressing for 4.294.967.295 buses and supports up to 1.090.921.692.930 devices. It regulates the exchange of packets with a configurable set of features driven by its header. Depending on the packet configuration a certain overhead is added to information varying from 5 up to 19 bytes.
 
@@ -234,7 +234,7 @@ Channel analysis               Transmission                      Response
 |___||__|________|______|____|______|______|__|_________|____|_____||___|
                              |RXINFO| TX INFO |       
 ```
-The graph above shows a packet transmission where the [recursive acknowledgement ](/specification/PJON-protocol-acknowledge-specification-v0.1.md#pjon-recursive-acknowledgement-pattern) pattern is applied: device `11` sends to device `12` of bus `0.0.0.2` a packet with header `ACK MODE` bit up requesting an asynchronous acknowledgement response, and so identifying the packet with the unique id `999` and `ACK` bit up requesting a synchronous acknowledgement response. `12` receives the packet and replies with a synchronous acknowledgement, or sending `PJON_ACK` (decimal 6), subsequently `12` sends also an asynchronous acknowledgement, that is instead an entire packet, back to device `11` containing only packet id `999` and the necessary configuration, that will be also synchronously acknowledged by device `11`:
+The graph above shows a packet transmission where the [recursive acknowledgement ](/specification/PJON-protocol-acknowledge-specification-v1.0.md#pjon-recursive-acknowledgement-pattern) pattern is applied: device `11` sends to device `12` of bus `0.0.0.2` a packet with header `ACK MODE` bit up requesting an asynchronous acknowledgement response, and so identifying the packet with the unique id `999` and `ACK` bit up requesting a synchronous acknowledgement response. `12` receives the packet and replies with a synchronous acknowledgement, or sending `PJON_ACK` (decimal 6), subsequently `12` sends also an asynchronous acknowledgement, that is instead an entire packet, back to device `11` containing only packet id `999` and the necessary configuration, that will be also synchronously acknowledged by device `11`:
 ```cpp
 Channel analysis               Transmission                  Response
  ___  _________________________________________________________  ___
@@ -244,4 +244,4 @@ Channel analysis               Transmission                  Response
 |___||__|________|______|____|______|______|__|_________|______||___|
                              |RXINFO| TX INFO |        
 ```
-See the [Acknowledge specification v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md) to have more detailed info of its procedure.
+See the [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md) to have more detailed info of its procedure.

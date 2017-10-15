@@ -70,19 +70,16 @@ Channel analysis             Transmission                           Response
 In the packet shown above device `0` of bus `0.0.0.1` sends `@` (64) to device `0` of bus `0.0.0.2`. Being the header `00001000` bit up (asynchronous acknowledgement request) the packet is formatted containing the 2 bytes integer packet id `99` (used by receiver to send back an asynchronous acknowledgement packet) immediately after the sender information. Being header's `00000100` bit up (synchronous acknowledgement request) receiver will acknowledge synchronously with an `PJON_ACK` (6) in case of correct reception or `PJON_NAK` (21) in case of mistake. This precise case is used as an example to show both features used at the same time to obtain an efficient and secure way to transmit packets with correct transmission certainty.
 
 ```cpp        
-BUS 0.0.0.1                                                                            BUS 0.0.0.2
+BUS 0.0.0.1                                          BUS 0.0.0.2
 
-1 Packet tx                         2 rx, sync ACK, packet tx         3 rx, sync ACK, async ACK tx
-TX START--->0-00001111-16-0002-0001-0-99-@-CRC-><-ACK->0-00001111-16-0002-0001-0-99-@-CRC-><-ACK-|
- ______                                        ______                                    ______  |
-|      |                                      |      |                                  |      | |
-| ID 0 |______________________________________|ROUTER|__________________________________| ID 0 | |
-|______|                                      |______|                                  |______| |
-                                                                                                 |
-TX END-------ACK-><-0-00001111-15-0001-0002-0-99-CRC-<-ACK-><-0-00001111-15-0001-0002-0-99-CRC-<-|
-                5 rx, sync ACK                4 rx, sync ACK, packet tx
+1 Packet send 2 sync ack, packet forward 3 sync ack, async ack send
+ ______                      ______                      ______  
+|      |                    |      |                    |      |
+| ID 0 |____________________|ROUTER|____________________| ID 0 |
+|______|                    |______|                    |______|
+   5 sync ack                   4 ack, async ack forward
 
-/* If packet length - its overhead is 4, it is an asynchronous acknowledgement packet
+/* If packet length - its overhead is 2, it is an asynchronous acknowledgement packet
    containing only its packet id */
 ```
 1) Device `0` sends the packet, the router has a route to device `0` of bus `0.0.0.2` so responds with a synchronous acknowledgement

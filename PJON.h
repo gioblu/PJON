@@ -195,33 +195,39 @@ class PJON {
       if(extended_length) {
         destination[2 + extended_header] = new_length >> 8;
         destination[3 + extended_header] = new_length & 0xFF;
-      } else destination[2 + extended_header] = new_length;
+        destination[4 + extended_header] =
+          PJON_crc8::compute((uint8_t *)destination, 4 + extended_header);
+      } else {
+        destination[2 + extended_header] = new_length;
+        destination[3 + extended_header] =
+          PJON_crc8::compute((uint8_t *)destination, 3 + extended_header);
+      }
       if(header & PJON_MODE_BIT) {
         copy_bus_id(
-          (uint8_t*) &destination[3 + extended_header + extended_length],
+          (uint8_t*) &destination[4 + extended_header + extended_length],
           b_id
         );
         if(header & PJON_TX_INFO_BIT) {
           copy_bus_id(
-            (uint8_t*) &destination[7 + extended_header + extended_length],
+            (uint8_t*) &destination[8 + extended_header + extended_length],
             bus_id
           );
-          destination[11 + extended_header + extended_length] = _device_id;
+          destination[12 + extended_header + extended_length] = _device_id;
           #if(PJON_INCLUDE_ASYNC_ACK)
             if(async_ack)
               memcpy(
-                destination + 12 + extended_header + extended_length,
+                destination + 13 + extended_header + extended_length,
                 &p_id,
                 2
               );
           #endif
         }
       } else if(header & PJON_TX_INFO_BIT) {
-        destination[3 + extended_header + extended_length] = _device_id;
+        destination[4 + extended_header + extended_length] = _device_id;
         #if(PJON_INCLUDE_ASYNC_ACK)
           if(async_ack)
             memcpy(
-              destination + 4 + extended_header + extended_length,
+              destination + 5 + extended_header + extended_length,
               &p_id,
               2
             );
@@ -349,6 +355,7 @@ class PJON {
           + (header & PJON_EXT_HEAD_BIT  ?  2 : 1)
           + (header & PJON_CRC_BIT       ?  4 : 1)
           + (header & PJON_ACK_MODE_BIT  ?  2 : 0)
+          + 1 // Header CRC
       );
     };
 
@@ -361,7 +368,7 @@ class PJON {
       bool extended_length = packet[1] & PJON_EXT_LEN_BIT;
       packet_info.header =
         (extended_header) ? packet[2] << 8 | packet[1] : packet[1];
-      uint8_t offset = extended_header + extended_length;
+      uint8_t offset = extended_header + extended_length + 1;
       if((packet_info.header & PJON_MODE_BIT) != 0) {
         copy_bus_id(packet_info.receiver_bus_id, packet + 3 + offset);
         if((packet_info.header & PJON_TX_INFO_BIT) != 0) {
@@ -451,10 +458,13 @@ class PJON {
           if(length > 15 && !(data[1] & PJON_CRC_BIT)) return PJON_BUSY;
         }
 
+        if(i == (3 + extended_header + extended_length))
+          (PJON_crc8::compute(data, i) == data[i]);
+
         if((config & PJON_MODE_BIT) && (data[1] & PJON_MODE_BIT) && !_router)
-          if((i > (2 + extended_header + extended_length)))
-            if((i < (7 + extended_header + extended_length)))
-              if(bus_id[i - 3 - extended_header - extended_length] != data[i])
+          if((i > (3 + extended_header + extended_length)))
+            if((i < (8 + extended_header + extended_length)))
+              if(bus_id[i - 4 - extended_header - extended_length] != data[i])
                 return PJON_BUSY;
       }
 

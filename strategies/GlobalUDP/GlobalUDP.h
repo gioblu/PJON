@@ -29,13 +29,17 @@
 
 #include <PJONDefines.h>
 
-#define GUDP_DEFAULT_PORT                    7000
-#define GUDP_RESPONSE_TIMEOUT  (uint32_t) 2000000
-#define GUDP_MAGIC_HEADER   (uint32_t) 0x0DFAC3FF
+// Timeout waiting for an ACK. This can be increased if the latency is high.
+#ifndef GUDP_RESPONSE_TIMEOUT
+  #define GUDP_RESPONSE_TIMEOUT         100000ul
+#endif
 
 #ifndef GUDP_MAX_REMOTE_NODES
-  #define GUDP_MAX_REMOTE_NODES              10
+  #define GUDP_MAX_REMOTE_NODES               10
 #endif
+
+#define GUDP_DEFAULT_PORT                    7000
+#define GUDP_MAGIC_HEADER   (uint32_t) 0x0DFAC3FF
 
 class GlobalUDP {
     bool _udp_initialized = false;
@@ -86,7 +90,11 @@ public:
     /* Returns the suggested delay related to attempts passed as parameter: */
 
     uint32_t back_off(uint8_t attempts) {
-      return 1;
+      #ifdef PJON_ESP
+        return 10000ul*attempts + random(10000);
+      #else
+        return 1;
+      #endif
     };
 
 
@@ -103,7 +111,7 @@ public:
 
     /* Returns the maximum number of attempts for each transmission: */
 
-    static uint8_t get_max_attempts() { return 1; };
+    static uint8_t get_max_attempts() { return 10; };
 
 
     /* Handle a collision (empty because handled on Ethernet level): */
@@ -120,7 +128,7 @@ public:
 
     /* Receive byte response */
 
-    uint16_t receive_response() {
+    int16_t receive_response() {
       /* TODO: Improve robustness by ignoring packets not from the previous
          receiver (Perhaps not that important as long as ACK/NAK responses are
          directed, not broadcast) */
@@ -134,7 +142,6 @@ public:
           if(result[0] == PJON_ACK)
             return result[0];
       } while ((uint32_t)(PJON_MICROS() - start) < GUDP_RESPONSE_TIMEOUT);
-      printf("END receive_response LOOP with FAIL, waited %u\n", PJON_MICROS() - start);
       return PJON_FAIL;
     };
 
@@ -151,10 +158,11 @@ public:
 
     void send_string(uint8_t *string, uint16_t length) {
       if(length > 0) {
-        uint8_t id = string[0], pos = find_remote_node(id);
+        uint8_t id = string[0];
+        int16_t pos = find_remote_node(id);
         // Package always starts with a receiver id byte
         if (pos != -1) {
-          udp.send_string(string, length, *(uint32_t *)_remote_ip[pos], _remote_port[pos]);
+          udp.send_string(string, length, _remote_ip[pos], _remote_port[pos]);
         }
       }
     };

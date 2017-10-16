@@ -29,7 +29,7 @@
 #include <PJONDefines.h>
 
 #define LUDP_DEFAULT_PORT                 7100
-#define LUDP_RESPONSE_TIMEOUT  (uint32_t) 2000000
+#define LUDP_RESPONSE_TIMEOUT  (uint32_t) 100000
 #define LUDP_MAGIC_HEADER      (uint32_t) 0x0DFAC3D0
 
 class LocalUDP {
@@ -50,7 +50,11 @@ public:
     /* Returns the suggested delay related to the attempts passed as parameter: */
 
     uint32_t back_off(uint8_t attempts) {
-      return 1;
+      #ifdef PJON_ESP
+        return 10000ul*attempts + random(10000);
+      #else
+        return 1;
+      #endif
     };
 
 
@@ -67,7 +71,7 @@ public:
 
     /* Returns the maximum number of attempts for each transmission: */
 
-    static uint8_t get_max_attempts() { return 1; };
+    static uint8_t get_max_attempts() { return 10; };
 
 
     /* Handle a collision (empty because handled on Ethernet level): */
@@ -84,7 +88,7 @@ public:
 
     /* Receive byte response */
 
-    uint16_t receive_response() {
+    int16_t receive_response() {
       /* TODO: Improve robustness by ignoring packets not from the previous
          receiver (Perhaps not that important as long as ACK/NAK responses are
          directed, not broadcast) */

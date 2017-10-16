@@ -1,23 +1,31 @@
 #include <PJON.h>
 
 // Ethernet configuration for this device
-byte gateway[] = { 192, 1, 1, 1 };
-byte subnet[] = { 255, 255, 255, 0 };
-byte mac[] = {0xDA, 0xCA, 0x7E, 0xEF, 0xFE, 0x5D};
-uint8_t local_ip[] = { 192, 1, 1, 150 };
+IPAddress gateway = { 192, 1, 1, 1 };
+IPAddress subnet = { 255, 255, 255, 0 };
+IPAddress local_ip = { 192, 1, 1, 151 };
 
 // Address of remote device
-uint8_t remote_ip[] = { 192, 1, 1, 151 };
+uint8_t remote_ip[] = { 192, 1, 1, 150 };
 
 // <Strategy name> bus(selected device id)
 PJON<GlobalUDP> bus(45);
 
+const char* ssid     = "MyNetworkSSID";
+const char* password = "MyNetworkPassword";
+
 void setup() {
   Serial.begin(115200);
   Serial.println("Transmitter started.");
-  Ethernet.begin(mac, local_ip, gateway, gateway, subnet);
+  WiFi.config(local_ip, gateway, subnet);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.printf("Now listening at IP %s\n", WiFi.localIP().toString().c_str());
 
-  bus.strategy.add_node(44, remote_ip); // Repeat for each remote device
+  bus.strategy.add_node(44, remote_ip);
   bus.set_receiver(receiver_function);
   bus.begin();
   bus.send_repeatedly(44, "P", 1, 20000); // Send P to device 44 repeatedly
@@ -35,8 +43,8 @@ void loop() {
   bus.receive();
 
   if (millis() - start > 1000) {
+    Serial.print("PONG/s: "); Serial.println(1000.0f*float(cnt)/float((uint32_t)(millis()-start))); 
     start = millis();
-    Serial.print("PONG/s: "); Serial.println(cnt);
     cnt = 0;
   }
 };

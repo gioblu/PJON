@@ -18,7 +18,7 @@ Compliant implementation versions: PJON 9.0 and following
 Changelog: Added frame separation
 */
 ```
-### PJDLR (Padded Jittering Data Link Radio)
+### PJDLR (Padded Jittering Data Link Radio) v2.0
 PJDLR is a simplex or half-duplex data link layer, that can be easily software emulated, enabling one or many to many communication in both master-slave and multi-master configuration optimized to obtain long range and high reliability using radio transceivers. It has been engineered to have limited minimum requirements, and to be efficiently executed on limited microcontrollers with poor clock accuracy. No additional hardware is required to apply PJDLR, and, being implemented in c++, in less than 350 lines of code, it is easily portable to many different architectures.
 
 #### Basic concepts

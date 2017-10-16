@@ -743,7 +743,7 @@ public:
     if (!_single_socket && _client_in) if (_client_in.available() > 0) return PJON_BUSY;
 
     #ifdef HAS_ETHERNETUDP
-    bool ok = client.write(buf, 9) == 9;
+    bool ok = client.write((uint8_t*) buf, 9) == 9;
     if(ok) ok = client.write((uint8_t*) packet, length) == length;
     if(ok) ok = client.write((uint8_t*) &foot, 4) == 4;
     #else

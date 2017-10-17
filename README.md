@@ -18,30 +18,30 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 - Cross-compilation support with the [interfaces](interfaces) system calls abstraction   
 - Multi-media support with the [strategies](strategies) data link layer abstraction
 - Master-slave or multi-master [dynamic addressing](specification/PJON-dynamic-addressing-specification-v0.1.md)
-- Hot-swap support, no need of system reset or shut down when replacing or adding devices 
+- Hot-swap support, no need of system reset or shut down when replacing or adding devices
 - Configurable synchronous and/or asynchronous [acknowledgement](specification/PJON-protocol-acknowledge-specification-v0.1.md)
 - Configurable 2 level addressing (device and bus id) for scalable applications
 - Configurable 1 or 2 bytes packet length (max 255 or 65535 bytes)
 - Collision avoidance to enable multi-master capability
 - Configurable CRC8 or CRC32 table-less cyclic redundancy check
 - Packet manager to handle, track and if necessary retransmit a packet sending in background
-- Optional ordered packet sending
 - Error handling
 
 #### PJON (Padded Jittering Operative Network) Protocol specification
-- PJON [v1.1](specification/PJON-protocol-specification-v1.1.md)
-- PJON Acknowledge [v0.1](specification/PJON-protocol-acknowledge-specification-v0.1.md)
-- PJON Dynamic addressing [v0.1](specification/PJON-dynamic-addressing-specification-v0.1.md)
+- [PJON v2.0](specification/PJON-protocol-specification-v2.0.md)
+- [PJON Acknowledge v1.0](specification/PJON-protocol-acknowledge-specification-v1.0.md)
+- [PJON Dynamic addressing v1.0](specification/PJON-dynamic-addressing-specification-v1.0.md)
 
-#### PJDL (Padded Jittering Data Link) specification
-- PJDL [v1.1](strategies/SoftwareBitBang/specification/PJDL-specification-v1.1.md)
-- PJDLR [v1.1](strategies/OverSampling/specification/PJDLR-specification-v1.1.md)
+#### Data links specification
+- [PJDL v2.0](strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md)
+- [PJDLR v2.0](strategies/OverSampling/specification/PJDLR-specification-v2.0.md)
+- [PJDLS v1.0](strategies/AnalogSampling/specification/PJDLS-specification-v1.0.md)
+- [TSDL v1.0](strategies/ThroughSerial/specification/TSDL-specification-v1.0.md)
 
 #### Compliant tools
 - [ModuleInterface](https://github.com/fredilarsen/ModuleInterface) by Fred Larsen
 - [PJON-piper](https://github.com/Girgitt/PJON-piper) by Zbigniew Zasieczny
 - [PJON-python](https://github.com/Girgitt/PJON-python) by Zbigniew Zasieczny
-- [saleae-pjon-protocol-analyzer](https://github.com/aperepel/saleae-pjon-protocol-analyzer) by Andrew Grande
 
 PJON™ is a self-funded, no-profit open-source project created in 2010 and maintained by Giovanni Blu Mitolo with the support of the internet community. If you want to see the PJON project growing with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
 

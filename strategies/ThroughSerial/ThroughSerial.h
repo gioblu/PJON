@@ -1,6 +1,7 @@
 
 /* ThroughSerial digital communication data link layer
    used as a Strategy by the PJON framework (included in version v4.1)
+   Compliant with TSDL (Tardy Serial Data Link) specification v1.0
 
    Contributors:
     - Fred Larsen, Development, testing and debugging
@@ -8,9 +9,10 @@
       and SoftwareSerial compatibility
     - Franketto (Arduino forum user) RS485 TX enable pin compatibility
     - Endre Karlson separate RS485 enable pins handling, flush timing hack
-   ____________________________________________________________________________
+   ___________________________________________________________________________
 
-   ThroughSerial, copyright 2016-2017 by Giovanni Blu Mitolo All rights reserved
+   ThroughSerial,
+   copyright 2016-2017 by Giovanni Blu Mitolo All rights reserved
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -26,6 +28,19 @@
 
 #pragma once
 
+// START frame symbol 10010101 - 0x95 - 
+#define TS_START 149
+// END   frame symbol 11101010 - 0xea - ê
+#define TS_END   234
+// ESCAPE      symbol 10111011 - 0xBB - »
+#define TS_ESC   187
+
+// Used to signal communication failure
+#define TS_FAIL                     65535
+
+// Used for pin handling
+#define TS_NOT_ASSIGNED               255
+
 #include "Timing.h"
 
 class ThroughSerial {
@@ -37,7 +52,7 @@ class ThroughSerial {
     #elif defined(_WIN32)
       Serial *serial = NULL;
     #endif
-    /* Returns the suggested delay related to the attempts passed as parameter: */
+    /* Returns suggested delay related to the attempts passed as parameter: */
 
     uint32_t back_off(uint8_t attempts) {
       uint32_t result = attempts;
@@ -53,6 +68,7 @@ class ThroughSerial {
       PJON_DELAY_MICROSECONDS(
         PJON_RANDOM(TS_INITIAL_DELAY) + additional_randomness
       );
+      _last_byte = receive_byte();
       return true;
     };
 
@@ -90,13 +106,16 @@ class ThroughSerial {
         if(PJON_SERIAL_AVAILABLE(serial)) {
           _last_reception_time = PJON_MICROS();
           uint16_t read = (uint8_t)PJON_SERIAL_READ(serial);
-          if(read >= 0) return read;
+          if(read >= 0) {
+            _last_byte = read;
+            return read;
+          }
         }
         #if defined(_WIN32)
           PJON_DELAY_MICROSECONDS(time_out / 10);
         #endif
       }
-      return PJON_FAIL;
+      return TS_FAIL;
     };
 
 
@@ -110,8 +129,30 @@ class ThroughSerial {
     /* Receive a string: */
 
     uint16_t receive_string(uint8_t *string, uint16_t max_length) {
-      uint16_t result = receive_byte();
-      if(result == PJON_FAIL) return PJON_FAIL;
+      uint16_t result;
+      // No initial flag, byte-stuffing violation
+      if(max_length == PJON_PACKET_MAX_LENGTH)
+        if(
+          (receive_byte() != TS_START) ||
+          (_last_byte == TS_ESC)
+        ) return TS_FAIL;
+
+      result = receive_byte();
+      if(result == TS_FAIL) return TS_FAIL;
+
+      // Unescaped START byte stuffing violation
+      if(result == TS_START) return TS_FAIL;
+
+      if(result == TS_ESC) {
+        result = receive_byte();
+        // Escaping byte-stuffing violation
+        if((result != TS_START) && (result != TS_ESC) && (result != TS_END))
+          return TS_FAIL;
+      }
+
+      // No end flag, byte-stuffing violation
+      if((max_length == 1) && (receive_byte() != TS_END))
+        return TS_FAIL;
       *string = result;
       return 1;
     };
@@ -138,16 +179,30 @@ class ThroughSerial {
 
     void send_string(uint8_t *string, uint8_t length) {
       start_tx();
+      uint16_t overhead = 2;
+      // Add frame flag
+      send_byte(TS_START);
       for(uint8_t b = 0; b < length; b++) {
+        // Byte-stuffing
+        if(
+          (string[b] == TS_START) ||
+          (string[b] == TS_ESC) ||
+          (string[b] == TS_END)
+        ) {
+          send_byte(TS_ESC);
+          overhead++;
+        }
         send_byte(string[b]);
-        /* On RPI flush fails to wait until all bytes are transmitted
-           here RPI forced to wait blocking using delayMicroseconds */
-        #if defined(RPI)
-          PJON_DELAY_MICROSECONDS(
-            (1000000 / (_bd / 8)) + _flush_offset
-          );
-        #endif
       }
+      send_byte(TS_END);
+      /* On RPI flush fails to wait until all bytes are transmitted
+         here RPI forced to wait blocking using delayMicroseconds */
+      #if defined(RPI)
+        if(_bd)
+          PJON_DELAY_MICROSECONDS(
+            ((1000000 / (_bd / 8)) + _flush_offset) * (overhead + length)
+          );
+      #endif
       PJON_SERIAL_FLUSH(serial);
       end_tx();
     };
@@ -169,17 +224,17 @@ class ThroughSerial {
     /* RS485 enable pins handling: */
 
     void start_tx() {
-      if(_enable_RS485_txe_pin != PJON_NOT_ASSIGNED) {
+      if(_enable_RS485_txe_pin != TS_NOT_ASSIGNED) {
         PJON_IO_WRITE(_enable_RS485_txe_pin, HIGH);
-        if(_enable_RS485_rxe_pin != PJON_NOT_ASSIGNED)
+        if(_enable_RS485_rxe_pin != TS_NOT_ASSIGNED)
           PJON_IO_WRITE(_enable_RS485_rxe_pin, HIGH);
       }
     };
 
     void end_tx() {
-      if(_enable_RS485_txe_pin != PJON_NOT_ASSIGNED) {
+      if(_enable_RS485_txe_pin != TS_NOT_ASSIGNED) {
         PJON_IO_WRITE(_enable_RS485_txe_pin, LOW);
-        if(_enable_RS485_rxe_pin != PJON_NOT_ASSIGNED)
+        if(_enable_RS485_rxe_pin != TS_NOT_ASSIGNED)
           PJON_IO_WRITE(_enable_RS485_rxe_pin, LOW);
       }
     };
@@ -193,8 +248,8 @@ class ThroughSerial {
     };
 
 
-    /* Set flush timing offset in microseconds between expected and real serial
-       byte transmission: */
+    /* Set flush timing offset in microseconds between expected and real
+       serial byte transmission: */
 
     void set_flush_offset(uint16_t offset) {
       _flush_offset = offset;
@@ -222,7 +277,8 @@ class ThroughSerial {
     uint16_t _flush_offset = TS_FLUSH_OFFSET;
     uint32_t _bd;
   #endif
+    uint8_t  _last_byte;
     uint32_t _last_reception_time;
-    uint8_t  _enable_RS485_rxe_pin = PJON_NOT_ASSIGNED;
-    uint8_t  _enable_RS485_txe_pin = PJON_NOT_ASSIGNED;
+    uint8_t  _enable_RS485_rxe_pin = TS_NOT_ASSIGNED;
+    uint8_t  _enable_RS485_txe_pin = TS_NOT_ASSIGNED;
 };

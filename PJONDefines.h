@@ -170,18 +170,13 @@ limitations under the License. */
   #define PJON_MAX_RECENT_PACKET_IDS 10
 #endif
 
-/* If set to true ensures packet ordered sending */
-#ifndef PJON_ORDERED_SENDING
-  #define PJON_ORDERED_SENDING false
-#endif
-
 /* Dynamic addressing timing constants:
    Maximum number of device id collisions during auto-addressing */
 #define PJON_MAX_ACQUIRE_ID_COLLISIONS 10
 /* Delay between device id acquisition and self request */
 #define PJON_ACQUIRE_ID_DELAY        1000
-/* Maximum id scan time (6 seconds) */
-#define PJON_ID_SCAN_TIME         6000000
+/* Maximum id scan time (10 seconds) */
+#define PJON_ID_SCAN_TIME        10000000
 /* Master free id broadcast response interval (0.1 seconds) */
 #define PJON_ID_REQUEST_INTERVAL   100000
 /* Master ID_REQUEST and ID_NEGATE timeout */

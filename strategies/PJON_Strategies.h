@@ -51,8 +51,9 @@
   #include "OverSampling/OverSampling.h"
   #include "SoftwareBitBang/SoftwareBitBang.h"
   #include "ThroughSerial/ThroughSerial.h"
-  /* Avoid ATtiny 45/85 error missing inclusion error */
-  #if !defined(__AVR_ATtiny45__) && !defined(__AVR_ATtiny85__)
+  /* Avoid ATtiny44/84/45/85 missing inclusion error */
+  #if !defined(__AVR_ATtiny45__) && !defined(__AVR_ATtiny85__) && \
+      !defined(__AVR_ATtiny44__) && !defined(__AVR_ATtiny84__)
     #include "EthernetTCP/EthernetTCP.h"
     #include "LocalUDP/LocalUDP.h"
     #include "GlobalUDP/GlobalUDP.h"

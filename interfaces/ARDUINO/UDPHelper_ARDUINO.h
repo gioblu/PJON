@@ -1,17 +1,9 @@
 #pragma once
 
-#ifdef ARDUINO_ESP8266_WEMOS_D1MINI // WeMos mini and D1 R2
-  #define PJON_ESP
-#elif ARDUINO_ESP8266_ESP01     // Generic ESP's use for 01's
-  #define PJON_ESP
-#elif ARDUINO_ESP8266_NODEMCU   // Wio Link and NodeMCU 1.0 (also 0.9), use for ESP12
-  #define PJON_ESP
-#endif
-
 #ifdef PJON_ESP
-#include <ESP8266WiFi.h>
-#include <WiFiUdp.h>
-#define PJON_ESP
+  #include <ESP8266WiFi.h>
+  #include <WiFiUdp.h>
+  #define PJON_ESP
 #else
   #include <Ethernet.h>
   #include <EthernetUDP.h>

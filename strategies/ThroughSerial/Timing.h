@@ -62,5 +62,5 @@
 
 /* Back-off exponential degree */
 #ifndef TS_BACK_OFF_DEGREE
-  #define TS_BACK_OFF_DEGREE       4
+  #define TS_BACK_OFF_DEGREE      4
 #endif

@@ -1,7 +1,15 @@
 #pragma once
 
 /* CRC32 table-less implementation
-   See: http://www.hackersdelight.org/hdcodetxt/crc.c.txt */
+   See: http://www.hackersdelight.org/hdcodetxt/crc.c.txt
+
+  Polynomial
+
+  0x82608edb = x^32+x^26+x^23+x^22+x^16+x^12+x^11+x^10+x^8+x^7+x^5+x^4+x^2+x+1
+  (0x82608edb; 0x104c11db7) <=> (0xedb88320; 0x1db710641)
+                                    |
+                                  bit-reversed polynomial implicit +1 notation
+                                  or reverse reciprocal notation */
 
 struct PJON_crc32 {
 

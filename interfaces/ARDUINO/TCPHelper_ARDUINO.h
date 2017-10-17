@@ -1,10 +1,25 @@
 #pragma once
 
+#ifdef ARDUINO_ESP8266_WEMOS_D1MINI // WeMos mini and D1 R2
+  #define PJON_ESP
+#elif ARDUINO_ESP8266_ESP01     // Generic ESP's use for 01's
+  #define PJON_ESP
+#elif ARDUINO_ESP8266_NODEMCU   // Wio Link and NodeMCU 1.0 (also 0.9), use for ESP12
+  #define PJON_ESP
+#endif
+
+#ifdef PJON_ESP
+#include <ESP8266WiFi.h>
+typedef WiFiServer TCPHelperServer;
+typedef WiFiClient TCPHelperClient;
+#define min(a,b) (a<b?a:b)
+#else
 #include <EthernetClient.h>
 #include <utility/socket.h>
-
 typedef EthernetServer TCPHelperServer;
 typedef EthernetClient TCPHelperClient;
+#endif
+
 
 /*
 // The following classes make it posssible to use the same non-blocking connect logic 

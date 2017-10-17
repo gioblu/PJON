@@ -6,6 +6,9 @@ byte subnet[] = { 255, 255, 255, 0 };
 byte mac[] = {0xDA, 0x5A, 0x4E, 0xEF, 0xAE, 0xED};
 uint8_t local_ip[] = { 192, 1, 1, 151 };
 
+// Address of remote device
+uint8_t remote_ip[] = { 192, 1, 1, 150 };
+
 // <Strategy name> bus(selected device id)
 PJON<GlobalUDP> bus(44);
 
@@ -14,6 +17,7 @@ void setup() {
   Serial.println("Receiver started.");
   Ethernet.begin(mac, local_ip, gateway, gateway, subnet);
 
+  bus.strategy.add_node(45, remote_ip); // Repeat for each remote device
   bus.set_receiver(receiver_function);
   bus.begin();
 };
@@ -22,8 +26,6 @@ uint32_t cnt = 0;
 uint32_t start = millis();
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
-  /* Make use of the payload before sending something, the buffer where payload points to is
-     overwritten when a new message is dispatched */
   if(payload[0] == 'P') {
     cnt++;
     bus.reply("P", 1);

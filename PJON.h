@@ -458,15 +458,17 @@ class PJON {
           if(length > 15 && !(data[1] & PJON_CRC_BIT)) return PJON_BUSY;
         }
 
-        if(i == (3 + extended_header + extended_length))
-          (PJON_crc8::compute(data, i) == data[i]);
-
         if((config & PJON_MODE_BIT) && (data[1] & PJON_MODE_BIT) && !_router)
           if((i > (3 + extended_header + extended_length)))
             if((i < (8 + extended_header + extended_length)))
               if(bus_id[i - 4 - extended_header - extended_length] != data[i])
                 return PJON_BUSY;
       }
+
+      if(
+        PJON_crc8::compute(data, 3 + extended_header + extended_length) !=
+        data[3 + extended_header + extended_length]
+      ) return PJON_NAK;
 
       if(data[1] & PJON_CRC_BIT)
         computed_crc = PJON_crc32::compare(

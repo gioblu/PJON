@@ -28,15 +28,15 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 - Error handling
 
 #### PJON (Padded Jittering Operative Network) Protocol specification
-- PJON [v2.0](specification/PJON-protocol-specification-v2.0.md)
-- PJON Acknowledge [v1.0](specification/PJON-protocol-acknowledge-specification-v1.0.md)
-- PJON Dynamic addressing [v1.0](specification/PJON-dynamic-addressing-specification-v1.0.md)
+- [PJON v2.0](specification/PJON-protocol-specification-v2.0.md)
+- [PJON Acknowledge v1.0](specification/PJON-protocol-acknowledge-specification-v1.0.md)
+- [PJON Dynamic addressing v1.0](specification/PJON-dynamic-addressing-specification-v1.0.md)
 
-#### PJDL (Padded Jittering Data Link) specification
-- PJDL [v2.0](strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md)
-- PJDLR [v2.0](strategies/OverSampling/specification/PJDLR-specification-v2.0.md)
-- PJDLS [v1.0](strategies/AnalogSampling/specification/PJDLS-specification-v1.0.md)
-- TSDL [v1.0](strategies/ThroughSerial/specification/TSDL-specification-v1.0.md)
+#### Data links specification
+- [PJDL v2.0](strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md)
+- [PJDLR v2.0](strategies/OverSampling/specification/PJDLR-specification-v2.0.md)
+- [PJDLS v1.0](strategies/AnalogSampling/specification/PJDLS-specification-v1.0.md)
+- [TSDL v1.0](strategies/ThroughSerial/specification/TSDL-specification-v1.0.md)
 
 #### Compliant tools
 - [ModuleInterface](https://github.com/fredilarsen/ModuleInterface) by Fred Larsen

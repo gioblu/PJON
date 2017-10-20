@@ -28,6 +28,8 @@
   #include <sstream>
   #include "Serial/Serial.h"
 
+  typedef char byte;
+
   #define OUTPUT 1
   #define INPUT 0
   #define HIGH 1
@@ -55,7 +57,7 @@
     if(elapsed_usec >= UINT32_MAX) {
       start_ts = std::chrono::high_resolution_clock::now();
       return 0;
-    } else return elapsed_usec;
+    } else return (uint32_t) elapsed_usec;
   };
 
 

@@ -56,7 +56,19 @@ class EthernetTCP {
 
     EthernetTCP() {
       link.set_receiver(static_receiver, this);
+#ifdef _WIN32
+      // Initialize Winsock
+      WSAData wsaData;
+      WSAStartup(MAKEWORD(2, 2), &wsaData);
+#endif
     };
+
+#ifdef _WIN32
+    ~EthernetTCP() {
+      // Cleanup Winsock
+      WSACleanup();
+    };
+#endif
 
 
     /* Returns the suggested delay related to the attempts passed as parameter: */

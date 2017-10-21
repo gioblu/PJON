@@ -92,6 +92,8 @@ public:
     uint32_t back_off(uint8_t attempts) {
       #ifdef PJON_ESP
         return 10000ul*attempts + random(10000);
+      #elif _WIN32
+      return 1000ul + (1000ul * rand()) / RAND_MAX;
       #else
         return 1;
       #endif
@@ -128,7 +130,7 @@ public:
 
     /* Receive byte response */
 
-    int16_t receive_response() {
+    uint16_t receive_response() {
       /* TODO: Improve robustness by ignoring packets not from the previous
          receiver (Perhaps not that important as long as ACK/NAK responses are
          directed, not broadcast) */
@@ -137,10 +139,12 @@ public:
       uint16_t reply_length = 0;
       do {
         reply_length = receive_string(result, sizeof result);
+
         // We expect 1, if packet is larger it is not our ACK
         if(reply_length == 1)
-          if(result[0] == PJON_ACK)
+          if (result[0] == PJON_ACK)
             return result[0];
+
       } while ((uint32_t)(PJON_MICROS() - start) < GUDP_RESPONSE_TIMEOUT);
       return PJON_FAIL;
     };

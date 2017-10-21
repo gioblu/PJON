@@ -52,6 +52,8 @@ public:
     uint32_t back_off(uint8_t attempts) {
       #ifdef PJON_ESP
         return 10000ul*attempts + random(10000);
+      #elif _WIN32
+        return 1000ul * attempts + 1000ul*rand()/RAND_MAX;
       #else
         return 1;
       #endif
@@ -88,7 +90,7 @@ public:
 
     /* Receive byte response */
 
-    int16_t receive_response() {
+    uint16_t receive_response() {
       /* TODO: Improve robustness by ignoring packets not from the previous
          receiver (Perhaps not that important as long as ACK/NAK responses are
          directed, not broadcast) */

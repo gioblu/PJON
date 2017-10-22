@@ -52,7 +52,7 @@ int main() {
 bus.strategy.link.keep_connection(true);
 #ifdef ETCP_SINGLE_DIRECTION
   bus.strategy.link.single_initiate_direction(true);
-#else if ETCP_SINGLE_SOCKET_WITH_ACK
+#elif ETCP_SINGLE_SOCKET_WITH_ACK
   bus.strategy.link.single_socket(true);
 #endif
   bus.set_receiver(receiver_function);

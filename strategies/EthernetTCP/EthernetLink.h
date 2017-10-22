@@ -133,12 +133,17 @@
 #else
   #include <interfaces/LINUX/TCPHelper_POSIX.h>
   const char *F(const char *s) { return s; }
-  struct Serial {
+#define Serial DummyPrint
+  struct DummyPrint {
     static void print(const char *s) { printf("%s", s); }
     static void print(int n) { printf("%d", n); }
     static void println(const char *s) { printf("%s\n", s); }
     static void println(int n) { printf("%d\n", n); }
-  } Serial;
+  } DummyPrint;
+
+#ifdef _WIN32
+#define millis() PJON_MILLIS()
+#endif
 #endif
 
 // Constants
@@ -204,6 +209,15 @@ typedef void (*link_error)(
   uint8_t data
 );
 
+class TmpBuffer {
+    char *buf = NULL;
+    uint16_t len = 0;
+  public:
+    TmpBuffer(uint16_t size) { len = size;  buf = new char[size]; }
+    ~TmpBuffer() { if (buf) delete buf;  }
+    char* operator()() { return buf; }
+    uint16_t size() { return len; }
+};
 
 class EthernetLink {
 private:
@@ -373,9 +387,9 @@ public:
       if (content_length > ETCP_MAX_PACKET_SIZE) return PJON_FAIL;
 
       // Read contents and footer
-      uint8_t buf[content_length];
+      TmpBuffer buf(content_length);
       if(ok) {
-        bytes_read = read_bytes(client, buf, content_length);
+        bytes_read = read_bytes(client, (uint8_t*)buf(), content_length);
         if(bytes_read != content_length) ok = false;
       }
 
@@ -423,7 +437,7 @@ public:
 
       // Call receiver callback function
       if(ok && !_receive_and_discard && content_length > 0)
-        _receiver(sender_id, buf, content_length, _callback_object);
+        _receiver(sender_id, (uint8_t*)buf(), content_length, _callback_object);
 
       if (!ok) disconnect_in();
     }
@@ -724,6 +738,7 @@ public:
       #endif
       stop(_client_in);
     }
+    return true;
   };
 
 
@@ -749,11 +764,11 @@ public:
     #else
     // On a POSIX capable device we expect to have enough memory to collect all into one buffer
     // so that it will not be sent as 3 separate packets when TCP_NODELAY is active.
-    uint8_t totalbuf[9+length+4];
-    memcpy(totalbuf, buf, 9);
-    memcpy(&totalbuf[9], packet, length);
-    memcpy(&totalbuf[9+length], &foot, 4);
-    bool ok = client.write(totalbuf, 9+length+4) == (9+length+4);
+    TmpBuffer totalbuf(9+length+4);
+    memcpy(totalbuf(), buf, 9);
+    memcpy(&(totalbuf()[9]), packet, length);
+    memcpy(&(totalbuf()[9+length]), &foot, 4);
+    bool ok = client.write((uint8_t*)totalbuf(), 9+length+4) == (9+length+4);
     #endif
     if(ok) client.flush();
     #ifdef ETCP_DEBUG_PRINT
@@ -1243,3 +1258,5 @@ uint32_t t0 = millis();
 
   void update() { };
 };
+
+#undef Serial

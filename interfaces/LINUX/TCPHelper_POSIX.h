@@ -2,15 +2,25 @@
 
 #include <stdio.h>
 #include <errno.h>
+#include <sys/types.h>
+#include <fcntl.h>
+
+#ifdef _WIN32
+#include <winsock2.h>
+#include <stdlib.h>
+
+#define close(fd) closesocket(fd)
+#define ssize_t int
+#define socklen_t int
+#else
 #include <string.h>
 #include <unistd.h>
 #include <netdb.h>
-#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <poll.h>
-#include <fcntl.h>
+#endif
 
 #ifndef constrain
 #define constrain(x, l, u) (x<l?l:(x>u?u:x))
@@ -19,7 +29,11 @@
 void delay(uint32_t ms) { PJON_DELAY_MICROSECONDS(ms*1000ul); }
 
 class TCPHelperClient {
+#ifdef _WIN32
+  SOCKET _fd = -1;
+#else
   int _fd = -1;
+#endif
   sockaddr_in _remote_addr;
 
 public:
@@ -27,7 +41,32 @@ public:
   TCPHelperClient(int fd) { _fd = fd; }
   TCPHelperClient(const TCPHelperClient &another) { *this = another; }
 
+/*
+  ~TCPHelperClient() { 
+#ifdef _WIN32
+    if (_fd != INVALID_SOCKET) closesocket(_fd);
+    WSACleanup();
+#else
+    if (_fd != INVALID_SOCKET) close(_fd);
+#endif
+  }
+*/
   int available() {
+#ifdef _WIN32
+    WSAPOLLFD pfs;
+    pfs.fd = _fd;
+    pfs.events = POLLIN;
+    pfs.revents = 0;
+    int rv = WSAPoll(&pfs, 1, 0);
+    if ((rv == -1 && WSAGetLastError() == WSAENETDOWN) || (rv > 0 && (pfs.revents & POLLNVAL) != 0)) {
+#ifdef ETCP_ERROR_PRINT
+      printf("poll triggered stop, rv=%d: %s\n", rv, strerror(errno));
+#endif
+      stop(); // Socket problem, close it
+    }
+    else if (rv > 0)
+      return (pfs.revents & POLLRDNORM) != 0 || (pfs.revents & POLLHUP) != 0;
+#else
     struct pollfd pfs;
     pfs.fd = _fd;
     pfs.events = POLLIN;
@@ -41,6 +80,7 @@ public:
     }
     else if (rv > 0)
       return (pfs.revents & POLLIN) != 0 || (pfs.revents & POLLHUP) != 0;
+#endif
     return 0;
   }
 
@@ -53,7 +93,7 @@ public:
     }
     _fd = ::socket(AF_INET,SOCK_STREAM,0);
     if (_fd == -1) return false;
-    bzero(&_remote_addr, sizeof(_remote_addr));
+    memset(&_remote_addr, 0, sizeof(_remote_addr));
     _remote_addr.sin_family = AF_INET;
     _remote_addr.sin_port = htons(port);
     memcpy(&_remote_addr.sin_addr.s_addr, address, 4);
@@ -62,8 +102,8 @@ public:
     struct timeval read_timeout;
     read_timeout.tv_sec = 0;
     read_timeout.tv_usec = 2000000;
-    setsockopt(_fd, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout);
-    setsockopt(_fd, SOL_SOCKET, SO_SNDTIMEO, &read_timeout, sizeof read_timeout);
+    setsockopt(_fd, SOL_SOCKET, SO_RCVTIMEO, (char*)&read_timeout, sizeof read_timeout);
+    setsockopt(_fd, SOL_SOCKET, SO_SNDTIMEO, (char*)&read_timeout, sizeof read_timeout);
 
     bool connected = ::connect(_fd, (struct sockaddr *) &_remote_addr,sizeof(_remote_addr)) == 0;
     if (connected) {
@@ -71,9 +111,9 @@ public:
       struct timeval read_timeout;
       read_timeout.tv_sec = 0;
       read_timeout.tv_usec = 1000;
-      setsockopt(_fd, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout);
+      setsockopt(_fd, SOL_SOCKET, SO_RCVTIMEO, (char*)&read_timeout, sizeof read_timeout);
       read_timeout.tv_usec = 2000000;
-      setsockopt(_fd, SOL_SOCKET, SO_SNDTIMEO, &read_timeout, sizeof read_timeout);
+      setsockopt(_fd, SOL_SOCKET, SO_SNDTIMEO, (char*)&read_timeout, sizeof read_timeout);
 
       // Disable Nagles algorith because we are sending small packets and waiting for reply
       set_nodelay(true);
@@ -91,12 +131,18 @@ public:
     }
     _fd = ::socket(AF_INET,SOCK_STREAM,0);
     if (_fd == -1) return false;
-    bzero(&_remote_addr, sizeof(_remote_addr));
+    memset(&_remote_addr, 0, sizeof(_remote_addr));
     _remote_addr.sin_family = AF_INET;
     _remote_addr.sin_port = htons(port);
     memcpy(&_remote_addr.sin_addr.s_addr, address, 4);
+#ifdef _WIN32
+    unsigned long ul = 1;
+    int flags = ioctlsocket(_fd, FIONBIO, (unsigned long *)&ul); //Set into non blocking mode.
+    if (flags != SOCKET_ERROR) ; // Failed to set?
+#else
     int flags = fcntl(_fd, F_GETFL, 0);
     if (flags!=-1) fcntl(_fd, F_SETFL, flags | O_NONBLOCK);
+#endif
     else {
       #ifdef ETCP_ERROR_PRINT
       printf("prepare_connect triggered stop, _fd=%d: %s\n", _fd, strerror(errno));
@@ -111,11 +157,22 @@ public:
     int8_t connected = 0;
     int status = ::connect(_fd, (struct sockaddr *) &_remote_addr,sizeof(_remote_addr));
     if (status == -1) {
-      if (errno == EISCONN) ; // Already connected, proceed with setting timeouts
+#ifdef _WIN32
+      int errno2 = WSAGetLastError();
+      if (errno2 == WSAEISCONN); // Already connected, proceed with setting timeouts
+      else if (errno2 == WSAEWOULDBLOCK || errno2 == WSAEINPROGRESS || errno2 == WSAEALREADY) 
+        return 0; // Normal, we are waiting for connect to succeed
+#else
+      if (errno == EISCONN); // Already connected, proceed with setting timeouts
       else if (errno == EINPROGRESS || errno == EALREADY) return 0; // Normal, we are waiting for connect to succeed
+#endif
       else {
         #ifdef ETCP_ERROR_PRINT
+#ifdef _WIN32
+        printf("try_connect triggered stop, _fd=%d: %d\n", _fd, errno2);
+#else
         printf("try_connect triggered stop, _fd=%d: %d %s\n", _fd, errno, strerror(errno));
+#endif
         #endif
         stop();
         return -1; // Some other error
@@ -123,16 +180,22 @@ public:
     }
 
     // Enable blocking operations
+#ifdef _WIN32
+    unsigned long ul = 0;
+    int flags = ioctlsocket(_fd, FIONBIO, (unsigned long *)&ul); // Set into non blocking mode.
+    //if (flags != SOCKET_ERROR) ; // Failed to set.
+#else
     int flags = fcntl(_fd, F_GETFL, 0);
-    if (flags!=-1) fcntl(_fd, F_SETFL, flags & ~O_NONBLOCK);
+    if (flags != -1) fcntl(_fd, F_SETFL, flags & ~O_NONBLOCK);
+#endif
 
     // Set timeouts for reading and writing
     struct timeval read_timeout;
     read_timeout.tv_sec = 0;
     read_timeout.tv_usec = 1000;
-    setsockopt(_fd, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout);
+    setsockopt(_fd, SOL_SOCKET, SO_RCVTIMEO, (char*)&read_timeout, sizeof read_timeout);
     read_timeout.tv_usec = 2000000;
-    setsockopt(_fd, SOL_SOCKET, SO_SNDTIMEO, &read_timeout, sizeof read_timeout);
+    setsockopt(_fd, SOL_SOCKET, SO_SNDTIMEO, (char*)&read_timeout, sizeof read_timeout);
 
     // Disable Nagles algorith because we are sending small packets and waiting for reply
     set_nodelay(true);
@@ -143,19 +206,27 @@ public:
   // Enable or disable Nagles algorithm to send unfilled packets immediately or not
   void set_nodelay(bool nodelay) {
     int flag = nodelay;
-    if (_fd != -1) setsockopt(_fd, IPPROTO_TCP, TCP_NODELAY, &flag, sizeof flag);
+    if (_fd != -1) setsockopt(_fd, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof flag);
   }
 
   bool connected() { return _fd != -1; }
 
   int read(uint8_t *buffer, int buffer_size) {
     if (_fd == -1) return -1;
-    int r = ::recv(_fd, buffer, buffer_size, 0); //MSG_DONTWAIT);
+    int r = ::recv(_fd, (char*)buffer, buffer_size, 0); //MSG_DONTWAIT);
     if (r == -1) {
+#ifdef _WIN32
+      int errno2 = WSAGetLastError();
+      if (errno2 == WSAEWOULDBLOCK) return 0; // Waiting for more
+#ifdef ETCP_ERROR_PRINT
+      printf("read triggered stop, r=%d: %d\n", r, errno2);
+#endif
+#else
       if (errno == EAGAIN) return 0; // Waiting for more
       #ifdef ETCP_ERROR_PRINT
       printf("read triggered stop, r=%d: %s\n", r, strerror(errno));
       #endif
+#endif
       stop();
     }
     return r;
@@ -163,10 +234,19 @@ public:
 
   int write(const uint8_t *buffer, int size) {
     if (_fd == -1) return -1;
-    int w = ::send(_fd, buffer, size, MSG_NOSIGNAL);
+#ifdef _WIN32
+    int w = ::send(_fd, (char*)buffer, size, 0);
+#else
+    int w = ::send(_fd, (char*)buffer, size, MSG_NOSIGNAL);
+#endif
     if (w == -1) {
       #ifdef ETCP_ERROR_PRINT
+#ifdef _WIN32
+      int errno2 = WSAGetLastError();
+      printf("write triggered stop, w=%d: %d\n", w, errno2);
+#else
       if (errno != EPIPE) printf("write triggered stop, w=%d: %s\n", w, strerror(errno));
+#endif
       #endif
       stop();
     }
@@ -177,7 +257,9 @@ public:
 
   void stop() {
     if (_fd != -1) {
+#ifndef _WIN32
       ::shutdown(_fd, SHUT_RDWR);
+#endif
       ::close(_fd);
       _fd = -1;
     }
@@ -212,36 +294,25 @@ public:
 
   TCPHelperClient available() {
     socklen_t len = sizeof(_remote_sender_addr);
-    bzero(&_remote_sender_addr, len);
+    memset(&_remote_sender_addr, 0, len);
     int connected_fd = _fd == -1 ? -1 : ::accept(_fd, (struct sockaddr *) &_remote_sender_addr, &len);
     if (connected_fd != -1) {
       // Shorten timeout for reading and writing
       struct timeval read_timeout;
       read_timeout.tv_sec = 0;
       read_timeout.tv_usec = 1000;
-      setsockopt(connected_fd, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout);
+      setsockopt(connected_fd, SOL_SOCKET, SO_RCVTIMEO, (char*)&read_timeout, sizeof read_timeout);
       read_timeout.tv_usec = 2000000;
-      setsockopt(connected_fd, SOL_SOCKET, SO_SNDTIMEO, &read_timeout, sizeof read_timeout);
+      setsockopt(connected_fd, SOL_SOCKET, SO_SNDTIMEO, (char*)&read_timeout, sizeof read_timeout);
 
       // Disable Nagles algorith because we are sending small packets and waiting for reply
       int flag = 1;
-      setsockopt(connected_fd, IPPROTO_TCP, TCP_NODELAY, &flag, sizeof flag);
+      setsockopt(connected_fd, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof flag);
     }
     return TCPHelperClient(connected_fd);
   }
 
   bool begin() {
-    #ifdef WINX86
-    // TODO: Add Windows support
-    WSADATA wsaData;
-    if WSAStartup(MAKEWORD(2,0), &wsaData) != 0) {
-      printf("Error loading winsock.\n");
-      return false;
-    }
-
-    // and WSACLeanup in destructor?
-    #endif
-
     // Close if open after previous init attempt
     if (_fd != -1) { close(_fd); _fd = -1; }
 
@@ -255,10 +326,10 @@ public:
     }
 
     int yes = 1;
-    setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
+    setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, (char*)&yes, sizeof(yes));
 
     // Bind to specific local port
-    bzero(&_localaddr, sizeof(_localaddr));
+    memset(&_localaddr, 0, sizeof(_localaddr));
     _localaddr.sin_family = AF_INET;
     _localaddr.sin_port = htons(_port);
     _localaddr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -278,12 +349,19 @@ public:
     }
 
     // Set the socket to nonblocking so that accept will not block
+#ifdef _WIN32
+    unsigned long ul = 1;
+    int flags = ioctlsocket(_fd, FIONBIO, (unsigned long *)&ul); //Set into non blocking mode.
+    if (flags != SOCKET_ERROR); //Failed to set.
+#else
     int flags = fcntl(_fd, F_GETFL, 0);
-    if (flags!=-1) fcntl(_fd, F_SETFL, flags | O_NONBLOCK);
-
-    bzero(&_remote_sender_addr, sizeof(_remote_sender_addr));
+    if (flags != -1) fcntl(_fd, F_SETFL, flags | O_NONBLOCK);
+#endif
+    memset(&_remote_sender_addr, 0, sizeof(_remote_sender_addr));
     return true;
   }
 
   void stop() { if (_fd != -1) { ::close(_fd); _fd = -1; } }
 };
+
+#undef close()

@@ -2,9 +2,9 @@
 **Medium:** Light |
 **Pins used:** 1 / 2
 
-`AnalogSampling` strategy or data link is designed to sample digital data using analog readings and can be used to communicate data wirelessly through light. It is able to use a single LED for both photo-emission and photo-reception phases enabling an half-duplex connection between two or more devices. `AnalogSampling` can operate wirelessly with a range of maximum 5 meters in ideal conditions using only a pair of LEDs (visible light, infrared or ultraviolet) or can be used along with single channel optic fiber cables enabling point-to-point bidirectional connection between two devices, that can also be branched using optical bidirectional splitters (PLC), enabling an extremely cheap electromagnetic interference free data link.
+`AnalogSampling` strategy or data link is designed to sample digital data using analog readings and can be used to communicate data wirelessly through light. It is able to use a single LED for both photo-emission and photo-reception phases enabling an half-duplex connection between two or more devices with a range of up to 5 meters; it can also be used with two pairs of any sort of tuned emitters and receivers enabling for example long range wireless laser communication. `AnalogSampling` can be used along with single channel optic fiber cables enabling a point-to-point bidirectional connection between two devices, that can also be branched in star configuration using optical bidirectional splitters (PLC).
 
-`AnalogSampling` can also be used with two pairs of any sort of tuned photo-emitters and photo-receivers enabling for example long range laser wireless communication. It was originally implemented it in the far 2011, here you can see the first [video documented experiment](https://www.youtube.com/watch?v=-Ul2j6ixbmE). It has been recently debugged and updated to act as a PJON Strategy. Take a look at the [video introduction](https://www.youtube.com/watch?v=yIncPe8OPpg) for a brief showcase of its features.
+`AnalogSampling` was originally implemented it in the far 2011, here you can see the first [video documented experiment](https://www.youtube.com/watch?v=-Ul2j6ixbmE). It has been recently debugged and updated to act as a PJON Strategy. Take a look at the [video introduction](https://www.youtube.com/watch?v=yIncPe8OPpg) for a brief showcase of its features.
 
 #### Compatibility
 - ATmega88/168/328 16MHz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
@@ -72,7 +72,7 @@ Leveraging of the interesting characteristics of LEDs:
 - Emit photons if electrons are travelling through the junction
 - Emit electrons if photons are hitting the junction (photo-electric effect)
 
-it is possible to use LEDs as wireless (bidirectional) transceivers!
+it is possible to use LEDs as wireless (bidirectional) transceivers! This means that you can connect two devices needing only one LED on each. Most devices have at least an energy consuming useless LED on board right? :)
 
 In most cases it is necessary to add a pull-down resistor with a value around 200KΩ-5MΩ connecting the A0 pin with ground to reduce the LED capacitance, reduce bit transition slopes and electromagnetic induced interference. Higher resistance can higher the range but can also higher background noise.
 
@@ -84,7 +84,7 @@ The obtained range is related to:
 - **Transmission power** the more power you feed to your transmitter, the more range and reliability you can get
 - **Signal-to-noise ratio or SNR** Noise level affects communication reliability specially when the signal magnitude is lowered by distance, filtering your input from background noise can higher maximum range and overall communication reliability. If your system has to operate with a strong background noise, consider using a hardware filter to cut the background noise frequencies and use a pull down resistor as described above.
 
-With the necessary hardware choices and timing configuration `AnalogSampling` can be used to experiment with short range infrared or visible light communication (i.e. micro-robot swarm, DIY remote, optic fiber), medium range using lighting as transceivers (i.e. cars transmitting data through front and backlights) or long range laser communication (i.e. data between ground and LEO).  
+With the necessary hardware choices and timing configuration `AnalogSampling` can be used to experiment with short range infrared or visible light communication (i.e. micro-robot swarm, DIY remote, optic fiber), medium range using light sources (i.e. cars transmitting data through front and backlights) or long range laser communication (i.e. data between ground and LEO).  
 
 #### Known issues
 - Direct sunlight or other light sources can affect receiver's sensitivity and maximum communication range

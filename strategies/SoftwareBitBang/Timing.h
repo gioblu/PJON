@@ -94,7 +94,7 @@
       /* External 16MHz oscillator */
       #define SWBB_BIT_WIDTH   40
       #define SWBB_BIT_SPACER 112
-      #define SWBB_ACCEPTANCE  40
+      #define SWBB_ACCEPTANCE  56
       #define SWBB_READ_DELAY   4
     #endif
   #endif
@@ -210,10 +210,10 @@
     #define SWBB_BIT_WIDTH   19
   #endif
   #ifndef SWBB_BIT_SPACER
-    #define SWBB_BIT_SPACER  52
+    #define SWBB_BIT_SPACER  68
   #endif
   #ifndef SWBB_ACCEPTANCE
-    #define SWBB_ACCEPTANCE  19
+    #define SWBB_ACCEPTANCE  36
   #endif
   #ifndef SWBB_READ_DELAY
     #define SWBB_READ_DELAY   8

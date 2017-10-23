@@ -2,7 +2,7 @@
 **Medium:** Wire |
 **Pins used:** 1 / 2
 
-`SoftwareBitBang` is a strategy or data link that complies with [PJDL v2.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md), requires 1 or optionally 2 wires and no additional hardware to handle one or many to many communication on a single channel or bus. It can be run on low performance microcontrollers sharing a common direct pin-to-pin connection. Bus maximum length is limited by resistance of the common conductive element used. It has been tested with up to 50m long insulated wires, results demonstrate the same high performance achieved with shorter lengths. Take a look at the [video introduction](https://www.youtube.com/watch?v=Vg5aSlD-VCU) for a brief showcase of its features.
+`SoftwareBitBang` is a strategy or data link that complies with [PJDL v2.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md), requires 1 or optionally 2 wires and no additional hardware to handle one or many to many communication on a single channel or bus. It can be run on low performance microcontrollers sharing a common direct pin-to-pin connection. It is a valid alternative to 1-Wire because of its flexibility and reliability. Bus maximum length is mostly limited by resistance of the common conductive element used. It has been tested with up to 50m long insulated wires, results demonstrate the same high performance achieved with shorter lengths. Take a look at the [video introduction](https://www.youtube.com/watch?v=Vg5aSlD-VCU) for a brief showcase of its features.
 ```cpp  
  ______     ______      ______      ______      ______
 |      |   |      |    |      |    |      |    |      |

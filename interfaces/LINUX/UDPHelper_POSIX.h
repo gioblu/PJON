@@ -2,17 +2,15 @@
 
 #include <stdio.h>
 #include <errno.h>
-#include <string.h>
 
 #ifdef _WIN32
 #include <winsock2.h>
-#include <inttypes.h>
-#include <stdlib.h>
 
 #define close(fd) closesocket(fd)
 #define ssize_t int
 #define socklen_t int
 #else
+#include <string.h>
 #include <unistd.h>
 #include <netdb.h>
 #include <sys/socket.h>
@@ -26,8 +24,8 @@ class UDPHelper {
   int _fd = -1;
 public:
   ~UDPHelper() {
-    if (_fd != -1) 
-      
+    if (_fd != -1)
+
 #ifdef _WIN32
     closesocket(_fd);
 	  WSACleanup();
@@ -47,11 +45,11 @@ public:
     _port = port;
 
     // Close if open after previous init attempt
-    if (_fd != -1) { 
+    if (_fd != -1) {
 #ifdef _WIN32
-      closesocket(_fd); 
+      closesocket(_fd);
 #else
-	  close(_fd); 
+	  close(_fd);
 #endif
       _fd = -1;
     }

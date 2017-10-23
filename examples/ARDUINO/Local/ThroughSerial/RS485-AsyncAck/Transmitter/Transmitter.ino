@@ -11,6 +11,9 @@
 // <Strategy name> bus(selected device id)
 PJON<ThroughSerial> bus(45);
 
+// 5 milliseconds maximum expected latency, higher if necessary
+uint32_t latency = 5000;
+
 void setup() {
   // Initialize LED 13 to be off
   pinMode(13, OUTPUT);
@@ -37,5 +40,8 @@ void error_handler(uint8_t code, uint8_t data) {
 
 void loop() {
     bus.update();
-    bus.receive();
+    bus.receive(TS_TIME_IN + latency);
+    /* Receive for, at least, the minumum timeframe necessary
+       for receiver to respond back an acknowledgement packet
+       (Avoid unnecessary retransmissions) */
 };

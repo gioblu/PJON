@@ -7,9 +7,8 @@ uint8_t bus_id[] = {0, 0, 0, 1};
 // <Strategy name> bus(selected device id)
 PJON<ThroughSerial> bus(bus_id, 45);
 
-int latency = 1000;
-/* 1 millisecond maximum expected latency using short
-   wires for bare testing, higher if necessary */
+// 1 millisecond maximum expected latency using short wires, higher if necessary
+uint32_t latency = 1000;
 
 void setup() {
   // Initialize LED 13 to be off

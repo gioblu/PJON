@@ -364,4 +364,4 @@ public:
   void stop() { if (_fd != -1) { ::close(_fd); _fd = -1; } }
 };
 
-#undef close()
+#undef close

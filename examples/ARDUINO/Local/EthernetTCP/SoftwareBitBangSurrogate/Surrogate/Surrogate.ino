@@ -26,12 +26,11 @@ PJON<EthernetTCP> busB(1);
 // Ethernet configuration for this device
 uint8_t gateway[] = { 192, 1, 1, 1 };
 uint8_t subnet[] = { 255, 255, 255, 0 };
-uint8_t mac[] = {0xDF, 0xCF, 0x4F, 0xEF, 0xFE, 0xED};
+uint8_t mac[] = {0xDE, 0x5D, 0x4E, 0xEF, 0xAE, 0xED};
 uint8_t ip[] = { 192, 1, 1, 144 };
 
 // Ethernet configuration for remote device
-const byte remote_ip[] = { 192, 1, 1, 145 };
-const uint16_t remote_port = 7000;
+const byte remote_ip[] = { 192, 1, 1, 70 };
 
 void setup() {
   Serial.begin(115200);
@@ -42,12 +41,11 @@ void setup() {
   busA.set_receiver(receiver_functionA);
   busA.begin();
 
-  busB.strategy.link.set_id(1);
-  busB.strategy.link.add_node(DEVICE_ID, remote_ip, remote_port);
-  busB.strategy.link.keep_connection(true);
+  busB.strategy.link.set_id(busB.device_id());
+  busB.strategy.link.add_node(DEVICE_ID, remote_ip);
   #ifdef ETCP_SINGLE_DIRECTION
     busB.strategy.link.single_initiate_direction(true);
-  #else if ETCP_SINGLE_SOCKET_WITH_ACK
+  #elif ETCP_SINGLE_SOCKET_WITH_ACK
     busB.strategy.link.single_socket(true);
   #endif
   busB.set_router(true);
@@ -78,7 +76,7 @@ void receiver_functionB(uint8_t *payload, uint16_t length, const PJON_Packet_Inf
     (char *)payload,
     length,
     packet_info.header
-  );
+  );  
 }
 
 void loop() {

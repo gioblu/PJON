@@ -18,7 +18,7 @@ Compliant implementation versions: PJON 9.0 and following
 ```
 ### TSDL (Tardy Serial Data Link) v1.0
 
-TSDL (Tardy Serial Data Link) is a simplex or half-duplex serial data link, that can be easily software emulated, enabling both master-slave and multi-master configuration. It supports collision avoidance, reliable frame separation through byte stuffing and optional synchronous response to frame transmissions.
+TSDL (Tardy Serial Data Link) is a simplex or half-duplex serial data link that supports both master-slave and multi-master configuration. It supports collision avoidance, reliable frame separation through byte stuffing and optional synchronous response to frame transmissions.
 
 ### Basic concepts
 * Use start, end and escape flags to support frame separation

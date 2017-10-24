@@ -71,7 +71,7 @@ In a scenario where a frame is received, low performance microcontrollers with i
 
 `initializer expected duration - (sync pad bit 1 duration - sync pad bit 1 minimum acceptable duration)`
 
-To ensure 100% reliability separating frames the sync pad minimum acceptable duration must be higher than 1 standard bit duration. With a correct `sync pad bit 1 / standard bit` ratio, frame initializer is 100% reliable, false positives cannot occur if not because of externally induced interference. Sync pad bit 1 duration must not be an exact multiple of a standard bit, for this reason ratio 2.0, 3.0 or 4.0 must be avoided because consecutive bits can be interpreted as a frame initializer.
+To ensure 100% reliability separating frames the sync pad minimum acceptable duration must be higher than 1 standard bit duration. Selecting a correct `sync pad bit 1 / standard bit` ratio, called pad-bit ratio, frame initializer is 100% reliable, false positives cannot occur if not because of externally induced interference. Sync pad bit 1 duration must not be an exact multiple of a standard bit, for this reason pad-bit ratio of 2.0, 3.0 or 4.0 must be avoided because consecutive bits can be interpreted as a frame initializer.
 
 #### Synchronous response
 A frame transmission can be optionally followed by a synchronous response by its recipient. This feature is available for both master-slave and multi-master configuration.
@@ -96,3 +96,13 @@ Transmission                                              Response
 ```
 
 The maximum time dedicated to potential acknowledgement reception and consequent medium jittering is estimated adding the maximum frame length CRC computation time to the expected latency. Thanks to the presence of the jittering wave, many differently configured devices can coexist on the same medium with no risk of collision.
+
+#### Communication modes
+The proposed communication modes are the result of years of testing and optimization and have been selected to be easily supported by limited microcontrollers.  
+
+| MODE | Bit timing | Sync bit timing | Pad-bit ratio | Speed               |
+| ---- | ---------- | --------------- | ------------- | ------------------- |
+| 1    | 40         | 112             | 2.8           | 2.118kB/s - 16944Bd |
+| 2    | 32         | 84              | 2.625         | 2.688kB/s - 21504Bd |
+
+Binary timing durations are expressed in microseconds.

@@ -74,3 +74,17 @@ Transmission                                             Response
 ```
 
 In master-slave configuration the maximum time dedicated to potential acknowledgement reception it is defined by the use case constraints like maximum packet length and latency or physical distance between devices.
+
+#### Communication modes
+The proposed communication modes are the result of years of testing and optimization for light pulses communication and have been selected to be easily supported also by low quality hardware.  
+
+| MODE | Bit timing | Sync bit timing | Pad-bit ratio | Speed               |
+| ---- | ---------- | --------------- | ------------- | ------------------- |
+| 1    | 750        | 1050            | 1.4           | 128B/s  -  1024Bb   |
+| 1    | 572        | 728             | 1.2727        | 170B/s  -  1361Bb   |
+| 1    | 188        | 428             | 2.2765        | 471B/s  -  3773Bb   |
+| 1    | 128        | 290             | 2.2656        | 471B/s  -  3773Bb   |
+| 1    | 128        | 290             | 2.2656        | 639B/s  -  5547Bb   |
+| 1    | 56         | 128             | 2.2857        | 1582B/s - 12658Bb   |
+
+Binary timing durations are expressed in microseconds.

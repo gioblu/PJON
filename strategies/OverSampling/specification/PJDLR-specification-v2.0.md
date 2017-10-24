@@ -68,3 +68,12 @@ Transmission                                                      Response
 |____|___|______||______||______||______|                 |____|___|_____|
 ```
 In master-slave configuration the maximum time dedicated to potential acknowledgement reception it is defined by the use case constraints like maximum packet length and latency or physical distance between devices.
+
+#### Communication modes
+The proposed communication mode is the result of years of testing and optimization for ASK/FSK radio transceivers and have been selected to be easily supported also by low quality hardware.  
+
+| MODE | Bit timing | Sync bit timing | Pad-bit ratio | Speed               |
+| ---- | ---------- | --------------- | ------------- | ------------------- |
+| 1    | 512        | 328             | 0.64          | 202B/s - 1620Bb     |
+
+Binary timing durations are expressed in microseconds.

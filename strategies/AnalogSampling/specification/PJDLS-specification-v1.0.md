@@ -83,8 +83,7 @@ The proposed communication modes are the result of years of testing and optimiza
 | 1    | 750        | 1050            | 1.4           | 128B/s  -  1024Bb   |
 | 2    | 572        | 728             | 1.2727        | 170B/s  -  1361Bb   |
 | 3    | 188        | 428             | 2.2765        | 471B/s  -  3773Bb   |
-| 4    | 128        | 290             | 2.2656        | 471B/s  -  3773Bb   |
-| 5    | 128        | 290             | 2.2656        | 639B/s  -  5547Bb   |
+| 4    | 128        | 290             | 2.2656        | 639B/s  -  5547Bb   |
 | 6    | 56         | 128             | 2.2857        | 1582B/s - 12658Bb   |
 
 Binary timing durations are expressed in microseconds.

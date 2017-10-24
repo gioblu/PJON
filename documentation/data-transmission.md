@@ -33,7 +33,7 @@ if(bus.send_packet_blocking(10, "All is ok?!", 11) == PJON_ACK) // Try with back
 ```
 `send_packet_blocking` returns the result of transmission as `send_packet` does.
 
-If you prefer PJON to handle packets for you, you can make use of the packet handler. The first thing to do and never forget is to call the `update()` function once per loop cycle:
+If you prefer PJON to handle packets for you, you can make use of the packet handler, although a little more memory is needed. The first thing to do and never forget is to call the `update()` function once per loop cycle:
 ```cpp  
   bus.update();
 ```
@@ -46,7 +46,7 @@ bus.send(100, "Ciao, this is a test!", 21);
 uint8_t bus_id[] = {0, 0, 0, 1};
 bus.send(100, bus_id, "Ciao, this is a test!", 21);
 ```
-Payload length is boring to be added but is there to prevent buffer overflow. If sending arbitrary values `NULL` terminator strategy based on `strlen` is not safe to detect the end of a string. The `send` call returns an id, that is the reference to the packet you have dispatched. To send a value repeatedly simply call `send_repeatedly()` and pass as last parameter the interval in microseconds you want between every sending:
+Payload length is boring to be added but is there to prevent buffer overflow. If sending arbitrary values `NULL` terminator strategy based on `strlen` is not safe to detect the end of a string. The `send` call returns an id, that is the reference to the packet you have dispatched. To send a value repeatedly simply call `send_repeatedly` and pass as last parameter the interval in microseconds you want between every sending:
 ```cpp
 uint16_t one_second_test = bus.send_repeatedly(100, "Test sent every second!", 23, 1000000);
 // IMPORTANT: maximum interval supported is 4293014170 microseconds or 71.55 minutes */

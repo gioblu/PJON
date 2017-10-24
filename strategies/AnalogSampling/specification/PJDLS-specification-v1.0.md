@@ -14,7 +14,9 @@ Invented by Giovanni Blu Mitolo released into the public domain
 
 Related implementation: /strategies/AnalogSampling/
 Compliant implementation versions: PJON 9.0 and following
-Changelog: Added frame separation
+Changelog:
+- Added frame separation
+- Added communication modes specification
 */
 ```
 ### PJDLS (Padded Jittering Data Link byte Stuffed) v1.0
@@ -84,6 +86,6 @@ The proposed communication modes are the result of years of testing and optimiza
 | 2    | 572        | 728             | 1.2727        | 170B/s  -  1361Bb   |
 | 3    | 188        | 428             | 2.2765        | 471B/s  -  3773Bb   |
 | 4    | 128        | 290             | 2.2656        | 639B/s  -  5547Bb   |
-| 6    | 56         | 128             | 2.2857        | 1582B/s - 12658Bb   |
+| 5    | 56         | 128             | 2.2857        | 1582B/s - 12658Bb   |
 
 Binary timing durations are expressed in microseconds.

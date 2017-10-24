@@ -13,7 +13,9 @@ Invented by Giovanni Blu Mitolo, released into the public domain
 
 Related implementation: /strategies/SoftwareBitBang/
 Compliant implementation versions: PJON 9.0 and following
-Changelog: Added frame separation
+Changelog:
+- Added frame separation
+- Added communication modes specification
 */
 ```
 ### PJDL (Padded Jittering Data Link) v2.0

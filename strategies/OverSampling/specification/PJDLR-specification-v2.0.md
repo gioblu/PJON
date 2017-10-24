@@ -15,7 +15,9 @@ released into the public domain
 
 Related implementation: /strategies/OverSampling/
 Compliant implementation versions: PJON 9.0 and following
-Changelog: Added frame separation
+Changelog:
+- Added frame separation
+- Added communication modes specification
 */
 ```
 ### PJDLR (Padded Jittering Data Link Radio) v2.0

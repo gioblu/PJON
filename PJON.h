@@ -652,14 +652,15 @@ class PJON {
       const uint8_t *b_id,
       const char *string,
       uint16_t length,
-      uint16_t header = PJON_NOT_ASSIGNED
+      uint16_t header = PJON_NOT_ASSIGNED,
+      uint16_t p_id = 0
     ) {
       uint8_t original_device_id = _device_id;
       uint8_t original_bus_id[4];
       copy_bus_id(original_bus_id, bus_id);
       set_id(sender_id);
       copy_bus_id(bus_id, sender_bus_id);
-      uint16_t result = dispatch(id, b_id, string, length, 0, header);
+      uint16_t result = dispatch(id, b_id, string, length, 0, header, p_id);
       copy_bus_id(bus_id, original_bus_id);
       set_id(original_device_id);
       return result;

@@ -93,11 +93,11 @@ limitations under the License. */
    1 - Local:  Sender device id included
        Shared: Sender device id + Sender bus id */
 #define PJON_TX_INFO_BIT    0B00000010
-/* 0 - Acknowledgement disabled
-   1 - Acknowledgement enabled */
+/* 0 - Synchronous acknowledgement disabled
+   1 - Synchronous acknowledgement enabled */
 #define PJON_ACK_REQ_BIT    0B00000100
-/* 0 - Synchronous acknowledgement requested
-   1 - Asynchronous acknowledgement requested */
+/* 0 - Asynchronous acknowledgement disabled
+   1 - Asynchronous acknowledgement enabled */
 #define PJON_ACK_MODE_BIT   0B00001000
 /* 0 - Not addressing related
    1 - Addressing related */

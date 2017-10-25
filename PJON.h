@@ -487,7 +487,7 @@ class PJON {
       #if(PJON_INCLUDE_ASYNC_ACK)
         /* If a packet requesting asynchronous acknowledgement is received
            send the acknowledgement packet back to the packet's transmitter */
-        if(async_ack) {
+        if(async_ack && !_router) {
           if(_auto_delete && length == overhead)
             if(handle_asynchronous_acknowledgment(last_packet_info))
               return PJON_ACK;

@@ -48,10 +48,10 @@ In the graph below it is shown the protocol stack model proposed; only layer 2 a
 | transmission, multiplexing, traffic control,  |
 | asynchronous acknowledgement                  |
 |_______________________________________________|
-| 2 Data link layer: PJDL/PJDLR                 |
-| Collision avoidance, simplex and half-duplex  |
-| communication, framing, synchronous           |
-| acknowledgement                               |
+| 2 Data link layer: PJDL/PJDLR/PJDLS/TSDL      |
+| Frame separation, collision avoidance,        |
+| simplex and half-duplex communication,        |
+| synchronous response                          |
 |_______________________________________________|
 |                                               |
 | 1 Physical layer: Cables, transceivers ecc.   |
@@ -181,7 +181,7 @@ PJON supports both CRC8 and CRC32, to cover a wide range of use cases and packet
 ```cpp
 0x82608edb = x^32 + x^26 + x^23 + x^22 + x^16 + x^12 + x^11 + x^10 + x^8 + x^7 + x^5 + x^4 + x^2 + x + 1
 ```
-`IEEE 802.3; CRC-32` bit-reversed polynomial implicit +1 notation, or `0xedb88320`, selected for its high performance on a wide range of lengths, while also being widely evaluated and accepted as a good polynomial.
+`CRC32 IEEE 802.3` bit-reversed polynomial implicit +1 notation, or `0xedb88320`, selected for its high performance on a wide range of lengths, while also being widely evaluated and accepted as a good polynomial.
 
 #### Initial meta-data CRC8
 CRC8 is calculated and appended to initial meta-data to ensure consistency and avoid false positives. In case of length corruption because of an error, other protocols expose a major vulnerability, having the protocol layer looking for the CRC present at the end of the packet, at the wrong address, having higher chances of failing detecting errors. PJON having the first CRC8 present in a known, fixed position offers higher reliability than CAN (Controlled Area Network) and many other alternatives.
@@ -199,7 +199,7 @@ Channel analysis            Transmission                Response
 |  0  || 12 | 00000100 |   6    |      |    64   |      ||  6  |
 |_____||____|__________|________|______|_________|______||_____|
 ```
-In the channel analysis phase transmitter assess if the medium's state before starting transmission to avoid collision. If the medium is considered free, transmission phase starts where the packet is entirely transmitted. The receiving device calculates CRC and starts the response phase transmitting a single byte, `PJON_ACK` (decimal 6) in case of correct data reception. If no acknowledgement is received, after an exponential back-off delay the transmitter device retries until acknowledgement is received or a maximum number of attempts is reached and packet transmission discarded.     
+In the channel analysis phase transmitter assess the medium's state before starting transmission to avoid collision. If the medium is considered free, transmission phase starts where the packet is entirely transmitted. The receiving device calculates CRC and starts the response phase transmitting a single byte, `PJON_ACK` (decimal 6) in case of correct data reception. If no acknowledgement is received, after an exponential back-off delay the transmitter device retries until acknowledgement is received or a maximum number of attempts is reached and packet transmission discarded.     
 
 Below is shown the same local transmission used as an example before, formatted to be sent over a shared medium, where device id `12` of bus `0.0.0.1` sends @ (decimal 64) to device id `11` in bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient, and optionally the sender's bus and device id:
 ```cpp

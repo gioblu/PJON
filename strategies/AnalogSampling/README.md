@@ -12,11 +12,11 @@
 
 #### Performance
 `AnalogSampling` works with the following communication modes:
-- `AS_STANDARD` runs at 1024Bd or 128B/s
-- `AS_FAST` runs at 1361Bd or 170B/s
-- `AS_OVERDRIVE_32` runs at 3773Bb or 471B/s
-- `AS_OVERDRIVE_16` runs at 5547Bb or 639B/s
-- `AS_OVERDRIVE_8`  runs at 12658Bd or 1528B/s
+- `1` runs at 1024Bd or 128B/s
+- `2` runs at 1361Bd or 170B/s
+- `3` runs at 3773Bb or 471B/s
+- `4` runs at 5547Bb or 639B/s
+- `5` runs at 12658Bd or 1528B/s
 
 Caution, `AS_OVERDRIVE_8` sets ADC clock prescale to a higher rate than manufacturer recommends as maximum ADC sample rate (prescale 16).
 

@@ -10,7 +10,7 @@ Serial communication is fast and reliable but it is often useless without all th
 #### How to use ThroughSerial
 Pass the `ThroughSerial` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
 ```cpp  
-  PJON<ThroughSerial> bus;
+PJON<ThroughSerial> bus;
 ```
 Call the `begin` method on the `Serial` or `SoftwareSerial`  object you want to use for PJON communication and pass it to the `set_serial` method:
 ```cpp  
@@ -43,12 +43,14 @@ void setup() {
 ```
 For a simple use with RS485 serial modules a transmission enable pin setter has been added:
 ```cpp  
-  bus.strategy.set_enable_RS485_pin(11);
+bus.strategy.set_enable_RS485_pin(11);
 ```
 If separate enable setters are needed use:
 ```cpp  
-  bus.strategy.set_RS485_rxe_pin(11); // Set RS485 reception enable pin
-  bus.strategy.set_RS485_txe_pin(12); // Set RS485 transmission enable pin
+// Set RS485 reception enable pin
+bus.strategy.set_RS485_rxe_pin(11);
+// Set RS485 transmission enable pin
+bus.strategy.set_RS485_txe_pin(12);
 ```
 See [RS485-Blink](../../examples/ARDUINO/Local/ThroughSerial/RS485-Blink) and [RS485-AsyncAck](../../examples/ARDUINO/Local/ThroughSerial/RS485-AsyncAck) examples.
 

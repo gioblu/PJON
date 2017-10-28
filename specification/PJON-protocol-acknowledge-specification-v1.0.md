@@ -115,6 +115,6 @@ BUS 0.0.0.1                                          BUS 0.0.0.2
 |ID| HEADER |LENGTH|CRC|BUS ID |BUS ID |ID|PACKET ID|CRC||ACK|
 |0 |00001111|  19  |   |0.0.0.1|0.0.0.2|0 |   99    |   || 6 |
 |__|________|______|___|_______|_______|__|_________|___||___|
-                      |RX INFO| TX INFO  |
+                       |RX INFO| TX INFO  |
 ```
 This documents doesn't want to specify in any way the routing mechanism (still not officially specified), but uses routing as a necessary example to showcase clearly the power of the recursive acknowledgement pattern.

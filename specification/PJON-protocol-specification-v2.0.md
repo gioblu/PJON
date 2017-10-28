@@ -243,6 +243,6 @@ The graph above shows a packet transmission where the [recursive acknowledgement
 |--|--------|------|----|------|------|--|---------|-----|
 |11|00001111|  19  |    | 0001 | 0002 |12|   999   |     |
 |__|________|______|____|______|______|__|_________|_____|
-                       |RXINFO| TX INFO |       
+                        |RXINFO| TX INFO |       
 ```
 See the [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md) to have more detailed info of its procedure.

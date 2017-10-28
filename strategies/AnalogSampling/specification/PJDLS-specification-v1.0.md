@@ -8,19 +8,22 @@
 
 ```cpp
 /*
-Milan, Italy - Originally published: 02/10/2017
+Milan, Italy
+Originally published: 02/10/2017
 PJDLS (Padded Jittering Data Link byte Stuffed) v1.0
-Invented by Giovanni Blu Mitolo released into the public domain
+Invented by Giovanni Blu Mitolo,
+released into the public domain
 
 Related implementation: /strategies/AnalogSampling/
-Compliant implementation versions: PJON 9.0 and following
+Compliant versions: PJON v9.0 and following
+
 Changelog:
 - Added frame separation
 - Added communication modes specification
 */
 ```
-### PJDLS (Padded Jittering Data Link byte Stuffed) v1.0
-PJDLS is a simplex or half-duplex data link layer, that can be easily software emulated, enabling one or many to many communication in both master-slave and multi-master configuration, optimized for use cases where high quality synchronization cannot be achieved. Frame separation is obtained with the use of start and end flags along with byte stuffing. It has been engineered to have limited minimum requirements, and to be efficiently executed on limited microcontrollers with poor clock accuracy. No additional hardware is required to apply PJDLS, and, being implemented in c++, in less than 350 lines of code, it is easily portable to many different architectures.
+### PJDLS v1.0
+PJDLS (Padded Jittering Data Link byte Stuffed) is a simplex or half-duplex data link layer, that can be easily software emulated, enabling one or many to many communication in both master-slave and multi-master configuration, optimized for use cases where high quality synchronization cannot be achieved. Frame separation is obtained with the use of start and end flags along with byte stuffing. It has been engineered to have limited minimum requirements, and to be efficiently executed on limited microcontrollers with poor clock accuracy. No additional hardware is required to apply PJDLS, and, being implemented in c++, in less than 350 lines of code, it is easily portable to many different architectures.
 
 #### Basic concepts
 * Define a synchronization pad initializer to identify a byte
@@ -67,12 +70,12 @@ Whenever any of the special character appears in the data, transmitter inserts a
 #### Synchronous response
 A frame transmission can be optionally followed by a synchronous response by its recipient. This feature is available for both master-slave and multi-master. In multi-master configuration the maximum acceptable acknowledgement overall response time must be less than the initial channel analysis duration before frame transmission.
 ```cpp  
-Transmission                                             Response
- _______  ______  ______  ______  _____                   _____
-| START || BYTE || BYTE || BYTE || END | CRC COMPUTATION | ACK |
-|-------||------||------||------||-----|-----------------|-----|
-|  149  ||  H   ||  I   ||   !  || 234 | LATENCY         |  6  |
-|_______||______||______||______||_____|                 |_____|
+Transmission                                    Response
+ _______  ______  ______  _____                   _____
+| START || BYTE || BYTE || END | CRC COMPUTATION | ACK |
+|-------||------||------||-----|-----------------|-----|
+|  149  ||  H   ||  I   || 234 | LATENCY         |  6  |
+|_______||______||______||_____|                 |_____|
 ```
 
 In master-slave configuration the maximum time dedicated to potential acknowledgement reception it is defined by the use case constraints like maximum packet length and latency or physical distance between devices.

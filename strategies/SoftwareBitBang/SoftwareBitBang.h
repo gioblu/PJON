@@ -21,23 +21,18 @@
 
 #pragma once
 
-/* STANDARD transmission mode performance:
-   Speed: 16.949kBb or 2.11kB/s
-   Promiscuous architecture/clock compatible */
-#define SWBB_STANDARD  1
-
-/* FAST transmission mode performance:
-   Speed: 21.505kBd or 2.68kB/s
-   Promiscuous architecture/clock compatible */
-#define SWBB_FAST      2
-
-/* OVERDRIVE transmission mode performance:
-   Architecture / setup dependant, see Timing.h */
-#define SWBB_OVERDRIVE 3
+/* - 1 mode performance:
+     Speed: 16.949kBb or 2.11kB/s
+     Promiscuous architecture/clock compatible
+   - 2 mode performance:
+     Speed: 21.505kBd or 2.68kB/s
+     Promiscuous architecture/clock compatible
+   - 3 mode performance:
+     Architecture/setup dependant, see Timing.h */
 
 /* Set here the selected transmission mode - default STANDARD */
 #ifndef SWBB_MODE
-  #define SWBB_MODE SWBB_STANDARD
+  #define SWBB_MODE         1
 #endif
 
 // Used to signal communication failure

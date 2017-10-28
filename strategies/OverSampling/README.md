@@ -17,30 +17,32 @@
 #### How to use OverSampling
 Pass the `OverSampling` type as PJON template parameter to instantiate a new PJON object. All the other necessary information is present in the general [Documentation](/documentation).
 ```cpp  
-  /* Maximum latency can be set defining OS_LATENCY
-     before PJON.h inclusion (default 4 milliseconds) */
-  #define OS_LATENCY      4000
+/* Maximum latency can be set defining OS_LATENCY
+   before PJON.h inclusion (default 4 milliseconds) */
+#define OS_LATENCY      4000
 
-  /* Set the back-off exponential degree (default 4) */
-  #define OS_BACK_OFF_DEGREE 4
+/* Set the back-off exponential degree (default 4) */
+#define OS_BACK_OFF_DEGREE 4
 
-  /* Set the maximum sending attempts (default 20) */
-  #define OS_MAX_ATTEMPTS   20
+/* Set the maximum sending attempts (default 20) */
+#define OS_MAX_ATTEMPTS   20
 
-  /* The values set above are the default producing a 3.2 seconds
-     back-off timeout with 20 attempts. Higher OS_MAX_ATTEMPTS to higher
-     the back-off timeout, higher OS_BACK_OFF_DEGREE to higher the interval
-     between every attempt. */
+/* The values set above are by default producing a 3.2 seconds
+   back-off timeout with 20 attempts. Higher OS_MAX_ATTEMPTS
+   to higher the back-off timeout, higher OS_BACK_OFF_DEGREE
+   to higher the interval between every attempt. */
 
-  #include <PJON.h>
+#include <PJON.h>
 
-  PJON<OverSampling> bus; // 2 pin over-sampled data link layer
+PJON<OverSampling> bus;
 
-  void setup() {
-    bus.strategy.set_pin(12);      // Set the pin 12 as the communication pin
-                                   // or
-    bus.strategy.set_pins(11, 12); // Set pin 11 as input pin and pin 12 as output pin  
-  }  
+void setup() {
+  // Set the pin 12 as the communication pin
+  bus.strategy.set_pin(12);
+
+  // Set pin 11 as input pin and pin 12 as output pin
+  bus.strategy.set_pins(11, 12);
+}  
 ```
 After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance.
 
@@ -56,21 +58,19 @@ If using `OverSampling`, the asynchronous acknowledgement is suggested as acknow
 #### Antenna design
 Experiments in `PJON_HALF_DUPLEX` mode have shown that it seems better to keep isolated the two antennas, using two different, not connected elements to transmit and receive. The first suggested antenna design is a wide beam dipole antenna made by two 173mm (quarter wavelength) or 345mm (half wavelength) long conductive elements, one connected to ground and the other connected to the input or output pin:
 ```cpp  
+173mm quarter wavelength / 345mm half wavelength
 
- 173mm (quarter wavelength) / 345mm(half wavelength)
-
- -------------------|--------------------
-                  __|__
-                 |TX/RX|
-                 |_____|
-
+-------------------|--------------------
+                 __|__
+                |TX/RX|
+                |_____|
 ```
 A more directional, compact and long range antenna design is the wip antenna. Can be easily crafted with two 173mm (quarter wavelength) / 345mm (half wavelength) long insulated wire sections wrapped with each other every 5mm, one is connected to ground and the other to the input or output pin. This design helps because of its strong ground plane, often necessary to have decent results with this sort of hardware.
 ```cpp  
-         5mm
-         ||  173mm (quarter wavelength) / 345mm (half wavelength)
- GND   --\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
- RX/TX --/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+       5mm
+       || 173mm quarter wavelength / 345mm half wavelength
+GND   --\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+RX/TX --/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ```
 
 #### Known issues

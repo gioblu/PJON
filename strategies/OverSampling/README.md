@@ -68,7 +68,7 @@ Experiments in `PJON_HALF_DUPLEX` mode have shown that it seems better to keep i
 A more directional, compact and long range antenna design is the wip antenna. Can be easily crafted with two 173mm (quarter wavelength) / 345mm (half wavelength) long insulated wire sections wrapped with each other every 5mm, one is connected to ground and the other to the input or output pin. This design helps because of its strong ground plane, often necessary to have decent results with this sort of hardware.
 ```cpp  
        5mm
-       || 173mm quarter wavelength / 345mm half wavelength
+        || 173mm quarter wavelength / 345mm half wavelength
 GND   --\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 RX/TX --/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ```

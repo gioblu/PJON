@@ -8,13 +8,16 @@
 
 ```cpp
 /*
-Milan, Italy - Originally published: 10/04/2010 - latest revision: 15/10/2017
+Milan, Italy
+Originally published: 10/04/2010
+latest revision: 15/10/2017
 PJON™ protocol layer specification v2.0
-Invented by Giovanni Blu Mitolo. Header driven configuration proposed
+Invented by Giovanni Blu Mitolo,
+header driven configuration proposed
 by Fred Larsen, released into the public domain
 
 Related work: https://github.com/gioblu/PJON/
-Compliant implementation versions: PJON 9.0 and following
+Compliant implementations: PJON v9.0 and following
 
 Changelog:
 - Initial meta-data CRC8 added
@@ -75,49 +78,48 @@ The PJON protocol v2.0 handles internal bus connectivity and unique addressing f
 ### Bus
 A PJON bus is made by a group of up to 254 devices transmitting and receiving on the same medium. Communication between devices occurs through packets and it is based on democracy: every device has the right to transmit on the common medium for up to `(1000 / devices number) milliseconds / second`.
 ```cpp
- _______     _______     _______     _______     _______
-|       |   |       |   |       |   |       |   |       |
-| ID 0  |   | ID 1  |   | ID 2  |   | ID 3  |   | ID 4  |
-|_______|   |_______|   |_______|   |_______|   |_______|
-____|___________|___________|___________|___________|___
-       ___|___     ___|___     ___|___     ___|___
-      |       |   |       |   |       |   |       |
-      | ID 5  |   | ID 6  |   | ID 7  |   | ID 8  |
-      |_______|   |_______|   |_______|   |_______|
+ _______     _______     _______     _______
+|       |   |       |   |       |   |       |
+| ID 1  |   | ID 2  |   | ID 3  |   | ID 4  |
+|_______|   |_______|   |_______|   |_______|
+____|___________|___________|___________|___
+      ___|___     ___|___     ___|___
+     |       |   |       |   |       |
+     | ID 5  |   | ID 6  |   | ID 7  |
+     |_______|   |_______|   |_______|
 ```
 
 ### Bus network
 A PJON bus network is the result of n PJON buses sharing the same medium and or being interconnected to other PJON buses through routers. In a shared medium scenario it is used a 4 bytes bus id to isolate devices from communication of other buses nearby, enabling many to coexist on the same communication medium.
 ```cpp  
-   TWO BUSES SHARING THE SAME MEDIUM
+TWO BUSES SHARING THE SAME MEDIUM
 
-       BUS ID 0.0.0.1                  BUS ID 0.0.0.2
-    _______     _______              _______     _______
-   |       |   |       |            |       |   |       |
-   | ID 0  |   | ID 1  |            | ID 0  |   | ID 1  |
-   |_______|   |_______|            |_______|   |_______|
- ______|___________|___________________|___________|______
-          ___|___                          ___|___
-         |       |                        |       |
-         | ID 2  |                        | ID 2  |
-         |_______|                        |_______|
-
+    BUS ID 0.0.0.1             BUS ID 0.0.0.2
+ _______     _______         _______     _______
+|       |   |       |       |       |   |       |
+| ID 0  |   | ID 1  |       | ID 0  |   | ID 1  |
+|_______|   |_______|       |_______|   |_______|
+______|___________|______________|___________|______
+       ___|___                     ___|___
+      |       |                   |       |
+      | ID 2  |                   | ID 2  |
+      |_______|                   |_______|
 ```
 ### Router
 A router is a device connected to n PJON buses with n dedicated, potentially different, data links on n dedicated media, able to route a packet from a bus to another. Thanks to this rule is not only possible to share the same medium with neighbours, but also network with them and enhance connectivity.
 ```cpp
 TWO BUSES CONNECTED THROUGH A ROUTER
 
-   BUS ID 0.0.0.1                   BUS ID 0.0.0.2
- _______     _______               _______     _______
-|       |   |       |             |       |   |       |
-| ID 0  |   | ID 1  |             | ID 0  |   | ID 1  |
-|_______|   |_______|   ________  |_______|   |_______|
-_____|___________|_____| ROUTER |_____|___________|____
-       ___|___         |  ID 3  |        ___|___
-      |       |        |________|       |       |
-      | ID 2  |                         | ID 2  |
-      |_______|                         |_______|
+   BUS ID 0.0.0.1                  BUS ID 0.0.0.2
+ _______     _______             _______     _______
+|       |   |       |           |       |   |       |
+| ID 0  |   | ID 1  |           | ID 0  |   | ID 1  |
+|_______|   |_______|   ______  |_______|   |_______|
+_____|___________|_____|ROUTER|_____|___________|____
+       ___|___         | ID 3 |        ___|___
+      |       |        |______|       |       |
+      | ID 2  |                       | ID 2  |
+      |_______|                       |_______|
 ```
 
 ### Header configuration
@@ -179,7 +181,9 @@ PJON supports both CRC8 and CRC32, to cover a wide range of use cases and packet
 
 #### CRC32 polynomial
 ```cpp
-0x82608edb = x^32 + x^26 + x^23 + x^22 + x^16 + x^12 + x^11 + x^10 + x^8 + x^7 + x^5 + x^4 + x^2 + x + 1
+0x82608edb = x^32 + x^26 + x^23 + x^22 + x^16 +
+             x^12 + x^11 + x^10 + x^8 + x^7 +
+             x^5 + x^4 + x^2 + x + 1
 ```
 `CRC32 IEEE 802.3` bit-reversed polynomial implicit +1 notation, or `0xedb88320`, selected for its high performance on a wide range of lengths, while also being widely evaluated and accepted as a good polynomial.
 
@@ -203,45 +207,42 @@ In the channel analysis phase transmitter assess the medium's state before start
 
 Below is shown the same local transmission used as an example before, formatted to be sent over a shared medium, where device id `12` of bus `0.0.0.1` sends @ (decimal 64) to device id `11` in bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient, and optionally the sender's bus and device id:
 ```cpp
-Channel analysis              Transmission               Response
- ___  _____________________________________________________  ___
-|C-A||ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|CONTENT|CRC8||ACK|
-|---||--|--------|------|----|------|------|--|-------|----||---|
-| 0 ||12|00000111|  15  |    | 0001 | 0001 |11|  64   |    || 6 |
-|___||__|________|______|____|______|______|__|_______|____||___|
-                             |RXINFO| TX INFO |
+Channel analysis              Transmission           Response
+ __  __________________________________________________  ___
+|CA||ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|DATA|CRC8||ACK|
+|--||--|--------|------|----|------|------|--|----|----||---|
+|00||12|00000111|  15  |    | 0001 | 0001 |11| 64 |    || 6 |
+|__||__|________|______|____|______|______|__|____|____||___|
+                            |RXINFO| TX INFO |
 ```
 
 Configuring the header it is possible to leverage of the extended features of the protocol:
 
 ```cpp
-Channel analysis                Transmission                      Response
- ___  ______________________________________________________________  ___
-|C-A||ID| HEADER |LENGTH 1|LENGTH 2|CRC8|BUS ID|BUS ID|ID|CONT|CRC32||ACK|
-|---||--|--------|--------|--------|----|------|------|--|----|-----||---|
-| 0 ||12|01100111| byte 1 | byte 2 |    | 0001 | 0001 |11|    |     || 6 |
-|___||__|________|________|________|____|______|______|__|____|_____||___|
-                                        |RXINFO| TX INFO |
+ ________________________________________________________
+|ID| HEADER |LEN 1|LEN 2|CRC8|BUS ID|BUS ID|ID|DATA|CRC32|
+|--|--------|-----|-----|----|------|------|--|----|-----|
+|12|01100111|  0  | 19  |    | 0001 | 0001 |11|    |     |
+|__|________|_____|_____|____|______|______|__|____|_____|
+                             |RXINFO| TX INFO |
 ```
 The graph above shows a packet transmission where the length is of 2 bytes supporting up to 65535 bytes packet length. Receiver is able to parse the packet correctly reading the header, where `B01000000` up signals a 2 bytes length format and `B00100000` up signals CRC32 use.
 
 ```cpp
-Channel analysis               Transmission                      Response
- ___  _____________________________________________________________  ___
-|C-A||ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|PACKET ID|CONT|CRC32||ACK|
-|---||--|--------|------|----|------|------|--|---------|----|-----||---|
-| 0 ||12|00001111|  20  |    | 0002 | 0001 |11|   999   | 64 |     || 6 |
-|___||__|________|______|____|______|______|__|_________|____|_____||___|
-                             |RXINFO| TX INFO |       
+ _____________________________________________________________
+|ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|PACKET ID|DATA|CRC32|
+|--|--------|------|----|------|------|--|---------|----|-----|
+|12|00001111|  20  |    | 0002 | 0001 |11|   999   | 64 |     |
+|__|________|______|____|______|______|__|_________|____|_____|
+                        |RXINFO| TX INFO |            
 ```
 The graph above shows a packet transmission where the [recursive acknowledgement ](/specification/PJON-protocol-acknowledge-specification-v1.0.md#pjon-recursive-acknowledgement-pattern) pattern is applied: device `11` sends to device `12` of bus `0.0.0.2` a packet with header `ACK MODE` bit up requesting an asynchronous acknowledgement response, and so identifying the packet with the unique id `999` and `ACK` bit up requesting a synchronous acknowledgement response. `12` receives the packet and replies with a synchronous acknowledgement, or sending `PJON_ACK` (decimal 6), subsequently `12` sends also an asynchronous acknowledgement, that is instead an entire packet, back to device `11` containing only packet id `999` and the necessary configuration, that will be also synchronously acknowledged by device `11`:
 ```cpp
-Channel analysis               Transmission                 Response
- ___  ________________________________________________________  ___
-|C-A||ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|PACKET ID|CRC32||ACK|
-|---||--|--------|------|----|------|------|--|---------|-----||---|
-| 0 ||11|00001111|  19  |    | 0001 | 0002 |12|   999   |     || 6 |
-|___||__|________|______|____|______|______|__|_________|_____||___|
-                             |RXINFO| TX INFO |        
+ ________________________________________________________
+|ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|PACKET ID|CRC32|
+|--|--------|------|----|------|------|--|---------|-----|
+|11|00001111|  19  |    | 0001 | 0002 |12|   999   |     |
+|__|________|______|____|______|______|__|_________|_____|
+                       |RXINFO| TX INFO |       
 ```
 See the [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md) to have more detailed info of its procedure.

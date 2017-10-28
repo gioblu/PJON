@@ -52,30 +52,25 @@
   #define AS_THRESHOLD  1
 #endif
 
-/* _AS_STANDARD transmission mode performance:
+/* MODE 1 performance (default):
    Transfer speed: 1024Bb or 128B/s */
-#define AS_STANDARD     1
 
-/* AS_FAST transmission mode performance:
+/* MODE 2 performance:
    Transfer speed: 1361Bb or 170B/s */
-#define AS_FAST         2
 
-/* AS_OVERDRIVE_32 transmission mode performance:
+/* MODE 3 performance:
    Transfer speed: 3352Bb or 419B/s */
-#define AS_OVERDRIVE_32 3
 
-/* AS_OVERDRIVE_16 transmission mode performance:
+/* MODE 4 performance:
    Transfer speed: 5069Bb or 633B/s */
-#define AS_OVERDRIVE_16 4
 
-/* AS_OVERDRIVE_8 transmission mode performance:
+/* MODE 5 performance:
    Transfer speed: 12658Bb or 1582B/s
    ADC prescale 8 (Caution out of specification) */
-#define AS_OVERDRIVE_8  5
 
 /* Set here the selected transmission mode - default STANDARD */
 #ifndef AS_MODE
-  #define AS_MODE AS_STANDARD
+  #define AS_MODE 1
 #endif
 
 // Used to signal communication failure

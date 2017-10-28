@@ -2,19 +2,19 @@
 /* PJON AnalogSampling strategy Transmission Timing table
    Copyright (c) 2017, Giovanni Blu Mitolo All rights reserved.
    __________________________________________________________
-  | 1 AS_STANDARD     | Transmission speed 1024Bb - 128B/s   |
+  | MODE 1            | Transmission speed 1024Bb - 128B/s   |
   | ADC prescale 128  |                                      |
   |-------------------|--------------------------------------|
-  | 2 AS_FAST         | Transmission speed 1361Bb - 170B/s   |
+  | MODE 2            | Transmission speed 1361Bb - 170B/s   |
   | ADC prescale 128  |                                      |
   |-------------------|--------------------------------------|
-  | 3 AS_OVERDRIVE_32 | Transmission speed 3773Bb - 471B/s   |
+  | MODE 3            | Transmission speed 3773Bb - 471B/s   |
   | ADC prescale 32   |                                      |
   |-------------------|--------------------------------------|
-  | 4 AS_OVERDRIVE_16 | Transmission speed 5547Bb - 639B/s   |
+  | MODE 4            | Transmission speed 5547Bb - 639B/s   |
   | ADC prescale 16   |                                      |
   |-------------------|--------------------------------------|
-  | 5 AS_OVERDRIVE_8  | Transmission speed 12658Bb - 1582B/s |
+  | MODE 5            | Transmission speed 12658Bb - 1582B/s |
   | ADC prescale 8    | Caution, ADC clocked faster than     |
   |                   | manifacturer raccomends as maximum   |
   |                   | ADC sample rate (prescale 16)        |
@@ -26,19 +26,19 @@
 
 #if defined(__AVR_ATmega88__) || defined(__AVR_ATmega168__) || \
     defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
-  #if AS_MODE == AS_STANDARD
+  #if AS_MODE == 1
     #if F_CPU == 16000000L
       #define AS_BIT_WIDTH    750
       #define AS_BIT_SPACER  1050
       #define AS_READ_DELAY     0
     #endif
-  #elif AS_MODE == AS_FAST
+  #elif AS_MODE == 2
     #if F_CPU == 16000000L
       #define AS_BIT_WIDTH    572
       #define AS_BIT_SPACER   728
       #define AS_READ_DELAY     0
     #endif
-  #elif AS_MODE == AS_OVERDRIVE_32
+  #elif AS_MODE == 3
     #ifndef AS_PRESCALE
       #define AS_PRESCALE      32
     #endif
@@ -47,7 +47,7 @@
       #define AS_BIT_SPACER   428
       #define AS_READ_DELAY     0
     #endif
-  #elif AS_MODE == AS_OVERDRIVE_16
+  #elif AS_MODE == 4
     #ifndef AS_PRESCALE
       #define AS_PRESCALE      16
     #endif
@@ -56,7 +56,7 @@
       #define AS_BIT_SPACER   290
       #define AS_READ_DELAY     0
     #endif
-  #elif AS_MODE == AS_OVERDRIVE_8
+  #elif AS_MODE == 5
     #ifndef AS_PRESCALE
       #define AS_PRESCALE       8
     #endif
@@ -70,29 +70,29 @@
 
 /* ATmega1280/2560 - Arduino Mega/Mega-nano ------------------------------- */
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-  #if AS_MODE == AS_STANDARD
+  #if AS_MODE == 1
     #if F_CPU == 16000000L
       /* Standard timing is applied below */
     #endif
-  #elif AS_MODE == AS_FAST
+  #elif AS_MODE == 2
     #if F_CPU == 16000000L
       /* Standard timing is applied below */
     #endif
-  #elif AS_MODE == AS_OVERDRIVE_32
+  #elif AS_MODE == 3
     #ifndef AS_PRESCALE
       #define AS_PRESCALE 32
     #endif
     #if F_CPU == 16000000L
       /* Standard timing is applied below */
     #endif
-  #elif AS_MODE == AS_OVERDRIVE_16
+  #elif AS_MODE == 4
     #ifndef AS_PRESCALE
       #define AS_PRESCALE 16
     #endif
     #if F_CPU == 16000000L
       /* Standard timing is applied below */
     #endif
-  #elif AS_MODE == AS_OVERDRIVE_8
+  #elif AS_MODE == 5
     #ifndef AS_PRESCALE
       #define AS_PRESCALE 8
     #endif
@@ -104,14 +104,14 @@
 
 /* ATmega16/32U4 - Arduino Leonardo/Micro --------------------------------- */
 #if defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__)
-  #if AS_MODE == AS_STANDARD
+  #if AS_MODE == 1
     /* TODO - define dedicated timing */
   #endif
 #endif
 
 /* NodeMCU, generic ESP8266 ----------------------------------------------- */
 #if defined(ESP8266)
-  #if AS_MODE == AS_STANDARD
+  #if AS_MODE == 1
     #if F_CPU == 80000000L
       /* TODO - define dedicated timing */
     #endif
@@ -120,7 +120,7 @@
 
 /* Fallback to standard timing if not previously defined: */
 
-#if AS_MODE == AS_STANDARD
+#if AS_MODE == 1
   #ifndef AS_BIT_WIDTH
     #define AS_BIT_WIDTH    750
   #endif
@@ -130,7 +130,7 @@
   #ifndef AS_READ_DELAY
     #define AS_READ_DELAY     0
   #endif
-#elif AS_MODE == AS_FAST
+#elif AS_MODE == 2
   #ifndef AS_BIT_WIDTH
     #define AS_BIT_WIDTH    572
   #endif
@@ -140,7 +140,7 @@
   #ifndef AS_READ_DELAY
     #define AS_READ_DELAY     0
   #endif
-#elif AS_MODE == AS_OVERDRIVE_32
+#elif AS_MODE == 3
   #ifndef AS_BIT_WIDTH
     #define AS_BIT_WIDTH    188
   #endif
@@ -150,7 +150,7 @@
   #ifndef AS_READ_DELAY
     #define AS_READ_DELAY     0
   #endif
-#elif AS_MODE == AS_OVERDRIVE_16
+#elif AS_MODE == 4
   #ifndef AS_BIT_WIDTH
     #define AS_BIT_WIDTH    128
   #endif
@@ -160,7 +160,7 @@
   #ifndef AS_READ_DELAY
     #define AS_READ_DELAY     0
   #endif
-#elif AS_MODE == AS_OVERDRIVE_8
+#elif AS_MODE == 5
   #ifndef AS_BIT_WIDTH
     #define AS_BIT_WIDTH     56
   #endif

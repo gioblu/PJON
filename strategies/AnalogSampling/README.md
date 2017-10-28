@@ -23,42 +23,44 @@ Caution, `AS_OVERDRIVE_8` sets ADC clock prescale to a higher rate than manufact
 #### How to use AnalogSampling
 Pass the `AnalogSampling` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy. All the other necessary information is present in the general [Documentation](/documentation).
 ```cpp  
+// Predefine AS_MODE selecting communication mode if needed
+#define AS_MODE 1 // AS_STANDARD     - 1024Bd  or 128B/s
+#define AS_MODE 2 // AS_FAST         - 1361Bd  or 170B/s
+#define AS_MODE 3 // AS_OVERDRIVE_32 - 3773Bb  or 471B/s
+#define AS_MODE 4 // AS_OVERDRIVE_16 - 5547Bb  or 639B/s
+#define AS_MODE 5 // AS_OVERDRIVE_8  - 12658Bd or 1528B/s
 
-  // Predefine AS_MODE selecting the communication mode if needed  
-  #define AS_MODE 1 // AS_STANDARD     - 1024Bd  or 128B/s
-  #define AS_MODE 2 // AS_FAST         - 1361Bd  or 170B/s
-  #define AS_MODE 3 // AS_OVERDRIVE_32 - 3773Bb  or 471B/s
-  #define AS_MODE 4 // AS_OVERDRIVE_16 - 5547Bb  or 639B/s
-  #define AS_MODE 5 // AS_OVERDRIVE_8  - 12658Bd or 1528B/s
+/* Acknowledge maximum latency, 15000 microseconds default.
+   Could be necessary to higher AS_RESPONSE_TIMEOUT if sending
+   long packets because of the CRC computation time needed by
+   receiver before transmitting its acknowledge  */
+#define AS_RESPONSE_TIMEOUT 15000
 
-  /* Acknowledge latency maximum duration (15000 microseconds default).
-     Could be necessary to higher AS_RESPONSE_TIMEOUT if sending long packets because
-     of the CRC computation time needed by receiver before transmitting its acknowledge  */
-  #define AS_RESPONSE_TIMEOUT 15000
+/* Set the back-off exponential degree (default 5) */
+#define AS_BACK_OFF_DEGREE      5
 
-  /* Set the back-off exponential degree (default 5) */
-  #define AS_BACK_OFF_DEGREE      5
+/* Set the maximum sending attempts (default 10) */
+#define AS_MAX_ATTEMPTS        10
 
-  /* Set the maximum sending attempts (default 10) */
-  #define AS_MAX_ATTEMPTS        10
+/* The values set above are the default producing a 3.2 seconds
+   back-off timeout with 20 attempts. Higher SWBB_MAX_ATTEMPTS
+   to higher the back-off timeout, higher SWBB_BACK_OFF_DEGREE
+   to higher the interval between every attempt. */
 
-  /* The values set above are the default producing a 3.2 seconds
-     back-off timeout with 20 attempts. Higher SWBB_MAX_ATTEMPTS to higher
-     the back-off timeout, higher SWBB_BACK_OFF_DEGREE to higher the interval
-     between every attempt. */
+#include <PJON.h>
 
-  #include <PJON.h>
+PJON<AnalogSampling> bus;
 
-  PJON<AnalogSampling> bus;
+void setup() {
+  // Set the pin A0 as the communication pin
+  bus.strategy.set_pin(A0);
 
-  void setup() {
-    bus.strategy.set_pin(A0);        // Set the pin A0 as the communication pin
-                                     // or
-    bus.strategy.set_pins(A0, 12);   // Set pin A0 as input pin and pin 12 as output pin  
+  // Set pin A0 as input pin and pin 12 as output pin
+  bus.strategy.set_pins(A0, 12);
 
-    bus.strategy.set_threshold(AS_THRESHOLD); // Set threshold (default value AS_THRESHOLD)
-  }
-
+  // Set threshold (default value AS_THRESHOLD)
+  bus.strategy.set_threshold(AS_THRESHOLD);
+}
 ```
 After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance.
 

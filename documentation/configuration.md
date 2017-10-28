@@ -12,7 +12,8 @@ Before instantiating the PJON class it is possible to define the packets and con
 #define PJON_PACKET_MAX_LENGTH 20
 #include <PJON.h>
 /* PJON can store up to 1 packet of up to
-   20 characters - packet overhead (from 4 to 13 depending by configuration) */
+   20 characters - packet overhead
+   (from 4 to 13 depending by configuration) */
 ```
 Templates can be scary at first sight, but they are quite straight-forward and efficient:
 ```cpp  
@@ -52,12 +53,15 @@ Configure network state (local or shared). If local (passing `false`), the PJON 
 ```
 Configure the communication mode:
 ```cpp  
-  bus.set_communication_mode(PJON_SIMPLEX); // Run in mono-directional PJON_SIMPLEX mode
-  bus.set_communication_mode(PJON_HALF_DUPLEX);  // Run in bi-directional PJON_HALF_DUPLEX mode
+  // Run in mono-directional PJON_SIMPLEX mode
+  bus.set_communication_mode(PJON_SIMPLEX);
+  // Run in bi-directional PJON_HALF_DUPLEX mode
+  bus.set_communication_mode(PJON_HALF_DUPLEX);
 ```
 Configure synchronous acknowledge:
 ```cpp  
-  bus.set_synchronous_acknowledge(false); // Avoid sync ack
+  // Avoid sync ack
+  bus.set_synchronous_acknowledge(false);
 ```
 If you are interested in including the asynchronous acknowledgement feature in your sketch, you need to define the `PJON_INCLUDE_ASYNC_ACK` as following (made to save more than 1kB on sketches where this feature is not used):
 ```cpp  
@@ -66,7 +70,8 @@ If you are interested in including the asynchronous acknowledgement feature in y
 ```
 Configure asynchronous acknowledgement:
 ```cpp  
-  bus.set_asynchronous_acknowledge(true); // Enable async ack
+  // Enable async ack
+  bus.set_asynchronous_acknowledge(true);
 ```
 Force CRC32 use for every packet sent:
 ```cpp  

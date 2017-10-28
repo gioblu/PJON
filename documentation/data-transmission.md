@@ -28,7 +28,7 @@ The sending is executed as soon as the method is called and it returns the follo
 
 Use `send_packet_blocking` if it is necessary to try more than once and so comply with the specified back-off.
 ```cpp
-if(bus.send_packet_blocking(10, "All is ok?!", 11) == PJON_ACK) // Try with back-off
+if(bus.send_packet_blocking(10, "All is ok?!", 11) == PJON_ACK)
   Serial.println("10 is ok!");
 ```
 `send_packet_blocking` returns the result of transmission as `send_packet` does.
@@ -48,8 +48,10 @@ bus.send(100, bus_id, "Ciao, this is a test!", 21);
 ```
 Payload length is boring to be added but is there to prevent buffer overflow. If sending arbitrary values `NULL` terminator strategy based on `strlen` is not safe to detect the end of a string. The `send` call returns an id, that is the reference to the packet you have dispatched. To send a value repeatedly simply call `send_repeatedly` and pass as last parameter the interval in microseconds you want between every sending:
 ```cpp
-uint16_t one_second_test = bus.send_repeatedly(100, "Test sent every second!", 23, 1000000);
-// IMPORTANT: maximum interval supported is 4293014170 microseconds or 71.55 minutes */
+uint16_t one_second_test =
+  bus.send_repeatedly(100, "Test sent every second!", 23, 1000000);
+/* IMPORTANT: maximum interval supported is
+   4293014170 microseconds or 71.55 minutes */
 ```
 `send_repeatedly` returns the id of the packet in the packet's buffer as `send` does, to remove this repeated transmission simply:
 ```cpp

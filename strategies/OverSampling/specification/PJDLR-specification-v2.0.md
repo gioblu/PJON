@@ -8,20 +8,23 @@
 
 ```cpp
 /*
-Milan, Italy - Originally published: 10/04/2010 - latest revision: 24/09/2017
+Milan, Italy
+Originally published: 10/04/2010
+latest revision: 24/09/2017
 PJDLR (Padded jittering data link Radio) v2.0
-Invented by Giovanni Blu Mitolo, preamble proposed by Fred Larsen
+Invented by Giovanni Blu Mitolo,
+preamble proposed by Fred Larsen
 released into the public domain
 
 Related implementation: /strategies/OverSampling/
-Compliant implementation versions: PJON 9.0 and following
+Compliant versions: PJON v9.0 and following
 Changelog:
 - Added frame separation
 - Added communication modes specification
 */
 ```
-### PJDLR (Padded Jittering Data Link Radio) v2.0
-PJDLR is a simplex or half-duplex data link layer, that can be easily software emulated, enabling one or many to many communication in both master-slave and multi-master configuration optimized to obtain long range and high reliability using radio transceivers. It has been engineered to have limited minimum requirements, and to be efficiently executed on limited microcontrollers with poor clock accuracy. No additional hardware is required to apply PJDLR, and, being implemented in c++, in less than 350 lines of code, it is easily portable to many different architectures.
+### PJDLR v2.0
+PJDLR (Padded Jittering Data Link Radio) is a simplex or half-duplex data link layer, that can be easily software emulated, enabling one or many to many communication in both master-slave and multi-master configuration optimized to obtain long range and high reliability using radio transceivers. It has been engineered to have limited minimum requirements, and to be efficiently executed on limited microcontrollers with poor clock accuracy. No additional hardware is required to apply PJDLR, and, being implemented in c++, in less than 350 lines of code, it is easily portable to many different architectures.
 
 #### Basic concepts
 * Define a synchronization pad initializer to identify a byte
@@ -62,12 +65,12 @@ In a scenario where a frame is received, low performance microcontrollers with i
 #### Synchronous response
 A frame transmission can be optionally followed by a synchronous response by its recipient. This feature is available for both master-slave and multi-master. In multi-master configuration the maximum acceptable acknowledgement overall response time is equal to 1 byte transmission time.
 ```cpp  
-Transmission                                                      Response
- ________ ______  ______  ______  ______                   ________ _____
-|PREAMBLE| INIT || BYTE || BYTE || BYTE | CRC COMPUTATION |PREAMBLE| ACK |
-|____    |------||------||------||------|-----------------|____    |     |
-|    |   |      ||      ||      ||      | LATENCY         |    |   |  6  |
-|____|___|______||______||______||______|                 |____|___|_____|
+Transmission                                              Response
+ ________ ______  ______  ______                   ________ _____
+|PREAMBLE| INIT || BYTE || BYTE | CRC COMPUTATION |PREAMBLE| ACK |
+|____    |------||------||------|-----------------|____    |     |
+|    |   |      ||      ||      | LATENCY         |    |   |  6  |
+|____|___|______||______||______|                 |____|___|_____|
 ```
 In master-slave configuration the maximum time dedicated to potential acknowledgement reception it is defined by the use case constraints like maximum packet length and latency or physical distance between devices.
 

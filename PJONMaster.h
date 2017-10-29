@@ -1,9 +1,9 @@
 
- /*-O//\          __     __
-   |-gfo\        |__| | |  | |\ | ™
-   |!y°o:\       |  __| |__| | \| v8.2
-   |y"s§+`\      multi-master, multi-media communications bus system framework
-  /so+:-..`\     Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
+ /*-O//\         __     __
+   |-gfo\       |__| | |  | |\ | ™
+   |!y°o:\      |  __| |__| | \| v9.0
+   |y"s§+`\     multi-master, multi-media communications bus system
+  /so+:-..`\    Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
   |5/:%&-a3f.:;\
   \+//u/+g%{osv,,\
@@ -11,7 +11,7 @@
        \:/+-.-°-:+oss\
         | |       \oy\\
         > <
- ______-| |-___________________________________________________________________
+ ______-| |-__________________________________________________________________
 
 PJONMaster has been created by Giovanni Blu Mitolo with the support
 of Fred Larsen and is inspired by the work of Thomas Snaidero:
@@ -22,11 +22,11 @@ Master Thesis, IT University of Copenhagen, Denmark, September 2016
 PJON™ Dynamic addressing specification:
 - v0.1 specification/PJON-dynamic-addressing-specification-v0.1.md
 
-PJON™ is a self-funded, no-profit open-source project created and maintained by
-Giovanni Blu Mitolo with the support of the internet community if you want
-to see the PJON project growing with a faster pace, consider a donation
-at the following link: https://www.paypal.me/PJON
- ______________________________________________________________________________
+PJON™ is a self-funded, no-profit open-source project created and maintained
+by Giovanni Blu Mitolo with the support of the internet community if you want
+to see the PJON project growing with a faster pace, consider a donation at
+the following link: https://www.paypal.me/PJON
+ _____________________________________________________________________________
 
 Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
 

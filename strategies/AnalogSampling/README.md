@@ -18,17 +18,17 @@
 - `4` runs at 5547Bb or 639B/s
 - `5` runs at 12658Bd or 1528B/s
 
-Caution, `AS_OVERDRIVE_8` sets ADC clock prescale to a higher rate than manufacturer recommends as maximum ADC sample rate (prescale 16).
+Caution, mode `5` sets ADC clock prescale to a higher rate than manufacturer recommends as maximum ADC sample rate (prescale 16).
 
 #### How to use AnalogSampling
 Pass the `AnalogSampling` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy. All the other necessary information is present in the general [Documentation](/documentation).
 ```cpp  
 // Predefine AS_MODE selecting communication mode if needed
-#define AS_MODE 1 // AS_STANDARD     - 1024Bd  or 128B/s
-#define AS_MODE 2 // AS_FAST         - 1361Bd  or 170B/s
-#define AS_MODE 3 // AS_OVERDRIVE_32 - 3773Bb  or 471B/s
-#define AS_MODE 4 // AS_OVERDRIVE_16 - 5547Bb  or 639B/s
-#define AS_MODE 5 // AS_OVERDRIVE_8  - 12658Bd or 1528B/s
+#define AS_MODE 1 // 1024Bd  or 128B/s
+#define AS_MODE 2 // 1361Bd  or 170B/s
+#define AS_MODE 3 // 3773Bb  or 471B/s  (ADC prescale 32)
+#define AS_MODE 4 // 5547Bb  or 639B/s  (ADC prescale 16)
+#define AS_MODE 5 // 12658Bd or 1528B/s (ADC prescale  8)
 
 /* Acknowledge maximum latency, 15000 microseconds default.
    Could be necessary to higher AS_RESPONSE_TIMEOUT if sending

@@ -8,17 +8,19 @@
 
 ```cpp
 /*
-Milan, Italy - Originally published: 27/09/2017
+Milan, Italy
+Originally published: 27/09/2017
 TSDL (Tardy Serial Data Link) v1.0 specification
-Invented by Giovanni Blu Mitolo, released into the public domain
+Invented by Giovanni Blu Mitolo,
+released into the public domain
 
 Related implementation: /strategies/ThroughSerial/
-Compliant implementation versions: PJON 9.0 and following
+Compliant versions: PJON v9.0 and following
 */
 ```
-### TSDL (Tardy Serial Data Link) v1.0
+### TSDL v1.0
 
-TSDL (Tardy Serial Data Link) is a simplex or half-duplex serial data link, that can be easily software emulated, enabling both master-slave and multi-master configuration. It supports collision avoidance, reliable frame separation through byte stuffing and optional synchronous response to frame transmissions.
+TSDL (Tardy Serial Data Link) is a simplex or half-duplex serial data link that supports both master-slave and multi-master configuration. It supports collision avoidance, reliable frame separation through byte stuffing and optional synchronous response to frame transmissions.
 
 ### Basic concepts
 * Use start, end and escape flags to support frame separation
@@ -57,11 +59,11 @@ Whenever any of the special character appears in the data, transmitter inserts a
 #### Synchronous response
 A frame transmission can be optionally followed by a synchronous response by its recipient.
 ```cpp  
-Transmission                                             Response
- _______  ______  ______  ______  _____                   _____
-| START || BYTE || BYTE || BYTE || END | CRC COMPUTATION | ACK |
-|-------||------||------||------||-----|-----------------|-----|
-|  149  ||  H   ||  I   ||   !  || 234 | LATENCY         |  6  |
-|_______||______||______||______||_____|                 |_____|
+Transmission                                    Response
+ _______  ______  ______  _____                   _____
+| START || BYTE || BYTE || END | CRC COMPUTATION | ACK |
+|-------||------||------||-----|-----------------|-----|
+|  149  ||  H   ||  I   || 234 | LATENCY         |  6  |
+|_______||______||______||_____|                 |_____|
 ```
 Between frame transmission and a synchronous response there is a variable timeframe influenced by latency and CRC computation time. The maximum time dedicated to potential acknowledgement reception must be shorter than the transmission time-in, to avoid other devices to disrupt a response exchange, and it is estimated adding the maximum frame length CRC computation time to the expected latency.

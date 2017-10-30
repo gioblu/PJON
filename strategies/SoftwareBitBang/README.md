@@ -21,17 +21,17 @@ It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to
 - ATmega2560 16MHz (Arduino Mega)
 - ATmega16u4/32u4 16MHz (Arduino Leonardo)
 - ATtiny84 16MHz external oscillator
-- ATtiny85 16MHz external oscillator, see [ATtiny interfacing](https://github.com/gioblu/PJON/wiki/ATtiny-interfacing)
+- ATtiny85 16MHz external oscillator
 - SAMD (Arduino Zero)
-- ESP8266 v.1-7 80MHz "AI-THINKER AT" firmware, see [Arduino](https://github.com/esp8266/Arduino)
-- ESP8266 NodeMCU v0.9-1.0 80MHz, see [Arduino](https://github.com/esp8266/Arduino)
+- ESP8266 v.1-7 80MHz "AI-THINKER AT" firmware
+- ESP8266 NodeMCU v0.9-1.0 80MHz
 - MK20DX256 96MHz (Teensy 3.1)
 
 #### Performance
-`SWBB_MODE` can be configured in 3 different modes, `SWBB_STANDARD`, `SWBB_FAST` and `SWBB_OVERDRIVE`:
-- `SWBB_STANDARD` (1) runs at 16944Bd or 2.12kB/s cross-architecture, promiscuous clock/architecture compatible.
-- `SWBB_FAST` (2) runs at 21504Bd or 2.68kB/s cross-architecture, promiscuous clock/architecture compatible.
-- `SWBB_OVERDRIVE` (3) runs a specific architecture at its maximum limits (non cross-architecture compatible). Every architecture has its own limits, Arduino Duemilanove for example runs at 33472Bd or 4184B/s, Arduino Zero can reach 48000Bd or 6000B/s.
+`SWBB_MODE` can be configured in 3 different modes, `1`, `2` and `3`:
+- `1` runs at 16944Bd or 2.12kB/s cross-architecture, promiscuous clock/architecture compatible.
+- `2` runs at 21504Bd or 2.68kB/s cross-architecture, promiscuous clock/architecture compatible.
+- `3` runs a specific architecture at its maximum limits (non cross-architecture compatible). Every architecture has its own limits, Arduino Duemilanove for example runs at 33472Bd or 4184B/s, Arduino Zero can reach 48000Bd or 6000B/s.
 
 When including and using `SoftwareBitBang`, as data link layer of a PJON bus, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because `SoftwareBitBang` is completely software emulated strategy with a non blocking implementation, transforming a painful walk in a nice flight.
 
@@ -40,41 +40,41 @@ Single wire simplicity let you to experiment quickly and with creativity. The fi
 #### How to use SoftwareBitBang
 Before including `PJON.h` it is possible to configure `SoftwareBitBang` using predefined constants:
 ```cpp  
-  /* The default SoftwareBitBang mode is SWBB_STANDARD
-     (Transfer speed: 16.949kBb or 2.11kB/s) */
+/* SoftwareBitBang default SWBB_MODE: 1
+   (Transfer speed: 16.949kBb or 2.11kB/s) */
 
-  /* Set SoftwareBitBang mode to SWBB_FAST before PJON.h inclusion
-     (Transfer speed: 21.505kBd or 2.68kB/s)
-     When used with a group of different devices a pull-down resistor is
-     suggested to have optimal channel reliability */
-  #define SWBB_MODE 2
+// Set SWBB_MODE 2 before PJON.h inclusion
+// (Speed: 21.505kBd or 2.68kB/s)
+#define SWBB_MODE 2
 
-  /* Set SoftwareBitBang mode to SWBB_OVERDRIVE before PJON.h inclusion
-     (Architecture / Toolchain dependant) */
-  #define SWBB_MODE 3
+// Set SWBB_MODE 3 before PJON.h inclusion
+// (Architecture / Toolchain dependant)
+#define SWBB_MODE 3
 
-  /* Synchronous acknowledgement response timeout (1.5 milliseconds by default)
-     If (latency + CRC computation) > SWBB_RESPONSE_TIMEOUT synchronous
-     acknowledgement reliability could be affected or disrupted higher
-     SWBB_RESPONSE_TIMEOUT if necessary. */
-  #define SWBB_RESPONSE_TIMEOUT 1500
+/* Synchronous acknowledgement response timeout
+   (1.5 milliseconds by default) If latency + CRC
+   computation > SWBB_RESPONSE_TIMEOUT
+   synchronous acknowledgement reliability could
+   be affected or disrupted higher
+   SWBB_RESPONSE_TIMEOUT if necessary. */
+#define SWBB_RESPONSE_TIMEOUT 1500
 
-  /* Set the back-off exponential degree (default 4) */
-  #define SWBB_BACK_OFF_DEGREE     4
+// Set the back-off exponential degree (default 4)
+#define SWBB_BACK_OFF_DEGREE     4
 
-  /* Set the maximum sending attempts (default 20) */
-  #define SWBB_MAX_ATTEMPTS       20
+// Set the maximum sending attempts (default 20)
+#define SWBB_MAX_ATTEMPTS       20
 
-  #include <PJON.h>
+#include <PJON.h>
 
-  PJON<SoftwareBitBang> bus;
+PJON<SoftwareBitBang> bus;
 
-  void setup() {
-    bus.strategy.set_pin(12);       // Set the pin 12 as the communication pin
-                                    // or
-    bus.strategy.set_pins(11, 12);  // Set pin 11 as input pin and pin 12 as output pin  
-  }
-
+void setup() {
+  // Set the pin 12 as the communication pin
+  bus.strategy.set_pin(12);
+  // Set pin 11 as input pin and pin 12 as output pin
+  bus.strategy.set_pins(11, 12);
+}
 ```
 After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance. All the other necessary information is present in the general [Documentation](/documentation).
 

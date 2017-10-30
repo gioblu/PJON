@@ -1,9 +1,9 @@
 
- /*-O//\           __     __
-   |-gfo\         |__| | |  | |\ | ™
-   |!y°o:\        |  __| |__| | \| v8.2
-   |y"s§+`\       multi-master, multi-media communications bus system framework
-  /so+:-..`\      Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
+ /*-O//\         __     __
+   |-gfo\       |__| | |  | |\ | ™
+   |!y°o:\      |  __| |__| | \| v9.0
+   |y"s§+`\     multi-master, multi-media communications bus system
+  /so+:-..`\    Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
   |5/:%&-a3f.:;\
   \+//u/+g%{osv,,\
@@ -11,12 +11,12 @@
        \:/+-.-°-:+oss\
         | |       \oy\\
         > <
- ______-| |-___________________________________________________________________
+ ______-| |-__________________________________________________________________
 
-PJON™ is a self-funded, no-profit open-source project created and maintained by
-Giovanni Blu Mitolo with the support of the internet community if you want
-to see the PJON project growing with a faster pace, consider a donation
-at the following link: https://www.paypal.me/PJON
+PJON™ is a self-funded, no-profit open-source project created and maintained
+by Giovanni Blu Mitolo with the support of the internet community if you want
+to see the PJON project growing with a faster pace, consider a donation at
+the following link: https://www.paypal.me/PJON
 
 For the PJON™ Protocol specification see the specification directory.
 
@@ -29,7 +29,7 @@ PJON™ Standard compliant tools:
  https://github.com/Girgitt/PJON-python
 - Logic analyzer by Andrew Grande (obsolete)
  https://github.com/aperepel/saleae-pjon-protocol-analyzer
- ______________________________________________________________________________
+ _____________________________________________________________________________
 
 Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
 
@@ -93,11 +93,11 @@ limitations under the License. */
    1 - Local:  Sender device id included
        Shared: Sender device id + Sender bus id */
 #define PJON_TX_INFO_BIT    0B00000010
-/* 0 - Acknowledgement disabled
-   1 - Acknowledgement enabled */
+/* 0 - Synchronous acknowledgement disabled
+   1 - Synchronous acknowledgement enabled */
 #define PJON_ACK_REQ_BIT    0B00000100
-/* 0 - Synchronous acknowledgement requested
-   1 - Asynchronous acknowledgement requested */
+/* 0 - Asynchronous acknowledgement disabled
+   1 - Asynchronous acknowledgement enabled */
 #define PJON_ACK_MODE_BIT   0B00001000
 /* 0 - Not addressing related
    1 - Addressing related */

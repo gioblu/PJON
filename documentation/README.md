@@ -5,22 +5,22 @@ Thanks to the [interfaces](/interfaces/README.md) abstraction, PJON can be easil
 
 ```cpp
   Implementation model
-       _______________________________________________________
-      | Layer 3 Network                                       |
-      | PJON                                                  |
-   ___| send, send_packet, send_repeatedly ...                |
-  |   |_______________________________________________________|
-  |   | Layer 2 data link or strategy                         |
-  |   | AnalogSampling, OverSampling, SoftwareBitBang ...     |
-  --->| can_start, send_string, receive_byte ...              |___   
-      |_______________________________________________________|   |
-      | Interfaces to system calls                            |   |
-   ___| PJON_MICROS, PJON_RANDOM, PJON_DELAY_MICROSECONDS ... |<---
-  |   |_______________________________________________________|
-  |   | Layer 1 physical-layer                                |
-  |   | System calls:                                         |
-  --->| micros, random, delayMicroseconds ...                 |
-      |_______________________________________________________|
+       ___________________________________________________
+      | Layer 3 Network                                   |
+      | PJON                                              |
+   ___| send, send_packet, send_repeatedly ...            |
+  |   |___________________________________________________|
+  |   | Layer 2 data link or strategy                     |
+  |   | AnalogSampling, OverSampling, SoftwareBitBang ... |
+  --->| can_start, send_string, receive_byte ...          |___   
+      |___________________________________________________|   |
+      | Interfaces to system calls                        |   |
+   ___| PJON_MICROS, PJON_RANDOM, PJON_IO_MODE ...        |<---
+  |   |___________________________________________________|
+  |   | Layer 1 physical-layer                            |
+  |   | System calls:                                     |
+  --->| micros, random, delayMicroseconds ...             |
+      |___________________________________________________|
 ```
 
 This library exposes to users a set of methods to easily configure and handle communication between devices:

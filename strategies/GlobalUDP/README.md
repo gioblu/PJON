@@ -14,17 +14,18 @@ It can also be useful for connecting physically separate clusters of devices tha
 #### How to use GlobalUDP
 Pass the `GlobalUDP` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
 ```cpp  
-  PJON<LocalUDP> bus(44); // Use LocalUDP strategy with PJON device id 44
+  // Use LocalUDP strategy with PJON device id 44
+  PJON<LocalUDP> bus(44);
 ```
 Set up the Ethernet card in the usual manner by calling `Ethernet.begin`, register the other devices to send to,
 then call the `begin` method on the PJON object:
 ```cpp  
-  void setup() {
-    Ethernet.begin(mac, local_ip, gateway, gateway, subnet);
-    bus.strategy.add_node(45, remote_ip1);
-    bus.strategy.add_node(46, remote_ip2);
-    bus.begin();
-  }
+void setup() {
+  Ethernet.begin(mac, local_ip, gateway, gateway, subnet);
+  bus.strategy.add_node(45, remote_ip1);
+  bus.strategy.add_node(46, remote_ip2);
+  bus.begin();
+}
 ```
 All the IP addresses of the registered nodes should be reachable. UDP port forwarding can be used to obtain this
 through firewalls. The IP address of the device can be DHCP assigned if none of the other devices need to reach it

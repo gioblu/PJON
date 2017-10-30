@@ -1,9 +1,9 @@
 ﻿
- /*-O//\           __     __
-   |-gfo\         |__| | |  | |\ | ™
-   |!y°o:\        |  __| |__| | \| v8.2
-   |y"s§+`\       multi-master, multi-media communications bus system framework
-  /so+:-..`\      Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
+ /*-O//\         __     __
+   |-gfo\       |__| | |  | |\ | ™
+   |!y°o:\      |  __| |__| | \| v9.0
+   |y"s§+`\     multi-master, multi-media communications bus system
+  /so+:-..`\    Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
   |5/:%&-a3f.:;\
   \+//u/+g%{osv,,\
@@ -11,12 +11,12 @@
        \:/+-.-°-:+oss\
         | |       \oy\\
         > <
- ______-| |-___________________________________________________________________
+ ______-| |-__________________________________________________________________
 
-PJON™ is a self-funded, no-profit open-source project created and maintained by
-Giovanni Blu Mitolo with the support of the internet community if you want
-to see the PJON project growing with a faster pace, consider a donation
-at the following link: https://www.paypal.me/PJON
+PJON™ is a self-funded, no-profit open-source project created and maintained
+by Giovanni Blu Mitolo with the support of the internet community if you want
+to see the PJON project growing with a faster pace, consider a donation at
+the following link: https://www.paypal.me/PJON
 
 For the PJON™ Protocol specification see the specification directory.
 
@@ -27,13 +27,11 @@ PJON™ Standard compliant tools:
   https://github.com/Girgitt/PJON-piper
 - PJON-python - PJON running on Python by Zbigniew Zasieczny
   https://github.com/Girgitt/PJON-python
-- Logic analyzer by Andrew Grande (obsolete)
-  https://github.com/aperepel/saleae-pjon-protocol-analyzer
 
 Credits to contributors:
 - Fred Larsen. Systems engineering, header driven communication, debugging
 - Zbigniew Zasieczny. WINX86 interface
-- Wilfried Klaas ATtiny44/84 porting 
+- Wilfried Klaas ATtiny44/84 porting
 - 4ib3r github user. Memory optimization configurable strategies inclusion
 - budaics github user. ATtiny85 16MHz external clock testing and wiki page
 - Pantovich github user. Update returning number of packets to be delivered
@@ -60,7 +58,7 @@ Bug reports:
 - Fabian Gärtner. receive function and big packets bugfix
 - Mauro Mombelli. Code cleanup
 - Shachar Limor. Blink example pinMode bugfix
- ______________________________________________________________________________
+ _____________________________________________________________________________
 
 Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
 
@@ -487,7 +485,7 @@ class PJON {
       #if(PJON_INCLUDE_ASYNC_ACK)
         /* If a packet requesting asynchronous acknowledgement is received
            send the acknowledgement packet back to the packet's transmitter */
-        if(async_ack) {
+        if(async_ack && !_router) {
           if(_auto_delete && length == overhead)
             if(handle_asynchronous_acknowledgment(last_packet_info))
               return PJON_ACK;
@@ -652,14 +650,15 @@ class PJON {
       const uint8_t *b_id,
       const char *string,
       uint16_t length,
-      uint16_t header = PJON_NOT_ASSIGNED
+      uint16_t header = PJON_NOT_ASSIGNED,
+      uint16_t p_id = 0
     ) {
       uint8_t original_device_id = _device_id;
       uint8_t original_bus_id[4];
       copy_bus_id(original_bus_id, bus_id);
       set_id(sender_id);
       copy_bus_id(bus_id, sender_bus_id);
-      uint16_t result = dispatch(id, b_id, string, length, 0, header);
+      uint16_t result = dispatch(id, b_id, string, length, 0, header, p_id);
       copy_bus_id(bus_id, original_bus_id);
       set_id(original_device_id);
       return result;

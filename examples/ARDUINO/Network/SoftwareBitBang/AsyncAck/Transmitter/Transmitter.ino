@@ -6,6 +6,9 @@
 
 uint8_t bus_id[] = {0, 0, 0, 1};
 
+// 1 milliseconds maximum expected latency, higher if necessary
+uint32_t latency = 1000;
+
 // <Strategy name> bus(selected device id)
 PJON<SoftwareBitBang> bus(bus_id, 45);
 
@@ -24,5 +27,5 @@ void setup() {
 
 void loop() {
   bus.update();
-  bus.receive(1000);
+  bus.receive(latency);
 };

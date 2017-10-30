@@ -2,7 +2,7 @@
 **Medium:** Light |
 **Pins used:** 1 / 2
 
-`AnalogSampling` strategy or data link is designed to sample digital data using analog readings and can be used to communicate data wirelessly through light. It is able to use a single LED for both photo-emission and photo-reception phases enabling an half-duplex connection between two or more devices with a range of up to 5 meters; it can also be used with two pairs of any sort of tuned emitters and receivers enabling for example long range wireless laser communication. `AnalogSampling` can be used along with single channel optic fiber cables enabling a point-to-point bidirectional connection between two devices, that can also be branched in star configuration using optical bidirectional splitters (PLC).
+`AnalogSampling` strategy or data link that complies with [PJDLS v1.0](/strategies/AnalogSampling/specification/PJDLS-specification-v1.0.md) and is designed to sample digital data using analog readings and can be used to communicate data wirelessly through light. It is able to use a single LED for both photo-emission and photo-reception phases enabling an half-duplex connection between two or more devices with a range of up to 5 meters; it can also be used with two pairs of any sort of tuned emitters and receivers enabling for example long range wireless laser communication. `AnalogSampling` can be used along with single channel optic fiber cables enabling a point-to-point bidirectional connection between two devices, that can also be branched in star configuration using optical bidirectional splitters (PLC).
 
 `AnalogSampling` was originally implemented it in the far 2011, here you can see the first [video documented experiment](https://www.youtube.com/watch?v=-Ul2j6ixbmE). It has been recently debugged and updated to act as a PJON Strategy. Take a look at the [video introduction](https://www.youtube.com/watch?v=yIncPe8OPpg) for a brief showcase of its features.
 
@@ -12,53 +12,55 @@
 
 #### Performance
 `AnalogSampling` works with the following communication modes:
-- `AS_STANDARD` runs at 1024Bd or 128B/s
-- `AS_FAST` runs at 1361Bd or 170B/s
-- `AS_OVERDRIVE_32` runs at 3773Bb or 471B/s
-- `AS_OVERDRIVE_16` runs at 5547Bb or 639B/s
-- `AS_OVERDRIVE_8`  runs at 12658Bd or 1528B/s
+- `1` runs at 1024Bd or 128B/s
+- `2` runs at 1361Bd or 170B/s
+- `3` runs at 3773Bb or 471B/s
+- `4` runs at 5547Bb or 639B/s
+- `5` runs at 12658Bd or 1528B/s
 
-Caution, `AS_OVERDRIVE_8` sets ADC clock prescale to a higher rate than manufacturer recommends as maximum ADC sample rate (prescale 16).
+Caution, mode `5` sets ADC clock prescale to a higher rate than manufacturer recommends as maximum ADC sample rate (prescale 16).
 
 #### How to use AnalogSampling
 Pass the `AnalogSampling` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy. All the other necessary information is present in the general [Documentation](/documentation).
 ```cpp  
+// Predefine AS_MODE selecting communication mode if needed
+#define AS_MODE 1 // 1024Bd  or 128B/s
+#define AS_MODE 2 // 1361Bd  or 170B/s
+#define AS_MODE 3 // 3773Bb  or 471B/s  (ADC prescale 32)
+#define AS_MODE 4 // 5547Bb  or 639B/s  (ADC prescale 16)
+#define AS_MODE 5 // 12658Bd or 1528B/s (ADC prescale  8)
 
-  // Predefine AS_MODE selecting the communication mode if needed  
-  #define AS_MODE 1 // AS_STANDARD     - 1024Bd  or 128B/s
-  #define AS_MODE 2 // AS_FAST         - 1361Bd  or 170B/s
-  #define AS_MODE 3 // AS_OVERDRIVE_32 - 3773Bb  or 471B/s
-  #define AS_MODE 4 // AS_OVERDRIVE_16 - 5547Bb  or 639B/s
-  #define AS_MODE 5 // AS_OVERDRIVE_8  - 12658Bd or 1528B/s
+/* Acknowledge maximum latency, 15000 microseconds default.
+   Could be necessary to higher AS_RESPONSE_TIMEOUT if sending
+   long packets because of the CRC computation time needed by
+   receiver before transmitting its acknowledge  */
+#define AS_RESPONSE_TIMEOUT 15000
 
-  /* Acknowledge latency maximum duration (15000 microseconds default).
-     Could be necessary to higher AS_RESPONSE_TIMEOUT if sending long packets because
-     of the CRC computation time needed by receiver before transmitting its acknowledge  */
-  #define AS_RESPONSE_TIMEOUT 15000
+/* Set the back-off exponential degree (default 5) */
+#define AS_BACK_OFF_DEGREE      5
 
-  /* Set the back-off exponential degree (default 5) */
-  #define AS_BACK_OFF_DEGREE      5
+/* Set the maximum sending attempts (default 10) */
+#define AS_MAX_ATTEMPTS        10
 
-  /* Set the maximum sending attempts (default 10) */
-  #define AS_MAX_ATTEMPTS        10
+/* The values set above are the default producing a 3.2 seconds
+   back-off timeout with 20 attempts. Higher SWBB_MAX_ATTEMPTS
+   to higher the back-off timeout, higher SWBB_BACK_OFF_DEGREE
+   to higher the interval between every attempt. */
 
-  /* The values set above are the default producing a 3.2 seconds
-     back-off timeout with 20 attempts. Higher SWBB_MAX_ATTEMPTS to higher
-     the back-off timeout, higher SWBB_BACK_OFF_DEGREE to higher the interval
-     between every attempt. */
+#include <PJON.h>
 
-  #include <PJON.h>
+PJON<AnalogSampling> bus;
 
-  PJON<AnalogSampling> bus;
+void setup() {
+  // Set the pin A0 as the communication pin
+  bus.strategy.set_pin(A0);
 
-  void setup() {
-    bus.strategy.set_pin(A0);        // Set the pin A0 as the communication pin
-                                     // or
-    bus.strategy.set_pins(A0, 12);   // Set pin A0 as input pin and pin 12 as output pin  
+  // Set pin A0 as input pin and pin 12 as output pin
+  bus.strategy.set_pins(A0, 12);
 
-    bus.strategy.set_threshold(AS_THRESHOLD); // Set threshold (default value AS_THRESHOLD)
-  }
-
+  // Set threshold (default value AS_THRESHOLD)
+  bus.strategy.set_threshold(AS_THRESHOLD);
+}
 ```
 After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance.
 

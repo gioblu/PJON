@@ -8,12 +8,15 @@
 
 ```cpp
 /*
-Milan, Italy - Originally published: 02/10/2016 - Latest revision: 15/10/2017
+Milan, Italy
+Originally published: 02/10/2016
+Latest revision: 15/10/2017
 PJON™ dynamic addressing specification v1.0
-Invented by Giovanni Blu Mitolo, released into the public domain
+Invented by Giovanni Blu Mitolo,
+released into the public domain
 
 Related implementation: https://github.com/gioblu/PJON/
-Compliant implementation versions: PJON 9.0 and following
+Compliant versions: PJON v9.0 and following
 
 Inspired by the thesis of Thomas Snaidero:
 "Modular components for eye tracking, in the interest of
@@ -28,15 +31,15 @@ This document defines the dynamic addressing procedure used by a device in multi
 
 ### Master-slave dynamic addressing
 ```cpp  
- _________     _________     _________     _________
-| ID    1 |   | ID    2 |   | ID    3 |   | ID    4 |
-| RID 101 |   | RID  41 |   | RID 945 |   | RID  22 |  __________
-|_________|   |_________|   |_________|   |_________| |  MASTER  |
-____|_____________|_____________|_____________|_______| ID   254 |
- ___|_____     ___|_____     ___|_____     ___|_____  |__________|
-| ID    5 |   | ID    6 |   | ID    7 |   | ID    8 |
-| RID 723 |   | RID  35 |   | RID 585 |   | RID  66 |
-|_________|   |_________|   |_________|   |_________|
+ _________    _________    _________    _________
+| ID    1 |  | ID    2 |  | ID    3 |  | ID    4 |
+| RID 101 |  | RID  41 |  | RID 945 |  | RID  22 |  __________
+|_________|  |_________|  |_________|  |_________| |  MASTER  |
+____|____________|____________|____________|_______| ID   254 |
+ ___|_____    ___|_____    ___|_____    ___|_____  |__________|
+| ID    5 |  | ID    6 |  | ID    7 |  | ID    8 |
+| RID 723 |  | RID  35 |  | RID 585 |  | RID  66 |
+|_________|  |_________|  |_________|  |_________|
 ```
 
 #### Master features
@@ -61,32 +64,32 @@ All communication to dynamically assign or request ids must be transmitted using
 
 Slave sends a `PJON_ID_REQUEST` to get a new device id:
 ```cpp  
- _________ ________ ______ ___ ________ __________ _______ ___  ___
-|         | HEADER |      |   |  NOT   |          |  RID  |   ||   |
-|MASTER_ID|00110110|LENGTH|CRC|ASSIGNED|ID_REQUEST|1|2|3|4|CRC||ACK|
-|_________|________|______|___|________|__________|_|_|_|_|___||___|
+ ______ ________ ______ ___ ________ __________ _______ ___  ___
+|MASTER| HEADER |      |   |  NOT   |          |  RID  |   ||   |
+|  ID  |00110110|LENGTH|CRC|ASSIGNED|ID_REQUEST|1|2|3|4|CRC||ACK|
+|______|________|______|___|________|__________|_|_|_|_|___||___|
 ```
 If master detects a device rid collision, sends a `PJON_ID_NEGATE` request to `PJON_NOT_ASSIGNED` device id to force
 the collided device still not approved to regenerate a device rid:
 ```cpp  
- ____________ ________ ______ ___ _________ _________ _______ ___  ___
-|            | HEADER |      |   |         |         |  RID  |   ||   |
-|NOT ASSIGNED|00110110|LENGTH|CRC|MASTER_ID|ID_NEGATE|1|2|3|4|CRC||ACK|
-|____________|________|______|___|_________|_________|_|_|_|_|___||___|
+ ________ ________ ______ ___ ______ _________ _______ ___  ___
+|  NOT   | HEADER |      |   |MASTER|         |  RID  |   ||   |
+|ASSIGNED|00110110|LENGTH|CRC|  ID  |ID_NEGATE|1|2|3|4|CRC||ACK|
+|________|________|______|___|______|_________|_|_|_|_|___||___|
 ```  
 Master broadcasts response containing the new id reserved for the device rid who requested:
 ```cpp  
- _________ ________ ______ ___ _________ __________ _______ __ ___
-|         | HEADER |      |   |         |          |  RID  |  |   |
-|BROADCAST|00110010|LENGTH|CRC|MASTER_ID|ID_REQUEST|1|2|3|4|ID|CRC|
-|_________|________|______|___|_________|__________|_|_|_|_|__|___|
+ _________ ________ ______ ___ ______ __________ _______ __ ___
+|         | HEADER |      |   |MASTER|          |  RID  |  |   |
+|BROADCAST|00110010|LENGTH|CRC|  ID  |ID_REQUEST|1|2|3|4|ID|CRC|
+|_________|________|______|___|______|__________|_|_|_|_|__|___|
 ```
 Slave device id acquisition confirmation:
 ```cpp  
- _________ ________ ______ ___ __ __________ _______ __ ___  ___
-|         | HEADER |      |   |  |          |  RID  |  |   ||   |
-|MASTER_ID|00110110|LENGTH|CRC|ID|ID_CONFIRM|1|2|3|4|ID|CRC||ACK|
-|_________|________|______|___|__|__________|_|_|_|_|__|___||___|
+ ______ ________ ______ ___ __ __________ _______ __ ___  ___
+|MASTER| HEADER |      |   |  |          |  RID  |  |   ||   |
+|  ID  |00110110|LENGTH|CRC|ID|ID_CONFIRM|1|2|3|4|ID|CRC||ACK|
+|______|________|______|___|__|__________|_|_|_|_|__|___||___|
 ```
 If master detects reference a requester's rid already present in its reference, sends a `PJON_ID_NEGATE` request to the slave id requesting `ID_CONFIRM` to force it to regenerate a rid and try again:
 ```cpp  
@@ -104,10 +107,10 @@ If master experiences temporary disconnection or reboot, on startup sends a `PJO
 ```
 Slaves receives and dispatches a `PJON_ID_REFRESH` request for master:
 ```cpp  
- _________ ________ ______ ___ __ __________ _______ __ ___  ___
-|         | HEADER |      |   |  |          |  RID  |  |   ||   |
-|MASTER_ID|00110110|LENGTH|CRC|ID|ID_REFRESH|1|2|3|4|ID|CRC||ACK|
-|_________|________|______|___|__|__________|_|_|_|_|__|___||___|
+ ______ ________ ______ ___ __ __________ _______ __ ___  ___
+|MASTER| HEADER |      |   |  |          |  RID  |  |   ||   |
+|  ID  |00110110|LENGTH|CRC|ID|ID_REFRESH|1|2|3|4|ID|CRC||ACK|
+|______|________|______|___|__|__________|_|_|_|_|__|___||___|
 ```
 If the id requested by the slave is free in master's reference, id is approved and the exchange ends.
 If the id is found already in use, master sends a `PJON_ID_NEGATE` request forcing the slave to
@@ -122,10 +125,10 @@ Master sends `PJON_ID_NEGATE` request to slave:
 ```
 If slave disconnect from the bus must send a `PJON_ID_NEGATE` request to the master:
 ```cpp  
- _________ ________ ______ ___ __ _________ _______ __ ___  ___
-|         | HEADER |      |   |  |         |  RID  |  |   ||   |
-|MASTER_ID|00110110|LENGTH|CRC|ID|ID_NEGATE|1|2|3|4|ID|CRC||ACK|
-|_________|________|______|___|__|_________|_|_|_|_|__|___||___|
+ ______ ________ ______ ___ __ _________ _______ __ ___  ___
+|MASTER| HEADER |      |   |  |         |  RID  |  |   ||   |
+|  ID  |00110110|LENGTH|CRC|ID|ID_NEGATE|1|2|3|4|ID|CRC||ACK|
+|______|________|______|___|__|_________|_|_|_|_|__|___||___|
 ```
 
 ### Multi-master dynamic addressing
@@ -134,11 +137,11 @@ If slave disconnect from the bus must send a `PJON_ID_NEGATE` request to the mas
 |       |   |       |   |       |   |       |   |       |
 | ID 0  |   | ID 1  |   | ID 2  |   | ID 3  |   | ID 4  |
 |_______|   |_______|   |_______|   |_______|   |_______|
-_____|___________|___________|___________|___________|_____
-       ___|___     ___|___     ___|___     ___|___
-      |       |   |       |   |       |   |       |
-      | ID 5  |   | ID 6  |   | ID 7  |   | ID 8  |
-      |_______|   |_______|   |_______|   |_______|   
+_____|___________|___________|___________|___________|____
+     ___|___     ___|___     ___|___     ___|___
+    |       |   |       |   |       |   |       |
+    | ID 5  |   | ID 6  |   | ID 7  |   | ID 8  |
+    |_______|   |_______|   |_______|   |_______|   
 ```
 
 #### Procedure

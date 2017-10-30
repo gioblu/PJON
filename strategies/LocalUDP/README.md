@@ -11,7 +11,8 @@ It can also be useful for connecting physically separate clusters of devices tha
 #### How to use LocalUDP
 Pass the `LocalUDP` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
 ```cpp  
-  PJON<LocalUDP> bus(44); // Use LocalUDP strategy with PJON device id 44
+  // Use LocalUDP strategy with PJON device id 44
+  PJON<LocalUDP> bus(44);
 ```
 Set up the Ethernet card in the usual manner by calling `Ethernet.begin`, then call the `begin` method on the PJON object:
 ```cpp  

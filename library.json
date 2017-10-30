@@ -1,7 +1,7 @@
 {
   "name": "PJON",
   "description": "PJON is an open-source, multi-master, multi-media device communications bus system framework",
-  "keywords": "communication, bus, protocol",
+  "keywords": "communication, bus, protocol, network",
   "authors":
   {
     "name": "Giovanni Blu Mitolo",
@@ -12,7 +12,7 @@
     "type": "git",
     "url": "https://github.com/gioblu/PJON.git"
   },
-  "version": "8.2",
+  "version": "9.0",
   "examples": "examples/*/*/*/*.ino",
   "frameworks": "arduino",
   "platforms":

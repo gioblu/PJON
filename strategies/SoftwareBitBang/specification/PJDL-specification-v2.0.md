@@ -7,16 +7,22 @@
 - TSDL (Tardy Serial Data Link) specification: [TSDL v1.0](/strategies/ThroughSerial/specification/TSDL-specification-v1.0.md)
 ```cpp
 /*
-Milan, Italy - Originally published: 10/04/2010 - latest revision: 24/09/2017
+Milan, Italy
+Originally published: 10/04/2010
+latest revision: 24/09/2017
 PJDL (Padded Jittering Data Link) v2.0 specification
-Invented by Giovanni Blu Mitolo, released into the public domain
+Invented by Giovanni Blu Mitolo,
+released into the public domain
 
 Related implementation: /strategies/SoftwareBitBang/
-Compliant implementation versions: PJON 9.0 and following
-Changelog: Added frame separation
+Compliant versions: PJON 9.0 and following
+
+Changelog:
+- Added frame separation
+- Added communication modes specification
 */
 ```
-### PJDL (Padded Jittering Data Link) v2.0
+### PJDL v2.0
 PJDL (Padded Jittering Data Link) is a simplex or half-duplex data link layer, that can be easily software emulated, enabling one or many to many communication over a single conductive medium or bus, connected to device's input-output ports, in both master-slave and multi-master configuration. It has been engineered to have limited minimum requirements, and to be efficiently executed on limited microcontrollers with low clock accuracy. No additional hardware is required to apply PJDL, and, being implemented in less than 350 lines of code, it is easily portable to many different architectures. Bus maximum length is limited by its electric resistance; it has been tested with up to 50m long insulated wires and results demonstrate the same high performance achieved with shorter lengths.
 
 ### Basic concepts
@@ -58,41 +64,51 @@ Padding bits add a certain overhead but are reducing the need of precise timing 
 #### Frame transmission
 Before a frame transmission, the communication medium is analysed, if logic 1 is present ongoing communication is detected and collision avoided, if logic 0 is detected for a duration longer than a byte transmission plus its synchronization pad and a small random timeframe, frame transmission starts with 3 synchronization pads, followed by data bytes. The presence of synchronization pads with their logic 1 between each byte ensures that also a frame composed of a series of bytes with decimal value 0 can be transmitted safely without risk of third-party collision.
 ```cpp  
- __________ _________________ __________________________________
-| ANALYSIS |   FRAME INIT    | DATA 1-65535 bytes               |
-|__________|_____ _____ _____|________________ _________________|
-|          |Sync |Sync |Sync |Sync | Byte     |Sync | Byte      |
-|          |___  |___  |___  |___  |     __   |___  |      _   _|
-|          |   | |   | |   | |   | |    |  |  |   | |     | | | |
-|0000000000| 1 |0| 1 |0| 1 |0| 1 |0|0000|11|00| 1 |0|00000|1|0|1|
-|__________|___|_|___|_|___|_|___|_|____|__|__|___|_|_____|_|_|_|
+ ________ _________________ __________________________________
+|ANALYSIS|   FRAME INIT    | DATA 1-65535 bytes               |
+|________|_____ _____ _____|________________ _________________|
+|        |Sync |Sync |Sync |Sync | Byte     |Sync | Byte      |
+|        |___  |___  |___  |___  |     __   |___  |      _   _|
+|        |   | |   | |   | |   | |    |  |  |   | |     | | | |
+|00000000| 1 |0| 1 |0| 1 |0| 1 |0|0000|11|00| 1 |0|00000|1|0|1|
+|________|___|_|___|_|___|_|___|_|____|__|__|___|_|_____|_|_|_|
 ```
 In a scenario where a frame is received, low performance microcontrollers with inaccurate clock can correctly synchronize with transmitter during the frame initializer, and consequently each byte is received. The frame initializer is detected if 3 synchronizations occurred and if its duration is equal or higher than:
 
 `initializer expected duration - (sync pad bit 1 duration - sync pad bit 1 minimum acceptable duration)`
 
-To ensure 100% reliability separating frames the sync pad minimum acceptable duration must be higher than 1 standard bit duration. With a correct `sync pad bit 1 / standard bit` ratio, frame initializer is 100% reliable, false positives cannot occur if not because of externally induced interference. Sync pad bit 1 duration must not be an exact multiple of a standard bit, for this reason ratio 2.0, 3.0 or 4.0 must be avoided because consecutive bits can be interpreted as a frame initializer.
+To ensure 100% reliability separating frames the sync pad minimum acceptable duration must be higher than 1 standard bit duration. Selecting a correct `sync pad bit 1 / standard bit` ratio, called pad-bit ratio, frame initializer is 100% reliable, false positives cannot occur if not because of externally induced interference. Sync pad bit 1 duration must not be an exact multiple of a standard bit, for this reason pad-bit ratio of 2.0, 3.0 or 4.0 must be avoided because consecutive bits can be interpreted as a frame initializer.
 
 #### Synchronous response
 A frame transmission can be optionally followed by a synchronous response by its recipient. This feature is available for both master-slave and multi-master configuration.
 ```cpp  
-Transmission                                            Response
- ______  ______  ______  ______  ______                   _____
-| INIT || BYTE || BYTE || BYTE || BYTE | CRC COMPUTATION | ACK |
-|------||------||------||------||------|-----------------|-----|
-|      ||      ||      ||      ||      | LATENCY         |  6  |
-|______||______||______||______||______|                 |_____|
+Transmission                                    Response
+ ______  ______  ______  ______                   _____
+| INIT || BYTE || BYTE || BYTE | CRC COMPUTATION | ACK |
+|------||------||------||------|-----------------|-----|
+|      ||      ||      ||      | LATENCY         |  6  |
+|______||______||______||______|                 |_____|
 ```
 
 Between frame transmission and a synchronous response there is a variable timeframe influenced by latency and CRC computation time. In order to avoid other devices to consider the medium free and disrupt an ongoing exchange, sender cyclically transmits a shorter than one bit logic 1 (which exact length depends on practical requirements) and consequently attempts to receive a response. On the other side receiver can synchronize its response transmission after the last incoming high bit, detect if acknowledgement was lost by transmitter and try again if necessary.
 ```cpp  
-Transmission                                              Response
- ______  ______  ______  ______  ______   _   _   _   _   _ _____
-| INIT || BYTE || BYTE || BYTE || BYTE | | | | | | | | | | | ACK |
-|------||------||------||------||------| | | | | | | | | | |-----|
-|      ||      ||      ||      ||      | | | | | | | | | | |  6  |
-|______||______||______||______||______|_| |_| |_| |_| |_| |_____|
+Transmission                                      Response
+ ______  ______  ______  ______   _   _   _   _   _ _____
+| INIT || BYTE || BYTE || BYTE | | | | | | | | | | | ACK |
+|------||------||------||------| | | | | | | | | | |-----|
+|      ||      ||      ||      | | | | | | | | | | |  6  |
+|______||______||______||______|_| |_| |_| |_| |_| |_____|
 
 ```
 
 The maximum time dedicated to potential acknowledgement reception and consequent medium jittering is estimated adding the maximum frame length CRC computation time to the expected latency. Thanks to the presence of the jittering wave, many differently configured devices can coexist on the same medium with no risk of collision.
+
+#### Communication modes
+The proposed communication modes are the result of years of testing and optimization and have been selected to be easily supported by limited microcontrollers.  
+
+| MODE | Bit timing | Sync bit timing | Pad-bit ratio | Speed               |
+| ---- | ---------- | --------------- | ------------- | ------------------- |
+| 1    | 40         | 112             | 2.8           | 2.118kB/s - 16944Bd |
+| 2    | 32         | 84              | 2.625         | 2.688kB/s - 21504Bd |
+
+Binary timing durations are expressed in microseconds.

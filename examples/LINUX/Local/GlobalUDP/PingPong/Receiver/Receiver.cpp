@@ -33,7 +33,8 @@ void loop() {
 }
 
 int main() {
-  bus.strategy.add_node(45, remote_ip);
+  bus.strategy.add_node(45, remote_ip, 16000);
+  bus.strategy.set_port(16001);
   bus.set_receiver(receiver_function);
   bus.begin();
 

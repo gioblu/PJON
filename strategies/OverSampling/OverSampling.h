@@ -24,9 +24,7 @@
 
 #pragma once
 
-#define STXRX882_STANDARD 1
-
-/* STXRX882_STANDARD:
+/* MODE 1:
    Medium: STX882/SRX882 433MHz ASK/FSK modules or 315/433 MHz modules (green)
     RX http://nicerf.com/manage/upfile/indexbanner/635331970881921250.pdf
     TX http://nicerf.com/manage/upfile/indexbanner/635169453223382155.pdf
@@ -39,7 +37,7 @@
     Range: 250m with no direct line of sight, 5km with direct line of sight  */
 
 #ifndef OS_MODE
-  #define OS_MODE STXRX882_STANDARD
+  #define OS_MODE 1
 #endif
 
 // Used to signal communication failure

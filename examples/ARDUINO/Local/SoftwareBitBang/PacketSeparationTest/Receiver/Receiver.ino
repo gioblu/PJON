@@ -6,9 +6,9 @@
    transmits a continuous random byte stream. If an incoming packet is detected
    a false positive occurred. */
 
-// Uncomment to run SoftwareBitBang to mode FAST
+// Uncomment to run SoftwareBitBang in MODE 2
 // #define SWBB_MODE 2
-// Uncomment to run SoftwareBitBang to mode OVERDRIVE
+// Uncomment to run SoftwareBitBang in MODE 3
 // #define SWBB_MODE 3
 
 #include <PJON.h>

@@ -20,7 +20,7 @@ of Fred Larsen and is inspired by the work of Thomas Snaidero:
 Master Thesis, IT University of Copenhagen, Denmark, September 2016
 
 PJON™ Dynamic addressing specification:
-- v0.1 specification/PJON-dynamic-addressing-specification-v0.1.md
+- v1.0 specification/PJON-dynamic-addressing-specification-v1.0.md
 
 PJON™ is a self-funded, no-profit open-source project created and maintained
 by Giovanni Blu Mitolo with the support of the internet community if you want

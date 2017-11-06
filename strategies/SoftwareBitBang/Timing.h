@@ -91,42 +91,31 @@
 #if defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
   #if SWBB_MODE == 1
     #if F_CPU == 16000000L
-      /* External 16MHz oscillator */
-      #define SWBB_BIT_WIDTH   40
-      #define SWBB_BIT_SPACER 112
-      #define SWBB_ACCEPTANCE  56
-      #define SWBB_READ_DELAY   4
+      // Working on pin: 1
+      // Fallback to default
     #endif
   #endif
   #if SWBB_MODE == 2
     #if F_CPU == 16000000L
-      /* External 16MHz oscillator */
-      #define SWBB_BIT_WIDTH   32
-      #define SWBB_BIT_SPACER  84
-      #define SWBB_ACCEPTANCE  32
-      #define SWBB_READ_DELAY   4
+      // Working on pin: 1
+      // Fallback to default
     #endif
   #endif
 #endif
 
-/* ATtiny44/84 ------------------------------------------------------------ */
-#if defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__)
+/* ATtiny44/84/44A/84A ---------------------------------------------------- */
+#if defined(__AVR_ATtiny44__)  || defined(__AVR_ATtiny84__) || \
+    defined(__AVR_ATtiny84A__) || defined(__AVR_ATtiny84A__)
   #if SWBB_MODE == 1
     #if F_CPU == 16000000L
-      /* External 16MHz oscillator */
-      #define SWBB_BIT_WIDTH   40
-      #define SWBB_BIT_SPACER 112
-      #define SWBB_ACCEPTANCE  40
-      #define SWBB_READ_DELAY   4
+      // Working on pin: 0, 1, 2, 3, 4
+      // Fallback to default
     #endif
   #endif
   #if SWBB_MODE == 2
     #if F_CPU == 16000000L
-      /* External 16MHz oscillator */
-      #define SWBB_BIT_WIDTH   32
-      #define SWBB_BIT_SPACER  84
-      #define SWBB_ACCEPTANCE  32
-      #define SWBB_READ_DELAY   4
+      // Working on pin: 0, 1, 2, 3, 4
+      // Fallback to default
     #endif
   #endif
 #endif
@@ -185,7 +174,7 @@
     #define SWBB_BIT_SPACER 112
   #endif
   #ifndef SWBB_ACCEPTANCE
-    #define SWBB_ACCEPTANCE  40
+    #define SWBB_ACCEPTANCE  56
   #endif
   #ifndef SWBB_READ_DELAY
     #define SWBB_READ_DELAY   4
@@ -199,7 +188,7 @@
     #define SWBB_BIT_SPACER  84
   #endif
   #ifndef SWBB_ACCEPTANCE
-    #define SWBB_ACCEPTANCE  32
+    #define SWBB_ACCEPTANCE  52
   #endif
   #ifndef SWBB_READ_DELAY
     #define SWBB_READ_DELAY   4

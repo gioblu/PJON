@@ -78,7 +78,7 @@
     #define SWBB_ACCEPTANCE  62
     #define SWBB_READ_DELAY  11
   #endif
-  #if SWBB_MODE == 2 || SWBB_MODE == 3
+  #if SWBB_MODE == 2
     /* Working on pin: 3, 4, 7, 8, 9, 10, 12 */
     #define SWBB_BIT_WIDTH   30
     #define SWBB_BIT_SPACER  82
@@ -91,13 +91,13 @@
 #if defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
   #if SWBB_MODE == 1
     #if F_CPU == 16000000L
-      // Working on pin: 1
+      // Working on pin: 1, 2
       // Fallback to default
     #endif
   #endif
   #if SWBB_MODE == 2
     #if F_CPU == 16000000L
-      // Working on pin: 1
+      // Working on pin: 1, 2
       // Fallback to default
     #endif
   #endif

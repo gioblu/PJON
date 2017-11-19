@@ -27,6 +27,8 @@ PJON™ Standard compliant tools:
   https://github.com/Girgitt/PJON-piper
 - PJON-python - PJON running on Python by Zbigniew Zasieczny
   https://github.com/Girgitt/PJON-python
+- PJON-gRPC - gRPC server-client by Oleg Galitskiy
+  https://github.com/Galitskiy/PJON-gRPC
 
 Credits to contributors:
 - Fred Larsen. Systems engineering, header driven communication, debugging

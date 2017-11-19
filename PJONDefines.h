@@ -27,8 +27,8 @@ PJON™ Standard compliant tools:
  https://github.com/Girgitt/PJON-piper
 - PJON-python - PJON running on Python by Zbigniew Zasieczny
  https://github.com/Girgitt/PJON-python
-- Logic analyzer by Andrew Grande (obsolete)
- https://github.com/aperepel/saleae-pjon-protocol-analyzer
+- PJON-gRPC - gRPC server-client by Oleg Galitskiy
+ https://github.com/Galitskiy/PJON-gRPC
  _____________________________________________________________________________
 
 Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com

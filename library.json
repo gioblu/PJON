@@ -1,11 +1,14 @@
 {
   "name": "PJON",
-  "description": "PJON is an open-source, multi-master, multi-media device communications bus system framework",
-  "keywords": "communication, bus, protocol, network",
+  "description": "PJON is an open-source, multi-master, multi-media network protocol stack",
+  "homepage": "https://www.pjon.org",
+  "keywords": "communication, bus, protocol, network, multi, master, media",
+  "license": "Apache-2.0",
   "authors":
   {
     "name": "Giovanni Blu Mitolo",
-    "email": "gioscarab@gmail.com"
+    "email": "gioscarab@gmail.com",
+    "maintainer": true
   },
   "repository":
   {
@@ -13,13 +16,27 @@
     "url": "https://github.com/gioblu/PJON.git"
   },
   "version": "9.0",
-  "examples": "examples/*/*/*/*.ino",
-  "frameworks": "arduino",
-  "platforms":
-  [
+  "examples": [
+    "examples/*/*/*/*/*.ino",
+    "examples/*/*/*/*/*.h",
+    "examples/*/*/*/*/*/*.ino",
+    "examples/*/*/*/*/*/*.h",
+    "examples/*/*/*/*/*/*/*.ino",
+    "examples/*/*/*/*/*/*/*.h",
+  ],
+  "frameworks": [
+    "arduino",
+    "wiringpi"
+  ],
+  "platforms": [
     "atmelavr",
     "atmelsam",
-    "espressif",
-    "teensy"
-  ]
+    "espressif8266",
+    "teensy",
+    "linux_x86_64",
+    "windows_x86"
+  ],
+  "build" : {
+    "flags": "-std=c++11"
+  }
 }

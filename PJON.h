@@ -779,9 +779,7 @@ class PJON {
         if(state == PJON_ACK) return state;
         attempts++;
         if(state != PJON_FAIL) strategy.handle_collision();
-        receive(
-          (uint32_t)(PJON_MICROS() - time) < strategy.back_off(attempts)
-        );
+        receive(strategy.back_off(attempts));
         time = PJON_MICROS();
       }
       return state;

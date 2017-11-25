@@ -22,7 +22,7 @@
     "examples/*/*/*/*/*/*.ino",
     "examples/*/*/*/*/*/*.h",
     "examples/*/*/*/*/*/*/*.ino",
-    "examples/*/*/*/*/*/*/*.h",
+    "examples/*/*/*/*/*/*/*.h"
   ],
   "frameworks": [
     "arduino",

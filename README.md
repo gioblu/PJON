@@ -51,6 +51,7 @@ and maintainance costs.
 - Paypal: [PJON](https://www.paypal.me/PJON)
 - Bitcoin: [1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD](http://tny.im/btc/address.php?a=1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD)
 - Ethereum: [0xf34AEAF3B149454522019781668F9a2d1762559b](https://etherchain.org/account/0xf34AEAF3B149454522019781668F9a2d1762559b)
+
 Thank you and happy tinkering!
 
 PJON™ and its brand are unregistered trademarks, property of Giovanni Blu Mitolo gioscarab@gmail.com

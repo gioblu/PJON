@@ -1,7 +1,7 @@
 
  /*-O//\         __     __
    |-gfo\       |__| | |  | |\ | ™
-   |!y°o:\      |  __| |__| | \| v9.0
+   |!y°o:\      |  __| |__| | \| v9.1
    |y"s§+`\     multi-master, multi-media communications bus system
   /so+:-..`\    Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\

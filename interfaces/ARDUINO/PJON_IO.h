@@ -10,8 +10,8 @@
   List of supported MCUs:
   - ATmega8/88/168/328/1280/2560 (Duemilanove, Uno, Nano, Mini, Pro, Mega)
   - ATmega16U4/32U4 (Leonardo, Micro)
+  - ATtiny44/84/44A/84A Added by Wilfried Klaas
   - ATtiny45/85 (Trinket, Digispark)
-  - ATtiny44/84 Added by Wilfried Klaas
   - SAMD21G18A (Arduino Zero) Added by Esben Soeltoft 03/09/2016
 
 Renamed since v7.0 to avoid naming collisions and so subtle bugs and anomalies
@@ -178,8 +178,9 @@ inform the reader of their definition as macros in the global scope.
   #endif
 #endif
 
-/* AVR ATtiny44/84 ------------------------------------ */
-#if defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__)
+/* AVR ATtiny44/84/44A/84A ------------------------------------------------ */
+#if defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__) || \
+    defined(__AVR_ATtiny44A__) || defined(__AVR_ATtiny84A__)
   #define PJON_IO_PIN_TO_PORT_REG(P) \
     ((P >= 0 && P <= 7) ? &PORTA : &PORTB )
   #define PJON_IO_PIN_TO_DDR_REG(P) \

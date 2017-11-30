@@ -1,7 +1,7 @@
 ﻿
  /*-O//\         __     __
    |-gfo\       |__| | |  | |\ | ™
-   |!y°o:\      |  __| |__| | \| v9.0
+   |!y°o:\      |  __| |__| | \| v9.1
    |y"s§+`\     multi-master, multi-media communications bus system
   /so+:-..`\    Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
@@ -13,11 +13,6 @@
         > <
  ______-| |-__________________________________________________________________
 
-PJON™ is a self-funded, no-profit open-source project created and maintained
-by Giovanni Blu Mitolo with the support of the internet community if you want
-to see the PJON project growing with a faster pace, consider a donation at
-the following link: https://www.paypal.me/PJON
-
 For the PJON™ Protocol specification see the specification directory.
 
 PJON™ Standard compliant tools:
@@ -27,6 +22,8 @@ PJON™ Standard compliant tools:
   https://github.com/Girgitt/PJON-piper
 - PJON-python - PJON running on Python by Zbigniew Zasieczny
   https://github.com/Girgitt/PJON-python
+- PJON-gRPC - gRPC server-client by Oleg Galitskiy
+  https://github.com/Galitskiy/PJON-gRPC
 
 Credits to contributors:
 - Fred Larsen. Systems engineering, header driven communication, debugging
@@ -58,6 +55,15 @@ Bug reports:
 - Fabian Gärtner. receive function and big packets bugfix
 - Mauro Mombelli. Code cleanup
 - Shachar Limor. Blink example pinMode bugfix
+
+If you believe in this project and you appreciate our work, please, make a
+donation. The PJON Foundation is entirely financed by contributions of wise
+people like you and its resources are solely invested to cover the development
+and maintainance costs.
+- Paypal:   https://www.paypal.me/PJON
+- Bitcoin:  1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD
+- Ethereum: 0xf34AEAF3B149454522019781668F9a2d1762559b
+Thank you and happy tinkering!
  _____________________________________________________________________________
 
 Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
@@ -777,9 +783,7 @@ class PJON {
         if(state == PJON_ACK) return state;
         attempts++;
         if(state != PJON_FAIL) strategy.handle_collision();
-        receive(
-          (uint32_t)(PJON_MICROS() - time) < strategy.back_off(attempts)
-        );
+        receive(strategy.back_off(attempts));
         time = PJON_MICROS();
       }
       return state;

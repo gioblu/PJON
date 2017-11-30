@@ -44,6 +44,13 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 - [PJON-python](https://github.com/Girgitt/PJON-python) - python interface by Zbigniew Zasieczny
 - [PJON-gRPC](https://github.com/Galitskiy/PJON-gRPC) - gRPC server-client by Oleg Galitskiy
 
-PJON™ is a self-funded, no-profit open-source project created in 2010 and maintained by Giovanni Blu Mitolo with the support of the internet community. If you want to see the PJON project growing with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
+If you believe in this project and you appreciate our work, please, make a
+donation. The PJON Foundation is entirely financed by contributions of wise
+people like you and its resources are solely invested to cover the development
+and maintainance costs.
+- Paypal: [PJON](https://www.paypal.me/PJON)
+- Bitcoin: [1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD](http://tny.im/btc/address.php?a=1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD)
+- Ethereum: [0xf34AEAF3B149454522019781668F9a2d1762559b](https://etherchain.org/account/0xf34AEAF3B149454522019781668F9a2d1762559b)
+Thank you and happy tinkering!
 
 PJON™ and its brand are unregistered trademarks, property of Giovanni Blu Mitolo gioscarab@gmail.com

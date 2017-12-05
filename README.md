@@ -1,7 +1,7 @@
 
 ![PJON](http://www.gioblu.com/PJON/PJON-github-header-tiny.png)
-## PJON v9.0
-PJON™ (Padded Jittering Operative Network) is an Arduino compatible, multi-master, multi-media communications bus system. It proposes a Standard, it is designed as a framework and implements a totally software emulated network protocol stack that can be easily cross-compiled on many architectures like ATtiny, ATmega, ESP8266, Teensy, Raspberry Pi, Linux and Windows x86 machines. It is a valid tool to quickly and comprehensibly build a network of devices. Visit [wiki](https://github.com/gioblu/PJON/wiki) and [documentation](https://github.com/gioblu/PJON/wiki/Documentation) to know more about the PJON Standard.
+## PJON v9.1
+PJON™ (Padded Jittering Operative Network) is an Arduino compatible, multi-master, multi-media communications bus system. It proposes a Standard, it is designed as a framework and implements a totally software emulated network protocol stack that can be easily cross-compiled on many architectures like ATtiny, ATmega, ESP8266, Teensy, Raspberry Pi, Linux and Windows x86 machines. It is a valid tool to quickly and comprehensibly build a network of devices. Visit [wiki](https://github.com/gioblu/PJON/wiki) and [documentation](documentation/README.md) to know more about the PJON Standard.
 
 [![Get PJON bus id](https://img.shields.io/badge/GET-PJON%20bus%20id-lightgrey.svg)](http://www.pjon.org/get-bus-id.php)
 [![Video introduction](https://img.shields.io/badge/PJON-video%20introduction-blue.svg)](https://www.youtube.com/watch?v=vjc4ZF5own8)
@@ -12,7 +12,7 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 - **Increased security**: Ethernet and WiFi are exposing many smart things to ransomware, illegal cyber-warfare activities and putting privacy at risk. PJON has been engineered to enhance security not necessarily implementing the standard network protocol stack together with its vulnerabilities where it is not absolutely necessary, offering a set of alternatives covering many use cases.
 - **Increased reliability**: Many protocols applied worldwide, also in critical use cases, like 1-Wire, i2c and CAN exposes dangerous vulnerabilities, their error detection algorithms are weak and they are not resilient in case of interference. The PJON network protocol specification is based on years of analysis and study not to make the same repeated mistakes present in most alternatives and provide with a simpler and more efficient solution.
 - **High flexibility**: The PJON network protocol stack is modular enabling the use of the same network protocol implementation on different data links or media and on different architectures, simply changing its configuration. PJON is totally "software emulated" or executed by software without the use of dedicated hardware; this engineering choice and its simplicity makes it easy to be ported on any computer or microcontroller. Its implementation is designed to enable developers to port new architectures in minutes defining a short set of interfaces to system calls.
-- **Low cost**: Without any additional hardware needed to operate, minimal network wiring requirements and direct pin-to-pin or LED-to-LED low current communication, PJON is extremely energy efficient, cheap to be implemented and maintained. This implementation is kept updated and meticulously tested thanks to the strong commitment of the PJON foundation and the huge support of its growing community of end users, testers and developers.
+- **Low cost**: Without any additional hardware needed to operate, minimal network wiring requirements and direct pin-to-pin or LED-to-LED low current communication, PJON is extremely energy efficient, cheap to be implemented and maintained. This implementation is kept updated and meticulously tested thanks to the strong commitment of the PJON Foundation and the huge support of its growing community of end users, testers and developers.
 
 #### Features
 - Cross-compilation support with the [interfaces](interfaces) system calls abstraction   
@@ -44,6 +44,13 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 - [PJON-python](https://github.com/Girgitt/PJON-python) - python interface by Zbigniew Zasieczny
 - [PJON-gRPC](https://github.com/Galitskiy/PJON-gRPC) - gRPC server-client by Oleg Galitskiy
 
-PJON™ is a self-funded, no-profit open-source project created in 2010 and maintained by Giovanni Blu Mitolo with the support of the internet community. If you want to see the PJON project growing with a faster pace, consider a donation at the following link: https://www.paypal.me/PJON
+#### Donate
+If you believe in this project and you appreciate our work, please, make a
+donation. The PJON Foundation is entirely financed by contributions of wise
+people like you and its resources are solely invested to cover the development
+and maintainance costs. Thank you and happy tinkering!
+- Paypal: [PJON](https://www.paypal.me/PJON)
+- Bitcoin: [1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD](http://tny.im/btc/address.php?a=1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD)
+- Ethereum: [0xf34AEAF3B149454522019781668F9a2d1762559b](https://etherchain.org/account/0xf34AEAF3B149454522019781668F9a2d1762559b)
 
 PJON™ and its brand are unregistered trademarks, property of Giovanni Blu Mitolo gioscarab@gmail.com

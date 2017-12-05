@@ -162,11 +162,15 @@ public:
 
     void send_string(uint8_t *string, uint16_t length) {
       if(length > 0) {
-        uint8_t id = string[0];
-        int16_t pos = find_remote_node(id);
-        // Package always starts with a receiver id byte
-        if (pos != -1) {
-          udp.send_string(string, length, _remote_ip[pos], _remote_port[pos]);
+        uint8_t id = string[0]; // Package always starts with a receiver id
+        if (id == 0) { // Broadcast, send to all receivers
+          for(uint8_t pos = 0; pos < _remote_node_count; pos++)
+            udp.send_string(string, length, _remote_ip[pos], _remote_port[pos]);
+        } else { // To a specific receiver
+          int16_t pos = find_remote_node(id);
+          if (pos != -1) {
+            udp.send_string(string, length, _remote_ip[pos], _remote_port[pos]);
+          }
         }
       }
     };

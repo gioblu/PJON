@@ -53,22 +53,22 @@
 #endif
 
 /* MODE 1 performance (default):
-   Transfer speed: 1024Bb or 128B/s */
+   Transfer speed: 1024Bb or 128B/s
 
-/* MODE 2 performance:
-   Transfer speed: 1361Bb or 170B/s */
+   MODE 2 performance:
+   Transfer speed: 1361Bb or 170B/s
 
-/* MODE 3 performance:
-   Transfer speed: 3352Bb or 419B/s */
+   MODE 3 performance:
+   Transfer speed: 3352Bb or 419B/s
 
-/* MODE 4 performance:
-   Transfer speed: 5069Bb or 633B/s */
+   MODE 4 performance:
+   Transfer speed: 5069Bb or 633B/s
 
-/* MODE 5 performance:
+   MODE 5 performance:
    Transfer speed: 12658Bb or 1582B/s
-   ADC prescale 8 (Caution out of specification) */
+   ADC prescale 8 (Caution out of specification)
 
-/* Set here the selected transmission mode - default STANDARD */
+  Set default transmission mode */
 #ifndef AS_MODE
   #define AS_MODE 1
 #endif
@@ -281,6 +281,7 @@ class AnalogSampling {
         // Escaping byte-stuffing violation
         if((result != AS_START) && (result != AS_ESC) && (result != AS_END))
           return AS_FAIL;
+        result ^= AS_ESC;
       }
       // No end flag, byte-stuffing violation
       if(max_length == 1 && receive_byte() != AS_END)
@@ -337,16 +338,15 @@ class AnalogSampling {
       PJON_IO_MODE(_output_pin, OUTPUT);
       // Add frame flag
       send_byte(AS_START);
-      for(uint16_t b = 0; b < length; b++) {
-        // Byte-stuffing
-        if(
+      for(uint16_t b = 0; b < length; b++)
+        if( // Byte-stuffing
           (string[b] == AS_START) ||
           (string[b] == AS_ESC) ||
           (string[b] == AS_END)
-        ) send_byte(AS_ESC);
-        // Transmit data
-        send_byte(string[b]);
-      }
+        ) {
+          send_byte(AS_ESC);
+          send_byte(string[b] ^ AS_ESC);
+        } else send_byte(string[b]);
       send_byte(AS_END);
       PJON_IO_PULL_DOWN(_output_pin);
     };

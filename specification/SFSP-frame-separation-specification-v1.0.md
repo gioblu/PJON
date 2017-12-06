@@ -5,14 +5,15 @@
 - PJDL (Padded Jittering Data Link) specification:
 [PJDL v2.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) - [PJDLR v2.0](/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) - [PJDLS v2.0](/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
 - TSDL (Tardy Serial Data Link) specification: [TSDL v2.0](/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md)
-- SFSP (Secure Frame Separation Protocol) specification: **[SFSP](/specification/SFSP-frame-separation-specification-v1.0.md)**
+- SFSP (Secure Frame Separation Protocol) specification: **[SFSP v1.0](/specification/SFSP-frame-separation-specification-v1.0.md)**
 
 ```cpp
 /*
 Milan, Italy
 Originally published: 24/11/2017
 SFSP v1.0
-Invented by Giovanni Blu Mitolo
+Invented by Giovanni Blu Mitolo,
+released into the public domain
 
 Related work: https://github.com/gioblu/PJON/
 Compliant implementations: PJON v10.0 and following

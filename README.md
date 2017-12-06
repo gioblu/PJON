@@ -35,8 +35,8 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 #### Data links specification
 - [PJDL v2.0](strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md)
 - [PJDLR v2.0](strategies/OverSampling/specification/PJDLR-specification-v2.0.md)
-- [PJDLS v1.0](strategies/AnalogSampling/specification/PJDLS-specification-v1.0.md)
-- [TSDL v1.0](strategies/ThroughSerial/specification/TSDL-specification-v1.0.md)
+- [PJDLS v2.0](strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
+- [TSDL v2.0](strategies/ThroughSerial/specification/TSDL-specification-v2.0.md)
 
 #### Compliant tools
 - [ModuleInterface](https://github.com/fredilarsen/ModuleInterface) - easy config and value sync between IoT modules by Fred Larsen

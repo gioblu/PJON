@@ -294,7 +294,7 @@ class PJONSlave : public PJON<Strategy> {
           ) acquire_id();
 
         if(this->data[overhead - CRC_overhead] == PJON_ID_LIST)
-          if(this->_device_id != PJON_NOT_ASSIGNED)
+          if(this->_device_id != PJON_NOT_ASSIGNED) {
             if(
               (uint32_t)(PJON_MICROS() - _last_request_time) >
               (PJON_ADDRESSING_TIMEOUT * 1.125)
@@ -310,7 +310,13 @@ class PJONSlave : public PJON<Strategy> {
                 this->config | PJON_ACK_REQ_BIT | required_config
               );
             }
-
+          } else if(
+            (uint32_t)(PJON_MICROS() - _last_request_time) >
+            (PJON_ADDRESSING_TIMEOUT * 1.125)
+          ) {
+            _last_request_time = PJON_MICROS();
+            acquire_id();
+          }
         return true;
       }
       return false;

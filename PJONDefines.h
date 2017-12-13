@@ -206,7 +206,7 @@ struct PJON_Packet_Record {
 
 /* Last received packet Metainfo */
 struct PJON_Packet_Info {
-  uint16_t header = 0;
+  uint8_t header = 0;
   uint16_t id = 0;
   uint8_t receiver_id = 0;
   uint8_t receiver_bus_id[4];

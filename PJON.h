@@ -158,16 +158,14 @@ class PJON {
       char *destination,
       const char *source,
       uint16_t length,
-      uint16_t header = PJON_NOT_ASSIGNED,
+      uint8_t header = PJON_NOT_ASSIGNED,
       uint16_t p_id = 0
     ) {
       if(header == PJON_NOT_ASSIGNED) header = config;
-      if(header > 255) header |= PJON_EXT_HEAD_BIT;
       if(length > 255) header |= PJON_EXT_LEN_BIT;
       if(id == PJON_BROADCAST)
         header &= ~(PJON_ACK_REQ_BIT | PJON_ACK_MODE_BIT);
       uint16_t new_length = length + packet_overhead(header);
-      bool extended_header = header & PJON_EXT_HEAD_BIT;
       bool extended_length = header & PJON_EXT_LEN_BIT;
 
       #if(PJON_INCLUDE_ASYNC_ACK)
@@ -192,46 +190,43 @@ class PJON {
       }
 
       destination[0] = id;
-      if(extended_header) {
-        destination[1] = (uint16_t)header;
-        destination[2] = (uint16_t)header >> 8;
-      } else destination[1] = header;
+      destination[1] = header;
       if(extended_length) {
-        destination[2 + extended_header] = new_length >> 8;
-        destination[3 + extended_header] = new_length & 0xFF;
-        destination[4 + extended_header] =
-          PJON_crc8::compute((uint8_t *)destination, 4 + extended_header);
+        destination[2] = new_length >> 8;
+        destination[3] = new_length & 0xFF;
+        destination[4] =
+          PJON_crc8::compute((uint8_t *)destination, 4);
       } else {
-        destination[2 + extended_header] = new_length;
-        destination[3 + extended_header] =
-          PJON_crc8::compute((uint8_t *)destination, 3 + extended_header);
+        destination[2] = new_length;
+        destination[3] =
+          PJON_crc8::compute((uint8_t *)destination, 3);
       }
       if(header & PJON_MODE_BIT) {
         copy_bus_id(
-          (uint8_t*) &destination[4 + extended_header + extended_length],
+          (uint8_t*) &destination[4 + extended_length],
           b_id
         );
         if(header & PJON_TX_INFO_BIT) {
           copy_bus_id(
-            (uint8_t*) &destination[8 + extended_header + extended_length],
+            (uint8_t*) &destination[8 + extended_length],
             bus_id
           );
-          destination[12 + extended_header + extended_length] = _device_id;
+          destination[12 + extended_length] = _device_id;
           #if(PJON_INCLUDE_ASYNC_ACK)
             if(async_ack)
               memcpy(
-                destination + 13 + extended_header + extended_length,
+                destination + 13 + extended_length,
                 &p_id,
                 2
               );
           #endif
         }
       } else if(header & PJON_TX_INFO_BIT) {
-        destination[4 + extended_header + extended_length] = _device_id;
+        destination[4 + extended_length] = _device_id;
         #if(PJON_INCLUDE_ASYNC_ACK)
           if(async_ack)
             memcpy(
-              destination + 5 + extended_header + extended_length,
+              destination + 5 + extended_length,
               &p_id,
               2
             );
@@ -271,7 +266,7 @@ class PJON {
       const char *packet,
       uint16_t length,
       uint32_t timing,
-      uint16_t header = PJON_NOT_ASSIGNED,
+      uint8_t header = PJON_NOT_ASSIGNED,
       uint16_t p_id = 0,
       uint16_t p_index = PJON_FAIL
     ) {
@@ -348,7 +343,7 @@ class PJON {
 
     /* Calculate the packet's overhead: */
 
-    uint8_t packet_overhead(uint16_t header = PJON_NOT_ASSIGNED) const {
+    uint8_t packet_overhead(uint8_t header = PJON_NOT_ASSIGNED) const {
       header = (header == PJON_NOT_ASSIGNED) ? config : header;
       return (
         (
@@ -356,9 +351,9 @@ class PJON {
             (header & PJON_TX_INFO_BIT   ? 10 : 5) :
             (header & PJON_TX_INFO_BIT   ?  2 : 1)
         ) + (header & PJON_EXT_LEN_BIT   ?  2 : 1)
-          + (header & PJON_EXT_HEAD_BIT  ?  2 : 1)
           + (header & PJON_CRC_BIT       ?  4 : 1)
           + (header & PJON_ACK_MODE_BIT  ?  2 : 0)
+          + 1 // Header
           + 1 // Header CRC
       );
     };
@@ -368,11 +363,9 @@ class PJON {
 
     void parse(const uint8_t *packet, PJON_Packet_Info &packet_info) const {
       packet_info.receiver_id = packet[0];
-      bool extended_header = packet[1] & PJON_EXT_HEAD_BIT;
       bool extended_length = packet[1] & PJON_EXT_LEN_BIT;
-      packet_info.header =
-        (extended_header) ? packet[2] << 8 | packet[1] : packet[1];
-      uint8_t offset = extended_header + extended_length + 1;
+      packet_info.header = packet[1];
+      uint8_t offset = extended_length + 1;
       if((packet_info.header & PJON_MODE_BIT) != 0) {
         copy_bus_id(packet_info.receiver_bus_id, packet + 3 + offset);
         if((packet_info.header & PJON_TX_INFO_BIT) != 0) {
@@ -400,7 +393,6 @@ class PJON {
       uint16_t batch_length = 0;
       uint8_t  overhead = 0;
       bool computed_crc = 0;
-      bool extended_header = false;
       bool extended_length = false;
       bool async_ack = false;
       for(uint16_t i = 0; i < length; i++) {
@@ -435,7 +427,6 @@ class PJON {
             )
           ) return PJON_BUSY;
           extended_length = data[i] & PJON_EXT_LEN_BIT;
-          extended_header = data[i] & PJON_EXT_HEAD_BIT;
           overhead = packet_overhead(data[i]);
           async_ack = (
             PJON_INCLUDE_ASYNC_ACK &&
@@ -444,7 +435,7 @@ class PJON {
           );
         }
 
-        if((i == (2 + extended_header)) && !extended_length) {
+        if((i == 2) && !extended_length) {
           length = data[i];
           if(
             length < (overhead + !async_ack) ||
@@ -453,7 +444,7 @@ class PJON {
           if(length > 15 && !(data[1] & PJON_CRC_BIT)) return PJON_BUSY;
         }
 
-        if((i == (3 + extended_header)) && extended_length) {
+        if((i == 3) && extended_length) {
           length = (data[i - 1] << 8) | (data[i] & 0xFF);
           if(
             length < (overhead + !async_ack) ||
@@ -463,15 +454,15 @@ class PJON {
         }
 
         if((config & PJON_MODE_BIT) && (data[1] & PJON_MODE_BIT) && !_router)
-          if((i > (3 + extended_header + extended_length)))
-            if((i < (8 + extended_header + extended_length)))
-              if(bus_id[i - 4 - extended_header - extended_length] != data[i])
+          if((i > (3 + extended_length)))
+            if((i < (8 + extended_length)))
+              if(bus_id[i - 4 - extended_length] != data[i])
                 return PJON_BUSY;
       }
 
       if(
-        PJON_crc8::compute(data, 3 + extended_header + extended_length) !=
-        data[3 + extended_header + extended_length]
+        PJON_crc8::compute(data, 3 + extended_length) !=
+        data[3 + extended_length]
       ) return PJON_NAK;
 
       if(data[1] & PJON_CRC_BIT)
@@ -609,7 +600,7 @@ class PJON {
     uint16_t reply(
       const char *packet,
       uint16_t length,
-      uint16_t header = PJON_NOT_ASSIGNED
+      uint8_t header = PJON_NOT_ASSIGNED
     ) {
       if(last_packet_info.sender_id != PJON_BROADCAST)
         return dispatch(
@@ -630,7 +621,7 @@ class PJON {
       uint8_t id,
       const char *string,
       uint16_t length,
-      uint16_t header = PJON_NOT_ASSIGNED
+      uint8_t header = PJON_NOT_ASSIGNED
     ) {
       return dispatch(id, bus_id, string, length, 0, header);
     };
@@ -641,7 +632,7 @@ class PJON {
       const uint8_t *b_id,
       const char *string,
       uint16_t length,
-      uint16_t header = PJON_NOT_ASSIGNED
+      uint8_t header = PJON_NOT_ASSIGNED
     ) {
       return dispatch(id, b_id, string, length, 0, header);
     };
@@ -656,7 +647,7 @@ class PJON {
       const uint8_t *b_id,
       const char *string,
       uint16_t length,
-      uint16_t header = PJON_NOT_ASSIGNED,
+      uint8_t header = PJON_NOT_ASSIGNED,
       uint16_t p_id = 0
     ) {
       uint8_t original_device_id = _device_id;
@@ -679,7 +670,7 @@ class PJON {
       const char *string,
       uint16_t length,
       uint32_t timing,
-      uint16_t header = PJON_NOT_ASSIGNED
+      uint8_t header = PJON_NOT_ASSIGNED
     ) {
       return dispatch(id, bus_id, string, length, timing, header);
     };
@@ -694,7 +685,7 @@ class PJON {
       const char *string,
       uint16_t length,
       uint32_t timing,
-      uint16_t header = PJON_NOT_ASSIGNED
+      uint8_t header = PJON_NOT_ASSIGNED
     ) {
       return dispatch(id, b_id, string, length, timing, header);
     };
@@ -726,7 +717,7 @@ class PJON {
       uint8_t id,
       char *string,
       uint16_t length,
-      uint16_t header = PJON_NOT_ASSIGNED
+      uint8_t header = PJON_NOT_ASSIGNED
     ) {
       if(!(length =
           compose_packet(id, bus_id, (char *)data, string, length, header)))
@@ -740,7 +731,7 @@ class PJON {
       const uint8_t *b_id,
       char *string,
       uint16_t length,
-      uint16_t header = PJON_NOT_ASSIGNED
+      uint8_t header = PJON_NOT_ASSIGNED
     ) {
       if(!(length =
           compose_packet(id, b_id, (char *)data, string, length, header)))
@@ -759,7 +750,7 @@ class PJON {
       const uint8_t *b_id,
       const char *string,
       uint16_t length,
-      uint16_t header = PJON_NOT_ASSIGNED,
+      uint8_t header = PJON_NOT_ASSIGNED,
       uint32_t timeout = 3000000
     ) {
       uint16_t state = PJON_FAIL;
@@ -793,7 +784,7 @@ class PJON {
       uint8_t id,
       const char *string,
       uint16_t length,
-      uint16_t header = PJON_NOT_ASSIGNED
+      uint8_t header = PJON_NOT_ASSIGNED
     ) {
       return send_packet_blocking(id, bus_id, string, length, header);
     };

@@ -85,6 +85,11 @@ Configure your device to act as a router, so receiving all the incoming packets:
 ```cpp  
   bus.set_router(true);
 ```
+Configure the instance to include a port identification in the packet. Ports from 0 to 8000 are reserved to known protocols which index is present in the [known protocol list](/strategies/ThroughSerial/specification/PJON-known-protocols-list-v1.0.md), ports from 8001 to 65535 are free for custom use cases:
+```cpp  
+  bus.include_port(false);      // Avoid port inclusion (default)  
+  bus.include_port(true, 8001); // Include custom port
+```
 Avoid packet auto-deletion:
 ```cpp  
   bus.set_packet_auto_deletion(false);

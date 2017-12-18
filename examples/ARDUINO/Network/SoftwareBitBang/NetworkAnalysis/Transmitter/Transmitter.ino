@@ -31,9 +31,7 @@ char content[] = "01234567890123456789"; // First 10 bytes left empty for bus id
 void setup() {
   bus.strategy.set_pin(12);
   bus.begin();
-  // Define a header used for transmission.
-  // Force CRC32 and add an additional header byte (only for feature testing)
-  header = bus.config | PJON_CRC_BIT | PJON_EXT_HEAD_BIT;
+  header = bus.config | PJON_CRC_BIT; // Force CRC32 
   Serial.begin(115200);
   Serial.println("PJON - Network analysis");
   Serial.println("Starting a 1 second communication test..");

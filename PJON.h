@@ -43,7 +43,7 @@ Credits to contributors:
 
 Bug reports:
 - bryant1410 github user. Debug readme format
-- pacproduct github user. Added missing mode configuration PJON_SIMPLEX example
+- pacproduct github user. Added missing mode configuration PJON_SIMPLEX ex.
 - elusive-code github user. PJONMaster reset bug
 - Franketto arduino forum user. PJON ThroughSerial over RS485 delay issue
 - Zbigniew Zasieczny. Header reference inconsistency report
@@ -115,7 +115,6 @@ class PJON {
       set_default();
     };
 
-
     /* PJON initialization passing device id:
        PJON bus(1); */
 
@@ -123,7 +122,6 @@ class PJON {
       _device_id = device_id;
       set_default();
     };
-
 
     /* PJON initialization passing bus and device id:
        uint8_t my_bus = {1, 1, 1, 1};
@@ -135,8 +133,7 @@ class PJON {
       set_default();
     };
 
-
-    /* Begin function to be called in setup: */
+    /* Begin function to be called after initialization: */
 
     void begin() {
       PJON_RANDOM_SEED(PJON_ANALOG_READ(random_seed) + _device_id);
@@ -145,7 +142,6 @@ class PJON {
         _packet_id_seed = PJON_RANDOM(65535) + _device_id;
       #endif
     };
-
 
     /* Compose packet in PJON format: */
 
@@ -246,6 +242,7 @@ class PJON {
         source,
         length
       );
+
       if(header & PJON_CRC_BIT) {
         uint32_t computed_crc =
           PJON_crc32::compute((uint8_t *)destination, new_length - 4);
@@ -258,15 +255,13 @@ class PJON {
       return new_length;
     };
 
-
-    /* Get the device id, returning a single byte: */
+    /* Get device id: */
 
     uint8_t device_id() const {
       return _device_id;
     };
 
-
-    /* Add a packet to the send list, delivered by the next update() call: */
+    /* Add packet to buffer (delivery attempt by the next update() call): */
 
     uint16_t dispatch(
       uint8_t id,
@@ -303,7 +298,6 @@ class PJON {
       return PJON_FAIL;
     };
 
-
     /* Check if a packet id is already dispatched in buffer: */
 
     bool dispatched(PJON_Packet_Info info) {
@@ -330,8 +324,7 @@ class PJON {
       return false;
     };
 
-
-    /* Get count of the packets for a device_id:
+    /* Get count of the packets related to a recipient device_id:
        Don't pass any parameter to count all packets
        Pass a device id to count all it's related packets */
 
@@ -347,7 +340,6 @@ class PJON {
       return packets_count;
     };
 
-
     /* Generate a new packet id: */
 
     uint16_t new_packet_id() {
@@ -356,8 +348,7 @@ class PJON {
       return _packet_id_seed;
     };
 
-
-    /* Calculate the packet's overhead: */
+    /* Calculate packet overhead: */
 
     uint8_t packet_overhead(uint8_t header = PJON_NOT_ASSIGNED) const {
       header = (header == PJON_NOT_ASSIGNED) ? config : header;
@@ -375,8 +366,7 @@ class PJON {
       );
     };
 
-
-    /* Fill in a PJON_Packet_Info struct by parsing a packet: */
+    /* Fill a PJON_Packet_Info struct with data parsing a packet: */
 
     void parse(const uint8_t *packet, PJON_Packet_Info &packet_info) const {
       uint8_t index = 0;
@@ -411,6 +401,7 @@ class PJON {
         packet_info.port = (packet[index] << 8) | (packet[index + 1] & 0xFF);
     };
 
+    /* Try to receive data: */
 
     uint16_t receive() {
       uint16_t length = PJON_PACKET_MAX_LENGTH;
@@ -538,7 +529,6 @@ class PJON {
       return PJON_ACK;
     };
 
-
     /* Try to receive a packet repeatedly with a maximum duration: */
 
     uint16_t receive(uint32_t duration) {
@@ -552,8 +542,7 @@ class PJON {
       return response;
     };
 
-
-    /* Remove a packet from the send list: */
+    /* Remove a packet from buffer: */
 
     void remove(uint16_t index) {
       if(index >= 0 && (index < PJON_MAX_PACKETS)) {
@@ -564,8 +553,7 @@ class PJON {
       }
     };
 
-
-    /* Remove a packet from the packet's buffer passing its id as reference: */
+    /* Remove a packet from buffer passing its packet id as reference: */
 
     bool handle_asynchronous_acknowledgment(PJON_Packet_Info packet_info) {
       PJON_Packet_Info actual_info;
@@ -605,8 +593,7 @@ class PJON {
       return false;
     };
 
-
-    /* Remove all packets from the list:
+    /* Remove all packets from the buffer:
        Don't pass any parameter to delete all packets
        Pass a device id to delete all it's related packets  */
 
@@ -617,10 +604,9 @@ class PJON {
       }
     };
 
-
-    /* Send a packet to the sender of the last packet received.
-       This function is typically called from with the receive
-       callback function to deliver a response to a request. */
+    /* Schedule a packet sending to the sender of the last packet received.
+       This function is typically called within the receive callback function
+       to deliver a response to a request. */
 
     uint16_t reply(
       const char *packet,
@@ -643,8 +629,7 @@ class PJON {
       return false;
     };
 
-
-    /* Insert a packet in the send list: */
+    /* Schedule a packet sending: */
 
     uint16_t send(
       uint8_t id,
@@ -658,7 +643,6 @@ class PJON {
         id, bus_id, string, length, 0, header, p_id, requested_port
       );
     };
-
 
     uint16_t send(
       uint8_t id,
@@ -674,8 +658,7 @@ class PJON {
       );
     };
 
-
-    /* Send a packet and configure its sender info: */
+    /* Schedule a packet sending configuring sender info: */
 
     uint16_t send_from_id(
       uint8_t sender_id,
@@ -736,8 +719,7 @@ class PJON {
       );
     };
 
-
-    /* Send an already composed packet:  */
+    /* Transmit an already composed packet:  */
 
     uint16_t send_packet(const char *string, uint16_t length) {
       if(!string) return PJON_FAIL;
@@ -756,8 +738,7 @@ class PJON {
       else return PJON_BUSY;
     };
 
-
-    /* Compose and send a packet passing its info as parameters: */
+    /* Compose and transmit a packet passing its info as parameters: */
 
     uint16_t send_packet(
       uint8_t id,
@@ -771,7 +752,6 @@ class PJON {
       ))) return PJON_FAIL;
       return send_packet((char *)data, length);
     };
-
 
     uint16_t send_packet(
       uint8_t id,
@@ -787,11 +767,9 @@ class PJON {
       return send_packet((char *)data, length);
     };
 
-
-    /* Send a packet without using the send list. It is called
-       send_packet_blocking because it tries to transmit a packet multiple
-       times within an internal cycle until the packet is delivered, or timing
-       limit is reached. */
+    /* Transmit a packet without using the packet's buffer. Tries to transmit
+       a packet multiple times within an internal cycle until the packet is
+       delivered, or timing limit is reached. */
 
     uint16_t send_packet_blocking(
       uint8_t id,
@@ -851,7 +829,6 @@ class PJON {
       strategy.send_response(PJON_ACK);
     };
 
-
     /* Set the config bit state: */
 
     void set_config_bit(bool new_state, uint16_t bit) {
@@ -859,15 +836,13 @@ class PJON {
       else config &= ~bit;
     };
 
-
     /* Configure synchronous acknowledge presence:
-       TRUE: Send synchronous acknowledge when a packet is correctly received
+       TRUE: Send 1 byte synchronous acknowledge when a packet is received
        FALSE: Avoid acknowledge transmission */
 
     void set_synchronous_acknowledge(bool state) {
       set_config_bit(state, PJON_ACK_REQ_BIT);
     };
-
 
     /* Configure asynchronous acknowledge presence:
        TRUE: Send back asynchronous acknowledge packet
@@ -877,22 +852,20 @@ class PJON {
       set_config_bit(state, PJON_ACK_MODE_BIT);
     };
 
-
     /* Configure CRC selected for packet checking:
-       TRUE:  CRC32
-       FALSE: CRC8 */
+       TRUE: CRC32, FALSE: CRC8 */
 
     void set_crc_32(bool state) {
       set_config_bit(state, PJON_CRC_BIT);
     };
 
-
-    /* Set communication mode: */
+    /* Set communication mode:
+       Passing PJON_SIMPLEX communication is mono-directional
+       Padding PJON_HALF_DUPLEX communication is bi-directional */
 
     void set_communication_mode(uint8_t mode) {
       _mode = mode;
     };
-
 
     /* Set bus state default configuration: */
 
@@ -908,9 +881,8 @@ class PJON {
       }
     };
 
-
-    /* Pass as a parameter a void function you previously defined in your code.
-       This will be called when an error in communication occurs
+    /* Pass as a parameter a void function you previously defined in the code.
+       This function is called when PJON detects an error
 
     void error_handler(uint8_t code, uint8_t data) {
       Serial.print(code);
@@ -924,8 +896,7 @@ class PJON {
       _error = e;
     };
 
-
-    /* Set the device id, passing a single byte (watch out to id collision): */
+    /* Set the device id passing a single byte (watch out to id collision): */
 
     void set_id(uint8_t id) {
       _device_id = id;
@@ -949,34 +920,30 @@ class PJON {
       set_config_bit(state, PJON_TX_INFO_BIT);
     };
 
-
     /* Configure the bus network behaviour.
-       TRUE: Enable devices part of other bus ids (shared medium).
-       FALSE: Isolate from external/third-party communication. */
+       TRUE: Include 4 bytes bus id or group identification.
+       FALSE: Use only 1 byte local device identification. */
 
     void set_shared_network(bool state) {
       set_config_bit(state, PJON_MODE_BIT);
     };
 
-
     /* Set if delivered or undeliverable packets are auto deleted:
        TRUE: Automatic deletion
-       FALSE: No packet deletion from buffer, (deletion from buffer by user) */
+       FALSE: No packet deleted from buffer, (deletion from buffer by user) */
 
     void set_packet_auto_deletion(bool state) {
       _auto_delete = state;
     };
 
-
-    /* Set the analog pin used as a seed for random generator: */
+    /* Set the analog pin used as a seed for random generation: */
 
     void set_random_seed(uint8_t seed) {
       random_seed = seed;
     };
 
-
     /* Pass as a parameter a void function you previously defined in your
-       code. This will be called when a correct message will be received.
+       code that is called when a correct message is received.
        Inside there you can code how to react when data is received.
 
       void receiver_function(
@@ -996,15 +963,13 @@ class PJON {
       _receiver = r;
     };
 
-
-    /* Configure if device will act as a router:
+    /* Configure if device acts as a router:
        FALSE: device receives messages only for its bus and device id
        TRUE:  The receiver function is always called if data is received */
 
     void set_router(bool state) {
       _router = state;
     };
-
 
     /* Update the state of the send list:
        Check if there are packets to be sent or to be erased if correctly
@@ -1073,7 +1038,6 @@ class PJON {
       return packets_count;
     };
 
-
     /* Check if the packet id and its transmitter info are already present in
        buffer of recently received packets, if not add it to the buffer. */
 
@@ -1100,7 +1064,6 @@ class PJON {
       #endif
     };
 
-
     /* Save packet id in the buffer: */
 
     void save_packet_id(PJON_Packet_Info info) {
@@ -1114,7 +1077,6 @@ class PJON {
       #endif
     };
 
-
     /* Check equality between two bus ids */
 
     static bool bus_id_equality(const uint8_t *n_one, const uint8_t *n_two) {
@@ -1123,7 +1085,6 @@ class PJON {
           return false;
       return true;
     };
-
 
     /* Copy a bus id: */
 

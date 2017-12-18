@@ -53,7 +53,7 @@ template<typename Strategy = SoftwareBitBang>
 class PJONSlave : public PJON<Strategy> {
   public:
     uint8_t required_config =
-      PJON_ADDRESS_BIT | PJON_TX_INFO_BIT | PJON_CRC_BIT;
+      PJON_PORT_BIT | PJON_TX_INFO_BIT | PJON_CRC_BIT;
 
     /* PJONSlave bus default initialization:
        State: Local (bus_id: 0.0.0.0)
@@ -64,21 +64,15 @@ class PJONSlave : public PJON<Strategy> {
        Strategy: SoftwareBitBang */
 
     PJONSlave() : PJON<Strategy>() {
-      PJON<Strategy>::set_error(static_error_handler);
-      set_error(PJON_dummy_error_handler);
-      set_receiver(PJON_dummy_receiver_handler);
+      set_default();
     };
-
 
     /* PJONSlave initialization passing device id:
        PJONSlave bus(1); */
 
     PJONSlave(uint8_t device_id) : PJON<Strategy>(device_id) {
-      PJON<Strategy>::set_error(static_error_handler);
-      set_error(PJON_dummy_error_handler);
-      set_receiver(PJON_dummy_receiver_handler);
+      set_default();
     };
-
 
     /* PJONSlave initialization passing bus and device id:
        uint8_t my_bus = {1, 1, 1, 1};
@@ -88,11 +82,8 @@ class PJONSlave : public PJON<Strategy> {
       const uint8_t *b_id,
       uint8_t device_id
     ) : PJON<Strategy>(b_id, device_id) {
-      PJON<Strategy>::set_error(static_error_handler);
-      set_error(PJON_dummy_error_handler);
-      set_receiver(PJON_dummy_receiver_handler);
+      set_default();
     };
-
 
     /* Acquire a device id: */
 
@@ -129,7 +120,8 @@ class PJONSlave : public PJON<Strategy> {
             this->bus_id,
             &msg,
             1,
-            head
+            head,
+            PJON_DYNAMIC_ADDRESSING_PORT
           ) == PJON_FAIL
         ) {
           this->_device_id = id;
@@ -143,11 +135,11 @@ class PJONSlave : public PJON<Strategy> {
           this->bus_id,
           &msg,
           1,
-          head
+          head,
+          PJON_DYNAMIC_ADDRESSING_PORT
         ) == PJON_ACK
       ) acquire_id_multi_master(limit++);
     };
-
 
     /* Acquire id in master-slave configuration: */
 
@@ -165,12 +157,12 @@ class PJONSlave : public PJON<Strategy> {
         this->bus_id,
         response,
         5,
-        this->config | PJON_ACK_REQ_BIT | required_config
+        this->config | PJON_ACK_REQ_BIT | required_config,
+        PJON_DYNAMIC_ADDRESSING_PORT
       ) == PJON_ACK) return true;
 
       return false;
     };
-
 
     /* Begin function to be called in setup: */
 
@@ -198,7 +190,8 @@ class PJONSlave : public PJON<Strategy> {
         this->bus_id,
         request,
         6,
-        this->config | PJON_ACK_REQ_BIT | required_config
+        this->config | PJON_ACK_REQ_BIT | required_config,
+        PJON_DYNAMIC_ADDRESSING_PORT
       ) == PJON_ACK) {
         this->_device_id = PJON_NOT_ASSIGNED;
         return true;
@@ -228,17 +221,20 @@ class PJONSlave : public PJON<Strategy> {
       ) ^ _rid ^ _last_request_time;
     };
 
+    /* Get device rid: */
 
     uint32_t get_rid() {
       return _rid;
     };
 
+    /* Handle dynamic addressing requests and responses: */
 
     bool handle_addressing() {
       if( // Detect mult-master dynamic addressing
-        (this->last_packet_info.header & PJON_ADDRESS_BIT) &&
+        (this->last_packet_info.header & PJON_PORT_BIT) &&
         (this->last_packet_info.header & PJON_TX_INFO_BIT) &&
         (this->last_packet_info.header & PJON_CRC_BIT) &&
+        (this->last_packet_info.port == PJON_DYNAMIC_ADDRESSING_PORT) &&
         (
           (this->last_packet_info.sender_id == PJON_NOT_ASSIGNED) ||
           (this->last_packet_info.sender_id == this->_device_id)
@@ -246,12 +242,14 @@ class PJONSlave : public PJON<Strategy> {
       ) return true;
 
       if( // Handle master-slave dynamic addressing
-        (this->last_packet_info.header & PJON_ADDRESS_BIT) &&
+        (this->last_packet_info.header & PJON_PORT_BIT) &&
         (this->last_packet_info.header & PJON_TX_INFO_BIT) &&
         (this->last_packet_info.header & PJON_CRC_BIT) &&
+        (this->last_packet_info.port == PJON_DYNAMIC_ADDRESSING_PORT) &&
         (this->_device_id != PJON_MASTER_ID) &&
         (this->last_packet_info.sender_id == PJON_MASTER_ID)
       ) {
+
         uint8_t overhead =
           this->packet_overhead(this->last_packet_info.header);
         uint8_t CRC_overhead =
@@ -278,7 +276,8 @@ class PJONSlave : public PJON<Strategy> {
               this->bus_id,
               response,
               6,
-              this->config | PJON_ACK_REQ_BIT | required_config
+              this->config | PJON_ACK_REQ_BIT | required_config,
+              PJON_DYNAMIC_ADDRESSING_PORT
             ) != PJON_ACK) {
               this->set_id(PJON_NOT_ASSIGNED);
               _slave_error(PJON_ID_ACQUISITION_FAIL, PJON_ID_CONFIRM);
@@ -307,7 +306,9 @@ class PJONSlave : public PJON<Strategy> {
                 this->bus_id,
                 response,
                 6,
-                this->config | PJON_ACK_REQ_BIT | required_config
+                this->config | PJON_ACK_REQ_BIT | required_config,
+                0,
+                PJON_DYNAMIC_ADDRESSING_PORT
               );
             }
           } else if(
@@ -331,17 +332,19 @@ class PJONSlave : public PJON<Strategy> {
       if(received_data != PJON_ACK) return received_data;
 
       uint8_t overhead = this->packet_overhead(this->data[1]);
-
+      uint16_t length = 0;
+      if(this->last_packet_info.header & PJON_EXT_LEN_BIT)
+        length = (this->data[2] << 8) | (this->data[3] & 0xFF);
+      else length = this->data[2];
       if(!handle_addressing())
         _slave_receiver(
           this->data + (overhead - (this->data[1] & PJON_CRC_BIT ? 4 : 1)),
-          this->data[this->data[1] & PJON_EXT_HEAD_BIT ? 3 : 2] - overhead,
+          length - overhead,
           this->last_packet_info
         );
 
       return PJON_ACK;
     };
-
 
     /* Try to receive a packet repeatedly with a maximum duration: */
 
@@ -352,6 +355,14 @@ class PJONSlave : public PJON<Strategy> {
       return PJON_FAIL;
     };
 
+    /* Set default configuration: */
+
+    void set_default() {
+      PJON<Strategy>::set_error(static_error_handler);
+      set_error(PJON_dummy_error_handler);
+      set_receiver(PJON_dummy_receiver_handler);
+      this->include_port(true);
+    };
 
     /* Slave receiver function setter: */
 

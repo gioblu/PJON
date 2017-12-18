@@ -62,7 +62,7 @@ class PJONMaster : public PJON<Strategy> {
   public:
     Device_reference ids[PJON_MAX_DEVICES];
     uint8_t required_config =
-      PJON_ADDRESS_BIT | PJON_TX_INFO_BIT | PJON_CRC_BIT;
+      PJON_PORT_BIT | PJON_TX_INFO_BIT | PJON_CRC_BIT;
 
     /* PJONMaster bus default initialization:
        State: Local (bus_id: 0.0.0.0)
@@ -73,10 +73,7 @@ class PJONMaster : public PJON<Strategy> {
        Strategy: SoftwareBitBang */
 
     PJONMaster() : PJON<Strategy>(PJON_MASTER_ID) {
-      PJON<Strategy>::set_error(static_error_handler);
-      set_error(PJON_dummy_error_handler);
-      set_receiver(PJON_dummy_receiver_handler);
-      delete_id_reference();
+      set_default();
     };
 
     /* PJONMaster initialization passing bus and device id:
@@ -84,12 +81,8 @@ class PJONMaster : public PJON<Strategy> {
        PJONMaster master(my_bys); */
 
     PJONMaster(const uint8_t *b_id) : PJON<Strategy>(b_id, PJON_MASTER_ID) {
-      PJON<Strategy>::set_error(static_error_handler);
-      set_error(PJON_dummy_error_handler);
-      set_receiver(PJON_dummy_receiver_handler);
-      delete_id_reference();
+      set_default();
     };
-
 
     /* Add a device reference: */
 
@@ -125,10 +118,11 @@ class PJONMaster : public PJON<Strategy> {
         response,
         6,
         PJON_ID_REQUEST_INTERVAL,
-        PJON<Strategy>::config | required_config
+        PJON<Strategy>::config | required_config,
+        0,
+        PJON_DYNAMIC_ADDRESSING_PORT
       );
     };
-
 
     /* Master begin function: */
 
@@ -244,12 +238,12 @@ class PJONMaster : public PJON<Strategy> {
           this->bus_id,
           &request,
           1,
-          PJON<Strategy>::config | required_config
+          PJON<Strategy>::config | required_config,
+          PJON_DYNAMIC_ADDRESSING_PORT
         );
         receive(PJON_LIST_IDS_TIME);
       }
     };
-
 
     /* Negate a device id request sending a packet to the device containing
        ID_NEGATE forcing the slave to make a new request. */
@@ -261,10 +255,10 @@ class PJONMaster : public PJON<Strategy> {
         b_id,
         response,
         5,
-        PJON<Strategy>::config | PJON_ACK_REQ_BIT | required_config
+        PJON<Strategy>::config | PJON_ACK_REQ_BIT | required_config,
+        PJON_DYNAMIC_ADDRESSING_PORT
       );
     };
-
 
     /* Reserve a device id and wait for its confirmation: */
 
@@ -293,10 +287,12 @@ class PJONMaster : public PJON<Strategy> {
       uint8_t CRC_overhead = (this->data[1] & PJON_CRC_BIT) ? 4 : 1;
 
       if(
-        (this->last_packet_info.header & PJON_ADDRESS_BIT) &&
+        (this->last_packet_info.header & PJON_PORT_BIT) &&
         (this->last_packet_info.header & PJON_TX_INFO_BIT) &&
-        (this->last_packet_info.header & PJON_CRC_BIT)
+        (this->last_packet_info.header & PJON_CRC_BIT) &&
+        (this->last_packet_info.port == PJON_DYNAMIC_ADDRESSING_PORT)
       ) {
+
         uint8_t request = this->data[overhead - CRC_overhead];
         uint32_t rid =
           (uint32_t)(this->data[(overhead - CRC_overhead) + 1]) << 24 |
@@ -341,14 +337,17 @@ class PJONMaster : public PJON<Strategy> {
               ) delete_id_reference(this->last_packet_info.sender_id);
       }
 
+      uint16_t length = 0;
+      if(this->last_packet_info.header & PJON_EXT_LEN_BIT)
+        length = (this->data[2] << 8) | (this->data[3] & 0xFF);
+      else length = this->data[2];
       _master_receiver(
         this->data + (overhead - CRC_overhead),
-        this->data[2] - overhead,
+        length - overhead,
         this->last_packet_info
       );
       return PJON_ACK;
     };
-
 
     /* Try to receive a packet repeatedly with a maximum duration: */
 
@@ -359,6 +358,15 @@ class PJONMaster : public PJON<Strategy> {
       return PJON_FAIL;
     };
 
+    /* Set default configuration: */
+
+    void set_default() {
+      PJON<Strategy>::set_error(static_error_handler);
+      set_error(PJON_dummy_error_handler);
+      set_receiver(PJON_dummy_receiver_handler);
+      delete_id_reference();
+      this->include_port(true);
+    };
 
     /* Master receiver function setter: */
 

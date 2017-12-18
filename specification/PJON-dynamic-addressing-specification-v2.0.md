@@ -32,7 +32,7 @@ Changelog:
 */
 ```
 
-### PJON™ dynamic addressing specification v1.0
+### PJON™ dynamic addressing specification v2.0
 This document defines the dynamic addressing procedure used by a device in multi-master configuration or the one imposed and regulated by master in a master-slave configuration. All communication related to the addressing procedure must be transmitted on the `PJON_DYNAMIC_ADDRESSING_PORT` or port `1`.
 
 ### Master-slave dynamic addressing

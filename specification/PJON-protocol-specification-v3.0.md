@@ -179,9 +179,6 @@ CRC8 is calculated and appended to initial meta-data to ensure consistency and a
 #### End CRC8/CRC32
 CRC8 is calculated on both data and meta-data and appended at the end, for up to 15 bytes (including CRC) packets. CRC32 is automatically used if packet length exceeds 15 bytes but can be optionally used for shorter than 15 bytes packets if higher accuracy is required.
 
-### Protocol encapsulation
-PJON supports higher level protocols transport and identification by using a 2 bytes unsigned integer port number as a protocol identifier. Thanks to this feature devices can handle safely many different protocols at the same time. Ports from `0` to `8000` are reserved to known protocols which index is present in the [known protocol list](/strategies/ThroughSerial/specification/PJON-known-protocols-list.md), ports from `8001` to `65535` are free for custom use cases.
-
 ### Packet transmission
 A default local packet transmission is an optionally bidirectional communication between two devices that can be divided in 3 different phases: **channel analysis**, **transmission** and optional **response**.
 ```cpp
@@ -235,3 +232,6 @@ The graph above shows a packet transmission where the [recursive acknowledgement
                         |RXINFO| TX INFO |       
 ```
 See the [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md) to have more detailed info of its procedure.
+
+### Protocol encapsulation
+PJON supports higher level protocols transport and identification by using a 2 bytes unsigned integer port number as a protocol identifier. Thanks to this feature devices can handle safely many different protocols at the same time. Ports from `0` to `8000` are reserved to known protocols which index is present in the [known protocol list](/strategies/ThroughSerial/specification/PJON-known-protocols-list.md), ports from `8001` to `65535` are free for custom use cases.

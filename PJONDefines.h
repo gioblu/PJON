@@ -103,42 +103,18 @@ limitations under the License. */
 /* 0 - Asynchronous acknowledgement disabled
    1 - Asynchronous acknowledgement enabled */
 #define PJON_ACK_MODE_BIT   0B00001000
-/* 0 - Not addressing related
-   1 - Addressing related */
-#define PJON_ADDRESS_BIT    0B00010000
+/* 0 - No port id contained
+   1 - Port id contained (2 bytes integer) */
+#define PJON_PORT_BIT       0B00010000
 /* 0 - CRC8 (1 byte) included at the end of the packet
    1 - CRC32 (4 bytes) included at the end of the packet */
 #define PJON_CRC_BIT        0B00100000
 /* 0 - 1 byte length (max 255 characters)
    1 - 2 bytes length (max 65535 characters) */
 #define PJON_EXT_LEN_BIT    0B01000000
-/* 0 - 1 byte header
-   1 - 2 bytes header */
-#define PJON_EXT_HEAD_BIT   0B10000000
-
-/* EXTENDED HEADER BITS DEFINITION: */
-
-/* 0 - No routing
-   1 - Routing */
-#define PJON_ROUTING_BIT    0B0100000000000000
-/* 0 - No segmentation
-   1 - Segmentation */
-#define PJON_SEGM_BIT       0B0010000000000000
-/* 0 - Not including session
-   1 - Including session */
-#define PJON_SESSION_BIT    0B0001000000000000
-/* 0 - No parity included
-   1 - Parity included */
-#define PJON_PARITY_BIT     0B0000100000000000
-/* 0 - Not encoded
-   1 - Encoded */
-#define PJON_ENCODING_BIT   0B0000010000000000
-/* 0 - No data compression
-   1 - Data compression */
-#define PJON_DATA_COMP_BIT  0B0000001000000000
-/* 0 - Not encrypted
-   1 - Encrypted */
-#define PJON_ENCRYPTION_BIT 0B0000000100000000
+/* 0 - Packet id not present
+   1 - Packet id present */
+#define PJON_ID_BIT         0B10000000
 
 /* ERRORS: */
 #define PJON_CONNECTION_LOST     101
@@ -174,8 +150,9 @@ limitations under the License. */
   #define PJON_MAX_RECENT_PACKET_IDS 10
 #endif
 
-/* Dynamic addressing timing constants:
-   Maximum number of device id collisions during auto-addressing */
+/* Dynamic addressing port number */
+#define PJON_DYNAMIC_ADDRESSING_PORT    1
+/* Maximum number of device id collisions during auto-addressing */
 #define PJON_MAX_ACQUIRE_ID_COLLISIONS 10
 /* Delay between device id acquisition and self request */
 #define PJON_ACQUIRE_ID_DELAY        1000
@@ -212,6 +189,7 @@ struct PJON_Packet_Info {
   uint8_t receiver_bus_id[4];
   uint8_t sender_id = 0;
   uint8_t sender_bus_id[4];
+  uint16_t port = 0;
 };
 
 typedef void (* PJON_Receiver)(

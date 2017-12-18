@@ -92,7 +92,6 @@ class PJONSlave : public PJON<Strategy> {
         acquire_id_multi_master();
     };
 
-
     /* Acquire an id in multi-master configuration: */
 
     void acquire_id_multi_master(uint8_t limit = 0) {
@@ -172,7 +171,6 @@ class PJONSlave : public PJON<Strategy> {
         acquire_id();
     };
 
-
     /* Release device id (Master-slave only): */
 
     bool discard_device_id() {
@@ -199,7 +197,6 @@ class PJONSlave : public PJON<Strategy> {
       return false;
     };
 
-
     /* Master error handler: */
 
     void error_handler(uint8_t code, uint8_t data) {
@@ -211,8 +208,8 @@ class PJONSlave : public PJON<Strategy> {
       if(slave != NULL) slave->error_handler(code, data);
     };
 
-
     /* Generate a new device rid: */
+
     void generate_rid() {
       _rid = (
         (uint32_t)(PJON_RANDOM()) ^
@@ -323,7 +320,6 @@ class PJONSlave : public PJON<Strategy> {
       return false;
     };
 
-
     /* Slave receive function: */
 
     uint16_t receive() {
@@ -370,13 +366,11 @@ class PJONSlave : public PJON<Strategy> {
       _slave_receiver = r;
     };
 
-
     /* Master error receiver function: */
 
     void set_error(PJON_Error e) {
       _slave_error = e;
     };
-
 
     /* Slave packet handling update: */
 

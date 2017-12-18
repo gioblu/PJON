@@ -95,7 +95,6 @@ class PJONMaster : public PJON<Strategy> {
       return false;
     };
 
-
     /* Confirm a device id sending a repeated broadcast containing:
     PJON_ID_REQUEST - RID (4 byte random id) - DEVICE ID (the new assigned) */
 
@@ -131,7 +130,6 @@ class PJONMaster : public PJON<Strategy> {
       list_ids();
     };
 
-
     /* Confirm device ID insertion in list: */
 
     bool confirm_id(uint32_t rid, uint8_t id) {
@@ -148,7 +146,6 @@ class PJONMaster : public PJON<Strategy> {
       return false;
     };
 
-
     /* Count active devices: */
 
     uint8_t count_active_ids() {
@@ -157,7 +154,6 @@ class PJONMaster : public PJON<Strategy> {
         if(ids[i].state) result++;
       return result;
     };
-
 
     /* Empty a single element or the whole buffer: */
 
@@ -181,7 +177,6 @@ class PJONMaster : public PJON<Strategy> {
       }
     };
 
-
     /* Master error handler: */
 
     void error_handler(uint8_t code, uint8_t data) {
@@ -195,7 +190,6 @@ class PJONMaster : public PJON<Strategy> {
       if(master != NULL) master->error_handler(code, data);
     };
 
-
     /* Remove reserved id which expired (Remove never confirmed ids): */
 
     void free_reserved_ids_expired() {
@@ -208,7 +202,6 @@ class PJONMaster : public PJON<Strategy> {
           else delete_id_reference(i + 1);
     };
 
-
     /* Get DEVICE ID from RID: */
 
     uint8_t get_id_from_rid(uint32_t rid) {
@@ -217,7 +210,6 @@ class PJONMaster : public PJON<Strategy> {
       return PJON_NOT_ASSIGNED;
     };
 
-
     /* Check for device rid uniqueness in the reference buffer: */
 
     bool unique_rid(uint32_t rid) {
@@ -225,7 +217,6 @@ class PJONMaster : public PJON<Strategy> {
         if(ids[i].rid == rid) return false;
       return true;
     };
-
 
     /* Broadcast a PJON_ID_LIST request to all devices: */
 
@@ -274,7 +265,6 @@ class PJONMaster : public PJON<Strategy> {
       _master_error(PJON_DEVICES_BUFFER_FULL, PJON_MAX_DEVICES);
       return PJON_DEVICES_BUFFER_FULL;
     };
-
 
 /* Master receive function: */
 
@@ -374,13 +364,11 @@ class PJONMaster : public PJON<Strategy> {
       _master_receiver = r;
     };
 
-
     /* Master error receiver function: */
 
     void set_error(PJON_Error e) {
       _master_error = e;
     };
-
 
     /* Master packet handling update: */
 

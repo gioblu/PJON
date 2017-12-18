@@ -9,7 +9,7 @@
 - TSDL (Tardy Serial Data Link) specification: [TSDL v2.0](/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md)
 - SFSP (Secure Frame Separation Protocol) specification: [SFSP v1.0](/specification/SFSP-frame-separation-specification-v1.0.md)
 
-###Known protocols
+### Known protocols
 
 * `0`: `PJON_BROADCAST` all ports are considered acceptable
 * `1`: `PJON_DYNAMIC_ADDRESSING` PJON dynamic addressing protocol [v1.0](/specification/PJON-dynamic-addressing-specification-v1.0.md)

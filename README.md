@@ -29,9 +29,9 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 - Error handling
 
 #### PJON (Padded Jittering Operative Network) Protocol specification
-- [PJON v2.0](specification/PJON-protocol-specification-v2.0.md)
+- [PJON v3.0](specification/PJON-protocol-specification-v3.0.md)
 - [PJON Acknowledge v1.0](specification/PJON-protocol-acknowledge-specification-v1.0.md)
-- [PJON Dynamic addressing v1.0](specification/PJON-dynamic-addressing-specification-v1.0.md)
+- [PJON Dynamic addressing v2.0](specification/PJON-dynamic-addressing-specification-v2.0.md)
 
 #### Data links specification
 - [PJDL v2.0](strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md)

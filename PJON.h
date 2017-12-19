@@ -1,6 +1,6 @@
-﻿
+
  /*-O//\         __     __
-   |-gfo\       |__| | |  | |\ | ™
+   |-gfo\       |__| | |  | |\ | ®
    |!y°o:\      |  __| |__| | \| v9.1
    |y"s§+`\     multi-master, multi-media communications bus system
   /so+:-..`\    Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
@@ -13,9 +13,9 @@
         > <
  ______-| |-__________________________________________________________________
 
-For the PJON™ Protocol specification see the specification directory.
+For the PJON® Protocol specification see the specification directory.
 
-PJON™ Standard compliant tools:
+PJON® Standard compliant tools:
 - ModuleInterface - Easy config and value sync between IOT modules
   https://github.com/fredilarsen/ModuleInterface
 - Command line PJON wrapper over unnamed pipes by Zbigniew Zasieczny
@@ -43,7 +43,7 @@ Credits to contributors:
 
 Bug reports:
 - bryant1410 github user. Debug readme format
-- pacproduct github user. Added missing mode configuration PJON_SIMPLEX example
+- pacproduct github user. Added missing mode configuration PJON_SIMPLEX ex.
 - elusive-code github user. PJONMaster reset bug
 - Franketto arduino forum user. PJON ThroughSerial over RS485 delay issue
 - Zbigniew Zasieczny. Header reference inconsistency report
@@ -88,22 +88,19 @@ limitations under the License. */
 template<typename Strategy>
 class PJON {
   public:
-    /* Abstract data link layer class */
     Strategy strategy;
-
     uint16_t config = PJON_TX_INFO_BIT | PJON_ACK_REQ_BIT;
     uint8_t bus_id[4] = {0, 0, 0, 0};
     const uint8_t localhost[4] = {0, 0, 0, 0};
-
-    /* Data buffers */
     uint8_t data[PJON_PACKET_MAX_LENGTH];
     PJON_Packet_Info last_packet_info;
     PJON_Packet packets[PJON_MAX_PACKETS];
+    uint16_t port = PJON_BROADCAST;
+    uint8_t random_seed = A0;
+
     #if(PJON_INCLUDE_ASYNC_ACK)
       PJON_Packet_Record recent_packet_ids[PJON_MAX_RECENT_PACKET_IDS];
     #endif
-
-    uint8_t random_seed = A0;
 
     /* PJON bus default initialization:
        State: Local (bus_id: 0.0.0.0)
@@ -118,7 +115,6 @@ class PJON {
       set_default();
     };
 
-
     /* PJON initialization passing device id:
        PJON bus(1); */
 
@@ -126,7 +122,6 @@ class PJON {
       _device_id = device_id;
       set_default();
     };
-
 
     /* PJON initialization passing bus and device id:
        uint8_t my_bus = {1, 1, 1, 1};
@@ -138,8 +133,7 @@ class PJON {
       set_default();
     };
 
-
-    /* Begin function to be called in setup: */
+    /* Begin function to be called after initialization: */
 
     void begin() {
       PJON_RANDOM_SEED(PJON_ANALOG_READ(random_seed) + _device_id);
@@ -149,7 +143,6 @@ class PJON {
       #endif
     };
 
-
     /* Compose packet in PJON format: */
 
     uint16_t compose_packet(
@@ -158,16 +151,26 @@ class PJON {
       char *destination,
       const char *source,
       uint16_t length,
-      uint16_t header = PJON_NOT_ASSIGNED,
-      uint16_t p_id = 0
+      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t p_id = 0,
+      uint16_t requested_port = PJON_BROADCAST
     ) {
+      uint8_t index = 0;
+
       if(header == PJON_NOT_ASSIGNED) header = config;
-      if(header > 255) header |= PJON_EXT_HEAD_BIT;
       if(length > 255) header |= PJON_EXT_LEN_BIT;
+      if((config & PJON_PORT_BIT) || (requested_port != PJON_BROADCAST))
+        header |= PJON_PORT_BIT;
+
+      if(
+        (header & PJON_PORT_BIT) &&
+        (requested_port == PJON_BROADCAST) &&
+        (port == PJON_BROADCAST)
+      ) header &= ~PJON_PORT_BIT;
+
       if(id == PJON_BROADCAST)
         header &= ~(PJON_ACK_REQ_BIT | PJON_ACK_MODE_BIT);
       uint16_t new_length = length + packet_overhead(header);
-      bool extended_header = header & PJON_EXT_HEAD_BIT;
       bool extended_length = header & PJON_EXT_LEN_BIT;
 
       #if(PJON_INCLUDE_ASYNC_ACK)
@@ -191,58 +194,55 @@ class PJON {
         return 0;
       }
 
-      destination[0] = id;
-      if(extended_header) {
-        destination[1] = (uint16_t)header;
-        destination[2] = (uint16_t)header >> 8;
-      } else destination[1] = header;
+      destination[index++] = id;
+      destination[index++] = header;
       if(extended_length) {
-        destination[2 + extended_header] = new_length >> 8;
-        destination[3 + extended_header] = new_length & 0xFF;
-        destination[4 + extended_header] =
-          PJON_crc8::compute((uint8_t *)destination, 4 + extended_header);
+        destination[index++] = new_length >> 8;
+        destination[index++] = new_length & 0xFF;
+        destination[index++] = PJON_crc8::compute((uint8_t *)destination, 4);
       } else {
-        destination[2 + extended_header] = new_length;
-        destination[3 + extended_header] =
-          PJON_crc8::compute((uint8_t *)destination, 3 + extended_header);
+        destination[index++] = new_length;
+        destination[index++] = PJON_crc8::compute((uint8_t *)destination, 3);
       }
       if(header & PJON_MODE_BIT) {
-        copy_bus_id(
-          (uint8_t*) &destination[4 + extended_header + extended_length],
-          b_id
-        );
+        copy_bus_id((uint8_t*) &destination[index], b_id);
+        index += 4;
         if(header & PJON_TX_INFO_BIT) {
-          copy_bus_id(
-            (uint8_t*) &destination[8 + extended_header + extended_length],
-            bus_id
-          );
-          destination[12 + extended_header + extended_length] = _device_id;
+          copy_bus_id((uint8_t*) &destination[index], bus_id);
+          index += 4;
+          destination[index++] = _device_id;
           #if(PJON_INCLUDE_ASYNC_ACK)
-            if(async_ack)
-              memcpy(
-                destination + 13 + extended_header + extended_length,
-                &p_id,
-                2
-              );
+            if(async_ack) {
+              memcpy(destination + index, &p_id, 2);
+              index += 2;
+            }
           #endif
         }
       } else if(header & PJON_TX_INFO_BIT) {
-        destination[4 + extended_header + extended_length] = _device_id;
+        destination[index++] = _device_id;
         #if(PJON_INCLUDE_ASYNC_ACK)
-          if(async_ack)
-            memcpy(
-              destination + 5 + extended_header + extended_length,
-              &p_id,
-              2
-            );
+          if(async_ack) {
+            memcpy(destination + index, &p_id, 2);
+            index += 2;
+          }
         #endif
       }
+
+      if(config & PJON_PORT_BIT)
+        if(requested_port != PJON_BROADCAST) {
+          destination[index++] = requested_port >> 8;
+          destination[index++] = requested_port & 0xFF;
+        } else if(port != PJON_BROADCAST) {
+          destination[index++] = port >> 8;
+          destination[index++] = port & 0xFF;
+        }
 
       memcpy(
         destination + (new_length - length - (header & PJON_CRC_BIT ? 4 : 1)),
         source,
         length
       );
+
       if(header & PJON_CRC_BIT) {
         uint32_t computed_crc =
           PJON_crc32::compute((uint8_t *)destination, new_length - 4);
@@ -255,15 +255,13 @@ class PJON {
       return new_length;
     };
 
-
-    /* Get the device id, returning a single byte: */
+    /* Get device id: */
 
     uint8_t device_id() const {
       return _device_id;
     };
 
-
-    /* Add a packet to the send list, delivered by the next update() call: */
+    /* Add packet to buffer (delivery attempt by the next update() call): */
 
     uint16_t dispatch(
       uint8_t id,
@@ -271,15 +269,23 @@ class PJON {
       const char *packet,
       uint16_t length,
       uint32_t timing,
-      uint16_t header = PJON_NOT_ASSIGNED,
+      uint8_t header = PJON_NOT_ASSIGNED,
       uint16_t p_id = 0,
+      uint16_t requested_port = PJON_BROADCAST,
       uint16_t p_index = PJON_FAIL
     ) {
       bool req_index = (p_index != PJON_FAIL);
       for(uint16_t i = ((req_index) ? p_index : 0); i < PJON_MAX_PACKETS; i++)
         if(packets[i].state == 0 || req_index) {
           if(!(length = compose_packet(
-            id, b_id, packets[i].content, packet, length, header, p_id
+            id,
+            b_id,
+            packets[i].content,
+            packet,
+            length,
+            header,
+            p_id,
+            requested_port
           ))) return PJON_FAIL;
           packets[i].length = length;
           packets[i].state = PJON_TO_BE_SENT;
@@ -291,7 +297,6 @@ class PJON {
       _error(PJON_PACKETS_BUFFER_FULL, PJON_MAX_PACKETS);
       return PJON_FAIL;
     };
-
 
     /* Check if a packet id is already dispatched in buffer: */
 
@@ -319,8 +324,7 @@ class PJON {
       return false;
     };
 
-
-    /* Get count of the packets for a device_id:
+    /* Get count of the packets related to a recipient device_id:
        Don't pass any parameter to count all packets
        Pass a device id to count all it's related packets */
 
@@ -336,7 +340,6 @@ class PJON {
       return packets_count;
     };
 
-
     /* Generate a new packet id: */
 
     uint16_t new_packet_id() {
@@ -345,10 +348,9 @@ class PJON {
       return _packet_id_seed;
     };
 
+    /* Calculate packet overhead: */
 
-    /* Calculate the packet's overhead: */
-
-    uint8_t packet_overhead(uint16_t header = PJON_NOT_ASSIGNED) const {
+    uint8_t packet_overhead(uint8_t header = PJON_NOT_ASSIGNED) const {
       header = (header == PJON_NOT_ASSIGNED) ? config : header;
       return (
         (
@@ -356,51 +358,56 @@ class PJON {
             (header & PJON_TX_INFO_BIT   ? 10 : 5) :
             (header & PJON_TX_INFO_BIT   ?  2 : 1)
         ) + (header & PJON_EXT_LEN_BIT   ?  2 : 1)
-          + (header & PJON_EXT_HEAD_BIT  ?  2 : 1)
           + (header & PJON_CRC_BIT       ?  4 : 1)
           + (header & PJON_ACK_MODE_BIT  ?  2 : 0)
+          + (header & PJON_PORT_BIT      ?  2 : 0)
+          + 1 // Header
           + 1 // Header CRC
       );
     };
 
-
-    /* Fill in a PJON_Packet_Info struct by parsing a packet: */
+    /* Fill a PJON_Packet_Info struct with data parsing a packet: */
 
     void parse(const uint8_t *packet, PJON_Packet_Info &packet_info) const {
-      packet_info.receiver_id = packet[0];
-      bool extended_header = packet[1] & PJON_EXT_HEAD_BIT;
-      bool extended_length = packet[1] & PJON_EXT_LEN_BIT;
-      packet_info.header =
-        (extended_header) ? packet[2] << 8 | packet[1] : packet[1];
-      uint8_t offset = extended_header + extended_length + 1;
+      uint8_t index = 0;
+      packet_info.receiver_id = packet[index++];
+      bool extended_length = packet[index] & PJON_EXT_LEN_BIT;
+      packet_info.header = packet[index++];
+      index += extended_length + 2; // + LENGTH + HEADER CRC
       if((packet_info.header & PJON_MODE_BIT) != 0) {
-        copy_bus_id(packet_info.receiver_bus_id, packet + 3 + offset);
+        copy_bus_id(packet_info.receiver_bus_id, packet + index);
+        index += 4;
         if((packet_info.header & PJON_TX_INFO_BIT) != 0) {
-          copy_bus_id(packet_info.sender_bus_id, packet + 7 + offset);
-          packet_info.sender_id = packet[11 + offset];
+          copy_bus_id(packet_info.sender_bus_id, packet + index);
+          index += 4;
+          packet_info.sender_id = packet[index++];
           #if(PJON_INCLUDE_ASYNC_ACK)
             if(packet_info.header & PJON_ACK_MODE_BIT)
               packet_info.id =
-                (packet[13 + offset] << 8) | (packet[12 + offset] & 0xFF);
+                (packet[index + 1] << 8) | (packet[index] & 0xFF);
+              index += 2;
           #endif
         }
       } else if((packet_info.header & PJON_TX_INFO_BIT) != 0) {
-        packet_info.sender_id = packet[3 + offset];
+        packet_info.sender_id = packet[index++];
         #if(PJON_INCLUDE_ASYNC_ACK)
           if(packet_info.header & PJON_ACK_MODE_BIT)
             packet_info.id =
-              (packet[5 + offset] << 8) | (packet[4 + offset] & 0xFF);
+              (packet[index + 1] << 8) | (packet[index] & 0xFF);
+            index += 2;
         #endif
       }
+      if(packet_info.header & PJON_PORT_BIT)
+        packet_info.port = (packet[index] << 8) | (packet[index + 1] & 0xFF);
     };
 
+    /* Try to receive data: */
 
     uint16_t receive() {
       uint16_t length = PJON_PACKET_MAX_LENGTH;
       uint16_t batch_length = 0;
       uint8_t  overhead = 0;
       bool computed_crc = 0;
-      bool extended_header = false;
       bool extended_length = false;
       bool async_ack = false;
       for(uint16_t i = 0; i < length; i++) {
@@ -429,13 +436,9 @@ class PJON {
               (data[1] & PJON_EXT_LEN_BIT) && !(data[1] & PJON_CRC_BIT)
             ) || (
               !PJON_INCLUDE_ASYNC_ACK && (data[1] & PJON_ACK_MODE_BIT)
-            ) || (
-              ((data[1] & PJON_ADDRESS_BIT) && !(data[1] & PJON_CRC_BIT)) ||
-              ((data[1] & PJON_ADDRESS_BIT) && !(data[1] & PJON_TX_INFO_BIT))
             )
           ) return PJON_BUSY;
           extended_length = data[i] & PJON_EXT_LEN_BIT;
-          extended_header = data[i] & PJON_EXT_HEAD_BIT;
           overhead = packet_overhead(data[i]);
           async_ack = (
             PJON_INCLUDE_ASYNC_ACK &&
@@ -444,7 +447,7 @@ class PJON {
           );
         }
 
-        if((i == (2 + extended_header)) && !extended_length) {
+        if((i == 2) && !extended_length) {
           length = data[i];
           if(
             length < (overhead + !async_ack) ||
@@ -453,7 +456,7 @@ class PJON {
           if(length > 15 && !(data[1] & PJON_CRC_BIT)) return PJON_BUSY;
         }
 
-        if((i == (3 + extended_header)) && extended_length) {
+        if((i == 3) && extended_length) {
           length = (data[i - 1] << 8) | (data[i] & 0xFF);
           if(
             length < (overhead + !async_ack) ||
@@ -463,15 +466,14 @@ class PJON {
         }
 
         if((config & PJON_MODE_BIT) && (data[1] & PJON_MODE_BIT) && !_router)
-          if((i > (3 + extended_header + extended_length)))
-            if((i < (8 + extended_header + extended_length)))
-              if(bus_id[i - 4 - extended_header - extended_length] != data[i])
+          if((i > (3 + extended_length)) && (i < (8 + extended_length)))
+              if(bus_id[i - 4 - extended_length] != data[i])
                 return PJON_BUSY;
       }
 
       if(
-        PJON_crc8::compute(data, 3 + extended_header + extended_length) !=
-        data[3 + extended_header + extended_length]
+        PJON_crc8::compute(data, 3 + extended_length) !=
+        data[3 + extended_length]
       ) return PJON_NAK;
 
       if(data[1] & PJON_CRC_BIT)
@@ -504,7 +506,8 @@ class PJON {
                 0,
                 0,
                 config | PJON_ACK_MODE_BIT | PJON_TX_INFO_BIT,
-                last_packet_info.id
+                last_packet_info.id,
+                last_packet_info.port
               );
               update();
             }
@@ -514,6 +517,9 @@ class PJON {
         }
       #endif
 
+      if((port != PJON_BROADCAST) && (port != last_packet_info.port))
+          return PJON_BUSY;
+
       _receiver(
         data + (overhead - (data[1] & PJON_CRC_BIT ? 4 : 1)),
         length - overhead,
@@ -522,7 +528,6 @@ class PJON {
 
       return PJON_ACK;
     };
-
 
     /* Try to receive a packet repeatedly with a maximum duration: */
 
@@ -537,8 +542,7 @@ class PJON {
       return response;
     };
 
-
-    /* Remove a packet from the send list: */
+    /* Remove a packet from buffer: */
 
     void remove(uint16_t index) {
       if(index >= 0 && (index < PJON_MAX_PACKETS)) {
@@ -549,8 +553,7 @@ class PJON {
       }
     };
 
-
-    /* Remove a packet from the packet's buffer passing its id as reference: */
+    /* Remove a packet from buffer passing its packet id as reference: */
 
     bool handle_asynchronous_acknowledgment(PJON_Packet_Info packet_info) {
       PJON_Packet_Info actual_info;
@@ -577,6 +580,7 @@ class PJON {
                 packets[i].timing,
                 actual_info.header,
                 new_packet_id(),
+                actual_info.port,
                 i
               );
               packets[i].attempts = 0;
@@ -589,8 +593,7 @@ class PJON {
       return false;
     };
 
-
-    /* Remove all packets from the list:
+    /* Remove all packets from the buffer:
        Don't pass any parameter to delete all packets
        Pass a device id to delete all it's related packets  */
 
@@ -601,15 +604,16 @@ class PJON {
       }
     };
 
-
-    /* Send a packet to the sender of the last packet received.
-       This function is typically called from with the receive
-       callback function to deliver a response to a request. */
+    /* Schedule a packet sending to the sender of the last packet received.
+       This function is typically called within the receive callback function
+       to deliver a response to a request. */
 
     uint16_t reply(
       const char *packet,
       uint16_t length,
-      uint16_t header = PJON_NOT_ASSIGNED
+      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t p_id = 0,
+      uint16_t requested_port = PJON_BROADCAST
     ) {
       if(last_packet_info.sender_id != PJON_BROADCAST)
         return dispatch(
@@ -618,36 +622,43 @@ class PJON {
           packet,
           length,
           0,
-          header
+          header,
+          p_id,
+          requested_port
         );
       return false;
     };
 
-
-    /* Insert a packet in the send list: */
+    /* Schedule a packet sending: */
 
     uint16_t send(
       uint8_t id,
       const char *string,
       uint16_t length,
-      uint16_t header = PJON_NOT_ASSIGNED
+      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t p_id = 0,
+      uint16_t requested_port = PJON_BROADCAST
     ) {
-      return dispatch(id, bus_id, string, length, 0, header);
+      return dispatch(
+        id, bus_id, string, length, 0, header, p_id, requested_port
+      );
     };
-
 
     uint16_t send(
       uint8_t id,
       const uint8_t *b_id,
       const char *string,
       uint16_t length,
-      uint16_t header = PJON_NOT_ASSIGNED
+      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t p_id = 0,
+      uint16_t requested_port = PJON_BROADCAST
     ) {
-      return dispatch(id, b_id, string, length, 0, header);
+      return dispatch(
+        id, b_id, string, length, 0, header, p_id, requested_port
+      );
     };
 
-
-    /* Send a packet and configure its sender info: */
+    /* Schedule a packet sending configuring sender info: */
 
     uint16_t send_from_id(
       uint8_t sender_id,
@@ -656,20 +667,22 @@ class PJON {
       const uint8_t *b_id,
       const char *string,
       uint16_t length,
-      uint16_t header = PJON_NOT_ASSIGNED,
-      uint16_t p_id = 0
+      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t p_id = 0,
+      uint16_t requested_port = PJON_BROADCAST
     ) {
       uint8_t original_device_id = _device_id;
       uint8_t original_bus_id[4];
       copy_bus_id(original_bus_id, bus_id);
       set_id(sender_id);
       copy_bus_id(bus_id, sender_bus_id);
-      uint16_t result = dispatch(id, b_id, string, length, 0, header, p_id);
+      uint16_t result = dispatch(
+        id, b_id, string, length, 0, header, p_id, requested_port
+      );
       copy_bus_id(bus_id, original_bus_id);
       set_id(original_device_id);
       return result;
     };
-
 
     /* IMPORTANT: send_repeatedly timing maximum
        is 4293014170 microseconds or 71.55 minutes */
@@ -679,11 +692,14 @@ class PJON {
       const char *string,
       uint16_t length,
       uint32_t timing,
-      uint16_t header = PJON_NOT_ASSIGNED
+      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t p_id = 0,
+      uint16_t requested_port = PJON_BROADCAST
     ) {
-      return dispatch(id, bus_id, string, length, timing, header);
+      return dispatch(
+        id, bus_id, string, length, timing, header, p_id, requested_port
+      );
     };
-
 
     /* IMPORTANT: send_repeatedly timing maximum
        is 4293014170 microseconds or 71.55 minutes */
@@ -694,13 +710,16 @@ class PJON {
       const char *string,
       uint16_t length,
       uint32_t timing,
-      uint16_t header = PJON_NOT_ASSIGNED
+      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t p_id = 0,
+      uint16_t requested_port = PJON_BROADCAST
     ) {
-      return dispatch(id, b_id, string, length, timing, header);
+      return dispatch(
+        id, b_id, string, length, timing, header, p_id, requested_port
+      );
     };
 
-
-    /* Send an already composed packet:  */
+    /* Transmit an already composed packet:  */
 
     uint16_t send_packet(const char *string, uint16_t length) {
       if(!string) return PJON_FAIL;
@@ -719,47 +738,46 @@ class PJON {
       else return PJON_BUSY;
     };
 
-
-    /* Compose and send a packet passing its info as parameters: */
+    /* Compose and transmit a packet passing its info as parameters: */
 
     uint16_t send_packet(
       uint8_t id,
       char *string,
       uint16_t length,
-      uint16_t header = PJON_NOT_ASSIGNED
+      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t requested_port = PJON_BROADCAST
     ) {
-      if(!(length =
-          compose_packet(id, bus_id, (char *)data, string, length, header)))
-        return PJON_FAIL;
+      if(!(length = compose_packet(
+        id, bus_id, (char *)data, string, length, header, 0, requested_port
+      ))) return PJON_FAIL;
       return send_packet((char *)data, length);
     };
-
 
     uint16_t send_packet(
       uint8_t id,
       const uint8_t *b_id,
       char *string,
       uint16_t length,
-      uint16_t header = PJON_NOT_ASSIGNED
+      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t requested_port = PJON_BROADCAST
     ) {
-      if(!(length =
-          compose_packet(id, b_id, (char *)data, string, length, header)))
-        return PJON_FAIL;
+      if(!(length = compose_packet(
+        id, b_id, (char *)data, string, length, header, 0, requested_port
+      ))) return PJON_FAIL;
       return send_packet((char *)data, length);
     };
 
-
-    /* Send a packet without using the send list. It is called
-       send_packet_blocking because it tries to transmit a packet multiple
-       times within an internal cycle until the packet is delivered, or timing
-       limit is reached. */
+    /* Transmit a packet without using the packet's buffer. Tries to transmit
+       a packet multiple times within an internal cycle until the packet is
+       delivered, or timing limit is reached. */
 
     uint16_t send_packet_blocking(
       uint8_t id,
       const uint8_t *b_id,
       const char *string,
       uint16_t length,
-      uint16_t header = PJON_NOT_ASSIGNED,
+      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t requested_port = PJON_BROADCAST,
       uint32_t timeout = 3000000
     ) {
       uint16_t state = PJON_FAIL;
@@ -777,7 +795,9 @@ class PJON {
           (char *)data,
           string,
           old_length,
-          header
+          header,
+          0,
+          requested_port
         ))) return PJON_FAIL;
         state = send_packet((char*)data, length);
         if(state == PJON_ACK) return state;
@@ -793,11 +813,14 @@ class PJON {
       uint8_t id,
       const char *string,
       uint16_t length,
-      uint16_t header = PJON_NOT_ASSIGNED
+      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t requested_port = PJON_BROADCAST,
+      uint32_t timeout = 3000000
     ) {
-      return send_packet_blocking(id, bus_id, string, length, header);
+      return send_packet_blocking(
+        id, bus_id, string, length, header, requested_port, timeout
+      );
     };
-
 
     /* In router mode, the receiver function can ack for selected receiver
        device ids for which the route is known */
@@ -806,7 +829,6 @@ class PJON {
       strategy.send_response(PJON_ACK);
     };
 
-
     /* Set the config bit state: */
 
     void set_config_bit(bool new_state, uint16_t bit) {
@@ -814,15 +836,13 @@ class PJON {
       else config &= ~bit;
     };
 
-
     /* Configure synchronous acknowledge presence:
-       TRUE: Send synchronous acknowledge when a packet is correctly received
+       TRUE: Send 1 byte synchronous acknowledge when a packet is received
        FALSE: Avoid acknowledge transmission */
 
     void set_synchronous_acknowledge(bool state) {
       set_config_bit(state, PJON_ACK_REQ_BIT);
     };
-
 
     /* Configure asynchronous acknowledge presence:
        TRUE: Send back asynchronous acknowledge packet
@@ -832,22 +852,20 @@ class PJON {
       set_config_bit(state, PJON_ACK_MODE_BIT);
     };
 
-
     /* Configure CRC selected for packet checking:
-       TRUE:  CRC32
-       FALSE: CRC8 */
+       TRUE: CRC32, FALSE: CRC8 */
 
     void set_crc_32(bool state) {
       set_config_bit(state, PJON_CRC_BIT);
     };
 
-
-    /* Set communication mode: */
+    /* Set communication mode:
+       Passing PJON_SIMPLEX communication is mono-directional
+       Padding PJON_HALF_DUPLEX communication is bi-directional */
 
     void set_communication_mode(uint8_t mode) {
       _mode = mode;
     };
-
 
     /* Set bus state default configuration: */
 
@@ -863,9 +881,8 @@ class PJON {
       }
     };
 
-
-    /* Pass as a parameter a void function you previously defined in your code.
-       This will be called when an error in communication occurs
+    /* Pass as a parameter a void function you previously defined in the code.
+       This function is called when PJON detects an error
 
     void error_handler(uint8_t code, uint8_t data) {
       Serial.print(code);
@@ -879,13 +896,18 @@ class PJON {
       _error = e;
     };
 
-
-    /* Set the device id, passing a single byte (watch out to id collision): */
+    /* Set the device id passing a single byte (watch out to id collision): */
 
     void set_id(uint8_t id) {
       _device_id = id;
     };
 
+    /* Include the port passing a boolean state and an unsigned integer: */
+
+    void include_port(bool state, uint16_t p = PJON_BROADCAST) {
+      set_config_bit(state, PJON_PORT_BIT);
+      port = p;
+    };
 
     /* Configure sender's information inclusion in the packet.
        TRUE: +1 byte (device id) local, +5 bytes (bus id + device id) shared
@@ -898,34 +920,30 @@ class PJON {
       set_config_bit(state, PJON_TX_INFO_BIT);
     };
 
-
     /* Configure the bus network behaviour.
-       TRUE: Enable devices part of other bus ids (shared medium).
-       FALSE: Isolate from external/third-party communication. */
+       TRUE: Include 4 bytes bus id or group identification.
+       FALSE: Use only 1 byte local device identification. */
 
     void set_shared_network(bool state) {
       set_config_bit(state, PJON_MODE_BIT);
     };
 
-
     /* Set if delivered or undeliverable packets are auto deleted:
        TRUE: Automatic deletion
-       FALSE: No packet deletion from buffer, (deletion from buffer by user) */
+       FALSE: No packet deleted from buffer, (deletion from buffer by user) */
 
     void set_packet_auto_deletion(bool state) {
       _auto_delete = state;
     };
 
-
-    /* Set the analog pin used as a seed for random generator: */
+    /* Set the analog pin used as a seed for random generation: */
 
     void set_random_seed(uint8_t seed) {
       random_seed = seed;
     };
 
-
     /* Pass as a parameter a void function you previously defined in your
-       code. This will be called when a correct message will be received.
+       code that is called when a correct message is received.
        Inside there you can code how to react when data is received.
 
       void receiver_function(
@@ -945,15 +963,13 @@ class PJON {
       _receiver = r;
     };
 
-
-    /* Configure if device will act as a router:
+    /* Configure if device acts as a router:
        FALSE: device receives messages only for its bus and device id
        TRUE:  The receiver function is always called if data is received */
 
     void set_router(bool state) {
       _router = state;
     };
-
 
     /* Update the state of the send list:
        Check if there are packets to be sent or to be erased if correctly
@@ -1022,7 +1038,6 @@ class PJON {
       return packets_count;
     };
 
-
     /* Check if the packet id and its transmitter info are already present in
        buffer of recently received packets, if not add it to the buffer. */
 
@@ -1049,7 +1064,6 @@ class PJON {
       #endif
     };
 
-
     /* Save packet id in the buffer: */
 
     void save_packet_id(PJON_Packet_Info info) {
@@ -1063,7 +1077,6 @@ class PJON {
       #endif
     };
 
-
     /* Check equality between two bus ids */
 
     static bool bus_id_equality(const uint8_t *n_one, const uint8_t *n_two) {
@@ -1072,7 +1085,6 @@ class PJON {
           return false;
       return true;
     };
-
 
     /* Copy a bus id: */
 

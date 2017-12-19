@@ -25,8 +25,6 @@
   #include <sstream>
   #include "Serial/Serial.h"
 
-  typedef char byte;
-
   #define OUTPUT 1
   #define INPUT 0
   #define HIGH 1
@@ -35,9 +33,9 @@
   #define LSBFIRST 1
   #define MSBFIRST 2
 
-  void pinMode(byte pin, byte m) { ; };
+  void pinMode(char pin, char m) { ; };
 
-  void digitalWrite(byte, byte) { ; };
+  void digitalWrite(char, char) { ; };
 
   int analogRead(int) {
     return 0;

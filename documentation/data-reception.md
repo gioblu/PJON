@@ -13,35 +13,37 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
   Serial.print("Header: ");
   Serial.print(packet_info.header, BIN);
   // If packet formatted for a shared medium
-  if((packet_info.header & PJON_MODE_BIT) != 0) {
+  if(packet_info.header & PJON_MODE_BIT) {
     Serial.print(" Receiver bus id: ");
     Serial.print(packet_info.receiver_bus_id[0]);
     Serial.print(packet_info.receiver_bus_id[1]);
     Serial.print(packet_info.receiver_bus_id[2]);
     Serial.print(packet_info.receiver_bus_id[3]);
-    Serial.print(" Device id: ");
+    Serial.print(" Receiver id: ");
     Serial.print(packet_info.receiver_id);
     // If sender info is included
-    if((packet_info.header & PJON_TX_INFO_BIT) != 0) {
+    if(packet_info.header & PJON_TX_INFO_BIT) {
       Serial.print(" Sender bus id: ");
       Serial.print(packet_info.sender_bus_id[0]);
       Serial.print(packet_info.sender_bus_id[1]);
       Serial.print(packet_info.sender_bus_id[2]);
       Serial.print(packet_info.sender_bus_id[3]);
-      Serial.print(" device id: ");
-      Serial.println(packet_info.sender_id);
-      // Reply to sender with "Hello!"
-      bus.reply("Hello!", 6);
-    }  
+    }
   }
-
-  Serial.print(" Content: ");
-  for(uint8_t i = 0; i < length; i++)
-    Serial.print((char)payload[i]);
-
+  // If sender device id is included
+  if(packet_info.header & PJON_TX_INFO_BIT) {
+    Serial.print(" Sender id: ");
+    Serial.print(packet_info.sender_id);
+  }
+  // Payload Length
   Serial.print(" Length: ");
-  Serial.println(length);
-};
+  Serial.print(length);
+  // If port id is included
+  if(packet_info.header & PJON_PORT_BIT) {
+    Serial.print(" Port bit: ");
+    Serial.println(packet_info.port);
+  }
+}
 ```
 Inform the instance to call `receiver_function` when a correct message is received:
 ```cpp

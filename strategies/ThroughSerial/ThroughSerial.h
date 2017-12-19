@@ -1,7 +1,7 @@
 
 /* ThroughSerial digital communication data link layer
    used as a Strategy by the PJON framework (included in version v4.1)
-   Compliant with TSDL (Tardy Serial Data Link) specification v1.0
+   Compliant with TSDL (Tardy Serial Data Link) specification v2.0
 
    Contributors:
     - Fred Larsen, Development, testing and debugging
@@ -148,6 +148,7 @@ class ThroughSerial {
         // Escaping byte-stuffing violation
         if((result != TS_START) && (result != TS_ESC) && (result != TS_END))
           return TS_FAIL;
+        result ^= TS_ESC;
       }
 
       // No end flag, byte-stuffing violation
@@ -190,9 +191,9 @@ class ThroughSerial {
           (string[b] == TS_END)
         ) {
           send_byte(TS_ESC);
+          send_byte(string[b] ^ TS_ESC);
           overhead++;
-        }
-        send_byte(string[b]);
+        } else send_byte(string[b]);
       }
       send_byte(TS_END);
       /* On RPI flush fails to wait until all bytes are transmitted

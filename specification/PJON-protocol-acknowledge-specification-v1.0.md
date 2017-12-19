@@ -1,10 +1,13 @@
-
-- PJON (Padded Jittering Operative Network) Protocol specification: [v2.0](/specification/PJON-protocol-specification-v2.0.md)
+#### Network layer
+- PJON (Padded Jittering Operative Network) Protocol specification: [v3.0](/specification/PJON-protocol-specification-v3.0.md)
 - Acknowledge specification: **[v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md)**
-- Dynamic addressing specification: [v1.0](/specification/PJON-dynamic-addressing-specification-v1.0.md)
+- Dynamic addressing specification: [v2.0](/specification/PJON-dynamic-addressing-specification-v2.0.md)
+- PJON known protocols: [list](/specification/PJON-known-protocols-list.md)
+#### Data link layer
 - PJDL (Padded Jittering Data Link) specification:
-[PJDL v2.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) - [PJDLR v2.0](/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) - [PJDLS v1.0](/strategies/AnalogSampling/specification/PJDLS-specification-v1.0.md)
-- TSDL (Tardy Serial Data Link) specification: [TSDL v1.0](/strategies/ThroughSerial/specification/TSDL-specification-v1.0.md)
+[PJDL v2.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) - [PJDLR v2.0](/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) - [PJDLS v2.0](/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
+- TSDL (Tardy Serial Data Link) specification: [TSDL v2.0](/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md)
+- SFSP (Secure Frame Separation Protocol) specification: [SFSP v1.0](/specification/SFSP-frame-separation-specification-v1.0.md)
 
 ```cpp
 /*
@@ -42,7 +45,7 @@ Channel analysis               Transmission                Response
  ____________________________________________________________  ___
 |ID| HEADER |LENGTH|CRC|BUS ID|BUS ID|ID|PACKET ID|DATA|CRC32||ACK|
 |--|--------|------|---|------|------|--|---------|----|-----||---|
-|12|00001111|  20  |   | 0002 | 0001 |11|   99    | 64 |     || 6 |
+|12|10001111|  20  |   | 0002 | 0001 |11|   99    | 64 |     || 6 |
 |__|________|______|___|______|______|__|_________|____|_____||___|
                        |RXINFO| TX INFO |       
 ```
@@ -65,7 +68,7 @@ Transmission                                             Response
  __________________________________________________________  ___
 |ID| HEADER |LENGTH|CRC|BUS ID|BUS ID|ID|PACKET ID|DATA|CRC||ACK|
 |--|--------|------|---|------|------|--|---------|----|---||---|
-|0 |00001111|  20  |   | 0002 | 0001 |0 |   99    | 64 |   || 6 |
+|0 |10001111|  20  |   | 0002 | 0001 |0 |   99    | 64 |   || 6 |
 |__|________|______|___|______|______|__|_________|____|___||___|
                        |RXINFO| TX INFO |         
 ```
@@ -88,7 +91,7 @@ BUS 0.0.0.1                                          BUS 0.0.0.2
 ```cpp
  __ ________ ______ ___ _______ _______ __ _________ ____ ___  ___
 |ID| HEADER |LENGTH|CRC|BUS ID |BUS ID |ID|PACKET ID|DATA|CRC||ACK|
-|0 |00001111|  20  |   |0.0.0.2|0.0.0.1|0 |   99    | 64 |   || 6 |
+|0 |10001111|  20  |   |0.0.0.2|0.0.0.1|0 |   99    | 64 |   || 6 |
 |__|________|______|___|_______|_______|__|_________|____|___||___|
                        |RX INFO| TX INFO  |
 ```
@@ -96,7 +99,7 @@ BUS 0.0.0.1                                          BUS 0.0.0.2
 ```cpp
  __ ________ ______ ___ _______ _______ __ _________ ____ ___  ___
 |ID| HEADER |LENGTH|CRC|BUS ID |BUS ID |ID|PACKET ID|DATA|CRC||ACK|
-|0 |00001111|  20  |   |0.0.0.2|0.0.0.1|0 |   99    | 64 |   || 6 |
+|0 |10001111|  20  |   |0.0.0.2|0.0.0.1|0 |   99    | 64 |   || 6 |
 |__|________|______|___|_______|_______|__|_________|____|___||___|
                        |RX INFO| TX INFO  |
 ```
@@ -104,7 +107,7 @@ BUS 0.0.0.1                                          BUS 0.0.0.2
 ```cpp
  __ ________ ______ ___ _______ _______ __ _________ ___  ___
 |ID| HEADER |LENGTH|CRC|BUS ID |BUS ID |ID|PACKET ID|CRC||ACK|
-|0 |00001111|  19  |   |0.0.0.1|0.0.0.2|0 |   99    |   || 6 |
+|0 |10001111|  19  |   |0.0.0.1|0.0.0.2|0 |   99    |   || 6 |
 |__|________|______|___|_______|_______|__|_________|___||___|
                        |RX INFO| TX INFO  |
 ```
@@ -113,7 +116,7 @@ BUS 0.0.0.1                                          BUS 0.0.0.2
 ```cpp
  __ ________ ______ ___ _______ _______ __ _________ ___  ___
 |ID| HEADER |LENGTH|CRC|BUS ID |BUS ID |ID|PACKET ID|CRC||ACK|
-|0 |00001111|  19  |   |0.0.0.1|0.0.0.2|0 |   99    |   || 6 |
+|0 |10001111|  19  |   |0.0.0.1|0.0.0.2|0 |   99    |   || 6 |
 |__|________|______|___|_______|_______|__|_________|___||___|
                        |RX INFO| TX INFO  |
 ```

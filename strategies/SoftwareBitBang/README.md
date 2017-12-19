@@ -33,7 +33,7 @@ It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to
 - `2` runs at 21504Bd or 2.68kB/s cross-architecture, promiscuous clock/architecture compatible.
 - `3` runs a specific architecture at its maximum limits (non cross-architecture compatible). Every architecture has its own limits, Arduino Duemilanove for example runs at 33472Bd or 4184B/s, Arduino Zero can reach 48000Bd or 6000B/s.
 
-When including and using `SoftwareBitBang`, as data link layer of a PJON bus, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because `SoftwareBitBang` is completely software emulated strategy with a non blocking implementation, transforming a painful walk in a nice flight.
+When including and using `SoftwareBitBang`, as data link layer of a PJON bus, you have the complete access to the microntroller ready to be used, as usual, untouched. This happens because `SoftwareBitBang` runs a completely software emulated implementation, transforming a painful walk in a nice flight.
 
 Single wire simplicity let you to experiment quickly and with creativity. The first suggested test, at the tester's risk, is to let two arduino boards communicate [through a living body](https://www.youtube.com/watch?v=caMit7nzJsM) touching with the left hand the digital port of the first board (5v 40ma, harmless) and with the right the port of the other one. It is stunning to see highly accurate digital communication running through a living biological body. This opens the mind to possible creative solutions.
 

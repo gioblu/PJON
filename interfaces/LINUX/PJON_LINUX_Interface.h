@@ -36,11 +36,9 @@
   #define LSBFIRST 1
   #define MSBFIRST 2
 
-  typedef char byte;
+  void pinMode(char pin, char m) { ; };
 
-  void pinMode(byte pin, byte m) { ; };
-
-  void digitalWrite(byte, byte) { ; };
+  void digitalWrite(char, char) { ; };
 
   int analogRead(int) {
     return 0;

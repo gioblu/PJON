@@ -12,4 +12,4 @@
 ### Known protocols
 
 * `0`: `PJON_BROADCAST` all ports are considered acceptable
-* `1`: `PJON_DYNAMIC_ADDRESSING` PJON dynamic addressing protocol [v1.0](/specification/PJON-dynamic-addressing-specification-v1.0.md)
+* `1`: `PJON_DYNAMIC_ADDRESSING` PJON dynamic addressing protocol [v1.0](/specification/PJON-dynamic-addressing-specification-v2.0.md)

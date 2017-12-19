@@ -1,6 +1,6 @@
 ![PJON](http://www.gioblu.com/PJON/PJON-github-header-tiny.png)
 
-PJON™ and its brand are unregistered trademarks, property of Giovanni Blu Mitolo gioscarab@gmail.com
+PJON™ and its brand are registered trademarks, property of Giovanni Blu Mitolo gioscarab@gmail.com
 
 Personal and educational use of physical and or digital representations of PJON™ and or its brand/icon are unlicensed and free. Commercial use of physical and or digital representations of PJON™ and or its brand/icon is subjected to prior application in order to be used.
 

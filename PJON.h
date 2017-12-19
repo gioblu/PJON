@@ -1,6 +1,6 @@
-﻿
+
  /*-O//\         __     __
-   |-gfo\       |__| | |  | |\ | ™
+   |-gfo\       |__| | |  | |\ | ®
    |!y°o:\      |  __| |__| | \| v9.1
    |y"s§+`\     multi-master, multi-media communications bus system
   /so+:-..`\    Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
@@ -13,9 +13,9 @@
         > <
  ______-| |-__________________________________________________________________
 
-For the PJON™ Protocol specification see the specification directory.
+For the PJON® Protocol specification see the specification directory.
 
-PJON™ Standard compliant tools:
+PJON® Standard compliant tools:
 - ModuleInterface - Easy config and value sync between IOT modules
   https://github.com/fredilarsen/ModuleInterface
 - Command line PJON wrapper over unnamed pipes by Zbigniew Zasieczny

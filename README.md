@@ -2,7 +2,7 @@
 
 ![PJON](http://www.gioblu.com/PJON/PJON-github-header-tiny.png)
 ## PJON v9.1
-PJON™ (Padded Jittering Operative Network) is an Arduino compatible, multi-master, multi-media communications bus system. It proposes a Standard, it is designed as a framework and implements a totally software emulated network protocol stack that can be easily cross-compiled on many architectures like ATtiny, ATmega, ESP8266, Teensy, Raspberry Pi, Linux and Windows x86 machines. It is a valid tool to quickly and comprehensibly build a network of devices. Visit [wiki](https://github.com/gioblu/PJON/wiki) and [documentation](documentation/README.md) to know more about the PJON Standard.
+PJON® (Padded Jittering Operative Network) is an Arduino compatible, multi-master, multi-media communications bus system. It proposes a Standard, it is designed as a framework and implements a totally software emulated network protocol stack that can be easily cross-compiled on many architectures like ATtiny, ATmega, ESP8266, Teensy, Raspberry Pi, Linux and Windows x86 machines. It is a valid tool to quickly and comprehensibly build a network of devices. Visit [wiki](https://github.com/gioblu/PJON/wiki) and [documentation](documentation/README.md) to know more about the PJON Standard.
 
 [![Get PJON bus id](https://img.shields.io/badge/GET-PJON%20bus%20id-lightgrey.svg)](http://www.pjon.org/get-bus-id.php)
 [![Video introduction](https://img.shields.io/badge/PJON-video%20introduction-blue.svg)](https://www.youtube.com/watch?v=vjc4ZF5own8)
@@ -54,4 +54,4 @@ and maintainance costs. Thank you and happy tinkering!
 - Bitcoin: [1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD](http://tny.im/btc/address.php?a=1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD)
 - Ethereum: [0xf34AEAF3B149454522019781668F9a2d1762559b](https://etherchain.org/account/0xf34AEAF3B149454522019781668F9a2d1762559b)
 
-PJON™ and its brand are unregistered trademarks, property of Giovanni Blu Mitolo gioscarab@gmail.com
+PJON® and its brand are unregistered trademarks, property of Giovanni Blu Mitolo gioscarab@gmail.com

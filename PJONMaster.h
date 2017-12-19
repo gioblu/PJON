@@ -1,6 +1,6 @@
 
  /*-O//\         __     __
-   |-gfo\       |__| | |  | |\ | ™
+   |-gfo\       |__| | |  | |\ | ®
    |!y°o:\      |  __| |__| | \| v9.1
    |y"s§+`\     multi-master, multi-media communications bus system
   /so+:-..`\    Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
@@ -19,7 +19,7 @@ of Fred Larsen and is inspired by the work of Thomas Snaidero:
  severely impaired motor skills."
 Master Thesis, IT University of Copenhagen, Denmark, September 2016
 
-PJON™ Dynamic addressing specification:
+PJON® Dynamic addressing specification:
 - v1.0 specification/PJON-dynamic-addressing-specification-v1.0.md
 
 If you believe in this project and you appreciate our work, please, make a

@@ -234,4 +234,4 @@ The graph above shows a packet transmission where the [recursive acknowledgement
 See the [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md) to have more detailed info of its procedure.
 
 ### Protocol encapsulation
-PJON supports higher level protocols transport and identification by using a 2 bytes unsigned integer port number as a protocol identifier. Thanks to this feature devices can handle safely many different protocols at the same time. Ports from `0` to `8000` are reserved to known protocols which index is present in the [known protocol list](/specification/PJON-known-protocols-list.md), ports from `8001` to `65535` are free for custom use cases.
+PJON supports higher level protocols transport and identification by using a 2 bytes unsigned integer port number as a protocol identifier. Thanks to this feature devices can handle safely many different protocols at the same time. Ports from `0` to `8000` are reserved to known protocols which index is present in the [known protocols list](/specification/PJON-known-protocols-list.md), ports from `8001` to `65535` are free for custom use cases.

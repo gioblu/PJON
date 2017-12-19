@@ -10,6 +10,9 @@
 - SFSP (Secure Frame Separation Protocol) specification: [SFSP v1.0](/specification/SFSP-frame-separation-specification-v1.0.md)
 
 ### Known protocols
+This is the list of the known protocols port identification. If you have developed or have ported a protocol on top of PJON Feel free to open an [issue](https://github.com/gioblu/PJON/issues) to obtain a known protocol identification and add it to this list:  
 
 * `0`: `PJON_BROADCAST` all ports are considered acceptable
 * `1`: `PJON_DYNAMIC_ADDRESSING` PJON dynamic addressing protocol [v1.0](/specification/PJON-dynamic-addressing-specification-v2.0.md)
+
+(on left you have the port id and its constant name, on right general information about the protocol)

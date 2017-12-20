@@ -15,6 +15,6 @@ This is the known protocols port identification list. If you have developed or h
 * `0` `PJON_BROADCAST` - All ports are considered acceptable
 * `1` `PJON_DYNAMIC_ADDRESSING` - PJON dynamic addressing protocol [v1.0](/specification/PJON-dynamic-addressing-specification-v2.0.md)
 
-* `100` `MODULEINTERFACE` - [ModuleInterface](https://github.com/fredilarsen/ModuleInterface) automation protocol
+* `100` `MODULE_INTERFACE` - [ModuleInterface](https://github.com/fredilarsen/ModuleInterface) automation protocol
 
 (on left you have the port id and its constant name, on right general information about the protocol)

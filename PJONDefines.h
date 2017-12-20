@@ -190,7 +190,7 @@ struct PJON_Packet_Info {
   uint8_t sender_id = 0;
   uint8_t sender_bus_id[4];
   uint16_t port = 0;
-  void *custom_pointer;
+  void *custom_pointer = NULL;
 };
 
 typedef void (* PJON_Receiver)(

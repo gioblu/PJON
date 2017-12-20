@@ -400,8 +400,7 @@ class PJON {
       if(packet_info.header & PJON_PORT_BIT)
         packet_info.port = (packet[index] << 8) | (packet[index + 1] & 0xFF);
 
-      if(_custom_pointer)
-        packet_info.custom_pointer = _custom_pointer;
+      packet_info.custom_pointer = _custom_pointer;
     };
 
     /* Try to receive data: */
@@ -1109,7 +1108,7 @@ class PJON {
     uint16_t      _packet_id_seed = 0;
     PJON_Receiver _receiver;
     bool          _router = false;
-    void         *_custom_pointer;
+    void         *_custom_pointer = NULL;
   protected:
     uint8_t       _device_id;
 };

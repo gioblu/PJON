@@ -114,7 +114,7 @@ limitations under the License. */
 #define PJON_EXT_LEN_BIT    0B01000000
 /* 0 - Packet id not present
    1 - Packet id present */
-#define PJON_ID_BIT         0B10000000
+#define PJON_PACKET_ID_BIT  0B10000000
 
 /* ERRORS: */
 #define PJON_CONNECTION_LOST     101

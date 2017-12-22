@@ -80,6 +80,8 @@ Configure the instance to include a port identification in the packet. Ports fro
   bus.include_port(false);      // Avoid port inclusion (default)  
   bus.include_port(true, 8001); // Include custom port
 ```
+See the [PortsUseExample](/examples/ARDUINO/Network/SoftwareBitBang/PortsUseExample) example to see more in detail how the port feature can be used.
+
 Avoid packet auto-deletion:
 ```cpp  
   bus.set_packet_auto_deletion(false);
@@ -99,6 +101,8 @@ Use the provided setter to add the packet id to configuration:
 ```cpp  
   bus.set_packet_id(true);
 ```
+See the [UsePacketId](/examples/ARDUINO/Local/SoftwareBitBang/UsePacketId) example to see more in detail how the packet id can be used.
+
 If the asynchronous acknowledgement feature is required you need to define the `PJON_INCLUDE_ASYNC_ACK` as following. The use of a constant has been chosen to save more than 1kB on sketches where this feature is not used (the packet id is used by the asynchronous acknowledgement process, so if necessary, play with that responsibly):
 ```cpp  
 #define PJON_INCLUDE_ASYNC_ACK true
@@ -112,3 +116,4 @@ Use the provided setter to use asynchronous acknowledgement:
   // Enable async ack
   bus.set_asynchronous_acknowledge(true);
 ```
+See the [AsyncAck](/examples/ARDUINO/Network/SoftwareBitBang/AsyncAck) example to see more in detail how the asynchronous acknowledgement can be used.

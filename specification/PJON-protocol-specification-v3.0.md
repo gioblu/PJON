@@ -32,6 +32,8 @@ Changelog:
 
 ### PJON™ Protocol specification v3.0
 The graph below shows the proposed protocol stack model. The features distribution have been engineered, and strongly tested, to offer an easier and more flexible set of standards for computer networks. Those engineering choices are made to offer a scalable and low overhead stack of protocols easily applied as a set or individually. PJON has been engineered "bottom to top" and was originally created to cover use cases where 1-Wire or i2c were generally applied, with its development, features have been extended enabling more complex use cases where more advanced network protocols like TCP-IP are generally applied.
+
+An iterative experimentation process of 8 years led to the development of the following minimalistic set of rules covering most of the features provided by TCP-IP although requiring slightly half of its overhead (IPv4 40 bytes, PJON 22 bytes). Being designed to support features modularity, PJON can be used on extremely simple systems excluding unused features reducing its implementation's memory footprint and its overhead up to 5 bytes, finally providing the community with a common protocol able to cover a very wide range of use cases.  
 ```cpp  
  _______________________________________________
 | 7 Application layer                           |
@@ -46,10 +48,12 @@ The graph below shows the proposed protocol stack model. The features distributi
 | 4 Transport layer: OSPREY                     |
 | segmentation                                  |
 |_______________________________________________|
+ _______________________________________________
 | 3 Network layer: PJON                         |
 | Addressing, error detection, reliable packet  |
 | transmission, multiplexing, traffic control,  |
-| asynchronous acknowledgement                  |
+| asynchronous acknowledgement, dynamic         |
+| protocol encapsulation                        |
 |_______________________________________________|
 | 2 Data link layer: PJDL/PJDLR/PJDLS/TSDL      |
 | Frame separation, collision avoidance,        |
@@ -68,14 +72,14 @@ The graph below shows the proposed protocol stack model. The features distributi
 * Devices communicate through packets with a maximum length of 255 or 65535 bytes
 * Every device has an equal right to transmit and receive
 * Every device has a unique 1 byte id
-* Every device can obtain an id if available (see [Dynamic addressing specification v1.0](/specification/PJON-dynamic-addressing-specification-v1.0.md))
+* Every device can obtain an id if available (see [Dynamic addressing specification v1.0](/specification/PJON-dynamic-addressing-specification-v2.0.md))
 * Every bus has a unique 4 bytes id
 * Every device can be connected to n PJON buses
 * Many buses can coexist on the same medium
 * Synchronous and or asynchronous acknowledgement can be requested (see [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md))
 * Encapsulated protocol identification using a 2 bytes port id  
 
-The PJON protocol v2.0 handles internal bus connectivity and unique addressing for 254 devices, through bus communication with unique bus addressing for 4.294.967.295 buses and supports up to 1.090.921.692.930 devices. It regulates the exchange of packets with a configurable set of features driven by its header. Depending on the packet configuration a certain overhead is added to information varying from 5 up to 19 bytes.
+The PJON protocol v2.0 handles internal bus connectivity and unique addressing for 254 devices, through bus communication with unique bus addressing for 4.294.967.295 buses and supports up to 1.090.921.692.930 devices. It regulates the exchange of packets with a configurable set of features driven by its header. Depending on the packet configuration a certain overhead is added to information varying from 5 up to 22 bytes.
 
 ### Bus
 A PJON bus is made by a group of up to 254 devices transmitting and receiving on the same medium. Communication between devices occurs through packets and it is based on democracy: every device has the right to transmit on the common medium for up to `(1000 / devices number) milliseconds / second`.
@@ -138,7 +142,7 @@ HEADER BITMASK
 * `PACKET ID` or packet id bit informs if the packet contains (value 1) or not (value 0) a 2 bytes packet id
 * `EXT. LENGTH` or extended length bit informs if the packet contains 1 (value 0) or 2 (value 1) bytes length
 * `CRC` bit informs the receiver which CRC was used as check for the packet, CRC 8 (value 0) or CRC 32 (value 1)
-* `PORT` or port bit informs if the packet contains (value 1) a 2 bytes [port identifier]() or not (value 0)
+* `PORT` or port bit informs if the packet contains (value 1) a 2 bytes port identifier or not (value 0)
 * `ACK MODE` or acknowledge mode bit requests synchronous (value 0) or asynchronous (value 1) acknowledge mode
 * `ACK` or acknowledge bit informs if acknowledge is requested (value 1) or not (value 0)
 * `TX INFO` or transmitter info bit informs if the sender info are included (value 1) or not (value 0)

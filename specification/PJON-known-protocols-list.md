@@ -13,7 +13,7 @@
 This is the known protocols port identification list. If you have developed or have ported a protocol on top of PJON Feel free to open an [issue](https://github.com/gioblu/PJON/issues) to obtain a known protocol identification and add it here:  
 
 * `0` `PJON_BROADCAST` - All ports are considered acceptable
-* `1` `PJON_DYNAMIC_ADDRESSING` - PJON dynamic addressing protocol [v1.0](/specification/PJON-dynamic-addressing-specification-v2.0.md)
+* `1` `PJON_DYNAMIC_ADDRESSING` - PJON dynamic addressing protocol [v2.0](/specification/PJON-dynamic-addressing-specification-v2.0.md)
 
 * `100` `MODULE_INTERFACE` - [ModuleInterface](https://github.com/fredilarsen/ModuleInterface) automation protocol
 

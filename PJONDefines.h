@@ -145,6 +145,12 @@ limitations under the License. */
   #define PJON_INCLUDE_ASYNC_ACK false
 #endif
 
+/* If set to false packet id feature is not included saving memory
+   (it saves around 1kB of memory) */
+#ifndef PJON_INCLUDE_PACKET_ID
+  #define PJON_INCLUDE_PACKET_ID false
+#endif
+
 /* Maximum packet ids record kept in memory (to avoid duplicated exchanges) */
 #ifndef PJON_MAX_RECENT_PACKET_IDS
   #define PJON_MAX_RECENT_PACKET_IDS 10

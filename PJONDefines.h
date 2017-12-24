@@ -139,7 +139,7 @@ limitations under the License. */
   #define PJON_PACKET_MAX_LENGTH 50
 #endif
 
-/* If set to true avoids async ack code memory allocation if not used
+/* If set to false async ack feature is not included saving memory
    (it saves around 1kB of memory) */
 #ifndef PJON_INCLUDE_ASYNC_ACK
   #define PJON_INCLUDE_ASYNC_ACK false

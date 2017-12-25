@@ -142,4 +142,10 @@
     #define ntohl(x) (x)
   #endif
 
+  #if !defined(__BYTE_ORDER__)          || \
+      !defined(__ORDER_BIG_ENDIAN__)    || \
+      !defined(__ORDER_LITTLE_ENDIAN__)
+    #error Undefined byte order constants.
+  #endif
+
 #endif

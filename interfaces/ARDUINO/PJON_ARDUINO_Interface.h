@@ -112,40 +112,4 @@
 
   #define HAS_ETHERNETUDP
 
-  /* Byte order ----------------------------------------------------------- */
-
-  #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-    #ifndef htons // Host to network short
-      #define htons(x) (((x) << 8 & 0xFF00) | ((x) >> 8 & 0x00FF))
-    #endif
-
-    #ifndef ntohs // Network to host short
-      #define ntohs(x) htons(x)
-    #endif
-
-    #ifndef htonl // Host to network long
-      #define htonl(x) ( ((x) << 24 & 0xFF000000UL) | \
-                         ((x) << 8 & 0x00FF0000UL)  | \
-                         ((x) >> 8 & 0x0000FF00UL)  | \
-                         ((x) >> 24 & 0x000000FFUL) )
-    #endif
-
-    #ifndef ntohl // Network to host long
-      #define ntohl(x) htonl(x)
-    #endif
-  #endif
-
-  #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-    #define htons(x) (x)
-    #define htonl(x) (x)
-    #define ntohs(x) (x)
-    #define ntohl(x) (x)
-  #endif
-
-  #if !defined(__BYTE_ORDER__)          || \
-      !defined(__ORDER_BIG_ENDIAN__)    || \
-      !defined(__ORDER_LITTLE_ENDIAN__)
-    #error Undefined byte order constants.
-  #endif
-
 #endif

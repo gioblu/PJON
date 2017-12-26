@@ -199,28 +199,38 @@ class PJON {
       destination[index++] = id;
       destination[index++] = header;
       if(extended_length) {
-        index += htonsp(&new_length, &destination[index]);
+        destination[index++] = (uint8_t)(new_length >> 8);
+        destination[index++] = (uint8_t)new_length;
         destination[index++] = PJON_crc8::compute((uint8_t *)destination, 4);
       } else {
         destination[index++] = new_length;
         destination[index++] = PJON_crc8::compute((uint8_t *)destination, 3);
       }
       if(header & PJON_MODE_BIT) {
-        index += htonlp(b_id, &destination[index]);
-        if(header & PJON_TX_INFO_BIT)
-          index += htonlp(bus_id, &destination[index]);
+        copy_bus_id((uint8_t*) &destination[index], b_id);
+        index += 4;
+        if(header & PJON_TX_INFO_BIT) {
+          copy_bus_id((uint8_t*) &destination[index], bus_id);
+          index += 4;
+        }
       }
       if(header & PJON_TX_INFO_BIT) destination[index++] = _device_id;
 
       #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
-        if(add_packet_id) index += htonsp(&p_id, destination + index);
+        if(add_packet_id) {
+          destination[index++] = (uint8_t)(p_id >> 8);
+          destination[index++] = (uint8_t)p_id;
+        }
       #endif
 
       if(config & PJON_PORT_BIT)
-        if(requested_port != PJON_BROADCAST)
-          index += htonsp(&requested_port, &destination[index]);
-        else if(port != PJON_BROADCAST)
-          index += htonsp(&port, &destination[index]);
+        if(requested_port != PJON_BROADCAST) {
+          destination[index++] = (uint8_t)(requested_port >> 8);
+          destination[index++] = (uint8_t)requested_port;
+        } else if(port != PJON_BROADCAST) {
+          destination[index++] = (uint8_t)(port >> 8);
+          destination[index++] = (uint8_t)port;
+        }
 
       memcpy(
         destination + (new_length - length - (header & PJON_CRC_BIT ? 4 : 1)),
@@ -231,7 +241,14 @@ class PJON {
       if(header & PJON_CRC_BIT) {
         uint32_t computed_crc =
           PJON_crc32::compute((uint8_t *)destination, new_length - 4);
-          htonlp(&computed_crc, &destination[new_length - 4]);
+        destination[new_length - 4] =
+          (uint8_t)((uint32_t)(computed_crc) >> 24);
+        destination[new_length - 3] =
+          (uint8_t)((uint32_t)(computed_crc) >> 16);
+        destination[new_length - 2] =
+          (uint8_t)((uint32_t)(computed_crc) >>  8);
+        destination[new_length - 1] =
+          (uint8_t)((uint32_t)computed_crc);
       } else destination[new_length - 1] =
         PJON_crc8::compute((uint8_t *)destination, new_length - 1);
       return new_length;
@@ -322,40 +339,6 @@ class PJON {
       return packets_count;
     };
 
-    /* Byte order: */
-
-    static uint8_t htonsp(const void *host, void *network) {
-      uint16_t v;
-      memcpy(&v, host, 2);
-      v = htons(v);
-      memcpy(network, &v, 2);
-      return 2;
-    }
-
-    static uint8_t htonlp(const void *host, void *network) {
-      uint32_t v;
-      memcpy(&v, host, 4);
-      v = htonl(v);
-      memcpy(network, &v, 4);
-      return 4;
-    }
-
-    static uint8_t ntohsp(const void *network, void *host) {
-      uint16_t v;
-      memcpy(&v, network, 2);
-      v = ntohs(v);
-      memcpy(host, &v, 2);
-      return 2;
-    }
-
-    static uint8_t ntohlp(const void *network, void *host) {
-      uint32_t v;
-      memcpy(&v, network, 4);
-      v = ntohl(v);
-      memcpy(host, &v, 4);
-      return 4;
-    }
-
     /* Generate a new packet id: */
 
     uint16_t new_packet_id() {
@@ -396,9 +379,12 @@ class PJON {
       packet_info.header = packet[index++];
       index += extended_length + 2; // + LENGTH + HEADER CRC
       if(packet_info.header & PJON_MODE_BIT) {
-        index += ntohlp(packet + index, packet_info.receiver_bus_id);
-        if(packet_info.header & PJON_TX_INFO_BIT)
-          index += ntohlp(packet + index, packet_info.sender_bus_id);
+        copy_bus_id(packet_info.receiver_bus_id, packet + index);
+        index += 4;
+        if(packet_info.header & PJON_TX_INFO_BIT) {
+          copy_bus_id(packet_info.sender_bus_id, packet + index);
+          index += 4;
+        }
       }
       if(packet_info.header & PJON_TX_INFO_BIT)
         packet_info.sender_id = packet[index++];
@@ -406,17 +392,20 @@ class PJON {
         if(((packet_info.header & PJON_ACK_MODE_BIT) &&
             (packet_info.header & PJON_TX_INFO_BIT)
           ) || packet_info.header & PJON_PACKET_ID_BIT
-        ) index += ntohsp(&packet[index], &packet_info.id);
+        ) {
+          packet_info.id =
+            (packet[index] << 8) | (packet[index + 1] & 0xFF);
+          index += 2;
+        }
       #endif
       if(packet_info.header & PJON_PORT_BIT)
-        ntohsp(&packet[index], &packet_info.port);
+        packet_info.port = (packet[index] << 8) | (packet[index + 1] & 0xFF);
       packet_info.custom_pointer = _custom_pointer;
     };
 
     /* Try to receive data: */
 
     uint16_t receive() {
-      uint8_t transl_buffer[4] = {0, 0, 0, 0};
       uint16_t length = PJON_PACKET_MAX_LENGTH;
       uint16_t batch_length = 0;
       uint8_t  overhead = 0;
@@ -471,7 +460,7 @@ class PJON {
         }
 
         if((i == 3) && extended_length) {
-          ntohsp(&data[i - 1], &length);
+          length = (data[i - 1] << 8) | (data[i] & 0xFF);
           if(
             length < (overhead + !async_ack) ||
             length >= PJON_PACKET_MAX_LENGTH
@@ -480,11 +469,9 @@ class PJON {
         }
 
         if((config & PJON_MODE_BIT) && (data[1] & PJON_MODE_BIT) && !_router)
-           if(i == (7 + extended_length)) {
-            ntohlp(data + 4 + extended_length, transl_buffer);
-            if(!bus_id_equality(transl_buffer, bus_id))
-              return PJON_BUSY;
-          }
+          if((i > (3 + extended_length)) && (i < (8 + extended_length)))
+              if(bus_id[i - 4 - extended_length] != data[i])
+                return PJON_BUSY;
       }
 
       if(
@@ -493,16 +480,18 @@ class PJON {
       ) return PJON_NAK;
 
       if(data[1] & PJON_CRC_BIT) {
-        uint32_t transl_crc32 = 0;
-        ntohlp(data + (length - 4), &transl_crc32);
-        if(PJON_crc32::compute(data, length - 4) != transl_crc32)
-          return PJON_NAK;
+        if(
+          !PJON_crc32::compare(
+            PJON_crc32::compute(data, length - 4), data + (length - 4)
+          )
+        ) return PJON_NAK;
       } else if(PJON_crc8::compute(data, length - 1) != data[length - 1])
         return PJON_NAK;
 
       if(data[1] & PJON_ACK_REQ_BIT && data[0] != PJON_BROADCAST)
         if((_mode != PJON_SIMPLEX) && !_router)
           strategy.send_response(PJON_ACK);
+
       parse(data, last_packet_info);
 
       #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)

@@ -5,7 +5,7 @@
 - [Error handling](/documentation/error-handling.md)
 - [IO setup](/documentation/io-setup.md)
 
-
+### Basic configuration
 Before instantiating the PJON class it is possible to define the packets and content buffer length.  Predefining `PJON_MAX_PACKETS` and `PJON_PACKET_MAX_LENGTH` it is possible to configure this constraints to reach the project memory requirements. Obviously, the less memory is dedicated to this buffers, the more memory can be used for something else.
 ```cpp  
 #define PJON_MAX_PACKETS 1
@@ -63,16 +63,6 @@ Configure synchronous acknowledge:
   // Avoid sync ack
   bus.set_synchronous_acknowledge(false);
 ```
-If you are interested in including the asynchronous acknowledgement feature in your sketch, you need to define the `PJON_INCLUDE_ASYNC_ACK` as following (made to save more than 1kB on sketches where this feature is not used):
-```cpp  
-#define PJON_INCLUDE_ASYNC_ACK true
-#include <PJON.h>
-```
-Configure asynchronous acknowledgement:
-```cpp  
-  // Enable async ack
-  bus.set_asynchronous_acknowledge(true);
-```
 Force CRC32 use for every packet sent:
 ```cpp  
   bus.set_crc_32(true);
@@ -90,7 +80,40 @@ Configure the instance to include a port identification in the packet. Ports fro
   bus.include_port(false);      // Avoid port inclusion (default)  
   bus.include_port(true, 8001); // Include custom port
 ```
+See the [PortsUseExample](/examples/ARDUINO/Network/SoftwareBitBang/PortsUseExample) example to see more in detail how the port feature can be used.
+
 Avoid packet auto-deletion:
 ```cpp  
   bus.set_packet_auto_deletion(false);
 ```
+
+### Extended configuration
+If packet duplication avoidance is required it is possible to add a 2 bytes id used to guarantee packet uniqueness.
+define the `PJON_INCLUDE_PACKET_ID` as following. The use of a constant has been chosen to save more than 1kB on sketches where this feature is not used:
+```cpp  
+#define PJON_INCLUDE_PACKET_ID true
+// Max number of old packet ids stored to avoid duplication
+#define PJON_MAX_RECENT_PACKET_IDS 10  // by default 10
+// If packet duplication occurs, higher PJON_MAX_RECENT_PACKET_IDS
+#include <PJON.h>
+```
+Use the provided setter to add the packet id to configuration:
+```cpp  
+  bus.set_packet_id(true);
+```
+See the [UsePacketId](/examples/ARDUINO/Local/SoftwareBitBang/UsePacketId) example to see more in detail how the packet id can be used.
+
+If the asynchronous acknowledgement feature is required you need to define the `PJON_INCLUDE_ASYNC_ACK` as following. The use of a constant has been chosen to save more than 1kB on sketches where this feature is not used (the packet id is used by the asynchronous acknowledgement process, so if necessary, play with that responsibly):
+```cpp  
+#define PJON_INCLUDE_ASYNC_ACK true
+// Max number of old packet ids stored to avoid duplication
+#define PJON_MAX_RECENT_PACKET_IDS 10  // by default 10
+// If packet duplication occurs, higher PJON_MAX_RECENT_PACKET_IDS
+#include <PJON.h>
+```
+Use the provided setter to use asynchronous acknowledgement:
+```cpp  
+  // Enable async ack
+  bus.set_asynchronous_acknowledge(true);
+```
+See the [AsyncAck](/examples/ARDUINO/Network/SoftwareBitBang/AsyncAck) example to see more in detail how the asynchronous acknowledgement can be used.

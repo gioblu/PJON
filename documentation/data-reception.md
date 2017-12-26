@@ -63,3 +63,5 @@ If you want to dedicate a certain timeframe to reception call the `receive` func
 ```cpp
 uint16_t response = bus.receive(1000);
 ```
+
+To pass custom data to the receiver callback function, se the [ClassMemberCallback](../examples/ARDUINO/Local/SoftwareBitBang/ClassMemberCallback) example. This feature can be used for a lot of different use cases. Could be used to let multiple PJON objects call the same callback function, passing an int specifying which PJON instance has to be called, or a pointer to the PJON object, or an enum or whatever. 

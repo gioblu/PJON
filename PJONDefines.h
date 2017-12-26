@@ -114,7 +114,7 @@ limitations under the License. */
 #define PJON_EXT_LEN_BIT    0B01000000
 /* 0 - Packet id not present
    1 - Packet id present */
-#define PJON_ID_BIT         0B10000000
+#define PJON_PACKET_ID_BIT  0B10000000
 
 /* ERRORS: */
 #define PJON_CONNECTION_LOST     101
@@ -139,10 +139,16 @@ limitations under the License. */
   #define PJON_PACKET_MAX_LENGTH 50
 #endif
 
-/* If set to true avoids async ack code memory allocation if not used
+/* If set to false async ack feature is not included saving memory
    (it saves around 1kB of memory) */
 #ifndef PJON_INCLUDE_ASYNC_ACK
   #define PJON_INCLUDE_ASYNC_ACK false
+#endif
+
+/* If set to false packet id feature is not included saving memory
+   (it saves around 1kB of memory) */
+#ifndef PJON_INCLUDE_PACKET_ID
+  #define PJON_INCLUDE_PACKET_ID false
 #endif
 
 /* Maximum packet ids record kept in memory (to avoid duplicated exchanges) */
@@ -190,6 +196,7 @@ struct PJON_Packet_Info {
   uint8_t sender_id = 0;
   uint8_t sender_bus_id[4];
   uint16_t port = 0;
+  void *custom_pointer = NULL;
 };
 
 typedef void (* PJON_Receiver)(

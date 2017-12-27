@@ -6,7 +6,7 @@
   #define PJON_ESP
 #else
   #include <Ethernet.h>
-  #include <EthernetUDP.h>
+  #include <EthernetUdp.h>
 #endif
 
 class UDPHelper {

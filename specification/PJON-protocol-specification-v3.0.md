@@ -48,7 +48,6 @@ An iterative experimentation process of 8 years led to the development of the fo
 | 4 Transport layer: OSPREY                     |
 | segmentation                                  |
 |_______________________________________________|
- _______________________________________________
 | 3 Network layer: PJON                         |
 | Addressing, error detection, reliable packet  |
 | transmission, multiplexing, traffic control,  |

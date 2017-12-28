@@ -44,7 +44,6 @@
 class GlobalUDP {
     bool _udp_initialized = false;
     uint16_t _port = GUDP_DEFAULT_PORT;
-    const uint32_t _magic_header = GUDP_MAGIC_HEADER;
 
     // Remote nodes
     uint8_t  _remote_node_count = 0;
@@ -56,7 +55,7 @@ class GlobalUDP {
 
     bool check_udp() {
       if(!_udp_initialized) {
-        udp.set_magic_header(_magic_header);
+        udp.set_magic_header(htonl(GUDP_MAGIC_HEADER));
         if (udp.begin(_port)) _udp_initialized = true;
       }
       return _udp_initialized;

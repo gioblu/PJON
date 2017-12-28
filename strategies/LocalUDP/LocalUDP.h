@@ -35,12 +35,11 @@
 class LocalUDP {
     bool _udp_initialized = false;
     uint16_t _port = LUDP_DEFAULT_PORT;
-    const uint32_t _magic_header = LUDP_MAGIC_HEADER;
     UDPHelper udp;
 
     bool check_udp() {
       if(!_udp_initialized) {
-        udp.set_magic_header(_magic_header);
+        udp.set_magic_header(htonl(LUDP_MAGIC_HEADER));
         if (udp.begin(_port)) _udp_initialized = true;
       }
       return _udp_initialized;

@@ -22,7 +22,6 @@ if(bus.send_packet(10, bus_id, "All is ok?!", 11) == PJON_ACK)
 ```
 The sending is executed as soon as the method is called and it returns the following values:
 - `PJON_ACK` (6) if a correct reception occurred
-- `PJON_NAK` (21) if a mistake is found in CRC
 - `PJON_BUSY` (666) if a transmission for other devices is occurring
 - `PJON_FAIL` (65535) if no data is received
 

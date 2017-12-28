@@ -61,3 +61,21 @@ To broadcast a message to all connected devices, use the `PJON_BROADCAST` consta
 ```cpp
 bus.send(PJON_BROADCAST, "Message for all connected devices.", 34);
 ```
+To transmit data including a custom port, for example `8002` use send with its extended parameters:
+```cpp
+bus.include_port(true, 8002);
+bus.send(100, "Port id test!", 13);
+
+// Or call send passing the port as a parameter:
+
+bus.send(
+  100,                       // (uint8_t)         Recipient device id
+  bus_id,                    // (const uint8_t *) Recipient bus id
+  "Test including port id!", // (const char *)    Content
+  23,                        // (uint16_t)        Length
+  bus.config,                // (uint8_t)         Packet header
+  110,                       // (uint16_t)        Packet id
+  8002                       // (uint16_t)        Port identification
+);
+
+```

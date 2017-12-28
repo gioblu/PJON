@@ -379,6 +379,7 @@ public:
         else {
           memcpy(&sender_id, buf, 1);
           memcpy(&content_length, &buf[1], 4);
+          content_length = ntohl(content_length);
           if(content_length == 0) ok = 0;
         }
       }
@@ -397,7 +398,7 @@ public:
       if(ok) {
         uint32_t foot = 0;
         bytes_read = read_bytes(client, (uint8_t*) &foot, 4);
-        if(bytes_read != 4 || foot != ETCP_FOOTER) ok = false;
+        if(bytes_read != 4 || foot != htonl(ETCP_FOOTER)) ok = false;
       }
 
       #ifdef ETCP_DEBUG_PRINT
@@ -420,7 +421,8 @@ public:
         // Write PJON_ACK
         int8_t acklen = 0;
         if(ok) {
-          acklen = client.write((uint8_t*) &return_value, 2);
+          uint16_t r = htons(return_value);
+          acklen = client.write((uint8_t*) &r, 2);
           client.flush();
         }
 
@@ -518,7 +520,7 @@ public:
       #endif
       if(connected) {
         // Adjust connection header A to include ACK request flag
-        uint32_t conn_header = _request_ack ? ETCP_CONNECTION_HEADER_A_ACK : ETCP_CONNECTION_HEADER_A;
+        uint32_t conn_header = htonl(_request_ack ? ETCP_CONNECTION_HEADER_A_ACK : ETCP_CONNECTION_HEADER_A);
         if (_client_out.write((uint8_t*) &conn_header, 4) != 4) {
           connected = false;
           #ifdef ETCP_ERROR_PRINT
@@ -545,7 +547,7 @@ public:
           Serial.println(connected_rev ? F("Conn rev to srv") : F("Failed rev conn to srv"));
         #endif
         if(connected_rev) {
-           uint32_t conn_header = ETCP_CONNECTION_HEADER_B;
+           uint32_t conn_header = htonl(ETCP_CONNECTION_HEADER_B);
            if (_client_in.write((uint8_t*) &conn_header, 4) != 4) {
              connected_rev = false;
              #ifdef ETCP_ERROR_PRINT
@@ -644,10 +646,10 @@ public:
         uint32_t connection_header = 0;
         bool header_ok = false;
         if (read_bytes(_client_in, (uint8_t*) &connection_header, 4) == 4) {
-          if (connection_header == ETCP_CONNECTION_HEADER_A) {
+          if (connection_header == htonl(ETCP_CONNECTION_HEADER_A)) {
             header_ok = true;
             _ack_requested = false;
-          } else if (connection_header == ETCP_CONNECTION_HEADER_A_ACK) {
+          } else if (connection_header == htonl(ETCP_CONNECTION_HEADER_A_ACK)) {
             header_ok = true;
             _ack_requested = true;
           }
@@ -683,7 +685,8 @@ public:
           Serial.println("Accept rev OK");
         #endif
         uint32_t connection_header = 0;
-        if (read_bytes(_client_out, (uint8_t*) &connection_header, 4) == 4 && connection_header == ETCP_CONNECTION_HEADER_B)
+        if (read_bytes(_client_out, (uint8_t*) &connection_header, 4) == 4 && 
+            connection_header == htonl(ETCP_CONNECTION_HEADER_B))
           connected_reverse = true;
         else {
           #ifdef ETCP_ERROR_PRINT
@@ -749,7 +752,7 @@ public:
     uint16_t length
   ) {
     // Assume we are connected. Try to deliver the package
-    uint32_t head = ETCP_HEADER, foot = ETCP_FOOTER, len = length;
+    uint32_t head = htonl(ETCP_HEADER), foot = htonl(ETCP_FOOTER), len = htonl(length);
     uint8_t buf[9];
     memcpy(buf, &head, 4);
     memcpy(&buf[4], &id, 1);
@@ -782,6 +785,7 @@ public:
       if(ok) {
         uint16_t code = 0;
         int16_t status = read_bytes(client, (uint8_t*) &code, 2);
+        code = ntohs(code);
         if(status == 2 && code == PJON_ACK) result = code; else ok = false;
       }
       #ifdef ETCP_DEBUG_PRINT
@@ -819,7 +823,7 @@ public:
 
       // Send singlesocket header and number of outgoing packets
       bool ok = true;
-      uint32_t head = ETCP_SINGLE_SOCKET_HEADER;
+      uint32_t head = htonl(ETCP_SINGLE_SOCKET_HEADER);
       uint8_t numpackets_out = length > 0 ? 1 : 0;
       char buf[5];
       memcpy(buf, &head, 4);
@@ -858,7 +862,7 @@ public:
       }
 
       // Write singlesocket footer for the whole thing
-      uint32_t foot = ETCP_SINGLE_SOCKET_FOOTER;
+      uint32_t foot = htonl(ETCP_SINGLE_SOCKET_FOOTER);
       if(ok) ok = client.write((uint8_t*) &foot, 4) == 4;
       if(ok) client.flush();
       #ifdef ETCP_DEBUG_PRINT
@@ -941,7 +945,7 @@ public:
       if(ok) {
         uint32_t foot = 0;
         ok = read_bytes(client, (uint8_t*) &foot, 4) == 4;
-        if(foot != ETCP_SINGLE_SOCKET_FOOTER) ok = 0;
+        if(foot != htonl(ETCP_SINGLE_SOCKET_FOOTER)) ok = 0;
         #ifdef ETCP_DEBUG_PRINT
           //Serial.print(F("Read ss foot, ok="));
           //Serial.println(ok);
@@ -978,6 +982,7 @@ public:
      This will resync if stream position is lost. */
 
   bool read_until_header(TCPHelperClient &client, uint32_t header) {
+    header = htonl(header); // Network byte order
     uint32_t head = 0;
     int8_t bytes_read = 0;
     bytes_read = read_bytes(client, (uint8_t*) &head, 4);
@@ -1199,8 +1204,6 @@ public:
     uint16_t length,
     uint32_t timing_us = 0
   ) {
-static uint32_t last = millis();
-uint32_t t0 = millis();
     // Special algorithm for single-socket transfers
     if(_single_socket)
       return single_socket_transfer(

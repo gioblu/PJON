@@ -22,7 +22,6 @@ if(bus.send_packet(10, bus_id, "All is ok?!", 11) == PJON_ACK)
 ```
 The sending is executed as soon as the method is called and it returns the following values:
 - `PJON_ACK` (6) if a correct reception occurred
-- `PJON_NAK` (21) if a mistake is found in CRC
 - `PJON_BUSY` (666) if a transmission for other devices is occurring
 - `PJON_FAIL` (65535) if no data is received
 
@@ -60,4 +59,22 @@ bus.remove(one_second_test);
 To broadcast a message to all connected devices, use the `PJON_BROADCAST` constant as recipient ID.
 ```cpp
 bus.send(PJON_BROADCAST, "Message for all connected devices.", 34);
+```
+To transmit data including a custom port, for example `8002` use send with its extended parameters:
+```cpp
+bus.include_port(true, 8002);
+bus.send(100, "Port id test!", 13);
+
+// Or call send passing the port as a parameter:
+
+bus.send(
+  100,                       // (uint8_t)         Recipient device id
+  bus_id,                    // (const uint8_t *) Recipient bus id
+  "Test including port id!", // (const char *)    Content
+  23,                        // (uint16_t)        Length
+  bus.config,                // (uint8_t)         Packet header
+  110,                       // (uint16_t)        Packet id
+  8002                       // (uint16_t)        Port identification
+);
+
 ```

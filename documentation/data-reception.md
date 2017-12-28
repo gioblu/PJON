@@ -41,8 +41,9 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
   // If port id is included
   if(packet_info.header & PJON_PORT_BIT) {
     Serial.print(" Port bit: ");
-    Serial.println(packet_info.port);
+    Serial.print(packet_info.port);
   }
+  Serial.println();
 }
 ```
 Inform the instance to call `receiver_function` when a correct message is received:

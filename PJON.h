@@ -176,8 +176,7 @@ class PJON {
       #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
         bool add_packet_id =
           ((header & PJON_ACK_MODE_BIT) && (header & PJON_TX_INFO_BIT)) ||
-          ((config & PJON_ACK_MODE_BIT) && (config & PJON_TX_INFO_BIT)) ||
-          ((header & PJON_PACKET_ID_BIT) || (config & PJON_PACKET_ID_BIT));
+          (header & PJON_PACKET_ID_BIT);
         if(!p_id && add_packet_id) p_id = new_packet_id();
       #endif
 
@@ -223,7 +222,7 @@ class PJON {
         }
       #endif
 
-      if(config & PJON_PORT_BIT)
+      if(header & PJON_PORT_BIT)
         if(requested_port != PJON_BROADCAST) {
           destination[index++] = (uint8_t)(requested_port >> 8);
           destination[index++] = (uint8_t)requested_port;

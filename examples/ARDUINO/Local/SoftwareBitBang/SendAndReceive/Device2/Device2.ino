@@ -2,7 +2,6 @@
 
 // <Strategy name> bus(selected device id)
 PJON<SoftwareBitBang> bus(45);
-int packet;
 
 void setup() {
   Serial.begin(115200);
@@ -14,7 +13,7 @@ void setup() {
   bus.set_receiver(receiver_function);
   bus.strategy.set_pin(12);
   bus.begin();
-  packet = bus.send(44, "B", 1);
+  bus.send(44, "B", 1);
 };
 
 void error_handler(uint8_t code, uint8_t data) {
@@ -39,8 +38,8 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
   /* Make use of the payload before sending something, the buffer where payload points to is
      overwritten when a new message is dispatched */
   if((char)payload[0] == 'B') {
-    if(!bus.packets[packet].state)
-      packet = bus.reply("B", 1); // Avoid duplicate sending checking old packet state
+    if(!bus.update()) // If all packets are delivered, send another
+      bus.reply("B", 1);
     digitalWrite(13, HIGH);
     delay(5);
     digitalWrite(13, LOW);

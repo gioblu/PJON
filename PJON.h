@@ -151,13 +151,12 @@ class PJON {
       char *destination,
       const char *source,
       uint16_t length,
-      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t header = PJON_FAIL,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
       uint8_t index = 0;
-
-      if(header == PJON_NOT_ASSIGNED) header = config;
+      if(header == PJON_FAIL) header = config;
       if(length > 255) header |= PJON_EXT_LEN_BIT;
       if((config & PJON_PORT_BIT) || (requested_port != PJON_BROADCAST))
         header |= PJON_PORT_BIT;
@@ -176,8 +175,7 @@ class PJON {
       #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
         bool add_packet_id =
           ((header & PJON_ACK_MODE_BIT) && (header & PJON_TX_INFO_BIT)) ||
-          ((config & PJON_ACK_MODE_BIT) && (config & PJON_TX_INFO_BIT)) ||
-          ((header & PJON_PACKET_ID_BIT) || (config & PJON_PACKET_ID_BIT));
+          (header & PJON_PACKET_ID_BIT);
         if(!p_id && add_packet_id) p_id = new_packet_id();
       #endif
 
@@ -223,7 +221,7 @@ class PJON {
         }
       #endif
 
-      if(config & PJON_PORT_BIT)
+      if(header & PJON_PORT_BIT)
         if(requested_port != PJON_BROADCAST) {
           destination[index++] = (uint8_t)(requested_port >> 8);
           destination[index++] = (uint8_t)requested_port;
@@ -268,7 +266,7 @@ class PJON {
       const char *packet,
       uint16_t length,
       uint32_t timing,
-      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t header = PJON_FAIL,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST,
       uint16_t p_index = PJON_FAIL
@@ -349,8 +347,8 @@ class PJON {
 
     /* Calculate packet overhead: */
 
-    uint8_t packet_overhead(uint8_t header = PJON_NOT_ASSIGNED) const {
-      header = (header == PJON_NOT_ASSIGNED) ? config : header;
+    uint8_t packet_overhead(uint16_t header = PJON_FAIL) const {
+      header = (header == PJON_FAIL) ? config : header;
       return (
         (
           (header & PJON_MODE_BIT) ?
@@ -618,7 +616,7 @@ class PJON {
     uint16_t reply(
       const char *packet,
       uint16_t length,
-      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t header = PJON_FAIL,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
@@ -642,7 +640,7 @@ class PJON {
       uint8_t id,
       const char *string,
       uint16_t length,
-      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t header = PJON_FAIL,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
@@ -656,7 +654,7 @@ class PJON {
       const uint8_t *b_id,
       const char *string,
       uint16_t length,
-      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t header = PJON_FAIL,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
@@ -674,7 +672,7 @@ class PJON {
       const uint8_t *b_id,
       const char *string,
       uint16_t length,
-      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t header = PJON_FAIL,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
@@ -699,7 +697,7 @@ class PJON {
       const char *string,
       uint16_t length,
       uint32_t timing,
-      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t header = PJON_FAIL,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
@@ -717,7 +715,7 @@ class PJON {
       const char *string,
       uint16_t length,
       uint32_t timing,
-      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t header = PJON_FAIL,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
@@ -751,7 +749,7 @@ class PJON {
       uint8_t id,
       char *string,
       uint16_t length,
-      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t header = PJON_FAIL,
       uint16_t requested_port = PJON_BROADCAST
     ) {
       if(!(length = compose_packet(
@@ -765,7 +763,7 @@ class PJON {
       const uint8_t *b_id,
       char *string,
       uint16_t length,
-      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t header = PJON_FAIL,
       uint16_t requested_port = PJON_BROADCAST
     ) {
       if(!(length = compose_packet(
@@ -783,7 +781,7 @@ class PJON {
       const uint8_t *b_id,
       const char *string,
       uint16_t length,
-      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t header = PJON_FAIL,
       uint16_t requested_port = PJON_BROADCAST,
       uint32_t timeout = 3000000
     ) {
@@ -820,7 +818,7 @@ class PJON {
       uint8_t id,
       const char *string,
       uint16_t length,
-      uint8_t header = PJON_NOT_ASSIGNED,
+      uint16_t header = PJON_FAIL,
       uint16_t requested_port = PJON_BROADCAST,
       uint32_t timeout = 3000000
     ) {

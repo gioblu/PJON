@@ -2,7 +2,7 @@
 /* SoftwareBitBang
    1 or 2 wires software emulated digital communication data link layer
    used as a Strategy by the PJON framework (included in version v3.0)
-   Compliant with Padded jittering data link layer specification v2.0
+   Compliant with PJDL (Padded Jittering Data Link) specification v2.0
    ___________________________________________________________________________
 
     Copyright 2010-2017 Giovanni Blu Mitolo gioscarab@gmail.com

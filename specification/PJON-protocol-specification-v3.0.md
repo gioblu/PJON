@@ -31,7 +31,7 @@ Changelog:
 ```
 
 ### PJON™ Protocol specification v3.0
-The graph below shows the proposed protocol stack model. The features distribution have been engineered, and strongly tested, to offer an easier and more flexible set of standards for computer networks. Those engineering choices are made to offer a scalable and low overhead stack of protocols easily applied as a set or individually. PJON has been engineered "bottom to top" and was originally created to cover use cases where 1-Wire or i2c were generally applied, with its development, features have been extended enabling more complex use cases where more advanced network protocols like TCP-IP are generally applied.
+The graph below shows the proposed protocol stack model. The features distribution have been engineered and verified through testing to offer an easier and more flexible set of standards for computer networks. Those engineering choices are made to offer a scalable and low overhead stack of protocols easily applied as a set or individually. PJON has been engineered "bottom to top" and was originally created to cover use cases where 1-Wire or i2c were generally applied, with its development, features have been extended enabling more complex use cases where more advanced network protocols like TCP-IP are generally applied.
 
 An iterative experimentation process of 8 years led to the development of the following minimalistic set of rules covering most of the features provided by TCP-IP although requiring slightly half of its overhead (IPv4 40 bytes, PJON 22 bytes). Being designed to support features modularity, PJON can be used on extremely simple systems excluding unused features reducing its implementation's memory footprint and its overhead up to 5 bytes, finally providing the community with a common protocol able to cover a very wide range of use cases.  
 ```cpp  
@@ -67,7 +67,7 @@ An iterative experimentation process of 8 years led to the development of the fo
 
 ### Basic concepts
 * Transmission occurs only if the communication medium is not in use
-* Packet transmission is regulated by a 1, 2 or 3 byte header
+* Packet transmission is regulated by a 1 byte header
 * Devices communicate through packets with a maximum length of 255 or 65535 bytes
 * Every device has an equal right to transmit and receive
 * Every device has a unique 1 byte id
@@ -238,3 +238,13 @@ See the [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledg
 
 ### Protocol encapsulation
 PJON supports higher level protocols transport and identification by using a 2 bytes unsigned integer port number as a protocol identifier. Thanks to this feature devices can handle safely many different protocols at the same time. Ports from `0` to `8000` are reserved to known protocols which index is present in the [known protocols list](/specification/PJON-known-protocols-list.md), ports from `8001` to `65535` are free for custom use cases.
+
+The graph below shows a packet transmission where port 8002 is inserted in the packet and header bit `B00010000` is set up to signal its presence.
+```cpp
+ _________________________________________
+|ID| HEADER |LENGTH|CRC8|PORT ID|DATA|CRC8|
+|--|--------|------|----|-------|----|----|
+|12|00010000|  8   |    | 8002  | 64 |    |
+|__|________|______|____|_______|____|____|
+
+```

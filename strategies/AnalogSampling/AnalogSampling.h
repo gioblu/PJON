@@ -1,7 +1,8 @@
 
 /* AnalogSampling data link layer 18/02/2017
    used as a Strategy by the PJON framework
-   It complies with PJDLS v1.0 data link specification
+   It complies with PJDLS (Padded Jittering Data Link byte Stuffed)
+   specification v2.0
 
    AnalogSampling is designed to sample digital data using analog readings.
    It can be effectively used to communicate data wirelessly through any
@@ -22,12 +23,12 @@
    - LED sensitivity to the signal
    - Available current for transmitter
 
-   It is possible to use this strategy with a couple of LEDs and an optic fiber
-   cable to have a safe EM interference free data link.
+   It is possible to use this strategy with a couple of LEDs and an optic
+   fiber cable to have a safe EM interference free data link.
 
-   It is possible to use this strategy to also communicate long range wirelessly
-   using a couple of photodiodes and laser emitters. It may be necessary to
-   tweak timing constants in Timing.h.
+   It is possible to use this strategy to also communicate long range
+   wirelessly using a couple of photodiodes and laser emitters. It may be
+   necessary to tweak timing constants in Timing.h.
    ____________________________________________________________________________
 
    Copyright 2010-2017 Giovanni Blu Mitolo gioscarab@gmail.com

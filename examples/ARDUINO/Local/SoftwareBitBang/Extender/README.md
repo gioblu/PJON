@@ -1,7 +1,7 @@
 ## Extender examples
 
 This sketch allows a local bus to be segmented. It can be used for:  
-1. Extending its medium as a repeater, for example if `SoftwareBitBang` bus wires are getting too long, they can be splitted in two sections connected by a repeater, extending range. This scheme can be repeated to enable really long distances.
+1. Extending its medium as a repeater, for example if `SoftwareBitBang` bus wires are getting too long, they can be split in two sections connected by a repeater, extending range. This scheme can be repeated to enable really long distances.
 2. Let devices on different media communicate with each other transparently, for example to let devices on a `SoftwareBitBang` bus wire communicate with devices using the `LocalUDP` strategy on a LAN.
 3. Tunnel packets through another medium using two extenders mirroring each other. For example, two `SoftwareBitBang` buses that are far from each other can be joined transparently through a LAN using the `LocalUDP` strategy, or through a WAN or Internet using the `EthernetTCP` strategy.
 4. Extend (3) to let packets flow freely between multiple `SoftwareBitBang` buses on different media with multiple extenders exchanging packets on a common medium like a LAN using `LocalUDP` strategy.

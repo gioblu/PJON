@@ -16,7 +16,7 @@ The simplest way to send data is to use `send_packet`, this method composes the 
 // Send to device id 10 the string "Hi!"
 bus.send_packet(10, "Hi!", 3);
 
-// All available optional parameters
+// All optional parameters available
 bus.send_packet(
   10,             // Device id
   "Hello World!", // Content
@@ -25,13 +25,13 @@ bus.send_packet(
   8002            // Port
 );
 
-// Shared
-uint8_t bus_id[] = {0, 0, 0, 1};
+// Shared or using bus indexing
 
-// Send to device id 10 the string "Hi!"
+// Send to bus id 0.0.0.1 - device id 10 the string "Hi!"
+uint8_t bus_id[] = {0, 0, 0, 1};
 bus.send_packet(10, bus_id, "Hi!", 3);
 
-// All available optional parameters
+// All optional parameters available
 bus.send_packet(
   10,             // Device id
   bus_id,         // Bus id
@@ -53,7 +53,7 @@ The sending is executed as soon as the method is called and it returns the follo
 if(bus.send_packet(10, "All is ok?!", 11) == PJON_ACK)
   Serial.println("10 is ok!");
 
-// Shared
+// Shared or using bus indexing
 if(bus.send_packet(10, bus_id, "All is ok?!", 11) == PJON_ACK)
   Serial.println("10 is ok!");
 ```
@@ -78,7 +78,7 @@ To send data to another device connected to the bus simply call `send` passing t
 // Local
 bus.send(100, "Ciao, this is a test!", 21);
 
-// Shared
+// Shared or using bus indexing
 uint8_t bus_id[] = {0, 0, 0, 1};
 bus.send(100, bus_id, "Ciao, this is a test!", 21);
 ```
@@ -114,7 +114,7 @@ bus.send(
   8002                       // (uint16_t)     Port identification
 );
 
-// Shared
+// Shared or using bus indexing
 bus.send(
   100,                       // (uint8_t)         Recipient device id
   bus_id,                    // (const uint8_t *) Recipient bus id

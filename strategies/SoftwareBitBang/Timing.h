@@ -144,9 +144,10 @@
   #if SWBB_MODE == 1
   /* Added by github user 240974a - 09/03/2016  */
     #if F_CPU == 80000000L
+      // Working on pin: D1 or GPIO 5
       #define SWBB_BIT_WIDTH   44
       #define SWBB_BIT_SPACER 110
-      #define SWBB_ACCEPTANCE  35
+      #define SWBB_ACCEPTANCE  56
       #define SWBB_READ_DELAY   4
     #endif
   #endif

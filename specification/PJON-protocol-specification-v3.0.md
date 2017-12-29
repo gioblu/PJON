@@ -238,3 +238,13 @@ See the [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledg
 
 ### Protocol encapsulation
 PJON supports higher level protocols transport and identification by using a 2 bytes unsigned integer port number as a protocol identifier. Thanks to this feature devices can handle safely many different protocols at the same time. Ports from `0` to `8000` are reserved to known protocols which index is present in the [known protocols list](/specification/PJON-known-protocols-list.md), ports from `8001` to `65535` are free for custom use cases.
+
+The graph below shows a packet transmission where port 8002 is inserted in the packet and header bit `B00010000` is set up to signal its presence.
+```cpp
+ _________________________________________
+|ID| HEADER |LENGTH|CRC8|PORT ID|DATA|CRC8|
+|--|--------|------|----|-------|----|----|
+|12|10001111|  8   |    | 8002  | 64 |    |
+|__|________|______|____|_______|____|____|
+
+```

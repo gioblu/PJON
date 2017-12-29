@@ -29,7 +29,7 @@
    It is possible to use this strategy to also communicate long range
    wirelessly using a couple of photodiodes and laser emitters. It may be
    necessary to tweak timing constants in Timing.h.
-   ____________________________________________________________________________
+   ___________________________________________________________________________
 
    Copyright 2010-2017 Giovanni Blu Mitolo gioscarab@gmail.com
 

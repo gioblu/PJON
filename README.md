@@ -1,7 +1,6 @@
-**Master is in transitional state between v9 and v10, please refer to the latest stable release:** [PJON v9.1](https://github.com/gioblu/PJON/releases/tag/9.1)
 
 ![PJON](http://www.gioblu.com/PJON/PJON-github-header-tiny.png)
-## PJON v9.1
+## PJON v10.0
 PJON® (Padded Jittering Operative Network) is an Arduino compatible, multi-master, multi-media communications bus system. It proposes a Standard, it is designed as a framework and implements a totally software emulated network protocol stack that can be easily cross-compiled on many architectures like ATtiny, ATmega, ESP8266, Teensy, Raspberry Pi, Linux and Windows x86 machines. It is a valid tool to quickly and comprehensibly build a network of devices. Visit [wiki](https://github.com/gioblu/PJON/wiki) and [documentation](documentation/README.md) to know more about the PJON Standard.
 
 [![Get PJON bus id](https://img.shields.io/badge/GET-PJON%20bus%20id-lightgrey.svg)](http://www.pjon.org/get-bus-id.php)

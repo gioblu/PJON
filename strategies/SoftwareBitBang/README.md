@@ -91,7 +91,7 @@ PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl
 in delay or executing other tasks a certain amount of packets could be potentially
 lost, PJON does its job scheduling the packet
 to be sent again in future but a certain amount of bandwidth can be wasted. Structure intelligently
-your loop cycle to avoid huge blind timeframes.
+your loop cycle and polling duration to avoid low transmission accuracy.
 - `SoftwareBitBang` strategy can have compatibility issues with codebases that
 are using interrupts, reliability or bandwidth loss can be experienced because of the cyclical
 interruptions made by third party software to the PJON procedure.

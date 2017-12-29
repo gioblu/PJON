@@ -67,7 +67,7 @@ An iterative experimentation process of 8 years led to the development of the fo
 
 ### Basic concepts
 * Transmission occurs only if the communication medium is not in use
-* Packet transmission is regulated by a 1, 2 or 3 byte header
+* Packet transmission is regulated by a 1 byte header
 * Devices communicate through packets with a maximum length of 255 or 65535 bytes
 * Every device has an equal right to transmit and receive
 * Every device has a unique 1 byte id

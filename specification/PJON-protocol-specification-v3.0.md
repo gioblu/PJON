@@ -244,7 +244,7 @@ The graph below shows a packet transmission where port 8002 is inserted in the p
  _________________________________________
 |ID| HEADER |LENGTH|CRC8|PORT ID|DATA|CRC8|
 |--|--------|------|----|-------|----|----|
-|12|10001111|  8   |    | 8002  | 64 |    |
+|12|00010000|  8   |    | 8002  | 64 |    |
 |__|________|______|____|_______|____|____|
 
 ```

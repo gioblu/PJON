@@ -1114,12 +1114,12 @@ class PJON {
 
   private:
     bool          _auto_delete = true;
+    void         *_custom_pointer;
     PJON_Error    _error;
     uint8_t       _mode;
     uint16_t      _packet_id_seed = 0;
     PJON_Receiver _receiver;
     bool          _router = false;
-    void         *_custom_pointer = NULL;
   protected:
     uint8_t       _device_id;
 };

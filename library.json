@@ -15,7 +15,7 @@
     "type": "git",
     "url": "https://github.com/gioblu/PJON.git"
   },
-  "version": "9.1",
+  "version": "10.0",
   "examples": [
     "examples/*/*/*/*/*.ino",
     "examples/*/*/*/*/*.h",

@@ -33,7 +33,7 @@ The features of the PJON protocol have been engineered and verified through test
 
 PJON is engineered to be modular, it can be operated by devices with few available resources using only its primary features with a program memory footprint of circa 4500 bytes and a overhead of 5 bytes per packet, but can also be operated by more complex machines using all its optional features with a maximum program memory footprint of 8200 bytes and a maximum overhead of 22 bytes per packet.
 
-The following set of rules provide with an alternative to 1-Wire or i2c using its more basic configuration, but also, including all its optional features, an alternative to TCP-IP requiring slightly half of its overhead (IPv4 40 bytes, PJON 5-22 bytes).
+PJON provides with an alternative to 1-Wire or i2c if used with its more basic configuration; including all its features it supports most of the TCP-IP functionality although requiring slightly half of its overhead (IPv4 40 bytes, PJON 5-22 bytes).
 
 ```cpp  
  _______________________________________________

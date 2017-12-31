@@ -13,7 +13,7 @@
 /*
 Milan, Italy
 Originally published: 10/04/2010
-latest revision: 24/09/2017
+latest revision: 31/12/2017
 PJDL (Padded Jittering Data Link) v2.0 specification
 Invented by Giovanni Blu Mitolo,
 released into the public domain
@@ -38,18 +38,19 @@ PJDL (Padded Jittering Data Link) is a simplex or half-duplex data link layer, t
 * Support error detection
 * Support 1 byte synchronous response to frame
 
-```cpp  
- ______     ______      ______      ______      ______
-|      |   |      |    |      |    |      |    |      |
-|DEVICE|   |DEVICE|    |DEVICE|    |DEVICE|    |DEVICE|
-|______|   |______|    |______|    |______|    |______|
-___|___________|___________|___________|___________|___
- ___|__     ___|__    ___|__     ___|__  | SINGLE WIRE BUS
-|      |   |      |  |      |   |      | |
-|DEVICE|   |DEVICE|  |DEVICE|   |DEVICE| |___/\/\/\___ GND
-|______|   |______|  |______|   |______|     1-5 MΩ
+```cpp
+PJDL SINGLE WIRE BUS                            ______
+ ______    ______    ______    ______          |      |
+|      |  |      |  |      |  |      |         |DEVICE|
+|DEVICE|  |DEVICE|  |DEVICE|  |DEVICE|         |______|
+|______|  |______|  |______|  |______|             |
+___|__________|________|___________|_______/\/\/\__| IO PIN
+ ___|__    __|___    ___|__    ___|__   |  110-180 Ω
+|      |  |      |  |      |  |      |  |  
+|DEVICE|  |DEVICE|  |DEVICE|  |DEVICE|  |__/\/\/\__  GND
+|______|  |______|  |______|  |______|     1-5 MΩ    
 ```
-It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to protect MCU pins and to reduce interference. The higher is the proximity of sources of induced interference, the higher is the required resistance of the pull-down resistor.     
+It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to reduce externally induced interference. Pins can be optionally protected by over current adding a current limiting resistor to each connected pin which value can be obtained solving the following equation `R = (operating voltage / pin max current drain)`, for example to obtain the current limiting resistor value for an Arduino Uno simply substitute its characteristics: `R = (5v / 0.030A) = 166.66Ω`.  
 
 #### Byte transmission
 Each byte is prepended with a synchronization pad and transmission occurs LSB-first. The first bit is a longer than standard logic 1 followed by a standard logic 0. The reception method is based on finding a logic 1 as long as the first padding bit within a certain threshold, synchronizing to its falling edge and checking if it is followed by a logic 0. If this pattern is detected, reception starts, if not, interference, synchronization loss or simply absence of communication is detected at byte level.    

@@ -50,7 +50,7 @@ ___|__________|________|___________|_______/\/\/\__| IO PIN
 |DEVICE|  |DEVICE|  |DEVICE|  |DEVICE|  |__/\/\/\__  GND
 |______|  |______|  |______|  |______|     1-5 MΩ    
 ```
-It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to reduce externally induced interference. Pins can be optionally protected by over current adding a current limiting resistor to each connected pin which value can be obtained solving the following equation `R = (operating voltage / pin max current drain)`, for example to obtain the current limiting resistor value for an Arduino Uno simply substitute its characteristics: `R = (5v / 0.030A) = 166.66Ω`.  
+It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to reduce externally induced interference. Pins can be optionally protected against overload adding a current limiting resistor to each connected pin. The resistor value can be obtained solving the following equation `R = (operating voltage / pin max current drain)`, for example to obtain the current limiting resistor value for an Arduino Uno simply substitute its characteristics: `R = (5v / 0.030A) = 166.66Ω`.
 
 #### Byte transmission
 Each byte is prepended with a synchronization pad and transmission occurs LSB-first. The first bit is a longer than standard logic 1 followed by a standard logic 0. The reception method is based on finding a logic 1 as long as the first padding bit within a certain threshold, synchronizing to its falling edge and checking if it is followed by a logic 0. If this pattern is detected, reception starts, if not, interference, synchronization loss or simply absence of communication is detected at byte level.    

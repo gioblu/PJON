@@ -40,6 +40,9 @@
 #if defined(PJON_INCLUDE_TS)
   #include "ThroughSerial/ThroughSerial.h"
 #endif
+#if defined(PJON_INCLUDE_TL)
+  #include "LoRa/ThroughLora.h"
+#endif
 #if defined(PJON_INCLUDE_NONE)
   /* None for custom strategy inclusion */
 #endif
@@ -51,6 +54,7 @@
   #include "OverSampling/OverSampling.h"
   #include "SoftwareBitBang/SoftwareBitBang.h"
   #include "ThroughSerial/ThroughSerial.h"
+  #include "LoRa/ThroughLora.h"
   /* Avoid ATtiny44/84/45/85 missing inclusion error */
   #if !defined(__AVR_ATtiny45__) && !defined(__AVR_ATtiny85__) && \
       !defined(__AVR_ATtiny44__) && !defined(__AVR_ATtiny84__)

@@ -2,7 +2,7 @@
 /* PJON Windows x86 Interface
    _____________________________________________________________________________
 
-    Copyright 2017 Zbigniew Zasieczny z.zasieczny@gmail.com
+    Copyright 2018 Zbigniew Zasieczny z.zasieczny@gmail.com
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

@@ -2,7 +2,7 @@
 #pragma once
 
 /* Compute CRC8 with a table-less implementation:
-   Copyright Giovanni Blu Mitolo giorscarab@gmail.com 2017
+   Copyright Giovanni Blu Mitolo giorscarab@gmail.com 2018
 
    CRC8 C2, source Baicheva98 (implicit + 1 representation)
    0x97 = (x + 1)(x^7 + x^6 + x^5 + x^2 + 1)^2

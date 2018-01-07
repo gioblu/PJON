@@ -41,7 +41,7 @@
   #include "ThroughSerial/ThroughSerial.h"
 #endif
 #if defined(PJON_INCLUDE_TL)
-  #include "LoRa/ThroughLora.h"
+  #include "ThroughLoRa/ThroughLora.h"
 #endif
 #if defined(PJON_INCLUDE_NONE)
   /* None for custom strategy inclusion */

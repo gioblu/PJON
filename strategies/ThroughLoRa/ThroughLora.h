@@ -35,27 +35,27 @@ class ThroughLora {
       return result;
     };
 
-  	int packetRssi() {
-  		return LoRa.packetRssi();
-  	};
+    int packetRssi() {
+      return LoRa.packetRssi();
+    };
 
-  	float packetSnr() {
-  		return LoRa.packetSnr();
-  	};
+    float packetSnr() {
+      return LoRa.packetSnr();
+    };
 
-  	bool setFrequency(uint32_t frequency) {
-  		return LoRa.begin(frequency);
-  	};
+    bool setFrequency(uint32_t frequency) {
+      return LoRa.begin(frequency);
+    };
 
-  	bool setSignalBandwidth(uint32_t bandwidth) {
-  		LoRa.setSignalBandwidth(bandwidth);
-  		return true;
-  	};
+    bool setSignalBandwidth(uint32_t bandwidth) {
+      LoRa.setSignalBandwidth(bandwidth);
+      return true;
+    };
 
-  	bool setPins(uint8_t cs_pin, uint8_t reset_pin, uint8_t dio0_pin) {
-  		LoRa.setPins(cs_pin, reset_pin, dio0_pin);
-  		return true;
-  	};
+    bool setPins(uint8_t cs_pin, uint8_t reset_pin, uint8_t dio0_pin) {
+      LoRa.setPins(cs_pin, reset_pin, dio0_pin);
+      return true;
+    };
 
     /* Begin method, to be called before transmission or reception:
        (returns always true) */
@@ -89,25 +89,25 @@ class ThroughLora {
     /* Receive byte response */
 
     uint16_t receive_response() {
-    	uint32_t time = PJON_MICROS();
-    	while((uint32_t)(PJON_MICROS() - time) < TL_RESPONSE_TIME_OUT) {
-    		uint8_t frame_size = LoRa.parsePacket();
-    		if(frame_size > 0) return LoRa.read();
-    	}
-    	return PJON_FAIL;
+      uint32_t time = PJON_MICROS();
+      while((uint32_t)(PJON_MICROS() - time) < TL_RESPONSE_TIME_OUT) {
+        uint8_t frame_size = LoRa.parsePacket();
+        if(frame_size > 0) return LoRa.read();
+      }
+      return PJON_FAIL;
     };
 
     /* Receive a string: */
 
     uint16_t receive_string(uint8_t *string, uint16_t max_length) {
-  		uint8_t frameSize = LoRa.parsePacket();
-  		if(frameSize > 0) {
-  			while(LoRa.available()) {
-  				*string = LoRa.read();
-  				string++;
-  			}
-  			return frameSize;
-  		} else return PJON_FAIL;
+      uint8_t frameSize = LoRa.parsePacket();
+      if(frameSize > 0) {
+        while(LoRa.available()) {
+          *string = LoRa.read();
+          string++;
+        }
+        return frameSize;
+      } else return PJON_FAIL;
     };
 
       /* Send a byte and wait for its transmission end */
@@ -119,9 +119,9 @@ class ThroughLora {
     /* Send byte response to the packet's transmitter */
 
     void send_response(uint8_t response) {
-  		start_tx();
-  		send_byte(response);
-  		end_tx();
+      start_tx();
+      send_byte(response);
+      end_tx();
     };
 
     /* Send a string: */
@@ -138,7 +138,7 @@ class ThroughLora {
     };
 
     void end_tx() {
-  	  LoRa.endPacket();
+      LoRa.endPacket();
     };
 
   private:

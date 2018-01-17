@@ -28,16 +28,11 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 - Packet manager to handle, track and if necessary retransmit a packet sending in background
 - Error handling
 
-#### PJON (Padded Jittering Operative Network) Protocol specification
+#### PJON (Padded Jittering Operative Network) Protocol specifications
 - [PJON v3.0](specification/PJON-protocol-specification-v3.0.md)
 - [PJON Acknowledge v1.0](specification/PJON-protocol-acknowledge-specification-v1.0.md)
 - [PJON Dynamic addressing v2.0](specification/PJON-dynamic-addressing-specification-v2.0.md)
-
-#### Data links specification
-- [PJDL v2.0](strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md)
-- [PJDLR v2.0](strategies/OverSampling/specification/PJDLR-specification-v2.0.md)
-- [PJDLS v2.0](strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
-- [TSDL v2.0](strategies/ThroughSerial/specification/TSDL-specification-v2.0.md)
+- [PJDL v2.0](strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) - [PJDLR v2.0](strategies/OverSampling/specification/PJDLR-specification-v2.0.md) - [PJDLS v2.0](strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) - [TSDL v2.0](strategies/ThroughSerial/specification/TSDL-specification-v2.0.md)
 
 #### Compliant tools
 - [ModuleInterface](https://github.com/fredilarsen/ModuleInterface) - easy config and value sync between IoT modules by Fred Larsen

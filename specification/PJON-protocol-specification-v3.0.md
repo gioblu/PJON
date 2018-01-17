@@ -29,7 +29,7 @@ Changelog:
 ```
 
 ### PJON™ Protocol specification v3.0
-The features of the PJON protocol has been engineered and verified through testing to offer an easier and more flexible set of standards for computer networks. Those engineering choices are made to offer a scalable and efficient stack of protocols to quickly connect a wide range of different systems. PJON has been engineered "bottom to top" and was originally created to cover use cases where 1-Wire or i2c are generally applied, with its development, features have been carefully extended enabling more complex use cases where more advanced network protocols are used.
+The features of the PJON protocol have been engineered and verified through testing to offer an easier and more flexible set of standards for computer networks. Those engineering choices are made to offer a scalable and efficient stack of protocols to quickly connect a wide range of different systems. PJON has been engineered "bottom to top" and was originally created to cover use cases where 1-Wire or i2c are generally applied, with its development, features have been carefully extended enabling more complex use cases where more advanced network protocols are used.
 
 The PJON protocol is modular, it can be operated by devices with few available resources using only its primary features with a program memory footprint of 4500 bytes and a overhead of 5 bytes per packet, but can also be operated by more complex machines using all its optional features with a maximum program memory footprint of 8200 bytes and a maximum overhead of 22 bytes per packet.
 
@@ -79,7 +79,7 @@ PJON provides with an alternative to 1-Wire or i2c if used with its more basic c
 * Synchronous and or asynchronous acknowledgement can be requested (see [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md))
 * Encapsulated protocol identification using a 2 bytes port id  
 
-The PJON protocol v2.0 handles internal bus connectivity and unique addressing for 254 devices, through bus communication with unique bus addressing for 4.294.967.295 buses and supports up to 1.090.921.692.930 devices. It regulates the exchange of packets with a configurable set of features driven by its header. Depending on the packet configuration a certain overhead is added to information varying from 5 up to 22 bytes.
+The PJON protocol v3.0 handles internal bus connectivity and unique addressing for 254 devices, through bus communication with unique bus addressing for 4.294.967.295 buses and supports up to 1.090.921.692.930 devices. It regulates the exchange of packets with a configurable set of features driven by its header. Depending on the packet configuration a certain overhead is added to information varying from 5 up to 22 bytes.
 
 ### Bus
 A PJON bus is made by a group of up to 254 devices transmitting and receiving on the same medium. Communication between devices occurs through packets and it is based on democracy: every device has the right to transmit on the common medium for up to `(1000 / devices number) milliseconds / second`.

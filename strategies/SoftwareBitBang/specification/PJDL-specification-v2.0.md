@@ -32,7 +32,7 @@ PJDL (Padded Jittering Data Link) is a simplex or half-duplex data link layer, t
 ### Basic concepts
 * Define a synchronization pad initializer to identify a byte
 * Use synchronization pad's falling edge to achieve byte level synchronization
-* Use 3 consequent synchronization pads identify a frame
+* Use 3 consequent synchronization pads to identify a frame
 * Detect interference or absence of communication at byte level
 * Support collision avoidance and detection
 * Support error detection

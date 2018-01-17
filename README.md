@@ -45,6 +45,9 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 - [PJON-python](https://github.com/Girgitt/PJON-python) - python interface by Zbigniew Zasieczny
 - [PJON-gRPC](https://github.com/Galitskiy/PJON-gRPC) - gRPC server-client by Oleg Galitskiy
 
+#### Contribute
+Feel free to send a pull request sharing something you have made that could help. If you want to support us you can also try to solve an [issue](https://github.com/gioblu/PJON/issues). Thank you for your support.
+
 #### Donate
 If you believe in this project and you appreciate our work, please, make a
 donation. The PJON Foundation is entirely financed by contributions of wise

@@ -196,13 +196,13 @@ class PJON {
       }
 
       destination[index++] = id;
-      destination[index++] = header;
+      destination[index++] = (uint8_t)header;
       if(extended_length) {
         destination[index++] = (uint8_t)(new_length >> 8);
         destination[index++] = (uint8_t)new_length;
         destination[index++] = PJON_crc8::compute((uint8_t *)destination, 4);
       } else {
-        destination[index++] = new_length;
+        destination[index++] = (uint8_t)new_length;
         destination[index++] = PJON_crc8::compute((uint8_t *)destination, 3);
       }
       if(header & PJON_MODE_BIT) {

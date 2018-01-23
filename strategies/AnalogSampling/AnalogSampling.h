@@ -126,7 +126,6 @@ class AnalogSampling {
       PJON_IO_PULL_DOWN(_input_pin);
       if(_output_pin != _input_pin)
         PJON_IO_PULL_DOWN(_output_pin);
-      uint32_t time = PJON_MICROS();
       compute_analog_read_duration();
       _last_byte = receive_byte();
       return true;

@@ -1082,8 +1082,8 @@ class PJON {
             )
           ) return true;
         save_packet_id(info);
-        return false;
       #endif
+      return false;
     };
 
     /* Save packet id in the buffer: */

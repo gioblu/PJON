@@ -222,7 +222,7 @@ class PJON {
         }
       #endif
 
-      if(header & PJON_PORT_BIT)
+      if(header & PJON_PORT_BIT) {
         if(requested_port != PJON_BROADCAST) {
           destination[index++] = (uint8_t)(requested_port >> 8);
           destination[index++] = (uint8_t)requested_port;
@@ -230,6 +230,7 @@ class PJON {
           destination[index++] = (uint8_t)(port >> 8);
           destination[index++] = (uint8_t)port;
         }
+      }
 
       memcpy(
         destination + (new_length - length - (header & PJON_CRC_BIT ? 4 : 1)),

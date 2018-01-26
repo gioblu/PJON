@@ -13,7 +13,7 @@
 /*
 Milan, Italy
 Originally published: 24/11/2017
-Latest revision: 26/1/2017
+Latest revision: 26/1/2018
 SFSP v1.0
 Invented by Giovanni Blu Mitolo,
 released into the public domain

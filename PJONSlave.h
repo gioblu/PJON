@@ -103,31 +103,28 @@ class PJONSlave : public PJON<Strategy> {
       char msg = PJON_ID_ACQUIRE;
       char head = this->config | required_config | PJON_ACK_REQ_BIT;
       this->_device_id = PJON_NOT_ASSIGNED;
-      for(
-        uint8_t id;
-        ((uint32_t)(PJON_MICROS() - time) < PJON_ID_SCAN_TIME);
-      ) {
-        id = PJON_RANDOM(1, PJON_MAX_DEVICES);
-        if(
-          id == PJON_NOT_ASSIGNED ||
-          id == PJON_MASTER_ID ||
-          id == PJON_BROADCAST
-        ) continue;
-        else if(
-          this->send_packet_blocking(
-            id,
-            this->bus_id,
-            &msg,
-            1,
-            head,
-            PJON_DYNAMIC_ADDRESSING_PORT
-          ) == PJON_FAIL
-        ) {
-          this->_device_id = id;
-          break;
-        }
-      }
+      uint8_t id = PJON_RANDOM(1, PJON_MAX_DEVICES);
+
+      if(
+        id == PJON_NOT_ASSIGNED ||
+        id == PJON_MASTER_ID ||
+        id == PJON_BROADCAST
+      ) acquire_id_multi_master(limit);
+
+      if(
+        this->send_packet_blocking(
+          id,
+          this->bus_id,
+          &msg,
+          1,
+          head,
+          PJON_DYNAMIC_ADDRESSING_PORT
+        ) == PJON_ACK
+      ) acquire_id_multi_master(limit++);
+
+      this->_device_id = id;
       receive(PJON_RANDOM(PJON_ACQUIRE_ID_DELAY) * 1000);
+
       if(
         this->send_packet_blocking(
           this->_device_id,

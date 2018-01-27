@@ -99,7 +99,6 @@ class PJONSlave : public PJON<Strategy> {
         return _slave_error(PJON_ID_ACQUISITION_FAIL, PJON_FAIL);
 
       PJON_DELAY_MICROSECONDS(PJON_RANDOM(PJON_ACQUIRE_ID_DELAY));
-      uint32_t time = PJON_MICROS();
       char msg = PJON_ID_ACQUIRE;
       char head = this->config | required_config | PJON_ACK_REQ_BIT;
       this->_device_id = PJON_NOT_ASSIGNED;

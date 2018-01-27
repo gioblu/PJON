@@ -87,7 +87,7 @@ class PJONMaster : public PJON<Strategy> {
     /* Add a device reference: */
 
     bool add_id(uint8_t id, uint32_t rid, bool state) {
-      if(!ids[id - 1].state && !ids[id - 1].rid) {
+      if(unique_rid(rid) && !ids[id - 1].state && !ids[id - 1].rid) {
         ids[id - 1].rid = rid;
         ids[id - 1].state = state;
         return true;

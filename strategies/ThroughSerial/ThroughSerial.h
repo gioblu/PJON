@@ -145,10 +145,10 @@ class ThroughSerial {
 
       if(result == TS_ESC) {
         result = receive_byte();
-        // Escaping byte-stuffing violation
+        result ^= TS_ESC;
+        // Avoid byte-stuffing violation
         if((result != TS_START) && (result != TS_ESC) && (result != TS_END))
           return TS_FAIL;
-        result ^= TS_ESC;
       }
 
       // No end flag, byte-stuffing violation

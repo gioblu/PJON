@@ -303,13 +303,13 @@ public:
   ) {
     int32_t total_bytes_read = 0, bytes_read = ETCP_ERROR_READ;
     uint32_t start_ms = millis();
-    int16_t avail;
     /* NOTE: The Arduino standard recv/read functions returns
        -1 if no data waiting
         0 if socket closed
         This is the opposite of POSIX. */
     do {
       #ifdef HAS_ETHERNETUDP // Avoid using blocking read until there is data present
+      int16_t avail;
       while(
         client.connected() &&
         (avail = client.available()) <= 0 &&

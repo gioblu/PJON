@@ -1,9 +1,9 @@
 
  /*-O//\         __     __
    |-gfo\       |__| | |  | |\ | ®
-   |!y°o:\      |  __| |__| | \| v9.1
-   |y"s§+`\     multi-master, multi-media communications bus system
-  /so+:-..`\    Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
+   |!y°o:\      |  __| |__| | \| v10.0
+   |y"s§+`\     multi-master, multi-media bus network protocol
+  /so+:-..`\    Copyright 2010-2018 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
   |5/:%&-a3f.:;\
   \+//u/+g%{osv,,\
@@ -32,7 +32,7 @@ and maintainance costs.
 Thank you and happy tinkering!
  _____________________________________________________________________________
 
-Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
+Copyright 2010-2018 by Giovanni Blu Mitolo gioscarab@gmail.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -87,7 +87,7 @@ class PJONMaster : public PJON<Strategy> {
     /* Add a device reference: */
 
     bool add_id(uint8_t id, uint32_t rid, bool state) {
-      if(!ids[id - 1].state && !ids[id - 1].rid) {
+      if(unique_rid(rid) && !ids[id - 1].state && !ids[id - 1].rid) {
         ids[id - 1].rid = rid;
         ids[id - 1].state = state;
         return true;

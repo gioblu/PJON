@@ -1,6 +1,6 @@
 
 /* PJON SoftwareBitBang strategy Transmission Timing table
-   Copyright (c) 2010-2017, Giovanni Blu Mitolo All rights reserved.
+   Copyright 2010-2018, Giovanni Blu Mitolo All rights reserved.
 
    Often timing in two different architectures doesn't match. This happens
    because PJON's code execution time can variate, and also time measurement
@@ -144,9 +144,10 @@
   #if SWBB_MODE == 1
   /* Added by github user 240974a - 09/03/2016  */
     #if F_CPU == 80000000L
+      // Working on pin: D1 or GPIO 5
       #define SWBB_BIT_WIDTH   44
       #define SWBB_BIT_SPACER 110
-      #define SWBB_ACCEPTANCE  35
+      #define SWBB_ACCEPTANCE  56
       #define SWBB_READ_DELAY   4
     #endif
   #endif

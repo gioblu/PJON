@@ -2,7 +2,7 @@
 /* PJON Arduino Interface
    ___________________________________________________________________________
 
-    Copyright 2017 Giovanni Blu Mitolo gioscarab@gmail.com
+    Copyright 2018 Giovanni Blu Mitolo gioscarab@gmail.com
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -32,23 +32,23 @@
 
   /* Fallback to digitalWrite --------------------------------------------- */
 
-  #if !defined(PJON_ANALOG_READ)
+  #ifndef PJON_ANALOG_READ
     #define PJON_ANALOG_READ analogRead
   #endif
 
-  #if !defined(PJON_IO_WRITE)
+  #ifndef PJON_IO_WRITE
     #define PJON_IO_WRITE digitalWrite
   #endif
 
-  #if !defined(PJON_IO_READ)
+  #ifndef PJON_IO_READ
     #define PJON_IO_READ digitalRead
   #endif
 
-  #if !defined(PJON_IO_MODE)
+  #ifndef PJON_IO_MODE
     #define PJON_IO_MODE pinMode
   #endif
 
-  #if !defined(PJON_IO_PULL_DOWN)
+  #ifndef PJON_IO_PULL_DOWN
     #define PJON_IO_PULL_DOWN(P) \
       do { \
         digitalWrite(P, LOW); \

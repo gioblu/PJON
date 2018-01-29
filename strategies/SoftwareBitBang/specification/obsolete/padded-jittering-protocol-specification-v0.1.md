@@ -9,7 +9,7 @@
 /*
 Milan, Italy - 10/04/2010
 The Padded jittering data link layer specification is an invention and intellectual property
-of Giovanni Blu Mitolo - Copyright 2010-2017 All rights reserved
+of Giovanni Blu Mitolo - Copyright 2010-2018 All rights reserved
 
 Related work: /strategies/SoftwareBitBang/
 Compliant implementation versions: PJON 1.0-5.0

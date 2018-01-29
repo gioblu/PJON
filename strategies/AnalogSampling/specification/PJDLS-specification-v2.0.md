@@ -25,13 +25,13 @@ Changelog:
 */
 ```
 ### PJDLS v2.0
-PJDLS (Padded Jittering Data Link byte Stuffed) is a simplex or half-duplex data link layer, that can be easily software emulated, enabling one or many to many communication in both master-slave and multi-master configuration, optimized for use cases where high quality synchronization cannot be achieved. Frame separation is obtained with the use of [SFSP v1.0](/specification/SFSP-frame-separation-specification). It has been engineered to have limited minimum requirements, and to be efficiently executed on limited microcontrollers with poor clock accuracy. No additional hardware is required to apply PJDLS, and, being implemented in c++, in less than 350 lines of code, it is easily portable to many different architectures.
+PJDLS (Padded Jittering Data Link byte Stuffed) is a simplex or half-duplex data link layer, that can be easily software emulated, enabling one or many to many communication in both master-slave and multi-master configuration, optimized for use cases where high quality synchronization cannot be achieved. Frame separation is obtained with the use of [SFSP v1.0](/specification/SFSP-frame-separation-specification-v1.0.md). It has been engineered to have limited minimum requirements, and to be efficiently executed on limited microcontrollers with poor clock accuracy. No additional hardware is required to apply PJDLS, and, being implemented in c++, in less than 350 lines of code, it is easily portable to many different architectures.
 
 #### Basic concepts
 * Define a synchronization pad initializer to identify a byte
 * Use synchronization pad's falling edge to achieve byte level synchronization
 * Detect interference or absence of communication at byte level
-* Frame separation obtained with [SFSP v1.0](/specification/SFSP-frame-separation-specification)  
+* Frame separation obtained with [SFSP v1.0](/specification/SFSP-frame-separation-specification-v1.0.md)  
 * Support collision avoidance
 * Support 1 byte synchronous response to frame
 

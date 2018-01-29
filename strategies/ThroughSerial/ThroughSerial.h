@@ -12,7 +12,7 @@
    ___________________________________________________________________________
 
    ThroughSerial,
-   copyright 2016-2017 by Giovanni Blu Mitolo All rights reserved
+   copyright 2016-2018 by Giovanni Blu Mitolo All rights reserved
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -145,10 +145,10 @@ class ThroughSerial {
 
       if(result == TS_ESC) {
         result = receive_byte();
-        // Escaping byte-stuffing violation
+        result ^= TS_ESC;
+        // Avoid byte-stuffing violation
         if((result != TS_START) && (result != TS_ESC) && (result != TS_END))
           return TS_FAIL;
-        result ^= TS_ESC;
       }
 
       // No end flag, byte-stuffing violation

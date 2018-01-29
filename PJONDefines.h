@@ -1,9 +1,9 @@
 
  /*-O//\         __     __
    |-gfo\       |__| | |  | |\ | ®
-   |!y°o:\      |  __| |__| | \| v9.1
-   |y"s§+`\     multi-master, multi-media communications bus system
-  /so+:-..`\    Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
+   |!y°o:\      |  __| |__| | \| v10.0
+   |y"s§+`\     multi-master, multi-media bus network protocol
+  /so+:-..`\    Copyright 2010-2018 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
   |5/:%&-a3f.:;\
   \+//u/+g%{osv,,\
@@ -35,7 +35,7 @@ PJON® Standard compliant tools:
  Thank you and happy tinkering!
  _____________________________________________________________________________
 
-Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
+Copyright 2010-2018 by Giovanni Blu Mitolo gioscarab@gmail.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -160,11 +160,9 @@ limitations under the License. */
 #define PJON_DYNAMIC_ADDRESSING_PORT    1
 /* Maximum number of device id collisions during auto-addressing */
 #define PJON_MAX_ACQUIRE_ID_COLLISIONS 10
-/* Delay between device id acquisition and self request */
+/* Delay between device id acquisition and self request (1000 milliseconds) */
 #define PJON_ACQUIRE_ID_DELAY        1000
-/* Maximum id scan time (10 seconds) */
-#define PJON_ID_SCAN_TIME        10000000
-/* Master free id broadcast response interval (0.1 seconds) */
+/* Master free id broadcast response interval (100 milliseconds) */
 #define PJON_ID_REQUEST_INTERVAL   100000
 /* Master ID_REQUEST and ID_NEGATE timeout */
 #define PJON_ADDRESSING_TIMEOUT   2900000

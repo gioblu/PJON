@@ -1,9 +1,9 @@
 
  /*-O//\         __     __
    |-gfo\       |__| | |  | |\ | ®
-   |!y°o:\      |  __| |__| | \| v9.1
-   |y"s§+`\     multi-master, multi-media communications bus system
-  /so+:-..`\    Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
+   |!y°o:\      |  __| |__| | \| v10.0
+   |y"s§+`\     multi-master, multi-media bus network protocol
+  /so+:-..`\    Copyright 2010-2018 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
   |5/:%&-a3f.:;\
   \+//u/+g%{osv,,\
@@ -28,6 +28,7 @@ PJON® Standard compliant tools:
 Credits to contributors:
 - Fred Larsen. Systems engineering, header driven communication, debugging
 - Zbigniew Zasieczny. WINX86 interface
+- Matheus Garbelini. ThroughLora strategy
 - Wilfried Klaas ATtiny44/84 porting
 - 4ib3r github user. Memory optimization configurable strategies inclusion
 - budaics github user. ATtiny85 16MHz external clock testing and wiki page
@@ -66,7 +67,7 @@ and maintainance costs.
 Thank you and happy tinkering!
  _____________________________________________________________________________
 
-Copyright 2010-2017 by Giovanni Blu Mitolo gioscarab@gmail.com
+Copyright 2010-2018 by Giovanni Blu Mitolo gioscarab@gmail.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -195,13 +196,13 @@ class PJON {
       }
 
       destination[index++] = id;
-      destination[index++] = header;
+      destination[index++] = (uint8_t)header;
       if(extended_length) {
         destination[index++] = (uint8_t)(new_length >> 8);
         destination[index++] = (uint8_t)new_length;
         destination[index++] = PJON_crc8::compute((uint8_t *)destination, 4);
       } else {
-        destination[index++] = new_length;
+        destination[index++] = (uint8_t)new_length;
         destination[index++] = PJON_crc8::compute((uint8_t *)destination, 3);
       }
       if(header & PJON_MODE_BIT) {
@@ -221,7 +222,7 @@ class PJON {
         }
       #endif
 
-      if(header & PJON_PORT_BIT)
+      if(header & PJON_PORT_BIT) {
         if(requested_port != PJON_BROADCAST) {
           destination[index++] = (uint8_t)(requested_port >> 8);
           destination[index++] = (uint8_t)requested_port;
@@ -229,6 +230,7 @@ class PJON {
           destination[index++] = (uint8_t)(port >> 8);
           destination[index++] = (uint8_t)port;
         }
+      }
 
       memcpy(
         destination + (new_length - length - (header & PJON_CRC_BIT ? 4 : 1)),
@@ -1080,8 +1082,8 @@ class PJON {
             )
           ) return true;
         save_packet_id(info);
-        return false;
       #endif
+      return false;
     };
 
     /* Save packet id in the buffer: */
@@ -1114,12 +1116,12 @@ class PJON {
 
   private:
     bool          _auto_delete = true;
+    void         *_custom_pointer;
     PJON_Error    _error;
     uint8_t       _mode;
     uint16_t      _packet_id_seed = 0;
     PJON_Receiver _receiver;
     bool          _router = false;
-    void         *_custom_pointer = NULL;
   protected:
     uint8_t       _device_id;
 };

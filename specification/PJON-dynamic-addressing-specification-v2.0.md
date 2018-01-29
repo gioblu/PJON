@@ -97,7 +97,7 @@ Slave device id acquisition confirmation:
 |  ID  |00110110|LENGTH|CRC|ID| 1  |ID_CONFIRM|   |ID|CRC||ACK|
 |______|________|______|___|__|____|__________|___|__|___||___|
 ```
-If master detects reference a requester's rid already present in its reference, sends a `PJON_ID_NEGATE` request to the slave id requesting `ID_CONFIRM` to force it to regenerate a rid and try again:
+If master detects a requester's rid already present in its reference, sends a `PJON_ID_NEGATE` request to the slave id requesting `ID_CONFIRM` to force it to regenerate a rid and try again:
 ```cpp  
  __ ________ ______ ___ _________ ____ _________ ___ ___  ___
 |  | HEADER |      |   |         |PORT|         |RID|   ||   |

@@ -29,9 +29,9 @@
    It is possible to use this strategy to also communicate long range
    wirelessly using a couple of photodiodes and laser emitters. It may be
    necessary to tweak timing constants in Timing.h.
-   ____________________________________________________________________________
+   ___________________________________________________________________________
 
-   Copyright 2010-2017 Giovanni Blu Mitolo gioscarab@gmail.com
+   Copyright 2010-2018 Giovanni Blu Mitolo gioscarab@gmail.com
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -126,7 +126,6 @@ class AnalogSampling {
       PJON_IO_PULL_DOWN(_input_pin);
       if(_output_pin != _input_pin)
         PJON_IO_PULL_DOWN(_output_pin);
-      uint32_t time = PJON_MICROS();
       compute_analog_read_duration();
       _last_byte = receive_byte();
       return true;

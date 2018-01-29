@@ -2,7 +2,7 @@
 /* PJON dynamic Strategy inclusion
    _____________________________________________________________________________
 
-    Copyright 2017 Giovanni Blu Mitolo gioscarab@gmail.com
+    Copyright 2018 Giovanni Blu Mitolo gioscarab@gmail.com
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -39,6 +39,9 @@
 #endif
 #if defined(PJON_INCLUDE_TS)
   #include "ThroughSerial/ThroughSerial.h"
+#endif
+#if defined(PJON_INCLUDE_TL)
+  #include "ThroughLoRa/ThroughLora.h"
 #endif
 #if defined(PJON_INCLUDE_NONE)
   /* None for custom strategy inclusion */

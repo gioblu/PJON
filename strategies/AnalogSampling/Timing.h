@@ -1,6 +1,6 @@
 
 /* PJON AnalogSampling strategy Transmission Timing table
-   Copyright (c) 2017, Giovanni Blu Mitolo All rights reserved.
+   Copyright 2018, Giovanni Blu Mitolo All rights reserved.
    __________________________________________________________
   | MODE 1            | Transmission speed 1024Bb - 128B/s   |
   | ADC prescale 128  |                                      |

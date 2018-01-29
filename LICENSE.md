@@ -1,6 +1,6 @@
 The PJON Protocol layer specification, the Padded jittering data link layer specification, all the related software implementations and documentation, released as a part of this repository, are and will always remain free for personal, educational, experimental and commercial purposes.
 
-Giovanni Blu Mitolo (gioscarab@gmail.com) Copyright 2010-2017
+Giovanni Blu Mitolo (gioscarab@gmail.com) Copyright 2010-2018
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 

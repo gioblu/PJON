@@ -552,7 +552,7 @@ class PJON {
     /* Remove a packet from buffer: */
 
     void remove(uint16_t index) {
-      if(index >= 0 && (index < PJON_MAX_PACKETS)) {
+      if((index >= 0) && (index < PJON_MAX_PACKETS)) {
         packets[index].attempts = 0;
         packets[index].length = 0;
         packets[index].registration = 0;

@@ -981,14 +981,14 @@ public:
     header = htonl(header); // Network byte order
     uint32_t head = 0;
     int8_t bytes_read = 0;
-    bytes_read = read_bytes(client, (uint8_t*) &head, 4);
+    bytes_read = (uint8_t)read_bytes(client, (uint8_t*) &head, 4);
     if(bytes_read != 4 || head != header) {
       // Did not get header. Lost position in stream?
       do { /* Try to resync if we lost position in the stream
               (throw avay all until ETCP_HEADER found) */
         head = head >> 8;
         // Make space for 8 bits to be read into the most significant byte
-        bytes_read = read_bytes(client, &((uint8_t*) &head)[3], 1);
+        bytes_read = (uint8_t)read_bytes(client, &((uint8_t*) &head)[3], 1);
         if(bytes_read != 1) break;
       } while(head != header);
     }

@@ -140,10 +140,6 @@
     static void println(const char *s) { printf("%s\n", s); }
     static void println(int n) { printf("%d\n", n); }
   } DummyPrint;
-
-#ifdef _WIN32
-#define millis() PJON_MILLIS()
-#endif
 #endif
 
 // Constants

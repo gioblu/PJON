@@ -45,6 +45,7 @@
   };
 
   auto start_ts = std::chrono::high_resolution_clock::now();
+  auto start_ts_ms = std::chrono::high_resolution_clock::now();
 
   uint32_t micros() {
     auto elapsed_usec =
@@ -59,7 +60,10 @@
   };
 
   uint32_t millis() {
-    return (micros() / 1000);
+    return (uint32_t)
+      std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::high_resolution_clock::now() - start_ts_ms
+      ).count();
   };
 
   void delayMicroseconds(uint32_t delay_value) {
@@ -73,6 +77,10 @@
       std::this_thread::sleep_for(std::chrono::microseconds(50));
     }
   };
+
+  void delay(uint32_t delay_value_ms) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(delay_value_ms));
+  }
 
   #ifndef A0
     #define A0 0

@@ -26,8 +26,6 @@
 #define constrain(x, l, u) (x<l?l:(x>u?u:x))
 #endif
 
-void delay(uint32_t ms) { PJON_DELAY_MICROSECONDS(ms*1000ul); }
-
 class TCPHelperClient {
 #ifdef _WIN32
   SOCKET _fd = -1;
@@ -275,6 +273,8 @@ public:
   }
   bool operator!=(const TCPHelperClient& rhs) { return !this->operator==(rhs); }
   uint8_t getSocketNumber() { return _fd; }
+
+  int print(const char *msg) { return write((const uint8_t*) msg, strlen(msg)); }
 };
 
 
@@ -352,7 +352,11 @@ public:
 #ifdef _WIN32
     unsigned long ul = 1;
     int flags = ioctlsocket(_fd, FIONBIO, (unsigned long *)&ul); //Set into non blocking mode.
-    if (flags != SOCKET_ERROR); //Failed to set.
+    if (flags != NO_ERROR) { // Failed to set.
+#ifdef ETCP_ERROR_PRINT
+      printf("ioctlsocket FIONBIO failed.");
+#endif
+    }
 #else
     int flags = fcntl(_fd, F_GETFL, 0);
     if (flags != -1) fcntl(_fd, F_SETFL, flags | O_NONBLOCK);

@@ -144,7 +144,7 @@ class SoftwareBitBang {
       /* Transmitter emits a SWBB_BIT_WIDTH / 4 long bit and tries
          to get a response cyclically for SWBB_RESPONSE_TIMEOUT microseconds.
          Receiver synchronizes to the falling edge of the last incoming
-         bit and transmits PJON_ACK or PJON_NAK */
+         bit and transmits PJON_ACK */
       while(
         response == SWBB_FAIL &&
         (uint32_t)(PJON_MICROS() - SWBB_RESPONSE_TIMEOUT) <= time
@@ -168,7 +168,7 @@ class SoftwareBitBang {
       uint16_t result;
       if(max_length == PJON_PACKET_MAX_LENGTH) {
         uint32_t time = PJON_MICROS();
-        // Look for string initializer
+        // Look for frame initializer
         if(!sync() || !sync() || !sync()) return SWBB_FAIL;
         // Check its timing consistency
         if(

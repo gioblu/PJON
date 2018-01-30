@@ -1,7 +1,6 @@
 
 #define PJON_INCLUDE_TL
 
-#include <SPI.h>
 #include <PJON.h>
 #include <ArduinoJson.h>
 

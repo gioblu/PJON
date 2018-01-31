@@ -24,5 +24,5 @@ Device id can also be set afterwards through a setter:
 Can be read through a getter:
 ```cpp  
   bus.device_id(); // Get device id
-  bus.bus_id;      // Get bus id
+  bus.bus_id;      // Get or set bus id
 ```

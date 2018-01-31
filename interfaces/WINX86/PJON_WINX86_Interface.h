@@ -33,14 +33,6 @@
   #define LSBFIRST 1
   #define MSBFIRST 2
 
-  void pinMode(char pin, char m) { ; };
-
-  void digitalWrite(char, char) { ; };
-
-  int analogRead(int) {
-    return 0;
-  };
-
   auto start_ts = std::chrono::high_resolution_clock::now();
   auto start_ts_ms = std::chrono::high_resolution_clock::now();
 
@@ -87,28 +79,24 @@
   /* Fallback to WINDOWS-specific functions -------------------------------- */
 
   #if !defined(PJON_ANALOG_READ)
-    #define PJON_ANALOG_READ(P) analogRead(P)
+    #define PJON_ANALOG_READ(P) 0
   #endif
 
   #if !defined(PJON_IO_WRITE)
-    #define PJON_IO_WRITE digitalWrite
+    #define PJON_IO_WRITE(P, V)
   #endif
 
   #if !defined(PJON_IO_READ)
-    #define PJON_IO_READ digitalRead
+    #define PJON_IO_READ(P) 0
   #endif
 
   #if !defined(PJON_IO_MODE)
-    #define PJON_IO_MODE pinMode
+    #define PJON_IO_MODE(P, V)
   #endif
 
   #if !defined(PJON_IO_PULL_DOWN)
-    #define PJON_IO_PULL_DOWN(P) { \
-      PJON_IO_MODE(P, INPUT); \
-      pullUpDnControl(P, PUD_DOWN); \
-    }
+    #define PJON_IO_PULL_DOWN(P)
   #endif
-
 
   /* Random ----------------------------------------------------------------- */
 

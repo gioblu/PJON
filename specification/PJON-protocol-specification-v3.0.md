@@ -47,7 +47,7 @@ PJON provides with an alternative to 1-Wire or i2c if used with its more basic c
 | Session                                       |
 |_______________________________________________|
 | 4 Transport layer: OSPREY                     |
-| segmentation                                  |
+| Routing, segmentation                         |
 |_______________________________________________|
 | 3 Network layer: PJON                         |
 | Addressing, error detection, reliable packet  |

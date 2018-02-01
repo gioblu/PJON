@@ -105,10 +105,10 @@ class ThroughSerial {
       while((uint32_t)(PJON_MICROS() - time) < time_out) {
         if(PJON_SERIAL_AVAILABLE(serial)) {
           _last_reception_time = PJON_MICROS();
-          uint16_t read = (uint8_t)PJON_SERIAL_READ(serial);
+          int16_t read = PJON_SERIAL_READ(serial);
           if(read >= 0) {
-            _last_byte = read;
-            return read;
+            _last_byte = (uint8_t)read;
+            return _last_byte;
           }
         }
         #if defined(_WIN32)

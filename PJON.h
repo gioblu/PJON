@@ -1,7 +1,7 @@
 
  /*-O//\         __     __
    |-gfo\       |__| | |  | |\ | ®
-   |!y°o:\      |  __| |__| | \| v10.0
+   |!y°o:\      |  __| |__| | \| v10.1
    |y"s§+`\     multi-master, multi-media bus network protocol
   /so+:-..`\    Copyright 2010-2018 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
@@ -552,7 +552,7 @@ class PJON {
     /* Remove a packet from buffer: */
 
     void remove(uint16_t index) {
-      if(index >= 0 && (index < PJON_MAX_PACKETS)) {
+      if((index >= 0) && (index < PJON_MAX_PACKETS)) {
         packets[index].attempts = 0;
         packets[index].length = 0;
         packets[index].registration = 0;

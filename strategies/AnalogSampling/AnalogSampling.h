@@ -139,11 +139,11 @@ class AnalogSampling {
     bool can_start() {
       if(read_byte() != 0B00000000) return false;
       PJON_DELAY_MICROSECONDS(AS_BIT_SPACER / 2);
-      if(PJON_ANALOG_READ(_input_pin) > threshold) return false;
+      if((uint16_t)PJON_ANALOG_READ(_input_pin) > threshold) return false;
       PJON_DELAY_MICROSECONDS(AS_BIT_SPACER / 2);
-      if(PJON_ANALOG_READ(_input_pin) > threshold) return false;
+      if((uint16_t)PJON_ANALOG_READ(_input_pin) > threshold) return false;
       PJON_DELAY_MICROSECONDS(PJON_RANDOM(AS_COLLISION_DELAY));
-      if(PJON_ANALOG_READ(_input_pin) > threshold) return false;
+      if((uint16_t)PJON_ANALOG_READ(_input_pin) > threshold) return false;
       return true;
     };
 
@@ -174,9 +174,9 @@ class AnalogSampling {
     /* Read a byte from the pin */
 
     uint8_t read_byte() {
-      int bit_value;
-      int high_bit = 0;
-      int low_bit = 0;
+      uint16_t bit_value = 0;
+      uint16_t high_bit = 0;
+      uint16_t low_bit = 0;
       uint8_t byte_value = 0;
       for(int i = 0; i < 8; i++) {
         long time = PJON_MICROS();
@@ -222,17 +222,15 @@ class AnalogSampling {
       uint32_t time = PJON_MICROS();
 
       if(
-        (uint32_t)(PJON_MICROS() - _last_update) <
+        (uint32_t)(PJON_MICROS() - _last_update) >
         AS_THRESHOLD_DECREASE_INTERVAL
       ) {
-        ; // Avoid micros overflow error
-      } else if(threshold) {
         threshold *= 0.9;
         _last_update = PJON_MICROS();
       }
 
       while(
-        (PJON_ANALOG_READ(_input_pin) > threshold) &&
+        ((uint16_t)(PJON_ANALOG_READ(_input_pin)) > threshold) &&
         ((uint32_t)(PJON_MICROS() - time) <= AS_BIT_SPACER)
       ); // Do nothing
 

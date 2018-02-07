@@ -48,7 +48,7 @@ inform the reader of their definition as macros in the global scope.
     (((P >= 10 && P <= 13) || (P >= 50 && P <= 53)) ? &PORTB : \
     ((P >= 30 && P <= 37) ? &PORTC : \
     (((P >= 18 && P <= 21) || P == 38) ? &PORTD : \
-    (((P >= 0 && P <= 3) || P == 5) ? &PORTE : \
+    (((P <= 3) || P == 5) ? &PORTE : \
     ((P >= 54 && P <= 61) ? &PORTF : \
     (((P >= 39 && P <= 41) || P == 4) ? &PORTG : \
     (((P >= 6 && P <= 9) || P == 16 || P == 17) ? &PORTH : \
@@ -60,7 +60,7 @@ inform the reader of their definition as macros in the global scope.
     (((P >= 10 && P <= 13) || (P >= 50 && P <= 53)) ? &DDRB : \
     ((P >= 30 && P <= 37) ? &DDRC : \
     (((P >= 18 && P <= 21) || P == 38) ? &DDRD : \
-    (((P >= 0 && P <= 3) || P == 5) ? &DDRE : \
+    (((P <= 3) || P == 5) ? &DDRE : \
     ((P >= 54 && P <= 61) ? &DDRF : \
     (((P >= 39 && P <= 41) || P == 4) ? &DDRG : \
     (((P >= 6 && P <= 9) || P == 16 || P == 17) ? &DDRH : \
@@ -72,7 +72,7 @@ inform the reader of their definition as macros in the global scope.
     (((P >= 10 && P <= 13) || (P >= 50 && P <= 53)) ? &PINB : \
     ((P >= 30 && P <= 37) ? &PINC : \
     (((P >= 18 && P <= 21) || P == 38) ? &PIND : \
-    (((P >= 0 && P <= 3) || P == 5) ? &PINE : \
+    (((P <= 3) || P == 5) ? &PINE : \
     ((P >= 54 && P <= 61) ? &PINF : \
     (((P >= 39 && P <= 41) || P == 4) ? &PING : \
     (((P >= 6 && P <= 9) || P == 16 || P == 17) ? &PINH : \
@@ -123,14 +123,14 @@ inform the reader of their definition as macros in the global scope.
 #if defined(__AVR_ATmega88__)  || defined(__AVR_ATmega168__) || \
     defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
   #define PJON_IO_PIN_TO_PORT_REG(P) \
-    ((P >= 0 && P <= 7) ? &PORTD : ((P >= 8 && P <= 13) ? &PORTB : &PORTC))
+    ((P <= 7) ? &PORTD : ((P >= 8 && P <= 13) ? &PORTB : &PORTC))
   #define PJON_IO_PIN_TO_DDR_REG(P) \
-    ((P >= 0 && P <= 7) ? &DDRD : ((P >= 8 && P <= 13) ? &DDRB : &DDRC))
+    ((P <= 7) ? &DDRD : ((P >= 8 && P <= 13) ? &DDRB : &DDRC))
   #define PJON_IO_PIN_TO_PIN_REG(P) \
-    ((P >= 0 && P <= 7) ? &PIND : ((P >= 8 && P <= 13) ? &PINB : &PINC))
+    ((P <= 7) ? &PIND : ((P >= 8 && P <= 13) ? &PINB : &PINC))
   #ifndef PJON_IO_PIN_TO_BIT
     #define PJON_IO_PIN_TO_BIT(P) \
-      ((P >= 0 && P <= 7) ? P : ((P >= 8 && P <= 13) ? P - 8 : P - 14))
+      ((P <= 7) ? P : ((P >= 8 && P <= 13) ? P - 8 : P - 14))
   #endif
 
   #define PJON_IO_PIN_TO_TIMER(P) \
@@ -145,15 +145,15 @@ inform the reader of their definition as macros in the global scope.
 
 #if defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__)
   #define PJON_IO_PIN_TO_PORT_REG(P) \
-    (((P >= 0 && P <= 4) || P == 6 || P == 12 || P == 24 || P == 25 || P == 29) \
+    (((P <= 4) || P == 6 || P == 12 || P == 24 || P == 25 || P == 29) \
     ? &PORTD : ((P == 5 || P == 13) ? &PORTC : ((P >= 18 && P <= 23)) ? &PORTF : \
     ((P == 7) ? &PORTE : &PORTB)))
   #define PJON_IO_PIN_TO_DDR_REG(P) \
-    (((P >= 0 && P <= 4) || P == 6 || P == 12 || P == 24 || P == 25 || P == 29) \
+    (((P <= 4) || P == 6 || P == 12 || P == 24 || P == 25 || P == 29) \
     ? &DDRD : ((P == 5 || P == 13) ? &DDRC : ((P >= 18 && P <= 23)) ? \
     &DDRF : ((P == 7) ? &DDRE : &DDRB)))
   #define PJON_IO_PIN_TO_PIN_REG(P) \
-    (((P >= 0 && P <= 4) || P == 6 || P == 12 || P == 24 || P == 25 || P == 29) \
+    (((P <= 4) || P == 6 || P == 12 || P == 24 || P == 25 || P == 29) \
     ? &PIND : ((P == 5 || P == 13) ? &PINC : ((P >= 18 && P <= 23)) ? \
     &PINF : ((P == 7) ? &PINE : &PINB)))
   #ifndef PJON_IO_PIN_TO_BIT
@@ -182,14 +182,14 @@ inform the reader of their definition as macros in the global scope.
 #if defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__) || \
     defined(__AVR_ATtiny44A__) || defined(__AVR_ATtiny84A__)
   #define PJON_IO_PIN_TO_PORT_REG(P) \
-    ((P >= 0 && P <= 7) ? &PORTA : &PORTB )
+    ((P <= 7) ? &PORTA : &PORTB )
   #define PJON_IO_PIN_TO_DDR_REG(P) \
-    ((P >= 0 && P <= 7) ? &DDRA : &DDRB )
+    ((P <= 7) ? &DDRA : &DDRB )
   #define PJON_IO_PIN_TO_PIN_REG(P) \
-    ((P >= 0 && P <= 7) ? &PINA : &PINB)
+    ((P <= 7) ? &PINA : &PINB)
   #ifndef PJON_IO_PIN_TO_BIT
     #define PJON_IO_PIN_TO_BIT(P) \
-      ((P >= 0 && P <= 7) ? P : ((P == 8) ? 2 : ( (P == 9) ? 3 : ( (P == 10) ? 1 : 0))))
+      ((P <= 7) ? P : ((P == 8) ? 2 : ( (P == 9) ? 3 : ( (P == 10) ? 1 : 0))))
   #endif
 #endif
 

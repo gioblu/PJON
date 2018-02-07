@@ -31,7 +31,7 @@ Changelog:
 ### PJON™ Protocol specification v3.0
 The features of the PJON protocol have been engineered and verified through testing to offer an easier and more flexible set of standards for computer networks. Those engineering choices are made to offer a scalable and efficient stack of protocols to quickly connect a wide range of different systems. PJON has been engineered "bottom to top" and was originally created to cover use cases where 1-Wire or i2c are generally applied, with its development, features have been carefully extended enabling more complex use cases where more advanced network protocols are used.
 
-The PJON protocol is modular, it can be operated by devices with few available resources using only its primary features with a program memory footprint of 4500 bytes and a overhead of 5 bytes per packet, but can also be operated by more complex machines using all its optional features with a maximum program memory footprint of 8200 bytes and a maximum overhead of 22 bytes per packet.
+The PJON protocol is modular, it can be operated by devices with few available resources using only its primary features with a program memory footprint of 3650 bytes and a overhead of 5 bytes per packet, but can also be operated by more complex machines using all its optional features with a maximum program memory footprint of 8200 bytes and a maximum overhead of 22 bytes per packet.
 
 PJON provides with an alternative to 1-Wire or i2c if used with its more basic configuration; including all its features it supports most of the TCP-IP functionality although requiring slightly half of its overhead (IPv4 40 bytes, PJON 5-22 bytes).
 
@@ -47,7 +47,7 @@ PJON provides with an alternative to 1-Wire or i2c if used with its more basic c
 | Session                                       |
 |_______________________________________________|
 | 4 Transport layer: OSPREY                     |
-| segmentation                                  |
+| Routing, segmentation                         |
 |_______________________________________________|
 | 3 Network layer: PJON                         |
 | Addressing, error detection, reliable packet  |

@@ -303,13 +303,13 @@ public:
   ) {
     int32_t total_bytes_read = 0, bytes_read = ETCP_ERROR_READ;
     uint32_t start_ms = millis();
-    int16_t avail;
     /* NOTE: The Arduino standard recv/read functions returns
        -1 if no data waiting
         0 if socket closed
         This is the opposite of POSIX. */
     do {
       #ifdef HAS_ETHERNETUDP // Avoid using blocking read until there is data present
+      int16_t avail;
       while(
         client.connected() &&
         (avail = client.available()) <= 0 &&
@@ -981,14 +981,14 @@ public:
     header = htonl(header); // Network byte order
     uint32_t head = 0;
     int8_t bytes_read = 0;
-    bytes_read = read_bytes(client, (uint8_t*) &head, 4);
+    bytes_read = (uint8_t)read_bytes(client, (uint8_t*) &head, 4);
     if(bytes_read != 4 || head != header) {
       // Did not get header. Lost position in stream?
       do { /* Try to resync if we lost position in the stream
               (throw avay all until ETCP_HEADER found) */
         head = head >> 8;
         // Make space for 8 bits to be read into the most significant byte
-        bytes_read = read_bytes(client, &((uint8_t*) &head)[3], 1);
+        bytes_read = (uint8_t)read_bytes(client, &((uint8_t*) &head)[3], 1);
         if(bytes_read != 1) break;
       } while(head != header);
     }

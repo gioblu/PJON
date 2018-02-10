@@ -1,8 +1,5 @@
 
-The `Any` strategy includes virtual inheritance and let a PJON object switch from a strategy to another when required or a collection of PJON objects with different strategies to be treated dynamically.  
-
-#### Why Any strategy?
-This strategy is required for example if you need to handle an array of PJON objects that are using different strategies or if you need to use a single PJON instance using more than one strategy.
+The `Any` strategy includes virtual inheritance and let PJON objects change from a strategy to another after instantiation or a collection of PJON objects with different strategies to be treated agnostically.
 
 #### How to use Any
 Define a `StrategyLink` template class passing the desired strategy, then pass the type `Any` as PJON template parameter to instantiate a PJON object ready to communicate using this strategy.

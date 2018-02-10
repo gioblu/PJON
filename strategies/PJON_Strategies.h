@@ -19,6 +19,10 @@
 #pragma once
 
 /* Strategy related constant predefinition memory optimization */
+
+#if defined(PJON_INCLUDE_ANY)
+  #include "Any/Any.h"
+#endif
 #if defined(PJON_INCLUDE_AS)
   #include "AnalogSampling/AnalogSampling.h"
 #endif
@@ -50,6 +54,7 @@
     !defined(PJON_INCLUDE_GUDP) && !defined(PJON_INCLUDE_LUDP) && \
     !defined(PJON_INCLUDE_OS)   && !defined(PJON_INCLUDE_SWBB) && \
     !defined(PJON_INCLUDE_TS)   && !defined(PJON_INCLUDE_NONE)
+  #include "Any/Any.h"
   #include "AnalogSampling/AnalogSampling.h"
   #include "OverSampling/OverSampling.h"
   #include "SoftwareBitBang/SoftwareBitBang.h"

@@ -171,10 +171,10 @@ inform the reader of their definition as macros in the global scope.
 
 #if defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
   #define PJON_IO_PIN_TO_PORT_REG(P) &PORTB
-  #define PJON_IO_PIN_TO_DDR_REG(P)  &DDRB
-  #define PJON_IO_PIN_TO_PIN_REG(P)  &PINB
+  #define PJON_IO_PIN_TO_DDR_REG(P) &DDRB
+  #define PJON_IO_PIN_TO_PIN_REG(P) &PINB
   #ifndef PJON_IO_PIN_TO_BIT
-    #define PJON_IO_PIN_TO_BIT(P) P - 6
+    #define PJON_IO_PIN_TO_BIT(P) P
   #endif
 #endif
 

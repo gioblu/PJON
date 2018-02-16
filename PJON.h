@@ -470,8 +470,8 @@ class PJON {
 
         if((config & PJON_MODE_BIT) && (data[1] & PJON_MODE_BIT) && !_router)
           if((i > (3 + extended_length)) && (i < (8 + extended_length)))
-              if(bus_id[i - 4 - extended_length] != data[i])
-                return PJON_BUSY;
+            if(bus_id[i - 4 - extended_length] != data[i])
+              return PJON_BUSY;
       }
 
       if(
@@ -521,11 +521,11 @@ class PJON {
           }
         }
         if(filter && known_packet_id(last_packet_info))
-            return PJON_ACK;
+          return PJON_ACK;
       #endif
 
       if((port != PJON_BROADCAST) && (port != last_packet_info.port))
-          return PJON_BUSY;
+        return PJON_BUSY;
 
       _receiver(
         data + (overhead - (data[1] & PJON_CRC_BIT ? 4 : 1)),

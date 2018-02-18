@@ -13,13 +13,10 @@
         > <
  ______-| |-__________________________________________________________________
 
-PJONNetworkRouter has been contributed by Fred Larsen.
+PJONRouter has been contributed by Fred Larsen.
 
-It routes packets between buses with different bus ids.
-
-For installations not using bus ids but simply segmenting one bus over multiple
-media to keep the packet size minimized, please have a look at the
-PJONLocalRouter class instead.
+It routes packets between buses with different bus ids, and between segmented
+buses as well, even for local buses with no bus ids.
 
 If you believe in this project and you appreciate our work, please, make a
 donation. The PJON Foundation is entirely financed by contributions of wise

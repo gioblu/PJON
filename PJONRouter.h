@@ -129,6 +129,7 @@ public:
       if (PJONAny::bus_id_equality(bus_id, buses[i]->bus_id)) {
         // Check if the bus is segmented and if the device belongs to the bus's segment
         if (buses[i]->segment_count <= 1 // No segments
+          || device_id == 0 // Broadcast to all segments of same bus id
           || ((device_id/(256/buses[i]->segment_count)) == buses[i]->segment))
           return i; // Explicit bus id match
       }

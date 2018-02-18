@@ -79,10 +79,78 @@ public:
 #endif
 
 class PJONRouter {
+protected:  
   uint8_t bus_count = 0,
           default_gateway = PJON_NOT_ASSIGNED,
           current_bus = PJON_NOT_ASSIGNED;
   PJONAny *buses[PJON_ROUTER_MAX_BUSES];
+  
+  void connect(uint8_t bus_count_in,
+              PJONAny *buses_in[],
+              uint8_t default_gateway_in,
+              void *custom_pointer,
+              PJON_Receiver receiver) {
+    bus_count = bus_count_in > PJON_ROUTER_MAX_BUSES ? PJON_ROUTER_MAX_BUSES : bus_count_in;
+    default_gateway = default_gateway_in;
+    for (uint8_t i=0; i<bus_count; i++) {
+      buses[i] = buses_in[i];
+      buses[i]->set_receiver(receiver);
+      buses[i]->set_custom_pointer(custom_pointer);
+      buses[i]->set_router(true);
+    }
+  }
+
+  uint8_t find_attached_bus_with_id(const uint8_t *bus_id, const uint8_t device_id, uint8_t &start_bus) {
+    for (uint8_t i=start_bus; i<bus_count; i++) {
+      if (PJONAny::bus_id_equality(bus_id, buses[i]->bus_id)) {
+        // Check if the bus is segmented and if the device belongs to the bus's segment
+        if (buses[i]->segment_count <= 1 // Not segmented
+          || device_id == PJON_BROADCAST // Broadcast to all segments of same bus id
+          || ((device_id/(256/buses[i]->segment_count)) == buses[i]->segment)) { // Segment match
+          start_bus = i+1; // Continue searching for more matches after this
+          return i; // Explicit bus id match
+        }
+      }
+    }
+    start_bus = PJON_NOT_ASSIGNED;
+    return PJON_NOT_ASSIGNED;
+  }
+  
+  virtual uint8_t find_bus_with_id(const uint8_t *bus_id, const uint8_t device_id, uint8_t &start_bus) {
+    return find_attached_bus_with_id(bus_id, device_id, start_bus);
+  }
+  
+  virtual void dynamic_receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {  
+    uint8_t sender_bus = current_bus, start_search = 0;
+    bool ack_sent = false; // Send ACK only once even if delivering copies to multiple buses
+    do {
+      uint8_t receiver_bus = find_bus_with_id((packet_info.header & PJON_MODE_BIT) != 0 ? 
+                                              packet_info.receiver_bus_id : (const uint8_t[]){0,0,0,0}, 
+                                              packet_info.receiver_id, start_search);
+      if (receiver_bus == PJON_NOT_ASSIGNED) receiver_bus = default_gateway;
+      
+      // If we have a matching receiving bus, and it is not the same as the sending bus, route the packet
+      if (receiver_bus != PJON_NOT_ASSIGNED && receiver_bus != sender_bus) {
+
+        // Send an ACK once to notify that we will take care of delivering the packet
+        if (!ack_sent && packet_info.header & PJON_ACK_REQ_BIT && packet_info.receiver_id != PJON_BROADCAST) {
+          buses[sender_bus]->strategy.send_response(PJON_ACK);
+          ack_sent = true;
+        }
+
+        // Forward the packet
+        if (PJON_MAX_PACKETS > 0)
+          buses[receiver_bus]->send_from_id(packet_info.sender_id, packet_info.sender_bus_id,
+           packet_info.receiver_id, packet_info.receiver_bus_id, (const char*)payload, length,
+           packet_info.header, packet_info.id, packet_info.port);
+        else
+          buses[receiver_bus]->send_packet_blocking(packet_info.receiver_id, packet_info.receiver_bus_id,
+           (const char*)payload, length, packet_info.header, packet_info.port);
+// TODO: Need send_from_id_blocking functions!!!
+      }
+    } while (start_search != PJON_NOT_ASSIGNED);
+  }
+  
 public:
 
   PJONRouter() {}
@@ -111,61 +179,9 @@ public:
                      PJONAny *buses_in[],
                      uint8_t default_gateway_in = PJON_NOT_ASSIGNED)
   {
-    bus_count = bus_count_in > PJON_ROUTER_MAX_BUSES ? PJON_ROUTER_MAX_BUSES : bus_count_in;
-    default_gateway = default_gateway_in;
-    for (uint8_t i=0; i<bus_count; i++) {
-      buses[i] = buses_in[i];
-      buses[i]->set_receiver(PJONRouter::receiver_function);
-      buses[i]->set_custom_pointer(this);
-      buses[i]->set_router(true);
-    }
+    connect(bus_count_in, buses_in, default_gateway_in, this, PJONRouter::receiver_function);
   }
-
-  uint8_t find_bus_with_id(const uint8_t *bus_id, const uint8_t device_id, const uint8_t start_bus) {
-    for (uint8_t i=start_bus; i<bus_count; i++) {
-      if (PJONAny::bus_id_equality(bus_id, buses[i]->bus_id)) {
-        // Check if the bus is segmented and if the device belongs to the bus's segment
-        if (buses[i]->segment_count <= 1 // No segments
-          || device_id == PJON_BROADCAST // Broadcast to all segments of same bus id
-          || ((device_id/(256/buses[i]->segment_count)) == buses[i]->segment))
-          return i; // Explicit bus id match
-      }
-    }
-    return PJON_NOT_ASSIGNED;
-  }
-
-  void dynamic_receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {  
-    uint8_t sender_bus = current_bus, start_search = 0;
-    bool ack_sent = false; // Send ACK only once even if delivering copies to multiple buses
-    do {
-      uint8_t receiver_bus = find_bus_with_id((packet_info.header & PJON_MODE_BIT) != 0 ? 
-                                              packet_info.receiver_bus_id : (const uint8_t[]){0,0,0,0}, 
-                                              packet_info.receiver_id, start_search);
-      start_search = receiver_bus == PJON_NOT_ASSIGNED ? PJON_NOT_ASSIGNED : receiver_bus + 1;
-      if (receiver_bus == PJON_NOT_ASSIGNED) receiver_bus = default_gateway;
-
-      // If we have a matching receiving bus, and it is not the same as the sending bus, route the packet
-      if (receiver_bus != PJON_NOT_ASSIGNED && receiver_bus != sender_bus) {
-
-        // Send an ACK once to notify that we will take care of delivering the packet
-        if (!ack_sent && packet_info.header & PJON_ACK_REQ_BIT && packet_info.receiver_id != PJON_BROADCAST) {
-          buses[sender_bus]->strategy.send_response(PJON_ACK);
-          ack_sent = true;
-        }
-
-        // Forward the packet
-        if (PJON_MAX_PACKETS > 0)
-          buses[receiver_bus]->send_from_id(packet_info.sender_id, packet_info.sender_bus_id,
-           packet_info.receiver_id, packet_info.receiver_bus_id, (const char*)payload, length,
-           packet_info.header, packet_info.id, packet_info.port);
-        else
-          buses[receiver_bus]->send_packet_blocking(packet_info.receiver_id, packet_info.receiver_bus_id,
-           (const char*)payload, length, packet_info.header, packet_info.port);
-// TODO: Need send_from_id_blocking functions!!!
-      }
-    } while (start_search != PJON_NOT_ASSIGNED);
-  }
-
+  
   static void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
     ((PJONRouter*) packet_info.custom_pointer)->dynamic_receiver_function(payload, length, packet_info);
   }

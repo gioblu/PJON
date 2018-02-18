@@ -272,7 +272,7 @@ inform the reader of their definition as macros in the global scope.
       } while(0)
   #endif
 
-  #if !defined(PJON_IO_MODE)
+  #ifndef PJON_IO_MODE
     #define PJON_IO_MODE(P, V) \
     do { \
       if(__builtin_constant_p(P) && __builtin_constant_p(V)) \
@@ -282,11 +282,11 @@ inform the reader of their definition as macros in the global scope.
   #endif
 
   #ifndef PJON_IO_READ
-  	#define PJON_IO_READ(P) ((int) _PJON_IO_READ_(P))
-  	#define _PJON_IO_READ_(P) \
-    	(__builtin_constant_p(P)) ? ( \
-    	((((*PJON_IO_PIN_TO_PIN_REG(P)) >> (PJON_IO_PIN_TO_BIT(P))) & 0x01))) : \
-    	digitalRead(P)
+    #define PJON_IO_READ(P) ((int) _PJON_IO_READ_(P))
+    #define _PJON_IO_READ_(P) \
+      (__builtin_constant_p(P)) ? ( \
+      ((((*PJON_IO_PIN_TO_PIN_REG(P)) >> (PJON_IO_PIN_TO_BIT(P))) & 0x01))) : \
+      digitalRead(P)
   #endif
 
   #define PJON_IO_PULL_DOWN(P) \

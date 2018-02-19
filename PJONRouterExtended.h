@@ -60,13 +60,8 @@ protected:
     uint8_t start = start_bus - bus_count;
     for (uint8_t i=start; i<bus_count; i++) {
       if (PJONAny::bus_id_equality(bus_id, remote_bus_ids[i])) {
-        // Check if the bus is segmented and if the device belongs to the bus's segment
-//        if (buses[i]->segment_count <= 1 // Not segmented
-//          || device_id == PJON_BROADCAST // Broadcast to all segments of same bus id
-//          || ((device_id/(256/buses[i]->segment_count)) == buses[i]->segment)) { // Segment match
-          start_bus = bus_count + i + 1; // Continue searching for more matches after this
-          return i; // Explicit bus id match
-//        }
+        start_bus = bus_count + i + 1; // Continue searching for more matches after this
+        return i; // Explicit bus id match
       }
     }
     start_bus = PJON_NOT_ASSIGNED;

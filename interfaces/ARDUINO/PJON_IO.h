@@ -8,7 +8,7 @@
   Copyright (c) 2008-2010 PJRC.COM, LLC
 
   List of supported MCUs:
-  - ATmega8/88/168/328/1280/2560 (Duemilanove, Uno, Nano, Mini, Pro, Mega)
+  - ATmega8/88/168/328/1280/1284P/2560 (Duemilanove, Uno, Nano, Mini, Pro, Mega)
   - ATmega16U4/32U4 (Leonardo, Micro)
   - ATtiny44/84/44A/84A Added by Wilfried Klaas
   - ATtiny45/85 (Trinket, Digispark)
@@ -142,6 +142,21 @@ inform the reader of their definition as macros in the global scope.
   #define PJON_IO_PIN_TO_PIN_REG(P) &PINB
   #ifndef PJON_IO_PIN_TO_BIT
     #define PJON_IO_PIN_TO_BIT(P) P
+  #endif
+#endif
+
+/* AVR ATMEGA1284P -------------------------------------------------------- */
+
+#if defined(__AVR_ATmega1284P__)
+  #define PJON_IO_PIN_TO_PORT_REG(P) \
+    ((P >= 9 && P <= 16) ? &PORTD : ((P >= 19 && P <= 26) ? &PORTC : ( ( (P >=1 && P <=3) || (P >= 40 && P <= 44) ) ? &PORTB : &PORTA) ))
+  #define PJON_IO_PIN_TO_DDR_REG(P) \
+    ((P >= 9 && P <= 16) ? &DDRD : ((P >= 19 && P <= 26) ? &DDRC : ( ( (P >=1 && P <=3) || (P >= 40 && P <= 44) ) ? &DDRB : &DDRA) ))
+  #define PJON_IO_PIN_TO_PIN_REG(P) \
+    ((P >= 9 && P <= 16) ? &PIND : ((P >= 19 && P <= 26) ? &PINC : ( ( (P >=1 && P <=3) || (P >= 40 && P <= 44) ) ? &PINB : &PINA) ))
+  #ifndef PJON_IO_PIN_TO_BIT
+    #define PJON_IO_PIN_TO_BIT(P) \
+      ( (P >= 30 && P <= 37) ? ((P-37)*-1) : ( ( (P >= 1 && P <=3) || (P >=40 && P <=44) ) ? ( ( P >= 1 && P <=3 ) ? P + 5 : P - 40 ) : ( ( P >= 19 &&  P <= 26) ? P - 19 : P - 9 ) ) )
   #endif
 #endif
 

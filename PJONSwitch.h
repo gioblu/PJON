@@ -18,6 +18,16 @@ PJONSwitch has been contributed by Fred Larsen.
 It routes packets between buses with different bus ids, and between segmented
 buses as well, even for local buses with no bus ids.
 
+A default gateway can be specified, identifying one of the attached buses to
+receive packets to other target buses than any of the attached buses. It is
+possible to use a PJONSwitch to handle leaf buses in a tree structure.
+
+A segmented bus is a "virtual" bus where ranges of its devices are  located 
+in separate physical buses. This allows a single local "virtual" or segmented
+bus to consist of buses of different strategies. This can be used to work in
+local mode, without bus ids, even if spanning different media, to reduce the
+packet sizes. A switch can combine multiple media into one bus.
+
 If you believe in this project and you appreciate our work, please, make a
 donation. The PJON Foundation is entirely financed by contributions of wise
 people like you and its resources are solely invested to cover the development

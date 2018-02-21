@@ -89,33 +89,7 @@ inform the reader of their definition as macros in the global scope.
       ? 0 : ((P == 1 || P == 14 || P == 16 || P == 20) ? 1 : ((P == 19) ? 2 : \
       ((P == 5 || P == 6 || P == 18) ? 3 : ((P == 2) ? 4 : \
       ((P == 3 || P == 4) ? 5 : 7)))))))))))))))
-    #endif
-
-  // 15 PWM
-  #define PJON_IO_PIN_TO_TIMER(P) \
-    ((P == 13 || P ==  4) ? &TCCR0A : \
-    ((P == 11 || P == 12) ? &TCCR1A : \
-    ((P == 10 || P ==  9) ? &TCCR2A : \
-    ((P ==  5 || P ==  2 || P ==  3) ? &TCCR3A : \
-    ((P ==  6 || P ==  7 || P ==  8) ? &TCCR4A : \
-    ((P == 46 || P == 45 || P == 44) ? &TCCR5A : 0))))))
-
-  #define PJON_IO_PIN_TO_TIMER_BIT(P) \
-    ((P == 13) ? COM0A1 : ((P ==  4) ? COM0B1 : \
-    ((P == 11) ? COM1A1 : ((P == 12) ? COM1B1 : \
-    ((P == 10) ? COM2A1 : ((P ==  9) ? COM2B1 : \
-    ((P ==  5) ? COM3A1 : ((P ==  2) ? COM3B1 : ((P ==  3) ? COM3C1 : \
-    ((P ==  6) ? COM4A1 : ((P ==  7) ? COM4B1 : ((P ==  8) ? COM4C1 : \
-    ((P == 46) ? COM5A1 : ((P == 45) ? COM5B1 : COM5C1))))))))))))))
-#endif
-
-/* AVR ATmega8 ------------------------------------------------------------ */
-
-#if defined(__AVR_ATmega8__)
-  #define PJON_IO_PIN_TO_TIMER(P) \
-    ((P ==  9 || P == 10) ? &TCCR1A : ((P == 11) ? &TCCR2 : 0))
-  #define PJON_IO_PIN_TO_TIMER_BIT(P) \
-    ((P ==  9) ? COM1A1 : ((P == 10) ? COM1B1 : COM21))
+  #endif
 #endif
 
 /* AVR ATmega88/168/328/328P - Arduino Duemilanove, Uno, Nano, Mini, Pro -- */
@@ -132,13 +106,6 @@ inform the reader of their definition as macros in the global scope.
     #define PJON_IO_PIN_TO_BIT(P) \
       ((P <= 7) ? P : ((P >= 8 && P <= 13) ? P - 8 : P - 14))
   #endif
-
-  #define PJON_IO_PIN_TO_TIMER(P) \
-    ((P == 6 || P == 5) ? &TCCR0A : ((P == 9 || P == 10) ? \
-    &TCCR1A : ((P == 11 || P == 3) ? &TCCR2A : 0)))
-  #define PJON_IO_PIN_TO_TIMER_BIT(P) \
-    ((P == 6) ? COM0A1 : ((P == 5) ? COM0B1 : ((P == 9) ? \
-    COM1A1 : ((P == 10) ? COM1B1 : ((P == 11) ? COM2A1 : COM2B1)))))
 #endif
 
 /* AVR ATmega16U4/32U4 - Arduino Leonardo, Micro -------------------------- */
@@ -305,7 +272,7 @@ inform the reader of their definition as macros in the global scope.
       } while(0)
   #endif
 
-  #if !defined(PJON_IO_MODE)
+  #ifndef PJON_IO_MODE
     #define PJON_IO_MODE(P, V) \
     do { \
       if(__builtin_constant_p(P) && __builtin_constant_p(V)) \
@@ -315,11 +282,11 @@ inform the reader of their definition as macros in the global scope.
   #endif
 
   #ifndef PJON_IO_READ
-  	#define PJON_IO_READ(P) ((int) _PJON_IO_READ_(P))
-  	#define _PJON_IO_READ_(P) \
-    	(__builtin_constant_p(P)) ? ( \
-    	((((*PJON_IO_PIN_TO_PIN_REG(P)) >> (PJON_IO_PIN_TO_BIT(P))) & 0x01))) : \
-    	digitalRead(P)
+    #define PJON_IO_READ(P) ((int) _PJON_IO_READ_(P))
+    #define _PJON_IO_READ_(P) \
+      (__builtin_constant_p(P)) ? ( \
+      ((((*PJON_IO_PIN_TO_PIN_REG(P)) >> (PJON_IO_PIN_TO_BIT(P))) & 0x01))) : \
+      digitalRead(P)
   #endif
 
   #define PJON_IO_PULL_DOWN(P) \

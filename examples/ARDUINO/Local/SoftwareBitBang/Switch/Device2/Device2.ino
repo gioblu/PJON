@@ -1,6 +1,6 @@
 #include <PJON.h>
 
-PJON<SoftwareBitBang> bus(100);
+PJON<SoftwareBitBang> bus(200);
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
@@ -9,12 +9,13 @@ void setup() {
   bus.strategy.set_pin(12);
   bus.set_receiver(receiver_function);
   bus.begin();
-  bus.send(200, "B", 1);
+  bus.send_repeatedly(100, "B", 1, 250000);
 };
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
+  /* Make use of the payload before sending something, the buffer where payload points to is
+     overwritten when a new message is dispatched */
   if((char)payload[0] == 'B') {
-    bus.reply("B", 1);
     static bool led_on = false;
     digitalWrite(LED_BUILTIN, led_on ? HIGH : LOW);
     led_on = !led_on;

@@ -97,12 +97,12 @@ protected:
   };
 
 public:
-  PJONRouterExtended() {};
-  PJONRouterExtended(
+  PJONRouter() {};
+  PJONRouter(
     uint8_t bus_count,
     PJONAny *buses[],
     uint8_t default_gateway = PJON_NOT_ASSIGNED
-  ) : PJONRouter(bus_count, buses, default_gateway) { };
+  ) : PJONSwitch(bus_count, buses, default_gateway) { };
 
   void add(const uint8_t bus_id[], uint8_t via_attached_bus) {
     if(table_size < PJON_ROUTER_TABLE_SIZE) {

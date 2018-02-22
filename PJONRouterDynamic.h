@@ -46,9 +46,9 @@ limitations under the License. */
 
 #define PJON_ROUTER_TABLE_SIZE 100
 
-#include <PJONRouterExtended.h>
+#include <PJONRouter.h>
 
-class PJONRouterDynamic : public PJONRouterExtended {
+class PJONRouterDynamic : public PJONRouter {
 protected:
 
   void add_sender_to_routing_table(const PJON_Packet_Info &packet_info, uint8_t sender_bus) {
@@ -73,5 +73,5 @@ public:
   PJONRouterDynamic(uint8_t bus_count,
                      PJONAny *buses[],
                      uint8_t default_gateway = PJON_NOT_ASSIGNED) 
-                     : PJONRouterExtended(bus_count, buses, default_gateway) { }
+                     : PJONRouter(bus_count, buses, default_gateway) { }
 };

@@ -1,2 +1,2 @@
 all:
-	g++ -DLINUX -I. -I../../../../../../ Receiver.cpp -o Receiver -std=c++11
+	g++ -DLINUX -I. -I../../../../../../src Receiver.cpp -o Receiver -std=c++11

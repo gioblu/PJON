@@ -47,15 +47,54 @@ class ThroughLora {
       return LoRa.begin(frequency);
     };
 
-    bool setSignalBandwidth(uint32_t bandwidth) {
+    void setSignalBandwidth(uint32_t bandwidth) {
       LoRa.setSignalBandwidth(bandwidth);
-      return true;
     };
 
-    bool setPins(uint8_t cs_pin, uint8_t reset_pin, uint8_t dio0_pin) {
+    void setPins(uint8_t cs_pin, uint8_t reset_pin, uint8_t dio0_pin) {
       LoRa.setPins(cs_pin, reset_pin, dio0_pin);
-      return true;
     };
+
+	void setSpreadingFactor(uint8_t spreadingFactor) {
+	  LoRa.setSpreadingFactor(spreadingFactor);
+	};
+
+	void setCodingRate4(uint8_t codingRate) {
+	  LoRa.setCodingRate4(codingRate);
+	};
+
+	void setPreambleLength(uint16_t preambleLength) {
+		LoRa.setPreambleLength(preambleLength);
+	};
+
+	void setSyncWord(uint8_t syncWord) {
+		LoRa.setSyncWord(syncWord);
+	};
+
+	void setCRC(bool enableCRC) {
+		if (enableCRC) LoRa.enableCrc();
+		else LoRa.disableCrc();
+	};
+
+	void setTxPower(uint8_t txPower) {
+		LoRa.setTxPower(txPower);
+	};
+
+	void setTxPower(uint8_t txPower, uint8_t boostPin) {
+		LoRa.setTxPower(txPower, boostPin);
+	};
+
+	void idle(uint8_t txPower, uint8_t boostPin) {
+		LoRa.idle();
+	};
+
+	void sleep(uint8_t txPower, uint8_t boostPin) {
+		LoRa.sleep();
+	};
+
+	uint8_t getRandom() {
+		return LoRa.random();
+	};
 
     /* Begin method, to be called before transmission or reception:
        (returns always true) */

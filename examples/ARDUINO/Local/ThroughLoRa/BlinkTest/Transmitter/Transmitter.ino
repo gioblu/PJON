@@ -9,7 +9,6 @@ To use this example, please download the LoRa third party Library from https://g
 PJON<ThroughLora> bus(45);
 
 void setup() {
-	Serial.begin(9600);
 
 	// Obligatory to initialize Radio with correct frequency
 	bus.strategy.setFrequency(868100000UL);

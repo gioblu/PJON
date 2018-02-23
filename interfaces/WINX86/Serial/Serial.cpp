@@ -13,6 +13,9 @@
  */
 
 #pragma once
+
+#if defined(_WIN32)
+
 #include <iostream>
 using namespace std;
 
@@ -31,7 +34,12 @@ std::wstring s2ws(const std::string& s){
 };
 
 
-Serial::Serial(std::string &commPortName, int bitRate, bool testOnStartup, bool cycleDtrOnStartup) {
+Serial::Serial(
+  std::string &commPortName,
+  int bitRate,
+  bool testOnStartup,
+  bool cycleDtrOnStartup
+) {
   std::wstring com_name_ws = s2ws(commPortName);
 
   commHandle =
@@ -161,3 +169,5 @@ void Serial::flush() {
   PurgeComm(commHandle, PURGE_RXCLEAR | PURGE_TXCLEAR);
   return;
 };
+
+#endif

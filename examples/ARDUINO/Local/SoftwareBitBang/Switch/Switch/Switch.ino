@@ -7,8 +7,8 @@
 StrategyLink<SoftwareBitBang> link1;
 StrategyLink<SoftwareBitBang> link2;
 
-PJONAny bus1(1, &link1, 1000, 2, 0); // Devices with id 1-127
-PJONAny bus2(1, &link2, 1000, 2, 1); // Devices with id 128-253
+PJONAny bus1(&link1, PJON_NOT_ASSIGNED, 1000, 2, 0); // Devices with id 1-127
+PJONAny bus2(&link2, PJON_NOT_ASSIGNED, 1000, 2, 1); // Devices with id 128-253
 
 PJONSwitch router(2, (PJONAny*[2]){&bus1, &bus2});
 

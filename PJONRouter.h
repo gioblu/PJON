@@ -13,9 +13,9 @@
         > <
  ______-| |-__________________________________________________________________
 
-PJONRouterExtended has been contributed by Fred Larsen.
+PJONRouter has been contributed by Fred Larsen.
 
-It performs the same routing as the PJONRouter for locally attached buses,
+It performs the same routing as the PJONSwitch for locally attached buses,
 but supports a static routing table to enable traversing multiple levels of
 buses.
 
@@ -44,6 +44,10 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 #pragma once
+
+// Add virtual keyword to PJONSimpleSwitch functions
+#define PJON_ROUTER_NEED_INHERITANCE
+
 #include <PJONSwitch.h>
 
 #ifndef PJON_ROUTER_TABLE_SIZE
@@ -52,8 +56,8 @@ limitations under the License. */
 
 class PJONRouter : public PJONSwitch {
 protected:
-  uint8_t remote_bus_ids[PJON_ROUTER_MAX_BUSES][4];
-  uint8_t remote_bus_via_attached_bus[PJON_ROUTER_MAX_BUSES];
+  uint8_t remote_bus_ids[PJON_ROUTER_TABLE_SIZE][4];
+  uint8_t remote_bus_via_attached_bus[PJON_ROUTER_TABLE_SIZE];
   uint8_t table_size = 0;
 
   uint8_t find_bus_in_table(
@@ -62,10 +66,10 @@ protected:
     uint8_t &start_bus
   ) {
     uint8_t start = start_bus - bus_count;
-    for(uint8_t i = start; i < bus_count; i++) {
+    for(uint8_t i = start; i < table_size; i++) {
       if(PJONAny::bus_id_equality(bus_id, remote_bus_ids[i])) {
         start_bus = bus_count + i + 1; // Continue searching for matches
-        return i; // Explicit bus id match
+        return remote_bus_via_attached_bus[i]; // Explicit bus id match
       }
     }
     start_bus = PJON_NOT_ASSIGNED;

@@ -149,14 +149,14 @@ inform the reader of their definition as macros in the global scope.
 
 #if defined(__AVR_ATmega1284P__)
   #define PJON_IO_PIN_TO_PORT_REG(P) \
-    ( P >= 24 ? &PORTA : (P <= 7 ? &PORTB : ( (P >= 8 && P <=15) ? &PORTD : &PORTC ) ) )
+    (P >= 24 ? &PORTA : (P <= 7 ? &PORTB : ((P >= 8 && P <=15) ? &PORTD : &PORTC)))
   #define PJON_IO_PIN_TO_DDR_REG(P) \
-    ( P >= 24 ? &DDRA : (P <= 7 ? &DDRB : ( (P >= 8 && P <=15) ? &DDRD : &DDRC ) ) )
+    (P >= 24 ? &DDRA : (P <= 7 ? &DDRB : ((P >= 8 && P <=15) ? &DDRD : &DDRC)))
   #define PJON_IO_PIN_TO_PIN_REG(P) \
-    ( P >= 24 ? &PINA : (P <= 7 ? &PINB : ( (P >= 8 && P <=15) ? &PIND : &PINC ) ) )
+    (P >= 24 ? &PINA : (P <= 7 ? &PINB : ((P >= 8 && P <=15) ? &PIND : &PINC)))
   #ifndef PJON_IO_PIN_TO_BIT
     #define PJON_IO_PIN_TO_BIT(P) \
-      ( P >= 24 ? P-24 : (P <= 7 ? P : ( (P >= 8 && P <=15) ? P-8 : P-16 ) ) )      
+      (P >= 24 ? P-24 : (P <= 7 ? P : ((P >= 8 && P <=15) ? P-8 : P-16 ) ) )
   #endif
 #endif
 

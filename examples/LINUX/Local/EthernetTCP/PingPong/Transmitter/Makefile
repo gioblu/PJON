@@ -1,2 +1,2 @@
 all:
-	g++ -DLINUX -I. -I../../../../../../ Transmitter.cpp -o Transmitter -std=c++11
+	g++ -DLINUX -I. -I../../../../../../src Transmitter.cpp -o Transmitter -std=c++11

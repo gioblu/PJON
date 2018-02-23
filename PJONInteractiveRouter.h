@@ -16,16 +16,16 @@
 PJONInteractiveRouter has been contributed by Fred Larsen.
 
 This class adds functionality to the PJONSwitch, PJONRouter, PJONRouterDynamic
-and potential future classes derived from them. This functionality allows a 
-switch or router to have it's own device id and send and receive packets as a 
+and potential future classes derived from them. This functionality allows a
+switch or router to have it's own device id and send and receive packets as a
 normal device, but to and from multiple buses.
 
 It also allows the device to listen to all packets passing through between
 buses.
 
-Probably it is wise to use this functionality only on routers using 
+Probably it is wise to use this functionality only on routers using
 strategies that are not timing-critical, for example on buffered media like
-serial or Ethernet. If used on timing-critical strategies like SWBB, the 
+serial or Ethernet. If used on timing-critical strategies like SWBB, the
 receiver callback should be really fast.
 
 If you believe in this project and you appreciate our work, please, make a
@@ -62,25 +62,26 @@ protected:
   PJON_Receiver receiver = NULL;
   bool router = false;
 
-  virtual void dynamic_receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {    
+  virtual void dynamic_receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
     // Handle packets to this device, with user-supplied callback and custom ptr
-    bool packet_is_for_me = 
-      (RouterClass::buses[RouterClass::current_bus]->device_id() != PJON_NOT_ASSIGNED
-      && memcmp(RouterClass::buses[RouterClass::current_bus]->bus_id, packet_info.receiver_bus_id, 4)==0
-      && RouterClass::buses[RouterClass::current_bus]->device_id() == packet_info.receiver_id); 
-    
+    bool packet_is_for_me = (
+      RouterClass::buses[RouterClass::current_bus]->device_id() != PJON_NOT_ASSIGNED &&
+      memcmp(RouterClass::buses[RouterClass::current_bus]->bus_id, packet_info.receiver_bus_id, 4) == 0 &&
+      RouterClass::buses[RouterClass::current_bus]->device_id() == packet_info.receiver_id
+    );
+
     // Take care of other's packets
-    if (!packet_is_for_me)
-      RouterClass::dynamic_receiver_function(payload, length, packet_info); 
-    
+    if(!packet_is_for_me)
+      RouterClass::dynamic_receiver_function(payload, length, packet_info);
+
     // Call the receive callback _after_ the packet has been delivered
-    if (router || packet_is_for_me) {
+    if(router || packet_is_for_me) {
        // The packet is for ME :-)
         PJON_Packet_Info p_i;
         memcpy(&p_i, &packet_info, sizeof(PJON_Packet_Info));
         p_i.custom_pointer = custom_pointer;
-        if (receiver) receiver(payload, length, p_i);
-        if (!router) return;
+        if(receiver) receiver(payload, length, p_i);
+        if(!router) return;
     }
   }
 
@@ -91,16 +92,20 @@ public:
     PJONAny*buses[],
     uint8_t default_gateway = PJON_NOT_ASSIGNED)
     : RouterClass(bus_count, buses, default_gateway) {}
-   
+
   void set_receiver(PJON_Receiver r, void *custom_ptr = NULL) {
       receiver = r;
       custom_pointer = custom_ptr;
   };
-  
-  void send_packet(const uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
+
+  void send_packet(
+    const uint8_t *payload,
+    uint16_t length,
+    const PJON_Packet_Info &packet_info
+  ) {
     dynamic_receiver_function(payload, length, packet_info);
-  }
-  
+  };
+
   // Deliver every packet to receiver callback, or just for this device?
-  void set_router(bool on) { router = on; }
+  void set_router(bool on) { router = on; };
 };

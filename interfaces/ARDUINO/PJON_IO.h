@@ -40,6 +40,59 @@ inform the reader of their definition as macros in the global scope.
 
 #pragma once
 
+/* AVR ATmega1281, ATmega2561 - (MegaCore standard pinout)------------------------------------- */
+
+#if defined(__AVR_ATmega1281__) || defined(__AVR_ATmega2561__)
+  #define PJON_IO_PIN_TO_PORT_REG(P) \
+    ((P >= 37 && P <= 44) ? &PORTA : \
+    ((P >= 8  && P <= 15) ? &PORTB : \
+    ((P >= 28 && P <= 35) ? &PORTC : \
+    ((P >= 18 && P <= 25) ? &PORTD : \
+    ((P >= 0  && P <= 7)  ? &PORTE : \
+    ((P >= 45 && P <= 52) ? &PORTF : &PORTG))))))
+
+  #define PJON_IO_PIN_TO_DDR_REG(P) \
+    ((P >= 37 && P <= 44) ? &DDRA : \
+    ((P >= 8  && P <= 15) ? &DDRB : \
+    ((P >= 28 && P <= 35) ? &DDRC : \
+    ((P >= 18 && P <= 25) ? &DDRD : \
+    ((P >= 0  && P <= 7)  ? &DDRE : \
+    ((P >= 45 && P <= 52) ? &DDRF : &DDRG))))))
+
+  #define PJON_IO_PIN_TO_PIN_REG(P) \
+    ((P >= 37 && P <= 44) ? &PINA : \
+    ((P >= 8  && P <= 15) ? &PINB : \
+    ((P >= 28 && P <= 35) ? &PINC : \
+    ((P >= 18 && P <= 25) ? &PIND : \
+    ((P >= 0  && P <= 7)  ? &PINE : \
+    ((P >= 45 && P <= 52) ? &PINF : &PING))))))
+
+  #ifndef PJON_IO_PIN_TO_BIT
+    #define PJON_IO_PIN_TO_BIT(P) \
+      ((P >=  7 && P <=  9) ? P - 3 : ((P >= 10 && P <= 13) ? P - 6 : \
+      ((P >= 22 && P <= 29) ? P - 22 : ((P >= 30 && P <= 37) ? 37 - P : \
+      ((P >= 39 && P <= 41) ? 41 - P : ((P >= 42 && P <= 49) ? 49 - P : \
+      ((P >= 50 && P <= 53) ? 53 - P : ((P >= 54 && P <= 61) ? P - 54 : \
+      ((P >= 62 && P <= 69) ? P - 62 : ((P == 0 || P == 15 || P == 17 || P == 21) \
+      ? 0 : ((P == 1 || P == 14 || P == 16 || P == 20) ? 1 : ((P == 19) ? 2 : \
+      ((P == 5 || P == 6 || P == 18) ? 3 : ((P == 2) ? 4 : \
+      ((P == 3 || P == 4) ? 5 : 7)))))))))))))))
+    #endif
+
+  // 15 PWM
+  #define PJON_IO_PIN_TO_TIMER(P) \
+    ((P == 15 || P == 53) ? &TCCR0A : \
+    ((P == 13 || P == 14) ? &TCCR1A : \
+    ((P == 12) ? &TCCR2A : \
+    ((P ==  3 || P ==  4 || P ==  5) ? &TCCR3A : 0))))))
+
+  #define PJON_IO_PIN_TO_TIMER_BIT(P) \
+    ((P == 15) ? COM0A1 : ((P == 53) ? COM0B1 : \
+    ((P == 13) ? COM1A1 : ((P == 14) ? COM1B1 : \
+    ((P == 12) ? COM2A1 : \
+    ((P ==  3) ? COM3A1 : ((P ==  4) ? COM3B1 : COM3C1 )))))))
+#endif
+
 /* AVR ATmega1280/2560 - Arduino Mega ------------------------------------- */
 
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)

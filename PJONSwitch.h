@@ -78,7 +78,5 @@ public:
     uint8_t bus_count,
     PJONAny *bus_list[],
     uint8_t default_gateway = PJON_NOT_ASSIGNED
-  ) : PJONSimpleSwitch<Any>(bus_count, (PJONBus<Any>**)bus_list, default_gateway) {
-    connect_buses(bus_count, buses, default_gateway);
-  };
+  ) : PJONSimpleSwitch<Any>(bus_count, (PJONBus<Any>**)bus_list, default_gateway) { };
 };

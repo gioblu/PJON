@@ -5,8 +5,8 @@
 - PJON known protocols: [list](/specification/PJON-known-protocols-list.md)
 #### Data link layer
 - PJDL (Padded Jittering Data Link) specification:
-[PJDL v2.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) - [PJDLR v2.0](/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) - [PJDLS v2.0](/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
-- TSDL (Tardy Serial Data Link) specification: [TSDL v2.0](/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md)
+[PJDL v2.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) - [PJDLR v2.0](/src/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) - [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
+- TSDL (Tardy Serial Data Link) specification: [TSDL v2.0](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md)
 - SFSP (Secure Frame Separation Protocol) specification: [SFSP v1.0](/specification/SFSP-frame-separation-specification-v1.0.md)
 
 ```cpp
@@ -36,7 +36,7 @@ Channel analysis       Transmission                 Response
 |_____||____|__________|________|____|_________|____||_____|
 ```
 
-The graph above contains a standard packet transmission with synchronous acknowledge request where the character `@` or `64` is sent to device id `12` with `00000100` header. As defined by the [PJON protocol layer specification v3.0](/specification/PJON-protocol-specification-v3.0.md) the third bit from right up in the header requests to transmitter a synchronous acknowledge response. How the synchronous acknowledgement procedure works depends on the medium and the strategy used, see [PJDL v2.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md), [PJDLR v2.0](/strategies/OverSampling/specification/PJDLR-specification-v2.0.md), [PJDLS v2.0](/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) and [TSDL v2.0](/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md) specification.
+The graph above contains a standard packet transmission with synchronous acknowledge request where the character `@` or `64` is sent to device id `12` with `00000100` header. As defined by the [PJON protocol layer specification v3.0](/specification/PJON-protocol-specification-v3.0.md) the third bit from right up in the header requests to transmitter a synchronous acknowledge response. How the synchronous acknowledgement procedure works depends on the medium and the strategy used, see [PJDL v2.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md), [PJDLR v2.0](/src/strategies/OverSampling/specification/PJDLR-specification-v2.0.md), [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) and [TSDL v2.0](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md) specification.
 
 #### Asynchronous acknowledge
 

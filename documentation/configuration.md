@@ -27,13 +27,13 @@ In the example above the PJON object is instantiated passing [SoftwareBitBang](/
 
 | Strategy      | Medium        | Pins needed   |
 | ------------- | ------------- | ------------- |
-| [SoftwareBitBang](/strategies/SoftwareBitBang)  | wire   | 1 or 2 |
-| [AnalogSampling](/strategies/AnalogSampling)  | light  | 1 or 2  |
-| [EthernetTCP](/strategies/EthernetTCP)  | wired or WiFi  | Ethernet port  |
-| [LocalUDP](/strategies/LocalUDP)  | wired or WiFi  | Ethernet port  |
-| [GlobalUDP](/strategies/GlobalUDP)  | wired or WiFi  | Ethernet port  |
-| [OverSampling](/strategies/OverSampling)  | radio, wire  | 1 or 2 |
-| [ThroughSerial](/strategies/ThroughSerial)  | serial port  | 1 or 2 |
+| [SoftwareBitBang](/src/strategies/SoftwareBitBang)  | wire   | 1 or 2 |
+| [AnalogSampling](/src/strategies/AnalogSampling)  | light  | 1 or 2  |
+| [EthernetTCP](/src/strategies/EthernetTCP)  | wired or WiFi  | Ethernet port  |
+| [LocalUDP](/src/strategies/LocalUDP)  | wired or WiFi  | Ethernet port  |
+| [GlobalUDP](/src/strategies/GlobalUDP)  | wired or WiFi  | Ethernet port  |
+| [OverSampling](/src/strategies/OverSampling)  | radio, wire  | 1 or 2 |
+| [ThroughSerial](/src/strategies/ThroughSerial)  | serial port  | 1 or 2 |
 
 By default all strategies are included. To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before PJON inclusion, to include only `SoftwareBitBang` strategy. You can define more than one strategy related constant if necessary.
 

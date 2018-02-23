@@ -14,11 +14,11 @@ ____|||_______|||_______|||____|_ SoftwareBitBang bus
 _____||________||________||______ +5v
 ______|_________|_________|______ GND
 ```
-Many LEDARs can be connected to the same [SoftwareBitBang](../../../strategies/SoftwareBitBang/README.md) bus. Each LEDAR is running an instance of the PJON protocol stack with its own configurable device id, so many can coexist on the same medium.
+Many LEDARs can be connected to the same [SoftwareBitBang](/src/strategies/SoftwareBitBang/README.md) bus. Each LEDAR is running an instance of the PJON protocol stack with its own configurable device id, so many can coexist on the same medium.
 
 Its detection method is based on two interesting characteristics of LEDs:
 - If hit by light, LEDs produce a tiny amount of electricity, thanks to the photo-electric effect
-- LEDs used as detectors are generally more sensitive to the frequency they emit if used as emitters, making a couple of identical LEDs generally used for lighting, in two extremely efficient wireless transceivers that can be used for reflectometry or also for wireless communication using the [AnalogSampling](../../../strategies/AnalogSampling/README.md) strategy
+- LEDs used as detectors are generally more sensitive to the frequency they emit if used as emitters, making a couple of identical LEDs generally used for lighting, in two extremely efficient wireless transceivers that can be used for reflectometry or also for wireless communication using the [AnalogSampling](/src/strategies/AnalogSampling/README.md) strategy
 
 Its sampling method is based on two different samples:
 - Background noise or ambient light sample `B`
@@ -29,7 +29,7 @@ Reflex intensity or `R` is estimated simply subtracting the background noise sam
 The internal 1.1v analog reference and analog readings integration are used to higher reflex detection resolution.
 
 #### Configuration
-A standard program is proposed to let users easily configure LEDARs using only a series of commands on its PJON [SoftwareBitBang](../../../strategies/SoftwareBitBang/README.md) bus, and automatically save its result in the EPROM to avoid the tedious need of flashing the chip multiple times. LEDAR accepts incoming configuration if sent by `MASTER_ID` and its configured recipient id.
+A standard program is proposed to let users easily configure LEDARs using only a series of commands on its PJON [SoftwareBitBang](/src/strategies/SoftwareBitBang/README.md) bus, and automatically save its result in the EPROM to avoid the tedious need of flashing the chip multiple times. LEDAR accepts incoming configuration if sent by `MASTER_ID` and its configured recipient id.
 
 | Command                         | Parameter     | Effect                        |
 | --------------------------------| --------------| ------------------------------|

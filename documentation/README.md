@@ -1,7 +1,7 @@
 
-PJON implements a totally software emulated network protocol stack in around 1500 lines of code, thanks to the [strategies](/strategies/README.md) abstraction it can work nominally with any data link is in use and can be applied in a variety of media and applications. This library can be cross-compiled (`-std=c++11`) to work with any Arduino compatible device, linux or windows x86 machine.
+PJON implements a totally software emulated network protocol stack in around 1500 lines of code, thanks to the [strategies](/src/strategies/README.md) abstraction it can work nominally with any data link is in use and can be applied in a variety of media and applications. This library can be cross-compiled (`-std=c++11`) to work with any Arduino compatible device, linux or windows x86 machine.
 
-Thanks to the [interfaces](/interfaces/README.md) abstraction, PJON can be easily ported on any MCU/architecture exposing random generation, timing and IO system calls (for example on Arduino: `random`, `micros`, `pinMode`).
+Thanks to the [interfaces](/src/interfaces/README.md) abstraction, PJON can be easily ported on any MCU/architecture exposing random generation, timing and IO system calls (for example on Arduino: `random`, `micros`, `pinMode`).
 
 ```cpp
   Implementation model

@@ -82,9 +82,9 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 #pragma once
-#include "interfaces/PJON_Interfaces.h"
-#include "PJONDefines.h"
-#include "strategies/PJON_Strategies.h"
+#include <src/interfaces/PJON_Interfaces.h>
+#include <src/PJONDefines.h>
+#include <src/strategies/PJON_Strategies.h>
 
 template<typename Strategy>
 class PJON {

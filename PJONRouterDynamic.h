@@ -44,7 +44,9 @@ limitations under the License. */
 
 #pragma once
 
-#define PJON_ROUTER_TABLE_SIZE 100
+#ifndef PJON_ROUTER_TABLE_SIZE
+  #define PJON_ROUTER_TABLE_SIZE 100
+#endif
 
 #include <PJONRouter.h>
 

@@ -72,7 +72,7 @@ Transmission                                             Response
 |__|________|______|___|______|______|__|_________|____|___||___|
                        |RXINFO| TX INFO |         
 ```
-In the packet shown above device `0` of bus `0.0.0.1` sends `@` (64) to device `0` of bus `0.0.0.2`. Being the header `00001000` bit up (asynchronous acknowledgement request) the packet is formatted containing the 2 bytes integer packet id `99` (used by receiver to send back an asynchronous acknowledgement packet) immediately after the sender information. Being header's `00000100` bit up (synchronous acknowledgement request) receiver will acknowledge synchronously with an `PJON_ACK` (6) in case of correct reception or `PJON_NAK` (21) in case of mistake. This precise case is used as an example to show both features used at the same time to obtain an efficient and secure way to transmit packets with correct transmission certainty.
+In the packet shown above device `0` of bus `0.0.0.1` sends `@` (64) to device `0` of bus `0.0.0.2`. Being the header `10001111` and so containing the `PACKET ID` and `ACK MODE` bit up (asynchronous acknowledgement request) the packet is formatted containing the 2 bytes integer packet id `99` (used by receiver to send back an asynchronous acknowledgement packet) immediately after the sender information. Being header's `00000100` bit up (synchronous acknowledgement request) receiver will acknowledge synchronously with an `PJON_ACK` or 6 in case of correct reception. This precise case is used as an example to show both features used at the same time to obtain an efficient and secure way to transmit packets with correct transmission certainty.
 
 ```cpp        
 BUS 0.0.0.1                                          BUS 0.0.0.2
@@ -120,4 +120,4 @@ BUS 0.0.0.1                                          BUS 0.0.0.2
 |__|________|______|___|_______|_______|__|_________|___||___|
                        |RX INFO| TX INFO  |
 ```
-This documents doesn't want to specify in any way the routing mechanism (still not officially specified), but uses routing as a necessary example to showcase clearly the power of the recursive acknowledgement pattern.
+This documents is not intended to specify the routing procedure but uses routing as a necessary example to showcase clearly the power of the recursive acknowledgement pattern.

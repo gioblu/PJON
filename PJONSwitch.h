@@ -54,7 +54,12 @@ public:
     const uint32_t receive_time_in = 1000,
     const uint8_t num_device_id_segments = 1,
     const uint8_t device_id_segment = 0
-  ) : PJONBus<Any>(id, receive_time_in, num_device_id_segments, device_id_segment) {
+  ) : PJONBus<Any>(
+    id,
+    receive_time_in,
+    num_device_id_segments,
+    device_id_segment
+  ) {
     strategy.set_link(link);
   };
 
@@ -65,7 +70,13 @@ public:
     const uint32_t receive_time_in = 1000,
     const uint8_t num_device_id_segments = 1,
     const uint8_t device_id_segment = 0
-  ) : PJONBus<Any>(bus_id, id, receive_time_in, num_device_id_segments, device_id_segment) {
+  ) : PJONBus<Any>(
+    bus_id,
+    id,
+    receive_time_in,
+    num_device_id_segments,
+    device_id_segment
+  ) {
     strategy.set_link(link);
   }
 };

@@ -2,7 +2,13 @@
 
 /* Route packets between a collection of buses with the same
    or different strategies or media. All physical buses are taking part
-   of the same local bus, with the device id range being segmented. */
+   of the same local bus, with the device id range being segmented.
+
+  // SWITCH forwarding from bus 1 to bus 2 and vice versa
+    __________                 ________                 __________
+   |          | Bus 1  Pin 11 |        | Pin 12  Bus 2 |          |
+   | DEVICE 1 |_______________| SWITCH |_______________| DEVICE 2 |
+   |__________| Range 1-127   |________| Range 128-253 |__________| */
 
 StrategyLink<SoftwareBitBang> link1;
 StrategyLink<SoftwareBitBang> link2;

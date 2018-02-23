@@ -37,7 +37,7 @@ void setup() {
 
   router.add((const uint8_t[4]){0,0,0,1}, 0);
   router.add((const uint8_t[4]){0,0,0,2}, 1);
-  
+
   router.begin();
 }
 

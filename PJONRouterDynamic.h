@@ -53,27 +53,38 @@ limitations under the License. */
 class PJONRouterDynamic : public PJONRouter {
 protected:
 
-  void add_sender_to_routing_table(const PJON_Packet_Info &packet_info, uint8_t sender_bus) {
+  void add_sender_to_routing_table(
+    const PJON_Packet_Info &packet_info,
+    uint8_t sender_bus
+  ) {
     uint8_t start_search = 0;
-    uint8_t found_bus = find_bus_with_id(packet_info.sender_bus_id, 
-                                         packet_info.sender_id, 
-                                         start_search);
-    if (found_bus == PJON_NOT_ASSIGNED) { 
-      // Not found among attached buses or in routing table. Add to table.
+    uint8_t found_bus = find_bus_with_id(
+      packet_info.sender_bus_id,
+      packet_info.sender_id,
+      start_search
+    );
+    // Not found among attached buses or in routing table. Add to table.
+    if(found_bus == PJON_NOT_ASSIGNED)
       add(packet_info.sender_bus_id, sender_bus);
-    }
-  }
+  };
 
-  virtual void dynamic_receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
+  virtual void dynamic_receiver_function(
+    uint8_t *payload,
+    uint16_t length,
+    const PJON_Packet_Info &packet_info
+  ) {
     // Do standard routing but also add unknown remote buses to routing table
     add_sender_to_routing_table(packet_info, current_bus);
     PJONSwitch::dynamic_receiver_function(payload, length, packet_info);
-  }
-  
-public:  
-  PJONRouterDynamic() {}
-  PJONRouterDynamic(uint8_t bus_count,
-                     PJONAny *buses[],
-                     uint8_t default_gateway = PJON_NOT_ASSIGNED) 
-                     : PJONRouter(bus_count, buses, default_gateway) { }
+  };
+
+public:
+  PJONRouterDynamic() { };
+
+  PJONRouterDynamic(
+    uint8_t bus_count,
+    PJONAny *buses[],
+    uint8_t default_gateway = PJON_NOT_ASSIGNED
+  ) : PJONRouter(bus_count, buses, default_gateway) { };
+
 };

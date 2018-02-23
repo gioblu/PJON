@@ -22,7 +22,7 @@ A default gateway can be specified, identifying one of the attached buses to
 receive packets to other target buses than any of the attached buses. It is
 possible to use a PJONSimpleSwitch to handle leaf buses in a tree structure.
 
-A segmented bus is a "virtual" bus where ranges of its devices are  located 
+A segmented bus is a "virtual" bus where ranges of its devices are  located
 in separate physical buses. This allows a single local "virtual" or segmented
 bus to consist of buses of different strategies. This can be used to work in
 local mode, without bus ids, even if spanning different media, to reduce the
@@ -64,7 +64,12 @@ public:
     const uint32_t receive_time_in = 1000,
     const uint8_t num_device_id_segments = 1,
     const uint8_t device_id_segment = 0
-  ) : PJONBus<Any>(id, receive_time_in, num_device_id_segments, device_id_segment) {
+  ) : PJONBus<Any>(
+    id,
+    receive_time_in,
+    num_device_id_segments,
+    device_id_segment
+  ) {
     strategy.set_link(link);
   };
 
@@ -75,7 +80,13 @@ public:
     const uint32_t receive_time_in = 1000,
     const uint8_t num_device_id_segments = 1,
     const uint8_t device_id_segment = 0
-  ) : PJONBus<Any>(bus_id, id, receive_time_in, num_device_id_segments, device_id_segment) {
+  ) : PJONBus<Any>(
+    bus_id,
+    id,
+    receive_time_in,
+    num_device_id_segments,
+    device_id_segment
+  ) {
     strategy.set_link(link);
   }
 };
@@ -96,7 +107,11 @@ protected:
     uint16_t length,
     const PJON_Packet_Info &packet_info
   ) {
-    PJONSimpleSwitch<Any>::dynamic_receiver_function(payload, length, packet_info);
+    PJONSimpleSwitch<Any>::dynamic_receiver_function(
+      payload,
+      length,
+      packet_info
+    );
   };
 */
 public:
@@ -107,7 +122,11 @@ public:
     uint8_t bus_count,
     PJONAny *bus_list[],
     uint8_t default_gateway = PJON_NOT_ASSIGNED
-  ) : PJONSimpleSwitch<Any>(bus_count, (PJONBus<Any>**)bus_list, default_gateway) {
+  ) : PJONSimpleSwitch<Any>(
+    bus_count,
+    (PJONBus<Any>**)bus_list,
+    default_gateway
+  ) {
     connect_buses(bus_count, buses, default_gateway);
   };
 };

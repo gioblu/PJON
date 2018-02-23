@@ -12,7 +12,6 @@ PJON<ThroughLora> bus(44);
 void setup() {
 	pinMode(13, OUTPUT);
 	digitalWrite(13, LOW); // Initialize LED 13 to be off
-	Serial.begin(9600);
 
 	// Obligatory to initialize Radio with correct frequency
 	bus.strategy.setFrequency(868100000UL);

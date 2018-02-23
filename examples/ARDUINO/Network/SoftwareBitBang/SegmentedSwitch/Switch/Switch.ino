@@ -1,8 +1,15 @@
-#include <PJONSwitch.h>
 
-/* Route packets between a collection of buses with the same
-   or different strategies or media, using the same bus id 
-   but different parts of the device id range. */
+/* This example illustrates how to route packets between devices sharing the
+   same bus id although potentially using different strategies or media to
+   be connected.
+
+   PJONSwitch routing between two separate SoftwareBitBang buses
+     __________           ________           __________
+    |          | 0.0.0.1 |        | 0.0.0.1 |          |
+    | DEVICE 1 |_________| SWITCH |_________| DEVICE 2 |
+    |__________| Pin 11  |________| Pin 12  |__________| */
+
+#include <PJONSwitch.h>
 
 StrategyLink<SoftwareBitBang> link1;
 StrategyLink<SoftwareBitBang> link2;

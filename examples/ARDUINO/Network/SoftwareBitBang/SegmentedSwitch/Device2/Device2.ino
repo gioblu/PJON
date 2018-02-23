@@ -1,3 +1,14 @@
+
+/* This example illustrates how to route packets between devices sharing the
+   same bus id although potentially using different strategies or media to
+   be connected.
+
+   PJONSwitch routing between two separate SoftwareBitBang buses
+     __________           ________           __________
+    |          | 0.0.0.1 |        | 0.0.0.1 |          |
+    | DEVICE 1 |_________| SWITCH |_________| DEVICE 2 |
+    |__________| Pin 11  |________| Pin 12  |__________| */
+
 #include <PJON.h>
 
 // Bus id definition

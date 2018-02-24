@@ -47,7 +47,7 @@ Supported definitions:
 - `PJON_INCLUDE_TS` includes ThroughSerial
 - `PJON_INCLUDE_NONE` no strategy file included
 
-Configure network state (local or shared). If local (passing `false`), the PJON protol layer procedure is based on a single byte device id to univocally communicate with a device; if in shared mode (passing `true`) the protocol adopts also a 4 byte bus id to univocally communicate with a device in a certain bus:
+Configure network state (local or shared). If local (passing `false`), the PJON protocol layer procedure is based on a single byte device id to univocally communicate with a device; if in shared mode (passing `true`) the protocol adopts also a 4 byte bus id to univocally communicate with a device in a certain bus:
 ```cpp  
   bus.set_shared_network(true);
 ```

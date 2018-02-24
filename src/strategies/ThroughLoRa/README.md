@@ -67,16 +67,14 @@ More examples can be found in https://github.com/gioblu/PJON/tree/master/example
 PJON<ThroughLora> bus(45);
 
 void setup() {
-	// Obligatory to initialize Radio with correct frequency
-	bus.strategy.setFrequency(868100000UL);
-
-	bus.begin();
-
+  // Obligatory to initialize Radio with correct frequency
+  bus.strategy.setFrequency(868100000UL);
+  bus.begin();
   bus.send_repeatedly(44, "B", 1, 1000000); // Send B to device 44 every second
 };
 
 void loop() {
-	bus.update();
+  bus.update();
 };
 ```
 
@@ -145,7 +143,7 @@ bus.strategy.setPins(ss, reset, dio0);
 
 - `ss` - new slave select pin to use, defaults to `10`
 - `reset` - new reset pin to use, defaults to `9`
-- `dio0` - new DIO0 pin to use, defaults to `2`.  **Must** be interrupt capable via [attachInterrupt(...)](https://www.arduino.cc/en/Reference/AttachInterrupt).
+- `dio0` - new DIO0 pin to use, defaults to `2`, **must** be interrupt capable via [attachInterrupt(...)](https://www.arduino.cc/en/Reference/AttachInterrupt).
 
 This call is optional and only needs to be used if you need to change the default pins used.
 

@@ -72,7 +72,7 @@ void setup() {
 
 	bus.begin();
 
-    bus.send_repeatedly(44, "B", 1, 1000000); // Send B to device 44 every second
+  bus.send_repeatedly(44, "B", 1, 1000000); // Send B to device 44 every second
 };
 
 void loop() {
@@ -91,31 +91,31 @@ void loop() {
 PJON<ThroughLora> bus(44);
 
 void setup() {
-	pinMode(13, OUTPUT);
-	digitalWrite(13, LOW); // Initialize LED 13 to be off
-	Serial.begin(9600);
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW); // Initialize LED 13 to be off
+  Serial.begin(9600);
 
-	// Obligatory to initialize Radio with correct frequency
-	bus.strategy.setFrequency(868100000UL);
-	// Optional
-	bus.strategy.setSignalBandwidth(250E3);
-	bus.begin();
+  // Obligatory to initialize Radio with correct frequency
+  bus.strategy.setFrequency(868100000UL);
+  // Optional
+  bus.strategy.setSignalBandwidth(250E3);
+  bus.begin();
 
-	bus.set_receiver(receiver_function);
+  bus.set_receiver(receiver_function);
 };
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
-	/* Make use of the payload before sending something, the buffer where payload points to is
-	   overwritten when a new message is dispatched */
-	if (payload[0] == 'B') {
-		digitalWrite(13, HIGH);
-		delay(30);
-		digitalWrite(13, LOW);
-	}
+  /* Make use of the payload before sending something, the buffer where payload points to is
+     overwritten when a new message is dispatched */
+ if (payload[0] == 'B') {
+    digitalWrite(13, HIGH);
+    delay(30);
+    digitalWrite(13, LOW);
+  }
 };
 
 void loop() {
-	bus.receive(1000);
+  bus.receive(1000);
 };
 ```
 
@@ -164,45 +164,27 @@ Returns the estimated SNR of the received packet in dB.
 ```c++
 bus.strategy.setSignalBandwidth(signalBandwidth);
 ```
-Change the signal bandwidth of the radio.
-
-- `signalBandwidth` - signal bandwidth in Hz, defaults to `125E3`.
-
-Supported values are `7.8E3`, `10.4E3`, `15.6E3`, `20.8E3`, `31.25E3`, `41.7E3`, `62.5E3`, `125E3`, and `250E3`.
+Change the signal bandwidth of the radio, `signalBandwidth` represents the signal bandwidth in Hz, defaults to `125E3`. Supported values are `7.8E3`, `10.4E3`, `15.6E3`, `20.8E3`, `31.25E3`, `41.7E3`, `62.5E3`, `125E3`, and `250E3`.
 
 ```c++
 bus.strategy.setSpreadingFactor(spreadingFactor);
 ```
-Change the spreading factor of the radio.
-
-- `spreadingFactor` - spreading factor, defaults to `7`
-
-Supported values are between `6` and `12`. If a spreading factor of `6` is set, implicit header mode must be used to transmit and receive packets.
+Change the spreading factor of the radio. `spreadingFactor` represents the spreading factor, defaults to `7`. Supported values are between `6` and `12`. If a spreading factor of `6` is set, implicit header mode must be used to transmit and receive packets.
 
 ```c++
 bus.strategy.setCodingRate4(codingRateDenominator);
 ```
-Change the coding rate of the radio.
-
-- `codingRateDenominator` - denominator of the coding rate, defaults to `5`
-
-Supported values are between `5` and `8`, these correspond to coding rates of `4/5` and `4/8`. The coding rate numerator is fixed at `4`.
+Change the coding rate of the radio. `codingRateDenominator` represents denominator of the coding rate, defaults to `5`. Supported values are between `5` and `8`, these correspond to coding rates of `4/5` and `4/8`. The coding rate numerator is fixed at `4`.
 
 ```c++
 bus.strategy.setPreambleLength(preambleLength);
 ```
-Change the preamble length of the radio.
-
-- `preambleLength` - preamble length in symbols, defaults to `8`
-
-Supported values are between `6` and `65535`.
+Change the preamble length of the radio. `preambleLength` represents preamble length in symbols, defaults to `8`. Supported values are between `6` and `65535`.
 
 ```c++
 bus.strategy.setSyncWord(syncWord);
 ```
-Change the sync word of the radio.
-
-- `syncWord` - byte value to use as the sync word, defaults to `0x34`
+Change the sync word of the radio. `syncWord` represents byte value to use as the sync word, defaults to `0x34`
 
 ```c++
 bus.strategy.setCRC(false); //To disable CRC

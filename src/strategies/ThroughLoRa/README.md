@@ -2,9 +2,9 @@
 
 **Medium:** Radio, Wire| **Pins used:** 6
 
-With `ThroughLora` strategy, PJON can run through a software or hardware SPI in order to communicate with supported lora modules. See [Supported Shields/Modules](#supported-shields/modules).
+With `ThroughLora` strategy, PJON can run through a software or hardware SPI in order to communicate with supported LoRa modules. See [Supported Shields/Modules](https://github.com/gioblu/PJON/tree/master/src/strategies/ThroughLoRa#supported-shieldsmodules).
 
-This strategy is a wrapper around  [Arduino LoRa library](https://github.com/sandeepmistry/arduino-LoRa) created by [Sandeep Mistry](https://github.com/sandeepmistry) so all the credit to the specific lora implementation goes to him.
+This strategy is a wrapper around  [Arduino LoRa library](https://github.com/sandeepmistry/arduino-LoRa) created by [Sandeep Mistry](https://github.com/sandeepmistry) so all the credit to the specific LoRa implementation goes to him.
 
 #### Compatibility
 - ATmega88/168/328 16MHz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
@@ -54,7 +54,7 @@ bus.strategy.setFrequency(868100000UL); //initialize 868 MHZ module
 #### Usage Example
 Here are listed basic examples of a transmitter and receiver code. After tou include the necessary code to initialize the Lora module you can use the normal PJON functions to handle data communication.
 
-Keep in mind that to use the lora startegy you must download the [Arduino LoRa library](https://github.com/sandeepmistry/arduino-LoRa).
+Keep in mind that to use the LoRa startegy you must download the [Arduino LoRa library](https://github.com/sandeepmistry/arduino-LoRa).
 
 More examples can be found in https://github.com/gioblu/PJON/tree/master/examples/ARDUINO/Local/ThroughLoRa
 

@@ -1,4 +1,4 @@
-### Through Lora Strategy
+### ThroughLoRa
 
 **Medium:** Radio, Wire| **Pins used:** 6
 

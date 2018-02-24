@@ -12,8 +12,6 @@
  *  - changed timeouts to 1s
  */
 
-#pragma once
-
 #if defined(_WIN32)
 
 #include <iostream>

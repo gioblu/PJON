@@ -15,7 +15,7 @@
 
 PJONInteractiveRouter has been contributed by Fred Larsen.
 
-This class adds functionality to the PJONSwitch, PJONRouter, PJONRouterDynamic
+This class adds functionality to the PJONSwitch, PJONRouter, PJONDynamicRouter
 and potential future classes derived from them. This functionality allows a
 switch or router to have it's own device id and send and receive packets as a
 normal device, but to and from multiple buses.
@@ -53,7 +53,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 #pragma once
-#include <PJONRouterDynamic.h>
+#include <PJONDynamicRouter.h>
 
 template<class RouterClass>
 class PJONInteractiveRouter : public RouterClass {

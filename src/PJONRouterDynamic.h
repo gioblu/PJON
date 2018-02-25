@@ -13,7 +13,7 @@
         > <
  ______-| |-__________________________________________________________________
 
-PJONRouterDynamic has been contributed by Fred Larsen.
+PJONDynamicRouter has been contributed by Fred Larsen.
 
 It performs the same as PJONRouterExtended, but populates the routing table
 dynamically based on observed packets from remote buses.
@@ -50,7 +50,7 @@ limitations under the License. */
 
 #include <PJONRouter.h>
 
-class PJONRouterDynamic : public PJONRouter {
+class PJONDynamicRouter : public PJONRouter {
 protected:
 
   void add_sender_to_routing_table(
@@ -79,9 +79,9 @@ protected:
   };
 
 public:
-  PJONRouterDynamic() { };
+  PJONDynamicRouter() { };
 
-  PJONRouterDynamic(
+  PJONDynamicRouter(
     uint8_t bus_count,
     PJONAny *buses[],
     uint8_t default_gateway = PJON_NOT_ASSIGNED

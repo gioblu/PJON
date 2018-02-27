@@ -752,10 +752,11 @@ class PJON {
       char *string,
       uint16_t length,
       uint16_t header = PJON_FAIL,
+      uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
       if(!(length = compose_packet(
-        id, bus_id, (char *)data, string, length, header, 0, requested_port
+        id, bus_id, (char *)data, string, length, header, p_id, requested_port
       ))) return PJON_FAIL;
       return send_packet((char *)data, length);
     };
@@ -766,10 +767,11 @@ class PJON {
       char *string,
       uint16_t length,
       uint16_t header = PJON_FAIL,
+      uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
       if(!(length = compose_packet(
-        id, b_id, (char *)data, string, length, header, 0, requested_port
+        id, b_id, (char *)data, string, length, header, p_id, requested_port
       ))) return PJON_FAIL;
       return send_packet((char *)data, length);
     };

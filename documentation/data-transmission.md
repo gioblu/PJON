@@ -21,7 +21,8 @@ bus.send_packet(
   10,             // Device id
   "Hello World!", // Content
   12,             // Length
-  bus.config(),   // Header  
+  bus.config(),   // Header
+  1,              // Packet id  
   8002            // Port
 );
 
@@ -37,7 +38,8 @@ bus.send_packet(
   bus_id,         // Bus id
   "Hello World!", // Content
   12,             // Length
-  bus.config(),   // Header  
+  bus.config(),   // Header
+  1,              // Packet id  
   8002            // Port
 );
 ```
@@ -110,7 +112,7 @@ bus.send(
   "Test including port id!", // (const char *) Content
   23,                        // (uint16_t)     Length
   bus.config,                // (uint8_t)      Packet header
-  110,                       // (uint16_t)     Packet id
+  1,                         // (uint16_t)     Packet id
   8002                       // (uint16_t)     Port identification
 );
 
@@ -121,7 +123,7 @@ bus.send(
   "Test including port id!", // (const char *)    Content
   23,                        // (uint16_t)        Length
   bus.config,                // (uint8_t)         Packet header
-  110,                       // (uint16_t)        Packet id
+  1,                         // (uint16_t)        Packet id
   8002                       // (uint16_t)        Port identification
 );
 

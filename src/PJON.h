@@ -793,6 +793,7 @@ class PJON {
       const char *string,
       uint16_t length,
       uint16_t header = PJON_FAIL,
+      uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST,
       uint32_t timeout = 3000000
     ) {
@@ -805,6 +806,7 @@ class PJON {
         (state != PJON_ACK) && (attempts <= strategy.get_max_attempts()) &&
         (uint32_t)(PJON_MICROS() - start) <= timeout
       ) {
+        _recursion++;
         if(!(length = compose_packet(
           id,
           b_id,
@@ -812,16 +814,18 @@ class PJON {
           string,
           old_length,
           header,
-          0,
+          p_id,
           requested_port
         ))) return PJON_FAIL;
         state = send_packet((char*)data, length);
         if(state == PJON_ACK) return state;
         attempts++;
         if(state != PJON_FAIL) strategy.handle_collision();
-        receive(strategy.back_off(attempts));
+        if(_recursion <= 1) receive(strategy.back_off(attempts));
+        else PJON_DELAY_MICROSECONDS(strategy.back_off(attempts));
         time = PJON_MICROS();
       }
+      _recursion--;
       return state;
     };
 
@@ -1130,6 +1134,7 @@ class PJON {
     uint8_t       _mode;
     uint16_t      _packet_id_seed = 0;
     PJON_Receiver _receiver;
+    uint8_t       _recursion = 0;
     bool          _router = false;
   protected:
     uint8_t       _device_id;

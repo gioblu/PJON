@@ -373,6 +373,7 @@ class PJON {
     /* Fill a PJON_Packet_Info struct with data parsing a packet: */
 
     void parse(const uint8_t *packet, PJON_Packet_Info &packet_info) const {
+      memset(&packet_info, 0, sizeof packet_info);
       uint8_t index = 0;
       packet_info.receiver_id = packet[index++];
       bool extended_length = packet[index] & PJON_EXT_LEN_BIT;

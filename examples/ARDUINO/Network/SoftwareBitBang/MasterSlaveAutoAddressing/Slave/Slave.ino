@@ -18,7 +18,7 @@ void setup() {
   time = millis();
 }
 
-void error_handler(uint8_t code, uint8_t data) {
+void error_handler(uint8_t code, uint8_t data, void *custom_pointer) {
   if(code == PJON_CONNECTION_LOST) {
     Serial.print("Connection lost with master ");
     Serial.println(bus.packets[data].content[0], DEC);

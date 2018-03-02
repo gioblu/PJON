@@ -665,7 +665,7 @@ class PJON {
       );
     };
 
-    /* Schedule a packet sending configuring sender info: */
+    /* Schedule a packet sending configuring its sender info:  */
 
     uint16_t send_from_id(
       uint8_t sender_id,
@@ -683,9 +683,16 @@ class PJON {
       copy_bus_id(original_bus_id, bus_id);
       set_id(sender_id);
       copy_bus_id(bus_id, sender_bus_id);
-      uint16_t result = dispatch(
-        id, b_id, string, length, 0, header, p_id, requested_port
-      );
+      uint16_t result = PJON_FAIL;
+      #if(PJON_MAX_PACKETS > 0)
+        result = dispatch(
+          id, b_id, string, length, 0, header, p_id, requested_port
+        );
+      #endif
+      if(result == PJON_FAIL)
+        result = send_packet_blocking(
+          id, b_id, string, length, header, p_id, requested_port
+        );
       copy_bus_id(bus_id, original_bus_id);
       set_id(original_device_id);
       return result;

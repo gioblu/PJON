@@ -191,7 +191,7 @@ class PJON {
       }
 
       if(new_length >= PJON_PACKET_MAX_LENGTH) {
-        _error(PJON_CONTENT_TOO_LONG, new_length);
+        _error(PJON_CONTENT_TOO_LONG, new_length, _custom_pointer);
         return 0;
       }
 
@@ -293,7 +293,7 @@ class PJON {
           return i;
         }
 
-      _error(PJON_PACKETS_BUFFER_FULL, PJON_MAX_PACKETS);
+      _error(PJON_PACKETS_BUFFER_FULL, PJON_MAX_PACKETS, _custom_pointer);
       return PJON_FAIL;
     };
 
@@ -1046,7 +1046,7 @@ class PJON {
           strategy.handle_collision();
 
         if(packets[i].attempts > strategy.get_max_attempts()) {
-          _error(PJON_CONNECTION_LOST, i);
+          _error(PJON_CONNECTION_LOST, i, _custom_pointer);
           if(!packets[i].timing) {
             if(_auto_delete) {
               remove(i);

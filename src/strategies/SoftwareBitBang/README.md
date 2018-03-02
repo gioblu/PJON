@@ -88,9 +88,10 @@ PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl
 
 #### Known issues
 - A 1-5 MΩ pull down resistor could be necessary to reduce interference, see [deal with interference](https://github.com/gioblu/PJON/wiki/Deal-with-interference).
+- When using more than one instance of `SoftwareBitBang` in the same sketch always use pins connected to a different port group to avoid cross-talk.  
 - Consider that this is not an interrupt driven system, during the time passed
 in delay or executing other tasks a certain amount of packets could be potentially
-lost, PJON does its job scheduling the packet
+lost, PJON does its job scheduling the packet.
 to be sent again in future but a certain amount of bandwidth can be wasted. Structure intelligently
 your loop cycle and polling duration to avoid low transmission accuracy.
 - `SoftwareBitBang` strategy can have compatibility issues with codebases that

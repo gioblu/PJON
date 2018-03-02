@@ -25,6 +25,8 @@
     #define PJON_ESP // Generic ESP's use for 01's
   #elif ARDUINO_ESP8266_NODEMCU
     #define PJON_ESP // Wio Link and NodeMCU 1.0 (also 0.9), use for ESP12
+  #elif ESP8266
+    #define PJON_ESP
   #endif
 
   #include <Arduino.h>

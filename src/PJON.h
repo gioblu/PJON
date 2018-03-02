@@ -191,7 +191,7 @@ class PJON {
       }
 
       if(new_length >= PJON_PACKET_MAX_LENGTH) {
-        _error(PJON_CONTENT_TOO_LONG, new_length);
+        _error(PJON_CONTENT_TOO_LONG, new_length, _custom_pointer);
         return 0;
       }
 
@@ -293,7 +293,7 @@ class PJON {
           return i;
         }
 
-      _error(PJON_PACKETS_BUFFER_FULL, PJON_MAX_PACKETS);
+      _error(PJON_PACKETS_BUFFER_FULL, PJON_MAX_PACKETS, _custom_pointer);
       return PJON_FAIL;
     };
 
@@ -665,7 +665,7 @@ class PJON {
       );
     };
 
-    /* Schedule a packet sending configuring sender info: */
+    /* Schedule a packet sending configuring its sender info:  */
 
     uint16_t send_from_id(
       uint8_t sender_id,
@@ -683,9 +683,16 @@ class PJON {
       copy_bus_id(original_bus_id, bus_id);
       set_id(sender_id);
       copy_bus_id(bus_id, sender_bus_id);
-      uint16_t result = dispatch(
-        id, b_id, string, length, 0, header, p_id, requested_port
-      );
+      uint16_t result = PJON_FAIL;
+      #if(PJON_MAX_PACKETS > 0)
+        result = dispatch(
+          id, b_id, string, length, 0, header, p_id, requested_port
+        );
+      #endif
+      if(result == PJON_FAIL)
+        result = send_packet_blocking(
+          id, b_id, string, length, header, p_id, requested_port
+        );
       copy_bus_id(bus_id, original_bus_id);
       set_id(original_device_id);
       return result;
@@ -752,10 +759,11 @@ class PJON {
       char *string,
       uint16_t length,
       uint16_t header = PJON_FAIL,
+      uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
       if(!(length = compose_packet(
-        id, bus_id, (char *)data, string, length, header, 0, requested_port
+        id, bus_id, (char *)data, string, length, header, p_id, requested_port
       ))) return PJON_FAIL;
       return send_packet((char *)data, length);
     };
@@ -766,10 +774,11 @@ class PJON {
       char *string,
       uint16_t length,
       uint16_t header = PJON_FAIL,
+      uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
       if(!(length = compose_packet(
-        id, b_id, (char *)data, string, length, header, 0, requested_port
+        id, b_id, (char *)data, string, length, header, p_id, requested_port
       ))) return PJON_FAIL;
       return send_packet((char *)data, length);
     };
@@ -784,6 +793,7 @@ class PJON {
       const char *string,
       uint16_t length,
       uint16_t header = PJON_FAIL,
+      uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST,
       uint32_t timeout = 3000000
     ) {
@@ -796,6 +806,7 @@ class PJON {
         (state != PJON_ACK) && (attempts <= strategy.get_max_attempts()) &&
         (uint32_t)(PJON_MICROS() - start) <= timeout
       ) {
+        _recursion++;
         if(!(length = compose_packet(
           id,
           b_id,
@@ -803,16 +814,18 @@ class PJON {
           string,
           old_length,
           header,
-          0,
+          p_id,
           requested_port
         ))) return PJON_FAIL;
         state = send_packet((char*)data, length);
         if(state == PJON_ACK) return state;
         attempts++;
         if(state != PJON_FAIL) strategy.handle_collision();
-        receive(strategy.back_off(attempts));
+        if(_recursion <= 1) receive(strategy.back_off(attempts));
+        else PJON_DELAY_MICROSECONDS(strategy.back_off(attempts));
         time = PJON_MICROS();
       }
+      _recursion--;
       return state;
     };
 
@@ -1044,7 +1057,7 @@ class PJON {
           strategy.handle_collision();
 
         if(packets[i].attempts > strategy.get_max_attempts()) {
-          _error(PJON_CONNECTION_LOST, i);
+          _error(PJON_CONNECTION_LOST, i, _custom_pointer);
           if(!packets[i].timing) {
             if(_auto_delete) {
               remove(i);
@@ -1121,6 +1134,7 @@ class PJON {
     uint8_t       _mode;
     uint16_t      _packet_id_seed = 0;
     PJON_Receiver _receiver;
+    uint8_t       _recursion = 0;
     bool          _router = false;
   protected:
     uint8_t       _device_id;

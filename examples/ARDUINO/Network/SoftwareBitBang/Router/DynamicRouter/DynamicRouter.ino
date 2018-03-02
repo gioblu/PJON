@@ -1,4 +1,4 @@
-#include <PJONRouterDynamic.h>
+#include <PJONDynamicRouter.h>
 
 /* Route packets between a collection of buses with the same or if required
    different strategies or media. Packets are routed trasparently using a
@@ -29,7 +29,7 @@ StrategyLink<SoftwareBitBang> link2;
 PJONAny bus1(&link1, (const uint8_t[4]){0,0,0,3});
 PJONAny bus2(&link2, (const uint8_t[4]){0,0,0,4});
 
-PJONRouterDynamic router(2, (PJONAny*[2]){&bus1, &bus2});
+PJONDynamicRouter router(2, (PJONAny*[2]){&bus1, &bus2});
 
 void setup() {
   link1.strategy.set_pin(11);

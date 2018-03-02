@@ -16,7 +16,7 @@ void setup() {
   bus.send(44, "B", 1);
 };
 
-void error_handler(uint8_t code, uint8_t data) {
+void error_handler(uint8_t code, uint8_t data, void *custom_pointer) {
   if(code == PJON_CONNECTION_LOST) {
     Serial.print("Connection with device ID ");
     Serial.print(bus.packets[data].content[0], DEC);

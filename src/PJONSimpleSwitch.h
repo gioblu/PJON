@@ -179,28 +179,17 @@ protected:
           ack_sent = true;
         }
         // Forward the packet
-        #if (PJON_MAX_PACKETS > 0)
-          buses[receiver_bus]->send_from_id(
-            packet_info.sender_id,
-            packet_info.sender_bus_id,
-            packet_info.receiver_id,
-            packet_info.receiver_bus_id,
-            (const char*)payload,
-            length,
-            packet_info.header,
-            packet_info.id,
-            packet_info.port
-          );
-        #else
-          buses[receiver_bus]->send_packet_blocking(
-            packet_info.receiver_id,
-            packet_info.receiver_bus_id,
-            (const char*)payload,
-            length,
-            packet_info.header,
-            packet_info.port
-          ); // TODO: Need send_from_id_blocking functions!!!
-         #endif
+        buses[receiver_bus]->send_from_id(
+          packet_info.sender_id,
+          packet_info.sender_bus_id,
+          packet_info.receiver_id,
+          packet_info.receiver_bus_id,
+          (const char*)payload,
+          length,
+          packet_info.header,
+          packet_info.id,
+          packet_info.port
+        );
       }
     } while(start_search != PJON_NOT_ASSIGNED);
   };

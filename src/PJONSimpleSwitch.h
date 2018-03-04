@@ -100,7 +100,8 @@ protected:
     PJONBus<Strategy> *buses_in[],
     uint8_t default_gateway_in,
     void *custom_pointer,
-    PJON_Receiver receiver
+    PJON_Receiver receiver,
+    PJON_Error error
   ) {
     bus_count = (bus_count_in > PJON_ROUTER_MAX_BUSES) ?
       PJON_ROUTER_MAX_BUSES : bus_count_in;
@@ -108,6 +109,7 @@ protected:
     for(uint8_t i = 0; i < bus_count; i++) {
       buses[i] = buses_in[i];
       buses[i]->set_receiver(receiver);
+      buses[i]->set_error(error);
       buses[i]->set_custom_pointer(custom_pointer);
       buses[i]->set_router(true);
     }
@@ -135,6 +137,35 @@ protected:
     return PJON_NOT_ASSIGNED;
   };
 
+  void forward_packet(const uint8_t *payload, const uint16_t length, 
+                      const uint8_t receiver_bus, const uint8_t sender_bus, 
+                      bool &ack_sent, const PJON_Packet_Info &packet_info) {
+    // If receiving bus matches and not equal to sending bus, then route packet
+    if(receiver_bus != PJON_NOT_ASSIGNED && receiver_bus != sender_bus) {
+      // Send an ACK once to notify that the packet will be delivered
+      if(
+        !ack_sent &&
+        (packet_info.header & PJON_ACK_REQ_BIT) &&
+        (packet_info.receiver_id != PJON_BROADCAST)
+      ) {
+        buses[sender_bus]->strategy.send_response(PJON_ACK);
+        ack_sent = true;
+      }
+      // Forward the packet
+      buses[receiver_bus]->send_from_id(
+        packet_info.sender_id,
+        packet_info.sender_bus_id,
+        packet_info.receiver_id,
+        packet_info.receiver_bus_id,
+        (const char*)payload,
+        length,
+        packet_info.header,
+        packet_info.id,
+        packet_info.port
+      );
+    }
+  }
+  
   #ifdef PJON_ROUTER_NEED_INHERITANCE
   virtual
   #endif
@@ -153,47 +184,28 @@ protected:
     uint8_t *payload,
     uint16_t length,
     const PJON_Packet_Info &packet_info
-  ) {
-    uint8_t sender_bus = current_bus, start_search = 0;
-    bool ack_sent = false;
-    // Send ACK only once even if delivering copies to multiple buses
-    const uint8_t localhost[4] = {0, 0, 0, 0};
+  ) {    
+    uint8_t start_search = 0;
+    bool ack_sent = false; // Send ACK only once even if delivering copies to multiple buses
     do {
       uint8_t receiver_bus = find_bus_with_id((const uint8_t*)
-        ((packet_info.header & PJON_MODE_BIT) != 0 ?
-          packet_info.receiver_bus_id : localhost),
-        packet_info.receiver_id, start_search
+          ((packet_info.header & PJON_MODE_BIT) != 0 ?
+          packet_info.receiver_bus_id : buses[0]->localhost),
+          packet_info.receiver_id, start_search
       );
 
       if(receiver_bus == PJON_NOT_ASSIGNED) receiver_bus = default_gateway;
-      // If receiving bus matches and not equal to sending bus route packet
+      
+      forward_packet(payload, length, receiver_bus, current_bus, ack_sent, packet_info);
 
-      if(receiver_bus != PJON_NOT_ASSIGNED && receiver_bus != sender_bus) {
-        // Send an ACK once to notify that the packet will be delivered
-        if(
-          !ack_sent &&
-          (packet_info.header & PJON_ACK_REQ_BIT) &&
-          (packet_info.receiver_id != PJON_BROADCAST)
-        ) {
-          buses[sender_bus]->strategy.send_response(PJON_ACK);
-          ack_sent = true;
-        }
-        // Forward the packet
-        buses[receiver_bus]->send_from_id(
-          packet_info.sender_id,
-          packet_info.sender_bus_id,
-          packet_info.receiver_id,
-          packet_info.receiver_bus_id,
-          (const char*)payload,
-          length,
-          packet_info.header,
-          packet_info.id,
-          packet_info.port
-        );
-      }
     } while(start_search != PJON_NOT_ASSIGNED);
   };
 
+  #ifdef PJON_ROUTER_NEED_INHERITANCE
+  virtual
+  #endif
+  void dynamic_error_function(uint8_t code, uint8_t packet) { }
+  
 public:
 
   PJONSimpleSwitch() {};
@@ -216,8 +228,11 @@ public:
       uint16_t code = buses[i]->receive(buses[i]->receive_time);
       if(PJON_MAX_PACKETS < bus_count && code == PJON_ACK) break;
     }
+    for(uint8_t i = 0; i < bus_count; i++) {
+      current_bus = i;
+      buses[i]->update();
+    }
     current_bus = PJON_NOT_ASSIGNED;
-    for(uint8_t i = 0; i < bus_count; i++) buses[i]->update();
   };
 
   void connect_buses(
@@ -230,10 +245,11 @@ public:
       buses_in,
       default_gateway_in,
       this,
-      PJONSimpleSwitch<Strategy>::receiver_function
+      PJONSimpleSwitch<Strategy>::receiver_function,
+      PJONSimpleSwitch<Strategy>::error_function
     );
   };
-
+  
   static void receiver_function(
     uint8_t *payload,
     uint16_t length,
@@ -246,5 +262,9 @@ public:
         length,
         packet_info
       );
+  }  
+  
+  static void error_function(uint8_t code, uint8_t packet, void *custom_pointer) {
+    ((PJONSimpleSwitch<Strategy>*)custom_pointer)->dynamic_error_function(code, packet);
   }
 };

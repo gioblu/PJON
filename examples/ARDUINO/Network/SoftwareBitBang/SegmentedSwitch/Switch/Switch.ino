@@ -7,7 +7,7 @@
      __________           ________           __________
     |          | 0.0.0.1 |        | 0.0.0.1 |          |
     | DEVICE 1 |_________| SWITCH |_________| DEVICE 2 |
-    |__________| Pin 11  |________| Pin 12  |__________| */
+    |__________|  Pin 7  |________| Pin 12  |__________| */
 
 #include <PJONSwitch.h>
 
@@ -20,7 +20,7 @@ PJONAny bus2(&link2, (uint8_t[4]){0,0,0,1}, PJON_NOT_ASSIGNED, 1000, 2, 1);
 PJONSwitch router(2, (PJONAny*[2]){&bus1, &bus2}, PJON_NOT_ASSIGNED);
 
 void setup() {
-  link1.strategy.set_pin(11);
+  link1.strategy.set_pin(7);
   link2.strategy.set_pin(12);
   router.begin();
 }

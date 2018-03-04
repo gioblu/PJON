@@ -540,13 +540,13 @@ class PJON {
     /* Try to receive a packet repeatedly with a maximum duration: */
 
     uint16_t receive(uint32_t duration) {
-      uint16_t response = PJON_FAIL;
       uint32_t time = PJON_MICROS();
-      while((uint32_t)(PJON_MICROS() - time) <= duration) {
-        response = receive();
-        if(response == PJON_ACK)
-          return PJON_ACK;
-      }
+      uint16_t response;
+      do response = receive();
+      while(
+        (response != PJON_ACK) &&
+        ((uint32_t)(PJON_MICROS() - time) <= duration)
+      );
       return response;
     };
 

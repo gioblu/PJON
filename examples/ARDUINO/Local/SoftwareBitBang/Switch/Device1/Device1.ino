@@ -6,7 +6,7 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW); // Initialize LED 13 to be off
 
-  bus.strategy.set_pin(11);
+  bus.strategy.set_pin(7);
   bus.set_receiver(receiver_function);
   bus.begin();
   bus.send(200, "B", 1);

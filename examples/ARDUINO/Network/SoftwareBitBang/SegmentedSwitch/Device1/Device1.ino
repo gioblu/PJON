@@ -7,7 +7,7 @@
      __________           ________           __________
     |          | 0.0.0.1 |        | 0.0.0.1 |          |
     | DEVICE 1 |_________| SWITCH |_________| DEVICE 2 |
-    |__________| Pin 11  |________| Pin 12  |__________| */
+    |__________|  Pin 7  |________| Pin 12  |__________| */
 
 #include <PJON.h>
 
@@ -21,7 +21,7 @@ PJON<SoftwareBitBang> bus(bus_id, 100);
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW); // Initialize LED to be off
-  bus.strategy.set_pin(11);
+  bus.strategy.set_pin(7);
   bus.set_receiver(receiver_function);
   bus.begin();
   bus.send_repeatedly(200, remote_bus_id, "B", 1, 250000);

@@ -6,7 +6,7 @@
 
   // SWITCH forwarding from bus 1 to bus 2 and vice versa
     __________                 ________                 __________
-   |          | Bus 1  Pin 11 |        | Pin 12  Bus 2 |          |
+   |          | Bus 1   Pin 7 |        | Pin 12  Bus 2 |          |
    | DEVICE 1 |_______________| SWITCH |_______________| DEVICE 2 |
    |__________| Range 1-127   |________| Range 128-253 |__________| */
 
@@ -19,7 +19,7 @@ PJONAny bus2(&link2, PJON_NOT_ASSIGNED, 1000, 2, 1); // Devices with id 128-253
 PJONSwitch router(2, (PJONAny*[2]){&bus1, &bus2});
 
 void setup() {
-  link1.strategy.set_pin(11);
+  link1.strategy.set_pin(7);
   link2.strategy.set_pin(12);
   router.begin();
 };

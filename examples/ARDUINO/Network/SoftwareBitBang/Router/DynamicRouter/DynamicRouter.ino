@@ -1,7 +1,7 @@
 #include <PJONDynamicRouter.h>
 
 /* Route packets between a collection of buses with the same or if required
-   different strategies or media. Packets are routed trasparently using a
+   different strategies or media. Packets are routed transparently using a
    routing table dynamically populated by traffic.
 
    - A Device on bus 0.0.0.1 is connected to the same medium as bus 0.0.0.3

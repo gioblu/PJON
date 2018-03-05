@@ -30,7 +30,7 @@ uint8_t mac[] = {0xDE, 0x5D, 0x4E, 0xEF, 0xAE, 0xED};
 uint8_t ip[] = { 192, 1, 1, 144 };
 
 // Ethernet configuration for remote device
-const byte remote_ip[] = { 192, 1, 1, 70 };
+const uint8_t remote_ip[] = { 192, 1, 1, 70 };
 
 void setup() {
   Serial.begin(115200);
@@ -78,6 +78,7 @@ void receiver_functionB(uint8_t *payload, uint16_t length, const PJON_Packet_Inf
     (char *)payload,
     length,
     packet_info.header,
+    packet_info.id,
     packet_info.port
   );  
 }

@@ -835,11 +835,12 @@ class PJON {
       const char *string,
       uint16_t length,
       uint16_t header = PJON_FAIL,
+      uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST,
       uint32_t timeout = 3000000
     ) {
       return send_packet_blocking(
-        id, bus_id, string, length, header, requested_port, timeout
+        id, bus_id, string, length, header, p_id, requested_port, timeout
       );
     };
 

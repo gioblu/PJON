@@ -230,6 +230,7 @@ class PJONMaster : public PJON<Strategy> {
           &request,
           1,
           PJON<Strategy>::config | required_config,
+          0,
           PJON_DYNAMIC_ADDRESSING_PORT
         );
         receive(PJON_LIST_IDS_TIME);
@@ -247,6 +248,7 @@ class PJONMaster : public PJON<Strategy> {
         response,
         5,
         PJON<Strategy>::config | PJON_ACK_REQ_BIT | required_config,
+        0,
         PJON_DYNAMIC_ADDRESSING_PORT
       );
     };

@@ -387,7 +387,7 @@ public:
       TmpBuffer buf(content_length);
       if(ok) {
         bytes_read = read_bytes(client, (uint8_t*)buf(), content_length);
-        if(bytes_read != content_length) ok = false;
+        if((uint32_t)bytes_read != content_length) ok = false;
       }
 
       // Read footer (4 bytes magic number)
@@ -427,6 +427,7 @@ public:
           Serial.print(ok ? "PJON_ACK: " : "PJON_FAIL: ");
           Serial.println(acklen);
         #else
+          (void)acklen; // Avoid "set but not used" warning
         #if defined(ETCP_ERROR_PRINT)
           if (!ok) Serial.println("FAILURE sending ACK");
         #endif
@@ -1155,7 +1156,7 @@ public:
       }
       #ifdef ETCP_SINGLE_DIRECTION
       else if (_initiate_both_sockets_in_same_direction && _initiator) {
-        bool connected = connect(remote_id);
+        connect(remote_id);
         uint16_t result = receive(_client_in, false);
         disconnect_out_if_needed(PJON_ACK); // Do not disconnect if nothing to read
         disconnect_in_if_needed();

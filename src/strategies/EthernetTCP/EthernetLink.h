@@ -309,7 +309,7 @@ public:
         This is the opposite of POSIX. */
     do {
       #ifdef HAS_ETHERNETUDP // Avoid using blocking read until there is data present
-      int16_t avail;
+      int16_t avail = 0;
       while(
         client.connected() &&
         (avail = client.available()) <= 0 &&
@@ -615,8 +615,10 @@ public:
 
   bool accept() {
     // Determine if to disconnect
-    bool disconnect = !_keep_connection,
-         reverse = _initiate_both_sockets_in_same_direction && !_initiator;
+    bool disconnect = !_keep_connection;
+    #ifdef ETCP_SINGLE_DIRECTION
+    bool reverse = _initiate_both_sockets_in_same_direction && !_initiator;
+    #endif
     if (!disconnect && _client_in && !_client_in.connected()) disconnect = true;
     #ifdef ETCP_SINGLE_DIRECTION
     if (!disconnect && reverse && _client_out && !_client_out.connected()) disconnect = true;
@@ -801,7 +803,7 @@ public:
      using a master-slave mode where the master connects and delivers packets
      or a placeholder, then reads packets or placeholder back before closing
      the connection (unless letting it stay open). */
-
+  #ifdef ETCP_SINGLE_SOCKET_WITH_ACK
   uint16_t single_socket_transfer(
     TCPHelperClient &client,
     int16_t id,
@@ -809,7 +811,6 @@ public:
     const char *contents,
     uint16_t length
   ) {
-    #ifdef ETCP_SINGLE_SOCKET_WITH_ACK
     if(master) { // Creating outgoing connections
       // Connect or check that we are already connected to the correct server
       bool connected = connect(id);
@@ -970,10 +971,9 @@ public:
       uint16_t result = ok ? PJON_ACK : PJON_FAIL;
       return contents == NULL ? (numpackets_in > 0 ? result : PJON_FAIL) : result;
     }
-    #endif
     return PJON_FAIL;
   };
-
+  #endif
 
   /* Read until a specific 4 byte value is found.
      This will resync if stream position is lost. */
@@ -1127,8 +1127,14 @@ public:
     /* Create connection if needed but only poll for incoming packet
        without delivering any */
     if(_single_socket) {
-      if(!_server)
+      if(!_server) {
+      #ifdef ETCP_SINGLE_SOCKET_WITH_ACK      
         return single_socket_transfer(_client_out, remote_id, true, NULL, 0);
+      #else
+        (void)remote_id; // Avoid "unused parameter" warning
+        return PJON_FAIL;
+      #endif
+      }
     } else { // Just do an ordinary receive without using the id
       return receive();
     }
@@ -1147,12 +1153,18 @@ public:
 
   uint16_t receive() {
     if(_server == NULL) { // Not listening for incoming connections
+      #if defined(ETCP_SINGLE_SOCKET_WITH_ACK) || defined(ETCP_SINGLE_DIRECTION) 
       int16_t remote_id = _remote_node_count == 1 ? _remote_id[0] : -1;
+      #endif
       if(_single_socket) { // Single-socket mode.
         /* Only read from already established outgoing socket, or create
         connection if there is only one remote node configured (no doubt about
         which node to connect to). */
+        #ifdef ETCP_SINGLE_SOCKET_WITH_ACK      
         return single_socket_transfer(_client_out, remote_id, true, NULL, 0);
+        #else
+        return PJON_FAIL;  
+        #endif  
       }
       #ifdef ETCP_SINGLE_DIRECTION
       else if (_initiate_both_sockets_in_same_direction && _initiator) {
@@ -1165,9 +1177,13 @@ public:
       #endif
     } else {
       // Accept new incoming connection if connection has been lost
-      if(_single_socket)
+      if(_single_socket) {
+        #ifdef ETCP_SINGLE_SOCKET_WITH_ACK
         return single_socket_transfer(_client_in, -1, false, NULL, 0);
-      else {
+        #else
+        return PJON_FAIL;  
+        #endif
+      }else {
         // Accept incoming connection(s)
         if(!accept()) return PJON_FAIL;
 
@@ -1199,10 +1215,11 @@ public:
     uint8_t id,
     const char *packet,
     uint16_t length,
-    uint32_t timing_us = 0
+    uint32_t = 0 // timing_us
   ) {
     // Special algorithm for single-socket transfers
     if(_single_socket)
+      #ifdef ETCP_SINGLE_SOCKET_WITH_ACK
       return single_socket_transfer(
         _server ? _client_in : _client_out,
         id,
@@ -1210,6 +1227,9 @@ public:
         packet,
         length
       );
+      #else
+      return PJON_FAIL;  
+      #endif  
 
     // Connect or check that we are already connected to the correct server
     bool connected = false;

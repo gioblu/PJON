@@ -204,9 +204,9 @@ typedef void (* PJON_Receiver)(
 );
 
 static void PJON_dummy_receiver_handler(
-  uint8_t *payload,
-  uint16_t length,
-  const PJON_Packet_Info &packet_info
+  uint8_t *,               // payload
+  uint16_t,                // length
+  const PJON_Packet_Info & // packet_info
 ) {};
 
 typedef void (* PJON_Error)(
@@ -216,7 +216,7 @@ typedef void (* PJON_Error)(
 );
 
 static void PJON_dummy_error_handler(
-  uint8_t code,
-  uint8_t data,
-  void *custom_pointer
+  uint8_t, // code
+  uint8_t, // data
+  void *   // custom_pointer
 ) {};

@@ -46,7 +46,7 @@ class EthernetTCP {
     };
 
 
-    void receiver(uint8_t id, const uint8_t *payload, uint16_t length) {
+    void receiver(uint8_t /*id*/, const uint8_t *payload, uint16_t length) {
       if(length <= current_buffer_size && incoming_packet_buf_ptr != NULL) {
         memcpy(incoming_packet_buf_ptr, payload, length);
         incoming_packet_size = length;
@@ -81,7 +81,7 @@ class EthernetTCP {
     /* Begin method, to be called before transmission or reception:
        (returns always true) */
 
-    bool begin(uint8_t additional_randomness = 0) {
+    bool begin(uint8_t /*additional_randomness*/ = 0) {
       return true;
     };
 
@@ -134,7 +134,7 @@ class EthernetTCP {
 
     /* Send byte response to package transmitter */
 
-    void send_response(uint8_t response) { // Empty, ACK is always sent
+    void send_response(uint8_t /*response*/) { // Empty, ACK is always sent
     };
 
 

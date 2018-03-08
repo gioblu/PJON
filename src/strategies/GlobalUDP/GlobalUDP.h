@@ -92,8 +92,10 @@ public:
       #ifdef PJON_ESP
         return 10000ul*attempts + random(10000);
       #elif _WIN32
+      (void)attempts; // Avoid "unused parameter" warning
       return 1000ul + (1000ul * rand()) / RAND_MAX;
       #else
+        (void)attempts; // Avoid "unused parameter" warning
         return 1;
       #endif
     };
@@ -102,7 +104,7 @@ public:
     /* Begin method, to be called before transmission or reception:
        (returns always true) */
 
-    bool begin(uint8_t additional_randomness = 0) { return check_udp(); };
+    bool begin(uint8_t /*additional_randomness*/ = 0) { return check_udp(); };
 
 
     /* Check if the channel is free for transmission */

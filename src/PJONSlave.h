@@ -85,13 +85,6 @@ class PJONSlave : public PJON<Strategy> {
       set_default();
     };
 
-    /* Acquire a device id: */
-
-    void acquire_id() {
-      if(!acquire_id_master_slave())
-        acquire_id_multi_master();
-    };
-
     /* Acquire an id in multi-master configuration: */
 
     void acquire_id_multi_master(uint8_t limit = 0) {
@@ -165,8 +158,6 @@ class PJONSlave : public PJON<Strategy> {
 
     void begin() {
       PJON<Strategy>::begin();
-      if(this->_device_id == PJON_NOT_ASSIGNED)
-        acquire_id();
     };
 
     /* Release device id (Master-slave only): */
@@ -296,7 +287,7 @@ class PJONSlave : public PJON<Strategy> {
               this->data + ((overhead - CRC_overhead) + 1),
               rid
             ) && this->_device_id == this->data[0]
-          ) acquire_id();
+          ) acquire_id_master_slave();
 
         if(this->data[overhead - CRC_overhead] == PJON_ID_LIST)
           if(this->_device_id != PJON_NOT_ASSIGNED) {
@@ -322,8 +313,9 @@ class PJONSlave : public PJON<Strategy> {
             (PJON_ADDRESSING_TIMEOUT * 1.125)
           ) {
             _last_request_time = PJON_MICROS();
-            acquire_id();
+            acquire_id_master_slave();
           }
+        }
         return true;
       }
       return false;

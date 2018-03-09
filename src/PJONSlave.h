@@ -53,7 +53,7 @@ template<typename Strategy = SoftwareBitBang>
 class PJONSlave : public PJON<Strategy> {
   public:
     uint8_t required_config =
-      PJON_PORT_BIT | PJON_TX_INFO_BIT | PJON_CRC_BIT;
+      PJON_ACK_REQ_BIT | PJON_TX_INFO_BIT | PJON_CRC_BIT;
 
     /* PJONSlave bus default initialization:
        State: Local (bus_id: 0.0.0.0)
@@ -94,7 +94,8 @@ class PJONSlave : public PJON<Strategy> {
 
       PJON_DELAY_MICROSECONDS(PJON_RANDOM(PJON_ACQUIRE_ID_DELAY));
       char msg = PJON_ID_ACQUIRE;
-      char head = this->config | required_config | PJON_ACK_REQ_BIT;
+      char head =
+        this->config | required_config | PJON_PORT_BIT;
       this->_device_id = PJON_NOT_ASSIGNED;
       uint8_t id = PJON_RANDOM(1, PJON_MAX_DEVICES);
 
@@ -148,7 +149,7 @@ class PJONSlave : public PJON<Strategy> {
         this->bus_id,
         response,
         5,
-        this->config | PJON_ACK_REQ_BIT | required_config,
+        this->config | PJON_PORT_BIT | required_config,
         0,
         PJON_DYNAMIC_ADDRESSING_PORT
       ) == PJON_ACK) return true;
@@ -180,7 +181,7 @@ class PJONSlave : public PJON<Strategy> {
         this->bus_id,
         request,
         6,
-        this->config | PJON_ACK_REQ_BIT | required_config,
+        this->config | PJON_PORT_BIT | required_config,
         0,
         PJON_DYNAMIC_ADDRESSING_PORT
       ) == PJON_ACK) {
@@ -282,7 +283,7 @@ class PJONSlave : public PJON<Strategy> {
               this->bus_id,
               response,
               6,
-              this->config | PJON_ACK_REQ_BIT | required_config,
+              this->config | PJON_PORT_BIT | required_config,
               0,
               PJON_DYNAMIC_ADDRESSING_PORT
             ) != PJON_ACK) {
@@ -313,7 +314,7 @@ class PJONSlave : public PJON<Strategy> {
                 this->bus_id,
                 response,
                 6,
-                this->config | PJON_ACK_REQ_BIT | required_config,
+                this->config | PJON_PORT_BIT | required_config,
                 0,
                 PJON_DYNAMIC_ADDRESSING_PORT
               );

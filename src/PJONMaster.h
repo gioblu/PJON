@@ -179,7 +179,8 @@ class PJONMaster : public PJON<Strategy> {
     };
 
     /* Check slaves presence contacting all known devices and waiting for
-       a synchronous acknowledge: */
+       a synchronous acknowledge. If no answer is received the slave is
+       removed from the list (bandwidth consuming, use rarely): */
 
     void check_slaves_presence() {
       char request = PJON_ID_ACQUIRE;
@@ -195,7 +196,10 @@ class PJONMaster : public PJON<Strategy> {
               0,
               PJON_DYNAMIC_ADDRESSING_PORT
             ) != PJON_ACK
-          ) delete_id_reference(i + 1);
+          ) {
+            delete_id_reference(i + 1);
+            error(PJON_ID_ACQUISITION_FAIL, i + 1);
+          }
       }
     };
 

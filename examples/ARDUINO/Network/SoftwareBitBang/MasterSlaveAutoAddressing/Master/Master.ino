@@ -29,6 +29,10 @@ void error_function(uint8_t code, uint8_t data, void *custom_pointer) {
     Serial.print("Connection lost with device ");
     Serial.println((uint8_t)bus.packets[data].content[0], DEC);
   }
+  if(code == PJON_ID_ACQUISITION_FAIL) {
+    Serial.print("Connection lost with device ");
+    Serial.println(data, DEC);
+  }
   if(code == PJON_DEVICES_BUFFER_FULL) {
     Serial.print("Master devices buffer is full with a length of ");
     Serial.println(data);
@@ -72,11 +76,10 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 
 void loop() {
   if(millis() - time > 5000) {
-    Serial.println("List of slaves known by master: ");
-
     // Check if registered slaves are still present on the bus
     bus.check_slaves_presence();
 
+    Serial.println("List of slaves known by master: ");
     for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++) {
       if(bus.ids[i].state) {
         Serial.print(" - Device id: ");

@@ -187,7 +187,7 @@ class PJONMaster : public PJON<Strategy> {
       for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++) {
         if(ids[i].state && ids[i].rid)
           if(
-            send_packet_blocking(
+            PJON<Strategy>::send_packet_blocking(
               i + 1,
               this->bus_id,
               &request,
@@ -337,18 +337,18 @@ class PJONMaster : public PJON<Strategy> {
        ID_NEGATE forcing the slave to make a new request. */
 
     void negate_id(uint8_t id, uint8_t *b_id, uint32_t rid) {
-      char response[5] = {
+      uint8_t response[5] = {
         (uint8_t)PJON_ID_NEGATE,
         (uint8_t)((uint32_t)(rid) >> 24),
         (uint8_t)((uint32_t)(rid) >> 16),
-        (uint8_t)((uint32_t)(rid) >> 8),
+        (uint8_t)((uint32_t)(rid) >>  8),
         (uint8_t)((uint32_t)(rid))
       };
 
       PJON<Strategy>::send_packet_blocking(
         id,
         b_id,
-        response,
+        (char *)response,
         5,
         PJON<Strategy>::config | required_config | PJON_PORT_BIT,
         0,

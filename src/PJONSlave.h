@@ -96,7 +96,8 @@ class PJONSlave : public PJON<Strategy> {
 
     void acquire_id_multi_master(uint8_t limit = 0) {
       if(limit >= PJON_MAX_ACQUIRE_ID_COLLISIONS)
-        return _slave_error(PJON_ID_ACQUISITION_FAIL, PJON_FAIL);
+        return
+          error(PJON_ID_ACQUISITION_FAIL, PJON_ID_ACQUIRE, _custom_pointer);
 
       PJON_DELAY_MICROSECONDS(PJON_RANDOM(PJON_ACQUIRE_ID_DELAY));
       char msg = PJON_ID_ACQUIRE;
@@ -156,6 +157,7 @@ class PJONSlave : public PJON<Strategy> {
         PJON_DYNAMIC_ADDRESSING_PORT
       ) == PJON_ACK) return true;
 
+      error(PJON_ID_ACQUISITION_FAIL, PJON_ID_REQUEST, _custom_pointer);
       return false;
     };
 
@@ -190,18 +192,29 @@ class PJONSlave : public PJON<Strategy> {
         this->_device_id = PJON_NOT_ASSIGNED;
         return true;
       }
+      error(PJON_ID_ACQUISITION_FAIL, PJON_ID_NEGATE, _custom_pointer);
       return false;
     };
 
-    /* Master error handler: */
+    /* Error callback: */
 
-    void error_handler(uint8_t code, uint8_t data) {
-      _slave_error(code, data);
+    void error(uint8_t code, uint8_t data, void *custom_pointer) {
+      _slave_error(code, data, _custom_pointer);
     };
 
-    static void static_error_handler(uint8_t code, uint8_t data) {
-      PJONSlave<Strategy> *slave = _current_pjon_slave;
-      if(slave != NULL) slave->error_handler(code, data);
+    /* Filter incoming addressing packets callback: */
+
+    void filter(
+      uint8_t *payload,
+      uint16_t length,
+      const PJON_Packet_Info &packet_info
+    ) {
+      if(!handle_addressing()) {
+         PJON_Packet_Info p_i;
+         memcpy(&p_i, &packet_info, sizeof(PJON_Packet_Info));
+         p_i.custom_pointer = _custom_pointer;
+        _slave_receiver(payload, length, p_i);
+      }
     };
 
     /* Generate a new device rid: */
@@ -273,7 +286,7 @@ class PJONSlave : public PJON<Strategy> {
               PJON_DYNAMIC_ADDRESSING_PORT
             ) != PJON_ACK) {
               this->set_id(PJON_NOT_ASSIGNED);
-              _slave_error(PJON_ID_ACQUISITION_FAIL, PJON_ID_CONFIRM);
+              error(PJON_ID_ACQUISITION_FAIL, PJON_ID_CONFIRM, _custom_pointer);
             }
           }
 
@@ -319,23 +332,7 @@ class PJONSlave : public PJON<Strategy> {
     /* Slave receive function: */
 
     uint16_t receive() {
-      _current_pjon_slave = this;
-      uint16_t received_data = PJON<Strategy>::receive();
-      if(received_data != PJON_ACK) return received_data;
-
-      uint8_t overhead = this->packet_overhead(this->data[1]);
-      uint16_t length = 0;
-      if(this->last_packet_info.header & PJON_EXT_LEN_BIT)
-        length = (this->data[2] << 8) | (this->data[3] & 0xFF);
-      else length = this->data[2];
-      if(!handle_addressing())
-        _slave_receiver(
-          this->data + (overhead - (this->data[1] & PJON_CRC_BIT ? 4 : 1)),
-          length - overhead,
-          this->last_packet_info
-        );
-
-      return PJON_ACK;
+      return PJON<Strategy>::receive();
     };
 
     /* Try to receive a packet repeatedly with a maximum duration: */
@@ -347,12 +344,19 @@ class PJONSlave : public PJON<Strategy> {
       return PJON_FAIL;
     };
 
+    /* Set custom pointer: */
+
+    void set_custom_pointer(void *p) {
+      _custom_pointer = p;
+    }
+
     /* Set default configuration: */
 
     void set_default() {
+      PJON<Strategy>::set_default();
+      PJON<Strategy>::set_custom_pointer(this);
+      PJON<Strategy>::set_receiver(static_receiver_handler);
       PJON<Strategy>::set_error(static_error_handler);
-      set_error(PJON_dummy_error_handler);
-      set_receiver(PJON_dummy_receiver_handler);
       this->include_port(true);
     };
 
@@ -368,21 +372,38 @@ class PJONSlave : public PJON<Strategy> {
       _slave_error = e;
     };
 
+    /* Static receiver hander: */
+
+    static void static_receiver_handler(
+      uint8_t *payload,
+      uint16_t length,
+      const PJON_Packet_Info &packet_info
+    ) {
+      (
+        (PJONSlave<Strategy>*)packet_info.custom_pointer
+      )->filter(payload, length, packet_info);
+    };
+
+    /* Static error hander: */
+
+    static void static_error_handler(
+      uint8_t code,
+      uint8_t data,
+      void *custom_pointer
+    ) {
+      ((PJONSlave<Strategy>*)custom_pointer)->error(code, data, custom_pointer);
+    };
+
     /* Slave packet handling update: */
 
     uint8_t update() {
-      _current_pjon_slave = this;
       return PJON<Strategy>::update();
     };
 
   private:
+    void          *_custom_pointer;
     uint32_t      _last_request_time;
-    PJON_Receiver _slave_receiver;
-    PJON_Error    _slave_error;
     uint32_t      _rid;
-    static PJONSlave<Strategy> *_current_pjon_slave;
+    PJON_Error    _slave_error;
+    PJON_Receiver _slave_receiver;
 };
-
-/* Shared callback function definition: */
-template<typename Strategy>
-PJONSlave<Strategy> * PJONSlave<Strategy>::_current_pjon_slave = NULL;

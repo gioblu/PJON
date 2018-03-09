@@ -138,10 +138,10 @@ class PJONSlave : public PJON<Strategy> {
       generate_rid();
       char response[5];
       response[0] = PJON_ID_REQUEST;
-      response[1] = (uint32_t)(_rid) >> 24;
-      response[2] = (uint32_t)(_rid) >> 16;
-      response[3] = (uint32_t)(_rid) >>  8;
-      response[4] = (uint32_t)(_rid);
+      response[1] = (uint8_t)((uint32_t)(_rid) >> 24);
+      response[2] = (uint8_t)((uint32_t)(_rid) >> 16);
+      response[3] = (uint8_t)((uint32_t)(_rid) >>  8);
+      response[4] = (uint8_t)((uint32_t)(_rid));
 
       if(this->send_packet_blocking(
         PJON_MASTER_ID,
@@ -168,10 +168,10 @@ class PJONSlave : public PJON<Strategy> {
     bool discard_device_id() {
       char request[6] = {
         PJON_ID_NEGATE,
-        _rid >> 24,
-        _rid >> 16,
-        _rid >> 8,
-        _rid,
+        (uint8_t)((uint32_t)(_rid) >> 24),
+        (uint8_t)((uint32_t)(_rid) >> 16),
+        (uint8_t)((uint32_t)(_rid) >>  8),
+        (uint8_t)((uint32_t)(_rid)),
         this->_device_id
       };
 
@@ -255,7 +255,12 @@ class PJONSlave : public PJON<Strategy> {
           this->packet_overhead(this->last_packet_info.header);
         uint8_t CRC_overhead =
           (this->last_packet_info.header & PJON_CRC_BIT) ? 4 : 1;
-        uint8_t rid[4] = {_rid >> 24, _rid >> 16, _rid >> 8, _rid};
+        uint8_t rid[4] = {
+          (uint8_t)((uint32_t)(_rid) >> 24),
+          (uint8_t)((uint32_t)(_rid) >> 16),
+          (uint8_t)((uint32_t)(_rid) >>  8),
+          (uint8_t)((uint32_t)(_rid))
+        };
         char response[6];
         response[1] = rid[0];
         response[2] = rid[1];
@@ -294,7 +299,7 @@ class PJONSlave : public PJON<Strategy> {
             ) && this->_device_id == this->data[0]
           ) acquire_id_master_slave();
 
-        if(this->data[overhead - CRC_overhead] == PJON_ID_LIST)
+        if(this->data[overhead - CRC_overhead] == PJON_ID_LIST) {
           if(this->_device_id != PJON_NOT_ASSIGNED) {
             if(
               (uint32_t)(PJON_MICROS() - _last_request_time) >

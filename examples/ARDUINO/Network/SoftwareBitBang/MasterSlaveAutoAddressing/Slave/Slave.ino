@@ -9,6 +9,7 @@ PJONSlave<SoftwareBitBang> bus(bus_id, PJON_NOT_ASSIGNED);
 int packet;
 char content[] = "01234567890123456789";
 uint32_t time;
+bool acquired = false;
 
 void receiver_handler(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   Serial.print("Received: ");
@@ -37,19 +38,20 @@ void error_handler(uint8_t code, uint8_t data, void *custom_pointer) {
 };
 
 void setup() {
+  Serial.begin(115200);
   bus.set_error(error_handler);
   bus.set_receiver(receiver_handler);
   bus.strategy.set_pin(12);
   bus.begin();
-  Serial.begin(115200);
-  time = millis();
   bus.acquire_id_master_slave();
+  time = millis();
 }
 
 void loop() {
-  if((millis() - time) > 3000) {
+  if((bus.device_id() != PJON_NOT_ASSIGNED) && !acquired) {
+    Serial.print("Acquired device id: ");
     Serial.println(bus.device_id());
-    time = millis();
+    acquired = true;
   }
   bus.update();
   bus.receive();

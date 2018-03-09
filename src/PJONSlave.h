@@ -90,7 +90,7 @@ class PJONSlave : public PJON<Strategy> {
     void acquire_id_multi_master(uint8_t limit = 0) {
       if(limit >= PJON_MAX_ACQUIRE_ID_COLLISIONS)
         return
-          error(PJON_ID_ACQUISITION_FAIL, PJON_ID_ACQUIRE, _custom_pointer);
+          error(PJON_ID_ACQUISITION_FAIL, PJON_ID_ACQUIRE);
 
       PJON_DELAY_MICROSECONDS(PJON_RANDOM(PJON_ACQUIRE_ID_DELAY));
       char msg = PJON_ID_ACQUIRE;
@@ -153,7 +153,7 @@ class PJONSlave : public PJON<Strategy> {
         PJON_DYNAMIC_ADDRESSING_PORT
       ) == PJON_ACK) return true;
 
-      error(PJON_ID_ACQUISITION_FAIL, PJON_ID_REQUEST, _custom_pointer);
+      error(PJON_ID_ACQUISITION_FAIL, PJON_ID_REQUEST);
       return false;
     };
 
@@ -187,13 +187,13 @@ class PJONSlave : public PJON<Strategy> {
         this->_device_id = PJON_NOT_ASSIGNED;
         return true;
       }
-      error(PJON_ID_ACQUISITION_FAIL, PJON_ID_NEGATE, _custom_pointer);
+      error(PJON_ID_ACQUISITION_FAIL, PJON_ID_NEGATE);
       return false;
     };
 
     /* Error callback: */
 
-    void error(uint8_t code, uint8_t data, void *custom_pointer) {
+    void error(uint8_t code, uint8_t data) {
       _slave_error(code, data, _custom_pointer);
     };
 
@@ -287,7 +287,7 @@ class PJONSlave : public PJON<Strategy> {
               PJON_DYNAMIC_ADDRESSING_PORT
             ) != PJON_ACK) {
               this->set_id(PJON_NOT_ASSIGNED);
-              error(PJON_ID_ACQUISITION_FAIL, PJON_ID_CONFIRM, _custom_pointer);
+              error(PJON_ID_ACQUISITION_FAIL, PJON_ID_CONFIRM);
             }
           }
 
@@ -393,7 +393,7 @@ class PJONSlave : public PJON<Strategy> {
       uint8_t data,
       void *custom_pointer
     ) {
-      ((PJONSlave<Strategy>*)custom_pointer)->error(code, data, custom_pointer);
+      ((PJONSlave<Strategy>*)custom_pointer)->error(code, data);
     };
 
     /* Slave packet handling update: */

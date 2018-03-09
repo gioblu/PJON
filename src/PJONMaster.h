@@ -178,6 +178,27 @@ class PJONMaster : public PJON<Strategy> {
       }
     };
 
+    /* Check slaves presence contacting all known devices and waiting for
+       a synchronous acknowledge: */
+
+    void check_slaves_presence() {
+      char request = PJON_ID_ACQUIRE;
+      for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++) {
+        if(ids[i].state && ids[i].rid)
+          if(
+            send_packet_blocking(
+              i + 1,
+              this->bus_id,
+              &request,
+              1,
+              PJON<Strategy>::config | required_config | PJON_PORT_BIT,
+              0,
+              PJON_DYNAMIC_ADDRESSING_PORT
+            ) != PJON_ACK
+          ) delete_id_reference(i + 1);
+      }
+    };
+
     /* Master error handler: */
 
     void error(uint8_t code, uint8_t data) {

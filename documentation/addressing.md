@@ -29,15 +29,18 @@ Can be read through a getter:
 ```
 
 ### Dynamic Addressing
-Using the `PJONMaster` and `PJONSlave` class it is possible to make use of the master-slave and multi-master [dynamic addressing](/specification/PJON-dynamic-addressing-specification-v2.0.md) features. Slaves can be connected to a bus and hot-swapped, their id is automatically assigned by master and their presence can be monitored. Master keeps an updated list of known dynamically addressed slaves.   
+`PJONMaster` and `PJONSlave` classes implement the master-slave and multi-master [dynamic addressing](/specification/PJON-dynamic-addressing-specification-v2.0.md) features. Slaves can be connected to a bus and can be hot-swapped, their id is automatically assigned by master and their presence can be optionally monitored. Master keeps an updated list of known dynamically addressed slaves. Use the `PJON` class if those features are not required.   
 
 #### PJONMaster
-The `PJONMaster` class provides with master-slave dynamic addressing feature that is totally automatic.
+The `PJONMaster` class implement master's dynamic addressing procedure which is totally automatic a requires no configuration, although some optional configuration is available.
 ```cpp
-#include <PJONMaster.h>
-// Bus id definition
-uint8_t bus_id[] = {0, 0, 0, 1};
-// PJON object - The Master device id is fixed to PJON_MASTER_ID or 254
+// Optionally configurable Master slaves buffer length
+#define PJON_MAX_DEVICES 50
+
+#include <PJONMaster.h>          // Include PJONMaster class
+uint8_t bus_id[] = {0, 0, 0, 1}; // Bus id definition
+
+// PJON object - Master device id is PJON_MASTER_ID or 254
 PJONMaster<SoftwareBitBang> bus(bus_id);
 };
 ```

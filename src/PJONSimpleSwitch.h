@@ -250,6 +250,8 @@ public:
     );
   };
   
+  uint8_t get_current_bus() const { return current_bus; }
+  
   static void receiver_function(
     uint8_t *payload,
     uint16_t length,

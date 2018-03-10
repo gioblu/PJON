@@ -54,6 +54,7 @@ limitations under the License. */
 
 #pragma once
 #include <PJONDynamicRouter.h>
+#include <PJONVirtualBusRouter.h>
 
 template<class RouterClass>
 class PJONInteractiveRouter : public RouterClass {
@@ -77,12 +78,11 @@ protected:
 
     // Call the receive callback _after_ the packet has been delivered
     if(router || packet_is_for_me) {
-       // The packet is for ME :-)
-        PJON_Packet_Info p_i;
-        memcpy(&p_i, &packet_info, sizeof(PJON_Packet_Info));
-        p_i.custom_pointer = custom_pointer;
-        if(receiver) receiver(payload, length, p_i);
-        if(!router) return;
+      // The packet is for ME :-)
+      PJON_Packet_Info p_i;
+      memcpy(&p_i, &packet_info, sizeof(PJON_Packet_Info));
+      p_i.custom_pointer = custom_pointer;
+      if(receiver) receiver(payload, length, p_i);
     }
   }
 

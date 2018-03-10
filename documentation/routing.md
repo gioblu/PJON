@@ -10,7 +10,7 @@
 ### Routing
 Transparent routing based on a tree topology has been implemented by Fred Larsen with the `PJONSimpleSwitch`, `PJONSwitch`, `PJONRouter`, `PJONDynamicRouter` and `PJONInteractiveRouter`. Those classes implement the following router roles:
 
-- [SimpleSwitch](/examples/ARDUINO/Local/SoftwareBitBang/Tunneler) connects two buses using the same strategy (`SoftwareBitBang` <=> `SoftwareBitBang`) primarily used to amplify signals and so extend the maximum range.
+- [SimpleSwitch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/SimpleSwitch) connects two buses using the same strategy (`SoftwareBitBang` <=> `SoftwareBitBang`) primarily used to amplify signals and so extend the maximum range.
 ```cpp
  __________             ________              __________
 |          | SWBB bus  |        | SWBB bus   |          |
@@ -18,7 +18,7 @@ Transparent routing based on a tree topology has been implemented by Fred Larsen
 |__________|           |________|            |__________|
 ```
 
-- [Switch](/examples/ARDUINO/Local/SoftwareBitBang/Switch) routes packets between locally attached buses also if different strategies or media are in use. It supports a default gateway to be able to act as a leaf in a larger network setup.
+- [Switch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/Switch) routes packets between locally attached buses also if different strategies or media are in use. It supports a default gateway to be able to act as a leaf in a larger network setup.
 ```cpp
  __________             ________              __________
 |          | SWBB bus  |        | TS bus     |          |

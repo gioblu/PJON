@@ -86,10 +86,24 @@ bus.send(100, bus_id, "Ciao, this is a test!", 21);
 ```
 Payload length is boring to be added but is there to prevent buffer overflow. If sending arbitrary values `NULL` terminator strategy based on `strlen` is not safe to detect the end of a string. The `send` call returns an id, that is the reference to the packet you have dispatched. To send a value repeatedly simply call `send_repeatedly` and pass as last parameter the interval in microseconds you want between every sending:
 ```cpp
+// Local sending example
 uint16_t one_second_test =
   bus.send_repeatedly(100, "Test sent every second!", 23, 1000000);
 /* IMPORTANT: maximum interval supported is
    4293014170 microseconds or 71.55 minutes */
+
+// Shared sending example including all optional parameters
+uint16_t one_second_test_shared =
+  bus.send_repeatedly(
+    100,                       // (uint8_t)         Recipient device id
+    bus_id,                    // (const uint8_t *) Recipient bus id
+    "Test including port id!", // (const char *)    Content
+    23,                        // (uint16_t)        Length
+    1000000,                   // (uint32_t)        Interval in microseconds
+    bus.config,                // (uint8_t)         Packet header
+    1,                         // (uint16_t)        Packet id
+    8002                       // (uint16_t)        Port identification
+  );
 ```
 `send_repeatedly` returns the id of the packet in the packet's buffer as `send` does, to remove this repeated transmission simply:
 ```cpp

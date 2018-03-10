@@ -5,6 +5,7 @@
 - [Error handling](/documentation/error-handling.md)
 - [IO setup](/documentation/io-setup.md)
 
+### Data reception
 Define a function of type `void` that will be called if a correct message is received. This function receives 3 parameters: the received payload, its length and a pointer to a data structure of type `PJON_Packet_Info` that contains all packet's metadata:
 ```cpp
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {

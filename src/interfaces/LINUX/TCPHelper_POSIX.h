@@ -82,7 +82,7 @@ public:
     return 0;
   }
 
-  bool connect(uint8_t *address, uint16_t port) {
+  bool connect(const uint8_t *address, uint16_t port) {
     if (_fd != -1) {
       #ifdef ETCP_ERROR_PRINT
       printf("connect triggered stop, _fd=%d\n", _fd);
@@ -120,7 +120,7 @@ public:
   }
 
   // Prepare a socket for non-blocking connect
-  bool prepare_connect(uint8_t *address, uint16_t port) {
+  bool prepare_connect(const uint8_t *address, uint16_t port) {
     if (_fd != -1) {
       #ifdef ETCP_ERROR_PRINT
       printf("prepare_connect triggered stop, _fd=%d\n", _fd);
@@ -275,6 +275,7 @@ public:
   uint8_t getSocketNumber() { return _fd; }
 
   int print(const char *msg) { return write((const uint8_t*) msg, strlen(msg)); }
+  int print(const std::string &msg) { return write((const uint8_t*) msg.c_str(), msg.length()); }
 };
 
 

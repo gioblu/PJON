@@ -49,7 +49,7 @@ Supported definitions:
 - `PJON_INCLUDE_TL` includes ThroughLoRa
 - `PJON_INCLUDE_NONE` no strategy file included
 
-If the use of `ThroughLoRa` is required download the [Arduino LoRa library](https://github.com/sandeepmistry/arduino-LoRa) library and define `PJON_INCLUDE_TL` before including `PJON.h`.
+Before using `ThroughLoRa` be sure to have [arduino-LoRa](https://github.com/sandeepmistry/arduino-LoRa) source available and to have defined `PJON_INCLUDE_TL` constant before including `PJON.h`.
 
 ### Network configuration
 Configure network state (local or shared). If local (passing `false`), the PJON protocol layer procedure is based on a single byte device id to univocally communicate with a device; if in shared mode (passing `true`) the protocol adopts also a 4 byte bus id to univocally communicate with a device in a certain bus:

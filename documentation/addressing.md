@@ -34,7 +34,7 @@ Can be read through a getter:
 #### PJONMaster
 The `PJONMaster` class implement master's dynamic addressing procedure which is totally automatic a requires no configuration, although some optional configuration is available.
 ```cpp
-// Optionally configurable Master slaves buffer length
+// Optionally configurable maximum amount of slaves handled by master
 #define PJON_MAX_DEVICES 50
 
 #include <PJONMaster.h>          // Include PJONMaster class
@@ -42,7 +42,6 @@ uint8_t bus_id[] = {0, 0, 0, 1}; // Bus id definition
 
 // PJON object - Master device id is PJON_MASTER_ID or 254
 PJONMaster<SoftwareBitBang> bus(bus_id);
-};
 ```
 If addressing procedure debug is needed set the state of `bus.debug` accordingly:
 ```cpp

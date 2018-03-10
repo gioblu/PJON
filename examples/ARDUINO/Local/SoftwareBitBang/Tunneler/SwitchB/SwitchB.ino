@@ -7,7 +7,7 @@
 #include <PJONVirtualBusRouter.h>
 
 // Ethernet configuration for this device, MAC must be unique!
-byte mac[] = {0xDE, 0x34, 0x4E, 0xEF, 0xFE, 0xE1};
+byte mac[] = {0xEE, 0x79, 0x4E, 0xEF, 0xFE, 0x6D};
 
 StrategyLink<SoftwareBitBang> link1;
 StrategyLink<LocalUDP> link2;
@@ -22,6 +22,7 @@ void setup() {
   Ethernet.begin(mac); // Use DHCP
   link1.strategy.set_pin(7);
   link2.strategy.set_port(7200); // Use a "private" UDP port
+  router.set_virtual_bus(0); // Enable virtual bus
   router.begin();
 }
 

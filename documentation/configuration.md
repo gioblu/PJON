@@ -13,7 +13,7 @@ Before instantiating the PJON class it is possible to define the packets and con
 #include <PJON.h>
 /* PJON can store up to 1 packet of up to
    20 characters - packet overhead
-   (from 4 to 13 depending by configuration) */
+   (from 5 to 22 bytes depending by configuration) */
 ```
 Templates can be scary at first sight, but they are quite straight-forward and efficient:
 ```cpp  
@@ -82,7 +82,7 @@ Configure the instance to include a port identification in the packet. Ports fro
 ```
 See the [PortsUseExample](/examples/ARDUINO/Network/SoftwareBitBang/PortsUseExample) example to see more in detail how the port feature can be used.
 
-Avoid packet auto-deletion:
+Avoid packet auto-deletion when delivered:
 ```cpp  
   bus.set_packet_auto_deletion(false);
 ```

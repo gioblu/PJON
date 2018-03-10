@@ -51,8 +51,8 @@ bus.check_slaves_presence();
 ```
 This is the list of the addressing errors possibly returned by the error call-back:
 
-- `PJON_ID_ACQUISITION_FAIL` (value 101), `data` parameter contains lost packet's id.
-- `PJON_DEVICES_BUFFER_FULL` (value 102), `data` parameter contains slaves buffer length.
+- `PJON_ID_ACQUISITION_FAIL` (value 105), `data` parameter contains lost packet's id.
+- `PJON_DEVICES_BUFFER_FULL` (value 254), `data` parameter contains slaves buffer length.
 
 This is an example of how an error call-back can be defined:
 ```cpp

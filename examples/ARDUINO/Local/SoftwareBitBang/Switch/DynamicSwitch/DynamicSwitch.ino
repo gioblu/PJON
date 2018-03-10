@@ -24,6 +24,7 @@ PJONVirtualBusRouter<PJONSwitch> router(2, (PJONAny*[2]){&bus1, &bus2});
 void setup() {
   link1.strategy.set_pin(7);
   link2.strategy.set_pin(12);
+  router.set_virtual_bus(0);
   router.begin();
 };
 

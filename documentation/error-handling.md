@@ -8,7 +8,7 @@
 PJON is designed to inform the user if an error is detected. A `void function` has to be defined as the error handler, it receives 2 parameters the first is the error code and the second is 1 byte additional data related to the error.
 
 Error types:
-- `PJON_CONNECTION_LOST` (value 101), `data` parameter contains lost packet's id.
+- `PJON_CONNECTION_LOST` (value 101), `data` parameter contains lost packet's index in the packets buffer.
 - `PJON_PACKETS_BUFFER_FULL` (value 102), `data` parameter contains buffer length.
 - `PJON_CONTENT_TOO_LONG` (value 104), `data` parameter contains content length.
 

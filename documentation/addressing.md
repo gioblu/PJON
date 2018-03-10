@@ -44,7 +44,7 @@ If addressing procedure debug is needed set the state of `bus.debug` accordingly
 ```cpp
 bus.debug = true;
 ```
-Slave presence check can be requested manually calling `check_slaves_presence`. This is a bandwidth consuming procedure because master contacts each known slave to determine if still online. The more devices are connected the more bandwidth is consumed. Call this function seldom (every 5-10 seconds) to avoid bandwidth saturation.
+Slave presence check can be requested manually calling `check_slaves_presence`. This is a bandwidth consuming procedure because master contacts each known slave to determine if still online. If a slave is found unresponsive it is removed from the master list of known slaves. The more devices are connected the more bandwidth is consumed. Call this function seldom (every 5-10 seconds) to avoid bandwidth saturation.
 ```cpp
 // Check if registered slaves are still present on the bus
 bus.check_slaves_presence();
@@ -101,9 +101,9 @@ This is the list of the addressing errors possibly returned by the error call-ba
 
 Requests list:
 - `PJON_ID_ACQUIRE` (value 199), multi-master id acquisition
-- `PJON_ID_CONFIRM` (value 200), master-slave id confirmation
-- `PJON_ID_NEGATE`  (value 201), master-slave id release
-- `PJON_ID_REQUEST` (value 202), master-slave id request
+- `PJON_ID_REQUEST` (value 200), master-slave id request
+- `PJON_ID_CONFIRM` (value 201), master-slave id confirmation
+- `PJON_ID_NEGATE`  (value 203), master-slave id release
 
 This is an example of how an error call-back can be defined:
 ```cpp

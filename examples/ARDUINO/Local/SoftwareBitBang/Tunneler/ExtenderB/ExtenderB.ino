@@ -22,6 +22,7 @@ void setup() {
   Ethernet.begin(mac); // Use DHCP
   link1.strategy.set_pin(7);
   link2.strategy.set_port(7200); // Use a "private" UDP port
+  router.set_virtual_bus(0); // Enable virtual bus
   router.begin();
 }
 

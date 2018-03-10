@@ -34,8 +34,9 @@ In the example above the PJON object is instantiated passing [SoftwareBitBang](/
 | [GlobalUDP](/src/strategies/GlobalUDP)  | wired or WiFi  | Ethernet port  |
 | [OverSampling](/src/strategies/OverSampling)  | radio, wire  | 1 or 2 |
 | [ThroughSerial](/src/strategies/ThroughSerial)  | serial port  | 1 or 2 |
+| [ThroughLoRa](/src/strategies/ThroughLoRa)  | serial port  | 1 or 2 |
 
-By default all strategies are included. To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before PJON inclusion, to include only `SoftwareBitBang` strategy. You can define more than one strategy related constant if necessary.
+By default all strategies are included except `ThroughLoRa`. To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before PJON inclusion to include only `SoftwareBitBang` strategy. More than one strategy related constant can defined in the same program if that is required.
 
 Supported definitions:
 - `PJON_INCLUDE_SWBB` includes SoftwareBitBang
@@ -45,8 +46,12 @@ Supported definitions:
 - `PJON_INCLUDE_LUDP` includes LocalUDP
 - `PJON_INCLUDE_OS` includes OverSampling
 - `PJON_INCLUDE_TS` includes ThroughSerial
+- `PJON_INCLUDE_TL` includes ThroughLoRa
 - `PJON_INCLUDE_NONE` no strategy file included
 
+If the use of `ThroughLoRa` is required download the [Arduino LoRa library](https://github.com/sandeepmistry/arduino-LoRa) library and define `PJON_INCLUDE_TL` before including `PJON.h`.
+
+### Network configuration
 Configure network state (local or shared). If local (passing `false`), the PJON protocol layer procedure is based on a single byte device id to univocally communicate with a device; if in shared mode (passing `true`) the protocol adopts also a 4 byte bus id to univocally communicate with a device in a certain bus:
 ```cpp  
   bus.set_shared_network(true);

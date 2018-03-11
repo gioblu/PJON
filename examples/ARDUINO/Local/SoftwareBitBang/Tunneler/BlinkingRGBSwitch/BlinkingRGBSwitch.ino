@@ -31,7 +31,6 @@ void setup() {
   router.set_sendnotification(sendnotification_function);
   router.set_error(error_function);
   router.set_virtual_bus(0); // Enable virtual bus
-  router.set_router(true); // Call receiver for all passing packets
   router.begin();
   
   // Init pins for external LEDs

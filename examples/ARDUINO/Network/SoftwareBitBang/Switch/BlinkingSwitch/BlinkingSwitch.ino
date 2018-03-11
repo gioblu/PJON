@@ -1,6 +1,6 @@
 
-/* This sketch is just the Router example with a user defined receive callback. 
-   It demonstrates how to spy on the packets being routed by a switch or router object. 
+/* This sketch is just the Router example with a user defined receive callback.
+   It demonstrates how to spy on the packets being routed by a switch or router object.
    In this case it just makes the on-board LED blink for every packet that passes. */
 
 #include <PJONInteractiveRouter.h>
@@ -15,7 +15,7 @@ PJONInteractiveRouter<PJONSwitch> router(2, (PJONAny*[2]) {&bus1, &bus2});
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
-  link1.strategy.set_pin(11);
+  link1.strategy.set_pin(7);
   link2.strategy.set_pin(12);
   router.set_receiver(receiver_function);
   router.set_router(true); // Pick up every packet passing

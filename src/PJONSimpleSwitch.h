@@ -58,7 +58,7 @@ class PJONBus : public PJON<Strategy> {
 public:
   PJONBus(
     const uint8_t id = PJON_NOT_ASSIGNED,
-    const uint32_t receive_time_in = 0,
+    const uint32_t receive_time_in = 1000,
     const uint8_t num_device_id_segments = 1,
     const uint8_t device_id_segment = 0
   ) : PJON<Strategy>(id) {
@@ -70,7 +70,7 @@ public:
   PJONBus(
     const uint8_t bus_id[],
     const uint8_t id = PJON_NOT_ASSIGNED,
-    const uint32_t receive_time_in = 0,
+    const uint32_t receive_time_in = 1000,
     const uint8_t num_device_id_segments = 1,
     const uint8_t device_id_segment = 0
   ) : PJON<Strategy>(bus_id, id) {
@@ -223,15 +223,13 @@ public:
   };
 
   void loop() {
-    for(uint8_t i = 0; i < bus_count; i++) {
-      current_bus = i;
-      uint16_t code = buses[i]->receive(buses[i]->receive_time);
+    for(current_bus = 0; current_bus < bus_count; current_bus++) {
+      uint16_t code =
+        buses[current_bus]->receive(buses[current_bus]->receive_time);
       if(PJON_MAX_PACKETS < bus_count && code == PJON_ACK) break;
     }
-    for(uint8_t i = 0; i < bus_count; i++) {
-      current_bus = i;
-      buses[i]->update();
-    }
+    for(current_bus = 0; current_bus < bus_count; current_bus++)
+      buses[current_bus]->update();
     current_bus = PJON_NOT_ASSIGNED;
   };
 

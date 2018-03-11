@@ -13,7 +13,7 @@ Before instantiating the PJON class it is possible to define the packets and con
 #include <PJON.h>
 /* PJON can store up to 1 packet of up to
    20 characters - packet overhead
-   (from 4 to 13 depending by configuration) */
+   (from 5 to 22 bytes depending by configuration) */
 ```
 Templates can be scary at first sight, but they are quite straight-forward and efficient:
 ```cpp  
@@ -34,8 +34,9 @@ In the example above the PJON object is instantiated passing [SoftwareBitBang](/
 | [GlobalUDP](/src/strategies/GlobalUDP)  | wired or WiFi  | Ethernet port  |
 | [OverSampling](/src/strategies/OverSampling)  | radio, wire  | 1 or 2 |
 | [ThroughSerial](/src/strategies/ThroughSerial)  | serial port  | 1 or 2 |
+| [ThroughLoRa](/src/strategies/ThroughLoRa)  | serial port  | 1 or 2 |
 
-By default all strategies are included. To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before PJON inclusion, to include only `SoftwareBitBang` strategy. You can define more than one strategy related constant if necessary.
+By default all strategies are included except `ThroughLoRa`. To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before PJON inclusion to include only `SoftwareBitBang` strategy. More than one strategy related constant can defined in the same program if that is required.
 
 Supported definitions:
 - `PJON_INCLUDE_SWBB` includes SoftwareBitBang
@@ -45,8 +46,12 @@ Supported definitions:
 - `PJON_INCLUDE_LUDP` includes LocalUDP
 - `PJON_INCLUDE_OS` includes OverSampling
 - `PJON_INCLUDE_TS` includes ThroughSerial
+- `PJON_INCLUDE_TL` includes ThroughLoRa
 - `PJON_INCLUDE_NONE` no strategy file included
 
+Before using `ThroughLoRa` be sure to have [arduino-LoRa](https://github.com/sandeepmistry/arduino-LoRa) source available and to have defined `PJON_INCLUDE_TL` constant before including `PJON.h`.
+
+### Network configuration
 Configure network state (local or shared). If local (passing `false`), the PJON protocol layer procedure is based on a single byte device id to univocally communicate with a device; if in shared mode (passing `true`) the protocol adopts also a 4 byte bus id to univocally communicate with a device in a certain bus:
 ```cpp  
   bus.set_shared_network(true);
@@ -82,7 +87,7 @@ Configure the instance to include a port identification in the packet. Ports fro
 ```
 See the [PortsUseExample](/examples/ARDUINO/Network/SoftwareBitBang/PortsUseExample) example to see more in detail how the port feature can be used.
 
-Avoid packet auto-deletion:
+Avoid packet auto-deletion when delivered:
 ```cpp  
   bus.set_packet_auto_deletion(false);
 ```

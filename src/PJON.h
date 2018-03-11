@@ -178,6 +178,8 @@ class PJON {
           ((header & PJON_ACK_MODE_BIT) && (header & PJON_TX_INFO_BIT)) ||
           (header & PJON_PACKET_ID_BIT);
         if(!p_id && add_packet_id) p_id = new_packet_id();
+      #else
+        (void)p_id; // Avoid unused variable compiler warning
       #endif
 
       if(new_length > 15 && !(header & PJON_CRC_BIT)) {
@@ -454,7 +456,7 @@ class PJON {
         if((i == 2) && !extended_length) {
           length = data[i];
           if(
-            length < (overhead + !async_ack) ||
+            length < (uint8_t)(overhead + !async_ack) ||
             length >= PJON_PACKET_MAX_LENGTH
           ) return PJON_BUSY;
           if(length > 15 && !(data[1] & PJON_CRC_BIT)) return PJON_BUSY;
@@ -463,15 +465,17 @@ class PJON {
         if((i == 3) && extended_length) {
           length = (data[i - 1] << 8) | (data[i] & 0xFF);
           if(
-            length < (overhead + !async_ack) ||
+            length < (uint8_t)(overhead + !async_ack) ||
             length >= PJON_PACKET_MAX_LENGTH
           ) return PJON_BUSY;
           if(length > 15 && !(data[1] & PJON_CRC_BIT)) return PJON_BUSY;
         }
 
-        if((config & PJON_MODE_BIT) && (data[1] & PJON_MODE_BIT) && !_router)
-          if((i > (3 + extended_length)) && (i < (8 + extended_length)))
-            if(bus_id[i - 4 - extended_length] != data[i])
+        if((i >= 1) && (data[1] & PJON_MODE_BIT) && !_router)
+          if(
+            (i > (uint8_t)(3 + extended_length)) &&
+            (i < (uint8_t)(8 + extended_length))
+          ) if(bus_id[i - 4 - extended_length] != data[i])
               return PJON_BUSY;
       }
 
@@ -835,11 +839,12 @@ class PJON {
       const char *string,
       uint16_t length,
       uint16_t header = PJON_FAIL,
+      uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST,
       uint32_t timeout = 3000000
     ) {
       return send_packet_blocking(
-        id, bus_id, string, length, header, requested_port, timeout
+        id, bus_id, string, length, header, p_id, requested_port, timeout
       );
     };
 

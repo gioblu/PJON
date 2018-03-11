@@ -137,34 +137,43 @@ protected:
     return PJON_NOT_ASSIGNED;
   };
 
+  #ifdef PJON_ROUTER_NEED_INHERITANCE
+  virtual
+  #endif
+  void send_packet(const uint8_t *payload, const uint16_t length, 
+                   const uint8_t receiver_bus, const uint8_t sender_bus, 
+                   bool &ack_sent, const PJON_Packet_Info &packet_info) {          
+    // Send an ACK once to notify that the packet will be delivered
+    if(
+      !ack_sent &&
+      (packet_info.header & PJON_ACK_REQ_BIT) &&
+      (packet_info.receiver_id != PJON_BROADCAST)
+    ) {
+      buses[sender_bus]->strategy.send_response(PJON_ACK);
+      ack_sent = true;
+    }
+    // Forward the packet
+    buses[receiver_bus]->send_from_id(
+      packet_info.sender_id,
+      packet_info.sender_bus_id,
+      packet_info.receiver_id,
+      packet_info.receiver_bus_id,
+      (const char*)payload,
+      length,
+      packet_info.header,
+      packet_info.id,
+      packet_info.port
+    );
+  }
+  
   void forward_packet(const uint8_t *payload, const uint16_t length, 
                       const uint8_t receiver_bus, const uint8_t sender_bus, 
                       bool &ack_sent, const PJON_Packet_Info &packet_info) {
     // If receiving bus matches and not equal to sending bus, then route packet
     if(receiver_bus != PJON_NOT_ASSIGNED && receiver_bus != sender_bus) {
-      // Send an ACK once to notify that the packet will be delivered
-      if(
-        !ack_sent &&
-        (packet_info.header & PJON_ACK_REQ_BIT) &&
-        (packet_info.receiver_id != PJON_BROADCAST)
-      ) {
-        buses[sender_bus]->strategy.send_response(PJON_ACK);
-        ack_sent = true;
-      }
-      // Forward the packet
-      buses[receiver_bus]->send_from_id(
-        packet_info.sender_id,
-        packet_info.sender_bus_id,
-        packet_info.receiver_id,
-        packet_info.receiver_bus_id,
-        (const char*)payload,
-        length,
-        packet_info.header,
-        packet_info.id,
-        packet_info.port
-      );
-    }
-  }
+      send_packet(payload, length, receiver_bus, sender_bus, ack_sent, packet_info);
+    }                        
+  }  
   
   #ifdef PJON_ROUTER_NEED_INHERITANCE
   virtual

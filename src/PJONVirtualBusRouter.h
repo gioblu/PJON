@@ -21,6 +21,12 @@ switch or router to treat multiple attached buses with the same bus id as a
 "virtual" bus, where devices can be placed anywhere independent of device id,
 and without any explicit segmentation of the device id range.
 
+It will start in promiscuous mode, delivering every packet to all attached 
+buses except the one where the packet comes from. As it learns by looking at
+the sender ids of observed packets, it will deliver each packet only to the 
+attached bus where the receiver device can be found, increasing precision
+and reducing traffic.
+
 If you believe in this project and you appreciate our work, please, make a
 donation. The PJON Foundation is entirely financed by contributions of wise
 people like you and its resources are solely invested to cover the development

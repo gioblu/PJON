@@ -275,7 +275,6 @@ public:
   uint8_t getSocketNumber() { return _fd; }
 
   int print(const char *msg) { return write((const uint8_t*) msg, strlen(msg)); }
-  int print(const std::string &msg) { return write((const uint8_t*) msg.c_str(), msg.length()); }
 };
 
 

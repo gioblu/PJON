@@ -7,11 +7,11 @@
 
 #ifdef _WIN32
 #include <winsock2.h>
+#include <WS2tcpip.h>
 #include <stdlib.h>
 
 #define close(fd) closesocket(fd)
 #define ssize_t int
-#define socklen_t int
 #else
 #include <string.h>
 #include <unistd.h>
@@ -19,6 +19,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
+#include <arpa/inet.h>
 #include <poll.h>
 #endif
 

@@ -17,6 +17,54 @@ Transparent routing based on a tree topology has been implemented by Fred Larsen
 | DEVICE 1 |___________| SWITCH |____________| DEVICE 2 |
 |__________|           |________|            |__________|
 ```
+The `SimpleSwitch` class provides with configurable transparent packet switching between buses using the same strategy. `SimpleSwitch` requires a tree topology (it does not contain any loop detection procedure). The `SimpleSwitch` class receives as a parameter the length and the array of 2 or more `PJONBus` instances:
+```cpp
+/* In both cases the switch does not have an assigned id it is
+   transparently switching packets in both directions */
+PJONBus<SoftwareBitBang> bus1(PJON_NOT_ASSIGNED);
+PJONBus<SoftwareBitBang> bus2(PJON_NOT_ASSIGNED);
+
+// Optionally polling time can be configured:
+PJONBus<SoftwareBitBang> bus2(
+  PJON_NOT_ASSIGNED, // Switch device id
+  1000               // Polling time in microseconds
+);
+
+// Optionally ranges can be statically configured:
+PJONBus<SoftwareBitBang> bus2(
+  PJON_NOT_ASSIGNED, // Switch device id
+  1000,              // Polling time in microseconds
+  2,                 // 2 ranges present (1-127, 128-254)
+  0,                 // range 1 in use here (1-127)
+);
+
+/* PJONSimpleSwitch definition: */
+PJONSimpleSwitch<SoftwareBitBang> router(
+  2, // Length of the bus array
+  (PJONBus<SoftwareBitBang>*[2]){&bus1,&bus2} // Bus array
+);
+
+// Can be optionally defined a default gateway:
+PJONSimpleSwitch<SoftwareBitBang> router(
+  2, // Length of the bus array
+  (PJONBus<SoftwareBitBang>*[2]){&bus1,&bus2}, // Bus array
+  122 // Statically defined default gateway
+);
+```
+The program should only contain the following methods to provide packet switching:
+```cpp
+
+void setup() {
+  // Set each SoftwareBitBang bus pin connection
+  bus1.strategy.set_pin(7);
+  bus2.strategy.set_pin(12);
+  router.begin();
+}
+
+void loop() {
+  router.loop();
+};
+```
 
 - [Switch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/Switch) routes packets between locally attached buses also if different strategies or media are in use. It supports a default gateway to be able to act as a leaf in a larger network setup.
 ```cpp

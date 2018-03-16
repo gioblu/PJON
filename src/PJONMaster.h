@@ -205,13 +205,13 @@ class PJONMaster : public PJON<Strategy> {
 
     /* Master error handler: */
 
-    void error(uint8_t code, uint8_t data) {
+    void error(uint8_t code, uint16_t data) {
       _master_error(code, data, _custom_pointer);
       if(code == PJON_CONNECTION_LOST)
         delete_id_reference(PJON<Strategy>::packets[data].content[0]);
     };
 
-    static void static_error_handler(uint8_t code, uint8_t data, void *custom_pointer) {
+    static void static_error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
       ((PJONMaster<Strategy>*)custom_pointer)->error(code, data);
     };
 

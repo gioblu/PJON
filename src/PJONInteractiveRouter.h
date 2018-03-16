@@ -95,22 +95,22 @@ protected:
     }
   }
 
-  virtual void dynamic_error_function(uint8_t code, uint8_t packet) { 
-    RouterClass::dynamic_error_function(code, packet);
-    
+  virtual void dynamic_error_function(uint8_t code, uint16_t data) {
+    RouterClass::dynamic_error_function(code, data);
+
     // Call any user registered error function
-    if(error) error(code, packet, custom_pointer);
+    if(error) error(code, data, custom_pointer);
   }
-  
-  virtual void send_packet(const uint8_t *payload, const uint16_t length, 
-                           const uint8_t receiver_bus, const uint8_t sender_bus, 
+
+  virtual void send_packet(const uint8_t *payload, const uint16_t length,
+                           const uint8_t receiver_bus, const uint8_t sender_bus,
                            bool &ack_sent, const PJON_Packet_Info &packet_info) {
     RouterClass::send_packet(payload, length, receiver_bus, sender_bus, ack_sent, packet_info);
 
     // Call any user registered send notification function
     if (sendnotification) sendnotification(payload, length, receiver_bus, sender_bus, packet_info);
   }
-  
+
 public:
   PJONInteractiveRouter() : RouterClass() {}
   PJONInteractiveRouter(

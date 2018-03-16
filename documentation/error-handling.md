@@ -15,7 +15,7 @@ Error types:
 - `PJON_CONTENT_TOO_LONG` (value 104), `data` parameter contains content length.
 
 ```cpp
-void error_handler(uint8_t code, uint8_t data, void *custom_pointer) {
+void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
   if(code == PJON_CONNECTION_LOST) {
     Serial.print("Connection with device ID ");
     Serial.print(bus.packets[data].content[0], DEC);
@@ -23,7 +23,7 @@ void error_handler(uint8_t code, uint8_t data, void *custom_pointer) {
   }
   if(code == PJON_PACKETS_BUFFER_FULL) {
     Serial.print("Packet buffer is full, has now a length of ");
-    Serial.println(data, DEC);
+    Serial.println(data);
     Serial.println("Possible wrong bus configuration!");
     Serial.println("higher PJON_MAX_PACKETS if necessary.");
   }

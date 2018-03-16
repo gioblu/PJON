@@ -12,7 +12,7 @@ uint8_t bus_id_B[] = {0, 0, 0, 2};
 // <Strategy name> bus(selected device id)
 PJON<SoftwareBitBang> bus(bus_id_A, 1);
 
-void error_handler(uint8_t code, uint8_t data, void *custom_pointer) {
+void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
   if(code == PJON_CONNECTION_LOST)
     digitalWrite(13, HIGH);
   // Light up LED 13 if a packet transmission failed

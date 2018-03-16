@@ -15,7 +15,7 @@ void setup() {
 
   bus.strategy.set_pin(12);
   bus.set_receiver(receiver_function);
-  bus.set_error(error_function);
+  bus.set_error(error_handler);
   bus.begin();
   /* Send a continuous greetings packet every secon
      to showcase the receiver function functionality if debug is active*/
@@ -24,7 +24,7 @@ void setup() {
   time = millis();
 };
 
-void error_function(uint8_t code, uint8_t data, void *custom_pointer) {
+void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
   if(code == PJON_CONNECTION_LOST) {
     Serial.print("Connection lost with device ");
     Serial.println((uint8_t)bus.packets[data].content[0], DEC);

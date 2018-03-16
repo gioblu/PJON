@@ -211,12 +211,12 @@ static void PJON_dummy_receiver_handler(
 
 typedef void (* PJON_Error)(
   uint8_t code,
-  uint8_t data,
+  uint16_t data,
   void *custom_pointer
 );
 
 static void PJON_dummy_error_handler(
   uint8_t, // code
-  uint8_t, // data
+  uint16_t, // data
   void *   // custom_pointer
 ) {};

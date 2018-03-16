@@ -5,16 +5,17 @@
 
 #ifdef _WIN32
 #include <winsock2.h>
+#include <WS2tcpip.h>
 
 #define close(fd) closesocket(fd)
 #define ssize_t int
-#define socklen_t int
 #else
 #include <string.h>
 #include <unistd.h>
 #include <netdb.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #endif
 
 class UDPHelper {

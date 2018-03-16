@@ -52,13 +52,13 @@ void loop() {
       fail++;
   }
   Serial.print("Packet Overhead: ");
-  Serial.print(bus.packet_overhead() + 1);
+  Serial.print(bus.packet_overhead(bus.data[1]) + 1);
   Serial.print("B - Total: ");
-  Serial.print((unsigned int)((bus.packet_overhead() + 1) * test));
+  Serial.print((unsigned int)((bus.packet_overhead(bus.data[1]) + 1) * test));
   Serial.println("B");
-  Serial.print("Maximum Bandwidth: ");
+  Serial.print("Bandwidth: ");
   // length + packet overhead + PJON_ACK
-  Serial.print((unsigned int)(test * (20 + bus.packet_overhead() + 1)));
+  Serial.print((unsigned int)(test * (20 + bus.packet_overhead(bus.data[1]) + 1)));
   Serial.println("B/s");
   Serial.print("Data throughput: ");
   Serial.print((unsigned int)(test * 20));

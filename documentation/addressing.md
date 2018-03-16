@@ -4,6 +4,7 @@
 - [Data transmission](/documentation/data-transmission.md)
 - [Error handling](/documentation/error-handling.md)
 - [IO setup](/documentation/io-setup.md)
+- [Routing](/documentation/routing.md)
 
 ### Addressing
 PJON can be instantiated passing a predefined device id and optionally a bus id, if the network is private and not accessible from the outside world (wired network in home, business, industry) any sort of bus indexing can be used without worrying about bus id collision; if instead the network is connected to a shared medium, where other PJON users could transmit and receive data, it is strongly suggested to request a unique PJON bus id [here](http://www.pjon.org/get-bus-id.php) for your group of devices.

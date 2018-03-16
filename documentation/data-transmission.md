@@ -4,6 +4,7 @@
 - **[Data transmission](/documentation/data-transmission.md)**
 - [Error handling](/documentation/error-handling.md)
 - [IO setup](/documentation/io-setup.md)
+- [Routing](/documentation/routing.md)
 
 ### Data transmission
 The begin function has to be called in the setup, the lack of this call can lead to collisions on startup, so be sure to call it before making use of the instance.

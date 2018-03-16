@@ -31,3 +31,4 @@ This library exposes to users a set of methods to easily configure and handle co
 - [Data transmission](/documentation/data-transmission.md)
 - [Error handling](/documentation/error-handling.md)
 - [IO setup](/documentation/io-setup.md)
+- [Routing](/documentation/routing.md)

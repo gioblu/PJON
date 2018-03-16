@@ -4,6 +4,7 @@
 - [Data transmission](/documentation/data-transmission.md)
 - [Error handling](/documentation/error-handling.md)
 - **[IO setup](/documentation/io-setup.md)**
+- [Routing](/documentation/routing.md)
 
 ### IO setup
 The physical layer configuration is handled by the Strategy entity, if you want to communicate bi-directionally on a single medium (using SoftwareBitBang, OverSampling or AnalogSampling), sharing transmission and reception line, use:

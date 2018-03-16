@@ -91,7 +91,7 @@ void loop() {
   Serial.println(test);
   Serial.print("Mistakes (error found with CRC): ");
   Serial.println(mistakes);
-  Serial.print("Fail (no acknowledge from receiver): ");
+  Serial.print("Fail (no data found): ");
   Serial.println(fail);
   Serial.print("Busy (Channel is busy or affected by interference): ");
   Serial.println(busy);

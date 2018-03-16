@@ -72,7 +72,7 @@ void loop() {
   Serial.println((unsigned int)test);
   Serial.print("Mistakes (error found with CRC): ");
   Serial.println((unsigned int)mistakes);
-  Serial.print("Fail (no answer from receiver): ");
+  Serial.print("Fail (no acknowledge from receiver): ");
   Serial.println(fail);
   Serial.print("Busy (Channel is busy or affected by interference): ");
   Serial.println(busy);

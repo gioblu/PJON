@@ -47,19 +47,19 @@ void loop() {
 			fail++;
 	}
 
-	Serial.print("Absolute com speed: ");
+	Serial.print("Bandwidth: ");
 	Serial.print(test * 25);
 	Serial.println("B/s");
-	Serial.print("Practical bandwidth: ");
+	Serial.print("Data throughput: ");
 	Serial.print(test * 20);
 	Serial.println("B/s");
 	Serial.print("Packets sent: ");
 	Serial.println(test);
-	Serial.print("Mistakes (error found with CRC) ");
+	Serial.print("Mistakes (error found with CRC): ");
 	Serial.println(mistakes);
-	Serial.print("Fail (no answer from receiver) ");
+	Serial.print("Fail (no acknowledge from receiver): ");
 	Serial.println(fail);
-	Serial.print("Busy (Channel is busy or affected by interference) ");
+	Serial.print("Busy (Channel is busy or affected by interference): ");
 	Serial.println(busy);
 	Serial.print("Accuracy: ");
 	Serial.print(100 - (100 / (test / mistakes)));

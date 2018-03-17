@@ -14,7 +14,7 @@
 Milan, Italy
 Originally published: 17/10/2016
 latest revision: 15/10/2017
-PJON™ protocol acknowledge specification v1.0
+PJON® protocol acknowledge specification v1.0
 Invented by Giovanni Blu Mitolo,
 released into the public domain
 
@@ -22,7 +22,7 @@ Related implementation: https://github.com/gioblu/PJON/
 Compliant versions: PJON v9.0 and following
 */
 ```
-### PJON™ protocol acknowledge specification v1.0
+### PJON® protocol acknowledge specification v1.0
 The PJON Standard supports both **synchronous** and **asynchronous** acknowledgement.
 This two mechanisms are defined to ensure that a packet transmission ended positively with no errors and can be used individually or together.
 
@@ -51,7 +51,7 @@ Channel analysis               Transmission                Response
 ```
 The graph above contains a standard packet transmission with asynchronous acknowledge request where the character `@` or `64` is sent to device id `12` with `0001111` header containing its packet id `99`. As defined by the [PJON protocol specification v3.0](/specification/PJON-protocol-specification-v3.0.md) the fourth bit from right up in the header requests to transmitter an asynchronous acknowledgment response and the presence of the packet id. The second bit from right up signals the inclusion of the sender's info necessary to send back an asynchronous acknowledgment packet when received.
 
-#### PJON™ recursive acknowledgement pattern
+#### PJON® recursive acknowledgement pattern
 In a scenario where there is no direct communication between two devices, a synchronous acknowledgement can't be obtained successfully, so an asynchronous acknowledgement packet has to be sent back from receiver to the packet's transmitter to inform of the correct packet reception.
 
 ```cpp

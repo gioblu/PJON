@@ -11,7 +11,7 @@
 Milan, Italy
 Originally published: 02/10/2016
 Latest revision: 15/10/2017
-PJON™ dynamic addressing specification v1.0
+PJON® dynamic addressing specification v1.0
 Invented by Giovanni Blu Mitolo,
 released into the public domain
 
@@ -26,7 +26,7 @@ Denmark, September 2016
 */
 ```
 
-### PJON™ dynamic addressing specification v1.0
+### PJON® dynamic addressing specification v1.0
 This document defines the dynamic addressing procedure used by a device in multi-master configuration or the one imposed and regulated by master in a master-slave configuration.
 
 ### Master-slave dynamic addressing

@@ -8,7 +8,7 @@
 ```cpp
 /*
 Milan, Italy - 04/09/2016
-The PJON™ protocol specification is an invention and intellectual property
+The PJON® protocol specification is an invention and intellectual property
 of Giovanni Blu Mitolo - Copyright 2010-2018 All rights reserved
 
 Related work: https://github.com/gioblu/PJON/
@@ -18,7 +18,7 @@ New feature: Header driven dynamical configuration proposed and implemented by F
 */
 ```
 
-### PJON™ Protocol specification v0.3
+### PJON® Protocol specification v0.3
 A third draft of the PJON protocol has been released with the addition of a 1 byte header designed to contain the configuration for the packet's communication procedure and its meta-data. In versions 0.1 and 0.2, the PJON communication procedure configuration was static and the header not present, for this reason two differently configured devices, could not establish nominal communication, without configuration pairing. It is now possible for the packet's receiver to read the header, react as transmitter requested and parse the packet and its info correctly.
 
 

@@ -14,7 +14,7 @@
 Milan, Italy
 Originally published: 10/04/2010
 latest revision: 14/12/2017
-PJON™ protocol layer specification v3.0
+PJON® protocol layer specification v3.0
 Invented by Giovanni Blu Mitolo,
 header driven configuration proposed
 by Fred Larsen, released into the public domain

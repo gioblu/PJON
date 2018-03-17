@@ -7,7 +7,7 @@
 ```cpp
 /*
 Milan, Italy - 3/10/2016
-The PJON™ protocol layer specification is an invention and intellectual property
+The PJON® protocol layer specification is an invention and intellectual property
 of Giovanni Blu Mitolo - Copyright 2010-2018 All rights reserved
 
 Related work: https://github.com/gioblu/PJON/
@@ -23,7 +23,7 @@ New features:
 */
 ```
 
-### PJON™ Protocol specification v1.0
+### PJON® Protocol specification v1.0
 With this release, the PJON protocol layer has been vastly extended and generalized aiming to interoperability and to offer a real and complete alternative to the actual set of standards used for networking today. The strong plus of the approach used by the protocol mechanism is high efficiency and low overhead thanks to the configuration driven packet format, enabling easy constrain to application needs.
 
 ### Network protocol stack model

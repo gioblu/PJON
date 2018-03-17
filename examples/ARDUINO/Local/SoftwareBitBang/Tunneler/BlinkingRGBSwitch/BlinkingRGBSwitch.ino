@@ -29,7 +29,7 @@ void setup() {
   link1.strategy.set_pin(7);
   link2.strategy.set_port(7200); // Use a "private" UDP port
   router.set_sendnotification(sendnotification_function);
-  router.set_error(error_function);
+  router.set_error(error_handler);
   router.set_virtual_bus(0); // Enable virtual bus
   router.begin();
   
@@ -49,7 +49,7 @@ void sendnotification_function(const uint8_t * const payload, const uint16_t len
   light_led(sender_bus);
 }
 
-void error_function(uint8_t code, uint8_t data, void *custom_ptr) {
+void error_handler(uint8_t code, uint16_t data, void *custom_ptr) {
   digitalWrite(ERROR_LED_PIN, HIGH);
   error_on_time = millis();  
 }

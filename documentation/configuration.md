@@ -4,6 +4,7 @@
 - [Data transmission](/documentation/data-transmission.md)
 - [Error handling](/documentation/error-handling.md)
 - [IO setup](/documentation/io-setup.md)
+- [Routing](/documentation/routing.md)
 
 ### Basic configuration
 Before instantiating the PJON class it is possible to define the packets and content buffer length.  Predefining `PJON_MAX_PACKETS` and `PJON_PACKET_MAX_LENGTH` it is possible to configure this constraints to reach the project memory requirements. Obviously, the less memory is dedicated to this buffers, the more memory can be used for something else.

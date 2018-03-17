@@ -20,7 +20,7 @@ void receiver_handler(uint8_t *payload, uint16_t length, const PJON_Packet_Info 
   Serial.println();
 };
 
-void error_handler(uint8_t code, uint8_t data, void *custom_pointer) {
+void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
   if(code == PJON_CONNECTION_LOST) {
     Serial.print("Connection lost with device ");
     Serial.println((uint8_t)bus.packets[data].content[0], DEC);

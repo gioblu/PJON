@@ -925,7 +925,7 @@ class PJON {
     /* Pass as a parameter a void function you previously defined in the code.
        This function is called when PJON detects an error
 
-    void error_handler(uint8_t code, uint8_t data) {
+    void error_handler(uint8_t code, uint16_t data) {
       Serial.print(code);
       Serial.print(" ");
       Serial.println(data);

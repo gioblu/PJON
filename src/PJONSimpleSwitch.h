@@ -213,8 +213,8 @@ protected:
   #ifdef PJON_ROUTER_NEED_INHERITANCE
   virtual
   #endif
-  void dynamic_error_function(uint8_t code, uint8_t packet) { }
-  
+  void dynamic_error_function(uint8_t code, uint16_t data) { }
+
 public:
 
   PJONSimpleSwitch() {};
@@ -271,9 +271,9 @@ public:
         length,
         packet_info
       );
-  }  
-  
-  static void error_function(uint8_t code, uint8_t packet, void *custom_pointer) {
-    ((PJONSimpleSwitch<Strategy>*)custom_pointer)->dynamic_error_function(code, packet);
+  }
+
+  static void error_function(uint8_t code, uint16_t data, void *custom_pointer) {
+    ((PJONSimpleSwitch<Strategy>*)custom_pointer)->dynamic_error_function(code, data);
   }
 };

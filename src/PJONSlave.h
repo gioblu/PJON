@@ -194,7 +194,7 @@ class PJONSlave : public PJON<Strategy> {
 
     /* Error callback: */
 
-    void error(uint8_t code, uint8_t data) {
+    void error(uint8_t code, uint16_t data) {
       _slave_error(code, data, _custom_pointer);
     };
 
@@ -391,7 +391,7 @@ class PJONSlave : public PJON<Strategy> {
 
     static void static_error_handler(
       uint8_t code,
-      uint8_t data,
+      uint16_t data,
       void *custom_pointer
     ) {
       ((PJONSlave<Strategy>*)custom_pointer)->error(code, data);

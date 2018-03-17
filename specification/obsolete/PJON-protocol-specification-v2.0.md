@@ -11,7 +11,7 @@
 Milan, Italy
 Originally published: 10/04/2010
 latest revision: 15/10/2017
-PJON™ protocol layer specification v2.0
+PJON® protocol layer specification v2.0
 Invented by Giovanni Blu Mitolo,
 header driven configuration proposed
 by Fred Larsen, released into the public domain
@@ -27,7 +27,7 @@ Changelog:
 */
 ```
 
-### PJON™ Protocol specification v2.0
+### PJON® Protocol specification v2.0
 The PJON protocol layer has been vastly extended and generalized aiming to interoperability and to offer an alternative standards used for networking today. The strong plus of the approach used by the protocol is its high flexibility, low overhead thanks to the header driven packet format and strong reliability thanks to the application of a double redundancy check.
 
 ### Network protocol stack model

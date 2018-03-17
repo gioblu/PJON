@@ -136,10 +136,10 @@ protected:
       RouterClass::dynamic_receiver_function(payload, length, packet_info);
   }
 
-  virtual void dynamic_error_function(uint8_t code, uint8_t packet) {
-    handle_send_error(code, packet);
-  }  
-  
+  virtual void dynamic_error_function(uint8_t code, uint16_t data) {
+    handle_send_error(code, data);
+  }
+
 public:
   PJONVirtualBusRouter() : RouterClass() { init_vbus(); }
   PJONVirtualBusRouter(

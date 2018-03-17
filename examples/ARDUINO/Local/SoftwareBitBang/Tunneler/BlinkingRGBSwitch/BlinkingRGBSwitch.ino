@@ -20,7 +20,7 @@ PJONInteractiveRouter<PJONVirtualBusRouter<PJONSwitch>> router(2, (PJONAny*[2]){
 // (Use resistors approximately R:3.3k G:33k, B:8.2k)
 // A clear, not diffuse, RGB LED lets the individual colors be seen directly.
 const int ERROR_LED_PIN = 4, SWBB_LED_PIN = 5, LUDP_LED_PIN = 6;
-const int LED_DURATION = 200; // how long each packet transfer shall be visible (ms)
+const int LED_DURATION = 100; // how long each packet transfer shall be visible (ms)
 uint32_t error_on_time = 0, swbb_on_time = 0, ludp_on_time = 0;
 
 void setup() {

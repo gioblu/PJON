@@ -66,6 +66,8 @@ void loop() {
   Serial.print(100 - (100 / (test / mistakes)));
   Serial.println(" %");
   Serial.println(" --------------------- ");
+  // Avoid Serial interference during test flushing
+  Serial.flush();
 
   test = 0;
   mistakes = 0;

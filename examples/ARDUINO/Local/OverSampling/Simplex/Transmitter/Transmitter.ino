@@ -13,17 +13,11 @@ PJON<OverSampling> bus(45);
 char content[] = "01234567890123456789";
 
 void setup() {
-  Serial.begin(115200);
-
   // Connect STX882 data output pin in Arduino pin 7
   bus.strategy.set_pins(PJON_NOT_ASSIGNED, 7);
 
   bus.set_communication_mode(PJON_SIMPLEX);
   bus.begin();
-
-  Serial.println("PJON - Network analysis");
-  Serial.println("Starting a 1 second communication test..");
-  Serial.println();
 
   bus.send(44, content, 20);
 }

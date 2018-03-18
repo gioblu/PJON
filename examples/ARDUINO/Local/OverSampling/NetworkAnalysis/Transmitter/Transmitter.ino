@@ -61,7 +61,7 @@ void loop() {
   }
 
   Serial.print("Bandwidth: ");
-  Serial.print((test * 26.0) / 5.0);
+  Serial.print((test * (20 + bus.packet_overhead(bus.data[1]) + 1)) / 5.0);
   Serial.println("B/s");
   Serial.print("Data throughput: ");
   Serial.print((test * 20.0) / 5.0);
@@ -78,6 +78,9 @@ void loop() {
   Serial.print(100 - (100 / (test / mistakes)));
   Serial.println(" %");
   Serial.println(" --------------------- ");
+  // Avoid Serial interference during test flushing
+  Serial.flush();
+
 
   test = 0;
   mistakes = 0;

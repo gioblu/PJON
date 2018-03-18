@@ -12,7 +12,9 @@ int packet;
 char content[] = "01234567890123456789";
 
 void setup() {
-  bus.strategy.set_pins(11, 12);
+  /* When using more than one pin always use pins connected to
+     a different port group to avoid cross-talk. */
+  bus.strategy.set_pins(7, 12);
   bus.set_error(error_handler);
   bus.begin();
 

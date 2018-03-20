@@ -325,8 +325,8 @@ class PJON {
       return false;
     };
 
-    /* Get count of the packets related to a recipient device_id:
-       Don't pass any parameter to count all packets
+    /* Get count of packets:
+       Don't pass any parameter to count all dispatched packets
        Pass a device id to count all it's related packets */
 
     uint16_t get_packets_count(uint8_t device_id = PJON_NOT_ASSIGNED) const {
@@ -541,7 +541,7 @@ class PJON {
       return PJON_ACK;
     };
 
-    /* Try to receive a packet repeatedly with a maximum duration: */
+    /* Try to receive data repeatedly with a maximum duration: */
 
     uint16_t receive(uint32_t duration) {
       uint32_t time = PJON_MICROS();
@@ -617,8 +617,8 @@ class PJON {
     };
 
     /* Schedule a packet sending to the sender of the last packet received.
-       This function is typically called within the receive callback function
-       to deliver a response to a request. */
+       This function is typically called within the receive callback to
+       deliver a response to a request. */
 
     uint16_t reply(
       const char *packet,
@@ -848,8 +848,8 @@ class PJON {
       );
     };
 
-    /* In router mode, the receiver function can ack for selected receiver
-       device ids for which the route is known */
+    /* In router mode, the receiver function can acknowledge
+       for selected receiver device ids for which the route is known */
 
     void send_synchronous_acknowledge() {
       strategy.send_response(PJON_ACK);
@@ -922,7 +922,7 @@ class PJON {
       }
     };
 
-    /* Pass as a parameter a void function you previously defined in the code.
+    /* Pass as a parameter a function you previously defined in the code.
        This function is called when PJON detects an error
 
     void error_handler(uint8_t code, uint16_t data) {
@@ -983,8 +983,8 @@ class PJON {
       random_seed = seed;
     };
 
-    /* Pass as a parameter a void function you previously defined in your
-       code that is called when a correct message is received.
+    /* Pass as a parameter a function you previously defined in your
+       code that is called when a message is received.
        Inside there you can code how to react when data is received.
 
       void receiver_function(

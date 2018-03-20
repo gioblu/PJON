@@ -1,11 +1,11 @@
 
 /* OverSampling 1 or 2 wires software-emulated data link
-   used as a Strategy by the PJON framework (included in version v3.0)
+   used as a Strategy by PJON (included in version v3.0)
    Compliant with PJDLR (Padded Jittering Data Link Radio) specification v2.0
 
-   Using the over-sampling method to receive data, it is generally implemented
-   on physical layers characterized by low bandwidth and high noise such as
-   ASK/FSK radio transceivers.
+   It uses the over-sampling method to receive data, that is generally
+   implemented on physical layers characterized by low bandwidth and high
+   noise such as ASK/FSK radio transceivers.
    ____________________________________________________________________________
 
    Copyright 2015-2018 Giovanni Blu Mitolo gioscarab@gmail.com

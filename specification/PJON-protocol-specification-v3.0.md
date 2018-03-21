@@ -29,7 +29,7 @@ Changelog:
 ```
 
 ### PJON® Protocol specification v3.0
-The PJON protocol v3.0 in local mode supports connectivity for up to 254 devices, in shared mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices. Thanks to its modularity or dynamic packet format, low memory footprint and low overhead (IPv4 40 bytes, PJON 5-22 bytes) PJON can be used as an alternative to 1-Wire or i2c to connect microcontrollers with limited resources but can also be applied in place of TCP-IP to interconnect more complex networks.   
+The PJON protocol v3.0 in local mode supports connectivity for up to 254 devices, in shared mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices. Thanks to its modularity, dynamic packet format, low memory footprint and low overhead (5-22 bytes) PJON can be used as an alternative to 1-Wire or i2c to connect microcontrollers with limited resources but can also be applied in place of TCP-IP to interconnect more complex networks.   
 
 The graph below shows the conceptual model that characterizes and standardizes the communication. Its goal is the interoperability of diverse systems on a wide range of media with the use of a new set of open-source protocols. The graph partitions represent abstraction layers.
 
@@ -125,7 +125,7 @@ _____|___________|_____|ROUTER|_____|___________|____
 ```
 
 ### Switch
-[Switch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/Switch) forwards packets between buses also if different physical layers or data-links are in use. It supports a default gateway to be able to act as a leaf in a larger tree network.
+A Switch is a device that forwards packets between buses also if different physical layers or data-links are in use. It supports a default gateway to be able to act as a leaf in a larger tree network.
 ```cpp
  ______             ________             ______
 |      | PJDL bus  |        | PJDLR bus |      |
@@ -231,10 +231,8 @@ The graph below shows a packet transmission where a 2 bytes packet identifier is
                         |RXINFO| TX INFO |            
 ```
 
-### Protocol encapsulation
-PJON supports encapsulated protocols identification by using a 2 bytes port number as a protocol identifier. Thanks to this feature devices and applications can handle safely many different protocols at the same time. Ports from `0` to `8000` are reserved to known protocols which index is present in the [known protocols list](/specification/PJON-known-protocols-list.md), ports from `8001` to `65535` are free for custom use cases.
-
-The graph below shows a packet transmission where port 8002 is inserted in the packet and header's `PORT` bit up to signal its presence.
+### Encapsulated protocol identification
+PJON supports encapsulated protocol identification by using a 2 bytes port as a protocol identifier. Thanks to this feature many protocols or applications can operate safely at the same time on the same network. Ports from `0` to `8000` are reserved to known protocols which index is present in the [known protocols list](/specification/PJON-known-protocols-list.md), ports from `8001` to `65535` are free for custom use cases. The graph below shows a packet transmission where port 8002 is inserted in the packet and header's `PORT` bit is up to signal its presence.
 ```cpp
  _________________________________________
 |ID| HEADER |LENGTH|CRC8|PORT ID|DATA|CRC8|

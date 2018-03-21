@@ -13,7 +13,7 @@
 /*
 Milan, Italy
 Originally published: 10/04/2010
-latest revision: 31/12/2017
+latest revision: 21/03/2018
 PJDL (Padded Jittering Data Link) v2.0 specification
 Invented by Giovanni Blu Mitolo,
 released into the public domain
@@ -113,7 +113,7 @@ The proposed communication modes are the result of years of testing and optimiza
 
 | MODE | Bit timing | Sync bit timing | Pad-bit ratio | Speed               |
 | ---- | ---------- | --------------- | ------------- | ------------------- |
-| 1    | 40         | 112             | 2.8           | 2.118kB/s - 16944Bd |
-| 2    | 32         | 84              | 2.625         | 2.688kB/s - 21504Bd |
+| 1    | 40         | 112             | 2.8           | 2.11kB/s  - 16944Bd |
+| 2    | 36         | 88              | 2.444         | 2.42kB/s  - 19417Bd |
 
 Binary timing durations are expressed in microseconds.

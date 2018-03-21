@@ -125,7 +125,7 @@ _____|___________|_____|ROUTER|_____|___________|____
 ```
 
 ### Switch
-A Switch is a device that forwards packets between buses also if different physical layers or data-links are in use. It supports a default gateway to be able to act as a leaf in a larger tree network.
+A Switch is a device that forwards packets transparently between buses also if different physical layers or data-links are in use. It can depend on a default gateway to act as a leaf in a larger tree network.
 ```cpp
  ______             ________             ______
 |      | PJDL bus  |        | PJDLR bus |      |
@@ -134,7 +134,7 @@ A Switch is a device that forwards packets between buses also if different physi
 ```
 
 ### Header configuration
-The header is a bit-mask or binary map of meta-data contained and configuration required.
+The header is a bitmap of meta-data contained and configuration required.
 ```cpp
 HEADER BITMASK
     1      2     3    4    5     6     7     8
@@ -166,13 +166,13 @@ HEADER BITMASK
 `-` symbol means irrelevant bit value
 
 ### Cyclic redundancy check
-PJON supports both CRC8 and CRC32, to cover a wide range of use cases and packet lengths.
+PJON supports both CRC8 and CRC32 to ensure safety on a wide range of use cases and packet lengths.
 
 #### CRC8 polynomial
 ```cpp
 0x97 = (x + 1)(x^7 + x^6 + x^5 + x^2 + 1)^2
 ```
-`CRC8 C2`, implicit +1 notation, source Baicheva98, selected because it has the largest possible length (119 bit) at which `HD=4` can be achieved with 8-bit CRC. Other protocols specify the use of polynomials with much lower performance like `CRC-8 0xEA` or `DOWCRC 0x8C` used by 1-Wire.
+`CRC8 C2`, implicit +1 notation, source Baicheva98, is used because it has the largest possible length (119 bit) at which `HD=4` can be achieved with 8-bit CRC. Other protocols specify the use of polynomials with much lower performance like `CRC-8 0xEA` or `DOWCRC 0x8C` used by 1-Wire.
 
 #### CRC32 polynomial
 ```cpp
@@ -200,7 +200,7 @@ Channel analysis            Transmission               Response
 ```
 In the channel analysis phase transmitter assess the medium's state before starting transmission to avoid collision. If the medium is free for use, transmission phase starts where the packet is entirely transmitted. The receiving device calculates CRC and starts the response phase transmitting a single byte, `PJON_ACK` (decimal 6) in case of correct data reception. If no acknowledgement is received, after an exponential back-off delay, the transmitter device retries until acknowledgement is received or a maximum number of attempts is reached and packet transmission discarded.     
 
-The same local transmission used as an example above is formatted to be sent on a shared medium, where device id `12` of bus `0.0.0.1` sends @ (decimal 64) to device id `11` of bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient as requested by header's `MODE` bit and with the sender's bus and device id as requested by header's `TX INFO` bit:
+Below, the same local transmission used as an example above, is formatted to be sent on a shared medium where device id `12` of bus `0.0.0.1` sends @ (decimal 64) to device id `11` of bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient as requested by header's `MODE` bit and with the sender's bus and device id as requested by header's `TX INFO` bit.
 ```cpp
 Channel analysis              Transmission           Response
  __  __________________________________________________  ___
@@ -211,7 +211,7 @@ Channel analysis              Transmission           Response
                             |RXINFO| TX INFO |
 ```
 
-The graph below shows a packet transmission where the length is represented with 2 bytes supporting up to 65535 bytes packet length as requested by the header's `EXT. LENGTH` bit and CRC32 is used as requested by header's `CRC` bit:
+The graph below shows a packet transmission where the length is represented with 2 bytes supporting up to 65535 bytes packet length as requested by the header's `EXT. LENGTH` bit and CRC32 is used as requested by header's `CRC` bit.
 ```cpp
  ________________________________________________________
 |ID| HEADER |LEN 1|LEN 2|CRC8|BUS ID|BUS ID|ID|DATA|CRC32|
@@ -221,7 +221,7 @@ The graph below shows a packet transmission where the length is represented with
                              |RXINFO| TX INFO |
 ```
 
-The graph below shows a packet transmission where a 2 bytes packet identifier is added:
+The graph below shows a packet transmission where a 2 bytes packet identifier is added as requested by header's `PACKET ID` bit.
 ```cpp
  _____________________________________________________________
 |ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|PACKET ID|DATA|CRC32|

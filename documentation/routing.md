@@ -39,7 +39,7 @@ PJONBus<SoftwareBitBang> bus2(
   0,                 // range 1 in use here (1-127)
 );
 
-/* PJONSimpleSwitch definition: */
+// PJONSimpleSwitch definition:
 PJONSimpleSwitch<SoftwareBitBang> router(
   2, // Length of the bus array
   (PJONBus<SoftwareBitBang>*[2]){&bus1,&bus2} // Bus array
@@ -49,7 +49,7 @@ PJONSimpleSwitch<SoftwareBitBang> router(
 PJONSimpleSwitch<SoftwareBitBang> router(
   2, // Length of the bus array
   (PJONBus<SoftwareBitBang>*[2]){&bus1,&bus2}, // Bus array
-  122 // Statically defined default gateway
+  122 // Statically defined default gateway device id
 );
 ```
 The program should only contain the following methods to provide packet switching:
@@ -93,8 +93,6 @@ ________________| ROUTER |________________
 
 #### DynamicRouter
 [Dynamic router](/examples/ARDUINO/Network/SoftwareBitBang/Router/DynamicRouter) is a router that also populates a routing table of remote (not directly attached) buses observing traffic.
-
-Additional features can be added to the above classes by the classes `PJONVirtualBusRouter` and `PJONInteractiveRouter`:
 
 #### Virtual bus
 [Virtual bus](/examples/ARDUINO/Local/SoftwareBitBang/Tunneler) is a bus where multiple buses using potentially different media or strategies, connected through a router, have the same bus id (including the local bus case), and where the location of each device is automatically registered observing traffic.

@@ -50,8 +50,8 @@ The graph below shows the conceptual model that characterizes and standardizes t
 | Port identification, traffic control         |
 |______________________________________________|
 | 3 Network layer: PJON                        |
-| Bus and device identification, error         |
-| detection, reliable packet transmission,     |
+| Addressing, error detection, reliable packet |
+| transmission, packet identification,         |
 | routing, asynchronous acknowledgement        |
 |______________________________________________|
 | 2 Data link layer: PJDL/PJDLR/PJDLS/TSDL     |
@@ -59,7 +59,7 @@ The graph below shows the conceptual model that characterizes and standardizes t
 | acknowledgement                              |
 |______________________________________________|
 | 1 Physical layer                             |
-| Electric, radio or light impulses            |
+| Electric, radio, light impulses              |
 |______________________________________________|
 ```
 

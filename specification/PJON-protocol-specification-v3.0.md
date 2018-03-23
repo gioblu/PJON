@@ -44,20 +44,19 @@ The graph below shows the conceptual model that characterizes and standardizes t
 | 5 Session layer                              |
 | Session                                      |
 |______________________________________________|
-| 4 Transport layer                            |
-| Routing, segmentation                        |
-|______________________________________________|
  You are here
  _|____________________________________________
+| 4 Transport layer: PJON                      |
+| Port identification, traffic control         |
+|______________________________________________|
 | 3 Network layer: PJON                        |
-| Addressing, error detection, reliable packet |
-| transmission, multiplexing, traffic control, |
-| asynchronous acknowledgement, dynamic        |
-| protocol encapsulation                       |
+| Bus and device identification, error         |
+| detection, reliable packet transmission,     |
+| routing, asynchronous acknowledgement        |
 |______________________________________________|
 | 2 Data link layer: PJDL/PJDLR/PJDLS/TSDL     |
-| Frame separation, collision avoidance,       |
-| synchronous acknowledgement                  |
+| Framing, collision avoidance, synchronous    |
+| acknowledgement                              |
 |______________________________________________|
 | 1 Physical layer                             |
 | Electric, radio or light impulses            |
@@ -75,7 +74,7 @@ The graph below shows the conceptual model that characterizes and standardizes t
 * Every device can be connected to n PJON buses
 * Many buses can coexist on the same medium
 * Synchronous and or asynchronous acknowledgement can be requested (see [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md))
-* Dynamic identification of encapsulated protocols using a 2 bytes port id  
+* Process or network service identifier using a 2 bytes port identification  
 
 ### Bus
 A PJON bus is made by a group of up to 254 devices transmitting and receiving on the same medium. Communication between devices occurs through packets and it is based on fairness or on the right of each device to equally share the bandwidth available.
@@ -107,8 +106,18 @@ ______|___________|______________|___________|______
       | ID 3  |                   | ID 3  |
       |_______|                   |_______|
 ```
+
+### Switch
+A Switch is a device that forwards packets transparently between directly connected buses also if different physical layers or data-links are in use. It can rely on a default gateway to operate as a leaf in a larger tree network.
+```cpp
+ ______             ________             ______
+|      | PJDL bus  |        | PJDLR bus |      |
+| ID 1 |___________| SWITCH |___________| ID 2 |
+|______|           |________|           |______|
+```
+
 ### Router
-A router is a device connected to n PJON devices or buses on n dedicated media, able to route packets from a device, a bus or a medium to another. The router can operate forwarding packets transparently and make use of a default gateway if the network has a tree topology and no loops.
+A router is a device connected to n PJON devices or buses on n dedicated media, able to route packets from a device, a bus or a medium to another. The router can operate in a network with a tree topology and no loops forwarding packets transparently. Packets can be routed between indirectly connected buses if a routing table or a default gateway is used.
 ```cpp
 TWO BUSES CONNECTED THROUGH A ROUTER
 
@@ -122,15 +131,6 @@ _____|___________|_____|ROUTER|_____|___________|____
       |       |        |______|       |       |
       | ID 3  |                       | ID 3  |
       |_______|                       |_______|
-```
-
-### Switch
-A Switch is a device that forwards packets transparently between buses also if different physical layers or data-links are in use. It can depend on a default gateway to act as a leaf in a larger tree network.
-```cpp
- ______             ________             ______
-|      | PJDL bus  |        | PJDLR bus |      |
-| ID 1 |___________| SWITCH |___________| ID 2 |
-|______|           |________|           |______|
 ```
 
 ### Header configuration
@@ -231,8 +231,8 @@ The graph below shows a packet transmission where a 2 bytes packet identifier is
                         |RXINFO| TX INFO |            
 ```
 
-### Encapsulated protocol identification
-PJON supports encapsulated protocol identification by using a 2 bytes port as a protocol identifier. Thanks to this feature many protocols or applications can operate safely at the same time on the same network. Ports from `0` to `8000` are reserved to known protocols which index is present in the [known protocols list](/specification/PJON-known-protocols-list.md), ports from `8001` to `65535` are free for custom use cases. The graph below shows a packet transmission where port 8002 is inserted in the packet and header's `PORT` bit is up to signal its presence.
+### Port identification
+PJON supports a process or network service identifier by using a 2 bytes port id. Thanks to this feature many protocols or applications can operate safely at the same time on the same network. Ports from `0` to `8000` are reserved to known protocols which index is present in the [known protocols list](/specification/PJON-known-protocols-list.md), ports from `8001` to `65535` are free for custom use cases. The graph below shows a packet transmission where port 8002 is inserted in the packet and header's `PORT` bit is up to signal its presence.
 ```cpp
  _________________________________________
 |ID| HEADER |LENGTH|CRC8|PORT ID|DATA|CRC8|

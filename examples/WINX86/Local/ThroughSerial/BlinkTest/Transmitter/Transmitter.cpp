@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include <stdio.h>
 #include <iostream>
 // PJON library
@@ -16,11 +15,11 @@
    acknowledgement. This timeframe is affected by latency and CRC computation.
    Could be necessary to higher this value if devices are separated by long
    physical distance and or if transmitting long packets. */
-   
+
 #define TS_COLLISION_DELAY 3000
 
 #define PJON_INCLUDE_TS true
-#include "PJON\PJON.h"
+#include <PJON.h>
 
 static void receiver_function(
   uint8_t *payload,

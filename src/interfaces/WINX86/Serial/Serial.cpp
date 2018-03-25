@@ -41,7 +41,7 @@ Serial::Serial(
   std::wstring com_name_ws = s2ws(commPortName);
 
   commHandle =
-    CreateFile(
+    CreateFileW(
       com_name_ws.c_str(),
       GENERIC_READ | GENERIC_WRITE,
       0,

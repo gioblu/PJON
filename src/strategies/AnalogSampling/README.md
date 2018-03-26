@@ -2,7 +2,7 @@
 **Medium:** Light |
 **Pins used:** 1 / 2
 
-`AnalogSampling` strategy or data link that complies with [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) and is designed to sample digital data using analog readings and can be used to communicate data wirelessly through light. It is able to use a single LED for both photo-emission and photo-reception phases enabling an half-duplex connection between two or more devices with a range of up to 5 meters; it can also be used with two pairs of any sort of tuned emitters and receivers enabling for example long range wireless laser communication. `AnalogSampling` can be used along with single channel optic fiber cables enabling a point-to-point bidirectional connection between two devices, that can also be branched in star configuration using optical bidirectional splitters (PLC).
+`AnalogSampling` strategy or data link complies with [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md), it is designed to communicate data wirelessly using light impulses and its sampling technique based on analog readings. It is able to use a single LED for both photo-emission and photo-reception phases enabling a half-duplex connection between two or more devices with a range of up to 5 meters using only a single LED per device; it can also be used with two pairs of any sort of tuned emitters and receivers enabling for example long range wireless laser communication. `AnalogSampling` can be used along with single channel optic fiber cables enabling a point-to-point bidirectional connection between two devices, that can also be branched in star configuration using optical bidirectional splitters (PLC).
 
 `AnalogSampling` was originally implemented it in the far 2011, here you can see the first [video documented experiment](https://www.youtube.com/watch?v=-Ul2j6ixbmE). It has been recently debugged and updated to act as a PJON Strategy. Take a look at the [video introduction](https://www.youtube.com/watch?v=yIncPe8OPpg) for a brief showcase of its features.
 
@@ -69,22 +69,22 @@ The most basic example is to connect two devices using a couple of visible light
 
 ![PJON AnalogSampling LED wireless communication](http://www.pjon.org/assets/images/PJON-AnalogSampling-half-duplex-led-communication.png)
 
-Leveraging of the interesting characteristics of LEDs:
+Leveraging of the interesting features of LEDs:
 
 - Emit photons if electrons are travelling through the junction
 - Emit electrons if photons are hitting the junction (photo-electric effect)
 
-it is possible to use LEDs as wireless (bidirectional) transceivers! This means that you can connect two devices needing only one LED on each. Most devices have at least an energy consuming useless LED on board right? :)
+Thanks to this 2 features it is possible to use LEDs as wireless (bidirectional) transceivers! This means that you can connect two devices needing only one LED on each. Most devices have at least an energy consuming useless LED on board right? :)
 
 In most cases it is necessary to add a pull-down resistor with a value around 200KΩ-5MΩ connecting the A0 pin with ground to reduce the LED capacitance, reduce bit transition slopes and electromagnetic induced interference. Higher resistance can higher the range but can also higher background noise.
 
 Consider that depending on the operating voltage of your device LEDs could be overpowered, so choose the LED depending on its operating voltage and add a current limiting resistor if needed. Because of the non continuous power supply also if using a 5v system most LEDs (infrared, blue, white) should survive.  
 
 The obtained range is related to:
-- **Resolution** - use `analogReference` wiring method to configure `analogRead` resolution as necessary taking care that the input voltage is not higher than the configured voltage reference
-- **Sensitivity** find a couple of identical LEDs, position one shining light directly on the other's junction and test the voltage produced by the unpowered one. Blue LEDs can produce more than 2 volts if hit by a twin LED light at full power
-- **Transmission power** the more power you feed to your transmitter, the more range and reliability you can get
-- **Signal-to-noise ratio or SNR** Noise level affects communication reliability specially when the signal magnitude is lowered by distance, filtering your input from background noise can higher maximum range and overall communication reliability. If your system has to operate with a strong background noise, consider using a hardware filter to cut the background noise frequencies and use a pull down resistor as described above.
+- **Resolution** - use `analogReference` wiring method to configure `analogRead` resolution as necessary taking care that the input voltage is not higher than the configured voltage reference.
+- **Sensitivity** find a couple of identical LEDs, position one shining light directly on the other's junction and test the voltage produced by the unpowered one. Blue LEDs can produce more than 2 volts if hit by its light at full power.
+- **Transmission power** the more power is feeded into the transmitter, the higher range and reliability can be achieved.
+- **Signal-to-noise ratio or SNR** Noise level affects communication reliability specially when the signal magnitude is lowered by distance, filtering your input from background noise can higher maximum range and overall communication reliability. If the system must operate with a strong background noise, consider using a hardware filter to reduce the background noise frequencies and use a pull down resistor as described above.
 
 With the necessary hardware choices and timing configuration `AnalogSampling` can be used to experiment with short range infrared or visible light communication (i.e. micro-robot swarm, DIY remote, optic fiber), medium range using light sources (i.e. cars transmitting data through front and backlights) or long range laser communication (i.e. data between ground and LEO).  
 

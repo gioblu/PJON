@@ -196,12 +196,7 @@ void get_reflex(uint16_t iterations) {
 
 void loop() {
   get_reflex(readings);
-  if(mode) {
+  if(mode || (!mode && (reading > threshold)))
     bus.send_packet(recipient_id, packet, 2);
-    bus.receive((uint32_t)(interval) * 1000);
-  } else {
-    if(reading > threshold)
-      bus.send_packet(recipient_id, packet, 2);
-    bus.receive((uint32_t)(interval) * 1000);
-  }
+  bus.receive((uint32_t)(interval) * 1000);
 };

@@ -13,10 +13,13 @@ void setup() {
   pinMode(13, OUTPUT);
   digitalWrite(13, LOW); // Initialize LED 13 to be off
 
-  bus.strategy.set_pins(11, 12);
-  bus.begin();
+  /* When using more than one pin always use pins connected to
+     a different port group to avoid cross-talk. */
+  bus.strategy.set_pins(7, 12);
+
   bus.set_receiver(receiver_function);
   bus.set_synchronous_acknowledge(false);
+  bus.begin();
 };
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {

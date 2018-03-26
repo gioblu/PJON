@@ -12,7 +12,9 @@ int packet;
 char content[] = "01234567890123456789";
 
 void setup() {
-  bus.strategy.set_pins(11, 12);
+  /* When using more than one pin always use pins connected to
+     a different port group to avoid cross-talk. */
+  bus.strategy.set_pins(7, 12);
   bus.set_error(error_handler);
   bus.begin();
 
@@ -59,7 +61,7 @@ void loop() {
   }
 
   Serial.print("Bandwidth: ");
-  Serial.print((test * 26.0) / 5.0);
+  Serial.print((test * (20 + bus.packet_overhead(bus.data[1]) + 1)) / 5.0);
   Serial.println("B/s");
   Serial.print("Data throughput: ");
   Serial.print((test * 20.0) / 5.0);
@@ -76,6 +78,9 @@ void loop() {
   Serial.print(100 - (100 / (test / mistakes)));
   Serial.println(" %");
   Serial.println(" --------------------- ");
+  // Avoid Serial interference during test flushing
+  Serial.flush();
+
 
   test = 0;
   mistakes = 0;

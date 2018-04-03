@@ -46,9 +46,9 @@ bus.send_packet(
 );
 ```
 The sending is executed as soon as the method is called and it returns the following values:
-- `PJON_ACK` (6) if a correct reception occurred
-- `PJON_BUSY` (666) if a transmission for other devices is occurring
-- `PJON_FAIL` (65535) if no data is received
+- `PJON_ACK` (6) if transmission occurred and acknowledgment is received if requested
+- `PJON_BUSY` (666) if bus is busy
+- `PJON_FAIL` (65535) if transmission failed
 
 ```cpp
 // Use the value returned by send_packet to determine transmission result

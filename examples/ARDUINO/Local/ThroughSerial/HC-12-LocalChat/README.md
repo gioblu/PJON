@@ -18,8 +18,13 @@ LocalChat is a wireless instant messaging application example implemented in 170
 ```
 
 To wirelessly connect the n computers (up to 254) you need only n Arduino compatible devices and n HC-12 modules.
+The first thing to do is to connect the HC-12 modules to the Arudino compatible devices. The wiring is extremely simple:
+- Connect HC-12 TX pin to Arduino pin 2
+- Connect HC-12 RX pin to Arduino pin 3
+- Connect HC-12 VCC pin to Arduino pin +5v
+- Connect HC-12 GND pin to Arduino pin GND
 
-The wiring is extremely simple, connect HC-12 TX pin to Arduino pin 2 and HC-12 RX pin to Arduino pin 3, then, connect +5v and GND pins to power HC-12 module and connect the Arduino compatible device to the computer's USB. The packet radio can be built using one of the USB enabled Arduino compatible devices, this is a Redstick and HC-12 wired together to obtain a USB stick packet radio running PJON and LocalChat:
+Now connect the Arduino compatible device to the computer's USB. The packet radio can be built using one of the USB enabled Arduino compatible devices like an Arduino Duemilanove, Uno, Nano or Mega. In the picture below a Redstick is used and a HC-12 module is connected as described above to obtain a handy USB packet radio running PJON and LocalChat:
 
 ![PJON HC-12 packet radio](images/redstick-hc12-PJON.jpg)
 The maximum range detected is around 150m in urban environment without line of sight using the default configuration and standard antenna. It is probably possible to reach more than 500 meters in open area with line of sight. The highest maximum range can be reached reducing the data rate and using a good antenna.
@@ -34,3 +39,5 @@ The maximum range detected is around 150m in urban environment without line of s
 After following the steps described above it is possible to directly chat with the other user simply by typing in the serial monitor's text field and pressing enter. Up to 254 users are supported, communication is completely handled by PJON that is configured to avoid packet duplications by using the packet id feature and to report communication errors that are logged in the interface.
 
 ![PJON HC-12 packet radio](images/LocalChat.jpg)
+
+LocalChat is not done to be practical, it is a bare-bones example done to showcase how quickly can be deployed an instant messaging application that requires wireless networking using PJON, open-hardware and makers' technology. The Arduino compatible device just sends and receives serial data to and from the computer's USB port. The Arduino IDE serial monitor is only one of the options for the user's interface, obviously a dedicated executable could be developed depending on the requirements.

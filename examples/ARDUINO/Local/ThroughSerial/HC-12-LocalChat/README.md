@@ -21,8 +21,7 @@ To wirelessly connect the n computers (up to 254) you need only n Arduino compat
 
 The wiring is extremely simple, connect HC-12 TX pin to Arduino pin 2 and HC-12 RX pin to Arduino pin 3, then, connect +5v and GND pins to power HC-12 module and connect the Arduino compatible device to the computer's USB. The packet radio can be built using one of the USB enabled Arduino compatible devices, this is a Redstick and HC-12 wired together to obtain a USB stick packet radio running PJON and LocalChat:
 
-![PJON HC-12 packet radio](https://github.com/gioblu/PJON/tree/master/examples/ARDUINO/Local/ThroughSerial/HC-12-LocalChat/images/redstick-hc12-PJON.jpg)
-
+![PJON HC-12 packet radio](https://raw.githubusercontent.com/gioblu/PJON/tree/master/examples/ARDUINO/Local/ThroughSerial/HC-12-LocalChat/images/redstick-hc12-PJON.jpg)
 The maximum range detected is around 150m in urban environment without line of sight using the default configuration and standard antenna. It is probably possible to reach more than 500 meters in open area with line of sight. The highest maximum range can be reached reducing the data rate and using a good antenna.
 
 ###LocalChat test

@@ -1,5 +1,5 @@
 ## LocalChat example
-LocalChat is a wireless instant messaging application example implemented in 170 lines of code. It uses a laptop or a desktop computer and the Arduino IDE serial monitor for the user interface. Connectivity is provided by an Arduino compatible device wired to a HC-12 wireless serial module. PJON in local mode is used to support connectivity for up to 254 unique users or 127 one-to-one conversations. LocalChat is a proof of concept demonstrating how, using PJON and open-hardware, decentralized networking can be easily achieved with interesting implications.
+LocalChat is a wireless instant messaging application example implemented in 170 lines of code. It uses a laptop or a desktop computer and the Arduino IDE serial monitor for the user interface. Connectivity is provided by an Arduino compatible device wired to a HC-12 wireless serial module. PJON in local mode supports networking for up to 254 unique users or 127 one-to-one conversations. LocalChat is a proof of concept demonstrating how, using PJON and open-hardware, decentralized networking can be easily achieved with interesting implications.
 
 ```cpp  
 /* User's 1 laptop                                        User's 2 laptop
@@ -24,7 +24,7 @@ The wiring is extremely simple, connect HC-12 TX pin to Arduino pin 2 and HC-12 
 ![PJON HC-12 packet radio](images/redstick-hc12-PJON.jpg)
 The maximum range detected is around 150m in urban environment without line of sight using the default configuration and standard antenna. It is probably possible to reach more than 500 meters in open area with line of sight. The highest maximum range can be reached reducing the data rate and using a good antenna.
 
-###LocalChat test
+### Set up LocalChat
 - Flash the [HC-12-LocalChat](HC-12-LocalChat.ino) example on the Arduino
 - Open the Arduino IDE serial monitor at 115200 baud
 - Set serial monitor 'Newline' ending

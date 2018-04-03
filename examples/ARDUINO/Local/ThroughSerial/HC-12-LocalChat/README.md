@@ -32,3 +32,5 @@ The maximum range detected is around 150m in urban environment without line of s
 - Enter the recipient's user id (1-254) and press 'Send'
 
 After following the steps described above it is possible to directly chat with the other user simply by typing in the serial monitor's text field and pressing enter. Up to 254 users are supported, communication is completely handled by PJON that is configured to avoid packet duplications by using the packet id feature and to report communication errors that are logged in the interface.
+
+![PJON HC-12 packet radio](images/LocalChat.jpg)

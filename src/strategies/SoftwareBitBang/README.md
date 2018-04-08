@@ -22,6 +22,7 @@ It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to
 - ATmega88/168/328 16MHz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
 - ATmega2560 16MHz (Arduino Mega)
 - ATmega16u4/32u4 16MHz (Arduino Leonardo)
+- ATMega1284P 16MHz external oscillator
 - ATtiny84/84A 16MHz external oscillator
 - ATtiny85 16MHz external oscillator
 - SAMD (Arduino Zero)
@@ -88,13 +89,7 @@ In the Arduino environment the use of libraries is really extensive and often th
 PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl/post/130558526217/pjon-my-son)
 
 #### Known issues
-- A 1-5 MΩ pull down resistor could be necessary to reduce interference, see [deal with interference](https://github.com/gioblu/PJON/wiki/Deal-with-interference).
+- A 1-5 MΩ pull down resistor could be necessary to reduce interference, see [Mitigate interference](https://github.com/gioblu/PJON/wiki/Mitigate-interference).
 - When using more than one instance of `SoftwareBitBang` in the same sketch always use pins connected to a different port group to avoid cross-talk.  
-- Consider that this is not an interrupt driven system, during the time passed
-in delay or executing other tasks a certain amount of packets could be potentially
-lost, PJON does its job scheduling the packet.
-to be sent again in future but a certain amount of bandwidth can be wasted. Structure intelligently
-your loop cycle and polling duration to avoid low transmission accuracy.
-- `SoftwareBitBang` strategy can have compatibility issues with codebases that
-are using interrupts, reliability or bandwidth loss can be experienced because of the cyclical
-interruptions made by third party software to the PJON procedure.
+- During the execution of other tasks or delays a certain amount of packets could be potentially lost because transmitted out of the polling timeframe of the receiver device. Thanks to the PJON packet handler after some retries the packet is received but a certain amount of bandwidth is wasted. If this situation occurs, try to reduce as much as possible the duration of other tasks and or use a longer polling timeframe using `receive` passing the requested amount of microseconds: `bus.receive(1000); // Poll for 1 millisecond`.
+- `SoftwareBitBang` strategy can have compatibility issues with codebases that are using interrupts, reliability or bandwidth loss can occur because of the interruptions made by third party software.

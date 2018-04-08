@@ -144,23 +144,22 @@ HEADER BITMASK
 |ID    |LENGTH|    |     |MODE |     |INFO |     |
 |______|______|____|_____|_____|_____|_____|_____|
 ```
-#### Header byte 1
-* `PACKET ID` bit informs if the packet contains (value 1) or not (value 0) a 2 bytes packet id
-* `EXT. LENGTH` bit informs if the packet contains 1 (value 0) or 2 (value 1) bytes length
-* `CRC` bit signals which CRC is used, CRC8 (value 0) or CRC32 (value 1)
-* `PORT` bit informs if the packet contains a 2 bytes port identifier (value 1) or not (value 0)
-* `ACK MODE` bit signals synchronous (value 0) or asynchronous (value 1) acknowledgment mode
-* `ACK` bit informs if acknowledgment is requested (value 1) or not (value 0)
-* `TX INFO` bit informs if the sender info are included (value 1) or not (value 0)
-* `MODE` bit informs if the packet is formatted in shared mode (value 1) or local mode (value 0)  
+1. `PACKET ID` bit informs if the packet contains (value 1) or not (value 0) a 2 bytes packet id
+2. `EXT. LENGTH` bit informs if the packet contains 1 (value 0) or 2 (value 1) bytes length
+3. `CRC` bit signals which CRC is used, CRC8 (value 0) or CRC32 (value 1)
+4. `PORT` bit informs if the packet contains a 2 bytes port identifier (value 1) or not (value 0)
+5. `ACK MODE` bit signals synchronous (value 0) or asynchronous (value 1) acknowledgment mode
+6. `ACK` bit informs if acknowledgment is requested (value 1) or not (value 0)
+7. `TX INFO` bit informs if the sender info are included (value 1) or not (value 0)
+8. `MODE` bit informs if the packet is formatted in shared mode (value 1) or local mode (value 0)  
 
-#### Unacceptable header configuration states for standard transmission
+Unacceptable header configuration states for standard transmission:
 * `----1-0-` or `ACK MODE` bit up, and `TX INFO` down (asynchronous acknowledgement needs transmitter info)
 * `-10-----` or `EXT. LENGTH` bit up and `CRC` down (CRC32 forced for packet length > 15)
 * `--01----` or `ADDR.` bit up and `CRC` bit down (CRC32 forced for addressing)
 * `---1--0-` or `ADDR.` bit up and `TX INFO` bit down (transmitter info necessary for addressing)
 
-#### Unacceptable header configuration states sending a BROADCAST
+Unacceptable header configuration states sending a BROADCAST:
 * `-----1--` or `ACK` bit up (no acknowledgement supported if BROADCAST)
 * `----1---` or `ACK MODE` bit up (no acknowledgement supported if BROADCAST)
 

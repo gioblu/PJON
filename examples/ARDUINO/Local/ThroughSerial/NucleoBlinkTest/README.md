@@ -8,7 +8,7 @@ Connect the 2 devices as shown in the following scheme:
 - Connect transmitter `Serial1` RX or pin 2 to receiver device `Serial1` TX or pin 8
 
 ### Result
-If all goes well the receiver blinks 10 times per second as requested. With an oscilloscope can be observed the bidirectional exchange:
+The receiver blinks 10 times per second as requested. With an oscilloscope can be observed the bidirectional exchange:
 
 ![PJON STM32 Nucleo Blink example seen in the oscilloscope](images/PJON-TS-Nucleo-oscillo.jpg)
 

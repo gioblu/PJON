@@ -3,11 +3,12 @@ NucleoBlinkTest demonstrates how to create a point-to-point connection between t
 
 ### NucleoBlinkTest example
 Connect the 2 devices as shown in the following scheme:
+
 ![PJON STM32 Nucleo Blink example](images/PJON-TS-Nucleo.jpg)
 - Connect transmitter `Serial1` TX or pin 8 to receiver device Serial1 RX or pin 2
 - Connect transmitter `Serial1` RX or pin 2 to receiver device Serial1 TX or pin 8
 
 ### Result
 If all goes well the receiver blinks 10 times per second as requested. With an oscilloscope can be observed the bidirectional exchange:
-![PJON STM32 Nucleo Blink example seen in the oscilloscope](images/PJON-TS-Nucleo-oscilloscope.jpg)
+![PJON STM32 Nucleo Blink example seen in the oscilloscope](images/PJON-TS-Nucleo-oscillo.jpg)
 The packet is transmitted and a synchronous acknowledgment is sent by the recipient immediately after reception.

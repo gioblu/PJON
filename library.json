@@ -34,7 +34,8 @@
     "espressif8266",
     "teensy",
     "linux_x86_64",
-    "windows_x86"
+    "windows_x86",
+    "ststm32"
   ],
   "build" : {
     "flags": "-std=c++11"

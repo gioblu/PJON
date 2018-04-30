@@ -75,8 +75,7 @@ Slave sends a `PJON_ID_REQUEST` to get a new id:
 |  ID  |00110110|LENGTH|CRC|ASSIGNED| 1  |ID_REQUEST|   |CRC||ACK|
 |______|________|______|___|________|____|__________|___|___||___|
 ```
-If master detects a rid collision, sends a `PJON_ID_NEGATE` request to `PJON_NOT_ASSIGNED` device id to force
-the still not approved slave to regenerate a rid:
+If master detects a rid collision, sends a `PJON_ID_NEGATE` request to `PJON_NOT_ASSIGNED` device id to force the still not approved slave to regenerate a rid:
 ```cpp  
  ________ ________ ______ ___ ______ ____ _________ ___ ___  ___
 |  NOT   | HEADER |      |   |MASTER|PORT|         |RID|   ||   |

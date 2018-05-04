@@ -154,14 +154,14 @@ HEADER BITMASK
 8. `MODE` bit informs if the packet is formatted in [shared](/specification/PJON-protocol-specification-v3.0.md#shared-mode) (value 1) or [local](/specification/PJON-protocol-specification-v3.0.md#local-mode) mode (value 0)  
 
 Unacceptable header configuration states for standard transmission:
-* `----1-0-` or `ACK MODE` bit up, and `TX INFO` down (asynchronous acknowledgement needs transmitter info)
-* `-10-----` or `EXT. LENGTH` bit up and `CRC` down (CRC32 forced for packet length > 15)
-* `--01----` or `ADDR.` bit up and `CRC` bit down (CRC32 forced for addressing)
-* `---1--0-` or `ADDR.` bit up and `TX INFO` bit down (transmitter info necessary for addressing)
+* `----1-0-` or `ACK MODE` bit high, and `TX INFO` bit low (asynchronous acknowledgement requires transmitter info)
+* `-10-----` or `EXT. LENGTH` bit high and `CRC` bit low (forced CRC32 for length > 15)
+* `--01----` or `ADDR.` bit high and `CRC` bit low (forced CRC32 for addressing)
+* `---1--0-` or `ADDR.` bit high and `TX INFO` bit low (addressing requires transmitter's info)
 
 Unacceptable header configuration states sending a BROADCAST:
-* `-----1--` or `ACK` bit up (no acknowledgement supported if BROADCAST)
-* `----1---` or `ACK MODE` bit up (no acknowledgement supported if BROADCAST)
+* `-----1--` or `ACK` bit high (acknowledgement not supported if broadcasting)
+* `----1---` or `ACK MODE` bit high (acknowledgement not supported if broadcasting)
 
 `-` symbol means irrelevant bit value
 
@@ -223,7 +223,7 @@ If header's `TX INFO` bit is high the sender's device id is included in the pack
 ```
 
 #### Shared mode
-If header's `MODE` bit is low bus identification is added to the packet. Below, the same local transmission used as an example above, is formatted to be sent in shared mode where device id `12` of bus `0.0.0.1` sends @ (decimal 64) to device id `11` of bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient as requested by header's `MODE` bit.
+If header's `MODE` bit is high [bus](/specification/PJON-protocol-specification-v3.0.md#bus) identification is added to the packet. Below, the same local transmission used as an example above, @ (decimal 64) is formatted to be sent in shared mode to device id `12` of bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient as requested by header's `MODE` bit.
 ```cpp
  ________________________________________
 |ID| HEADER |LENGTH|CRC8|BUS ID|DATA|CRC8|
@@ -233,7 +233,7 @@ If header's `MODE` bit is low bus identification is added to the packet. Below, 
 
 ```
 
-If header's `TX INFO` bit is high the sender's device and bus id are included in the packet.
+If header's `TX INFO` bit is high the sender's device and bus id are included in the packet. In the example below device id `11` of bus id `0.0.0.1` send to device id `12` of bus id `0.0.0.1`.
 
 ```cpp
  __________________________________________________
@@ -245,7 +245,7 @@ If header's `TX INFO` bit is high the sender's device and bus id are included in
 ```
 
 #### Extended length
-The graph below shows a packet transmission where the length is represented with 2 bytes supporting up to 65535 bytes length as requested by the header's `EXT. LENGTH`. If the extended length feature is used, CRC32 must be applied setting the header's `CRC` bit low.
+The graph below shows a packet transmission where the length is represented with 2 bytes supporting up to 65535 bytes length as requested by the header's `EXT. LENGTH`. If the extended length feature is used, CRC32 must be applied setting the header's `CRC` bit high.
 ```cpp
  ______________________________________________
 |ID| HEADER |LEN 1|LEN 2|CRC8|BUS ID|DATA|CRC32|
@@ -256,7 +256,7 @@ The graph below shows a packet transmission where the length is represented with
 ```
 
 #### Packet identification
-The graph below shows a packet transmission where a 2 bytes packet identifier is added as requested by header's `PACKET ID` bit. This feature is provided to avoid duplications and guarantee packet uniqueness. The receiver filters packets containing a packet identifier and sender info that already appeared previously.
+The graph below shows a packet transmission where a 2 bytes packet identifier is added as requested by header's `PACKET ID` bit. This feature is provided to avoid duplications and guarantee packet uniqueness. The receiver filters packets containing a packet identifier and sender information that already appeared previously.
 ```cpp
  _____________________________________________________________
 |ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|PACKET ID|DATA|CRC32|
@@ -267,7 +267,7 @@ The graph below shows a packet transmission where a 2 bytes packet identifier is
 ```
 
 #### Port identification
-PJON supports a network service identifier by using a 2 bytes port id. Thanks to this feature many services can operate and be identified safely. Ports from `0` to `8000` are reserved to known services which index is present in the [known services list](/specification/PJON-known-services-list.md), ports from `8001` to `65535` are free for custom use cases. The graph below shows a packet transmission where port 8002 is inserted in the packet and header's `PORT` bit is up to signal its presence.
+PJON supports a network service identifier by using a 2 bytes port id. Thanks to this feature many services can operate and be identified safely. Ports from `0` to `8000` are reserved to known services which index is present in the [known services list](/specification/PJON-known-services-list.md), ports from `8001` to `65535` are free for custom use cases. The graph below shows a packet transmission where port 8002 is inserted in the packet and header's `PORT` bit is high to signal its presence.
 ```cpp
  _________________________________________
 |ID| HEADER |LENGTH|CRC8|PORT ID|DATA|CRC8|

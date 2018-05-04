@@ -13,7 +13,7 @@
 /*
 Milan, Italy
 Originally published: 10/04/2010
-latest revision: 21/03/2018
+latest revision: 04/05/2018
 PJON® protocol layer specification v3.0
 Invented by Giovanni Blu Mitolo,
 header driven configuration proposed
@@ -144,14 +144,14 @@ HEADER BITMASK
 |ID    |LENGTH|    |     |MODE |     |INFO |     |
 |______|______|____|_____|_____|_____|_____|_____|
 ```
-1. `PACKET ID` bit informs if the packet contains (value 1) or not (value 0) a 2 bytes packet id
-2. `EXT. LENGTH` bit informs if the packet contains 1 (value 0) or 2 (value 1) bytes length
-3. `CRC` bit signals which CRC is used, CRC8 (value 0) or CRC32 (value 1)
-4. `PORT` bit informs if the packet contains a 2 bytes port identifier (value 1) or not (value 0)
-5. `ACK MODE` bit signals synchronous (value 0) or asynchronous (value 1) acknowledgment mode
-6. `ACK` bit informs if acknowledgment is requested (value 1) or not (value 0)
+1. `PACKET ID` bit informs if the packet contains (value 1) or not (value 0) a 2 bytes [packet id](/specification/PJON-protocol-specification-v3.0.md#packet-identification)
+2. `EXT. LENGTH` bit informs if the packet contains 1 (value 0) or 2 (value 1) bytes [length](/specification/PJON-protocol-specification-v3.0.md#extended-length)
+3. `CRC` bit signals which CRC is used, [CRC8](/specification/PJON-protocol-specification-v3.0.md#crc8-polynomial) (value 0) or [CRC32](/specification/PJON-protocol-specification-v3.0.md#crc32-polynomial) (value 1)
+4. `PORT` bit informs if the packet contains a 2 bytes [port identifier](/specification/PJON-protocol-specification-v3.0.md#port-identification) (value 1) or not (value 0)
+5. `ACK MODE` bit signals [synchronous](/specification/PJON-protocol-acknowledge-specification-v1.0.md#synchronous-acknowledge) (value 0) or [asynchronous](/specification/PJON-protocol-acknowledge-specification-v1.0.md#asynchronous-acknowledge) (value 1) acknowledgment mode
+6. `ACK` bit informs if [acknowledgment](/specification/PJON-protocol-acknowledge-specification-v1.0.md) is requested (value 1) or not (value 0)
 7. `TX INFO` bit informs if the sender info are included (value 1) or not (value 0)
-8. `MODE` bit informs if the packet is formatted in shared mode (value 1) or local mode (value 0)  
+8. `MODE` bit informs if the packet is formatted in [shared](/specification/PJON-protocol-specification-v3.0.md#shared-mode) (value 1) or [local](/specification/PJON-protocol-specification-v3.0.md#local-mode) mode (value 0)  
 
 Unacceptable header configuration states for standard transmission:
 * `----1-0-` or `ACK MODE` bit up, and `TX INFO` down (asynchronous acknowledgement needs transmitter info)
@@ -191,9 +191,6 @@ CRC8 is calculated on both data and meta-data and it is appended at the end of p
 ### Packet transmission
 A default local packet transmission is an optionally bidirectional communication between two devices that can be divided in 3 different phases: **channel analysis**, **transmission** and optional **response**. In the channel analysis phase transmitter assess the medium's state before starting transmission to avoid collision. If the medium is free for use, transmission phase starts where the packet is entirely transmitted. The receiving device calculates CRC and starts the response phase transmitting a single byte, `PJON_ACK` (decimal 6) in case of correct data reception. If no acknowledgement is received, after an exponential back-off delay, the transmitter device retries until acknowledgement is received or a maximum number of attempts is reached and packet transmission discarded.
 
-#### Local mode
-In the graph below the simplest packet format is represented requesting only the synchronous acknowledgment feature (adding 6 bytes of overhead). This mode adds supports connectivity for up to 254 devices. 
-
 ```cpp
 Channel analysis            Transmission               Response
  _____  _______________________________________________  _____
@@ -203,36 +200,68 @@ Channel analysis            Transmission               Response
 |_____||____|__________|________|______|________|______||_____|
 ```
 
+#### Local mode
+Depending on header's `MODE` bit, PJON packets can contain basic or extended support to identification. Local mode required by header's `MODE` bit low supports connectivity for up to 254 devices. In the graph below is represented the simplest local mode packet format:
+
+```cpp
+ _______________________________________________
+| ID |  HEADER  | LENGTH | CRC8 |  DATA  | CRC8 |
+|----|----------|--------|------|--------|------|
+| 12 | 00000000 |   6    |      |   64   |      |
+|____|__________|________|______|________|______|
+```
+
+If header's `TX INFO` bit is high the sender's device id is included in the packet.
+
+```cpp
+ ______________________________________________________
+| ID |  HEADER  | LENGTH | CRC8 |  ID  |  DATA  | CRC8 |
+|----|----------|--------|------|------|--------|------|
+| 12 | 00000010 |   7    |      |  11  |   64   |      |
+|____|__________|________|______|______|________|______|
+                                |TXINFO|
+```
 
 #### Shared mode
-Below, the same local transmission used as an example above, is formatted to be sent on a shared medium (adding 15 bytes of overhead) where device id `12` of bus `0.0.0.1` sends @ (decimal 64) to device id `11` of bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient as requested by header's `MODE` bit and with the sender's bus and device id as requested by header's `TX INFO` bit.
+If header's `MODE` bit is low bus identification is added to the packet. Below, the same local transmission used as an example above, is formatted to be sent in shared mode where device id `12` of bus `0.0.0.1` sends @ (decimal 64) to device id `11` of bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient as requested by header's `MODE` bit.
 ```cpp
-Channel analysis              Transmission           Response
- __  __________________________________________________  ___
-|CA||ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|DATA|CRC8||ACK|
-|--||--|--------|------|----|------|------|--|----|----||---|
-|00||12|00000111|  15  |    | 0001 | 0001 |11| 64 |    || 6 |
-|__||__|________|______|____|______|______|__|____|____||___|
-                            |RXINFO| TX INFO |
+ ________________________________________
+|ID| HEADER |LENGTH|CRC8|BUS ID|DATA|CRC8|
+|--|--------|------|----|------|----|----|
+|12|00000001|  10  |    | 0001 | 64 |    |
+|__|________|______|____|______|____|____|
+
 ```
-#### Extended length
-The graph below shows a packet transmission where the length is represented with 2 bytes (adding 19 bytes of overhead) supporting up to 65535 bytes length as requested by the header's `EXT. LENGTH` bit. CRC32 is used as requested by header's `CRC` bit.
+
+If header's `TX INFO` bit is high the sender's device and bus id are included in the packet.
+
 ```cpp
- ________________________________________________________
-|ID| HEADER |LEN 1|LEN 2|CRC8|BUS ID|BUS ID|ID|DATA|CRC32|
-|--|--------|-----|-----|----|------|------|--|----|-----|
-|12|01100111|  0  | 19  |    | 0001 | 0001 |11| 64 |     |
-|__|________|_____|_____|____|______|______|__|____|_____|
-                             |RXINFO| TX INFO |
+ __________________________________________________
+|ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|DATA|CRC8|
+|--|--------|------|----|------|------|--|----|----|
+|12|00000011|  15  |    | 0001 | 0001 |11| 64 |    |
+|__|________|______|____|______|______|__|____|____|
+                        |RXINFO| TX INFO |
+```
+
+#### Extended length
+The graph below shows a packet transmission where the length is represented with 2 bytes supporting up to 65535 bytes length as requested by the header's `EXT. LENGTH`. If the extended length feature is used, CRC32 must be applied setting the header's `CRC` bit low.
+```cpp
+ ______________________________________________
+|ID| HEADER |LEN 1|LEN 2|CRC8|BUS ID|DATA|CRC32|
+|--|--------|-----|-----|----|------|----|-----|
+|12|01100001|  0  | 14  |    | 0001 | 64 |     |
+|__|________|_____|_____|____|______|____|_____|
+
 ```
 
 #### Packet identification
-The graph below shows a packet transmission where a 2 bytes packet identifier is added as requested by header's `PACKET ID` bit. This feature is provided to avoid duplications and guarantee packet uniqueness.
+The graph below shows a packet transmission where a 2 bytes packet identifier is added as requested by header's `PACKET ID` bit. This feature is provided to avoid duplications and guarantee packet uniqueness. The receiver filters packets containing a packet identifier and sender info that already appeared previously.
 ```cpp
  _____________________________________________________________
 |ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|PACKET ID|DATA|CRC32|
 |--|--------|------|----|------|------|--|---------|----|-----|
-|12|10100111|  20  |    | 0002 | 0001 |11|   999   | 64 |     |
+|12|10100011|  20  |    | 0002 | 0001 |11|   999   | 64 |     |
 |__|________|______|____|______|______|__|_________|____|_____|
                         |RXINFO| TX INFO |            
 ```
@@ -245,5 +274,4 @@ PJON supports a network service identifier by using a 2 bytes port id. Thanks to
 |--|--------|------|----|-------|----|----|
 |12|00010000|  8   |    | 8002  | 64 |    |
 |__|________|______|____|_______|____|____|
-
 ```

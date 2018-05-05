@@ -137,7 +137,7 @@ _____|___________|_____|ROUTER|_____|___________|____
 The header is a bitmap of the meta-data contained and the configuration required. Unlike other protocols, PJON has a dynamic packet format designed to include in each packet only what is strictly required to carry out the exchange. Depending on the bitmap configuration a variable overhead (5-22 bytes) is added to information.
 
 ```cpp
-HEADER BITMASK
+HEADER BITMAP
     1      2     3    4    5     6     7     8
  ______ ______ ____ _____ _____ _____ _____ _____
 |PACKET|EXT.  |CRC |PORT |ACK  | ACK |TX   |MODE |
@@ -201,7 +201,7 @@ Channel analysis            Transmission               Response
 ```
 
 #### Local mode
-Depending on header's `MODE` bit, PJON packets can contain basic or extended support to identification. Local mode required by header's `MODE` bit low supports connectivity for up to 254 devices. In the graph below is represented the simplest local mode packet format:
+Depending on header's `MODE` bit, PJON packets can contain basic or extended support to identification. Local mode required by header's `MODE` bit low supports connectivity for up to 254 devices. In the graph below is represented the simplest local mode packet format sending `@` (decimal 64) to device `12`:
 
 ```cpp
  _______________________________________________

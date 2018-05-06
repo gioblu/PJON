@@ -90,7 +90,7 @@ template<typename Strategy>
 class PJON {
   public:
     Strategy strategy;
-    uint16_t config = PJON_TX_INFO_BIT | PJON_ACK_REQ_BIT;
+    uint8_t config = PJON_TX_INFO_BIT | PJON_ACK_REQ_BIT;
     uint8_t bus_id[4] = {0, 0, 0, 0};
     const uint8_t localhost[4] = {0, 0, 0, 0};
     uint8_t data[PJON_PACKET_MAX_LENGTH];
@@ -859,7 +859,7 @@ class PJON {
 
     /* Set the config bit state: */
 
-    void set_config_bit(bool new_state, uint16_t bit) {
+    void set_config_bit(bool new_state, uint8_t bit) {
       if(new_state) config |= bit;
       else config &= ~bit;
     };

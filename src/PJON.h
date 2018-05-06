@@ -807,11 +807,11 @@ class PJON {
       uint32_t time = PJON_MICROS(), start = time;
       uint16_t old_length = length;
 
+      _recursion++;
       while(
         (state != PJON_ACK) && (attempts <= strategy.get_max_attempts()) &&
         (uint32_t)(PJON_MICROS() - start) <= timeout
       ) {
-        _recursion++;
         if(!(length = compose_packet(
           id,
           b_id,
@@ -823,7 +823,10 @@ class PJON {
           requested_port
         ))) return PJON_FAIL;
         state = send_packet((char*)data, length);
-        if(state == PJON_ACK) return state;
+        if(state == PJON_ACK) {
+          _recursion--;
+          return state;
+        }
         attempts++;
         if(state != PJON_FAIL) strategy.handle_collision();
         if(_recursion <= 1) receive(strategy.back_off(attempts));

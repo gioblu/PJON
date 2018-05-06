@@ -804,7 +804,7 @@ class PJON {
     ) {
       uint16_t state = PJON_FAIL;
       uint32_t attempts = 0;
-      uint32_t time = PJON_MICROS(), start = time;
+      uint32_t start = PJON_MICROS();
       uint16_t old_length = length;
 
       _recursion++;
@@ -831,7 +831,6 @@ class PJON {
         if(state != PJON_FAIL) strategy.handle_collision();
         if(_recursion <= 1) receive(strategy.back_off(attempts));
         else PJON_DELAY_MICROSECONDS(strategy.back_off(attempts));
-        time = PJON_MICROS();
       }
       _recursion--;
       return state;

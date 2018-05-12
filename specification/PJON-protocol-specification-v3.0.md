@@ -245,7 +245,7 @@ If header's `TX INFO` bit is high the sender's device and bus id are included in
 ```
 
 #### Extended length
-The graph below shows a packet transmission where the length is represented with 2 bytes supporting up to 65535 bytes length as requested by the header's `EXT. LENGTH`. If the extended length feature is used, CRC32 must be applied setting the header's `CRC` bit high.
+The graph below shows a packet transmission where the length is represented with 2 bytes supporting up to 65535 bytes length as requested by the header's `EXT. LENGTH` bit. If the extended length feature is used, CRC32 must be applied setting the header's `CRC` bit high.
 ```cpp
  ______________________________________________
 |ID| HEADER |LEN 1|LEN 2|CRC8|BUS ID|DATA|CRC32|

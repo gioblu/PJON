@@ -821,7 +821,10 @@ class PJON {
           header,
           p_id,
           requested_port
-        ))) return PJON_FAIL;
+        ))) {
+          _recursion--;
+          return PJON_FAIL;
+        }
         state = send_packet((char*)data, length);
         if(state == PJON_ACK) {
           _recursion--;

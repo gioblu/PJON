@@ -20,7 +20,7 @@
    physical distance and or if transmitting long packets. */
 
 #define PJON_INCLUDE_TS true // Include only ThroughSerial
-#include "PJON/PJON.h"
+#include <PJON.h>
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   /* Make use of the payload before sending something, the buffer where payload points to is

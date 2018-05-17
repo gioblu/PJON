@@ -20,7 +20,7 @@
    physical distance and or if transmitting long packets. */
 
 #define PJON_INCLUDE_TS true // Include only ThroughSerial
-#include "PJON/PJON.h"
+#include <PJON.h>
 
 int main() {
   printf("PJON instantiation... \n");

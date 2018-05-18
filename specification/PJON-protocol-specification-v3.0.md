@@ -48,7 +48,7 @@ The graph below shows the conceptual model that characterizes and standardizes t
  _|___________________________________________
 | 4 Transport layer: PJON                     |
 | Error detection, traffic control,           |
-| Network service identification,             |
+| network service identification,             |
 | asynchronous acknowledgement                |
 |_____________________________________________|
 | 3 Network layer: PJON                       |
@@ -57,7 +57,7 @@ The graph below shows the conceptual model that characterizes and standardizes t
 | synchronous acknowledgment                  |
 |_____________________________________________|
 | 2 Data link layer: PJDL, PJDLR, PJDLS, TSDL |
-| Framing, collision avoidance,               |
+| Collision avoidance, frame transmission,    |
 | synchronous response                        |
 |_____________________________________________|
 | 1 Physical layer                            |

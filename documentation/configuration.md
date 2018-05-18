@@ -81,7 +81,7 @@ Configure your device to act as a router, so receiving all the incoming packets:
 ```cpp  
   bus.set_router(true);
 ```
-Configure the instance to include a port identification in the packet. Ports from 0 to 8000 are reserved to known protocols which index is present in the [known protocol list](/specification/PJON-known-protocols-list.md), ports from 8001 to 65535 are free for custom use cases:
+Configure the instance to include a port identification in the packet. Ports from 0 to 8000 are reserved to known network services which index is present in the [known network services list](/specification/PJON-network-services-list.md), ports from 8001 to 65535 are free for custom use cases:
 ```cpp  
   bus.include_port(false);      // Avoid port inclusion (default)  
   bus.include_port(true, 8001); // Include custom port

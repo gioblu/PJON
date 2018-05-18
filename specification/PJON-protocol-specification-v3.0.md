@@ -1,8 +1,8 @@
 #### Network layer
 - PJON (Padded Jittering Operative Network) Protocol specification: **[v3.0](/specification/PJON-protocol-specification-v3.0.md)**
-- Acknowledge specification: [v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md)
+- PJON Acknowledge specification: [v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md)
 - PJON Dynamic addressing specification: [v2.0](/specification/PJON-dynamic-addressing-specification-v2.0.md)
-- PJON known protocols: [list](/specification/PJON-known-protocols-list.md)
+- PJON Network services: [list](/specification/PJON-network-services-list.md)
 #### Data link layer
 - PJDL (Padded Jittering Data Link) specification:
 [PJDL v2.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) - [PJDLR v2.0](/src/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) - [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
@@ -34,33 +34,35 @@ The PJON protocol v3.0 in local mode supports connectivity for up to 254 devices
 The graph below shows the conceptual model that characterizes and standardizes the communication. Its goal is the interoperability of diverse systems on a wide range of media with the use of a new set of open-source protocols. The graph partitions represent abstraction layers.
 
 ```cpp  
- ______________________________________________
-| 7 Application layer                          |
-| Remote access, automation, data sharing      |
-|______________________________________________|
-| 6 Presentation layer                         |
-| Encryption, encoding, data compression       |
-|______________________________________________|
-| 5 Session layer                              |
-| Session                                      |
-|______________________________________________|
- You are here
- _|____________________________________________
-| 4 Transport layer: PJON                      |
-| Port identification, traffic control         |
-|______________________________________________|
-| 3 Network layer: PJON                        |
-| Addressing, error detection, reliable packet |
-| transmission, packet identification,         |
-| routing, asynchronous acknowledgement        |
-|______________________________________________|
-| 2 Data link layer: PJDL/PJDLR/PJDLS/TSDL     |
-| Framing, collision avoidance, synchronous    |
-| acknowledgement                              |
-|______________________________________________|
-| 1 Physical layer                             |
-| Electric, radio, light impulses              |
-|______________________________________________|
+ _____________________________________________
+| 7 Application layer                         |
+| Remote access, automation, data sharing     |
+|_____________________________________________|
+| 6 Presentation layer                        |
+| Encryption, encoding, data compression      |
+|_____________________________________________|
+| 5 Session layer                             |
+| Semi-permanent interactive exchange         |
+|_____________________________________________|
+ You are here                                 
+ _|___________________________________________
+| 4 Transport layer: PJON                     |
+| Error detection, traffic control,           |
+| Network service identification,             |
+| asynchronous acknowledgement                |
+|_____________________________________________|
+| 3 Network layer: PJON                       |
+| Addressing, packet transmission,            |
+| packet identification, routing, switching,  |
+| synchronous acknowledgment                  |
+|_____________________________________________|
+| 2 Data link layer: PJDL, PJDLR, PJDLS, TSDL |
+| Framing, collision avoidance,               |
+| synchronous response                        |
+|_____________________________________________|
+| 1 Physical layer                            |
+| Electric, radio, light impulses             |
+|_____________________________________________|
 ```
 
 ### Basic concepts
@@ -266,8 +268,8 @@ The graph below shows a packet transmission where a 2 bytes packet identifier is
                         |RXINFO| TX INFO |            
 ```
 
-#### Port identification
-PJON supports a network service identifier by using a 2 bytes port id. Thanks to this feature many services can operate and be identified safely. Ports from `0` to `8000` are reserved to known services which index is present in the [known services list](/specification/PJON-known-services-list.md), ports from `8001` to `65535` are free for custom use cases. The graph below shows a packet transmission where port 8002 is inserted in the packet and header's `PORT` bit is high to signal its presence.
+#### Network services
+PJON supports a network service identifier by using a 2 bytes port id. Thanks to this feature many services can operate and be identified safely. Ports from `0` to `8000` are reserved to known services which index is present in the [known network services list](/specification/PJON-network-services-list.md), ports from `8001` to `65535` are free for custom use cases. The graph below shows a packet transmission where port 8002 is inserted in the packet and header's `PORT` bit is high to signal its presence.
 ```cpp
  _________________________________________
 |ID| HEADER |LENGTH|CRC8|PORT ID|DATA|CRC8|

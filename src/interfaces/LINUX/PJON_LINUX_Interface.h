@@ -74,11 +74,17 @@
     std::this_thread::sleep_for(std::chrono::milliseconds(delay_value_ms));
   }
 
+  /* Generic constants ---------------------------------------------------- */
+
   #ifndef A0
     #define A0 0
   #endif
 
-  /* LINUX IO functions -------------------------------- */
+  #ifndef LED_BUILTIN
+    #define LED_BUILTIN -1
+  #endif
+
+  /* LINUX IO system calls ------------------------------------------------ */
 
   #if !defined(PJON_ANALOG_READ)
     #define PJON_ANALOG_READ(P) 0

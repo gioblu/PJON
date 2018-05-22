@@ -47,8 +47,8 @@ void receiver_functionB(uint8_t *payload, uint16_t length, const PJON_Packet_Inf
 
 void setup() {
   // Initialize LED 13 to be off
-  pinMode(13, OUTPUT);
-  digitalWrite(13, LOW);
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
   // Bus 0.0.0.1 configuration
   busA.set_synchronous_acknowledge(true);
   busA.set_asynchronous_acknowledge(true);

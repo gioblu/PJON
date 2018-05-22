@@ -72,8 +72,14 @@
     std::this_thread::sleep_for(std::chrono::milliseconds(delay_value_ms));
   }
 
+  /* Generic constants ---------------------------------------------------- */
+
   #ifndef A0
     #define A0 0
+  #endif
+
+  #ifndef LED_BUILTIN
+    #define LED_BUILTIN -1
   #endif
 
   /* Fallback to WINDOWS-specific functions -------------------------------- */

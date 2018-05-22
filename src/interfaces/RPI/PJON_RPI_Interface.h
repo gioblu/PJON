@@ -25,11 +25,17 @@
   #include <wiringPi.h>
   #include <wiringSerial.h>
 
+  /* Generic constants ---------------------------------------------------- */
+
   #ifndef A0
     #define A0 0
   #endif
 
-  /* Fallback to WiringPi core functions ------------------------------------ */
+  #ifndef LED_BUILTIN
+    #define LED_BUILTIN -1
+  #endif
+
+  /* Fallback to WiringPi core functions ---------------------------------- */
 
   #if !defined(PJON_ANALOG_READ)
     #define PJON_ANALOG_READ(P) analogRead(P)

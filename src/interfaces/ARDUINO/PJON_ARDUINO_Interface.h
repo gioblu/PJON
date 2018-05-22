@@ -32,7 +32,13 @@
   #include <Arduino.h>
   #include "PJON_IO.h"
 
-  /* Fallback to digitalWrite --------------------------------------------- */
+  /* Generic constants ---------------------------------------------------- */
+
+  #ifndef LED_BUILTIN
+    #define LED_BUILTIN -1
+  #endif
+
+  /* Arduino IO system calls ---------------------------------------------- */
 
   #ifndef PJON_ANALOG_READ
     #define PJON_ANALOG_READ analogRead

@@ -5,6 +5,7 @@
 #include <inttypes.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 // RPI serial interface
 #include <wiringPi.h>
 //#include <wiringSerial.h>
@@ -22,14 +23,6 @@
 #define PJON_INCLUDE_TS true // Include only ThroughSerial
 #include <PJON.h>
 
-void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
-  /* Make use of the payload before sending something, the buffer where payload points to is
-     overwritten when a new message is dispatched */
-  if(payload[0] == 'B') {
-    printf("BLINK\n");
-  }
-}
-
 int main() {
   printf("PJON instantiation... \n");
   PJON<ThroughSerial> bus(45);
@@ -41,15 +34,17 @@ int main() {
   printf("Setting serial... \n");
   bus.strategy.set_serial(s);
   bus.strategy.set_baud_rate(baud_rate);
-  bus.set_receiver(receiver_function);
 
   printf("Opening bus... \n");
   bus.begin();
   printf("Success, initiating BlinkTest repeated transmission... \n");
-  bus.send_repeatedly(44, "B", 1, 1000000); // Send B to device 44 every second
 
   while(true) {
+    usleep(100000);
+    if(bus.send_packet(44, "B", 1) == PJON_ACK) {
+      printf("Device blinked as requested! \n");
+    } else printf("Failure! \n");
     bus.update();
-    bus.receive(1000);
+    bus.receive(1000000);
   }
 };

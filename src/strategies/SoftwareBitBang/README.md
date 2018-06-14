@@ -79,7 +79,7 @@ void setup() {
   bus.strategy.set_pins(11, 12);
 }
 ```
-The SoftwareBitBang implementation permits the use of input and an output pin because separated signals may be required if additional circuitry is used for amplification or noise filtering. It also works if you directly connect the pins as a simple point-to-point null-modem or cross-over serial.
+The SoftwareBitBang implementation permits the use of input and output pins because separated signals may be required if additional circuitry is used for amplification or noise filtering. It also works if you directly connect the pins as a simple point-to-point null-modem or cross-over serial link.
 
 After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance. All the other necessary information is present in the general [Documentation](/documentation).
 

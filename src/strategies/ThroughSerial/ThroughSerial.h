@@ -221,6 +221,7 @@ class ThroughSerial {
     };
 
     void end_tx() {
+      PJON_DELAY(_RS485_delay);
       if(_enable_RS485_txe_pin != TS_NOT_ASSIGNED) {
         PJON_IO_WRITE(_enable_RS485_txe_pin, LOW);
         if(_enable_RS485_rxe_pin != TS_NOT_ASSIGNED)
@@ -261,6 +262,10 @@ class ThroughSerial {
       PJON_IO_MODE(_enable_RS485_txe_pin, OUTPUT);
     }
 
+    void set_RS485_delay(uint32_t d) {
+      _RS485_delay = d;
+    };
+
   private:
   #if defined(RPI)
     uint16_t _flush_offset = TS_FLUSH_OFFSET;
@@ -270,4 +275,5 @@ class ThroughSerial {
     uint32_t _last_reception_time;
     uint8_t  _enable_RS485_rxe_pin = TS_NOT_ASSIGNED;
     uint8_t  _enable_RS485_txe_pin = TS_NOT_ASSIGNED;
+    uint32_t _RS485_delay = TS_RS485_DELAY;
 };

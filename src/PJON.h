@@ -29,6 +29,7 @@ Credits to contributors:
 - Fred Larsen. Systems engineering, header driven communication, debugging
 - Zbigniew Zasieczny. WINX86 interface
 - Matheus Garbelini. ThroughLora strategy
+- drtrigon github user. LINUX ThroughSerial examples
 - Wilfried Klaas ATtiny44/84 porting
 - 4ib3r github user. Memory optimization configurable strategies inclusion
 - budaics github user. ATtiny85 16MHz external clock testing and wiki page

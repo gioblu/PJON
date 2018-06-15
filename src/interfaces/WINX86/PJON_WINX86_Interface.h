@@ -119,6 +119,10 @@
 
   /* Serial ----------------------------------------------------------------- */
 
+  #ifndef PJON_SERIAL_TYPE
+    #define PJON_SERIAL_TYPE Serial
+  #endif
+
   #ifndef PJON_SERIAL_AVAILABLE
     #define PJON_SERIAL_AVAILABLE(S) S->serialDataAvail()
   #endif

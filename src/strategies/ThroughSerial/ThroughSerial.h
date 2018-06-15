@@ -45,13 +45,8 @@
 
 class ThroughSerial {
   public:
-    #if defined(ARDUINO)
-      Stream *serial = NULL;
-    #elif defined(RPI)
-      int16_t serial = 0;
-    #elif defined(_WIN32)
-      Serial *serial = NULL;
-    #endif
+    PJON_SERIAL_TYPE *serial;
+
     /* Returns suggested delay related to the attempts passed as parameter: */
 
     uint32_t back_off(uint8_t attempts) {
@@ -211,16 +206,9 @@ class ThroughSerial {
 
     /* Pass the Serial port where you want to operate with */
 
-  #if defined(ARDUINO)
-    void set_serial(Stream *serial_port) {
-  #elif defined(RPI)
-    void set_serial(int16_t serial_port) {
-  #elif defined(_WIN32)
-    void set_serial(Serial *serial_port) {
-  #endif
+    void set_serial(PJON_SERIAL_TYPE *serial_port) {
       serial = serial_port;
     };
-
 
     /* RS485 enable pins handling: */
 

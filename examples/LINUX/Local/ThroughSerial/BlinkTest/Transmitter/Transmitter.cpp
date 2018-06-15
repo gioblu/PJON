@@ -7,7 +7,6 @@
 #include <string.h>
 // RPI serial interface
 #include <wiringPi.h>
-//#include <wiringSerial.h>
 
 #ifndef RPI
   #define RPI true
@@ -29,7 +28,6 @@ int main() {
   printf("Opening serial... \n");
   int s = serialOpen("/dev/ttyACM0", baud_rate);
   if(int(s) < 0) printf("Serial open fail!");
-//  if(wiringPiSetup() == -1) printf("WiringPi setup fail");
   printf("Setting serial... \n");
   bus.strategy.set_serial(s);
   bus.strategy.set_baud_rate(baud_rate);

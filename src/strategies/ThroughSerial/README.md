@@ -53,6 +53,12 @@ bus.strategy.set_RS485_rxe_pin(11);
 // Set RS485 transmission enable pin
 bus.strategy.set_RS485_txe_pin(12);
 ```
+In some cases it may be required to add a delay before disabling the RS485 pins txe and or rxe:
+```cpp
+// Set RS485 txe/rxe pins disable delay in milliseconds
+bus.strategy.set_RS485_delay(1);
+```
+
 See [RS485-Blink](../../examples/ARDUINO/Local/ThroughSerial/RS485-Blink) and [RS485-AsyncAck](../../examples/ARDUINO/Local/ThroughSerial/RS485-AsyncAck) examples.
 
 HC-12 wireless module supports both synchronous and asynchronous acknowledgement, see [HC-12-Blink](../../examples/ARDUINO/Local/ThroughSerial/HC-12-Blink), [HC-12-SendAndReceive](../../examples/ARDUINO/Local/ThroughSerial/HC-12-SendAndReceive) and [HC-12-AsyncAck](../../examples/ARDUINO/Local/ThroughSerial/HC-12-AsyncAck) examples.

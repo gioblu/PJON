@@ -237,7 +237,6 @@ class ThroughSerial {
       _bd = baud;
     };
 
-
     /* Set flush timing offset in microseconds between expected and real
        serial byte transmission: */
 

@@ -94,6 +94,10 @@
 
   /* Timing --------------------------------------------------------------- */
 
+  #ifndef PJON_DELAY
+    #define PJON_DELAY delay
+  #endif
+
   #ifndef PJON_DELAY_MICROSECONDS
     #define PJON_DELAY_MICROSECONDS delayMicroseconds
   #endif

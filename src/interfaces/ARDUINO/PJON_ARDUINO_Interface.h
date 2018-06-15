@@ -77,7 +77,7 @@
   /* Serial --------------------------------------------------------------- */
 
   #ifndef PJON_SERIAL_TYPE
-    #define PJON_SERIAL_TYPE Stream
+    #define PJON_SERIAL_TYPE Stream * 
   #endif
 
   #ifndef PJON_SERIAL_AVAILABLE

@@ -120,7 +120,7 @@
   /* Serial ----------------------------------------------------------------- */
 
   #ifndef PJON_SERIAL_TYPE
-    #define PJON_SERIAL_TYPE Serial
+    #define PJON_SERIAL_TYPE Serial * 
   #endif
 
   #ifndef PJON_SERIAL_AVAILABLE

@@ -75,7 +75,7 @@
   /* Serial ----------------------------------------------------------------- */
 
   #ifndef PJON_SERIAL_TYPE
-    #define PJON_SERIAL_TYPE uint16_t 
+    #define PJON_SERIAL_TYPE int16_t
   #endif
 
   #ifndef PJON_SERIAL_AVAILABLE

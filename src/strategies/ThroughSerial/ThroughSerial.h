@@ -45,7 +45,7 @@
 
 class ThroughSerial {
   public:
-    PJON_SERIAL_TYPE *serial;
+    PJON_SERIAL_TYPE serial;
 
     /* Returns suggested delay related to the attempts passed as parameter: */
 
@@ -206,7 +206,7 @@ class ThroughSerial {
 
     /* Pass the Serial port where you want to operate with */
 
-    void set_serial(PJON_SERIAL_TYPE *serial_port) {
+    void set_serial(PJON_SERIAL_TYPE serial_port) {
       serial = serial_port;
     };
 

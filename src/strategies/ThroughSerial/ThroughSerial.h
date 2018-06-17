@@ -221,8 +221,8 @@ class ThroughSerial {
     };
 
     void end_tx() {
-      PJON_DELAY(_RS485_delay);
       if(_enable_RS485_txe_pin != TS_NOT_ASSIGNED) {
+        PJON_DELAY(_RS485_delay);
         PJON_IO_WRITE(_enable_RS485_txe_pin, LOW);
         if(_enable_RS485_rxe_pin != TS_NOT_ASSIGNED)
           PJON_IO_WRITE(_enable_RS485_rxe_pin, LOW);

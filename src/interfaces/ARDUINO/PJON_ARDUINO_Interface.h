@@ -29,6 +29,12 @@
     #define PJON_ESP
   #endif
 
+  #ifdef __STM32F1__
+    #ifdef PA0
+      #define A0 PA0
+    #endif
+  #endif
+
   #include <Arduino.h>
   #include "PJON_IO.h"
 

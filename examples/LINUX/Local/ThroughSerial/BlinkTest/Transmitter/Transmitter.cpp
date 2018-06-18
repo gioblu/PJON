@@ -5,7 +5,10 @@
 #include <inttypes.h>
 #include <stdlib.h>
 #include <string.h>
-// RPI serial interface
+
+/* WiringPi RaspberryPi system access library is used to implement the Serial
+   system calls, so be sure to have it available for use */
+
 #include <wiringPi.h>
 
 #ifndef RPI

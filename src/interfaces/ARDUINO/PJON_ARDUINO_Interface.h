@@ -66,8 +66,14 @@
 
   /* Random --------------------------------------------------------------- */
 
-  #ifndef PJON_RANDOM
-    #define PJON_RANDOM random
+  #ifdef __STM32F1__
+    #ifndef PJON_RANDOM
+      #define PJON_RANDOM(R) random(R ? R : R + 1)
+    #endif
+  #else
+    #ifndef PJON_RANDOM
+      #define PJON_RANDOM random
+    #endif
   #endif
 
   #ifndef PJON_RANDOM_SEED

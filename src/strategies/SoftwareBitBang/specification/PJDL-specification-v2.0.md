@@ -67,7 +67,7 @@ Minimum acceptable HIGH padding bit duration
 The synchronization pad adds a certain overhead, although, including synchronization along with the data eliminates the need of accurate timing or of a dedicated clock line. The minimum acceptable synchronization pad's duration is the timeframe in which a receiver initiating polling can correctly receive a byte. If the length of the first padding bit is less than the minimum acceptable duration, the received signal is considered interference. The minimum acceptable duration of the first padding bit must be shorter than a padding bit duration; a large minimum acceptable duration reduces the chances of false positive's occurrences, a small minimum acceptable duration instead mitigates timing inaccuracies, for this reason it is suggested to evaluate its setting depending on requirements and available resources. The presence of synchronization pads with their logic 1 between each byte also ensures that a frame composed of a series of bytes with decimal value 0 can be transmitted safely without risk of third-party collision.
 
 #### Frame transmission
-Before a frame transmission, the communication medium is analysed, if logic 1 is present ongoing communication is detected and collision is avoided, if logic 0 is detected for a duration longer than a byte transmission plus a small random timeframe, frame transmission starts with a symbol composed by 3 consequent synchronization pads followed by data bytes. The synchronization pad is used for frame initialization, byte initialization and sampling synchronization to reduce the amount of resources required to implement those features.  
+Before a frame transmission, the communication medium is analysed, if logic 1 is present ongoing communication is detected and collision is avoided, if logic 0 is detected for a duration longer than a byte transmission plus a small random timeframe, frame transmission starts with a symbol composed by 3 consequent synchronization pads followed by data bytes. The synchronization pad is used for frame initialization and byte initialization to reduce the amount of resources required to implement those features.  
 ```cpp  
  ________ _________________ __________________________________
 |ANALYSIS|   FRAME INIT    | DATA 1-65535 bytes               |
@@ -78,7 +78,7 @@ Before a frame transmission, the communication medium is analysed, if logic 1 is
 |00000000| 1 |0| 1 |0| 1 |0| 1 |0|0000|11|00| 1 |0|00000|1|0|1|
 |________|___|_|___|_|___|_|___|_|____|__|__|___|_|_____|_|_|_|
 ```
-When a frame is received, a low performance microcontroller with an inaccurate clock can correctly synchronize with transmitter during the frame initializer, and consequently each byte is received. On receiver's side a frame reception starts if 3 synchronization pads are detected and if their duration is equal or higher than:
+When a frame is received a low performance microcontroller with an inaccurate clock can correctly synchronize with transmitter during the frame initializer and consequently each byte is received. On receiver's side a frame reception starts if 3 synchronization pads are detected and if their duration is equal or higher than:
 
 `frame initializer expected duration - (sync pad bit 1 duration - sync pad bit 1 minimum acceptable duration)`
 
@@ -106,7 +106,7 @@ Transmission                                      Response
 
 ```
 
-The maximum time dedicated to potential acknowledgement reception and consequent medium jittering is estimated adding the maximum frame length CRC computation time to the expected latency. Thanks to the presence of the jittering wave, many differently configured devices can coexist on the same medium with no risk of collision.
+The maximum time dedicated to potential acknowledgement reception and consequent medium jittering is estimated adding the maximum frame length CRC computation time to the expected latency. Thanks to the presence of the jittering wave many differently configured devices can coexist on the same medium with no risk of collision.
 
 #### Communication modes
 The proposed communication modes are the result of years of testing and optimization and have been selected to be easily supported by limited microcontrollers.  

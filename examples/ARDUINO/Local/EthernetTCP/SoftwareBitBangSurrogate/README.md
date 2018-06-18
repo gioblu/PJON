@@ -13,14 +13,12 @@ enabling for example a Raspberry PI to communicate in a `SoftwareBitBang` bus th
 Also, the `RemoteWorker` can run on a computer, allowing a lot of possibilities, for example a personal computer running whatever operative system to be part of a `SoftwareBitBang` bus.
 
 ## The Surrogate device
-The surrogate will have the same bus id on the `SoftwareBitBang` bus as the `RemoteWorker` has on the `EthernetTCP` bus (which is private between the `Surrogate` and `RemoteWorker` devices). It will pass any packets to that id on the `SoftwareBitBang` bus to the `RemoteWorker`, and forward all packets from the `RemoteWorker` to the correct device on the `SoftwareBitBang` bus, acting as a transparent link.
-
-The difference between a Surrogate and a Switch or Router is that the Surrogate does not pick up and forward any packets to other devices than the RemoteWorker which it represents.
+The surrogate has the same bus id on the `SoftwareBitBang` bus as the `RemoteWorker` has on the `EthernetTCP` bus (which is private between the `Surrogate` and `RemoteWorker` devices). It forwards packets to that id on the `SoftwareBitBang` bus to the `RemoteWorker`, and forwards all packets from the `RemoteWorker` to devices connected to the `SoftwareBitBang` bus. The surrogate is not a switch or a general purpose routing device, but is a custom class engineered to transparently connect to `SoftwareBitBang` bus a device connected using `EthernetTCP`. The difference between a Surrogate and a Switch or Router is that the Surrogate does not pick up and forward any packets to other devices than the RemoteWorker which it represents.
 
 ## The RemoteWorker device
 The `RemoteWorker` name is just a concept for the role this device plays in relation to the SWBB bus. It can be named anything and do whatever work is wanted.
 
-Not relevant for an Arduino, but for a `RemoteWorker` program running on a multi-threaded OS, is that the program may be a "master" that interacts in multiple buses via one `Surrogate` in each bus, all connected through Ethernet. 
+Not relevant for an Arduino, but for a `RemoteWorker` program running on a multi-threaded OS, is that the program may be a "master" that interacts in multiple buses via one `Surrogate` in each bus, all connected through Ethernet.
 
 ## Ethernet
 The `EthernetTCP` mode `single_initiate_direction` used in this scheme establishes one socket for each packet direction, but initiates these sockets in the direction from the Surrogate to the `RemoteWorker`. The `RemoteWorker` can be in a central position, with port forwarding for `Surrogates` on potentially multiple remote buses. This allows for a "master" to be in a central position behind a router that just forwards one TCP port.

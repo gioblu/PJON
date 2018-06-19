@@ -53,8 +53,6 @@ and maintainance costs. Thank you and happy tinkering!
 - Ethereum: [0xf34AEAF3B149454522019781668F9a2d1762559b](https://etherchain.org/account/0xf34AEAF3B149454522019781668F9a2d1762559b)
 
 #### License
-All the software included in this project still experimental, it is distributed "AS IS" without any warranty and should be used only for experimental purposes.
-
-[Licensed](https://github.com/gioblu/PJON/blob/master/LICENSE.md) under the Apache License, Version 2.0 (the "License")
+All the software included in this project still experimental, it is distributed "AS IS" without any warranty and should be used only for experimental purposes. [Licensed](https://github.com/gioblu/PJON/blob/master/LICENSE.md) under the Apache License, Version 2.0 (the "License")
 
 PJON® and its brand are registered trademarks, property of Giovanni Blu Mitolo gioscarab@gmail.com

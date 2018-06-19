@@ -8,10 +8,11 @@ void setup() {
   digitalWrite(13, LOW); // Initialize LED 13 to be off
 
   Serial.begin(9600);
-  bus.strategy.set_serial(&Serial);
-  bus.begin();
 
+  bus.strategy.set_serial(&Serial);
   bus.set_receiver(receiver_function);
+  bus.set_synchronous_acknowledge(false);
+  bus.begin();
 };
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
@@ -27,5 +28,5 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 
 void loop() {
   bus.update();
-  bus.receive(1000);
+  bus.receive();
 };

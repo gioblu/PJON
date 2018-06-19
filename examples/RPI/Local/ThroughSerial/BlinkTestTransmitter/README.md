@@ -14,4 +14,4 @@ Typing `sudo ./Transmitter` the program is executed and some logging info should
 
 Now program the receiving Arduino compatible device, using `PJON/examples/ARDUINO/Local/ThroughSerial/BlinkTest/Receiver/Receiver.ino` [receiver's sketch](https://github.com/gioblu/PJON/blob/master/examples/ARDUINO/Local/ThroughSerial/BlinkTest/Receiver/Receiver.ino) and the Arduino IDE.
 
-The Arduino should blink as soon as you type `sudo ./compiled_program` and hit enter.
+The Arduino should blink as soon as you type `sudo ./Transmitter` and hit enter.

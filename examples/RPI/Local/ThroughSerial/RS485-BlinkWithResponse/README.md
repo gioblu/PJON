@@ -9,7 +9,7 @@ To compile the program it is necessary to reach with the terminal the `PJON/exam
 
 Typing `sudo ./Transmitter` the program is executed and some logging info should appear.
 
-Now program the receiving Arduino compatible device, using `PJON/examples/ARDUINO/Local/ThroughSerial/RS485-BlinkWithResponse/Receiver/Receiver.ino` [receiver's sketch](https://github.com/gioblu/PJON/blob/master/examples/ARDUINO/Local/ThroughSerial/BlinkWithResponse/Receiver/Receiver.ino) and the Arduino IDE.
+Now program the receiving Arduino compatible device, using `PJON/examples/ARDUINO/Local/ThroughSerial/RS485-BlinkWithResponse/Receiver/Receiver.ino` [receiver's sketch](https://github.com/gioblu/PJON/blob/master/examples/ARDUINO/Local/ThroughSerial/RS485-BlinkWithResponse/Receiver/Receiver.ino) and the Arduino IDE.
 
 RPI circuit:
 - Connect RPI Serial TX pin or GPIO14 to DI RS485 pin

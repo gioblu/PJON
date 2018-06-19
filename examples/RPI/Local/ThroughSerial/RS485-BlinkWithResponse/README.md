@@ -5,7 +5,7 @@ If in your case it is missing, type `sudo apt-get install wiringPi`
 
 To correctly receive data on Raspberry Pi it may be necessary to disable the serial console, accessing as root to `boot/cmdline.txt` and removing `console=ttyAMA0, 115200`  or `console=serial0, 115200` if present.
 
-To compile the program it is necessary to reach with the terminal the `PJON/examples/RPI/Local/ThroughSerial/RS485-BlinkWithResponse/` directory and type `make`. Once the program is compiled you should see a new file called `Transmitter`. Typing `sudo ./Transmitter` the program is executed and some logging info should appear.
+To compile the program it is necessary to reach with the terminal the `PJON/examples/RPI/Local/ThroughSerial/RS485-BlinkWithResponse/` directory and type `make`. Once the program is compiled you should see a new file called `Transmitter`.
 
 Typing `sudo ./Transmitter` the program is executed and some logging info should appear.
 

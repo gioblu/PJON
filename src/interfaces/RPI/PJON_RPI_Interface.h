@@ -19,9 +19,9 @@
 #pragma once
 
 #if defined(RPI)
-  #include <inttypes.h>
-  #include <stdlib.h>
-  #include <string.h>
+  #include <cinttypes>
+  #include <cstdlib>
+  #include <cstring>
   #include <wiringPi.h>
   #include <wiringSerial.h>
 

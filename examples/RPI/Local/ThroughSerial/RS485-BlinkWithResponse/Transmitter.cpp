@@ -46,7 +46,7 @@ int main() {
   uint32_t baud_rate = 9600;
 
   printf("PJON ThroughSerial RS485-BlinkWithResponse Transmitter test \n");
-  printf("Opening serial port /dev/ttyAMA0 @ %d", baud_rate);
+  printf("Opening serial port /dev/ttyAMA0 @ %d \n", baud_rate);
   int s = serialOpen("/dev/ttyAMA0", baud_rate);
   if(int(s) < 0) printf("ERROR - Serial open fail");
   if(wiringPiSetup() == -1) printf("ERROR - WiringPi setup fail");

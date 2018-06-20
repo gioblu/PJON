@@ -15,7 +15,7 @@
 
 For the PJON® Protocol specification see the specification directory.
 
-PJON® Standard compliant tools:
+Compliant tools:
 - ModuleInterface - Easy config and value sync between IOT modules
  https://github.com/fredilarsen/ModuleInterface
 - Command line PJON wrapper over unnamed pipes by Zbigniew Zasieczny
@@ -25,15 +25,17 @@ PJON® Standard compliant tools:
 - PJON-gRPC - gRPC server-client by Oleg Galitskiy
  https://github.com/Galitskiy/PJON-gRPC
 
- If you believe in this project and you appreciate our work, please, make a
- donation. The PJON Foundation is entirely financed by contributions of wise
- people like you and its resources are solely invested to cover the development
- and maintainance costs.
+ The PJON project is entirely financed by contributions of people like you and
+ its resources are solely invested to cover the development and maintainance
+ costs, consider to make donation:
  - Paypal:   https://www.paypal.me/PJON
  - Bitcoin:  1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD
  - Ethereum: 0xf34AEAF3B149454522019781668F9a2d1762559b
  Thank you and happy tinkering!
  _____________________________________________________________________________
+
+This software is experimental and it is distributed "AS IS" without any
+warranty, use it at your own risk.
 
 Copyright 2010-2018 by Giovanni Blu Mitolo gioscarab@gmail.com
 

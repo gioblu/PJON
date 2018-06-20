@@ -142,9 +142,9 @@ protected:
   #ifdef PJON_ROUTER_NEED_INHERITANCE
   virtual
   #endif
-  void send_packet(const uint8_t *payload, const uint16_t length, 
-                   const uint8_t receiver_bus, const uint8_t sender_bus, 
-                   bool &ack_sent, const PJON_Packet_Info &packet_info) {          
+  void send_packet(const uint8_t *payload, const uint16_t length,
+                   const uint8_t receiver_bus, const uint8_t sender_bus,
+                   bool &ack_sent, const PJON_Packet_Info &packet_info) {
     // Send an ACK once to notify that the packet will be delivered
     if(
       !ack_sent &&
@@ -167,16 +167,16 @@ protected:
       packet_info.port
     );
   }
-  
-  void forward_packet(const uint8_t *payload, const uint16_t length, 
-                      const uint8_t receiver_bus, const uint8_t sender_bus, 
+
+  void forward_packet(const uint8_t *payload, const uint16_t length,
+                      const uint8_t receiver_bus, const uint8_t sender_bus,
                       bool &ack_sent, const PJON_Packet_Info &packet_info) {
     // If receiving bus matches and not equal to sending bus, then route packet
     if(receiver_bus != PJON_NOT_ASSIGNED && receiver_bus != sender_bus) {
       send_packet(payload, length, receiver_bus, sender_bus, ack_sent, packet_info);
-    }                        
-  }  
-  
+    }
+  }
+
   #ifdef PJON_ROUTER_NEED_INHERITANCE
   virtual
   #endif
@@ -195,7 +195,7 @@ protected:
     uint8_t *payload,
     uint16_t length,
     const PJON_Packet_Info &packet_info
-  ) {    
+  ) {
     uint8_t start_search = 0;
     bool ack_sent = false; // Send ACK only once even if delivering copies to multiple buses
     do {
@@ -206,7 +206,7 @@ protected:
       );
 
       if(receiver_bus == PJON_NOT_ASSIGNED) receiver_bus = default_gateway;
-      
+
       forward_packet(payload, length, receiver_bus, current_bus, ack_sent, packet_info);
 
     } while(start_search != PJON_NOT_ASSIGNED);
@@ -258,9 +258,9 @@ public:
       PJONSimpleSwitch<Strategy>::error_function
     );
   };
-  
+
   uint8_t get_current_bus() const { return current_bus; }
-  
+
   static void receiver_function(
     uint8_t *payload,
     uint16_t length,

@@ -128,7 +128,7 @@ public:
   void set_sendnotification(PJON_SendNotification s) { sendnotification = s; };
 
   void set_custom_ptr(void *custom_ptr) { custom_pointer = custom_ptr; };
-  
+
   void send_packet(
     const uint8_t *payload,
     uint16_t length,

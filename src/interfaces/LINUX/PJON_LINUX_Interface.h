@@ -106,7 +106,7 @@
     #define PJON_IO_PULL_DOWN(P)
   #endif
 
-  /* Random ----------------------------------------------------------------- */
+  /* Random --------------------------------------------------------------- */
 
   #ifndef PJON_RANDOM
     #define PJON_RANDOM(randMax) (int)((1.0 + randMax) * rand() / ( RAND_MAX + 1.0 ) )
@@ -118,6 +118,7 @@
     #define PJON_RANDOM_SEED srand
   #endif
 
+  /* Timing --------------------------------------------------------------- */
 
   #ifndef PJON_DELAY
     #define PJON_DELAY delay

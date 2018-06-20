@@ -684,7 +684,7 @@ public:
           Serial.println("Accept rev OK");
         #endif
         uint32_t connection_header = 0;
-        if (read_bytes(_client_out, (uint8_t*) &connection_header, 4) == 4 && 
+        if (read_bytes(_client_out, (uint8_t*) &connection_header, 4) == 4 &&
             connection_header == htonl(ETCP_CONNECTION_HEADER_B))
           connected_reverse = true;
         else {
@@ -1128,7 +1128,7 @@ public:
        without delivering any */
     if(_single_socket) {
       if(!_server) {
-      #ifdef ETCP_SINGLE_SOCKET_WITH_ACK      
+      #ifdef ETCP_SINGLE_SOCKET_WITH_ACK
         return single_socket_transfer(_client_out, remote_id, true, NULL, 0);
       #else
         (void)remote_id; // Avoid "unused parameter" warning
@@ -1153,18 +1153,18 @@ public:
 
   uint16_t receive() {
     if(_server == NULL) { // Not listening for incoming connections
-      #if defined(ETCP_SINGLE_SOCKET_WITH_ACK) || defined(ETCP_SINGLE_DIRECTION) 
+      #if defined(ETCP_SINGLE_SOCKET_WITH_ACK) || defined(ETCP_SINGLE_DIRECTION)
       int16_t remote_id = _remote_node_count == 1 ? _remote_id[0] : -1;
       #endif
       if(_single_socket) { // Single-socket mode.
         /* Only read from already established outgoing socket, or create
         connection if there is only one remote node configured (no doubt about
         which node to connect to). */
-        #ifdef ETCP_SINGLE_SOCKET_WITH_ACK      
+        #ifdef ETCP_SINGLE_SOCKET_WITH_ACK
         return single_socket_transfer(_client_out, remote_id, true, NULL, 0);
         #else
-        return PJON_FAIL;  
-        #endif  
+        return PJON_FAIL;
+        #endif
       }
       #ifdef ETCP_SINGLE_DIRECTION
       else if (_initiate_both_sockets_in_same_direction && _initiator) {
@@ -1181,7 +1181,7 @@ public:
         #ifdef ETCP_SINGLE_SOCKET_WITH_ACK
         return single_socket_transfer(_client_in, -1, false, NULL, 0);
         #else
-        return PJON_FAIL;  
+        return PJON_FAIL;
         #endif
       }else {
         // Accept incoming connection(s)
@@ -1228,8 +1228,8 @@ public:
         length
       );
       #else
-      return PJON_FAIL;  
-      #endif  
+      return PJON_FAIL;
+      #endif
 
     // Connect or check that we are already connected to the correct server
     bool connected = false;

@@ -9,6 +9,8 @@
       and SoftwareSerial compatibility
     - Franketto (Arduino forum user) RS485 TX enable pin compatibility
     - Endre Karlson separate RS485 enable pins handling, flush timing hack
+    - hyndruide github user added set_RS485_delay
+    - fabpolli github user RS485 missing ack delay report and testing
    ___________________________________________________________________________
 
    ThroughSerial,

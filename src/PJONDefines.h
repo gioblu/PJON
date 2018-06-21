@@ -90,8 +90,9 @@ limitations under the License. */
 #define PJON_FAIL         65535
 #define PJON_TO_BE_SENT      74
 
+/* No header present */
+#define PJON_NO_HEADER      0B01011000
 /* HEADER BITS DEFINITION: */
-
 /* 0 - Local network
    1 - Shared  network */
 #define PJON_MODE_BIT       0B00000001

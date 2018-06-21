@@ -158,8 +158,6 @@ HEADER BITMAP
 Unacceptable header configuration states for standard transmission:
 * `----1-0-` or `ACK MODE` bit high, and `TX INFO` bit low (asynchronous acknowledgement requires transmitter info)
 * `-10-----` or `EXT. LENGTH` bit high and `CRC` bit low (forced CRC32 for length > 15)
-* `--01----` or `ADDR.` bit high and `CRC` bit low (forced CRC32 for addressing)
-* `---1--0-` or `ADDR.` bit high and `TX INFO` bit low (addressing requires transmitter's info)
 
 Unacceptable header configuration states sending a BROADCAST:
 * `-----1--` or `ACK` bit high (acknowledgement not supported if broadcasting)

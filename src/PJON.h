@@ -111,8 +111,7 @@ class PJON {
        Acknowledge: true (Acknowledge is requested)
        device id: PJON_NOT_ASSIGNED (255)
        Mode: PJON_HALF_DUPLEX
-       Sender info: true (Sender info are included in the packet)
-       Strategy: SoftwareBitBang */
+       Sender info: true (Sender info are included in the packet) */
 
     PJON() : strategy(Strategy()) {
       _device_id = PJON_NOT_ASSIGNED;

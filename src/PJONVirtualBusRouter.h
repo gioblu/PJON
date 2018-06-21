@@ -28,7 +28,7 @@ attached bus where the receiver device can be found, increasing precision
 and reducing traffic.
 
 The PJON project is entirely financed by contributions of people like you and
-its resources are solely invested to cover the development and maintainance
+its resources are solely invested to cover the development and maintenance
 costs, consider to make donation:
 - Paypal:   https://www.paypal.me/PJON
 - Bitcoin:  1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD

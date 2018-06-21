@@ -167,6 +167,8 @@ class ThroughSerial {
 
     void send_response(uint8_t response) {
       start_tx();
+      if(_enable_RS485_txe_pin != TS_NOT_ASSIGNED)
+        PJON_DELAY(_RS485_delay);
       send_byte(response);
       PJON_SERIAL_FLUSH(serial);
       end_tx();

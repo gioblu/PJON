@@ -162,22 +162,14 @@ class ThroughSerial {
       PJON_SERIAL_WRITE(serial, b);
     };
 
-    void waitForTxePinChange()
-    {
-      if(_enable_RS485_txe_pin != TS_NOT_ASSIGNED)
-      {
-        PJON_DELAY(_RS485_delay);
-      }
-    }
-
     /* Send byte response to the packet's transmitter */
 
     void send_response(uint8_t response) {
       start_tx();
-      waitForTxePinChange();
+      wait_RS485_pin_change();
       send_byte(response);
       PJON_SERIAL_FLUSH(serial);
-      waitForTxePinChange();
+      wait_RS485_pin_change();
       end_tx();
     };
 
@@ -221,6 +213,11 @@ class ThroughSerial {
       serial = serial_port;
     };
 
+    void wait_RS485_pin_change() {
+      if(_enable_RS485_txe_pin != TS_NOT_ASSIGNED)
+        PJON_DELAY(_RS485_delay);
+    };
+
     /* RS485 enable pins handling: */
 
     void start_tx() {
@@ -233,7 +230,7 @@ class ThroughSerial {
 
     void end_tx() {
       if(_enable_RS485_txe_pin != TS_NOT_ASSIGNED) {
-        PJON_DELAY(_RS485_delay);
+        wait_RS485_pin_change();
         PJON_IO_WRITE(_enable_RS485_txe_pin, LOW);
         if(_enable_RS485_rxe_pin != TS_NOT_ASSIGNED)
           PJON_IO_WRITE(_enable_RS485_rxe_pin, LOW);

@@ -27,6 +27,8 @@
     #define PJON_ESP // Wio Link and NodeMCU 1.0 (also 0.9), use for ESP12
   #elif ESP8266
     #define PJON_ESP
+  #elif defined(ESP32)
+    #define PJON_ESP
   #endif
 
   #ifdef __STM32F1__

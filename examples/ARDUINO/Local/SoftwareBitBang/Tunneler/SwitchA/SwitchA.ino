@@ -18,8 +18,7 @@ PJONAny bus2(&link2);
 PJONVirtualBusRouter<PJONSwitch> router(2, (PJONAny*[2]){&bus1, &bus2});
 
 void setup() {
-  Serial.begin(115200);
-  Ethernet.begin(mac); // Use DHCP
+  while (Ethernet.begin(mac) == 0) delay(5000); // Wait for DHCP response
   link1.strategy.set_pin(7);
   link2.strategy.set_port(7200); // Use a "private" UDP port
   router.set_virtual_bus(0); // Enable virtual bus
@@ -28,4 +27,5 @@ void setup() {
 
 void loop() {
   router.loop();
+  Ethernet.maintain(); // Maintain DHCP lease
 };

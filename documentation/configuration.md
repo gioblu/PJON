@@ -20,7 +20,7 @@ Templates can be scary at first sight, but they are quite straight-forward and e
 ```cpp  
   PJON<SoftwareBitBang> bus;
 ```
-In the example above the PJON object is instantiated passing [SoftwareBitBang](/wiki/SoftwareBitBang) strategy as template parameter. Strategies are classes abstracting the data link layer, making PJON easy to be used on different media. It is possible to instantiate more than one PJON object with different strategies in the same sketch:
+In the example above the PJON object is instantiated passing [SoftwareBitBang](/src/strategies/SoftwareBitBang/README.md) strategy as template parameter. Strategies are classes abstracting the data link layer, making PJON easy to be used on different media. It is possible to instantiate more than one PJON object with different strategies in the same sketch:
 ```cpp  
   PJON<SoftwareBitBang> wiredBus;
   PJON<EthernetTCP>     tcpBus;
@@ -81,7 +81,7 @@ Configure your device to act as a router, so receiving all the incoming packets:
 ```cpp  
   bus.set_router(true);
 ```
-Configure the instance to include a port identification in the packet. Ports from 0 to 8000 are reserved to known protocols which index is present in the [known protocol list](/specification/PJON-known-protocols-list.md), ports from 8001 to 65535 are free for custom use cases:
+Configure the instance to include a port identification in the packet. Ports from 0 to 8000 are reserved to known network services which index is present in the [known network services list](/specification/PJON-network-services-list.md), ports from 8001 to 65535 are free for custom use cases:
 ```cpp  
   bus.include_port(false);      // Avoid port inclusion (default)  
   bus.include_port(true, 8001); // Include custom port

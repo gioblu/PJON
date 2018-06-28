@@ -15,7 +15,7 @@
 
 For the PJON® Protocol specification see the specification directory.
 
-PJON® Standard compliant tools:
+Compliant tools:
 - ModuleInterface - Easy config and value sync between IOT modules
   https://github.com/fredilarsen/ModuleInterface
 - Command line PJON wrapper over unnamed pipes by Zbigniew Zasieczny
@@ -29,14 +29,16 @@ Credits to contributors:
 - Fred Larsen. Systems engineering, header driven communication, debugging
 - Zbigniew Zasieczny. WINX86 interface
 - Matheus Garbelini. ThroughLora strategy
-- Wilfried Klaas ATtiny44/84 porting
+- Jorgen-VikingGod github user. ESP32 port
+- drtrigon github user. LINUX ThroughSerial examples
+- Wilfried Klaas ATtiny44/84 port
 - 4ib3r github user. Memory optimization configurable strategies inclusion
 - budaics github user. ATtiny85 16MHz external clock testing and wiki page
 - Pantovich github user. Update returning number of packets to be delivered
 - Adrian Sławiński. Fix to enable SimpleModbusMasterV2 compatibility
-- SticilFace github user. Teensy porting
-- Esben Soeltoft. Arduino Zero porting
-- Alex Grishin. ESP8266 porting
+- SticilFace github user. Teensy port
+- Esben Soeltoft. Arduino Zero port
+- Alex Grishin. ESP8266 port
 - Andrew Grande. Testing, support, bugfix
 - Mauro Zancarlin. Systems engineering, testing, bugfix
 - Michael Teeww. Callback based reception, debugging
@@ -57,15 +59,17 @@ Bug reports:
 - Mauro Mombelli. Code cleanup
 - Shachar Limor. Blink example pinMode bugfix
 
-If you believe in this project and you appreciate our work, please, make a
-donation. The PJON Foundation is entirely financed by contributions of wise
-people like you and its resources are solely invested to cover the development
-and maintainance costs.
+The PJON project is entirely financed by contributions of people like you and
+its resources are solely invested to cover the development and maintenance
+costs, consider to make donation:
 - Paypal:   https://www.paypal.me/PJON
 - Bitcoin:  1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD
 - Ethereum: 0xf34AEAF3B149454522019781668F9a2d1762559b
 Thank you and happy tinkering!
  _____________________________________________________________________________
+
+This software is experimental and it is distributed "AS IS" without any
+warranty, use it at your own risk.
 
 Copyright 2010-2018 by Giovanni Blu Mitolo gioscarab@gmail.com
 
@@ -90,7 +94,7 @@ template<typename Strategy>
 class PJON {
   public:
     Strategy strategy;
-    uint16_t config = PJON_TX_INFO_BIT | PJON_ACK_REQ_BIT;
+    uint8_t config = PJON_TX_INFO_BIT | PJON_ACK_REQ_BIT;
     uint8_t bus_id[4] = {0, 0, 0, 0};
     const uint8_t localhost[4] = {0, 0, 0, 0};
     uint8_t data[PJON_PACKET_MAX_LENGTH];
@@ -108,8 +112,7 @@ class PJON {
        Acknowledge: true (Acknowledge is requested)
        device id: PJON_NOT_ASSIGNED (255)
        Mode: PJON_HALF_DUPLEX
-       Sender info: true (Sender info are included in the packet)
-       Strategy: SoftwareBitBang */
+       Sender info: true (Sender info are included in the packet) */
 
     PJON() : strategy(Strategy()) {
       _device_id = PJON_NOT_ASSIGNED;
@@ -152,12 +155,12 @@ class PJON {
       char *destination,
       const char *source,
       uint16_t length,
-      uint16_t header = PJON_FAIL,
+      uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
       uint8_t index = 0;
-      if(header == PJON_FAIL) header = config;
+      if(header == PJON_NO_HEADER) header = config;
       if(length > 255) header |= PJON_EXT_LEN_BIT;
       if((config & PJON_PORT_BIT) || (requested_port != PJON_BROADCAST))
         header |= PJON_PORT_BIT;
@@ -270,7 +273,7 @@ class PJON {
       const char *packet,
       uint16_t length,
       uint32_t timing,
-      uint16_t header = PJON_FAIL,
+      uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST,
       uint16_t p_index = PJON_FAIL
@@ -351,8 +354,8 @@ class PJON {
 
     /* Calculate packet overhead: */
 
-    uint8_t packet_overhead(uint16_t header = PJON_FAIL) const {
-      header = (header == PJON_FAIL) ? config : header;
+    uint8_t packet_overhead(uint8_t  header = PJON_NO_HEADER) const {
+      header = (header == PJON_NO_HEADER) ? config : header;
       return (
         (
           (header & PJON_MODE_BIT) ?
@@ -623,7 +626,7 @@ class PJON {
     uint16_t reply(
       const char *packet,
       uint16_t length,
-      uint16_t header = PJON_FAIL,
+      uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
@@ -647,7 +650,7 @@ class PJON {
       uint8_t id,
       const char *string,
       uint16_t length,
-      uint16_t header = PJON_FAIL,
+      uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
@@ -661,7 +664,7 @@ class PJON {
       const uint8_t *b_id,
       const char *string,
       uint16_t length,
-      uint16_t header = PJON_FAIL,
+      uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
@@ -679,7 +682,7 @@ class PJON {
       const uint8_t *b_id,
       const char *string,
       uint16_t length,
-      uint16_t header = PJON_FAIL,
+      uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
@@ -711,7 +714,7 @@ class PJON {
       const char *string,
       uint16_t length,
       uint32_t timing,
-      uint16_t header = PJON_FAIL,
+      uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
@@ -729,7 +732,7 @@ class PJON {
       const char *string,
       uint16_t length,
       uint32_t timing,
-      uint16_t header = PJON_FAIL,
+      uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
@@ -763,7 +766,7 @@ class PJON {
       uint8_t id,
       char *string,
       uint16_t length,
-      uint16_t header = PJON_FAIL,
+      uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
@@ -778,7 +781,7 @@ class PJON {
       const uint8_t *b_id,
       char *string,
       uint16_t length,
-      uint16_t header = PJON_FAIL,
+      uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
@@ -797,21 +800,21 @@ class PJON {
       const uint8_t *b_id,
       const char *string,
       uint16_t length,
-      uint16_t header = PJON_FAIL,
+      uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST,
       uint32_t timeout = 3000000
     ) {
       uint16_t state = PJON_FAIL;
       uint32_t attempts = 0;
-      uint32_t time = PJON_MICROS(), start = time;
+      uint32_t start = PJON_MICROS();
       uint16_t old_length = length;
 
+      _recursion++;
       while(
         (state != PJON_ACK) && (attempts <= strategy.get_max_attempts()) &&
         (uint32_t)(PJON_MICROS() - start) <= timeout
       ) {
-        _recursion++;
         if(!(length = compose_packet(
           id,
           b_id,
@@ -821,14 +824,19 @@ class PJON {
           header,
           p_id,
           requested_port
-        ))) return PJON_FAIL;
+        ))) {
+          _recursion--;
+          return PJON_FAIL;
+        }
         state = send_packet((char*)data, length);
-        if(state == PJON_ACK) return state;
+        if(state == PJON_ACK) {
+          _recursion--;
+          return state;
+        }
         attempts++;
         if(state != PJON_FAIL) strategy.handle_collision();
         if(_recursion <= 1) receive(strategy.back_off(attempts));
         else PJON_DELAY_MICROSECONDS(strategy.back_off(attempts));
-        time = PJON_MICROS();
       }
       _recursion--;
       return state;
@@ -838,7 +846,7 @@ class PJON {
       uint8_t id,
       const char *string,
       uint16_t length,
-      uint16_t header = PJON_FAIL,
+      uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST,
       uint32_t timeout = 3000000
@@ -857,7 +865,7 @@ class PJON {
 
     /* Set the config bit state: */
 
-    void set_config_bit(bool new_state, uint16_t bit) {
+    void set_config_bit(bool new_state, uint8_t bit) {
       if(new_state) config |= bit;
       else config &= ~bit;
     };

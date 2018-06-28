@@ -4,7 +4,7 @@
 /* Compute CRC8 with a table-less implementation:
    Copyright Giovanni Blu Mitolo giorscarab@gmail.com 2018
 
-   CRC8 C2, source Baicheva98 (implicit + 1 representation)
+   CRC8 C2, source Baicheva98 (implicit + 1 notation)
    0x97 = (x + 1)(x^7 + x^6 + x^5 + x^2 + 1)^2
    Chosen because it has the largest possible length (119 bit) at which
    HD=4 can be achieved with 8-bit CRC. */

@@ -21,21 +21,23 @@ switch or router to treat multiple attached buses with the same bus id as a
 "virtual" bus, where devices can be placed anywhere independent of device id,
 and without any explicit segmentation of the device id range.
 
-It will start in promiscuous mode, delivering every packet to all attached 
+It will start in promiscuous mode, delivering every packet to all attached
 buses except the one where the packet comes from. As it learns by looking at
-the sender ids of observed packets, it will deliver each packet only to the 
+the sender ids of observed packets, it will deliver each packet only to the
 attached bus where the receiver device can be found, increasing precision
 and reducing traffic.
 
-If you believe in this project and you appreciate our work, please, make a
-donation. The PJON Foundation is entirely financed by contributions of wise
-people like you and its resources are solely invested to cover the development
-and maintainance costs.
+The PJON project is entirely financed by contributions of people like you and
+its resources are solely invested to cover the development and maintenance
+costs, consider to make donation:
 - Paypal:   https://www.paypal.me/PJON
 - Bitcoin:  1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD
 - Ethereum: 0xf34AEAF3B149454522019781668F9a2d1762559b
 Thank you and happy tinkering!
  _____________________________________________________________________________
+
+This software is experimental and it is distributed "AS IS" without any
+warranty, use it at your own risk.
 
 Copyright 2010-2018 by Giovanni Blu Mitolo gioscarab@gmail.com
 
@@ -69,18 +71,18 @@ protected:
     for (uint8_t i=0; i<PJON_VIRTUALBUS_MAX_DEVICES; i++)
       device_via_attached_bus[i] = PJON_NOT_ASSIGNED;
   }
-  
+
   uint8_t find_vbus_with_device(const uint8_t *bus_id, const uint8_t device_id) {
     if (!is_vbus(bus_id) || device_id >= PJON_VIRTUALBUS_MAX_DEVICES)
       return PJON_NOT_ASSIGNED;
     return device_via_attached_bus[device_id];
   }
-  
+
   bool is_vbus(const uint8_t bus_id[]) {
-    return virtual_bus < RouterClass::bus_count && 
+    return virtual_bus < RouterClass::bus_count &&
            memcmp(RouterClass::buses[virtual_bus]->bus_id, bus_id, 4)==0;
   }
-  
+
   void register_device_on_vbus(const uint8_t device_id, const uint8_t attached_bus) {
     if (device_id < PJON_VIRTUALBUS_MAX_DEVICES) {
       #ifdef DEBUG_PRINT
@@ -95,9 +97,9 @@ protected:
 
   void handle_send_error(uint8_t code, uint8_t packet) {
         // Find out which device id does not receive
-    if (PJON_CONNECTION_LOST == code && 
-        is_vbus(RouterClass::buses[RouterClass::current_bus]->bus_id) && 
-        packet < PJON_MAX_PACKETS) 
+    if (PJON_CONNECTION_LOST == code &&
+        is_vbus(RouterClass::buses[RouterClass::current_bus]->bus_id) &&
+        packet < PJON_MAX_PACKETS)
     {
       PJON_Packet_Info info;
       RouterClass::buses[RouterClass::current_bus]->
@@ -109,13 +111,13 @@ protected:
         if (device_via_attached_bus[info.receiver_id] == RouterClass::current_bus) {
           device_via_attached_bus[info.receiver_id] = PJON_NOT_ASSIGNED;
           #ifdef DEBUG_PRINT
-          Serial.print("Unregister "); Serial.print(info.receiver_id); 
+          Serial.print("Unregister "); Serial.print(info.receiver_id);
           Serial.print(" from bus "); Serial.println(RouterClass::current_bus);
           #endif
         }
       }
     }
-  }  
+  }
 
   virtual void dynamic_receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
     // First register the sender device if it belongs to  a virtual bus.
@@ -147,7 +149,7 @@ public:
     PJONAny*buses[],
     uint8_t default_gateway = PJON_NOT_ASSIGNED)
     : RouterClass(bus_count, buses, default_gateway) { init_vbus(); }
-    
+
   /* Support multiple of the attached physical buses to have the same bus id,
   / forming a "virtual bus" where devices can be in any part independent of
   / device id. Specify the array position of one of the bus parts. */

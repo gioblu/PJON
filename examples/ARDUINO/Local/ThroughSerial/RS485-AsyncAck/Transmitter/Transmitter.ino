@@ -16,8 +16,8 @@ uint32_t latency = 5000;
 
 void setup() {
   // Initialize LED 13 to be off
-  pinMode(13, OUTPUT);
-  digitalWrite(13, LOW);
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
   // Initialize Serial instance used for PJON communication
   Serial.begin(9600);
   bus.strategy.set_serial(&Serial);
@@ -35,7 +35,7 @@ void setup() {
 
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
   if(code == PJON_CONNECTION_LOST)
-    digitalWrite(13, HIGH); // Light up LED 13 if a packet transmission failed
+    digitalWrite(LED_BUILTIN, HIGH); // Light up LED 13 if a packet transmission failed
 }
 
 void loop() {

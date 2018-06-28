@@ -72,8 +72,14 @@
     std::this_thread::sleep_for(std::chrono::milliseconds(delay_value_ms));
   }
 
+  /* Generic constants ---------------------------------------------------- */
+
   #ifndef A0
     #define A0 0
+  #endif
+
+  #ifndef LED_BUILTIN
+    #define LED_BUILTIN -1
   #endif
 
   /* Fallback to WINDOWS-specific functions -------------------------------- */
@@ -113,6 +119,10 @@
 
   /* Serial ----------------------------------------------------------------- */
 
+  #ifndef PJON_SERIAL_TYPE
+    #define PJON_SERIAL_TYPE Serial * 
+  #endif
+
   #ifndef PJON_SERIAL_AVAILABLE
     #define PJON_SERIAL_AVAILABLE(S) S->serialDataAvail()
   #endif
@@ -131,6 +141,10 @@
 
 
   /* Timing ----------------------------------------------------------------- */
+
+  #ifndef PJON_DELAY
+    #define PJON_DELAY delay
+  #endif
 
   #ifndef PJON_DELAY_MICROSECONDS
     #define PJON_DELAY_MICROSECONDS delayMicroseconds

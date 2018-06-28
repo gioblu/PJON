@@ -41,7 +41,7 @@ public:
   TCPHelperClient(const TCPHelperClient &another) { *this = another; }
 
 /*
-  ~TCPHelperClient() { 
+  ~TCPHelperClient() {
 #ifdef _WIN32
     if (_fd != INVALID_SOCKET) closesocket(_fd);
     WSACleanup();
@@ -159,7 +159,7 @@ public:
 #ifdef _WIN32
       int errno2 = WSAGetLastError();
       if (errno2 == WSAEISCONN); // Already connected, proceed with setting timeouts
-      else if (errno2 == WSAEWOULDBLOCK || errno2 == WSAEINPROGRESS || errno2 == WSAEALREADY) 
+      else if (errno2 == WSAEWOULDBLOCK || errno2 == WSAEINPROGRESS || errno2 == WSAEALREADY)
         return 0; // Normal, we are waiting for connect to succeed
 #else
       if (errno == EISCONN); // Already connected, proceed with setting timeouts

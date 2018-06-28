@@ -13,8 +13,8 @@ const uint8_t bus_count = 2;
 PJON<Any> *buses[] = { &bus1, &bus2 };
 
 void setup() {
-  pinMode(13, OUTPUT);
-  digitalWrite(13, LOW); // Initialize LED 13 to be off
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW); // Initialize LED 13 to be off
 
   link1.strategy.set_pin(12);
   link2.strategy.set_pin(11);
@@ -40,9 +40,9 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
   if(payload[0] == 'B') {
     Serial.print("BLINK FROM BUS ");
     Serial.println((packet_info.custom_pointer == &bus1 ? "1" : "2"));
-    digitalWrite(13, HIGH);
+    digitalWrite(LED_BUILTIN, HIGH);
     delay(10);
-    digitalWrite(13, LOW);
+    digitalWrite(LED_BUILTIN, LOW);
   }
 }
 

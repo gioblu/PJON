@@ -26,15 +26,17 @@ possible to use a PJONSimpleSwitch to handle leaf buses in a tree structure.
 A segmented bus is a "virtual" bus where ranges of its devices are  located
 in separate physical buses.
 
-If you believe in this project and you appreciate our work, please, make a
-donation. The PJON Foundation is entirely financed by contributions of wise
-people like you and its resources are solely invested to cover the development
-and maintainance costs.
+The PJON project is entirely financed by contributions of people like you and
+its resources are solely invested to cover the development and maintenance
+costs, consider to make donation:
 - Paypal:   https://www.paypal.me/PJON
 - Bitcoin:  1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD
 - Ethereum: 0xf34AEAF3B149454522019781668F9a2d1762559b
 Thank you and happy tinkering!
  _____________________________________________________________________________
+
+This software is experimental and it is distributed "AS IS" without any
+warranty, use it at your own risk.
 
 Copyright 2010-2018 by Giovanni Blu Mitolo gioscarab@gmail.com
 
@@ -140,9 +142,9 @@ protected:
   #ifdef PJON_ROUTER_NEED_INHERITANCE
   virtual
   #endif
-  void send_packet(const uint8_t *payload, const uint16_t length, 
-                   const uint8_t receiver_bus, const uint8_t sender_bus, 
-                   bool &ack_sent, const PJON_Packet_Info &packet_info) {          
+  void send_packet(const uint8_t *payload, const uint16_t length,
+                   const uint8_t receiver_bus, const uint8_t sender_bus,
+                   bool &ack_sent, const PJON_Packet_Info &packet_info) {
     // Send an ACK once to notify that the packet will be delivered
     if(
       !ack_sent &&
@@ -165,16 +167,16 @@ protected:
       packet_info.port
     );
   }
-  
-  void forward_packet(const uint8_t *payload, const uint16_t length, 
-                      const uint8_t receiver_bus, const uint8_t sender_bus, 
+
+  void forward_packet(const uint8_t *payload, const uint16_t length,
+                      const uint8_t receiver_bus, const uint8_t sender_bus,
                       bool &ack_sent, const PJON_Packet_Info &packet_info) {
     // If receiving bus matches and not equal to sending bus, then route packet
     if(receiver_bus != PJON_NOT_ASSIGNED && receiver_bus != sender_bus) {
       send_packet(payload, length, receiver_bus, sender_bus, ack_sent, packet_info);
-    }                        
-  }  
-  
+    }
+  }
+
   #ifdef PJON_ROUTER_NEED_INHERITANCE
   virtual
   #endif
@@ -193,7 +195,7 @@ protected:
     uint8_t *payload,
     uint16_t length,
     const PJON_Packet_Info &packet_info
-  ) {    
+  ) {
     uint8_t start_search = 0;
     bool ack_sent = false; // Send ACK only once even if delivering copies to multiple buses
     do {
@@ -204,7 +206,7 @@ protected:
       );
 
       if(receiver_bus == PJON_NOT_ASSIGNED) receiver_bus = default_gateway;
-      
+
       forward_packet(payload, length, receiver_bus, current_bus, ack_sent, packet_info);
 
     } while(start_search != PJON_NOT_ASSIGNED);
@@ -256,9 +258,9 @@ public:
       PJONSimpleSwitch<Strategy>::error_function
     );
   };
-  
+
   uint8_t get_current_bus() const { return current_bus; }
-  
+
   static void receiver_function(
     uint8_t *payload,
     uint16_t length,

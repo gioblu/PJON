@@ -14,14 +14,14 @@ PJON<SoftwareBitBang> bus(bus_id_A, 1);
 
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
   if(code == PJON_CONNECTION_LOST)
-    digitalWrite(13, HIGH);
+    digitalWrite(LED_BUILTIN, HIGH);
   // Light up LED 13 if a packet transmission failed
 }
 
 void setup() {
   // Initialize LED 13 to be off
-  pinMode(13, OUTPUT);
-  digitalWrite(13, LOW);
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
 
   bus.set_error(error_handler);
   bus.set_synchronous_acknowledge(true);

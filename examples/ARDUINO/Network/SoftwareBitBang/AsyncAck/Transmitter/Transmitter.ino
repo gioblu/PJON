@@ -13,8 +13,8 @@ uint32_t latency = 1000;
 PJON<SoftwareBitBang> bus(bus_id, 45);
 
 void setup() {
-  pinMode(13, OUTPUT);
-  digitalWrite(13, LOW); // Initialize LED 13 to be off
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW); // Initialize LED 13 to be off
 
   bus.strategy.set_pin(12);
   /* A packet containing the id of every packet received will be sent back

@@ -11,8 +11,8 @@
 PJON<AnalogSampling> bus(44);
 
 void setup() {
-  pinMode(13, OUTPUT);
-  digitalWrite(13, LOW); // Initialize LED 13 to be off
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW); // Initialize LED 13 to be off
 
   /* Use internal 1.1v analog reference (not available on Arduino Mega)
   DEFAULT: Default analog reference 5v (5v Arduino boards) or 3.3v (3.3V Arduino boards)
@@ -33,9 +33,9 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
      overwritten when a new message is dispatched */
   if(payload[0] == 'B') {
     Serial.println("Received!");
-    digitalWrite(13, HIGH);
+    digitalWrite(LED_BUILTIN, HIGH);
     delay(5);
-    digitalWrite(13, LOW);
+    digitalWrite(LED_BUILTIN, LOW);
   }
 }
 

@@ -9,6 +9,8 @@
       and SoftwareSerial compatibility
     - Franketto (Arduino forum user) RS485 TX enable pin compatibility
     - Endre Karlson separate RS485 enable pins handling, flush timing hack
+    - hyndruide github user added set_RS485_delay
+    - fabpolli github user RS485 missing ack delay report and testing
    ___________________________________________________________________________
 
    ThroughSerial,
@@ -45,13 +47,8 @@
 
 class ThroughSerial {
   public:
-    #if defined(ARDUINO)
-      Stream *serial = NULL;
-    #elif defined(RPI)
-      int16_t serial = 0;
-    #elif defined(_WIN32)
-      Serial *serial = NULL;
-    #endif
+    PJON_SERIAL_TYPE serial;
+
     /* Returns suggested delay related to the attempts passed as parameter: */
 
     uint32_t back_off(uint8_t attempts) {
@@ -165,13 +162,14 @@ class ThroughSerial {
       PJON_SERIAL_WRITE(serial, b);
     };
 
-
     /* Send byte response to the packet's transmitter */
 
     void send_response(uint8_t response) {
       start_tx();
+      wait_RS485_pin_change();
       send_byte(response);
       PJON_SERIAL_FLUSH(serial);
+      wait_RS485_pin_change();
       end_tx();
     };
 
@@ -211,16 +209,14 @@ class ThroughSerial {
 
     /* Pass the Serial port where you want to operate with */
 
-  #if defined(ARDUINO)
-    void set_serial(Stream *serial_port) {
-  #elif defined(RPI)
-    void set_serial(int16_t serial_port) {
-  #elif defined(_WIN32)
-    void set_serial(Serial *serial_port) {
-  #endif
+    void set_serial(PJON_SERIAL_TYPE serial_port) {
       serial = serial_port;
     };
 
+    void wait_RS485_pin_change() {
+      if(_enable_RS485_txe_pin != TS_NOT_ASSIGNED)
+        PJON_DELAY(_RS485_delay);
+    };
 
     /* RS485 enable pins handling: */
 
@@ -234,6 +230,7 @@ class ThroughSerial {
 
     void end_tx() {
       if(_enable_RS485_txe_pin != TS_NOT_ASSIGNED) {
+        wait_RS485_pin_change();
         PJON_IO_WRITE(_enable_RS485_txe_pin, LOW);
         if(_enable_RS485_rxe_pin != TS_NOT_ASSIGNED)
           PJON_IO_WRITE(_enable_RS485_rxe_pin, LOW);
@@ -247,7 +244,6 @@ class ThroughSerial {
     void set_baud_rate(uint32_t baud) {
       _bd = baud;
     };
-
 
     /* Set flush timing offset in microseconds between expected and real
        serial byte transmission: */
@@ -273,6 +269,10 @@ class ThroughSerial {
       PJON_IO_MODE(_enable_RS485_txe_pin, OUTPUT);
     }
 
+    void set_RS485_delay(uint32_t d) {
+      _RS485_delay = d;
+    };
+
   private:
   #if defined(RPI)
     uint16_t _flush_offset = TS_FLUSH_OFFSET;
@@ -282,4 +282,5 @@ class ThroughSerial {
     uint32_t _last_reception_time;
     uint8_t  _enable_RS485_rxe_pin = TS_NOT_ASSIGNED;
     uint8_t  _enable_RS485_txe_pin = TS_NOT_ASSIGNED;
+    uint32_t _RS485_delay = TS_RS485_DELAY;
 };

@@ -28,6 +28,7 @@ It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to
 - SAMD (Arduino Zero)
 - ESP8266 v.1-7 80MHz AI-THINKER Modules
 - ESP8266 NodeMCU v0.9-1.0 80MHz
+- ESP32 Heltech WiFi LoRa
 - MK20DX256 96MHz (Teensy 3.1)
 
 #### Performance

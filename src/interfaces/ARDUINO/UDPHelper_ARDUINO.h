@@ -2,7 +2,7 @@
 
 #ifdef PJON_ESP
   #if defined(ESP32)
-    #include <Wifi.h>
+    #include <WiFi.h>
   #else
     #include <ESP8266WiFi.h>
   #endif

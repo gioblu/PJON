@@ -29,15 +29,16 @@ Credits to contributors:
 - Fred Larsen. Systems engineering, header driven communication, debugging
 - Zbigniew Zasieczny. WINX86 interface
 - Matheus Garbelini. ThroughLora strategy
+- Jorgen-VikingGod github user. ESP32 port
 - drtrigon github user. LINUX ThroughSerial examples
-- Wilfried Klaas ATtiny44/84 porting
+- Wilfried Klaas ATtiny44/84 port
 - 4ib3r github user. Memory optimization configurable strategies inclusion
 - budaics github user. ATtiny85 16MHz external clock testing and wiki page
 - Pantovich github user. Update returning number of packets to be delivered
 - Adrian Sławiński. Fix to enable SimpleModbusMasterV2 compatibility
-- SticilFace github user. Teensy porting
-- Esben Soeltoft. Arduino Zero porting
-- Alex Grishin. ESP8266 porting
+- SticilFace github user. Teensy port
+- Esben Soeltoft. Arduino Zero port
+- Alex Grishin. ESP8266 port
 - Andrew Grande. Testing, support, bugfix
 - Mauro Zancarlin. Systems engineering, testing, bugfix
 - Michael Teeww. Callback based reception, debugging

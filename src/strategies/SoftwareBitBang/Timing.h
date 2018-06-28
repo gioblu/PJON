@@ -150,6 +150,18 @@
   #endif
 #endif
 
+/* Heltech WiFi LoRa ESP32, generic ESP32 --------------------------------- */
+#if defined(ESP32)
+  #if SWBB_MODE == 1
+      /* Added full support to MODE 1 - 28/06/2018
+         Working on pin: 12 and 25 */
+      #define SWBB_BIT_WIDTH   44
+      #define SWBB_BIT_SPACER 112
+      #define SWBB_ACCEPTANCE  56
+      #define SWBB_READ_DELAY  -2
+    #endif
+#endif
+
 /* MK20DX256 - Teensy ----------------------------------------------------- */
 #if defined(__MK20DX256__)
   #if SWBB_MODE == 1

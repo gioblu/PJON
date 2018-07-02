@@ -92,6 +92,6 @@ void loop() {
     Serial.println();
     time = millis();
   }
-  bus.receive();
+  bus.receive(1000);
   bus.update();
 };

@@ -54,5 +54,5 @@ void loop() {
     acquired = true;
   }
   bus.update();
-  bus.receive();
+  bus.receive(1000);
 };

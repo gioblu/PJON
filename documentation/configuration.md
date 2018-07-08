@@ -53,7 +53,7 @@ Supported definitions:
 Before using `ThroughLoRa` be sure to have [arduino-LoRa](https://github.com/sandeepmistry/arduino-LoRa) source available and to have defined `PJON_INCLUDE_TL` constant before including `PJON.h`.
 
 ### Network configuration
-Configure network state (local or shared). If local (passing `false`), the PJON protocol layer procedure is based on a single byte device id to univocally communicate with a device; if in shared mode (passing `true`) the protocol adopts also a 4 byte bus id to univocally communicate with a device in a certain bus:
+Configure network mode (local or shared). If local (passing `false`) a single byte called device id used for device identification; if in shared mode (passing `true`) a 4 byte bus id is also used to univocally identify a group of devices:
 ```cpp  
   bus.set_shared_network(true);
 ```

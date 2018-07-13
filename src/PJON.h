@@ -835,7 +835,7 @@ class PJON {
         }
         attempts++;
         if(state != PJON_FAIL) strategy.handle_collision();
-        #ifdef(PJON_RECEIVE_WHILE_SENDING_BLOCKING)
+        #if(PJON_RECEIVE_WHILE_SENDING_BLOCKING)
           if(_recursion <= 1) receive(strategy.back_off(attempts));
         #endif
         else PJON_DELAY_MICROSECONDS(strategy.back_off(attempts));

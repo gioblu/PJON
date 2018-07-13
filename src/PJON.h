@@ -30,7 +30,7 @@ Credits to contributors:
 - Zbigniew Zasieczny. WINX86 interface
 - Matheus Garbelini. ThroughLora strategy
 - Jorgen-VikingGod github user. ESP32 port
-- drtrigon github user. LINUX ThroughSerial examples
+- drtrigon github user. LINUX ThroughSerial examples, missing warning report
 - Wilfried Klaas ATtiny44/84 port
 - 4ib3r github user. Memory optimization configurable strategies inclusion
 - budaics github user. ATtiny85 16MHz external clock testing and wiki page

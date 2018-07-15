@@ -8,7 +8,6 @@ PJONSlave<SoftwareBitBang> bus(bus_id, PJON_NOT_ASSIGNED);
 
 int packet;
 char content[] = "01234567890123456789";
-uint32_t time;
 bool acquired = false;
 
 void receiver_handler(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
@@ -44,7 +43,6 @@ void setup() {
   bus.strategy.set_pin(12);
   bus.begin();
   bus.acquire_id_master_slave();
-  time = millis();
 }
 
 void loop() {

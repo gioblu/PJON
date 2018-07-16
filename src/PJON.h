@@ -803,7 +803,7 @@ class PJON {
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST,
-      uint32_t timeout = 3000000
+      uint32_t timeout = 3500000
     ) {
       uint16_t state = PJON_FAIL;
       uint32_t attempts = 0;
@@ -837,8 +837,9 @@ class PJON {
         if(state != PJON_FAIL) strategy.handle_collision();
         #if(PJON_RECEIVE_WHILE_SENDING_BLOCKING)
           if(_recursion <= 1) receive(strategy.back_off(attempts));
+          else
         #endif
-        else PJON_DELAY_MICROSECONDS(strategy.back_off(attempts));
+        PJON_DELAY((uint32_t)(strategy.back_off(attempts) / 1000));
       }
       _recursion--;
       return state;

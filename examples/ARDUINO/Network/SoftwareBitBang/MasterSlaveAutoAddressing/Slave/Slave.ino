@@ -17,6 +17,7 @@ void receiver_handler(uint8_t *payload, uint16_t length, const PJON_Packet_Info 
     Serial.print(" ");
   }
   Serial.println();
+  Serial.flush();
 };
 
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
@@ -26,14 +27,15 @@ void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
   }
   if(code == PJON_ID_ACQUISITION_FAIL) {
     if(data == PJON_ID_ACQUIRE)
-      Serial.println("Multi-master auto addressing procedure failed.");
+      Serial.println("PJONSlave error: multi-master addressing failed.");
     if(data == PJON_ID_CONFIRM)
-      Serial.println("Master-slave id confirmation procedure failed.");
+      Serial.println("PJONSlave error: master-slave id confirmation failed.");
     if(data == PJON_ID_NEGATE)
-      Serial.println("Master-slave id release procedure failed.");
+      Serial.println("PJONSlave error: master-slave id release failed.");
     if(data == PJON_ID_REQUEST)
-      Serial.println("Master-slave id request procedure failed.");
+      Serial.println("PJONSlave error: master-slave id request failed.");
   }
+  Serial.flush();
 };
 
 void setup() {
@@ -49,8 +51,9 @@ void loop() {
   if((bus.device_id() != PJON_NOT_ASSIGNED) && !acquired) {
     Serial.print("Acquired device id: ");
     Serial.println(bus.device_id());
+    Serial.flush();
     acquired = true;
   }
   bus.update();
-  bus.receive(1000);
+  bus.receive(5000);
 };

@@ -30,7 +30,7 @@ Credits to contributors:
 - Zbigniew Zasieczny. WINX86 interface
 - Matheus Garbelini. ThroughLora strategy
 - Jorgen-VikingGod github user. ESP32 port
-- drtrigon github user. LINUX ThroughSerial examples
+- drtrigon github user. LINUX ThroughSerial examples, missing warning report
 - Wilfried Klaas ATtiny44/84 port
 - 4ib3r github user. Memory optimization configurable strategies inclusion
 - budaics github user. ATtiny85 16MHz external clock testing and wiki page
@@ -803,7 +803,7 @@ class PJON {
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST,
-      uint32_t timeout = 3000000
+      uint32_t timeout = 3500000
     ) {
       uint16_t state = PJON_FAIL;
       uint32_t attempts = 0;
@@ -835,8 +835,11 @@ class PJON {
         }
         attempts++;
         if(state != PJON_FAIL) strategy.handle_collision();
-        if(_recursion <= 1) receive(strategy.back_off(attempts));
-        else PJON_DELAY_MICROSECONDS(strategy.back_off(attempts));
+        #if(PJON_RECEIVE_WHILE_SENDING_BLOCKING)
+          if(_recursion <= 1) receive(strategy.back_off(attempts));
+          else
+        #endif
+        PJON_DELAY((uint32_t)(strategy.back_off(attempts) / 1000));
       }
       _recursion--;
       return state;

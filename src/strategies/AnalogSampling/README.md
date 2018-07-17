@@ -91,3 +91,6 @@ With the necessary hardware choices and timing configuration `AnalogSampling` ca
 #### Known issues
 - Direct sunlight or other light sources can affect receiver's sensitivity and maximum communication range
 - A pull-down resistor can be necessary to obtain nominal functionality, see above
+
+#### Safety warning
+In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. When working with an [AnalogSampling](/src/strategies/AnalogSampling) LED or laser based setup safety glasses must be worn and transceivers must be operated cautiously to avoid potential eye injuries.

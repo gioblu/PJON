@@ -96,3 +96,6 @@ PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl
 - When using more than one instance of `SoftwareBitBang` in the same sketch always use pins connected to a different port group to avoid cross-talk.  
 - During the execution of other tasks or delays a certain amount of packets could be potentially lost because transmitted out of the polling timeframe of the receiver device. Thanks to the PJON packet handler after some retries the packet is received but a certain amount of bandwidth is wasted. If this situation occurs, try to reduce as much as possible the duration of other tasks and or use a longer polling timeframe using `receive` passing the requested amount of microseconds: `bus.receive(1000); // Poll for 1 millisecond`.
 - `SoftwareBitBang` strategy can have compatibility issues with codebases that are using interrupts, reliability or bandwidth loss can occur because of the interruptions made by third party software.
+
+#### Safety warning
+In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. When a [SoftwareBitBang](/src/strategies/SoftwareBitBang) bus is installed each pin must be protected with a current limiting resistor as described above.

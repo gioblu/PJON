@@ -27,3 +27,6 @@ Using DHCP assigned IP addresses is fine, and the strategy does not need to rela
 The strategy will broadcast the packets, and the correct receiver will pick them up and ACK if requested. Other devices will observe but ignore packets not meant for them.
 
 All the other necessary information is present in the general [Documentation](/documentation).
+
+#### Safety warning
+In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. When connecting a local bus to the internet using [EthernetTCP](/src/strategies/EthernetTCP) or [GlobalUDP](/src/strategies/GlobalUDP) all connected devices must be considered potentially compromised, potentially manipulated or remotely actuated against your will. It should be considered a good practice not to connect to the internet systems that may create a damage (fire, flood, data-leak) if hacked.

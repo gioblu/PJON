@@ -154,8 +154,13 @@ protected:
       buses[sender_bus]->strategy.send_response(PJON_ACK);
       ack_sent = true;
     }
+
+    // Set current_bus to receiver bus before potentially calling error callback for that bus
+    uint8_t send_bus = current_bus;
+    current_bus = receiver_bus;
+
     // Forward the packet
-    buses[receiver_bus]->send_from_id(
+    uint16_t result = buses[receiver_bus]->send_from_id(
       packet_info.sender_id,
       packet_info.sender_bus_id,
       packet_info.receiver_id,
@@ -166,6 +171,12 @@ protected:
       packet_info.id,
       packet_info.port
     );
+    #if PJON_MAX_PACKETS == 0
+    // Call error function explicitly, because that will not be done while sending
+    // when PJON_MAX_PACKETS=0.
+    if (result == PJON_FAIL) dynamic_error_function(0, 0);
+    #endif
+    current_bus = send_bus;
   }
 
   void forward_packet(const uint8_t *payload, const uint16_t length,
@@ -259,8 +270,13 @@ public:
     );
   };
 
-  uint8_t get_current_bus() const { return current_bus; }
-
+  // Return the position of the bus currently calling a callback.
+  // (It may return PJON_NOT_ASSIGNED if not doing a callback.)
+  uint8_t get_callback_bus() const { return current_bus; }
+  
+  // Return one of the buses, in the same order as sent to the constructor
+  PJONBus<Strategy> &get_bus(const uint8_t ix) { return *(buses[ix]); }
+  
   static void receiver_function(
     uint8_t *payload,
     uint16_t length,

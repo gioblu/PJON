@@ -77,6 +77,8 @@ protected:
 
   virtual void dynamic_receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
     // Handle packets to this device, with user-supplied callback and custom ptr
+    // (If this device has a device id on the source bus, and it is equal to 
+    // the packets receiver_id, the packet is for this device.)
     bool packet_is_for_me = (
       RouterClass::buses[RouterClass::current_bus]->device_id() != PJON_NOT_ASSIGNED &&
       memcmp(RouterClass::buses[RouterClass::current_bus]->bus_id, packet_info.receiver_bus_id, 4) == 0 &&

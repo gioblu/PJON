@@ -99,11 +99,16 @@ protected:
         // Find out which device id does not receive
     if (PJON_CONNECTION_LOST == code &&
         is_vbus(RouterClass::buses[RouterClass::current_bus]->bus_id) &&
-        packet < PJON_MAX_PACKETS)
+        (packet < PJON_MAX_PACKETS || PJON_MAX_PACKETS == 0)) 
     {
       PJON_Packet_Info info;
+      #if PJON_MAX_PACKETS == 0
+      RouterClass::buses[RouterClass::current_bus]->
+        parse((uint8_t *)(RouterClass::buses[RouterClass::current_bus]->data), info);
+      #else
       RouterClass::buses[RouterClass::current_bus]->
         parse((uint8_t *)(RouterClass::buses[RouterClass::current_bus]->packets[packet].content), info);
+      #endif
       if (info.receiver_id < PJON_VIRTUALBUS_MAX_DEVICES && is_vbus(info.receiver_bus_id)) {
         // Unregister the device if we got an error trying to deliver to the attached
         // bus on which it is registered. This will step back from pointed delivery

@@ -67,6 +67,9 @@ protected:
   uint8_t virtual_bus = PJON_NOT_ASSIGNED;
   uint8_t device_via_attached_bus[PJON_VIRTUALBUS_MAX_DEVICES];
 
+  // Support for disabling ACK for devices with unknown location
+  bool unknown_device_location = false;
+
   void init_vbus() {
     for (uint8_t i=0; i<PJON_VIRTUALBUS_MAX_DEVICES; i++)
       device_via_attached_bus[i] = PJON_NOT_ASSIGNED;
@@ -95,11 +98,38 @@ protected:
     }
   }
 
+  virtual void send_packet(const uint8_t *payload, const uint16_t length,
+                           const uint8_t receiver_bus, const uint8_t sender_bus,
+                           bool &ack_sent, const PJON_Packet_Info &packet_info) {
+    // Override the base class send_packet to disable requesting and sending ACK
+    // if the receiver's location is not registered.
+    bool disable_ack = unknown_device_location && is_vbus(RouterClass::buses[receiver_bus]->bus_id);
+    if (disable_ack) {
+      PJON_Packet_Info info;
+      memcpy(&info, &packet_info, sizeof info);
+      info.header &= ~PJON_ACK_REQ_BIT;
+
+      bool disable_ack = true;
+      RouterClass::send_packet(payload, length, receiver_bus, sender_bus, disable_ack, info);
+      #ifdef DEBUG_PRINT
+      Serial.print(F("FORWARD NOACK ")); Serial.print(info.receiver_id); Serial.print(F(" to bus "));
+      Serial.println(receiver_bus);
+      #endif
+    } 
+    else {
+      RouterClass::send_packet(payload, length, receiver_bus, sender_bus, ack_sent, packet_info);
+      #ifdef DEBUG_PRINT
+      Serial.print(F("FORWARD ")); Serial.print(packet_info.receiver_id); Serial.print(F(" to bus "));
+      Serial.println(receiver_bus);
+      #endif
+    }
+  }
+
   void handle_send_error(uint8_t code, uint8_t packet) {
-        // Find out which device id does not receive
+    // Find out which device id does not receive
     if (PJON_CONNECTION_LOST == code &&
         is_vbus(RouterClass::buses[RouterClass::current_bus]->bus_id) &&
-        (packet < PJON_MAX_PACKETS || PJON_MAX_PACKETS == 0)) 
+        (packet < PJON_MAX_PACKETS || PJON_MAX_PACKETS == 0))
     {
       PJON_Packet_Info info;
       #if PJON_MAX_PACKETS == 0
@@ -138,9 +168,13 @@ protected:
     // If found on part of a virtual bus, do not deliver copies to others
     if (receiver_bus != PJON_NOT_ASSIGNED) {
       bool ack_sent = false;
-      RouterClass::forward_packet(payload, length, receiver_bus, RouterClass::current_bus, ack_sent, packet_info);
-    } else
+      if (receiver_bus != RouterClass::current_bus)
+        RouterClass::forward_packet(payload, length, receiver_bus, RouterClass::current_bus, ack_sent, packet_info);
+    } else {
+      unknown_device_location = true;
       RouterClass::dynamic_receiver_function(payload, length, packet_info);
+      unknown_device_location = false;
+    }
   }
 
   virtual void dynamic_error_function(uint8_t code, uint16_t data) {

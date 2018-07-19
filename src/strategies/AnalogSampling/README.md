@@ -29,7 +29,7 @@ Leveraging of the interesting features of LEDs:
 - Emit light if powered by electricity
 - Emit a small but detectable amount of electricity if hit by light (photo-electric effect)
 
-It is possible to use LEDs as wireless (bidirectional) transceivers. This means that wireless half-duplex connectivity con be provided by a single LED per device. Not all LEDs behave as good as others so a preliminary evaluation of a set of different products is suggested:
+It is possible to use LEDs as wireless (bidirectional) transceivers. This means that wireless half-duplex connectivity can be provided by a single LED per device. Not all LEDs behave as good as others so a preliminary evaluation of a set of different products is suggested:
 
 1. Position a couple of identical LEDs on a breadboard aiming at each other
 2. Connect one channel of the oscilloscope to the positive lead of one LED

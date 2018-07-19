@@ -29,12 +29,12 @@ Leveraging of the interesting features of LEDs:
 - Emit light if powered by electricity
 - Emit a small but detectable amount of electricity if hit by light (photo-electric effect)
 
-It is possible to use LEDs as wireless (bidirectional) transceivers. This means that you can connect two devices needing only one LED per device. Not all LEDs behave as good as others so a preliminary evaluation of a set of different products is suggested:
+It is possible to use LEDs as wireless (bidirectional) transceivers. This means that wireless half-duplex connectivity con be provided by a single LED per device. Not all LEDs behave as good as others so a preliminary evaluation of a set of different products is suggested:
 
 1. Position a couple of identical LEDs on a breadboard aiming at each other
-2. Connect one channel of the oscilloscope to one of the LED's positive lead
+2. Connect one channel of the oscilloscope to the positive lead of one LED
 3. Power the connected LED with a 500Hz square wave
-4. Connect oscilloscope's remaining channel to positive lead of the other LED
+4. Connect oscilloscope's remaining channel to the other LED's positive lead
 5. Connect all grounds together
 
 If you don't have a square wave generator you can use an Arduino:
@@ -45,14 +45,14 @@ digitalWrite(12, LOW);
 delay(1);
 ```
 
-Looking at the 2 channels it can be observed:
+Looking at the 2 channels it should be observed:
 
-- Transmitter's channel should show a crisp 5v signal
-- Receiver's channel should show a lower voltage signal with transitions slopes
+- The Transmitter's channel showing a crisp 5v signal
+- The Receiver's channel showing a lower voltage signal with transitions slopes
 
 Testing different LEDs with the same conditions shows that some produce a higher or lower voltage and transitions that are steeper or slower and more gradual. To obtain the best performance it is required to find a LED with the following characteristics:
-- Highest voltage produced
-- Faster and steeper transitions
+- Highest voltage produced when hit by light
+- Fastest and steepest transitions between states
 
 The picture below shows the [KCL5587S](https://datasheet.octopart.com/KCL5587S-Kodenshi-datasheet-62058055.pdf) that is evidently not the LED we are looking for.
 
@@ -62,9 +62,9 @@ The [L-53SF4C](https://www.rapidonline.com/pdf/55-9204_v1.pdf) instead is able t
 
 ![AnalogSampling PJDLS good LED](images/AnalogSampling_PJDLS_Good_LED.jpg)
 
-It is necessary to add a pull-down resistor 75K-5MΩ connecting the A0 pin with ground to reduce the LED capacitance, reduce bit transition slopes and externally induced interference.
+It is necessary to add a 75K-5MΩ pull-down resistor connecting the A0 pin with ground to reduce the LED capacitance, bit transition slopes and externally induced interference.
 
-`AnalogSampling` can be used to experiment with short range infrared or visible light communication (i.e. micro-robot swarm, DIY remote, optic fiber), medium range using light sources (i.e. cars transmitting data through front and backlights) or long range laser communication (i.e. data between ground and LEO).  
+`AnalogSampling` can be used to experiment with short range infrared or visible light communication (i.e. remote control), medium range using light sources (i.e. cars transmitting data through front and backlights) or long range laser communication (i.e. data between ground and LEO).  
 
 The picture below shows a bidirectional exchange where both packet and acknowledgment are clearly visible:
 

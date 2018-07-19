@@ -4,7 +4,7 @@
 
 `AnalogSampling` strategy or data link complies with [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md), it is designed to communicate data wirelessly using light impulses and its sampling technique is based on analog readings. This strategy is able to use a single LED for both photo-emission and photo-reception phases providing with wireless half-duplex connectivity between devices with a range of up to 5 meters. Most appliances have at least a useless energy consuming LED on board, right?
 
-`AnalogSampling` can also be used with two pairs of any sort of emitters and receivers enabling cheap long range wireless laser communication. The proposed circuit, technique and codebase were originally implemented in the far 2011, see the first [video documented experiment](https://www.youtube.com/watch?v=-Ul2j6ixbmE). Take a look at the [video introduction](https://www.youtube.com/watch?v=yIncPe8OPpg) for a brief showcase of its features.
+`AnalogSampling` can also be used with separate emitter and receiver enabling cheap long range wireless LED and laser communication. The proposed circuit, technique and codebase were originally implemented in the far 2011, see the first [video documented experiment](https://www.youtube.com/watch?v=-Ul2j6ixbmE). Take a look at the [video introduction](https://www.youtube.com/watch?v=yIncPe8OPpg) for a brief showcase of its features.
 
 #### Compatibility
 - ATmega88/168/328 16MHz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
@@ -63,18 +63,12 @@ The [L-53SF4C](https://www.rapidonline.com/pdf/55-9204_v1.pdf) instead is able t
 ![AnalogSampling PJDLS good LED](images/AnalogSampling_PJDLS_Good_LED.jpg)
 
 To minimize other potential issues while experimenting:
-- Always minimize wiring length
-- Consider that oscilloscope's probe acting as a pull down resistor influences the results and the required pull down resistor's value
+- Always minimize wiring length.
+- Depending on the power supply voltage, LEDs could be overpowered, add a current limiting resistor if required.
+- Oscilloscope's probe acting as a pull down resistor influences results and the required pull down resistor's value.
+- It is necessary to add a pull-down resistor 75K-5MΩ connecting the A0 pin with ground to reduce the LED capacitance, reduce bit transition slopes and externally induced interference.
 
-In most cases it is necessary to add a pull-down resistor 75K-5MΩ connecting the A0 pin with ground to reduce the LED capacitance, reduce bit transition slopes and externally induced interference.
-
-Consider that depending on the operating voltage of your device LEDs could be overpowered, so choose the LED depending on its operating voltage and add a current limiting resistor if needed. Because of the non continuous power supply also if using a 5v system most LEDs (infrared, blue, white) should survive.  
-
-The obtained performance is affected by:
-- **Resolution** - use `analogReference` wiring method to configure `analogRead` resolution as necessary taking care that the input voltage is not higher than the configured voltage reference.
-- **Sensitivity** find a couple of identical LEDs, position one shining light directly on the other's junction and test the voltage produced by the unpowered one. Blue LEDs can produce more than 2 volts if hit by its light at full power.
-- **Transmission power** the more power is given to the transmitter, the higher range and reliability can be achieved.
-- **Signal-to-noise ratio or SNR** Noise level affects communication reliability specially when the signal magnitude is reduced by distance; filtering your input from background noise can higher maximum range and communication reliability.
+The obtained performance is affected by resolution, sensitivity, transmission power and signal-to-noise ratio or SNR.
 
 `AnalogSampling` can be used to experiment with short range infrared or visible light communication (i.e. micro-robot swarm, DIY remote, optic fiber), medium range using light sources (i.e. cars transmitting data through front and backlights) or long range laser communication (i.e. data between ground and LEO).  
 

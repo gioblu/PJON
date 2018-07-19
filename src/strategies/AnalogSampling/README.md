@@ -54,10 +54,12 @@ Testing different LEDs with the same conditions shows that some produce a higher
 - Highest voltage produced
 - Faster and steeper transitions
 
-The picture below shows the [KCL5587S]() that is evidently not the LED we are looking for.
+The picture below shows the [KCL5587S](https://datasheet.octopart.com/KCL5587S-Kodenshi-datasheet-62058055.pdf) that is evidently not the LED we are looking for.
+
 ![AnalogSampling PJDLS bad LED](images/AnalogSampling_PJDLS_Bad_LED.jpg)
 
-The [L-53SF4C]() instead is able to run flawlessly at MODE 3 (3773Bb or 471B/s):
+The [L-53SF4C](https://www.rapidonline.com/pdf/55-9204_v1.pdf) instead is able to run flawlessly at MODE 3 (3773Bb or 471B/s):
+
 ![AnalogSampling PJDLS good LED](images/AnalogSampling_PJDLS_Bad_LED.jpg)
 
 To minimize other potential issues while experimenting:
@@ -77,6 +79,7 @@ The obtained performance is affected by:
 `AnalogSampling` can be used to experiment with short range infrared or visible light communication (i.e. micro-robot swarm, DIY remote, optic fiber), medium range using light sources (i.e. cars transmitting data through front and backlights) or long range laser communication (i.e. data between ground and LEO).  
 
 The picture shows a bidirectional exchange where both packet and acknowledgment are clearly visible:
+
 ![AnalogSampling PJDLS bidirectional exchange](images/AnalogSampling_PJDLS_LED_Transceiver.jpg)
 
 #### How to use AnalogSampling

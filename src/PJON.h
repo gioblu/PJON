@@ -18,11 +18,13 @@ For the PJON® Protocol specification see the specification directory.
 Compliant tools:
 - ModuleInterface - Easy config and value sync between IOT modules
   https://github.com/fredilarsen/ModuleInterface
-- Command line PJON wrapper over unnamed pipes by Zbigniew Zasieczny
+- Cython PJON wrapper by xlfe github user
+  https://github.com/xlfe/PJON-cython
+- Command line PJON wrapper over pipes by Zbigniew Zasieczny (outdated)
   https://github.com/Girgitt/PJON-piper
-- PJON-python - PJON running on Python by Zbigniew Zasieczny
+- PJON-python - PJON running on Python by Zbigniew Zasieczny (outdated)
   https://github.com/Girgitt/PJON-python
-- PJON-gRPC - gRPC server-client by Oleg Galitskiy
+- PJON-gRPC - gRPC server-client by Oleg Galitskiy (outdated)
   https://github.com/Galitskiy/PJON-gRPC
 
 Credits to contributors:

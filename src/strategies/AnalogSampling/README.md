@@ -62,17 +62,11 @@ The [L-53SF4C](https://www.rapidonline.com/pdf/55-9204_v1.pdf) instead is able t
 
 ![AnalogSampling PJDLS good LED](images/AnalogSampling_PJDLS_Good_LED.jpg)
 
-To minimize other potential issues while experimenting:
-- Always minimize wiring length.
-- Depending on the power supply voltage, LEDs could be overpowered, add a current limiting resistor if required.
-- Oscilloscope's probe acting as a pull down resistor influences results and the required pull down resistor's value.
-- It is necessary to add a pull-down resistor 75K-5MΩ connecting the A0 pin with ground to reduce the LED capacitance, reduce bit transition slopes and externally induced interference.
-
-The obtained performance is affected by resolution, sensitivity, transmission power and signal-to-noise ratio or SNR.
+It is necessary to add a pull-down resistor 75K-5MΩ connecting the A0 pin with ground to reduce the LED capacitance, reduce bit transition slopes and externally induced interference.
 
 `AnalogSampling` can be used to experiment with short range infrared or visible light communication (i.e. micro-robot swarm, DIY remote, optic fiber), medium range using light sources (i.e. cars transmitting data through front and backlights) or long range laser communication (i.e. data between ground and LEO).  
 
-The picture shows a bidirectional exchange where both packet and acknowledgment are clearly visible:
+The picture below shows a bidirectional exchange where both packet and acknowledgment are clearly visible:
 
 ![AnalogSampling PJDLS bidirectional exchange](images/AnalogSampling_PJDLS_LED_Transceiver.jpg)
 
@@ -122,7 +116,10 @@ After the PJON object is defined with its strategy it is possible to set the com
 
 #### Known issues
 - Direct sunlight or other light sources can affect receiver's sensitivity and maximum communication range
-- A pull-down resistor can be necessary to obtain nominal functionality, see above
+- Long wires can degrade performance
+- Depending on the power supply voltage, LEDs could be overpowered, add a current limiting resistor if required
+- Oscilloscope's probe acting as a pull down resistor influences results and the required pull down resistor's value
+- A pull-down resistor is required to obtain optimal performance, see above
 
 #### Safety warning
 In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. When working with an [AnalogSampling](/src/strategies/AnalogSampling) LED or laser based setup safety glasses must be worn and transceivers must be operated cautiously to avoid potential eye injuries. Consider that with [AnalogSampling](/src/strategies/AnalogSampling) all LEDs that are physically connected to an ADC may be used maliciously to both download or upload data wirelessly, effectively circumventing many air-gapping techniques.   

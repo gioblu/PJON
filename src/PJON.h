@@ -45,6 +45,7 @@ Credits to contributors:
 - PaoloP74 github user. Library conversion to 1.x Arduino IDE
 
 Bug reports:
+- per1234 github user. Fix keywords.txt separators
 - bryant1410 github user. Debug readme format
 - pacproduct github user. Added missing mode configuration PJON_SIMPLEX ex.
 - elusive-code github user. PJONMaster reset bug

@@ -60,7 +60,7 @@ The picture below shows the [KCL5587S](https://datasheet.octopart.com/KCL5587S-K
 
 The [L-53SF4C](https://www.rapidonline.com/pdf/55-9204_v1.pdf) instead is able to run flawlessly at MODE 3 (3773Bb or 471B/s):
 
-![AnalogSampling PJDLS good LED](images/AnalogSampling_PJDLS_Bad_LED.jpg)
+![AnalogSampling PJDLS good LED](images/AnalogSampling_PJDLS_Good_LED.jpg)
 
 To minimize other potential issues while experimenting:
 - Always minimize wiring length

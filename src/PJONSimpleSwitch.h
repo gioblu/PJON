@@ -171,10 +171,11 @@ protected:
       packet_info.id,
       packet_info.port
     );
+
     #if PJON_MAX_PACKETS == 0
     // Call error function explicitly, because that will not be done while sending
     // when PJON_MAX_PACKETS=0.
-    if (result == PJON_FAIL) dynamic_error_function(0, 0);
+    if (result == PJON_FAIL) dynamic_error_function(PJON_CONNECTION_LOST, 0);
     #endif
     current_bus = send_bus;
   }

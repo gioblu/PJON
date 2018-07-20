@@ -220,4 +220,4 @@ byte b = bus.strategy.getRandom();
 Generate a random byte, based on the Wideband RSSI measurement.
 
 #### Safety warning
-In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. Before any practical test or a hardware purchase for a wireless [OverSampling](/src/strategies/OverSampling), [ThroughSerial](/src/strategies/ThroughSerial) or [ThroughLoRa](/src/strategies/ThroughLoRa) radio setup, compliance with government requirements and regulations must be ensured.
+In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. Before any practical test or hardware purchase for a wireless [ThroughLoRa](/src/strategies/ThroughLoRa) radio setup, compliance with government requirements and regulations must be ensured.

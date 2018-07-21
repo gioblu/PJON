@@ -30,7 +30,19 @@ void setup() {
 ```
 All the IP addresses of the registered nodes should be reachable. UDP port forwarding can be used to obtain this
 through firewalls. The IP address of the device can be DHCP assigned if none of the other devices need to reach it
-except with ACKs or replies. Otherwise it should be static.
+except with ACKs. Otherwise it should be static, unless using sender autoregistration.
+
+Sender autoregistration is now enabled by default and can be disabled with:
+
+```
+  bus.set_autoregistration(false);
+```
+
+With sender autoregistration the sender of each incoming packet is automatically registered in the node table, meaning that replies will work also for unregistered devices with static or dynamic IP. Also, after a packet from a device has been received, packets can be sent to it by its PJON id.
+
+This means that sender autoregistration can be used in setups where packets are exchanged through a central device, typically a master or switch, to let all devices except the central device use DHCP for dynamic network configuration. Each device then need to register the central device in its table, and the central device can have an empty table at startup.
+
+Note that the preprocessor define `GUDP_MAX_REMOTE_NODES` is important when using autoregistration. For a device it should be higher than the maximum number of other devices it will communicate with. Its default value of 10 is low to save memory, and in larger setups it must be increased.
 
 UDP packets are _not_ broadcast like with the `LocalUDP` strategy, but directed to a selected receiver.
 

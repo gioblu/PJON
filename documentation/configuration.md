@@ -48,6 +48,7 @@ Supported definitions:
 - `PJON_INCLUDE_OS` includes OverSampling
 - `PJON_INCLUDE_TS` includes ThroughSerial
 - `PJON_INCLUDE_TL` includes ThroughLoRa
+- `PJON_INCLUDE_ANY` includes Any - Required for `StrategyLink` if using router
 - `PJON_INCLUDE_NONE` no strategy file included
 
 Before using `ThroughLoRa` be sure to have [arduino-LoRa](https://github.com/sandeepmistry/arduino-LoRa) source available and to have defined `PJON_INCLUDE_TL` constant before including `PJON.h`.

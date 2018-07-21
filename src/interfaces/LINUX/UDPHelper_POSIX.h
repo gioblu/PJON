@@ -26,12 +26,11 @@ class UDPHelper {
 public:
   ~UDPHelper() {
     if (_fd != -1)
-
 #ifdef _WIN32
-    closesocket(_fd);
-	  WSACleanup();
+      closesocket(_fd);
+    WSACleanup();
 #else
-    close(_fd);
+      close(_fd);
 #endif
   }
 
@@ -50,7 +49,7 @@ public:
 #ifdef _WIN32
       closesocket(_fd);
 #else
-	  close(_fd);
+	    close(_fd);
 #endif
       _fd = -1;
     }
@@ -63,14 +62,14 @@ public:
     }
 
     // Make it non-blocking
-	#ifdef _WIN32
-	DWORD read_timeout = 10; // millis
-	#else
+    #ifdef _WIN32
+    DWORD read_timeout = 10; // millis
+    #else
     struct timeval read_timeout;
     read_timeout.tv_sec = 0;
     read_timeout.tv_usec = 1000;
-	#endif
-	setsockopt(_fd, SOL_SOCKET, SO_RCVTIMEO, (char *)&read_timeout, sizeof read_timeout);
+    #endif
+    setsockopt(_fd, SOL_SOCKET, SO_RCVTIMEO, (char *)&read_timeout, sizeof read_timeout);
 
     // Bind to specific local port
     memset(&_localaddr, 0, sizeof(_localaddr));
@@ -166,6 +165,11 @@ public:
   }
 
   void set_magic_header(uint32_t magic_header) { _magic_header = magic_header; }
+
+  void get_sender(uint8_t *ip, uint16_t &port) {
+    memcpy(ip, &_remote_sender_addr.sin_addr.s_addr, 4);
+    port = ntohs(_remote_sender_addr.sin_port);
+  }
 };
 
 #undef close

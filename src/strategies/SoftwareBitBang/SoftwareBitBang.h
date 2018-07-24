@@ -60,9 +60,6 @@ class SoftwareBitBang {
 
     bool begin(uint8_t additional_randomness = 0) {
       PJON_DELAY(PJON_RANDOM(SWBB_INITIAL_DELAY) + additional_randomness);
-      PJON_IO_PULL_DOWN(_input_pin);
-      if(_output_pin != _input_pin)
-        PJON_IO_PULL_DOWN(_output_pin);
       return true;
     };
 
@@ -317,6 +314,7 @@ class SoftwareBitBang {
     /* Set the communicaton pin: */
 
     void set_pin(uint8_t pin) {
+      PJON_IO_PULL_DOWN(pin);
       _input_pin = pin;
       _output_pin = pin;
     };
@@ -328,6 +326,8 @@ class SoftwareBitBang {
       uint8_t input_pin = SWBB_NOT_ASSIGNED,
       uint8_t output_pin = SWBB_NOT_ASSIGNED
     ) {
+      PJON_IO_PULL_DOWN(input_pin);
+      PJON_IO_PULL_DOWN(output_pin);
       _input_pin = input_pin;
       _output_pin = output_pin;
     };

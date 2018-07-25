@@ -28,14 +28,14 @@ In the example above the PJON object is instantiated passing [SoftwareBitBang](/
 
 | Strategy      | Physical layer | Protocol | Pins needed   |
 | ------------- | -------------- | -------- | ------------- |
-| [SoftwareBitBang](/src/strategies/SoftwareBitBang) | Electrical impulses over a conductive medium | [PJDL](../src/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) | 1 or 2 |
+| [SoftwareBitBang](/src/strategies/SoftwareBitBang) | Electrical impulses over conductive element | [PJDL](../src/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) | 1 or 2 |
 | [AnalogSampling](/src/strategies/AnalogSampling)  | Light pulses over air or optic fiber | [PJDLS](../src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) | 1 or 2 |
-| [EthernetTCP](/src/strategies/EthernetTCP)  | Electrical or radio impulses over wire or air | TCP | Ethernet port |
-| [LocalUDP](/src/strategies/LocalUDP)  | Electrical or radio impulses over wire or air | UDP | Ethernet port |
-| [GlobalUDP](/src/strategies/GlobalUDP)  | Electrical or radio impulses over wire or air | UDP | Ethernet port |
-| [OverSampling](/src/strategies/OverSampling)  | Electrical or radio impulses over wire or air | [PJDLR](../src/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) | 1 or 2 |
-| [ThroughSerial](/src/strategies/ThroughSerial)  | Electrical or radio impulses over wire or air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md) | 1 or 2 |
-| [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio impulses over wire or air | LoRa | 3 or 4 |
+| [EthernetTCP](/src/strategies/EthernetTCP)  | Electrical/radio impulses over wire/air | TCP | Ethernet port |
+| [LocalUDP](/src/strategies/LocalUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
+| [GlobalUDP](/src/strategies/GlobalUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
+| [OverSampling](/src/strategies/OverSampling)  | Electrical/radio impulses over wire/air | [PJDLR](../src/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) | 1 or 2 |
+| [ThroughSerial](/src/strategies/ThroughSerial)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md) | 1 or 2 |
+| [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio impulses over air | LoRa | 3 or 4 |
 
 By default all strategies are included except `ThroughLoRa`. To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before PJON inclusion to include only `SoftwareBitBang` strategy. More than one strategy related constant can defined in the same program if that is required.
 

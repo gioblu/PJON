@@ -175,6 +175,19 @@
   #endif
 #endif
 
+/* STM32F1 ---------------------------------------------------------------- */
+#if defined(__STM32F1__)
+  #if SWBB_MODE == 1
+    #if F_CPU == 72000000L
+    /* Added by github user osman-aktepe - 22/06/2018 */
+      #define SWBB_BIT_WIDTH   44
+      #define SWBB_BIT_SPACER 112
+      #define SWBB_ACCEPTANCE  40
+      #define SWBB_READ_DELAY -10
+    #endif
+  #endif
+#endif
+
 /* Avoid error if any previous defined ------------------------------------ */
 #if SWBB_MODE == 1
   #ifndef SWBB_BIT_WIDTH

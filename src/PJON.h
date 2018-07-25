@@ -28,39 +28,40 @@ Compliant tools:
   https://github.com/Galitskiy/PJON-gRPC
 
 Credits to contributors:
-- Fred Larsen. Systems engineering, header driven communication, debugging
-- Zbigniew Zasieczny. WINX86 interface
-- Matheus Garbelini. ThroughLora strategy
-- Jorgen-VikingGod github user. ESP32 port
-- drtrigon github user. LINUX ThroughSerial examples, missing warning report
-- Wilfried Klaas ATtiny44/84 port
-- 4ib3r github user. Memory optimization configurable strategies inclusion
-- budaics github user. ATtiny85 16MHz external clock testing and wiki page
-- Pantovich github user. Update returning number of packets to be delivered
-- Adrian Sławiński. Fix to enable SimpleModbusMasterV2 compatibility
-- SticilFace github user. Teensy port
-- Esben Soeltoft. Arduino Zero port
-- Alex Grishin. ESP8266 port
-- Andrew Grande. Testing, support, bugfix
-- Mauro Zancarlin. Systems engineering, testing, bugfix
-- Michael Teeww. Callback based reception, debugging
-- PaoloP74 github user. Library conversion to 1.x Arduino IDE
+- Fred Larsen: Systems engineering, header driven communication, debugging
+- Zbigniew Zasieczny: WINX86 interface
+- Matheus Garbelini: ThroughLora strategy
+- osman-aktepe github user: SoftwareBitBang STM32F1 support
+- Jorgen-VikingGod github user: SoftwareBitBang ESP32 support
+- drtrigon github user: LINUX ThroughSerial examples, missing warning report
+- Wilfried Klaas: SoftwareBitBang ATtiny44/84 support
+- 4ib3r github user: Memory optimization configurable strategies inclusion
+- budaics github user: ATtiny85 16MHz external clock testing and wiki page
+- Pantovich github user: Update returning number of packets to be delivered
+- Adrian Sławiński: Fix to enable SimpleModbusMasterV2 compatibility
+- SticilFace github user: SoftwareBitBang Teensy support
+- Esben Soeltoft: SoftwareBitBang Arduino Zero support
+- Alex Grishin: SoftwareBitBang ESP8266 support
+- Andrew Grande: Testing, support, bugfix
+- Mauro Zancarlin: Systems engineering, testing, bugfix
+- Michael Teeww: Callback based reception, debugging
+- PaoloP74 github user: Library conversion to 1.x Arduino IDE
 
 Bug reports:
-- per1234 github user. Fix keywords.txt separators
-- bryant1410 github user. Debug readme format
-- pacproduct github user. Added missing mode configuration PJON_SIMPLEX ex.
-- elusive-code github user. PJONMaster reset bug
-- Franketto arduino forum user. PJON ThroughSerial over RS485 delay issue
-- Zbigniew Zasieczny. Header reference inconsistency report
-- DanRoad reddit user. can_start ThroughSerial bugfix
-- Remo Kallio. Packet index 0 bugfix
-- Emanuele Iannone. Forcing PJON_SIMPLEX in OverSamplingSimplex
-- Christian Pointner. Fixed compiler warnings
-- Andrew Grande. ESP8266 example watchdog error bug fix
-- Fabian Gärtner. receive function and big packets bugfix
-- Mauro Mombelli. Code cleanup
-- Shachar Limor. Blink example pinMode bugfix
+- per1234 github user: Fix keywords.txt separators
+- bryant1410 github user: Debug readme format
+- pacproduct github user: Added missing mode configuration PJON_SIMPLEX ex.
+- elusive-code github user: PJONMaster reset bug
+- Franketto arduino forum user: PJON ThroughSerial over RS485 delay issue
+- Zbigniew Zasieczny: Header reference inconsistency report
+- DanRoad reddit user: can_start ThroughSerial bugfix
+- Remo Kallio: Packet index 0 bugfix
+- Emanuele Iannone: Forcing PJON_SIMPLEX in OverSamplingSimplex
+- Christian Pointner: Fixed compiler warnings
+- Andrew Grande: ESP8266 example watchdog error bug fix
+- Fabian Gärtner: receive function and big packets bugfix
+- Mauro Mombelli: Code cleanup
+- Shachar Limor: Blink example pinMode bugfix
 
 The PJON project is entirely financed by contributions of people like you and
 its resources are solely invested to cover the development and maintenance

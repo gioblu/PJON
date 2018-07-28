@@ -16,7 +16,7 @@
 
 #include <PJON.h>
 
-const uint8_t DEVICE_ID = 44;
+const uint8_t DEVICE_ID = 45;
 // SWBB Device ID for this device and the RemoteWorker
 
 // <Strategy name> bus(selected device id)
@@ -34,37 +34,31 @@ PJON<ThroughSerial> busB(1);
 //const uint8_t remote_ip[] = { 192, 1, 1, 70 };
 
 void setup() {
-  pinMode(5, OUTPUT);
-  digitalWrite(5, LOW); // Initialize LED 13 to be off
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW); // Initialize LED 13 to be off
 //  digitalWrite(13, HIGH); // Initialize LED 13 to be on
 
 //  Serial.begin(115200);
 //  Serial.println("Welcome to Surrogate 1");
 //  Ethernet.begin(mac, ip, gateway, gateway, subnet);
-  //Serial.begin(115200);
-  Serial1.begin(115200); 
+  Serial.begin(9600);
 
-  busA.strategy.set_pin(2);
+  busA.strategy.set_pin(7);
   busA.set_receiver(receiver_functionA);
   busA.begin();
 
-  busB.strategy.set_serial(&Serial1);
+//  busB.strategy.link.set_id(busB.device_id());
+//  busB.strategy.link.add_node(DEVICE_ID, remote_ip);
+//  #ifdef ETCP_SINGLE_DIRECTION
+//    busB.strategy.link.single_initiate_direction(true);
+//  #elif ETCP_SINGLE_SOCKET_WITH_ACK
+//    busB.strategy.link.single_socket(true);
+//  #endif
+  busB.strategy.set_serial(&Serial);
   busB.set_router(true);
   busB.set_receiver(receiver_functionB);
   busB.begin();
-
-    attachInterrupt(digitalPinToInterrupt(2), intFunc , RISING);
-
 }
-
-
-void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
-  noInterrupts();
-  busA.receive();
-  interrupts();
-}
-
-
 
 void receiver_functionA(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   // Forward packet to RemoteWorker on bus B, preserving the original sender id
@@ -79,7 +73,7 @@ void receiver_functionA(uint8_t *payload, uint16_t length, const PJON_Packet_Inf
     packet_info.id,
     packet_info.port
   );
-  digitalWrite(5, HIGH);
+  digitalWrite(13, HIGH);
 }
 
 void receiver_functionB(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
@@ -95,14 +89,21 @@ void receiver_functionB(uint8_t *payload, uint16_t length, const PJON_Packet_Inf
     packet_info.id,
     packet_info.port
   );  
-  digitalWrite(5, LOW);
+  digitalWrite(13, LOW);
 }
 
 void loop() {
-  //busA.receive(1000);
+  busA.receive(1000);
   busB.update();
-  busB.receive();
+  busB.receive(1000);
   busA.update();
 
-
+//  // Show the number of sockets created after startup
+//  // (Try disconnecting the Ethernet cable for a while to see it increase when reconnected.)
+//  static uint32_t last = millis();
+//  if (millis() - last > 5000) {
+//    last = millis();
+//    Serial.print(F("CONNECT COUNT: "));
+//    Serial.println(busB.strategy.link.get_connection_count());
+//  }
 };

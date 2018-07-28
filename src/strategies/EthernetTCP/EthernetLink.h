@@ -302,7 +302,7 @@ public:
     uint16_t timeout_ms = 2000
   ) {
     int32_t total_bytes_read = 0, bytes_read = ETCP_ERROR_READ;
-    uint32_t start_ms = millis();
+    uint32_t start_ms = PJON_MILLIS();
     /* NOTE: The Arduino standard recv/read functions returns
        -1 if no data waiting
         0 if socket closed
@@ -313,8 +313,8 @@ public:
       while(
         client.connected() &&
         (avail = client.available()) <= 0 &&
-        (uint32_t)(millis() - start_ms) < min(1000, timeout_ms)
-      ) delayMicroseconds(250);
+        (uint32_t)(PJON_MILLIS() - start_ms) < min(1000, timeout_ms)
+      ) PJON_DELAY_MICROSECONDS(250);
       if (avail <= 0) continue;
       #endif
 
@@ -327,7 +327,7 @@ public:
     } while(
       bytes_read != ETCP_ERROR_READ &&
       total_bytes_read < length &&
-      (uint32_t)(millis() - start_ms) < timeout_ms
+      (uint32_t)(PJON_MILLIS() - start_ms) < timeout_ms
     );
 
     if(bytes_read == ETCP_ERROR_READ) {
@@ -343,13 +343,13 @@ public:
   // Read a package from a connected client (incoming or outgoing socket) and send ACK
   uint16_t receive(TCPHelperClient &client, bool wait) {
     uint16_t return_value = PJON_FAIL;
-    uint32_t start_ms = millis(), avail;
+    uint32_t start_ms = PJON_MILLIS(), avail;
     if (wait) {
       while(
         client.connected() &&
         (avail = client.available()) <= 0 &&
-        (uint32_t)(millis() - start_ms) < 1000
-      ) delayMicroseconds(250);
+        (uint32_t)(PJON_MILLIS() - start_ms) < 1000
+      ) PJON_DELAY_MICROSECONDS(250);
     } else avail = client.connected() ? client.available() : 0;
 
     if(avail > 0) {
@@ -412,7 +412,7 @@ public:
       #endif
 
       return_value = ok ? PJON_ACK : PJON_FAIL;
-      if (ok) _last_receive_time = millis();
+      if (ok) _last_receive_time = PJON_MILLIS();
       if (_ack_requested && !_receive_and_discard) {
         // Write PJON_ACK
         int8_t acklen = 0;
@@ -499,15 +499,15 @@ public:
         // Use non-blocking calls, and receive and discard incoming packets
         if (_client_out.prepare_connect(_remote_ip[pos], _remote_port[pos])) {
           int8_t status = 0;
-          uint32_t start = millis();
+          uint32_t start = PJON_MILLIS();
           do {
             if (!_initiate_both_sockets_in_same_direction && !_single_socket && _server) {
               TCPHelperClient client = _server->available();
               if (client) client.stop();
             }
             status = _client_out.try_connect();
-            if (status == 0) delayMicroseconds(rand() % 250); // Avoid misusing CPU while waiting
-          } while (status == 0 && (uint32_t)(millis()-start)<4000);
+            if (status == 0) PJON_DELAY_MICROSECONDS(PJON_RANDOM(250)); // Avoid misusing CPU while waiting
+          } while (status == 0 && (uint32_t)(PJON_MILLIS()-start)<4000);
           connected = (status == 1);
         }
       #endif
@@ -536,10 +536,10 @@ public:
         #ifdef ETCP_DEBUG_PRINT
           Serial.println("Conn rev..");
         #endif
-        uint32_t start = millis();
+        uint32_t start = PJON_MILLIS();
         do {
           connected_rev = _client_in.connect(_remote_ip[pos], _remote_port[pos]);
-        } while (!connected_rev && (uint32_t)(millis()-start) < 2000);
+        } while (!connected_rev && (uint32_t)(PJON_MILLIS()-start) < 2000);
         #ifdef ETCP_DEBUG_PRINT
           Serial.println(connected_rev ? F("Conn rev to srv") : F("Failed rev conn to srv"));
         #endif
@@ -556,14 +556,14 @@ public:
           // ACK active on both sockets or none in this mode
           _ack_requested = _request_ack;
           did_connect = true;
-          _last_receive_time = millis(); // Count the connection as a receive action
+          _last_receive_time = PJON_MILLIS(); // Count the connection as a receive action
         }
       }
     }
     #endif
 
     if (did_connect) { // Gather a litte connection information
-      _connection_time = millis();
+      _connection_time = PJON_MILLIS();
       _connection_count++;
       if (_single_socket) _ack_requested = _request_ack; // Same mode in both directions
     }
@@ -576,7 +576,7 @@ public:
       #endif
       disconnect_out();
       _current_device = -1;
-      delay(10);  // Slow down if failure
+      PJON_DELAY(10);  // Slow down if failure
       return false; // Server is unreachable or busy
     }
     else _current_device = id; // Remember who we are connected to
@@ -674,17 +674,17 @@ public:
       _request_ack = _ack_requested;
 
       bool connected_reverse = false;
-      uint32_t start = millis();
+      uint32_t start = PJON_MILLIS();
       do {
         _client_out = _server->available();
-      } while (!_client_out && (uint32_t)(millis()-start) < 2000);
+      } while (!_client_out && (uint32_t)(PJON_MILLIS()-start) < 2000);
 
       if(_client_out) {
         #ifdef ETCP_DEBUG_PRINT
           Serial.println("Accept rev OK");
         #endif
         uint32_t connection_header = 0;
-        if (read_bytes(_client_out, (uint8_t*) &connection_header, 4) == 4 && 
+        if (read_bytes(_client_out, (uint8_t*) &connection_header, 4) == 4 &&
             connection_header == htonl(ETCP_CONNECTION_HEADER_B))
           connected_reverse = true;
         else {
@@ -712,9 +712,9 @@ public:
     #endif
 
     if (did_connect) {
-      _connection_time = millis();
+      _connection_time = PJON_MILLIS();
       _connection_count++;
-      _last_receive_time = millis(); // Count the connection as a receive action
+      _last_receive_time = PJON_MILLIS(); // Count the connection as a receive action
     }
     return connected;
   };
@@ -731,7 +731,7 @@ public:
     }
   };
 
-  bool got_receive_timeout() { return (uint32_t)(millis() - _last_receive_time) > ETCP_IDLE_TIMEOUT; }
+  bool got_receive_timeout() { return (uint32_t)(PJON_MILLIS() - _last_receive_time) > ETCP_IDLE_TIMEOUT; }
 
   bool disconnect_in_if_needed() {
     if(_client_in && !_keep_connection) {
@@ -898,7 +898,7 @@ public:
 
       // Read singlesocket header
       bool ok = read_until_header(client, ETCP_SINGLE_SOCKET_HEADER);
-      if (ok) _last_receive_time = millis();
+      if (ok) _last_receive_time = PJON_MILLIS();
       #ifdef ETCP_DEBUG_PRINT
         //Serial.print("Read ss head, ok=");
         //Serial.println(ok);
@@ -1128,7 +1128,7 @@ public:
        without delivering any */
     if(_single_socket) {
       if(!_server) {
-      #ifdef ETCP_SINGLE_SOCKET_WITH_ACK      
+      #ifdef ETCP_SINGLE_SOCKET_WITH_ACK
         return single_socket_transfer(_client_out, remote_id, true, NULL, 0);
       #else
         (void)remote_id; // Avoid "unused parameter" warning
@@ -1153,18 +1153,18 @@ public:
 
   uint16_t receive() {
     if(_server == NULL) { // Not listening for incoming connections
-      #if defined(ETCP_SINGLE_SOCKET_WITH_ACK) || defined(ETCP_SINGLE_DIRECTION) 
+      #if defined(ETCP_SINGLE_SOCKET_WITH_ACK) || defined(ETCP_SINGLE_DIRECTION)
       int16_t remote_id = _remote_node_count == 1 ? _remote_id[0] : -1;
       #endif
       if(_single_socket) { // Single-socket mode.
         /* Only read from already established outgoing socket, or create
         connection if there is only one remote node configured (no doubt about
         which node to connect to). */
-        #ifdef ETCP_SINGLE_SOCKET_WITH_ACK      
+        #ifdef ETCP_SINGLE_SOCKET_WITH_ACK
         return single_socket_transfer(_client_out, remote_id, true, NULL, 0);
         #else
-        return PJON_FAIL;  
-        #endif  
+        return PJON_FAIL;
+        #endif
       }
       #ifdef ETCP_SINGLE_DIRECTION
       else if (_initiate_both_sockets_in_same_direction && _initiator) {
@@ -1181,7 +1181,7 @@ public:
         #ifdef ETCP_SINGLE_SOCKET_WITH_ACK
         return single_socket_transfer(_client_in, -1, false, NULL, 0);
         #else
-        return PJON_FAIL;  
+        return PJON_FAIL;
         #endif
       }else {
         // Accept incoming connection(s)
@@ -1202,7 +1202,7 @@ public:
     uint16_t result = PJON_FAIL;
     do {
       result = receive();
-      if (result != PJON_ACK) delayMicroseconds(250);
+      if (result != PJON_ACK) PJON_DELAY_MICROSECONDS(250);
     } while(
       result != PJON_ACK &&
       (uint32_t)(PJON_MICROS() - start) <= duration_us
@@ -1228,8 +1228,8 @@ public:
         length
       );
       #else
-      return PJON_FAIL;  
-      #endif  
+      return PJON_FAIL;
+      #endif
 
     // Connect or check that we are already connected to the correct server
     bool connected = false;

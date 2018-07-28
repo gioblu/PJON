@@ -28,15 +28,17 @@ strategies that are not timing-critical, for example on buffered media like
 serial or Ethernet. If used on timing-critical strategies like SWBB, the
 receiver callback should be really fast.
 
-If you believe in this project and you appreciate our work, please, make a
-donation. The PJON Foundation is entirely financed by contributions of wise
-people like you and its resources are solely invested to cover the development
-and maintainance costs.
+The PJON project is entirely financed by contributions of people like you and
+its resources are solely invested to cover the development and maintenance
+costs, consider to make donation:
 - Paypal:   https://www.paypal.me/PJON
 - Bitcoin:  1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD
 - Ethereum: 0xf34AEAF3B149454522019781668F9a2d1762559b
 Thank you and happy tinkering!
  _____________________________________________________________________________
+
+This software is experimental and it is distributed "AS IS" without any
+warranty, use it at your own risk.
 
 Copyright 2010-2018 by Giovanni Blu Mitolo gioscarab@gmail.com
 
@@ -75,6 +77,8 @@ protected:
 
   virtual void dynamic_receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
     // Handle packets to this device, with user-supplied callback and custom ptr
+    // (If this device has a device id on the source bus, and it is equal to 
+    // the packets receiver_id, the packet is for this device.)
     bool packet_is_for_me = (
       RouterClass::buses[RouterClass::current_bus]->device_id() != PJON_NOT_ASSIGNED &&
       memcmp(RouterClass::buses[RouterClass::current_bus]->bus_id, packet_info.receiver_bus_id, 4) == 0 &&
@@ -126,7 +130,7 @@ public:
   void set_sendnotification(PJON_SendNotification s) { sendnotification = s; };
 
   void set_custom_ptr(void *custom_ptr) { custom_pointer = custom_ptr; };
-  
+
   void send_packet(
     const uint8_t *payload,
     uint16_t length,

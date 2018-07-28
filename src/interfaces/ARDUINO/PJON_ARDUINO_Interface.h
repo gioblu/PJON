@@ -27,12 +27,26 @@
     #define PJON_ESP // Wio Link and NodeMCU 1.0 (also 0.9), use for ESP12
   #elif ESP8266
     #define PJON_ESP
+  #elif defined(ESP32)
+    #define PJON_ESP
   #endif
 
   #include <Arduino.h>
   #include "PJON_IO.h"
 
-  /* Fallback to digitalWrite --------------------------------------------- */
+  #ifdef __STM32F1__
+    #ifndef A0
+      #define A0 0
+    #endif
+  #endif
+
+  /* Generic constants ---------------------------------------------------- */
+
+  #ifndef LED_BUILTIN
+    #define LED_BUILTIN -1
+  #endif
+
+  /* Arduino IO system calls ---------------------------------------------- */
 
   #ifndef PJON_ANALOG_READ
     #define PJON_ANALOG_READ analogRead
@@ -60,8 +74,14 @@
 
   /* Random --------------------------------------------------------------- */
 
-  #ifndef PJON_RANDOM
-    #define PJON_RANDOM random
+  #ifdef __STM32F1__
+    #ifndef PJON_RANDOM
+      #define PJON_RANDOM(R) random(R ? R : R + 1)
+    #endif
+  #else
+    #ifndef PJON_RANDOM
+      #define PJON_RANDOM random
+    #endif
   #endif
 
   #ifndef PJON_RANDOM_SEED
@@ -69,6 +89,10 @@
   #endif
 
   /* Serial --------------------------------------------------------------- */
+
+  #ifndef PJON_SERIAL_TYPE
+    #define PJON_SERIAL_TYPE Stream *
+  #endif
 
   #ifndef PJON_SERIAL_AVAILABLE
     #define PJON_SERIAL_AVAILABLE(S) S->available()
@@ -87,6 +111,10 @@
   #endif
 
   /* Timing --------------------------------------------------------------- */
+
+  #ifndef PJON_DELAY
+    #define PJON_DELAY delay
+  #endif
 
   #ifndef PJON_DELAY_MICROSECONDS
     #define PJON_DELAY_MICROSECONDS delayMicroseconds

@@ -48,11 +48,11 @@
   #define TS_TIME_IN  TS_RESPONSE_TIME_OUT + TS_COLLISION_DELAY
 #endif
 
-/* Set 5 milliseconds as the maximum timeframe for byte reception.
+/* Set 50 milliseconds as the maximum timeframe for byte reception.
    This value depends on the latency, baud rate and computation time.
    Always set TS_BYTE_TIME_OUT > (byte transmission time + latency) */
 #ifndef TS_BYTE_TIME_OUT
-  #define TS_BYTE_TIME_OUT      5000
+  #define TS_BYTE_TIME_OUT     50000
 #endif
 
 /* Maximum transmission attempts */
@@ -63,4 +63,9 @@
 /* Back-off exponential degree */
 #ifndef TS_BACK_OFF_DEGREE
   #define TS_BACK_OFF_DEGREE      4
+#endif
+
+/* Trailing delay before disabling RS485 DE and or RE pin */
+#ifndef TS_RS485_DELAY
+  #define TS_RS485_DELAY          1
 #endif

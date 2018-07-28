@@ -15,7 +15,7 @@
 
 For the PJON® Protocol specification see the specification directory.
 
-PJON® Standard compliant tools:
+Compliant tools:
 - ModuleInterface - Easy config and value sync between IOT modules
  https://github.com/fredilarsen/ModuleInterface
 - Command line PJON wrapper over unnamed pipes by Zbigniew Zasieczny
@@ -25,15 +25,17 @@ PJON® Standard compliant tools:
 - PJON-gRPC - gRPC server-client by Oleg Galitskiy
  https://github.com/Galitskiy/PJON-gRPC
 
- If you believe in this project and you appreciate our work, please, make a
- donation. The PJON Foundation is entirely financed by contributions of wise
- people like you and its resources are solely invested to cover the development
- and maintainance costs.
+ The PJON project is entirely financed by contributions of people like you and
+ its resources are solely invested to cover the development and maintenance
+ costs, consider to make donation:
  - Paypal:   https://www.paypal.me/PJON
  - Bitcoin:  1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD
  - Ethereum: 0xf34AEAF3B149454522019781668F9a2d1762559b
  Thank you and happy tinkering!
  _____________________________________________________________________________
+
+This software is experimental and it is distributed "AS IS" without any
+warranty, use it at your own risk.
 
 Copyright 2010-2018 by Giovanni Blu Mitolo gioscarab@gmail.com
 
@@ -88,8 +90,9 @@ limitations under the License. */
 #define PJON_FAIL         65535
 #define PJON_TO_BE_SENT      74
 
+/* No header present (unacceptable value used)*/
+#define PJON_NO_HEADER      0B01001000
 /* HEADER BITS DEFINITION: */
-
 /* 0 - Local network
    1 - Shared  network */
 #define PJON_MODE_BIT       0B00000001
@@ -165,9 +168,9 @@ limitations under the License. */
 /* Master free id broadcast response interval (100 milliseconds) */
 #define PJON_ID_REQUEST_INTERVAL   100000
 /* Master ID_REQUEST and ID_NEGATE timeout */
-#define PJON_ADDRESSING_TIMEOUT   2900000
-/* Master reception time during LIST_ID broadcast (75 milliseconds) */
-#define PJON_LIST_IDS_TIME          75000
+#define PJON_ADDRESSING_TIMEOUT   4000000
+/* Master reception time during LIST_ID broadcast (250 milliseconds) */
+#define PJON_LIST_IDS_TIME         250000
 
 struct PJON_Packet {
   uint8_t  attempts;

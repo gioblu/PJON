@@ -35,3 +35,9 @@ except with ACKs or replies. Otherwise it should be static.
 UDP packets are _not_ broadcast like with the `LocalUDP` strategy, but directed to a selected receiver.
 
 All the other necessary information is present in the general [Documentation](/documentation).
+
+#### Known issues
+- Firewall may block `GlobalUDP` packets, edit its configuration to allow them
+
+#### Safety warning
+In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. When connecting a local bus to the internet using [EthernetTCP](/src/strategies/EthernetTCP) or [GlobalUDP](/src/strategies/GlobalUDP) all connected devices must be considered potentially compromised, potentially manipulated or remotely actuated against your will. It should be considered a good practice not to connect to the internet systems that may create a damage (fire, flood, data-leak) if hacked.

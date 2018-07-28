@@ -56,8 +56,8 @@ uint8_t recipient = 0;
 
 void setup() {
   // Initialize LED 13 to be off
-  pinMode(13, OUTPUT);
-  digitalWrite(13, LOW);
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
   // Set HC12 baudrate (you must use the one configured in HC12, default 9600)
   HC12.begin(9600);
 

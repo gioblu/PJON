@@ -24,8 +24,7 @@ const int LED_DURATION = 100; // how long each packet transfer shall be visible 
 uint32_t error_on_time = 0, swbb_on_time = 0, ludp_on_time = 0;
 
 void setup() {
-  Serial.begin(115200);
-  Ethernet.begin(mac); // Use DHCP
+  while (Ethernet.begin(mac) == 0) delay(5000); // Wait for DHCP response
   link1.strategy.set_pin(7);
   link2.strategy.set_port(7200); // Use a "private" UDP port
   router.set_sendnotification(sendnotification_function);
@@ -42,6 +41,7 @@ void setup() {
 void loop() {
   router.loop();
   check_leds();
+  Ethernet.maintain(); // Maintain DHCP lease
 };
 
 void sendnotification_function(const uint8_t * const payload, const uint16_t length, const uint8_t receiver_bus,

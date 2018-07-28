@@ -26,16 +26,16 @@ In the example above the PJON object is instantiated passing [SoftwareBitBang](/
   PJON<EthernetTCP>     tcpBus;
 ```
 
-| Strategy      | Medium        | Pins needed   |
-| ------------- | ------------- | ------------- |
-| [SoftwareBitBang](/src/strategies/SoftwareBitBang)  | wire   | 1 or 2 |
-| [AnalogSampling](/src/strategies/AnalogSampling)  | light  | 1 or 2  |
-| [EthernetTCP](/src/strategies/EthernetTCP)  | wired or WiFi  | Ethernet port  |
-| [LocalUDP](/src/strategies/LocalUDP)  | wired or WiFi  | Ethernet port  |
-| [GlobalUDP](/src/strategies/GlobalUDP)  | wired or WiFi  | Ethernet port  |
-| [OverSampling](/src/strategies/OverSampling)  | radio, wire  | 1 or 2 |
-| [ThroughSerial](/src/strategies/ThroughSerial)  | serial port  | 1 or 2 |
-| [ThroughLoRa](/src/strategies/ThroughLoRa)  | serial port  | 1 or 2 |
+| Strategy      | Physical layer | Protocol | Pins needed   |
+| ------------- | -------------- | -------- | ------------- |
+| [SoftwareBitBang](/src/strategies/SoftwareBitBang) | Electrical impulses over conductive element | [PJDL](../src/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) | 1 or 2 |
+| [AnalogSampling](/src/strategies/AnalogSampling)  | Light pulses over air or optic fiber | [PJDLS](../src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) | 1 or 2 |
+| [EthernetTCP](/src/strategies/EthernetTCP)  | Electrical/radio impulses over wire/air | TCP | Ethernet port |
+| [LocalUDP](/src/strategies/LocalUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
+| [GlobalUDP](/src/strategies/GlobalUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
+| [OverSampling](/src/strategies/OverSampling)  | Electrical/radio impulses over wire/air | [PJDLR](../src/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) | 1 or 2 |
+| [ThroughSerial](/src/strategies/ThroughSerial)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md) | 1 or 2 |
+| [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio impulses over air | LoRa | 3 or 4 |
 
 By default all strategies are included except `ThroughLoRa`. To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before PJON inclusion to include only `SoftwareBitBang` strategy. More than one strategy related constant can defined in the same program if that is required.
 
@@ -48,15 +48,24 @@ Supported definitions:
 - `PJON_INCLUDE_OS` includes OverSampling
 - `PJON_INCLUDE_TS` includes ThroughSerial
 - `PJON_INCLUDE_TL` includes ThroughLoRa
+- `PJON_INCLUDE_ANY` includes Any - Required for `StrategyLink` if using router
 - `PJON_INCLUDE_NONE` no strategy file included
 
 Before using `ThroughLoRa` be sure to have [arduino-LoRa](https://github.com/sandeepmistry/arduino-LoRa) source available and to have defined `PJON_INCLUDE_TL` constant before including `PJON.h`.
 
 ### Network configuration
-Configure network state (local or shared). If local (passing `false`), the PJON protocol layer procedure is based on a single byte device id to univocally communicate with a device; if in shared mode (passing `true`) the protocol adopts also a 4 byte bus id to univocally communicate with a device in a certain bus:
+Configure network mode (local or shared). If local (passing `false`) a single byte called device id is used for device identification; if in shared mode (passing `true`) a 4 byte bus id is also used to univocally identify a group of devices:
 ```cpp  
   bus.set_shared_network(true);
 ```
+A PJON object can be instantiated to communicate in shared mode simply passing its bus id:
+```cpp
+uint8_t bus_id[4] = {1, 2, 3, 4};
+PJON<SoftwareBitBang> bus(bus_id, 44);
+// Device id 44, bus id 1.2.3.4 in shared mode
+```
+It is strongly suggested to request a unique PJON bus id for your group of devices [here](http://www.pjon.org/get-bus-id.php).
+
 Configure the communication mode:
 ```cpp  
   // Run in mono-directional PJON_SIMPLEX mode
@@ -81,7 +90,7 @@ Configure your device to act as a router, so receiving all the incoming packets:
 ```cpp  
   bus.set_router(true);
 ```
-Configure the instance to include a port identification in the packet. Ports from 0 to 8000 are reserved to known protocols which index is present in the [known protocol list](/specification/PJON-known-protocols-list.md), ports from 8001 to 65535 are free for custom use cases:
+Configure the instance to include a port identification in the packet. Ports from 0 to 8000 are reserved to known network services which index is present in the [known network services list](/specification/PJON-network-services-list.md), ports from 8001 to 65535 are free for custom use cases:
 ```cpp  
   bus.include_port(false);      // Avoid port inclusion (default)  
   bus.include_port(true, 8001); // Include custom port

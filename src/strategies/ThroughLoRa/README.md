@@ -218,3 +218,6 @@ Put the radio in sleep mode.
 byte b = bus.strategy.getRandom();
 ```
 Generate a random byte, based on the Wideband RSSI measurement.
+
+#### Safety warning
+In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. Before any practical test or hardware purchase for a wireless [ThroughLoRa](/src/strategies/ThroughLoRa) radio setup, compliance with government requirements and regulations must be ensured.

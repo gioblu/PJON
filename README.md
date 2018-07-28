@@ -1,7 +1,7 @@
 
 ![PJON](http://www.gioblu.com/PJON/PJON-github-header-tiny.png)
 ## PJON v11.0
-PJON® (Padded Jittering Operative Network) is an Arduino compatible, multi-master, multi-media network protocol. It proposes a Standard, it is designed as a framework and implements a totally software emulated network protocol stack that can be easily cross-compiled on many architectures like ATtiny, ATmega, ESP8266, Teensy, Raspberry Pi, Linux and Windows x86 machines. It is a valid tool to quickly and comprehensibly build a network of devices. Visit [wiki](https://github.com/gioblu/PJON/wiki) and [documentation](documentation/README.md) to know more about the PJON Standard.
+PJON® (Padded Jittering Operative Network) is an Arduino compatible, multi-master, multi-media network protocol. It proposes a Standard, it is designed as a framework and implements a totally software emulated network protocol stack that can be easily cross-compiled on many architectures like ATtiny, ATmega, ESP8266, ESP32, STM32, Teensy, Raspberry Pi, Linux, Windows x86 and Apple machines. It is a valid tool to quickly and comprehensibly build a network of devices. Visit [wiki](https://github.com/gioblu/PJON/wiki) and [documentation](documentation/README.md) to know more about the PJON Standard.
 
 [![Get PJON bus id](https://img.shields.io/badge/GET-PJON%20bus%20id-lightgrey.svg)](http://www.pjon.org/get-bus-id.php)
 [![Video introduction](https://img.shields.io/badge/PJON-video%20introduction-blue.svg)](https://www.youtube.com/watch?v=vjc4ZF5own8)
@@ -13,7 +13,7 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 - **Increased security**: Devices using Ethernet/WiFi are often vulnerable to ransomware, illegal cyber warfare and private data leak. PJON has been engineered to enhance security not necessarily implementing the standard network protocol stack together with its vulnerabilities where it is not absolutely necessary offering a set of alternatives for many use cases.
 - **Increased reliability**: Many protocols massively applied worldwide like 1-Wire, i2c and CAN expose dangerous vulnerabilities, their error detection algorithms are weak and they are not resilient to interference. The PJON network protocol stack is based on years of analysis and study not to make the same repeated mistakes present in most alternatives and provide with a simpler and more efficient solution.
 - **High flexibility**: PJON is totally "software emulated" or executed by software without the use of dedicated hardware, for this reason its implementation can run a wide range of architectures; this engineering choice and its simplicity makes it easy to be ported on any computer or microcontroller. Its implementation is designed to enable developers to port new architectures in minutes defining a short set of interfaces to system calls.
-- **Low cost**: Without any additional hardware needed to operate, minimal network wiring requirements and direct pin-to-pin or LED-to-LED communication, PJON is extremely energy efficient, cheap to be implemented and maintained. This implementation is kept updated and meticulously tested thanks to the strong commitment of the PJON Foundation and the huge support of its growing community of end users, testers and developers.
+- **Low cost**: Without any additional hardware needed to operate, minimal network wiring requirements and direct pin-to-pin or LED-to-LED communication, PJON is extremely energy efficient, cheap to be implemented and maintained. This implementation is kept updated and meticulously tested thanks to the strong commitment of its growing community of end users, testers and developers.
 
 #### Features
 - Cross-compilation support with the [interfaces](src/interfaces) system calls abstraction   
@@ -36,20 +36,22 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 
 #### Compliant tools
 - [ModuleInterface](https://github.com/fredilarsen/ModuleInterface) - easy config and value sync between IoT modules by Fred Larsen
-- [PJON-piper](https://github.com/Girgitt/PJON-piper) - command line wrapper by Zbigniew Zasieczny
-- [PJON-python](https://github.com/Girgitt/PJON-python) - python interface by Zbigniew Zasieczny
-- [PJON-gRPC](https://github.com/Galitskiy/PJON-gRPC) - gRPC server-client by Oleg Galitskiy
+- [PJON-cython](https://github.com/xlfe/PJON-cython) - cython PJON wrapper by xlfe github user
+- [PJON-piper](https://github.com/Girgitt/PJON-piper) - command line wrapper by Zbigniew Zasieczny (outdated)
+- [PJON-python](https://github.com/Girgitt/PJON-python) - python interface by Zbigniew Zasieczny (outdated)
+- [PJON-gRPC](https://github.com/Galitskiy/PJON-gRPC) - gRPC server-client by Oleg Galitskiy (outdated)
 
 #### Contribute
 Feel free to send a pull request sharing something you have made that could help. If you want to support us you can also try to solve an [issue](https://github.com/gioblu/PJON/issues). Thank you for your support.
 
 #### Donate
-If you believe in this project and you appreciate our work, please, make a
-donation. The PJON Foundation is entirely financed by contributions of wise
-people like you and its resources are solely invested to cover the development
-and maintainance costs. Thank you and happy tinkering!
+The PJON project is entirely financed by contributions of people like you and its resources are solely invested to cover the development and maintenance costs, consider to make donation:
 - Paypal: [PJON](https://www.paypal.me/PJON)
 - Bitcoin: [1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD](http://tny.im/btc/address.php?a=1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD)
 - Ethereum: [0xf34AEAF3B149454522019781668F9a2d1762559b](https://etherchain.org/account/0xf34AEAF3B149454522019781668F9a2d1762559b)
 
-PJON® and its brand are registered trademarks, property of Giovanni Blu Mitolo gioscarab@gmail.com
+#### License
+All the software included in this project is experimental and it is distributed "AS IS" without any warranty, use it at your own risk. [Licensed](https://github.com/gioblu/PJON/blob/master/LICENSE.md) under the Apache License, Version 2.0. PJON® and its brand are registered trademarks, property of Giovanni Blu Mitolo gioscarab@gmail.com
+
+#### Safety warning
+In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. When a [SoftwareBitBang](/src/strategies/SoftwareBitBang) bus is installed each pin must be protected with a current limiting resistor. When working with an [AnalogSampling](/src/strategies/AnalogSampling) LED or laser based setup safety glasses must be worn and transceivers must be operated cautiously to avoid potential eye injuries. Before any practical test or a hardware purchase for a wireless [OverSampling](/src/strategies/OverSampling), [ThroughSerial](/src/strategies/ThroughSerial) or [ThroughLoRa](/src/strategies/ThroughLoRa) radio setup, compliance with government requirements and regulations must be ensured. When connecting a local bus to the internet using [EthernetTCP](/src/strategies/EthernetTCP) or [GlobalUDP](/src/strategies/GlobalUDP) all connected devices must be considered potentially compromised, potentially manipulated or remotely actuated against your will. It should be considered a good practice not to connect to the internet systems that may create a damage (fire, flood, data-leak) if hacked.

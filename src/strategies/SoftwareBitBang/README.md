@@ -3,7 +3,7 @@
 **Medium:** Wire |
 **Pins used:** 1 / 2
 
-`SoftwareBitBang` is a strategy or data link that complies with [PJDL v2.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md), requires 1 or optionally 2 wires and no additional hardware to handle one or many to many communication on a single channel or bus. It can be run on low performance microcontrollers sharing a common direct pin-to-pin connection. It is a valid alternative to 1-Wire because of its flexibility and reliability. Bus maximum length is mostly limited by resistance of the common conductive element used and by externally induced interference. It has been tested with up to 50m long insulated wires, results demonstrate the same high performance achieved with shorter lengths. Take a look at the [video introduction](https://www.youtube.com/watch?v=Vg5aSlD-VCU) for a brief showcase of its features.
+`SoftwareBitBang` is a strategy or data link that complies with [PJDL v2.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md), requires 1 or optionally 2 wires and no additional hardware to handle one or many to many communication on a single channel or bus. It can be run on low performance microcontrollers sharing a common direct pin-to-pin connection or 2 using pins connected to external circuitry. It is a valid alternative to 1-Wire because of its flexibility and reliability. Fault tolerance schemes can be easily implemented because the communication pins can be configured at runtime. Bus maximum length is limited by voltage level, common medium's resistance and by externally induced interference. It has been tested with up to 50 meters long insulated wires, results demonstrate the same performance achieved with shorter lengths. The maximum range is still unknown. Take a look at the [video introduction](https://www.youtube.com/watch?v=Vg5aSlD-VCU) for a brief showcase of its features.
 ```cpp
 PJDL SINGLE WIRE BUS                            ______
  ______    ______    ______    ______          |      |
@@ -22,11 +22,13 @@ It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to
 - ATmega88/168/328 16MHz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
 - ATmega2560 16MHz (Arduino Mega)
 - ATmega16u4/32u4 16MHz (Arduino Leonardo)
+- ATMega1284P 16MHz external oscillator
 - ATtiny84/84A 16MHz external oscillator
 - ATtiny85 16MHz external oscillator
 - SAMD (Arduino Zero)
 - ESP8266 v.1-7 80MHz AI-THINKER Modules
 - ESP8266 NodeMCU v0.9-1.0 80MHz
+- ESP32 Heltech WiFi LoRa
 - MK20DX256 96MHz (Teensy 3.1)
 
 #### Performance
@@ -78,6 +80,8 @@ void setup() {
   bus.strategy.set_pins(11, 12);
 }
 ```
+The SoftwareBitBang implementation permits the use of input and output pins because separated signals may be required if additional circuitry is used for amplification or noise filtering. It also works if you directly connect the pins as a simple point-to-point null-modem or cross-over serial link.
+
 After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance. All the other necessary information is present in the general [Documentation](/documentation).
 
 #### Why not interrupts?
@@ -88,13 +92,10 @@ In the Arduino environment the use of libraries is really extensive and often th
 PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl/post/130558526217/pjon-my-son)
 
 #### Known issues
-- A 1-5 MΩ pull down resistor could be necessary to reduce interference, see [deal with interference](https://github.com/gioblu/PJON/wiki/Deal-with-interference).
+- A 1-5 MΩ pull down resistor could be necessary to reduce interference, see [Mitigate interference](https://github.com/gioblu/PJON/wiki/Mitigate-interference).
 - When using more than one instance of `SoftwareBitBang` in the same sketch always use pins connected to a different port group to avoid cross-talk.  
-- Consider that this is not an interrupt driven system, during the time passed
-in delay or executing other tasks a certain amount of packets could be potentially
-lost, PJON does its job scheduling the packet.
-to be sent again in future but a certain amount of bandwidth can be wasted. Structure intelligently
-your loop cycle and polling duration to avoid low transmission accuracy.
-- `SoftwareBitBang` strategy can have compatibility issues with codebases that
-are using interrupts, reliability or bandwidth loss can be experienced because of the cyclical
-interruptions made by third party software to the PJON procedure.
+- During the execution of other tasks or delays a certain amount of packets could be potentially lost because transmitted out of the polling timeframe of the receiver device. Thanks to the PJON packet handler after some retries the packet is received but a certain amount of bandwidth is wasted. If this situation occurs, try to reduce as much as possible the duration of other tasks and or use a longer polling timeframe using `receive` passing the requested amount of microseconds: `bus.receive(1000); // Poll for 1 millisecond`.
+- `SoftwareBitBang` strategy can have compatibility issues with codebases that are using interrupts, reliability or bandwidth loss can occur because of the interruptions made by third party software.
+
+#### Safety warning
+In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. When a [SoftwareBitBang](/src/strategies/SoftwareBitBang) bus is installed each pin must be protected with a current limiting resistor as described above.

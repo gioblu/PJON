@@ -26,15 +26,17 @@ possible to use a PJONSimpleSwitch to handle leaf buses in a tree structure.
 A segmented bus is a "virtual" bus where ranges of its devices are  located
 in separate physical buses.
 
-If you believe in this project and you appreciate our work, please, make a
-donation. The PJON Foundation is entirely financed by contributions of wise
-people like you and its resources are solely invested to cover the development
-and maintainance costs.
+The PJON project is entirely financed by contributions of people like you and
+its resources are solely invested to cover the development and maintenance
+costs, consider to make donation:
 - Paypal:   https://www.paypal.me/PJON
 - Bitcoin:  1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD
 - Ethereum: 0xf34AEAF3B149454522019781668F9a2d1762559b
 Thank you and happy tinkering!
  _____________________________________________________________________________
+
+This software is experimental and it is distributed "AS IS" without any
+warranty, use it at your own risk.
 
 Copyright 2010-2018 by Giovanni Blu Mitolo gioscarab@gmail.com
 
@@ -140,9 +142,9 @@ protected:
   #ifdef PJON_ROUTER_NEED_INHERITANCE
   virtual
   #endif
-  void send_packet(const uint8_t *payload, const uint16_t length, 
-                   const uint8_t receiver_bus, const uint8_t sender_bus, 
-                   bool &ack_sent, const PJON_Packet_Info &packet_info) {          
+  void send_packet(const uint8_t *payload, const uint16_t length,
+                   const uint8_t receiver_bus, const uint8_t sender_bus,
+                   bool &ack_sent, const PJON_Packet_Info &packet_info) {
     // Send an ACK once to notify that the packet will be delivered
     if(
       !ack_sent &&
@@ -152,8 +154,13 @@ protected:
       buses[sender_bus]->strategy.send_response(PJON_ACK);
       ack_sent = true;
     }
+
+    // Set current_bus to receiver bus before potentially calling error callback for that bus
+    uint8_t send_bus = current_bus;
+    current_bus = receiver_bus;
+
     // Forward the packet
-    buses[receiver_bus]->send_from_id(
+    uint16_t result = buses[receiver_bus]->send_from_id(
       packet_info.sender_id,
       packet_info.sender_bus_id,
       packet_info.receiver_id,
@@ -164,17 +171,24 @@ protected:
       packet_info.id,
       packet_info.port
     );
+
+    #if PJON_MAX_PACKETS == 0
+    // Call error function explicitly, because that will not be done while sending
+    // when PJON_MAX_PACKETS=0.
+    if (result == PJON_FAIL) dynamic_error_function(PJON_CONNECTION_LOST, 0);
+    #endif
+    current_bus = send_bus;
   }
-  
-  void forward_packet(const uint8_t *payload, const uint16_t length, 
-                      const uint8_t receiver_bus, const uint8_t sender_bus, 
+
+  void forward_packet(const uint8_t *payload, const uint16_t length,
+                      const uint8_t receiver_bus, const uint8_t sender_bus,
                       bool &ack_sent, const PJON_Packet_Info &packet_info) {
     // If receiving bus matches and not equal to sending bus, then route packet
     if(receiver_bus != PJON_NOT_ASSIGNED && receiver_bus != sender_bus) {
       send_packet(payload, length, receiver_bus, sender_bus, ack_sent, packet_info);
-    }                        
-  }  
-  
+    }
+  }
+
   #ifdef PJON_ROUTER_NEED_INHERITANCE
   virtual
   #endif
@@ -193,7 +207,7 @@ protected:
     uint8_t *payload,
     uint16_t length,
     const PJON_Packet_Info &packet_info
-  ) {    
+  ) {
     uint8_t start_search = 0;
     bool ack_sent = false; // Send ACK only once even if delivering copies to multiple buses
     do {
@@ -204,7 +218,7 @@ protected:
       );
 
       if(receiver_bus == PJON_NOT_ASSIGNED) receiver_bus = default_gateway;
-      
+
       forward_packet(payload, length, receiver_bus, current_bus, ack_sent, packet_info);
 
     } while(start_search != PJON_NOT_ASSIGNED);
@@ -256,8 +270,13 @@ public:
       PJONSimpleSwitch<Strategy>::error_function
     );
   };
+
+  // Return the position of the bus currently calling a callback.
+  // (It may return PJON_NOT_ASSIGNED if not doing a callback.)
+  uint8_t get_callback_bus() const { return current_bus; }
   
-  uint8_t get_current_bus() const { return current_bus; }
+  // Return one of the buses, in the same order as sent to the constructor
+  PJONBus<Strategy> &get_bus(const uint8_t ix) { return *(buses[ix]); }
   
   static void receiver_function(
     uint8_t *payload,

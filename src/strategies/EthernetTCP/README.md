@@ -66,3 +66,9 @@ One use case is to have a PJON program on a computer not able to run a strategy 
 The `EthernetTCP` strategy looks simple because most of the implementation is present in a worker class named `EthernetLink`. This class can be used standalone in some contexts.
 
 All the other necessary information is present in the general [Documentation](/documentation).
+
+#### Known issues
+- Firewall may block `EthernetTCP` packets, edit its configuration to allow them
+
+#### Safety warning
+In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. When connecting a local bus to the internet using [EthernetTCP](/src/strategies/EthernetTCP) or [GlobalUDP](/src/strategies/GlobalUDP) all connected devices must be considered potentially compromised, potentially manipulated or remotely actuated against your will. It should be considered a good practice not to connect to the internet systems that may create a damage (fire, flood, data-leak) if hacked.

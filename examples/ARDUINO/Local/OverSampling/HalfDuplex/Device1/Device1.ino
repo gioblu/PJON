@@ -6,8 +6,8 @@ PJON<OverSampling> bus(44);
 void setup() {
   Serial.begin(115200);
 
-  pinMode(13, OUTPUT);
-  digitalWrite(13, LOW); // Initialize LED 13 to be off
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW); // Initialize LED 13 to be off
 
   /* When using more than one pin always use pins connected to
      a different port group to avoid cross-talk. */
@@ -25,9 +25,9 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
      overwritten when a new message is dispatched */
   if((char)payload[0] == 'B') {
     bus.reply("B", 1);
-    digitalWrite(13, HIGH);
+    digitalWrite(LED_BUILTIN, HIGH);
     delay(5);
-    digitalWrite(13, LOW);
+    digitalWrite(LED_BUILTIN, LOW);
   }
 }
 

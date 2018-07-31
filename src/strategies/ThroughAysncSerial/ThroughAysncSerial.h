@@ -191,7 +191,6 @@ public:
               state = TAS_WAITING; //  real fail
               return TAS_FAIL;
             }
-            count++;
             buffer[position++] = value;
             _last_reception_time = PJON_MICROS();
             continue;

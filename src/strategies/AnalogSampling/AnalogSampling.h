@@ -121,9 +121,6 @@ class AnalogSampling {
         #endif
       #endif
       PJON_DELAY(PJON_RANDOM(AS_INITIAL_DELAY) + additional_randomness);
-      PJON_IO_PULL_DOWN(_input_pin);
-      if(_output_pin != _input_pin)
-        PJON_IO_PULL_DOWN(_output_pin);
       compute_analog_read_duration();
       _last_byte = receive_byte();
       return true;
@@ -351,6 +348,7 @@ class AnalogSampling {
     /* Set the communicaton pin: */
 
     void set_pin(uint8_t pin) {
+      PJON_IO_PULL_DOWN(pin);
       _input_pin = pin;
       _output_pin = pin;
     };
@@ -362,6 +360,8 @@ class AnalogSampling {
       uint8_t input_pin = AS_NOT_ASSIGNED,
       uint8_t output_pin = AS_NOT_ASSIGNED
     ) {
+      PJON_IO_PULL_DOWN(input_pin);
+      PJON_IO_PULL_DOWN(output_pin);
       _input_pin = input_pin;
       _output_pin = output_pin;
     };

@@ -65,7 +65,7 @@
   #define TS_BACK_OFF_DEGREE      4
 #endif
 
-/* Trailing delay before disabling RS485 DE and or RE pin */
+/* Delay before enabling and disabling RS485 DE and or RE pin */
 #ifndef TS_RS485_DELAY
   #define TS_RS485_DELAY          1
 #endif

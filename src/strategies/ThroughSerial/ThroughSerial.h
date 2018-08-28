@@ -62,9 +62,7 @@ class ThroughSerial {
        (returns always true) */
 
     bool begin(uint8_t additional_randomness = 0) {
-      PJON_DELAY_MICROSECONDS(
-        PJON_RANDOM(TS_INITIAL_DELAY) + additional_randomness
-      );
+      PJON_DELAY(PJON_RANDOM(TS_INITIAL_DELAY) + additional_randomness);
       _last_byte = receive_byte();
       return true;
     };

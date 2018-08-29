@@ -5,14 +5,14 @@
 
 With `ThroughAsyncSerial` strategy, PJON can run through a software or hardware Serial port working out of the box with many Arduino compatible serial transceivers, like RS485 or radio modules like HC-12 (HCMODU0054). Take a look at the [video introduction](https://www.youtube.com/watch?v=H4jUsgvM-lw) for a brief showcase of its features. It complies with [TSDL v2.0](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md).  
 
-This strategy is based upon the `ThroughSerial` strategy but operates asynchronously at least for reception making good use of the hardware buffers and spares a lot of time that `ThroughSerial` looses during polling. It is not required to call `bus.receive()` with any delay, just call is frequently to see if there are any packets that have been received.
+This strategy is based upon the `ThroughSerial` strategy but operates asynchronously at least for reception, it makes good use of hardware buffers and spares time that `ThroughSerial` looses during polling. It is not required to call `bus.receive()` with any delay, just call it frequently to see if there are any packets that have been received.
 
 #### Why PJON over Serial?
 Serial communication is fast and reliable but it is often useless without all the features PJON contains. `ThroughAsyncSerial` has been developed to enable PJON communication through a serial data link. Adding PJON on top of Serial it is possible to leverage of the PJON protocol layer features like acknowledge, addressing, multiplexing, packet handling, 8 or 32-bit CRC and traffic control.  
 
-This version is very suited to ESP8266 and ESP32 where polling using `SoftwareBitBang` is not ideal. The reception phase is entirely non-blocking. Sending, however, and ACK are still blocking.
+`ThroughSerialAsync` performs really well if used with ESP8266 and ESP32 where polling using `SoftwareBitBang` is not ideal. The reception phase is entirely non-blocking. Sending and acknowledgement however are still blocking.
 
-There is a default timeout on checking data that is 100 microseconds. This is to allow data to accumulate in the hardware UART buffer. This value is configurable using `bus.strategy.set_read_interval(100)` passing an arbitrary interval in microseconds. The read interval may require adjustment depending on UART RX buffer size and baud rate.  
+There is a default reception interval of 100 microseconds used to allow data to accumulate in the hardware UART buffer. This value is configurable using `bus.strategy.set_read_interval(100)` passing an arbitrary interval in microseconds. The read interval may require adjustment depending on UART RX buffer size and baud rate.  
 
 #### How to use ThroughAsyncSerial
 Pass the `ThroughSerial` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
@@ -53,7 +53,7 @@ PJON<ThroughAsyncSerial> bus;
 void setup() {
   Serial.begin(9600);
   bus.strategy.set_serial(&Serial);
-  bus.strategy.set_read_interval(0);
+  bus.strategy.set_read_interval(100);
 }
 ```
 For a simple use with RS485 serial modules a transmission enable pin setter has been added:

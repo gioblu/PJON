@@ -44,8 +44,8 @@
 #if defined(PJON_INCLUDE_TS)
   #include "ThroughSerial/ThroughSerial.h"
 #endif
-#if defined(PJON_INCLUDE_TAS)
-  #include "ThroughAysncSerial/ThroughAysncSerial.h"
+#if defined(PJON_INCLUDE_TSA)
+  #include "ThroughSerialAsync/ThroughSerialAsync.h"
 #endif
 #if defined(PJON_INCLUDE_TL)
   #include "ThroughLoRa/ThroughLora.h"
@@ -57,7 +57,7 @@
     !defined(PJON_INCLUDE_GUDP) && !defined(PJON_INCLUDE_LUDP) && \
     !defined(PJON_INCLUDE_OS)   && !defined(PJON_INCLUDE_SWBB) && \
     !defined(PJON_INCLUDE_TS)   && !defined(PJON_INCLUDE_NONE) && \
-    !defined(PJON_INCLUDE_TAS)
+    !defined(PJON_INCLUDE_TSA)
   #include "Any/Any.h"
   #include "AnalogSampling/AnalogSampling.h"
   #include "OverSampling/OverSampling.h"

@@ -27,6 +27,7 @@
   #include <chrono>
   #include <thread>
   #include <sstream>
+  #include "PJON_LINUX_WiringSerial.h"
 
   #define OUTPUT 1
   #define INPUT 0

@@ -1,7 +1,7 @@
 
  /*-O//\         __     __
    |-gfo\       |__| | |  | |\ | ®
-   |!y°o:\      |  __| |__| | \| v11.0
+   |!y°o:\      |  __| |__| | \| v11.1
    |y"s§+`\     multi-master, multi-media bus network protocol
   /so+:-..`\    Copyright 2010-2018 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
@@ -18,46 +18,50 @@ For the PJON® Protocol specification see the specification directory.
 Compliant tools:
 - ModuleInterface - Easy config and value sync between IOT modules
   https://github.com/fredilarsen/ModuleInterface
-- Command line PJON wrapper over unnamed pipes by Zbigniew Zasieczny
+- cython PJON wrapper by xlfe github user
+  https://github.com/xlfe/PJON-cython
+- Command line PJON wrapper over pipes by Zbigniew Zasieczny (outdated)
   https://github.com/Girgitt/PJON-piper
-- PJON-python - PJON running on Python by Zbigniew Zasieczny
+- PJON-python - PJON running on Python by Zbigniew Zasieczny (outdated)
   https://github.com/Girgitt/PJON-python
-- PJON-gRPC - gRPC server-client by Oleg Galitskiy
+- PJON-gRPC - gRPC server-client by Oleg Galitskiy (outdated)
   https://github.com/Galitskiy/PJON-gRPC
 
 Credits to contributors:
-- Fred Larsen. Systems engineering, header driven communication, debugging
-- Zbigniew Zasieczny. WINX86 interface
-- Matheus Garbelini. ThroughLora strategy
-- Jorgen-VikingGod github user. ESP32 port
-- drtrigon github user. LINUX ThroughSerial examples, missing warning report
-- Wilfried Klaas ATtiny44/84 port
-- 4ib3r github user. Memory optimization configurable strategies inclusion
-- budaics github user. ATtiny85 16MHz external clock testing and wiki page
-- Pantovich github user. Update returning number of packets to be delivered
-- Adrian Sławiński. Fix to enable SimpleModbusMasterV2 compatibility
-- SticilFace github user. Teensy port
-- Esben Soeltoft. Arduino Zero port
-- Alex Grishin. ESP8266 port
-- Andrew Grande. Testing, support, bugfix
-- Mauro Zancarlin. Systems engineering, testing, bugfix
-- Michael Teeww. Callback based reception, debugging
-- PaoloP74 github user. Library conversion to 1.x Arduino IDE
+- Fred Larsen: Systems engineering, header driven communication, debugging
+- Zbigniew Zasieczny: WINX86 interface
+- Matheus Garbelini: ThroughLora strategy
+- sticilface github user: SoftwareBitBang Teensy support, ThroughSerialAsync
+- osman-aktepe github user: SoftwareBitBang STM32F1 support
+- Jorgen-VikingGod github user: SoftwareBitBang ESP32 support
+- drtrigon github user: LINUX ThroughSerial examples, missing warning report
+- Wilfried Klaas: SoftwareBitBang ATtiny44/84 support
+- 4ib3r github user: Memory optimization configurable strategies inclusion
+- budaics github user: ATtiny85 16MHz external clock testing and wiki page
+- Pantovich github user: Update returning number of packets to be delivered
+- Adrian Sławiński: Fix to enable SimpleModbusMasterV2 compatibility
+- Esben Soeltoft: SoftwareBitBang Arduino Zero support
+- Alex Grishin: SoftwareBitBang ESP8266 support
+- Andrew Grande: Testing, support, bugfix
+- Mauro Zancarlin: Systems engineering, testing, bugfix
+- Michael Teeww: Callback based reception, debugging
+- PaoloP74 github user: Library conversion to 1.x Arduino IDE
 
 Bug reports:
-- bryant1410 github user. Debug readme format
-- pacproduct github user. Added missing mode configuration PJON_SIMPLEX ex.
-- elusive-code github user. PJONMaster reset bug
-- Franketto arduino forum user. PJON ThroughSerial over RS485 delay issue
-- Zbigniew Zasieczny. Header reference inconsistency report
-- DanRoad reddit user. can_start ThroughSerial bugfix
-- Remo Kallio. Packet index 0 bugfix
-- Emanuele Iannone. Forcing PJON_SIMPLEX in OverSamplingSimplex
-- Christian Pointner. Fixed compiler warnings
-- Andrew Grande. ESP8266 example watchdog error bug fix
-- Fabian Gärtner. receive function and big packets bugfix
-- Mauro Mombelli. Code cleanup
-- Shachar Limor. Blink example pinMode bugfix
+- per1234 github user: Fix keywords.txt separators
+- bryant1410 github user: Debug readme format
+- pacproduct github user: Added missing mode configuration PJON_SIMPLEX ex.
+- elusive-code github user: PJONMaster reset bug
+- Franketto arduino forum user: PJON ThroughSerial over RS485 delay issue
+- Zbigniew Zasieczny: Header reference inconsistency report
+- DanRoad reddit user: can_start ThroughSerial bugfix
+- Remo Kallio: Packet index 0 bugfix
+- Emanuele Iannone: Forcing PJON_SIMPLEX in OverSamplingSimplex
+- Christian Pointner: Fixed compiler warnings
+- Andrew Grande: ESP8266 example watchdog error bug fix
+- Fabian Gärtner: receive function and big packets bugfix
+- Mauro Mombelli: Code cleanup
+- Shachar Limor: Blink example pinMode bugfix
 
 The PJON project is entirely financed by contributions of people like you and
 its resources are solely invested to cover the development and maintenance
@@ -803,7 +807,7 @@ class PJON {
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST,
-      uint32_t timeout = 3000000
+      uint32_t timeout = 3500000
     ) {
       uint16_t state = PJON_FAIL;
       uint32_t attempts = 0;
@@ -837,8 +841,9 @@ class PJON {
         if(state != PJON_FAIL) strategy.handle_collision();
         #if(PJON_RECEIVE_WHILE_SENDING_BLOCKING)
           if(_recursion <= 1) receive(strategy.back_off(attempts));
+          else
         #endif
-        else PJON_DELAY_MICROSECONDS(strategy.back_off(attempts));
+        PJON_DELAY((uint32_t)(strategy.back_off(attempts) / 1000));
       }
       _recursion--;
       return state;

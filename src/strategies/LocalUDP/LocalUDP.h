@@ -50,9 +50,9 @@ public:
 
     uint32_t back_off(uint8_t attempts) {
       #ifdef PJON_ESP
-        return 10000ul*attempts + random(10000);
+        return 10000ul * attempts + PJON_RANDOM(10000);
       #elif _WIN32
-        return 1000ul * attempts + 1000ul*rand()/RAND_MAX;
+        return 1000ul  * attempts + PJON_RANDOM(1000);
       #else
         (void)attempts; // Avoid "unused parameter" warning
         return 1;

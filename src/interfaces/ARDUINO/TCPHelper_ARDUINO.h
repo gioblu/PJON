@@ -11,7 +11,7 @@
   #define min(a,b) (a<b?a:b)
 #else
   #include <EthernetClient.h>
-  #include <utility/socket.h>
+  // #include <utility/socket.h>
   typedef EthernetServer TCPHelperServer;
   typedef EthernetClient TCPHelperClient;
 #endif

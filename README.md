@@ -1,7 +1,7 @@
 
 ![PJON](http://www.gioblu.com/PJON/PJON-github-header-tiny.png)
-## PJON v11.0
-PJON® (Padded Jittering Operative Network) is an Arduino compatible, multi-master, multi-media network protocol. It proposes a Standard, it is designed as a framework and implements a totally software emulated network protocol stack that can be easily cross-compiled on many architectures like ATtiny, ATmega, ESP8266, ESP32, STM32, Teensy, Raspberry Pi, Linux and Windows x86 machines. It is a valid tool to quickly and comprehensibly build a network of devices. Visit [wiki](https://github.com/gioblu/PJON/wiki) and [documentation](documentation/README.md) to know more about the PJON Standard.
+## PJON v11.1
+PJON® (Padded Jittering Operative Network) is an Arduino compatible, multi-master, multi-media network protocol. It proposes a Standard, it is designed as a framework and implements a totally software emulated network protocol stack that can be easily cross-compiled on many architectures like ATtiny, ATmega, ESP8266, ESP32, STM32, Teensy, Raspberry Pi, Linux, Windows x86 and Apple machines. It is a valid tool to quickly and comprehensibly build a network of devices. Visit [wiki](https://github.com/gioblu/PJON/wiki) and [documentation](documentation/README.md) to know more about the PJON Standard.
 
 [![Get PJON bus id](https://img.shields.io/badge/GET-PJON%20bus%20id-lightgrey.svg)](http://www.pjon.org/get-bus-id.php)
 [![Video introduction](https://img.shields.io/badge/PJON-video%20introduction-blue.svg)](https://www.youtube.com/watch?v=vjc4ZF5own8)
@@ -36,9 +36,10 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 
 #### Compliant tools
 - [ModuleInterface](https://github.com/fredilarsen/ModuleInterface) - easy config and value sync between IoT modules by Fred Larsen
-- [PJON-piper](https://github.com/Girgitt/PJON-piper) - command line wrapper by Zbigniew Zasieczny
-- [PJON-python](https://github.com/Girgitt/PJON-python) - python interface by Zbigniew Zasieczny
-- [PJON-gRPC](https://github.com/Galitskiy/PJON-gRPC) - gRPC server-client by Oleg Galitskiy
+- [PJON-cython](https://github.com/xlfe/PJON-cython) - cython PJON wrapper by xlfe github user
+- [PJON-piper](https://github.com/Girgitt/PJON-piper) - command line wrapper by Zbigniew Zasieczny (outdated)
+- [PJON-python](https://github.com/Girgitt/PJON-python) - python interface by Zbigniew Zasieczny (outdated)
+- [PJON-gRPC](https://github.com/Galitskiy/PJON-gRPC) - gRPC server-client by Oleg Galitskiy (outdated)
 
 #### Contribute
 Feel free to send a pull request sharing something you have made that could help. If you want to support us you can also try to solve an [issue](https://github.com/gioblu/PJON/issues). Thank you for your support.

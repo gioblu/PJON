@@ -67,3 +67,6 @@ All the other necessary information is present in the general [Documentation](/d
 
 #### Known issues
 - Being PJON not an interrupt driven, its communication can be affected and potentially disrupted by long delays added in the user's sketch. Try to reduce as possible the interval between every `receive` call.
+
+#### Safety warning
+In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. Before any practical test or hardware purchase for a wireless [ThroughSerial](/src/strategies/ThroughSerial) radio setup, compliance with government requirements and regulations must be ensured.

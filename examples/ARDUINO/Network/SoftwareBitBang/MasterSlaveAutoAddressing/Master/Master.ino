@@ -2,10 +2,10 @@
 
 // Bus id definition
 uint8_t bus_id[] = {0, 0, 0, 1};
-uint32_t time;
-
 // PJON object - The Master device id is fixed to PJON_MASTER_ID or 254
 PJONMaster<SoftwareBitBang> bus(bus_id);
+
+uint32_t t_millis;
 
 void setup() {
   Serial.begin(115200);
@@ -20,21 +20,21 @@ void setup() {
   /* Send a continuous greetings packet every secon
      to showcase the receiver function functionality if debug is active*/
   if(bus.debug)
-    bus.send_repeatedly(PJON_BROADCAST, "Master says hi!", 15, 1000000);
-  time = millis();
+    bus.send_repeatedly(PJON_BROADCAST, "Master says hi!", 15, 2500000);
+  t_millis = millis();
 };
 
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
   if(code == PJON_CONNECTION_LOST) {
-    Serial.print("Connection lost with device ");
+    Serial.print("PJON error: connection lost with device id ");
     Serial.println((uint8_t)bus.packets[data].content[0], DEC);
   }
   if(code == PJON_ID_ACQUISITION_FAIL) {
-    Serial.print("Connection lost with device ");
+    Serial.print("PJONMaster error: connection lost with slave id ");
     Serial.println(data, DEC);
   }
   if(code == PJON_DEVICES_BUFFER_FULL) {
-    Serial.print("Master devices buffer is full with a length of ");
+    Serial.print("PJONMaster error: master devices' buffer is full with a length of ");
     Serial.println(data);
   }
 };
@@ -75,7 +75,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 };
 
 void loop() {
-  if(millis() - time > 5000) {
+  if(millis() - t_millis > 5000) {
     // Check if registered slaves are still present on the bus
     bus.check_slaves_presence();
 
@@ -90,8 +90,9 @@ void loop() {
       }
     }
     Serial.println();
-    time = millis();
+    Serial.flush();
+    t_millis = millis();
   }
-  bus.receive(1000);
+  bus.receive(5000);
   bus.update();
 };

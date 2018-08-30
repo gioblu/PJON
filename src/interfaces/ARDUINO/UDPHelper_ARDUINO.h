@@ -31,7 +31,7 @@ public:
     return udp.begin(_port);
   }
 
-  int16_t receive_string(uint8_t *string, uint16_t max_length) {
+  uint16_t receive_string(uint8_t *string, uint16_t max_length) {
     uint16_t packetSize = udp.parsePacket();
     if(packetSize > 0) {
       uint32_t header = 0;
@@ -80,4 +80,10 @@ public:
   }
 
   void set_magic_header(uint32_t magic_header) { _magic_header = magic_header; }
+
+  void get_sender(uint8_t *ip, uint16_t &port) {
+    uint32_t ip_address = udp.remoteIP();
+    memcpy(ip, &ip_address, 4);
+    port = udp.remotePort();
+  }
 };

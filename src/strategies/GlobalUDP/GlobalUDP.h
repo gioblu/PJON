@@ -44,6 +44,7 @@
 class GlobalUDP {
     bool _udp_initialized = false;
     uint16_t _port = GUDP_DEFAULT_PORT;
+    bool _auto_registration = true;
 
     // Remote nodes
     uint8_t  _remote_node_count = 0;
@@ -68,6 +69,31 @@ class GlobalUDP {
       return -1;
     };
 
+    void autoregister_sender(const uint8_t *message, uint16_t length) {
+      // Add the last sender to the node table
+      if (_auto_registration && length>4) {
+        // First get PJON sender id from incoming packet
+        PJON_Packet_Info packet_info;
+        PJONTools::parse_header(message, packet_info);
+        uint8_t sender_id = packet_info.sender_id;
+        if (sender_id == 0) return; // If parsing fails, it will be 0
+
+        // Then get the IP address and port number of the sender
+        uint8_t sender_ip[4];
+        uint16_t sender_port;
+        udp.get_sender(sender_ip, sender_port);
+
+        // See if PJON id is already registered, add if not
+        int16_t pos = find_remote_node(sender_id);
+        if (pos == -1) add_node(sender_id, sender_ip, sender_port);
+        else {
+          // Update IP and port of existing node
+          memcpy(_remote_ip[pos], sender_ip, 4);
+          _remote_port[pos] = sender_port; 
+        }
+      }
+    }
+
 public:
 
     /* Register each device we want to send to */
@@ -84,6 +110,13 @@ public:
       _remote_node_count++;
       return _remote_node_count - 1;
     };
+
+
+    /* Select if incoming packets should automatically add their sender as a node */
+
+    void set_autoregistration(bool enabled) {
+      _auto_registration = enabled;
+    }
 
 
     /* Returns the suggested delay related to attempts passed as parameter: */
@@ -125,7 +158,9 @@ public:
     /* Receive a string: */
 
     uint16_t receive_string(uint8_t *string, uint16_t max_length) {
-      return udp.receive_string(string, max_length);
+      uint16_t length = udp.receive_string(string, max_length);
+      if (length != PJON_FAIL) autoregister_sender(string, length);
+      return length;
     }
 
 

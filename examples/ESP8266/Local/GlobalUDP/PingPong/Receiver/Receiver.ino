@@ -5,9 +5,6 @@ IPAddress gateway = { 192, 1, 1, 1 };
 IPAddress subnet = { 255, 255, 255, 0 };
 IPAddress local_ip = { 192, 1, 1, 163 };
 
-// Address of remote device
-uint8_t remote_ip[] = { 192, 1, 1, 160 };
-
 // <Strategy name> bus(selected device id)
 PJON<GlobalUDP> bus(44);
 
@@ -35,7 +32,6 @@ void setup() {
   }
   Serial.printf("Now listening at IP %s\n", WiFi.localIP().toString().c_str());
 
-  bus.strategy.add_node(45, remote_ip);
   bus.set_receiver(receiver_function);
   bus.begin();
 };

@@ -101,6 +101,9 @@ class ThroughSerial {
         if(PJON_SERIAL_AVAILABLE(serial)) {
           _last_reception_time = PJON_MICROS();
           int16_t read = PJON_SERIAL_READ(serial);
+          #if defined(_WIN32)
+            read = (uint8_t)read;
+          #endif
           if(read >= 0) {
             _last_byte = (uint8_t)read;
             return _last_byte;

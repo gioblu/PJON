@@ -66,7 +66,7 @@ It is necessary to add a 75K-5MΩ pull-down resistor connecting the A0 pin with 
 
 `AnalogSampling` can be used to experiment with short range infrared or visible light communication (i.e. remote control), medium range using light sources (i.e. cars transmitting data through front and backlights) or long range laser communication (i.e. data between ground and LEO).  
 
-The picture below shows a bidirectional exchange where both packet and acknowledgment are clearly visible:
+The picture below shows a bidirectional exchange where both packet and acknowledgement are clearly visible:
 
 ![AnalogSampling PJDLS bidirectional exchange](images/AnalogSampling_PJDLS_LED_Transceiver.jpg)
 

@@ -12,4 +12,4 @@ The receiver blinks 10 times per second as requested. With an oscilloscope can b
 
 ![PJON STM32 Nucleo Blink example seen in the oscilloscope](images/PJON-TS-Nucleo-oscillo.jpg)
 
-The packet is transmitted and a synchronous acknowledgment is sent by the recipient immediately after reception.
+The packet is transmitted and a synchronous acknowledgement is sent by the recipient immediately after reception.

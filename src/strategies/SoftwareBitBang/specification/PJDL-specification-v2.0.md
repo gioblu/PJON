@@ -119,7 +119,12 @@ The proposed communication modes are the result of years of testing and optimiza
 Binary timing durations are expressed in microseconds.
 
 ### Basic physical connector
-For cheap and low power applications the suggested connector on device's side is a male header "servo" connector (composed by 3 pins with 2.54mm pitch). Female header 24-20AWG "servo wire" can be used for wiring which size and length should be carefully selected depending on the overall application's power supply requirements and selected components maximum rating.
+For cheap and low power applications the suggested connector on device's side is a male header "servo" connector (composed by 3 pins with 2.54mm pitch). Female header 24-20AWG "servo wire" can be used for wiring which size and length should be carefully selected taking in consideration the overall application's power supply requirements and selected components' maximum rating.
+
+Pinout:
+- PJDL input/output signal (white or yellow)
+- Unregulated power supply (red)
+- Ground (black)
 
 ```cpp
    DEVICE MALE
@@ -136,7 +141,3 @@ For cheap and low power applications the suggested connector on device's side is
    CABLE FEMALE
       HEADER
 ```
-Pinout:
-- PJDL input/output signal (white or yellow)
-- Unregulated power supply (red)
-- Ground (black)

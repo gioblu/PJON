@@ -53,8 +53,8 @@ enum TSA_state_t : uint8_t {
 
 class ThroughSerialAsync {
   public:
-    uint8_t buffer[PJON_PACKET_MAX_LENGTH];
-    uint16_t position;
+    uint8_t buffer[PJON_PACKET_MAX_LENGTH] = {0};
+    uint16_t position = 0;
     TSA_state_t state = TSA_WAITING;
     #if defined(ARDUINO)
       Stream *serial = NULL;
@@ -144,6 +144,7 @@ class ThroughSerialAsync {
         _last_reception_time &&
         ((uint32_t)(PJON_MICROS() - _last_reception_time) > TSA_BYTE_TIME_OUT)
       ) {
+        _last_reception_time = 0;
         state = TSA_WAITING;
         return TSA_FAIL;
       }

@@ -117,3 +117,19 @@ The proposed communication modes are the result of years of testing and optimiza
 | 2    | 36         | 88              | 2.444         | 2.42kB/s  - 19417Bd |
 
 Binary timing durations are expressed in microseconds.
+
+#### Basic physical connector
+The proposed basic physical connector is a common servo plug composed by 3 pins with 2.54mm pitch in the following configuration:
+- Left PJDL input/output signal
+- Unregulated power supply
+- Ground
+
+```cpp
+   ___________  
+  |___________|
+   |    |    |
+   |    |    |
+   |    |    |
+
+ PJDL   +    -
+```

@@ -120,7 +120,7 @@ Binary timing durations are expressed in microseconds.
 
 #### Basic physical connector
 The proposed basic physical connector is a common servo plug composed by 3 pins with 2.54mm pitch in the following configuration:
-- Left PJDL input/output signal
+- PJDL input/output signal
 - Unregulated power supply
 - Ground
 

@@ -27,17 +27,10 @@ Changelog:
 */
 ```
 ### PJDL v2.0
-PJDL (Padded Jittering Data Link) is a simplex or half-duplex data link layer, that can be easily software emulated, enabling one or many to many communication over a single conductive medium or bus, connected to device's input-output ports. It has been engineered to have limited minimum requirements and to be efficiently implemented on limited microcontrollers with low clock accuracy. No additional hardware is required to apply PJDL and, being implemented in less than 350 lines of code, it is easily portable to many different architectures. Bus maximum length is limited by its electric resistance; it has been tested with up to 50m long insulated wires and results demonstrate the same high performance achieved with shorter lengths.
+PJDL (Padded Jittering Data Link) is a simplex or half-duplex asynchronous serial data link that can be easily software emulated and enables one or many to many communication over a single conductive medium or bus connected to device's input-output pins. It has been engineered to have limited minimum requirements and to be efficiently implemented on limited microcontrollers with low clock accuracy. It is a valid alternative to 1-Wire because of its flexibility and reliability.
 
-### Basic concepts
-* Define a synchronization pad to identify a byte
-* Use synchronization pad's falling edge to achieve byte level synchronization
-* Use 3 consequent synchronization pads to identify a frame
-* Detect interference or absence of communication at byte level
-* Support collision avoidance and detection
-* Support error detection
-* Support 1 byte synchronous response to frame transmission
-
+### Physical layer
+Bus maximum length is limited by cable's resistance, by the voltage level used and by externally induced interference. It has been tested with up to 50 meters long insulated wires and results demonstrate the same performance achieved with shorter lengths. The maximum range is still unknown.
 ```cpp
 PJDL SINGLE WIRE BUS                            ______
  ______    ______    ______    ______          |      |
@@ -51,6 +44,15 @@ ___|__________|________|___________|_______/\/\/\__| IO PIN
 |______|  |______|  |______|  |______|     1-5 MΩ    
 ```
 It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to reduce externally induced interference. Pins can be optionally protected against overload adding a current limiting resistor to each connected pin. The resistor value can be obtained solving the following equation `R = (operating voltage / pin max current drain)`, for example to obtain the current limiting resistor value for an Arduino Uno simply substitute its characteristics: `R = (5v / 0.030A) = 166.66Ω`.
+
+### Basic concepts
+* Defines a synchronization pad to identify a byte
+* Uses synchronization pad's falling edge to achieve byte level synchronization
+* Uses 3 consequent synchronization pads to identify a frame
+* Detects interference or absence of communication at byte level
+* Supports collision avoidance and detection
+* Supports error detection
+* Supports 1 byte synchronous response to frame transmission
 
 ### Byte transmission
 PJDL byte transmission is composed by 10 bits and occurs LSB-first. The 2 most significant bits are a longer than standard logic 1 followed by a standard logic 0, they are called synchronization pad and they are used to obtain binary sampling synchronization. The 8 least significant bits contain information. The reception technique is based on finding a logic 1 which duration is equal or acceptably shorter than the expected synchronization pad's duration, synchronizing to its falling edge and ensuring that it is followed by a standard logic 0. If this pattern is detected, reception starts, if not, interference, synchronization loss or simply absence of communication is detected at byte level.
@@ -117,27 +119,3 @@ The proposed communication modes are the result of years of testing and optimiza
 | 2    | 36         | 88              | 2.444         | 2.42kB/s  - 19417Bd |
 
 Binary timing durations are expressed in microseconds.
-
-### Basic physical connector
-For cheap and low power applications the suggested connector on device's side is a male header "servo" connector (composed by 3 pins with 2.54mm pitch). Female header 24-20AWG "servo wire" can be used for wiring which size and length should be carefully selected taking in consideration the overall application's power supply requirements and selected components' maximum rating.
-
-Pinout:
-- PJDL input/output signal (white or yellow)
-- Unregulated power supply (red)
-- Ground (black)
-
-```cpp
-   DEVICE MALE
-     HEADER
-   ___________  
-  |___________|
-   |    |    |
-   |    |    |
-   |    |    |
-
- PJDL   +    -
-    __________
-   |__________|
-   CABLE FEMALE
-      HEADER
-```

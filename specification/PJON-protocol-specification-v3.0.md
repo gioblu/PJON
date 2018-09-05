@@ -54,7 +54,7 @@ The graph below shows the conceptual model that characterizes and standardizes t
 | 3 Network layer: PJON                       |
 | Addressing, packet transmission,            |
 | packet identification, routing, switching,  |
-| synchronous acknowledgement                  |
+| synchronous acknowledgement                 |
 |_____________________________________________|
 | 2 Data link layer: PJDL, PJDLR, PJDLS, TSDL |
 | Collision avoidance, frame transmission,    |

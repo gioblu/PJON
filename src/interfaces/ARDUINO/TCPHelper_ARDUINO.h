@@ -10,7 +10,11 @@
   typedef WiFiClient TCPHelperClient;
   #define min(a,b) (a<b?a:b)
 #else
-  #include <EthernetClient.h>
+  #ifdef PJON_ETHERNET2
+    #include <Ethernet2.h>
+  #else
+    #include <Ethernet.h>
+  #endif
   // #include <utility/socket.h> // May be required if using outdated IDE
   typedef EthernetServer TCPHelperServer;
   typedef EthernetClient TCPHelperClient;

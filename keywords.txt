@@ -22,6 +22,7 @@ AnalogSampling	KEYWORD1
 SoftwareBitBang	KEYWORD1
 OverSampling	KEYWORD1
 ThroughSerial	KEYWORD1
+ThroughSerialAsync	KEYWORD1
 ThroughLora	KEYWORD1
 EthernetTCP	KEYWORD1
 LocalUDP	KEYWORD1

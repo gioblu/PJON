@@ -27,17 +27,10 @@ Changelog:
 */
 ```
 ### PJDL v2.0
-PJDL (Padded Jittering Data Link) is a simplex or half-duplex data link layer, that can be easily software emulated, enabling one or many to many communication over a single conductive medium or bus, connected to device's input-output ports. It has been engineered to have limited minimum requirements and to be efficiently implemented on limited microcontrollers with low clock accuracy. No additional hardware is required to apply PJDL and, being implemented in less than 350 lines of code, it is easily portable to many different architectures. Bus maximum length is limited by its electric resistance; it has been tested with up to 50m long insulated wires and results demonstrate the same high performance achieved with shorter lengths.
+PJDL (Padded Jittering Data Link) is a simplex or half-duplex asynchronous serial data link that can be easily software emulated and enables one or many to many communication over a single conductive medium or bus connected to device's input-output pins. It has been engineered to have limited minimum requirements and to be efficiently implemented on limited microcontrollers with low clock accuracy. It is a valid alternative to 1-Wire because of its flexibility and reliability.
 
-### Basic concepts
-* Define a synchronization pad to identify a byte
-* Use synchronization pad's falling edge to achieve byte level synchronization
-* Use 3 consequent synchronization pads to identify a frame
-* Detect interference or absence of communication at byte level
-* Support collision avoidance and detection
-* Support error detection
-* Support 1 byte synchronous response to frame transmission
-
+### Physical layer
+Bus maximum length is limited by cable's resistance, by the voltage level used and by externally induced interference. It has been tested with up to 50 meters long insulated wires and results demonstrate the same performance achieved with shorter lengths. The maximum range is still unknown.
 ```cpp
 PJDL SINGLE WIRE BUS                            ______
  ______    ______    ______    ______          |      |
@@ -52,7 +45,16 @@ ___|__________|________|___________|_______/\/\/\__| IO PIN
 ```
 It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to reduce externally induced interference. Pins can be optionally protected against overload adding a current limiting resistor to each connected pin. The resistor value can be obtained solving the following equation `R = (operating voltage / pin max current drain)`, for example to obtain the current limiting resistor value for an Arduino Uno simply substitute its characteristics: `R = (5v / 0.030A) = 166.66Ω`.
 
-#### Byte transmission
+### Basic concepts
+* Defines a synchronization pad to identify a byte
+* Uses synchronization pad's falling edge to achieve byte level synchronization
+* Uses 3 consequent synchronization pads to identify a frame
+* Detects interference or absence of communication at byte level
+* Supports collision avoidance and detection
+* Supports error detection
+* Supports 1 byte synchronous response to frame transmission
+
+### Byte transmission
 PJDL byte transmission is composed by 10 bits and occurs LSB-first. The 2 most significant bits are a longer than standard logic 1 followed by a standard logic 0, they are called synchronization pad and they are used to obtain binary sampling synchronization. The 8 least significant bits contain information. The reception technique is based on finding a logic 1 which duration is equal or acceptably shorter than the expected synchronization pad's duration, synchronizing to its falling edge and ensuring that it is followed by a standard logic 0. If this pattern is detected, reception starts, if not, interference, synchronization loss or simply absence of communication is detected at byte level.
 ```cpp  
  __________ ___________________________
@@ -66,7 +68,7 @@ Minimum acceptable HIGH padding bit duration
 ```
 The synchronization pad adds a certain overhead, although, including synchronization along with the data eliminates the need of accurate timing or of a dedicated clock line. The minimum acceptable synchronization pad's duration is the timeframe in which a receiver initiating polling can correctly receive a byte. If the length of the first padding bit is less than the minimum acceptable duration, the received signal is considered interference. The minimum acceptable duration of the first padding bit must be shorter than a padding bit duration; a large minimum acceptable duration reduces the chances of false positive's occurrences, a small minimum acceptable duration instead mitigates timing inaccuracies, for this reason it is suggested to evaluate its setting depending on requirements and available resources. The presence of synchronization pads with their logic 1 between each byte also ensures that a frame composed of a series of bytes with decimal value 0 can be transmitted safely without risk of third-party collision.
 
-#### Frame transmission
+### Frame transmission
 Before a frame transmission, the communication medium is analysed, if logic 1 is present ongoing communication is detected and collision is avoided, if logic 0 is detected for a duration longer than a byte transmission plus a small random timeframe, frame transmission starts with a symbol composed by 3 consequent synchronization pads followed by data bytes. The synchronization pad is used for frame initialization and byte initialization to reduce the amount of resources required to implement those features.  
 ```cpp  
  ________ _________________ __________________________________
@@ -84,7 +86,7 @@ When a frame is received a low performance microcontroller with an inaccurate cl
 
 To ensure 100% reliability the synchronization pad's minimum acceptable duration must be higher than 1 standard bit duration. Selecting a correct `sync pad bit 1 / standard bit` ratio, called pad-bit ratio, frame initialization is 100% reliable, false positives cannot occur if not because of externally induced interference. synchronization pad's first bit duration must not be an exact multiple of a standard bit duration, for this reason pad-bit ratio of 2.0, 3.0 or 4.0 must be avoided because consecutive bits may be interpreted as a frame initializer.
 
-#### Synchronous response
+### Synchronous response
 A frame transmission can be optionally followed by a synchronous response by its recipient.
 ```cpp  
 Transmission                                    Response
@@ -108,7 +110,7 @@ Transmission                                      Response
 
 The maximum time dedicated to potential acknowledgement reception and consequent medium jittering is estimated adding the maximum frame length CRC computation time to the expected latency. Thanks to the presence of the jittering wave many differently configured devices can coexist on the same medium with no risk of collision.
 
-#### Communication modes
+### Communication modes
 The proposed communication modes are the result of years of testing and optimization and have been selected to be easily supported by limited microcontrollers.  
 
 | MODE | Bit timing | Sync bit timing | Pad-bit ratio | Speed               |

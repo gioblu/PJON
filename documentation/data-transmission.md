@@ -46,7 +46,7 @@ bus.send_packet(
 );
 ```
 The sending is executed as soon as the method is called and it returns the following values:
-- `PJON_ACK` (6) if transmission occurred and acknowledgment is received if requested
+- `PJON_ACK` (6) if transmission occurred and acknowledgement is received if requested
 - `PJON_BUSY` (666) if bus is busy
 - `PJON_FAIL` (65535) if transmission failed
 

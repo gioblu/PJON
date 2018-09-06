@@ -31,6 +31,7 @@ Credits to contributors:
 - Fred Larsen: Systems engineering, header driven communication, debugging
 - Zbigniew Zasieczny: WINX86 interface
 - Matheus Garbelini: ThroughLora strategy
+- sticilface github user: SoftwareBitBang Teensy support, ThroughSerialAsync
 - osman-aktepe github user: SoftwareBitBang STM32F1 support
 - Jorgen-VikingGod github user: SoftwareBitBang ESP32 support
 - drtrigon github user: LINUX ThroughSerial examples, missing warning report
@@ -39,7 +40,6 @@ Credits to contributors:
 - budaics github user: ATtiny85 16MHz external clock testing and wiki page
 - Pantovich github user: Update returning number of packets to be delivered
 - Adrian Sławiński: Fix to enable SimpleModbusMasterV2 compatibility
-- SticilFace github user: SoftwareBitBang Teensy support
 - Esben Soeltoft: SoftwareBitBang Arduino Zero support
 - Alex Grishin: SoftwareBitBang ESP8266 support
 - Andrew Grande: Testing, support, bugfix

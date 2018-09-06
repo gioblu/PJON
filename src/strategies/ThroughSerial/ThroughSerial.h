@@ -62,9 +62,7 @@ class ThroughSerial {
        (returns always true) */
 
     bool begin(uint8_t additional_randomness = 0) {
-      PJON_DELAY_MICROSECONDS(
-        PJON_RANDOM(TS_INITIAL_DELAY) + additional_randomness
-      );
+      PJON_DELAY(PJON_RANDOM(TS_INITIAL_DELAY) + additional_randomness);
       _last_byte = receive_byte();
       return true;
     };
@@ -103,6 +101,9 @@ class ThroughSerial {
         if(PJON_SERIAL_AVAILABLE(serial)) {
           _last_reception_time = PJON_MICROS();
           int16_t read = PJON_SERIAL_READ(serial);
+          #if defined(_WIN32)
+            read = (uint8_t)read;
+          #endif
           if(read >= 0) {
             _last_byte = (uint8_t)read;
             return _last_byte;
@@ -225,6 +226,7 @@ class ThroughSerial {
         PJON_IO_WRITE(_enable_RS485_txe_pin, HIGH);
         if(_enable_RS485_rxe_pin != TS_NOT_ASSIGNED)
           PJON_IO_WRITE(_enable_RS485_rxe_pin, HIGH);
+        wait_RS485_pin_change();
       }
     };
 

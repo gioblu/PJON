@@ -197,7 +197,7 @@ class ThroughSerial {
       send_byte(TS_END);
       /* On RPI flush fails to wait until all bytes are transmitted
          here RPI forced to wait blocking using delayMicroseconds */
-      #if defined(RPI)
+      #if defined(RPI) || defined(LINUX)
         if(_bd)
           PJON_DELAY_MICROSECONDS(
             ((1000000 / (_bd / 8)) + _flush_offset) * (overhead + length)
@@ -239,7 +239,7 @@ class ThroughSerial {
       }
     };
 
-  #if defined(RPI)
+  #if defined(RPI) || defined(LINUX)
     /* Pass baudrate to ThroughSerial
        (needed only for RPI flush hack): */
 
@@ -276,7 +276,7 @@ class ThroughSerial {
     };
 
   private:
-  #if defined(RPI)
+  #if defined(RPI) || defined(LINUX)
     uint16_t _flush_offset = TS_FLUSH_OFFSET;
     uint32_t _bd;
   #endif

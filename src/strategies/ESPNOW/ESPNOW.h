@@ -58,7 +58,9 @@ class ESPNOW {
     bool check_en() {
       if(!_espnow_initialised) {
         en.set_magic_header(htonl(EN_MAGIC_HEADER));
-        if (en.begin()) _espnow_initialised = true;
+        if (en.begin()) {
+            _espnow_initialised = true;
+        }
       }
       return _espnow_initialised;
     };
@@ -77,7 +79,10 @@ class ESPNOW {
         PJON_Packet_Info packet_info;
         PJONTools::parse_header(message, packet_info);
         uint8_t sender_id = packet_info.sender_id;
-        if (sender_id == 0) return; // If parsing fails, it will be 0
+        if (sender_id == 0) {
+            ESP_LOGE("ESPNOW", "AutoRegister parsing failed");
+            return; // If parsing fails, it will be 0
+        }
 
         // Then get the mac address of the sender
         uint8_t sender_mac[ESP_NOW_ETH_ALEN];
@@ -85,10 +90,15 @@ class ESPNOW {
 
         // See if PJON id is already registered, add if not
         int16_t pos = find_remote_node(sender_id);
-        if (pos == -1) add_node(sender_id, sender_mac);
-        else {
+        if (pos == -1) {
+            ESP_LOGI("ESPNOW", "Autoregister new sender %d",sender_id);
+            add_node(sender_id, sender_mac);
+        }
+        else if(_remote_mac[pos][ESP_NOW_ETH_ALEN-1] != sender_mac[ESP_NOW_ETH_ALEN-1]){
           // Update mac of existing node
-          memcpy(_remote_mac[pos], sender_mac, ESP_NOW_ETH_ALEN);
+            ESP_LOGI("ESPNOW", "Update sender mac %d %d:%d:%d",sender_id,
+                    sender_mac[1], sender_mac[2],sender_mac[3]);
+            memcpy(_remote_mac[pos], sender_mac, ESP_NOW_ETH_ALEN);
         }
       }
     }
@@ -103,6 +113,7 @@ public:
         if (_remote_node_count == EN_MAX_REMOTE_NODES) return -1;
         _remote_id[_remote_node_count] = remote_id;
         memcpy(_remote_mac[_remote_node_count], remote_mac, ESP_NOW_ETH_ALEN);
+        en.add_node_mac(remote_mac);
         _remote_node_count++;
         return _remote_node_count - 1;
     };
@@ -159,7 +170,7 @@ public:
          receiver (Perhaps not that important as long as ACK/NAK responses are
          directed, not broadcast) */
       uint32_t start = PJON_MICROS();
-      uint8_t result[8];
+      uint8_t result[16];
       uint16_t reply_length = 0;
       do {
         reply_length = receive_string(result, sizeof result);
@@ -192,7 +203,12 @@ public:
         } else { // To a specific receiver
           int16_t pos = find_remote_node(id);
           if (pos != -1) {
-            en.send_string(string, length, _remote_mac[pos]);
+//              ESP_LOGI("ESPNOW", "Sending packet to %d", id);
+                en.send_string(string, length, _remote_mac[pos]);
+          } else {
+              //Broadcast - any replies will get registered
+//              ESP_LOGI("ESPNOW", "Sending packet via broadcast");
+              en.send_string(string, length);
           }
         }
       }

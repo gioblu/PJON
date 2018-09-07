@@ -36,6 +36,7 @@ static const char *TAG = "espnow";
 #define ESPNOW_WIFI_IF   ESP_IF_WIFI_AP
 #endif
 
+#define ESPNOW_MAX_PACKET   250
 #define ESPNOW_QUEUE_SIZE           6
 
 static uint8_t espnow_broadcast_mac[ESP_NOW_ETH_ALEN] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
@@ -95,7 +96,7 @@ static esp_err_t espnow_event_handler(void *ctx, system_event_t *event) {
 
 
 /* WiFi should start before using ESPNOW */
-static void espnow_wifi_init(void) {
+static esp_err_t espnow_wifi_init(void) {
     tcpip_adapter_init();
     ESP_ERROR_CHECK(esp_event_loop_init(espnow_event_handler, NULL));
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
@@ -109,23 +110,28 @@ static void espnow_wifi_init(void) {
      * been already on the same channel.
      */
     ESP_ERROR_CHECK(esp_wifi_set_channel(CONFIG_ESPNOW_CHANNEL, WIFI_SECOND_CHAN_NONE));
+    return ESP_OK;
 }
 
 static void espnow_send_cb(const uint8_t *mac_addr, esp_now_send_status_t status) {
-    espnow_event_t evt;
-    espnow_event_send_cb_t *send_cb = &evt.info.send_cb;
+
+//    espnow_event_t evt;
+//    espnow_event_send_cb_t *send_cb = &evt.info.send_cb;
 
     if (mac_addr == NULL) {
         ESP_LOGE(TAG, "Send cb arg error");
         return;
     }
 
-    evt.id = ESPNOW_SEND_CB;
-    memcpy(send_cb->mac_addr, mac_addr, ESP_NOW_ETH_ALEN);
-    send_cb->status = status;
-    if (xQueueSend(espnow_queue, &evt, portMAX_DELAY) != pdTRUE) {
-        ESP_LOGW(TAG, "Send send queue fail");
-    }
+    xTaskNotifyGive(pjon_task_h);
+    return;
+//    evt.id = ESPNOW_SEND_CB;
+//    memcpy(send_cb->mac_addr, mac_addr, ESP_NOW_ETH_ALEN);
+//    send_cb->status = status;
+//
+//    if (xQueueSend(espnow_queue, &evt, portMAX_DELAY) != pdTRUE) {
+//        ESP_LOGW(TAG, "Send send queue fail");
+//    }
 }
 
 static void espnow_recv_cb(const uint8_t *mac_addr, const uint8_t *data, int len) {
@@ -154,6 +160,10 @@ static void espnow_recv_cb(const uint8_t *mac_addr, const uint8_t *data, int len
 
 static esp_err_t add_peer(uint8_t mac_addr[ESP_NOW_ETH_ALEN]) {
 
+    if (esp_now_is_peer_exist(mac_addr)){
+        return ESP_OK;
+    }
+
     /* Add broadcast peer information to peer list. */
     esp_now_peer_info_t *peer = (esp_now_peer_info_t *) malloc(sizeof(esp_now_peer_info_t));
     if (peer == NULL) {
@@ -173,25 +183,12 @@ static esp_err_t add_peer(uint8_t mac_addr[ESP_NOW_ETH_ALEN]) {
 
 }
 
-
-/* task that handles callbacks */
+/* task that handles the recv callback */
 static void espnow_task(void *pvParameter) {
     espnow_event_t evt;
-//    ENHelper *me = (ENHelper *) pvParameter;
-
-    vTaskDelay(1000 / portTICK_RATE_MS);
 
     while (xQueueReceive(espnow_queue, &evt, portMAX_DELAY) == pdTRUE) {
         switch (evt.id) {
-            case ESPNOW_SEND_CB: {
-                /* Notification that outgoing data has been received on the MAC layer */
-
-                /* Delay a while before unblocking the send function */
-                vTaskDelay(5 / portTICK_RATE_MS);
-                xTaskNotifyGive(pjon_task_h);
-
-                break;
-            }
             case ESPNOW_RECV_CB: {
                 /* Notification that incoming data has been received by the MAC layer */
 
@@ -273,7 +270,7 @@ static void espnow_task(void *pvParameter) {
 //                        MACSTR
 //                        "", MAC2STR(recv_cb->mac_addr));
 //                    }
-//                    break;
+                    break;
             }
             default:
                 ESP_LOGE(TAG, "Callback type error: %d", evt.id);
@@ -322,7 +319,7 @@ static void espnow_deinit(espnow_packet_t *send_param) {
 static void clear_received() {
     if (espnow_received != NULL) {
         free(espnow_received->data);
-        free(espnow_received);
+//        free(espnow_received);
         espnow_received = NULL;
     }
     /* Unblock the receive function */
@@ -342,6 +339,9 @@ class ENHelper {
 
 public:
 
+    void add_node_mac(uint8_t mac_addr[ESP_NOW_ETH_ALEN]) {
+        ESP_ERROR_CHECK(add_peer(mac_addr));
+    }
 
     bool begin() {
         esp_err_t ret = nvs_flash_init();
@@ -353,8 +353,9 @@ public:
 
         pjon_task_h = xTaskGetCurrentTaskHandle();
 
-        espnow_wifi_init();
-        espnow_init();
+        ESP_ERROR_CHECK(espnow_wifi_init());
+        ESP_ERROR_CHECK(espnow_init());
+
         return true;
     }
 
@@ -364,6 +365,7 @@ public:
 
         if (espnow_received == NULL) {
             clear_received();
+//            ESP_LOGD(TAG, "No data");
             return PJON_FAIL; //no data waiting
         }
 
@@ -374,15 +376,17 @@ public:
 
             if (header != _magic_header) {
                 clear_received();
+                ESP_LOGE(TAG, "magic mismatch");
                 return PJON_FAIL; // Not an expected packet
             }
-            if (espnow_received->data_len > 4 + max_length) {
-                //packet bigger than buffer
+            len = espnow_received->data_len - 4;
+
+            if (len >  max_length) {
+//                packet bigger than buffer
+                ESP_LOGE(TAG, "buffer overflow - %d bytes but max is %d", len, max_length);
                 clear_received();
                 return PJON_FAIL;
             }
-
-            len = espnow_received->data_len - 4;
 
             memcpy(string, espnow_received->data + 4, len);
             clear_received();
@@ -393,11 +397,24 @@ public:
     }
 
     void send_string(uint8_t *string, uint16_t length, uint8_t dest_mac[ESP_NOW_ETH_ALEN]) {
-        if (esp_now_send(dest_mac, string, length) != ESP_OK) {
+        uint8_t packet[ESPNOW_MAX_PACKET];
+
+        if (length + 4 > ESPNOW_MAX_PACKET) {
+            ESP_LOGE(TAG, "Packet send error - too long");
+            return;
+        }
+
+        memcpy(packet, (uint8_t*)(&_magic_header), 4);
+        memcpy(packet+4, string, length);
+
+        if (esp_now_send(dest_mac, packet, length+4) != ESP_OK) {
             ESP_LOGE(TAG, "Send error");
         } else {
             // Wait for notification that the data has been received by the MAC
+//            ESP_LOGI(TAG,"waiting for send to be confirmed");
             ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+//            vTaskDelay(2/portTICK_RATE_MS);
+//            ulTaskNotifyTake(pdTRUE, 5 / portTICK_RATE_MS);
         }
     }
 

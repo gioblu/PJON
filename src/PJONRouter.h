@@ -69,7 +69,7 @@ protected:
   ) {
     uint8_t start = start_bus - bus_count;
     for(uint8_t i = start; i < table_size; i++) {
-      if(PJONAny::bus_id_equality(bus_id, remote_bus_ids[i])) {
+      if(PJONTools::bus_id_equality(bus_id, remote_bus_ids[i])) {
         start_bus = bus_count + i + 1; // Continue searching for matches
         return remote_bus_via_attached_bus[i]; // Explicit bus id match
       }
@@ -112,7 +112,7 @@ public:
 
   void add(const uint8_t bus_id[], uint8_t via_attached_bus) {
     if(table_size < PJON_ROUTER_TABLE_SIZE) {
-      PJONAny::copy_bus_id(remote_bus_ids[table_size], bus_id);
+      PJONTools::copy_bus_id(remote_bus_ids[table_size], bus_id);
       remote_bus_via_attached_bus[table_size] = via_attached_bus;
       table_size++;
     }

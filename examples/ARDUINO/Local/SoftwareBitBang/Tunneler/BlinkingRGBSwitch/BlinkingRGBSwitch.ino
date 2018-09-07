@@ -59,11 +59,13 @@ void light_led(uint8_t bus_number) {
     case 0: {
       digitalWrite(SWBB_LED_PIN, HIGH);
       swbb_on_time = millis();
-    };
+    }
+    break;
     case 1: {
       digitalWrite(LUDP_LED_PIN, HIGH);
       ludp_on_time = millis();
-    };
+    }
+    break;
   }
 }
 

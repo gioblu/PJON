@@ -1,28 +1,29 @@
-### GlobalUDP
+### ESPNOW
 
-**Medium:** Ethernet port, wired or WiFi
+**Medium:** 802.11 (WiFi)
 
-With the `GlobalUDP` PJON strategy, multiple devices with Ethernet ports can use PJON to communicate with each other over an
-Ethernet network, wired or over WiFi or both. This strategy demands a little more configuration than the `LocalUDP` strategy
-but is not limited to the local network and can therefore reach devices farther away, to another LAN connected through
-VPN, or potentially across the Internet (beware of security issues).
+With the `ESPNOW` PJON strategy, up to 10 ESP32 devices can use PJON to communicate with each other over the Espressif
+ESPNOW protocol (peer-to-peer 802.11).
 
-#### Why PJON over UDP?
-If a cabled or wireless Ethernet network exists, using this to let devices communicate can be easier than to pull new wires or utilize other radio communication modules.
+#### Why not use PJON over WiFi
 
-It can also be useful for connecting physically separate clusters of devices that are connected wired with the `SoftwareBitBang` strategy, or wirelessly with the `Oversampling` strategy, when a LAN or WAN is connecting the locations.
+WiFi is a "best effort" medium - using PJON over WiFI requires a Router and configuration of SSID, Password and IP Addresses.
+
+PJON over ESPNOW has the benefits over wifi of :-
+
+* Lower latency (no router is required - the devices communicate directly to each other)
+* Auto configuration (devices register on the group when starting up and so are accessable by device_id immediately)
 
 #### How to use GlobalUDP
-Pass the `GlobalUDP` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
+Pass the `ESPNOW` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
 ```cpp  
-  // Use LocalUDP strategy with PJON device id 44
-  PJON<LocalUDP> bus(44);
+  // Use ESPNOW strategy with PJON device id 44
+  PJON<ESPNOW> bus(44);
 ```
 Set up the Ethernet card in the usual manner by calling `Ethernet.begin`, register the other devices to send to,
 then call the `begin` method on the PJON object:
 ```cpp  
 void setup() {
-  Ethernet.begin(mac, local_ip, gateway, gateway, subnet);
   bus.strategy.add_node(45, remote_ip1);
   bus.strategy.add_node(46, remote_ip2);
   bus.begin();

@@ -164,8 +164,8 @@ class ThroughSerialAsync {
         }
         case TSA_RECEIVING: {
           while(PJON_SERIAL_AVAILABLE(serial)) {
-            uint16_t value = PJON_SERIAL_READ(serial);
-            if(value == TSA_FAIL || value == TSA_START) {
+            uint8_t value = PJON_SERIAL_READ(serial);
+            if(value == TSA_START) {
               state = TSA_WAITING;
               return TSA_FAIL;
             }
@@ -184,7 +184,7 @@ class ThroughSerialAsync {
                   state = TSA_WAITING;
                   return TSA_FAIL;
                 }
-                buffer[position++] = value;
+                buffer[position++] = value ^ TSA_ESC;
                 _last_reception_time = PJON_MICROS();
                 continue;
               }
@@ -195,7 +195,7 @@ class ThroughSerialAsync {
               return TSA_FAIL;
             }
 
-            if(position + 1 >= PJON_PACKET_MAX_LENGTH ) {
+            if(position + 1 >= PJON_PACKET_MAX_LENGTH) {
               state = TSA_WAITING;
               return TSA_FAIL;
             }
@@ -215,8 +215,15 @@ class ThroughSerialAsync {
         case TSA_WAITING_ESCAPE: {
           if(PJON_SERIAL_AVAILABLE(serial)) {
             uint8_t value = PJON_SERIAL_READ(serial);
-            value ^= TSA_ESC;
-            buffer[position++] = value;
+            if(
+              (value != TSA_START) &&
+              (value != TSA_ESC) &&
+              (value != TSA_END)
+            ) {
+              state = TSA_WAITING;
+              return TSA_FAIL;
+            }
+            buffer[position++] = value ^ TSA_ESC;;
             state = TSA_RECEIVING;
             return TSA_FAIL;
           }

@@ -56,13 +56,7 @@ class ThroughSerialAsync {
     uint8_t buffer[PJON_PACKET_MAX_LENGTH] = {0};
     uint16_t position = 0;
     TSA_state_t state = TSA_WAITING;
-    #if defined(ARDUINO)
-      Stream *serial = NULL;
-    #elif defined(RPI)
-      int16_t serial = 0;
-    #elif defined(_WIN32)
-      Serial *serial = NULL;
-    #endif
+    PJON_SERIAL_TYPE serial;
 
     /* Returns suggested delay related to the attempts passed as parameter: */
 
@@ -311,13 +305,7 @@ class ThroughSerialAsync {
 
     /* Pass the Serial port where you want to operate with */
 
-    #if defined(ARDUINO)
-      void set_serial(Stream *serial_port) {
-    #elif defined(RPI)
-      void set_serial(int16_t serial_port) {
-    #elif defined(_WIN32)
-      void set_serial(Serial * serial_port) {
-    #endif
+    void set_serial(PJON_SERIAL_TYPE serial_port) {
       serial = serial_port;
     };
 

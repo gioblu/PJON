@@ -230,7 +230,9 @@
     #define PJON_SERIAL_FLUSH(S) tcflush(S, TCIOFLUSH)
   #endif
 
-  #define TS_FLUSH_OFFSET 152
+  #ifndef TS_FLUSH_OFFSET
+    #define TS_FLUSH_OFFSET 152
+  #endif
 
   /* Timing --------------------------------------------------------------- */
 

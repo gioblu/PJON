@@ -79,6 +79,7 @@ enum {
 
 static uint8_t last_mac[ESP_NOW_ETH_ALEN];
 static TaskHandle_t pjon_task_h = NULL, espnow_recv_task_h = NULL;
+static uint8_t receiver_buffer[ESPNOW_MAX_PACKET];
 static espnow_packet_t *espnow_received = NULL;
 static xQueueHandle espnow_queue = NULL;
 
@@ -194,7 +195,17 @@ static void espnow_recv_task(void *pvParameter) {
 
                 //Update last mac received from
                 memcpy(last_mac, recv_cb->mac_addr, ESP_NOW_ETH_ALEN);
-                espnow_received = recv_cb;
+                espnow_received = (espnow_packet_t*)malloc(sizeof(espnow_packet_t));
+                if (espnow_received == NULL){
+                    ESP_LOGE(TAG, "allocate failed espnow_received");
+                    break;
+                }
+
+                espnow_received->data_len = recv_cb->data_len;
+                memcpy(espnow_received->mac_addr, recv_cb->mac_addr,ESP_NOW_ETH_ALEN);
+                memcpy(receiver_buffer, recv_cb->data,recv_cb->data_len);
+                espnow_received->data = receiver_buffer;
+                free(recv_cb->data);
 
                 break;
             }
@@ -237,7 +248,8 @@ static esp_err_t espnow_init() {
 
 static void clear_received() {
     if (espnow_received != NULL) {
-        free(espnow_received->data);
+//        free(espnow_received->data);
+        free(espnow_received);
         espnow_received = NULL;
     }
     /* Unblock the receive function */
@@ -324,9 +336,9 @@ public:
         } else {
             // Wait for notification that the data has been received by the MAC
 //            ESP_LOGI(TAG,"waiting for send to be confirmed");
-            ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+//            ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 //            vTaskDelay(2/portTICK_RATE_MS);
-//            ulTaskNotifyTake(pdTRUE, 5 / portTICK_RATE_MS);
+            ulTaskNotifyTake(pdTRUE, 5 / portTICK_RATE_MS);
         }
     }
 

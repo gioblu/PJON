@@ -215,8 +215,8 @@ class OverSampling {
     void send_response(uint8_t response) {
       PJON_IO_PULL_DOWN(_input_pin);
       PJON_IO_MODE(_output_pin, OUTPUT);
-      /* Send initial transmission preamble */
-      send_preamble();
+      // Send initial transmission preamble if required
+      if(OS_PREAMBLE_PULSE_WIDTH) send_preamble();
       send_byte(response);
       PJON_IO_PULL_DOWN(_output_pin);
     };
@@ -226,8 +226,8 @@ class OverSampling {
 
     void send_string(uint8_t *string, uint16_t length) {
       PJON_IO_MODE(_output_pin, OUTPUT);
-      // Send initial transmission preamble
-      send_preamble();
+      // Send initial transmission preamble if required
+      if(OS_PREAMBLE_PULSE_WIDTH) send_preamble();
       // Send string init
       for(uint8_t i = 0; i < 3; i++) {
         PJON_IO_WRITE(_output_pin, HIGH);

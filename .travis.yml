@@ -12,7 +12,7 @@ env:
      - ARDUINO_IDE_VERSION="1.8.6"
 before_install:
   - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
-#install:
+install:
 script:
   # Arduino based examples
   - pushd examples/ARDUINO >/dev/null && build_platform uno && popd >/dev/null

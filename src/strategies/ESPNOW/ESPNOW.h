@@ -35,7 +35,7 @@
   #define EN_MAX_REMOTE_NODES               10
 #endif
 
-#define EN_MAGIC_HEADER   (uint32_t) 0xEEFE0EEF
+uint8_t EN_MAGIC_HEADER[4] = {0xEE, 0xFE, 0x0E, 0xEF};
 
 
 
@@ -57,7 +57,7 @@ class ESPNOW {
 
     bool check_en() {
       if(!_espnow_initialised) {
-        en.set_magic_header(htonl(EN_MAGIC_HEADER));
+        en.set_magic_header(EN_MAGIC_HEADER);
         if (en.begin()) {
             _espnow_initialised = true;
         }

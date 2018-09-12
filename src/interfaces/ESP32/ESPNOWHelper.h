@@ -43,11 +43,6 @@ static uint8_t espnow_broadcast_mac[ESP_NOW_ETH_ALEN] = {0xFF, 0xFF, 0xFF, 0xFF,
 #define IS_BROADCAST_ADDR(addr) (memcmp(addr, espnow_broadcast_mac, ESP_NOW_ETH_ALEN) == 0)
 
 
-typedef enum {
-    ESPNOW_SEND_CB,
-    ESPNOW_RECV_CB,
-} espnow_event_id_t;
-
 typedef struct {
     uint8_t mac_addr[ESP_NOW_ETH_ALEN];
     esp_now_send_status_t status;
@@ -59,17 +54,6 @@ typedef struct {
     int data_len;
 } espnow_packet_t;
 
-typedef union {
-    espnow_event_send_cb_t send_cb;
-    espnow_packet_t recv_cb;
-} espnow_event_info_t;
-
-/* When ESPNOW sending or receiving callback function is called, post event to ESPNOW task. */
-typedef struct {
-    espnow_event_id_t id;
-    espnow_event_info_t info;
-} espnow_event_t;
-
 enum {
     ESPNOW_DATA_BROADCAST,
     ESPNOW_DATA_UNICAST,
@@ -78,10 +62,8 @@ enum {
 
 
 static uint8_t last_mac[ESP_NOW_ETH_ALEN];
-static TaskHandle_t pjon_task_h = NULL, espnow_recv_task_h = NULL;
-static uint8_t receiver_buffer[ESPNOW_MAX_PACKET];
-static espnow_packet_t *espnow_received = NULL;
-static xQueueHandle espnow_queue = NULL;
+static TaskHandle_t pjon_task_h = NULL;
+static xQueueHandle espnow_recv_queue = NULL;
 
 
 static esp_err_t espnow_event_handler(void *ctx, system_event_t *event) {
@@ -119,13 +101,13 @@ static void espnow_send_cb(const uint8_t *mac_addr, esp_now_send_status_t status
     // The only thing we do in the send callback is unblock the
     // other thread which blocks after posting data to the MAC
 
+    xTaskNotifyGive(pjon_task_h);
 
     if (mac_addr == NULL) {
         ESP_LOGE(TAG, "Send cb arg error");
         return;
     }
 
-    xTaskNotifyGive(pjon_task_h);
     return;
 }
 
@@ -139,7 +121,7 @@ static esp_err_t add_peer(uint8_t mac_addr[ESP_NOW_ETH_ALEN]) {
     esp_now_peer_info_t *peer = (esp_now_peer_info_t *) malloc(sizeof(esp_now_peer_info_t));
     if (peer == NULL) {
         ESP_LOGE(TAG, "Malloc peer information fail");
-        vSemaphoreDelete(espnow_queue);
+        vSemaphoreDelete(espnow_recv_queue);
         esp_now_deinit();
         return ESP_FAIL;
     }
@@ -156,74 +138,36 @@ static esp_err_t add_peer(uint8_t mac_addr[ESP_NOW_ETH_ALEN]) {
 
 
 static void espnow_recv_cb(const uint8_t *mac_addr, const uint8_t *data, int len) {
-    espnow_event_t evt;
-    espnow_packet_t *recv_cb = &evt.info.recv_cb;
+    espnow_packet_t packet;
 
     if (mac_addr == NULL || data == NULL || len <= 0) {
         ESP_LOGE(TAG, "Receive cb arg error");
         return;
     }
 
-    evt.id = ESPNOW_RECV_CB;
-    memcpy(recv_cb->mac_addr, mac_addr, ESP_NOW_ETH_ALEN);
-    recv_cb->data = (uint8_t *) malloc(len);
-    if (recv_cb->data == NULL) {
+    memcpy(packet.mac_addr, mac_addr, ESP_NOW_ETH_ALEN);
+    packet.data = (uint8_t *) malloc(len);
+    if (packet.data == NULL) {
         ESP_LOGE(TAG, "Malloc receive data fail");
         return;
     }
-    memcpy(recv_cb->data, data, len);
-    recv_cb->data_len = len;
-    if (xQueueSend(espnow_queue, &evt, portMAX_DELAY) != pdTRUE) {
+    memcpy(packet.data, data, len);
+    packet.data_len = len;
+    //Post to the queue, but don't wait
+    if (xQueueSend(espnow_recv_queue, &packet, 0) != pdTRUE) {
         ESP_LOGW(TAG, "Send receive queue fail");
-        free(recv_cb->data);
-    }
-}
-
-/* task that handles the recv callback */
-static void espnow_recv_task(void *pvParameter) {
-    espnow_event_t evt;
-
-    while (xQueueReceive(espnow_queue, &evt, portMAX_DELAY) == pdTRUE) {
-        switch (evt.id) {
-            case ESPNOW_RECV_CB: {
-                /* Notification that incoming data has been received by the MAC layer */
-
-                espnow_packet_t *recv_cb = &evt.info.recv_cb;
-
-                /* Wait until we're unblocked by the recv function */
-                ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-
-                //Update last mac received from
-                memcpy(last_mac, recv_cb->mac_addr, ESP_NOW_ETH_ALEN);
-                espnow_received = (espnow_packet_t*)malloc(sizeof(espnow_packet_t));
-                if (espnow_received == NULL){
-                    ESP_LOGE(TAG, "allocate failed espnow_received");
-                    break;
-                }
-
-                espnow_received->data_len = recv_cb->data_len;
-                memcpy(espnow_received->mac_addr, recv_cb->mac_addr,ESP_NOW_ETH_ALEN);
-                memcpy(receiver_buffer, recv_cb->data,recv_cb->data_len);
-                espnow_received->data = receiver_buffer;
-                free(recv_cb->data);
-
-                break;
-            }
-            default:
-                ESP_LOGE(TAG, "Callback type error: %d", evt.id);
-                break;
-        }
+        free(packet.data);
     }
 }
 
 static esp_err_t espnow_init() {
 
-    if (espnow_queue != NULL) {
+    if (espnow_recv_queue != NULL) {
         return ESP_FAIL;
     }
 
-    espnow_queue = xQueueCreate(ESPNOW_QUEUE_SIZE, sizeof(espnow_event_t));
-    if (espnow_queue == NULL) {
+    espnow_recv_queue = xQueueCreate(ESPNOW_QUEUE_SIZE, sizeof(espnow_packet_t));
+    if (espnow_recv_queue == NULL) {
         ESP_LOGE(TAG, "Create mutex fail");
         return ESP_FAIL;
     }
@@ -239,28 +183,13 @@ static esp_err_t espnow_init() {
     /* Add broadcast peer information to peer list. */
     add_peer(espnow_broadcast_mac);
 
-    /* create the task */
-    xTaskCreate(espnow_recv_task, "espnow_recv_task", 1024, NULL, 4, &espnow_recv_task_h);
-
     return ESP_OK;
 }
 
 
-static void clear_received() {
-    if (espnow_received != NULL) {
-//        free(espnow_received->data);
-        free(espnow_received);
-        espnow_received = NULL;
-    }
-    /* Unblock the receive function */
-    xTaskNotifyGive(espnow_recv_task_h);
-}
-
-
-
 class ENHelper {
 
-    uint32_t _magic_header;
+    uint8_t _magic_header[4];
 
 public:
 
@@ -287,36 +216,41 @@ public:
     uint16_t receive_string(uint8_t *string, uint16_t max_length) {
 
         // see if there's any received data waiting
+        espnow_packet_t packet;
 
-        if (espnow_received == NULL) {
-            clear_received();
-//            ESP_LOGD(TAG, "No data");
-            return PJON_FAIL; //no data waiting
+        if (xQueueReceive(espnow_recv_queue, &packet, 0) == pdTRUE) {
+
+            //Update last mac received from
+            memcpy(last_mac, packet.mac_addr, ESP_NOW_ETH_ALEN);
+
+            if (packet.data_len > 4) {
+                uint16_t len;
+
+                if (memcmp(_magic_header, packet.data, 4) != 0) {
+                    free(packet.data);
+                    ESP_LOGE(TAG, "magic mismatch");
+                    return PJON_FAIL; // Not an expected packet
+                }
+                len = packet.data_len - 4;
+
+                if (len > max_length) {
+                    free(packet.data);
+                    ESP_LOGE(TAG, "buffer overflow - %d bytes but max is %d", len, max_length);
+                    return PJON_FAIL;
+                }
+
+                memcpy(string, packet.data + 4, len);
+                free(packet.data);
+                return len;
+
+            } else {
+
+                free(packet.data);
+                return PJON_FAIL; //no data waiting
+
+            }
         }
 
-        if (espnow_received->data_len > 0) {
-            uint32_t header = 0;
-            uint16_t len;
-            memcpy((uint8_t * )(&header), espnow_received->data, 4);
-
-            if (header != _magic_header) {
-                clear_received();
-                ESP_LOGE(TAG, "magic mismatch");
-                return PJON_FAIL; // Not an expected packet
-            }
-            len = espnow_received->data_len - 4;
-
-            if (len >  max_length) {
-                ESP_LOGE(TAG, "buffer overflow - %d bytes but max is %d", len, max_length);
-                clear_received();
-                return PJON_FAIL;
-            }
-
-            memcpy(string, espnow_received->data + 4, len);
-            clear_received();
-            return len;
-        }
-        clear_received();
         return PJON_FAIL;
     }
 
@@ -328,7 +262,7 @@ public:
             return;
         }
 
-        memcpy(packet, (uint8_t*)(&_magic_header), 4);
+        memcpy(packet, _magic_header, 4);
         memcpy(packet+4, string, length);
 
         if (esp_now_send(dest_mac, packet, length+4) != ESP_OK) {
@@ -336,9 +270,9 @@ public:
         } else {
             // Wait for notification that the data has been received by the MAC
 //            ESP_LOGI(TAG,"waiting for send to be confirmed");
-//            ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+            ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 //            vTaskDelay(2/portTICK_RATE_MS);
-            ulTaskNotifyTake(pdTRUE, 5 / portTICK_RATE_MS);
+//            ulTaskNotifyTake(pdTRUE, 5 / portTICK_RATE_MS);
         }
     }
 
@@ -351,7 +285,7 @@ public:
         send_string(string, length, espnow_broadcast_mac);
     }
 
-    void set_magic_header(uint32_t magic_header) { _magic_header = magic_header; }
+    void set_magic_header(uint8_t *magic_header) { memcpy(_magic_header,magic_header,4); }
 
     void get_sender(uint8_t *ip) {
         memcpy(ip, last_mac, ESP_NOW_ETH_ALEN);

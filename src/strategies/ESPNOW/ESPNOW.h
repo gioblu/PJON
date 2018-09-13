@@ -35,7 +35,7 @@
   #define EN_MAX_REMOTE_NODES               10
 #endif
 
-uint8_t EN_MAGIC_HEADER[4] = {0xEE, 0xFE, 0x0E, 0xEF};
+#define EN_MAGIC_HEADER (uint8_t*)"\xEE\xFE\x0E\xEF"
 
 
 
@@ -47,6 +47,8 @@ uint8_t EN_MAGIC_HEADER[4] = {0xEE, 0xFE, 0x0E, 0xEF};
 class ESPNOW {
     bool _espnow_initialised = false;
     bool _auto_registration = true;
+    uint8_t _channel = 14;
+    char _espnow_pmk[17] = "\xdd\xdb\xdd\x44\x34\xd5\x6a\x0b\x7e\x9f\x4e\x27\xd6\x5b\xa2\x81";
 
     // Remote nodes
     uint8_t  _remote_node_count = 0;
@@ -58,7 +60,7 @@ class ESPNOW {
     bool check_en() {
       if(!_espnow_initialised) {
         en.set_magic_header(EN_MAGIC_HEADER);
-        if (en.begin()) {
+        if (en.begin(_channel,(uint8_t*)_espnow_pmk)) {
             _espnow_initialised = true;
         }
       }
@@ -104,6 +106,14 @@ class ESPNOW {
     }
 
 public:
+
+    void set_pmk(char *espnow_pmk) {
+        memcpy(_espnow_pmk, espnow_pmk, 16);
+    }
+
+    void set_channel(uint8_t channel) {
+        _channel = channel;
+    }
 
     /* Register each device we want to send to */
 
@@ -170,7 +180,7 @@ public:
          receiver (Perhaps not that important as long as ACK/NAK responses are
          directed, not broadcast) */
       uint32_t start = PJON_MICROS();
-      uint8_t result[16];
+      uint8_t result[PJON_PACKET_MAX_LENGTH];
       uint16_t reply_length = 0;
       do {
         reply_length = receive_string(result, sizeof result);

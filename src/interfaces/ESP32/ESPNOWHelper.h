@@ -24,6 +24,20 @@
 #include "esp_now.h"
 #include "rom/ets_sys.h"
 #include "rom/crc.h"
+#include "esp_wifi_types.h"
+
+
+
+
+
+static wifi_country_t wifi_country = {
+        cc:"AU",
+        schan:1,
+        nchan:14,
+        max_tx_power:80, // Level0
+        policy: WIFI_COUNTRY_POLICY_MANUAL
+};
+
 
 static const char *TAG = "espnow";
 
@@ -65,37 +79,6 @@ static uint8_t last_mac[ESP_NOW_ETH_ALEN];
 static TaskHandle_t pjon_task_h = NULL;
 static xQueueHandle espnow_recv_queue = NULL;
 
-
-static esp_err_t espnow_event_handler(void *ctx, system_event_t *event) {
-    switch (event->event_id) {
-        case SYSTEM_EVENT_STA_START:
-            ESP_LOGI(TAG, "WiFi started");
-            break;
-        default:
-            break;
-    }
-    return ESP_OK;
-}
-
-
-/* WiFi should start before using ESPNOW */
-static esp_err_t espnow_wifi_init(void) {
-    tcpip_adapter_init();
-    ESP_ERROR_CHECK(esp_event_loop_init(espnow_event_handler, NULL));
-    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
-    ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
-    ESP_ERROR_CHECK(esp_wifi_set_mode(ESPNOW_WIFI_MODE));
-    ESP_ERROR_CHECK(esp_wifi_start());
-
-    /* In order to simplify example, channel is set after WiFi started.
-     * This is not necessary in real application if the two devices have
-     * been already on the same channel.
-     */
-    ESP_ERROR_CHECK(esp_wifi_set_channel(CONFIG_ESPNOW_CHANNEL, WIFI_SECOND_CHAN_NONE));
-    return ESP_OK;
-}
-
 static void espnow_send_cb(const uint8_t *mac_addr, esp_now_send_status_t status) {
 
     // The only thing we do in the send callback is unblock the
@@ -109,31 +92,6 @@ static void espnow_send_cb(const uint8_t *mac_addr, esp_now_send_status_t status
     }
 
     return;
-}
-
-static esp_err_t add_peer(uint8_t mac_addr[ESP_NOW_ETH_ALEN]) {
-
-    if (esp_now_is_peer_exist(mac_addr)){
-        return ESP_OK;
-    }
-
-    /* Add broadcast peer information to peer list. */
-    esp_now_peer_info_t *peer = (esp_now_peer_info_t *) malloc(sizeof(esp_now_peer_info_t));
-    if (peer == NULL) {
-        ESP_LOGE(TAG, "Malloc peer information fail");
-        vSemaphoreDelete(espnow_recv_queue);
-        esp_now_deinit();
-        return ESP_FAIL;
-    }
-    memset(peer, 0, sizeof(esp_now_peer_info_t));
-    peer->channel = CONFIG_ESPNOW_CHANNEL;
-    peer->ifidx = ESPNOW_WIFI_IF;
-    peer->encrypt = false;
-    memcpy(peer->peer_addr, mac_addr, ESP_NOW_ETH_ALEN);
-    ESP_ERROR_CHECK(esp_now_add_peer(peer));
-    free(peer);
-    return ESP_OK;
-
 }
 
 
@@ -160,36 +118,11 @@ static void espnow_recv_cb(const uint8_t *mac_addr, const uint8_t *data, int len
     }
 }
 
-static esp_err_t espnow_init() {
-
-    if (espnow_recv_queue != NULL) {
-        return ESP_FAIL;
-    }
-
-    espnow_recv_queue = xQueueCreate(ESPNOW_QUEUE_SIZE, sizeof(espnow_packet_t));
-    if (espnow_recv_queue == NULL) {
-        ESP_LOGE(TAG, "Create mutex fail");
-        return ESP_FAIL;
-    }
-
-    /* Initialize ESPNOW and register sending and receiving callback function. */
-    ESP_ERROR_CHECK(esp_now_init());
-    ESP_ERROR_CHECK(esp_now_register_send_cb(espnow_send_cb));
-    ESP_ERROR_CHECK(esp_now_register_recv_cb(espnow_recv_cb));
-
-    /* Set primary master key. */
-    ESP_ERROR_CHECK(esp_now_set_pmk((uint8_t *) CONFIG_ESPNOW_PMK));
-
-    /* Add broadcast peer information to peer list. */
-    add_peer(espnow_broadcast_mac);
-
-    return ESP_OK;
-}
-
-
 class ENHelper {
 
     uint8_t _magic_header[4];
+    uint8_t _channel = 14;
+    uint8_t _esp_pmk[16];
 
 public:
 
@@ -197,7 +130,40 @@ public:
         ESP_ERROR_CHECK(add_peer(mac_addr));
     }
 
-    bool begin() {
+    esp_err_t add_peer(uint8_t mac_addr[ESP_NOW_ETH_ALEN]) {
+
+        if (esp_now_is_peer_exist(mac_addr)){
+            return ESP_OK;
+        }
+
+        /* Add broadcast peer information to peer list. */
+        esp_now_peer_info_t *peer = (esp_now_peer_info_t *) malloc(sizeof(esp_now_peer_info_t));
+        if (peer == NULL) {
+            ESP_LOGE(TAG, "Malloc peer information fail");
+            vSemaphoreDelete(espnow_recv_queue);
+            esp_now_deinit();
+            return ESP_FAIL;
+        }
+        memset(peer, 0, sizeof(esp_now_peer_info_t));
+        peer->channel = _channel;
+        peer->ifidx = ESPNOW_WIFI_IF;
+        if (IS_BROADCAST_ADDR(mac_addr)) {
+            peer->encrypt = false;
+        }
+//        else {
+//            peer->encrypt = true;
+//            memcpy(peer->lmk, _esp_pmk, 16);
+//        }
+        memcpy(peer->peer_addr, mac_addr, ESP_NOW_ETH_ALEN);
+        ESP_ERROR_CHECK(esp_now_add_peer(peer));
+        free(peer);
+        return ESP_OK;
+
+    }
+
+
+    bool begin(uint8_t channel, uint8_t *espnow_pmk) {
+
         esp_err_t ret = nvs_flash_init();
         if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
             ESP_ERROR_CHECK(nvs_flash_erase());
@@ -206,9 +172,39 @@ public:
         ESP_ERROR_CHECK(ret);
 
         pjon_task_h = xTaskGetCurrentTaskHandle();
+        _channel = channel;
+        memcpy(_esp_pmk, espnow_pmk, 16);
 
-        ESP_ERROR_CHECK(espnow_wifi_init());
-        ESP_ERROR_CHECK(espnow_init());
+        if (espnow_recv_queue != NULL) {
+            return ESP_FAIL;
+        }
+
+        espnow_recv_queue = xQueueCreate(ESPNOW_QUEUE_SIZE, sizeof(espnow_packet_t));
+
+        if (espnow_recv_queue == NULL) {
+            ESP_LOGE(TAG, "Create mutex fail");
+            return ESP_FAIL;
+        }
+
+        tcpip_adapter_init();
+        wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+        ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+        ESP_ERROR_CHECK(esp_wifi_set_country(&wifi_country));
+        ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
+        ESP_ERROR_CHECK(esp_wifi_set_mode(ESPNOW_WIFI_MODE));
+        ESP_ERROR_CHECK(esp_wifi_start());
+        ESP_ERROR_CHECK(esp_wifi_set_channel(_channel, WIFI_SECOND_CHAN_NONE));
+
+        /* Initialize ESPNOW and register sending and receiving callback function. */
+        ESP_ERROR_CHECK(esp_now_init());
+        ESP_ERROR_CHECK(esp_now_register_send_cb(espnow_send_cb));
+        ESP_ERROR_CHECK(esp_now_register_recv_cb(espnow_recv_cb));
+
+        /* Set primary master key. */
+        ESP_ERROR_CHECK(esp_now_set_pmk(_esp_pmk));
+
+        /* Add broadcast peer information to peer list. */
+        add_peer(espnow_broadcast_mac);
 
         return true;
     }
@@ -258,7 +254,7 @@ public:
         uint8_t packet[ESPNOW_MAX_PACKET];
 
         if (length + 4 > ESPNOW_MAX_PACKET) {
-            ESP_LOGE(TAG, "Packet send error - too long");
+            ESP_LOGE(TAG, "Packet send error - too long :%d",length + 4);
             return;
         }
 

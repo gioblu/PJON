@@ -1,56 +1,71 @@
 ### ESPNOW
 
-**Medium:** 802.11 (WiFi)
+**Medium:** 802.11 Peer-to-peer
 
-With the `ESPNOW` PJON strategy, up to 10 ESP32 devices can use PJON to communicate with each other over the Espressif
-ESPNOW protocol (peer-to-peer 802.11).
+With the `ESPNOW` PJON strategy, up to 10 ESP32 devices can use PJON to communicate with each other over
+the [Espressif ESPNOW protocol](https://www.espressif.com/en/products/software/esp-now/overview) (peer-to-peer 802.11).
 
-#### Why not use PJON over WiFi
+#### What about PJON over WiFi using GlobalUDP or LocalUDP?
 
-WiFi is a "best effort" medium - using PJON over WiFI requires a Router and configuration of SSID, Password and IP Addresses.
+PJON over ESPNOW has the benefit (over Wifi) of :-
 
-PJON over ESPNOW has the benefits over wifi of :-
-
-* Lower latency (no router is required - the devices communicate directly to each other)
+* Lower latency (no router is required - the devices communicate directly with each other)
 * Auto configuration (devices register on the group when starting up and so are accessable by device_id immediately)
+* Further distance (ESPNOW claims upto 1km line of sight)
+
+PJON over Wifi has the benefit (over ESPNOW) of :-
+
+* Connected directly over IP network (allows easier OTA update)
 
 #### How to use GlobalUDP
-Pass the `ESPNOW` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
+
+Compilation tested as an esp-idf component with [arduino-esp32](https://github.com/espressif/arduino-esp32)
+
+Pass the `ESPNOW` type as PJON template parameter to instantiate a
+PJON object ready to communicate through this Strategy.
+
 ```cpp  
   // Use ESPNOW strategy with PJON device id 44
   PJON<ESPNOW> bus(44);
 ```
-Set up the Ethernet card in the usual manner by calling `Ethernet.begin`, register the other devices to send to,
-then call the `begin` method on the PJON object:
-```cpp  
+
+You can customise the channel (default is channel 1) and PMK (encryption) as follows (all devices must be the same):
+```cpp
 void setup() {
-  bus.strategy.add_node(45, remote_ip1);
-  bus.strategy.add_node(46, remote_ip2);
-  bus.begin();
+
+    /* note the PMK is 16 bytes, but storing it in a char requires char[17] - an extra byte for the nul terminator */
+    char pmk[17] = "\x2b\xb2\x1e\x7a\x83\x13\x76\x9f\xf8\xa9\x3b\x1b\x5b\x52\xd0\x70";
+    PJON<ESPNOW> bus(44);
+
+    bus.strategy.set_channel(6);
+    bus.strategy.set_pmk(pmk);
 }
 ```
-All the IP addresses of the registered nodes should be reachable. UDP port forwarding can be used to obtain this
-through firewalls. The IP address of the device can be DHCP assigned if none of the other devices need to reach it
-except with ACKs. Otherwise it should be static, unless using sender autoregistration.
+
+The ESPNOW strategy will send a broadcast message if the device_id is not already registered.
+
+Once a response is received (assuming autoregistration is enabled) then the device will automatically
+add the node id / mac.
 
 Sender autoregistration is now enabled by default and can be disabled with:
 
-```
+```cpp
   bus.set_autoregistration(false);
 ```
 
-With sender autoregistration the sender of each incoming packet is automatically registered in the node table, meaning that replies will work also for unregistered devices with static or dynamic IP. Also, after a packet from a device has been received, packets can be sent to it by its PJON id.
+With sender autoregistration the sender of each incoming packet is automatically registered in the
+node table, meaning that you don't have to pre-register each devices' mac address.
 
-This means that sender autoregistration can be used in setups where packets are exchanged through a central device, typically a master or switch, to let all devices except the central device use DHCP for dynamic network configuration. Each device then need to register the central device in its table, and the central device can have an empty table at startup.
+If you disable autoregistration you can add a node as follows:
 
-Note that the preprocessor define `GUDP_MAX_REMOTE_NODES` is important when using autoregistration. For a device it should be higher than the maximum number of other devices it will communicate with. Its default value of 10 is low to save memory, and in larger setups it must be increased.
-
-UDP packets are _not_ broadcast like with the `LocalUDP` strategy, but directed to a selected receiver.
-
-All the other necessary information is present in the general [Documentation](/documentation).
-
-#### Known issues
-- Firewall may block `GlobalUDP` packets, edit its configuration to allow them
+```cpp
+uint8_t dev_mac[6] = {0x02, 0x23, 0x34, 0x22, 0x33, 0x44 };
+bus.strategy.add_node(device_id, dev_mac);
+```
 
 #### Safety warning
-In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. When connecting a local bus to the internet using [EthernetTCP](/src/strategies/EthernetTCP) or [GlobalUDP](/src/strategies/GlobalUDP) all connected devices must be considered potentially compromised, potentially manipulated or remotely actuated against your will. It should be considered a good practice not to connect to the internet systems that may create a damage (fire, flood, data-leak) if hacked.
+
+In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger.
+When using ESPNOW keep in mind that all connected devices must be considered potentially compromised if the PMK is known
+or can be guessed, and therefore potentially manipulated or remotely actuated against your will. It should be considered
+a good practice to have your own message authentication on top of the transport medium / PJON.

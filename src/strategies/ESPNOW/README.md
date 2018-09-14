@@ -17,7 +17,7 @@ PJON over Wifi has the benefit (over ESPNOW) of :-
 
 * Connected directly over IP network (allows easier OTA update)
 
-#### How to use GlobalUDP
+#### How to use ESPNOW
 
 Compilation tested as an esp-idf component with [arduino-esp32](https://github.com/espressif/arduino-esp32)
 

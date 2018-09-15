@@ -216,18 +216,19 @@ public:
 
         if (xQueueReceive(espnow_recv_queue, &packet, 0) == pdTRUE) {
 
-            //Update last mac received from
-            memcpy(last_mac, packet.mac_addr, ESP_NOW_ETH_ALEN);
+            if (packet.data_len >= 4) {
+                uint8_t len = packet.data_len - 4;
 
-            if (packet.data_len > 4) {
-                uint16_t len;
+                if (
+                        (packet.data[0                  ]   ^ len) != _magic_header[0] ||
+                        (packet.data[1                  ]   ^ len) != _magic_header[1] ||
+                        (packet.data[packet.data_len - 2]   ^ len) != _magic_header[2] ||
+                        (packet.data[packet.data_len - 1]   ^ len) != _magic_header[3]) {
 
-                if (memcmp(_magic_header, packet.data, 4) != 0) {
-                    free(packet.data);
                     ESP_LOGE(TAG, "magic mismatch");
-                    return PJON_FAIL; // Not an expected packet
+                    free(packet.data);
+                    return PJON_FAIL;
                 }
-                len = packet.data_len - 4;
 
                 if (len > max_length) {
                     free(packet.data);
@@ -235,15 +236,18 @@ public:
                     return PJON_FAIL;
                 }
 
-                memcpy(string, packet.data + 4, len);
+                memcpy(string, packet.data + 2, len);
                 free(packet.data);
+
+                //Update last mac received from
+                memcpy(last_mac, packet.mac_addr, ESP_NOW_ETH_ALEN);
+
                 return len;
 
             } else {
-
+                ESP_LOGE(TAG, "packet < 4 received");
                 free(packet.data);
                 return PJON_FAIL; //no data waiting
-
             }
         }
 
@@ -258,17 +262,21 @@ public:
             return;
         }
 
-        memcpy(packet, _magic_header, 4);
-        memcpy(packet+4, string, length);
+        uint8_t len = length;
 
-        if (esp_now_send(dest_mac, packet, length+4) != ESP_OK) {
+        packet[0] = _magic_header[0] ^ len;
+        packet[1] = _magic_header[1] ^ len;
+
+        memcpy(packet+2, string, len);
+
+        packet[len + 2] = _magic_header[2] ^ len;
+        packet[len + 3] = _magic_header[3] ^ len;
+
+        if (esp_now_send(dest_mac, packet, len + 4) != ESP_OK) {
             ESP_LOGE(TAG, "Send error");
         } else {
             // Wait for notification that the data has been received by the MAC
-//            ESP_LOGI(TAG,"waiting for send to be confirmed");
             ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-//            vTaskDelay(2/portTICK_RATE_MS);
-//            ulTaskNotifyTake(pdTRUE, 5 / portTICK_RATE_MS);
         }
     }
 

@@ -96,7 +96,7 @@ class ESPNOW {
             ESP_LOGI("ESPNOW", "Autoregister new sender %d",sender_id);
             add_node(sender_id, sender_mac);
         }
-        else if(_remote_mac[pos][ESP_NOW_ETH_ALEN-1] != sender_mac[ESP_NOW_ETH_ALEN-1]){
+        else if(memcmp(_remote_mac[pos], sender_mac, ESP_NOW_ETH_ALEN) == 0){
           // Update mac of existing node
             ESP_LOGI("ESPNOW", "Update sender mac %d %d:%d:%d",sender_id,
                     sender_mac[1], sender_mac[2],sender_mac[3]);
@@ -213,11 +213,9 @@ public:
         } else { // To a specific receiver
           int16_t pos = find_remote_node(id);
           if (pos != -1) {
-//              ESP_LOGI("ESPNOW", "Sending packet to %d", id);
                 en.send_string(string, length, _remote_mac[pos]);
           } else {
               //Broadcast - any replies will get registered
-//              ESP_LOGI("ESPNOW", "Sending packet via broadcast");
               en.send_string(string, length);
           }
         }

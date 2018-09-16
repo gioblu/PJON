@@ -56,13 +56,7 @@ class ThroughSerialAsync {
     uint8_t buffer[PJON_PACKET_MAX_LENGTH] = {0};
     uint16_t position = 0;
     TSA_state_t state = TSA_WAITING;
-    #if defined(ARDUINO)
-      Stream *serial = NULL;
-    #elif defined(RPI)
-      int16_t serial = 0;
-    #elif defined(_WIN32)
-      Serial *serial = NULL;
-    #endif
+    PJON_SERIAL_TYPE serial;
 
     /* Returns suggested delay related to the attempts passed as parameter: */
 
@@ -164,8 +158,8 @@ class ThroughSerialAsync {
         }
         case TSA_RECEIVING: {
           while(PJON_SERIAL_AVAILABLE(serial)) {
-            uint16_t value = PJON_SERIAL_READ(serial);
-            if(value == TSA_FAIL || value == TSA_START) {
+            uint8_t value = PJON_SERIAL_READ(serial);
+            if(value == TSA_START) {
               state = TSA_WAITING;
               return TSA_FAIL;
             }
@@ -174,8 +168,7 @@ class ThroughSerialAsync {
                 state = TSA_WAITING_ESCAPE;
                 return TSA_FAIL;
               } else {
-                value = PJON_SERIAL_READ(serial);
-                value ^= TSA_ESC;
+                value = PJON_SERIAL_READ(serial) ^ TSA_ESC;
                 if(
                   (value != TSA_START) &&
                   (value != TSA_ESC) &&
@@ -195,7 +188,7 @@ class ThroughSerialAsync {
               return TSA_FAIL;
             }
 
-            if(position + 1 >= PJON_PACKET_MAX_LENGTH ) {
+            if(position + 1 >= PJON_PACKET_MAX_LENGTH) {
               state = TSA_WAITING;
               return TSA_FAIL;
             }
@@ -214,8 +207,15 @@ class ThroughSerialAsync {
 
         case TSA_WAITING_ESCAPE: {
           if(PJON_SERIAL_AVAILABLE(serial)) {
-            uint8_t value = PJON_SERIAL_READ(serial);
-            value ^= TSA_ESC;
+            uint8_t value = PJON_SERIAL_READ(serial) ^ TSA_ESC;
+            if(
+              (value != TSA_START) &&
+              (value != TSA_ESC) &&
+              (value != TSA_END)
+            ) {
+              state = TSA_WAITING;
+              return TSA_FAIL;
+            }
             buffer[position++] = value;
             state = TSA_RECEIVING;
             return TSA_FAIL;
@@ -292,7 +292,7 @@ class ThroughSerialAsync {
       send_byte(TSA_END);
       /* On RPI flush fails to wait until all bytes are transmitted
          here RPI forced to wait blocking using delayMicroseconds */
-      #if defined(RPI)
+      #if defined(RPI) || defined(LINUX)
         if(_bd)
           PJON_DELAY_MICROSECONDS(
             ((1000000 / (_bd / 8)) + _flush_offset) * (overhead + length)
@@ -305,13 +305,7 @@ class ThroughSerialAsync {
 
     /* Pass the Serial port where you want to operate with */
 
-    #if defined(ARDUINO)
-      void set_serial(Stream *serial_port) {
-    #elif defined(RPI)
-      void set_serial(int16_t serial_port) {
-    #elif defined(_WIN32)
-      void set_serial(Serial * serial_port) {
-    #endif
+    void set_serial(PJON_SERIAL_TYPE serial_port) {
       serial = serial_port;
     };
 
@@ -336,7 +330,7 @@ class ThroughSerialAsync {
       }
     };
 
-  #if defined(RPI)
+  #if defined(RPI) || defined(LINUX)
     /* Pass baudrate to ThroughSerial
        (needed only for RPI flush hack): */
 
@@ -388,7 +382,7 @@ class ThroughSerialAsync {
     };
 
   private:
-  #if defined(RPI)
+  #if defined(RPI) || defined(LINUX)
     uint16_t _flush_offset = TSA_FLUSH_OFFSET;
     uint32_t _bd;
   #endif

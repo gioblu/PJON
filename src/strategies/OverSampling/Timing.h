@@ -5,9 +5,9 @@
    All benchmarks are executed with NetworkAnalysis and SpeedTest examples.
 
    The following constants setup is quite conservative and determined only
-   with a huge amount of time and blind testing (without oscilloscope)
-   tweaking values and analysing results. Theese can be changed to obtain
-   faster speed. Probably you need experience, time and an oscilloscope. */
+   with a huge amount of time testing tweaking values and analysing results.
+   Theese can be changed to obtain faster speed. Probably you will need
+   experience, time and an oscilloscope. */
 
 #pragma once
 
@@ -56,10 +56,11 @@
   #define OS_BIT_SPACER      328  // 340 microseconds detected by oscilloscope
 #endif
 
-/* Preamble data sent for receiver to tune its gain to signal dB: */
+/* Preamble data sent for receiver to tune its gain to incoming signal dB.
+   By default disabled, set a duration if required. */
 
 #ifndef OS_PREAMBLE_PULSE_WIDTH
-  #define OS_PREAMBLE_PULSE_WIDTH 100000
+  #define OS_PREAMBLE_PULSE_WIDTH 0
 #endif
 
 /* The default response timeout setup dedicates the transmission time of 1

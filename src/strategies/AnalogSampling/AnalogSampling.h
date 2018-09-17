@@ -134,7 +134,8 @@ class AnalogSampling {
     bool can_start() {
       uint32_t time = PJON_MICROS();
       while(
-        (uint32_t)(PJON_MICROS() - time) <= (AS_BIT_SPACER + AS_BIT_WIDTH * 9)
+        (uint32_t)(PJON_MICROS() - time) <=
+        (AS_BIT_SPACER + (AS_BIT_WIDTH * 9))
       ) if(receive_byte() != PJON_FAIL) return false;
       PJON_DELAY_MICROSECONDS(PJON_RANDOM(AS_COLLISION_DELAY));
       if((uint16_t)PJON_ANALOG_READ(_input_pin) > threshold) return false;

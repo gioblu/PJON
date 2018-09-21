@@ -9,8 +9,13 @@
   #include <WiFiUdp.h>
   #define PJON_ESP
 #else
-  #include <Ethernet.h>
-  #include <EthernetUdp.h>
+  #ifdef PJON_ETHERNET2
+    #include <Ethernet2.h>
+    #include <EthernetUdp2.h>
+  #else
+    #include <Ethernet.h>
+    #include <EthernetUdp.h>
+  #endif
 #endif
 
 class UDPHelper {

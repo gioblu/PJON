@@ -125,10 +125,7 @@
 
 #pragma once
 
-#ifdef HAS_ETHERNETUDP
-  #ifndef UIPETHERNET_H
-    #include <Ethernet.h>
-  #endif
+#ifdef ARDUINO
   #include <interfaces/ARDUINO/TCPHelper_ARDUINO.h>
 #else
   #include <interfaces/LINUX/TCPHelper_POSIX.h>

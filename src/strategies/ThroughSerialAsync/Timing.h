@@ -76,3 +76,9 @@
 #ifndef TSA_RS485_DELAY
   #define TSA_RS485_DELAY           1
 #endif
+
+/* Force blocking sending hack (adds a delay for each character sent). */
+
+#ifndef TSA_FLUSH_OFFSET
+  #define TSA_FLUSH_OFFSET 152
+#endif

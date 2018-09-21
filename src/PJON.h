@@ -32,6 +32,7 @@ Credits to contributors:
 - Zbigniew Zasieczny: WINX86 interface
 - Matheus Garbelini: ThroughLora strategy
 - sticilface github user: SoftwareBitBang Teensy support, ThroughSerialAsync
+- xlfe github user: LINUX serial support
 - osman-aktepe github user: SoftwareBitBang STM32F1 support
 - Jorgen-VikingGod github user: SoftwareBitBang ESP32 support
 - drtrigon github user: LINUX ThroughSerial examples, missing warning report

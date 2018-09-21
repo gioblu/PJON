@@ -1084,8 +1084,11 @@ class PJON {
                   (uint8_t *)recent_packet_ids[i].sender_bus_id
                 )
               ) ||
+              (
+
               !(info.header & PJON_MODE_BIT) &&
               !(recent_packet_ids[i].header & PJON_MODE_BIT)
+                      )
             )
           ) return true;
         save_packet_id(info);

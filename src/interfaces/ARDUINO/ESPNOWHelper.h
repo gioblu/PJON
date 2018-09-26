@@ -26,10 +26,6 @@
 #include "rom/crc.h"
 #include "esp_wifi_types.h"
 
-
-
-
-
 static wifi_country_t wifi_country = {
         cc:"AU",
         schan:1,
@@ -295,4 +291,3 @@ public:
         memcpy(ip, last_mac, ESP_NOW_ETH_ALEN);
     }
 };
-

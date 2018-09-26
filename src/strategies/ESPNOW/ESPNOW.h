@@ -1,11 +1,11 @@
 
 /* ESPNOW is a Strategy for the PJON framework.
-   It supports delivering PJON packets through the Espressif ESPNOW 802.11 protocol
-   to a registered list of devices on the 802.11 ESPNOW network. Each device must be
-   registered with its device id and mac address.
+   It supports delivering PJON packets through the Espressif ESPNOW 802.11
+   protocol to a registered list of devices on the 802.11 ESPNOW network. Each
+   device must be registered with its device id and mac address.
    ___________________________________________________________________________
 
-    ESPNOW strategy proposed and developed by xlfe Sept 2018
+    ESPNOW strategy proposed and developed by xlfe in September 2018
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -22,9 +22,7 @@
 #pragma once
 
 #include <PJONDefines.h>
-
-#include <interfaces/ESP32/ESPNOWHelper.h>
-
+#include <interfaces/ARDUINO/ESPNOWHelper.h>
 
 // Timeout waiting for an ACK. This can be increased if the latency is high.
 #ifndef EN_RESPONSE_TIMEOUT
@@ -36,13 +34,6 @@
 #endif
 
 #define EN_MAGIC_HEADER (uint8_t*)"\xEE\xFE\x0E\xEF"
-
-
-
-
-
-
-
 
 class ESPNOW {
     bool _espnow_initialised = false;

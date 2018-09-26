@@ -901,7 +901,8 @@ class PJON {
 
     void set_default() {
       _mode = PJON_HALF_DUPLEX;
-      if(!PJONTools::bus_id_equality(bus_id, localhost)) set_shared_network(true);
+      if(!PJONTools::bus_id_equality(bus_id, localhost))
+        set_shared_network(true);
       set_error(PJON_dummy_error_handler);
       set_receiver(PJON_dummy_receiver_handler);
       for(uint16_t i = 0; i < PJON_MAX_PACKETS; i++) {
@@ -1084,12 +1085,10 @@ class PJON {
                   (uint8_t *)info.sender_bus_id,
                   (uint8_t *)recent_packet_ids[i].sender_bus_id
                 )
-              ) ||
-              (
-
-              !(info.header & PJON_MODE_BIT) &&
-              !(recent_packet_ids[i].header & PJON_MODE_BIT)
-                      )
+              ) || (
+                !(info.header & PJON_MODE_BIT) &&
+                !(recent_packet_ids[i].header & PJON_MODE_BIT)
+              )
             )
           ) return true;
         save_packet_id(info);
@@ -1106,7 +1105,10 @@ class PJON {
         recent_packet_ids[0].id = info.id;
         recent_packet_ids[0].header = info.header;
         recent_packet_ids[0].sender_id = info.sender_id;
-        PJONTools::copy_bus_id(recent_packet_ids[0].sender_bus_id, info.sender_bus_id);
+        PJONTools::copy_bus_id(
+          recent_packet_ids[0].sender_bus_id,
+          info.sender_bus_id
+        );
       #endif
     };
 

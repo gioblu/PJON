@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include <PJONDefines.h>
 #include <interfaces/ARDUINO/ESPNOWHelper.h>
 
 // Timeout waiting for an ACK. This can be increased if the latency is high.

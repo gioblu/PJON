@@ -1,8 +1,5 @@
 #pragma once
 
-#include <PJON.h>
-#include <PJONDefines.h>
-
 #ifndef ESP32
 #error "shouldn't happen"
 #endif

@@ -148,10 +148,10 @@
     return fd;
   };
 
-  /* Returns the number of bytes of data avalable to be read in the buffer */
+  /* Returns the number of bytes of data available to be read in the buffer */
 
   int serialDataAvailable(const int fd) {
-    int result;
+    int result = 0;
     ioctl(fd, FIONREAD, &result);
     return result;
   };

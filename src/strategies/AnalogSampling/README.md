@@ -1,3 +1,4 @@
+### AnalogSampling
 
 **Medium:** Light |
 **Pins used:** 1 / 2

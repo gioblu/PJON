@@ -1,4 +1,20 @@
+
 #include "Arduino.h"
+
+// ESP32 WiFi country configuration is done using constants:
+
+// Set country, for example Italy
+// #define PJON_ESPNOW_COUNTRY "IT"
+
+// Set schan, for example 1
+// PJON_ESPNOW_SCHAN 1
+
+// Set nchan, for example 14
+// PJON_ESPNOW_NCHAN 14
+
+// Set country policy
+// #define PJON_ESPNOW_POLICY WIFI_COUNTRY_POLICY_MANUAL // for manual
+// #define PJON_ESPNOW_POLICY WIFI_COUNTRY_POLICY_AUTO   // for auto
 
 #define PJON_INCLUDE_EN
 #include <PJON.h>

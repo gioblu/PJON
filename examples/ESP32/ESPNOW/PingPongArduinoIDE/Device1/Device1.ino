@@ -1,4 +1,7 @@
 
+/* This example implemments a continuous PING-PONG between 2 devices at the
+   maximum speed. In average 170-180 PONG/s should be exchanged */
+
 // ESP32 WiFi country configuration is done using constants:
 
 // Set country, for example Italy

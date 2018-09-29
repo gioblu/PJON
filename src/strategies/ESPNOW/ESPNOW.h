@@ -38,7 +38,8 @@ class ESPNOW {
     bool _espnow_initialised = false;
     bool _auto_registration = true;
     uint8_t _channel = 14;
-    char _espnow_pmk[17] = "\xdd\xdb\xdd\x44\x34\xd5\x6a\x0b\x7e\x9f\x4e\x27\xd6\x5b\xa2\x81";
+    char _espnow_pmk[17] =
+      "\xdd\xdb\xdd\x44\x34\xd5\x6a\x0b\x7e\x9f\x4e\x27\xd6\x5b\xa2\x81";
 
     // Remote nodes
     uint8_t  _remote_node_count = 0;
@@ -119,11 +120,11 @@ public:
     };
 
 
-    /* Select if incoming packets should automatically add their sender as a node */
+    /* Set if each packet's sender is automatically added as a node */
 
     void set_autoregistration(bool enabled) {
       _auto_registration = enabled;
-    }
+    };
 
 
     /* Returns the suggested delay related to attempts passed as parameter: */
@@ -211,5 +212,4 @@ public:
         }
       }
     };
-
 };

@@ -202,11 +202,13 @@ class OverSampling {
     /* Send preamble with a requested number of pulses: */
 
     void send_preamble() {
-      PJON_IO_WRITE(_output_pin, HIGH);
-      uint32_t time = PJON_MICROS();
-      while((uint32_t)(PJON_MICROS() - time) < OS_PREAMBLE_PULSE_WIDTH);
-      PJON_IO_WRITE(_output_pin, LOW);
-      PJON_DELAY_MICROSECONDS(OS_TIMEOUT - OS_BIT_WIDTH);
+      #if OS_PREAMBLE_PULSE_WIDTH > 0
+        PJON_IO_WRITE(_output_pin, HIGH);
+        uint32_t time = PJON_MICROS();
+        while((uint32_t)(PJON_MICROS() - time) < OS_PREAMBLE_PULSE_WIDTH);
+        PJON_IO_WRITE(_output_pin, LOW);
+        PJON_DELAY_MICROSECONDS(OS_TIMEOUT - OS_BIT_WIDTH);
+      #endif
     };
 
 

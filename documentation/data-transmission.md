@@ -6,12 +6,12 @@
 - [IO setup](/documentation/io-setup.md)
 - [Routing](/documentation/routing.md)
 
-### Data transmission
-The begin function has to be called in the setup, the lack of this call can lead to collisions on startup, so be sure to call it before making use of the instance.
+### Basic data transmission
+The begin function must be called before starting communication, the lack of this call can lead to collisions after boot, so be sure to call it before making use of the instance.
 ```cpp  
   bus.begin();
 ```
-The simplest way to send data is to use `send_packet`, this method composes the packet and tries to send it once. The first parameter is the id of the recipient, optionally you can pass the bus id if needed, then follows payload and its length. This call implies a single try and has no guarantee of success, but logs the result of the attempted transmission:
+The simplest way to send data is to use `send_packet`, this method composes the packet and tries to send it once. The first parameter is the device id of the recipient of type `uint8_t`, optionally you can pass the bus id of type `const uint8_t *`, then follows the payload of type `const char *` and its length of type `uint16_t`. This call implies a single attempt and has no guarantee of success, but logs the result of the attempted transmission:
 ```cpp
 // Local
 
@@ -20,12 +20,12 @@ bus.send_packet(10, "Hi!", 3);
 
 // All optional parameters available
 bus.send_packet(
-  10,             // Device id
-  "Hello World!", // Content
-  12,             // Length
-  bus.config(),   // Header
-  1,              // Packet id  
-  8002            // Port
+  10,             // Device id (uint8_t)
+  "Hello World!", // Content   (const char *)
+  12,             // Length    (uint16_t)
+  bus.config,     // Header    (uint8_t)  - Use default config
+  0,              // Packet id (uint16_t) - Don't include packet id
+  8002            // Port      (uint16_t)
 );
 
 // Shared or using bus indexing
@@ -36,13 +36,13 @@ bus.send_packet(10, bus_id, "Hi!", 3);
 
 // All optional parameters available
 bus.send_packet(
-  10,             // Device id
-  bus_id,         // Bus id
-  "Hello World!", // Content
-  12,             // Length
-  bus.config(),   // Header
-  1,              // Packet id  
-  8002            // Port
+  10,             // Device id (uint8_t)
+  bus_id,         // Bus id    (const uint8_t *)
+  "Hello World!", // Content   (const char *)
+  12,             // Length    (uint16_t)
+  bus.config,     // Header    (uint8_t)  - Use default config
+  0,              // Packet id (uint16_t) - Don't include packet id
+  8002            // Port      (uint16_t)
 );
 ```
 The sending is executed as soon as the method is called and it returns the following values:
@@ -73,6 +73,7 @@ if(bus.send_packet_blocking(10, "All is ok?!", 11) == PJON_ACK)
 ```
 `send_packet_blocking` returns the result of transmission as `send_packet` does.
 
+### Packet handler
 If you prefer PJON to handle packets for you, you can make use of the packet handler, although a little more memory is needed. The first thing to do and never forget is to call the `update()` function once per loop cycle:
 ```cpp  
   bus.update();

@@ -83,30 +83,31 @@ Configure the communication mode:
   bus.set_communication_mode(PJON_HALF_DUPLEX);
 ```
 
-If manual packet handling is required, packet automatic deletion can be avoided using the setter as shown below:
-```cpp  
-  bus.set_packet_auto_deletion(false);
-```
-
-### CRC configuration
-CRC32 use can be forced on every packet sent to higher reliability:
-```cpp  
-  bus.set_crc_32(true);
-```
-
-### Sender information
+#### Sender information
 PJON by default includes the sender information in the packet. If you don't need this information you can use the provided setter to reduce overhead and higher communication speed:
 ```cpp  
   bus.include_sender_info(false);
 ```
 
-### Router mode
+#### Router mode
 Configure your device to act as a router, so receiving all the incoming packets:
 ```cpp  
   bus.set_router(true);
 ```
 
-### Acknowledgement configuration
+#### CRC configuration
+CRC32 use can be forced on every packet sent to higher reliability:
+```cpp  
+  bus.set_crc_32(true);
+```
+
+#### Packet handling
+If manual packet handling is required, packet automatic deletion can be avoided using the setter as shown below:
+```cpp  
+  bus.set_packet_auto_deletion(false);
+```
+
+#### Acknowledgement
 The [synchronous acknowledgement](/specification/PJON-protocol-acknowledge-specification-v1.0.md#synchronous-acknowledge) is by default enabled but can be disabled if required:
 ```cpp  
   bus.set_synchronous_acknowledge(false);
@@ -128,7 +129,7 @@ Use the provided setter to use asynchronous acknowledgement:
 See the [AsyncAck](/examples/ARDUINO/Network/SoftwareBitBang/AsyncAck) example to see more in detail how the asynchronous acknowledgement can be used.
 
 
-### Packet identification
+#### Packet identification
 If packet duplication avoidance is required it is possible to add a 2 bytes [packet identifier](/specification/PJON-protocol-specification-v3.0.md#packet-identification) to guarantee uniqueness.
 define the `PJON_INCLUDE_PACKET_ID` as following. The use of a constant has been chosen to save more than 1kB on sketches where this feature is not used:
 ```cpp  
@@ -144,7 +145,7 @@ Use the provided setter to enable the packet identification feature:
 ```
 See the [UsePacketId](/examples/ARDUINO/Local/SoftwareBitBang/UsePacketId) example to see more in detail how the packet id can be used.
 
-### Network service identification
+#### Network service identification
 Configure the instance to include a [network service identifier](/specification/PJON-protocol-specification-v3.0.md#network-services) in the packet. Ports from 0 to 8000 are reserved to known network services which index is present in the [known network services list](/specification/PJON-network-services-list.md), ports from 8001 to 65535 are free for custom use cases:
 ```cpp  
   bus.include_port(false);      // Avoid port inclusion (default)  

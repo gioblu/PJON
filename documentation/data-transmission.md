@@ -62,7 +62,12 @@ if(bus.send_packet(10, bus_id, "All is ok?!", 11) == PJON_ACK)
   Serial.println("10 is ok!");
 ```
 
-Use `send_packet_blocking` if it is necessary to try more than once and so comply with the specified back-off.
+To broadcast a message to all connected devices, use the `PJON_BROADCAST` constant as recipient ID:
+```cpp
+bus.send_packet(PJON_BROADCAST, "Message for all connected devices.", 34);
+```
+
+Use `send_packet_blocking` if it is necessary to try until the packet is effectively received by the recipient and so comply with the specified back-off.
 ```cpp
 // Send to device id 10 the string "Hi!"
 bus.send_packet_blocking(10, "Hi!", 3);
@@ -86,6 +91,30 @@ bus.send(100, "Ciao, this is a test!", 21);
 // Shared or using bus indexing
 uint8_t bus_id[] = {0, 0, 0, 1};
 bus.send(100, bus_id, "Ciao, this is a test!", 21);
+
+// All optional parameters available
+
+// Local mode
+bus.send(
+  100,                       // (uint8_t)      Recipient device id
+  "Test including port id!", // (const char *) Content
+  23,                        // (uint16_t)     Length
+  bus.config,                // (uint8_t)      Packet header
+  1,                         // (uint16_t)     Packet id
+  8002                       // (uint16_t)     Port identification
+);
+
+// Shared mode or using bus indexing
+bus.send(
+  100,                       // (uint8_t)         Recipient device id
+  bus_id,                    // (const uint8_t *) Recipient bus id
+  "Test including port id!", // (const char *)    Content
+  23,                        // (uint16_t)        Length
+  bus.config,                // (uint8_t)         Packet header
+  1,                         // (uint16_t)        Packet id
+  8002                       // (uint16_t)        Port identification
+);
+
 ```
 Payload length is boring to be added but is there to prevent buffer overflow. If sending arbitrary values `NULL` terminator strategy based on `strlen` is not safe to detect the end of a string. The `send` call returns an id, that is the reference to the packet you have dispatched. To send a value repeatedly simply call `send_repeatedly` and pass as last parameter the interval in microseconds you want between every sending:
 ```cpp
@@ -111,37 +140,4 @@ uint16_t one_second_test_shared =
 `send_repeatedly` returns the id of the packet in the packet's buffer as `send` does, to remove this repeated transmission simply:
 ```cpp
 bus.remove(one_second_test);
-```
-To broadcast a message to all connected devices, use the `PJON_BROADCAST` constant as recipient ID.
-```cpp
-bus.send(PJON_BROADCAST, "Message for all connected devices.", 34);
-```
-To transmit data including a custom port, for example `8002` use send with its extended parameters:
-```cpp
-bus.include_port(true, 8002);
-bus.send(100, "Port id test!", 13);
-
-// Or call send passing the port as a parameter:
-
-// Local
-bus.send(
-  100,                       // (uint8_t)      Recipient device id
-  "Test including port id!", // (const char *) Content
-  23,                        // (uint16_t)     Length
-  bus.config,                // (uint8_t)      Packet header
-  1,                         // (uint16_t)     Packet id
-  8002                       // (uint16_t)     Port identification
-);
-
-// Shared or using bus indexing
-bus.send(
-  100,                       // (uint8_t)         Recipient device id
-  bus_id,                    // (const uint8_t *) Recipient bus id
-  "Test including port id!", // (const char *)    Content
-  23,                        // (uint16_t)        Length
-  bus.config,                // (uint8_t)         Packet header
-  1,                         // (uint16_t)        Packet id
-  8002                       // (uint16_t)        Port identification
-);
-
 ```

@@ -78,7 +78,7 @@ if(bus.send_packet_blocking(10, "All is ok?!", 11) == PJON_ACK)
 ```
 `send_packet_blocking` returns the result of transmission as `send_packet` does.
 
-If you prefer PJON to handle packets for you, you can make use of the packet handler, although a little more memory is needed. The first thing to do and never forget is to call the `update()` function once per loop cycle:
+PJON can also optionally handle packets for you, although a little more memory is required. The first thing to do and never forget is to call the `update()` function once per loop cycle:
 ```cpp  
   bus.update();
 ```

@@ -80,16 +80,16 @@ The communication mode can be configured using the `set_communication_mode` pass
   bus.set_communication_mode(PJON_HALF_DUPLEX);
 ```
 
-#### Sender information
-PJON by default includes the sender's information in the packet. If that is not required `include_sender_info` can be used as shown below to avoid including sender's information:
-```cpp  
-  bus.include_sender_info(false);
-```
-
 #### Router mode
 Use `set_router` to configure the device in router mode, simply receiving all the incoming packets:
 ```cpp  
   bus.set_router(true);
+```
+
+#### Sender information
+PJON by default includes the sender's information in the packet, If required `include_sender_info` can be used as shown below to avoid including sender's information:
+```cpp  
+  bus.include_sender_info(false);
 ```
 
 #### CRC configuration

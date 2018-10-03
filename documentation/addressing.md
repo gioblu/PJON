@@ -7,7 +7,7 @@
 - [Routing](/documentation/routing.md)
 
 ### Addressing
-PJON can be instantiated passing a predefined device id and optionally a bus id, if the network is private and not accessible from the outside world (wired network in home, business, industry) any sort of bus indexing can be used without worrying about bus id collision; if instead the network is connected to a shared medium, where other PJON users could transmit and receive data, it is strongly suggested to request a unique PJON bus id [here](http://www.pjon.org/get-bus-id.php) for your group of devices.
+PJON can be instantiated passing a predefined device id and optionally a bus id. if the network is private and not accessible from the outside world (wired network in home, business, industry) any sort of bus indexing can be used without worrying about bus id collision; if instead the network is connected to a shared medium, where other PJON users could transmit and receive data, it is strongly suggested to request a unique PJON bus id [here](http://www.pjon.org/get-bus-id.php).
 ```cpp  
   PJON<SoftwareBitBang> bus;
   // Device id PJON_NOT_ASSIGNED in local mode
@@ -48,7 +48,7 @@ If addressing procedure debug is needed set the state of `bus.debug` accordingly
 ```cpp
 bus.debug = true;
 ```
-Slave presence check can be requested manually calling `check_slaves_presence`. This is a bandwidth consuming procedure because master contacts each known slave to determine if still online. If a slave is found unresponsive it is removed from the master list of known slaves. The more devices are connected the more bandwidth is consumed. Call this function seldom (every 5-10 seconds) to avoid bandwidth saturation.
+Slave presence check can be requested manually calling `check_slaves_presence`. This is a bandwidth consuming procedure because master contacts each known slave to determine if still online. If a slave is found unresponsive it is removed from the list of known slaves. The more devices are connected the more bandwidth is consumed. Call this function seldom (every 5-10 seconds) to avoid bandwidth saturation.
 ```cpp
 // Check if registered slaves are still present on the bus
 bus.check_slaves_presence();

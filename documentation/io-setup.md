@@ -7,7 +7,7 @@
 - [Routing](/documentation/routing.md)
 
 ### IO setup
-The physical layer configuration is handled by the [strategy](/src/strategies/README.md) entity, if you want to communicate bi-directionally on a single pin (using [SoftwareBitBang](/src/strategies/SoftwareBitBang) or [AnalogSampling](/src/strategies/AnalogSampling)) use:
+The physical layer configuration is handled by the [strategy](/src/strategies/README.md) entity, if you want to communicate bi-directionally on a single pin with [SoftwareBitBang](/src/strategies/SoftwareBitBang) or [AnalogSampling](/src/strategies/AnalogSampling) use:
 ```cpp  
  PJON<SoftwareBitBang> bus;
  bus.strategy.set_pin(12);
@@ -23,7 +23,7 @@ If you don't need bidirectional communication and you have only the transmitter 
 ```cpp  
  PJON<OverSampling> bus;
  // Operate in simplex mode
- bus.strategy.set_communication_mode(PJON_SIMPLEX);
+ bus.set_communication_mode(PJON_SIMPLEX);
   // Use only receiver pin
  bus.strategy.set_pins(11, PJON_NOT_ASSIGNED);
 ```

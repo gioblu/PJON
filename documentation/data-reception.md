@@ -6,7 +6,7 @@
 - [IO setup](/documentation/io-setup.md)
 - [Routing](/documentation/routing.md)
 
-### Callback setup
+### Data reception
 A function of type `void` can be defined and register to be called by the PJON object when a packet is received. This function receives 3 parameters: the received payload of type `uint8_t *`, its length of type `uint16_t` and a pointer to a data structure of type `const PJON_Packet_Info` that contains all packet's metadata:
 ```cpp
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
@@ -55,7 +55,6 @@ bus.set_receiver(receiver_function);
 
 To pass custom data to the receiver callback function, se the [ClassMemberCallback](../examples/ARDUINO/Local/SoftwareBitBang/ClassMemberCallback) example. This feature can be used for a lot of different use cases. Could be used to let multiple PJON objects call the same callback function, passing an `int` specifying which PJON instance has to be called, or a pointer to the PJON object, or an `enum` or whatever.
 
-### Data reception
 To receive the `receive` function must be called at least once per loop cycle:
 ```cpp
 uint16_t response = bus.receive();

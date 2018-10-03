@@ -6,7 +6,10 @@
 - [IO setup](/documentation/io-setup.md)
 - [Routing](/documentation/routing.md)
 
-### Buffers configuration
+### Configuration
+PJON uses predefined constants, setters and getters to support features and constraints configuration.  
+
+#### Buffers configuration
 Before instantiating PJON it is possible to define the length of its buffers. Predefining `PJON_MAX_PACKETS` and `PJON_PACKET_MAX_LENGTH` it is possible to configure this constraints to reach the project memory requirements. Obviously, the less memory is dedicated to buffers, the more memory can be used for something else:
 ```cpp  
 #define PJON_MAX_PACKETS 1
@@ -17,12 +20,12 @@ Before instantiating PJON it is possible to define the length of its buffers. Pr
    (from 5 to 22 bytes depending by configuration) */
 ```
 
-### Data link configuration
+#### Data link configuration
 PJON is instantiated passing a [strategy](/src/strategies/README.md) template parameter:
 ```cpp  
   PJON<SoftwareBitBang> bus;
 ```
-In the example above the PJON object is instantiated passing [SoftwareBitBang](/src/strategies/SoftwareBitBang/README.md) strategy. Strategies are classes abstracting the data link layer, making PJON easy to be used on different media. It is possible to instantiate more than one PJON object using different strategies in the same sketch:
+In the example above the PJON object is instantiated passing [SoftwareBitBang](/src/strategies/SoftwareBitBang/README.md) strategy. Strategies are classes abstracting the data link layer, making PJON easy to be used on different media. It is possible to instantiate more than one PJON object using different strategies in the same program:
 ```cpp  
   PJON<SoftwareBitBang> wiredBus;
   PJON<EthernetTCP>     tcpBus;
@@ -40,7 +43,7 @@ In the example above the PJON object is instantiated passing [SoftwareBitBang](/
 | [ThroughSerialAsync](/src/strategies/ThroughSerialAsync)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md) | 1 or 2 |
 | [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio impulses over air | LoRa | 3 or 4 |
 | [ESPNOW](/src/strategies/ESPNOW)  | Radio impulses over air | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) | WiFi link |
-| [Any](/src/strategies/Any)  | Virtual inheritance abstraction | Any of the above | Any of the above |
+| [Any](/src/strategies/Any)  | Virtual inheritance, any of the above | Any of the above | Any of the above |
 
 By default all strategies are included except `ThroughLoRa` and `ESPNOW`. To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before PJON inclusion to include only `SoftwareBitBang` strategy. More than one strategy related constant can defined in the same program if that is required.
 
@@ -62,20 +65,14 @@ Before using `ThroughLoRa` be sure to have [arduino-LoRa](https://github.com/san
 
 Before using `ESPNOW` be sure to have installed the required tools as described [here](/src/strategies/ESPNOW/README.md) and to have defined the `PJON_INCLUDE_EN` constant before including `PJON.h`.
 
-### Network configuration
-In the example below `set_shared_network` is used to configure the network mode, [local](/specification/PJON-protocol-specification-v3.0.md#local-mode) or [shared](/specification/PJON-protocol-specification-v3.0.md#shared-mode). In local mode, passing `false`, a single byte called device id is used for device identification; in shared mode, passing `true`, a 4 byte bus id is also used to univocally identify a group of devices:
+#### Network mode
+The network mode can be changed with `set_shared_network` during runtime, for example moving from [local](/specification/PJON-protocol-specification-v3.0.md#local-mode) to [shared](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v3.0.md#shared-mode) mode:
 ```cpp  
   bus.set_shared_network(true);
 ```
-A PJON object can be instantiated to communicate in shared mode simply passing its bus id:
-```cpp
-uint8_t bus_id[4] = {1, 2, 3, 4};
-PJON<SoftwareBitBang> bus(bus_id, 44);
-// Device id 44, bus id 1.2.3.4 in shared mode
-```
-It is strongly suggested to request a unique PJON bus id for your group of devices [here](http://www.pjon.org/get-bus-id.php).
 
-Configure the communication mode:
+#### Communication mode
+The communication mode can be configured using the `set_communication_mode` passing `PJON_SIMPLEX` for simplex or mono-directional mode or `PJON_HALF_DUPLEX` for half-duplex or bidirectional mode:
 ```cpp  
   // Run in mono-directional PJON_SIMPLEX mode
   bus.set_communication_mode(PJON_SIMPLEX);
@@ -84,25 +81,25 @@ Configure the communication mode:
 ```
 
 #### Sender information
-PJON by default includes the sender information in the packet. If you don't need this information you can use the provided setter to reduce overhead and higher communication speed:
+PJON by default includes the sender's information in the packet. If that is not required `include_sender_info` can be used as shown below to avoid including sender's information:
 ```cpp  
   bus.include_sender_info(false);
 ```
 
 #### Router mode
-Configure your device to act as a router, so receiving all the incoming packets:
+Use `set_router` to configure the device in router mode, simply receiving all the incoming packets:
 ```cpp  
   bus.set_router(true);
 ```
 
 #### CRC configuration
-CRC32 use can be forced on every packet sent to higher reliability:
+With `set_crc_32` CRC32 can be forced on each packet sent to higher reliability:
 ```cpp  
   bus.set_crc_32(true);
 ```
 
 #### Packet handling
-If manual packet handling is required, packet automatic deletion can be avoided using the setter as shown below:
+If manual packet handling is required, packet automatic deletion can be avoided using `set_packet_auto_deletion` as shown below:
 ```cpp  
   bus.set_packet_auto_deletion(false);
 ```
@@ -121,7 +118,7 @@ If the [asynchronous acknowledgement](/specification/PJON-protocol-acknowledge-s
 // If packet duplication occurs, higher PJON_MAX_RECENT_PACKET_IDS
 #include <PJON.h>
 ```
-Use the provided setter to use asynchronous acknowledgement:
+Use `set_asynchronous_acknowledge` to enable the asynchronous acknowledgement:
 ```cpp  
   // Enable async ack
   bus.set_asynchronous_acknowledge(true);
@@ -139,7 +136,7 @@ define the `PJON_INCLUDE_PACKET_ID` as following. The use of a constant has been
 // If packet duplication occurs, higher PJON_MAX_RECENT_PACKET_IDS
 #include <PJON.h>
 ```
-Use the provided setter to enable the packet identification feature:
+Use `set_packet_id` to enable the packet identification feature:
 ```cpp  
   bus.set_packet_id(true);
 ```

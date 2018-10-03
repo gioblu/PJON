@@ -7,14 +7,13 @@
 - [Routing](/documentation/routing.md)
 
 ### IO setup
-The physical layer configuration is handled by the Strategy entity, if you want to communicate bi-directionally on a single medium (using SoftwareBitBang, OverSampling or AnalogSampling), sharing transmission and reception line, use:
+The physical layer configuration is handled by the [strategy](/src/strategies/README.md) entity, if you want to communicate bi-directionally on a single pin (using [SoftwareBitBang](/src/strategies/SoftwareBitBang) or [AnalogSampling](/src/strategies/AnalogSampling)) use:
 ```cpp  
  PJON<SoftwareBitBang> bus;
  bus.strategy.set_pin(12);
 ```
 
-With this setup it is possible to communicate in `PJON_HALF_DUPLEX` with up to 254 different devices on the same wire.
-If for some reason you need to keep separate the two lines, for example if using cheap radio transmitter and receiver modules, to which you have to connect two wires:
+With this setup it is possible to communicate in `PJON_HALF_DUPLEX` mode with up to 254 different devices on the same physical pin. If for some reason you need to keep separate the two lines, for example if using [OverSampling](/src/strategies/OverSampling) with separate radio transmitter and receiver modules, you can pass 2 separate pins:
 ```cpp  
  PJON<OverSampling> bus;
  bus.strategy.set_pins(11, 12);

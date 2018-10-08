@@ -10,19 +10,6 @@ uint8_t local_ip[] = { 192, 1, 1, 144 },
 // <Strategy name> bus(selected device id)
 PJON<EthernetTCP> bus(44);
 
-void setup() {
-  Serial.begin(115200);
-  Serial.println("Receiver started.");
-  Ethernet.begin(mac, local_ip, gateway, gateway, subnet);
-
-  bus.strategy.link.set_id(bus.device_id());
-  bus.strategy.link.add_node(45, remote_ip);
-  bus.strategy.link.start_listening();
-  
-  bus.set_receiver(receiver_function);  
-  bus.begin();
-};
-
 uint32_t cnt = 0;
 uint32_t start = millis();
 
@@ -33,15 +20,28 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
     cnt++;
     bus.reply("P", 1);
   }
-}
+};
+
+void setup() {
+  Serial.begin(115200);
+  Serial.println("Receiver started.");
+  Ethernet.begin(mac, local_ip, gateway, gateway, subnet);
+
+  bus.strategy.link.set_id(bus.device_id());
+  bus.strategy.link.add_node(45, remote_ip);
+  bus.strategy.link.start_listening();
+
+  bus.set_receiver(receiver_function);
+  bus.begin();
+};
 
 void loop() {
   bus.update();
   bus.receive();
 
-  if (millis() - start > 1000) {
+  if(millis() - start > 1000) {
     start = millis();
     Serial.print("PING/s: "); Serial.println(cnt);
     cnt = 0;
-  }  
+  }
 };

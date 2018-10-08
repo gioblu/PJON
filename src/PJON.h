@@ -1033,8 +1033,11 @@ class PJON {
           if(!packets[i].timing) {
             if(
               _auto_delete && (
-                (packets[i].length == packet_overhead(packets[i].content[1])
-              && async_ack ) || !(packets[i].content[1] & PJON_ACK_MODE_BIT))
+                (
+                  packets[i].length == packet_overhead(packets[i].content[1])
+                  && async_ack
+                ) || !(packets[i].content[1] & PJON_ACK_MODE_BIT)
+              )
             ) {
               remove(i);
               packets_count--;

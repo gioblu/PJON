@@ -6,9 +6,12 @@
 `OverSampling` strategy has been developed to enable a new software emulated simplex or half-duplex data link supporting one or many to many communication on a single channel or medium. It can be run on cheap and low performance microcontrollers, it supports communication for many devices connected to the same medium and stable operation in spite of interference. Its procedure has been specified to obtain long range and high reliability using FSK/ASK/OOK 315/433MHz radio transceivers available on the market. It complies with [PJDLR v2.0](/src/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=G1ckfsMzPns) for a brief showcase of its features.
 
 #### Compatibility
-- ATmega88/168/328 16MHz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
-- ATmega2560 16MHz (Arduino Mega)
-- ATmega16u4/32u4 16MHz (Arduino Leonardo)
+| MCU              | Clock | Supported pins   |
+| ---------------- |------ | ---------------- |
+| ATmega88/168/328 (Duemilanove, Uno, Nano, Pro) | 16MHz | 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 |
+| ATmega16u4/32u4 (Leonardo, Micro) | 16MHz | 2, 4, 8, 12 |
+| ATmega2560 (Mega, Mega nano) | 16MHz | 3, 4, 7, 8, 9, 10, 12 |
+| ESP8266 | 80/160MHz | D0 or GPIO 16, D1 or GPIO 5 |
 
 #### Performance
 - Transfer speed: 202 B/s or 1620 Baud

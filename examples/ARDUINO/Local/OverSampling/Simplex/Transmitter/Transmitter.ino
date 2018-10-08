@@ -1,9 +1,8 @@
 
 #define OS_PREAMBLE_PULSE_WIDTH 0
-/* Gain refresh time of SRX882 module is 100 milliseconds.
-   If only one pair of SRX and STX are used to connect 2 devices in SIMPLEX
-   mode, there is no need to refresh receiver's gain, being communication
-   mono-directional. */
+/* If only one pair of SRX and STX are used to connect 2 devices in SIMPLEX
+   mode, being communication mono-directional, there is no need to include
+   the preamble pulse. */
 
 #include <PJON.h>
 

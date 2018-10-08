@@ -12,17 +12,6 @@ uint8_t bus_id[] = {0, 0, 0, 1};
 // PJON object
 PJON<SoftwareBitBang> bus(bus_id, 44);
 
-void setup() {
-  /* Include a custom port, pnly packet including port 8001
-     are received others are filtered out. */
-  bus.include_port(true, 8001);
-  bus.strategy.set_pin(12);
-  bus.set_receiver(receiver_function);
-  bus.begin();
-
-  Serial.begin(115200);
-};
-
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   /* Make use of the payload before sending something, the buffer where payload points to is
      overwritten when a new message is dispatched */
@@ -62,8 +51,18 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
     }
   }
   Serial.println();
-}
+};
 
+void setup() {
+  /* Include a custom port, only packet including port 8001
+     are received others are filtered out. */
+  bus.include_port(true, 8001);
+  bus.strategy.set_pin(12);
+  bus.set_receiver(receiver_function);
+  bus.begin();
+
+  Serial.begin(115200);
+};
 
 void loop() {
   Serial.print("Starting 1 second communication speed test on port ");

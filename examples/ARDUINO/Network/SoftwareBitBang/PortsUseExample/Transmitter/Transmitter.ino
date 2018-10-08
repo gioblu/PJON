@@ -8,9 +8,16 @@ PJON<SoftwareBitBang> bus(bus_id, 45);
 int packet;
 char content[] = "01234567890123456789";
 
+void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
+  if(code == PJON_CONNECTION_LOST) {
+    Serial.print("Connection lost with device id ");
+    Serial.println(bus.packets[data].content[0], DEC);
+  }
+};
+
 void setup() {
   bus.begin();
-  /* Include a custom port, pnly packet including port 8001
+  /* Include a custom port, only packet including port 8001
      are received others are filtered out. */
   bus.include_port(true, 8001);
   bus.strategy.set_pin(12);
@@ -22,15 +29,7 @@ void setup() {
   /* This packet will be transmitted but ignored by recipient because
      configured on port 8002 */
   bus.send(44, content, 20, bus.config, 0, 8002);
-
-}
-
-void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
-  if(code == PJON_CONNECTION_LOST) {
-    Serial.print("Connection lost with device id ");
-    Serial.println(bus.packets[data].content[0], DEC);
-  }
-}
+};
 
 void loop() {
   if(!bus.update()) // If all packets are delivered, send another

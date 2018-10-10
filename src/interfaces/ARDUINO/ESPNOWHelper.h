@@ -47,9 +47,10 @@ static wifi_country_t wifi_country = {
   cc:     PJON_ESPNOW_COUNTRY,
   schan:  PJON_ESPNOW_SCHAN,
   nchan:  PJON_ESPNOW_NCHAN,
-  policy: PJON_ESPNOW_POLICY,
-  // max_tx_power: 80 // Level0
-  //error: wifi_country_t has no non-static data member named 'max_tx_power'
+#ifdef ESP_PLATFORM
+  max_tx_power: 80, // Level0
+#endif
+  policy: PJON_ESPNOW_POLICY
 };
 
 static const char *TAG = "espnow";

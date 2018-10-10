@@ -475,7 +475,7 @@ class PJON {
         return PJON_NAK;
 
       if(data[1] & PJON_ACK_REQ_BIT && data[0] != PJON_BROADCAST)
-        if((_mode != PJON_SIMPLEX) && !_router)
+        if((_mode != PJON_SIMPLEX) && data[0] == _device_id)
           strategy.send_response(PJON_ACK);
 
       parse(data, last_packet_info);

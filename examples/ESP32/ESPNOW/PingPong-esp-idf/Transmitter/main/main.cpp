@@ -1,20 +1,17 @@
 
+// Include wifi_country_t
+#include "esp_wifi_types.h"
+
+// Define WiFi country configuration
+static wifi_country_t wifi_country = {
+  cc:     "AU",
+  schan:  1,
+  nchan:  14,
+  max_tx_power: 80, // Level 10
+  policy: WIFI_COUNTRY_POLICY_MANUAL
+};
+
 #include "Arduino.h"
-
-// ESP32 WiFi country configuration is done using constants:
-
-// Set country, for example Italy
-// #define PJON_ESPNOW_COUNTRY "IT"
-
-// Set schan, for example 1
-// PJON_ESPNOW_SCHAN 1
-
-// Set nchan, for example 14
-// PJON_ESPNOW_NCHAN 14
-
-// Set country policy
-// #define PJON_ESPNOW_POLICY WIFI_COUNTRY_POLICY_MANUAL // for manual
-// #define PJON_ESPNOW_POLICY WIFI_COUNTRY_POLICY_AUTO   // for auto
 
 #define PJON_INCLUDE_EN
 #include <PJON.h>

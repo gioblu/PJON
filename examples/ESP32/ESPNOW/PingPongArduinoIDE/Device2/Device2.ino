@@ -1,23 +1,21 @@
 
-/* This example implemments a continuous PING-PONG between 2 devices at the
-   maximum speed. In average 170-180 PONG/s should be exchanged */
+/* This example implemments a continuous PING-PONG between 2 devices at
+   10Hz, so around 10 PONG/s should be received. */
 
-// ESP32 WiFi country configuration is done using constants:
+#include <WiFi.h>
 
-// Set country, for example Italy
-// #define PJON_ESPNOW_COUNTRY "IT"
 
-// Set schan, for example 1
-// PJON_ESPNOW_SCHAN 1
+// Define WiFi country configuration
+static wifi_country_t wifi_country = {
+  cc:     "AU",
+  schan:  1,
+  nchan:  14,
+  policy: WIFI_COUNTRY_POLICY_MANUAL
+};
 
-// Set nchan, for example 14
-// PJON_ESPNOW_NCHAN 14
-
-// Set country policy
-// #define PJON_ESPNOW_POLICY WIFI_COUNTRY_POLICY_MANUAL // for manual
-// #define PJON_ESPNOW_POLICY WIFI_COUNTRY_POLICY_AUTO   // for auto
-
+// Use the PJON_INCLUDE_EN to include the ESPNOW strategy
 #define PJON_INCLUDE_EN
+
 #include <PJON.h>
 
 // <Strategy name> bus(selected device id)
@@ -27,25 +25,22 @@ uint32_t cnt = 0;
 uint32_t start = millis();
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
-  if (payload[0] == 'P') {
-    cnt++;
-    bus.reply("P", 1); // Reply P to device 44
-  }
-}
+  if(payload[0] == 'P') cnt++;
+};
 
 void setup() {
   Serial.begin(115200);
   Serial.println("Transmitter started.");
   bus.set_receiver(receiver_function);
   bus.begin();
-  bus.send(44, "P", 1); // Send P to device 44
-}
+  bus.send_repeatedly(44, "P", 1, 100000); // Send P to device 44 10 times per second
+};
 
 void loop() {
   bus.update();
   bus.receive();
 
-  if (millis() - start > 1000) {
+  if(millis() - start > 1000) {
     Serial.print("PONG/s: ");
     Serial.println(1000.0f*float(cnt)/float((uint32_t)(millis()-start)));
     start = millis();

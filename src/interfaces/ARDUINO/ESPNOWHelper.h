@@ -23,35 +23,6 @@
 #include "rom/crc.h"
 #include "esp_wifi_types.h"
 
-#ifndef PJON_ESPNOW_COUNTRY
-  #define PJON_ESPNOW_COUNTRY "AU"
-#endif
-
-#ifndef PJON_ESPNOW_POLICY
-  #ifndef PJON_ESPNOW_COUNTRY
-    #define PJON_ESPNOW_POLICY WIFI_COUNTRY_POLICY_AUTO
-  #else
-    #define PJON_ESPNOW_POLICY WIFI_COUNTRY_POLICY_MANUAL
-  #endif
-#endif
-
-#ifndef PJON_ESPNOW_SCHAN
-  #define PJON_ESPNOW_SCHAN 1
-#endif
-
-#ifndef PJON_ESPNOW_NCHAN
-  #define PJON_ESPNOW_NCHAN 14
-#endif
-
-static wifi_country_t wifi_country = {
-  cc:     PJON_ESPNOW_COUNTRY,
-  schan:  PJON_ESPNOW_SCHAN,
-  nchan:  PJON_ESPNOW_NCHAN,
-  policy: PJON_ESPNOW_POLICY,
-  // max_tx_power: 80 // Level0
-  //error: wifi_country_t has no non-static data member named 'max_tx_power'
-};
-
 static const char *TAG = "espnow";
 
 /* ESPNOW can work in both station and softap mode. It is configured in menuconfig. */

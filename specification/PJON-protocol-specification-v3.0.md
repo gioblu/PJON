@@ -29,11 +29,11 @@ Changelog:
 ```
 
 ### PJON® Protocol specification v3.0
-The PJON protocol v3.0 in local mode supports connectivity for up to 254 devices, in shared mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices. The packet format is dynamic, consequently, meta-data can be included or excluded using the header as a bitmap, enabling interoperability between systems and providing with high efficiency including only the features used and the overhead (5-22 bytes) effectively required. Thanks to its modularity, dynamic packet format, low memory footprint, and low overhead, PJON can be used as an alternative to 1-Wire, i2c or CAN to connect a local network of microcontrollers with limited resources but can also be applied in place of TCP-IP to interconnect more complex networks.   
+The PJON protocol v3.0 in local mode supports connectivity for up to 254 devices, in shared mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices. The packet format is dynamic therefore meta-data can be optionally included using the header as a bitmap of selected features supporting interoperability between systems configured differently and providing with high efficiency including only the protocol's features used and the overhead (5-22 bytes) effectively required. Thanks to its modularity, dynamic packet format, low memory footprint and low overhead PJON can be used as an alternative to 1-Wire, i2c or CAN to connect a local network of microcontrollers with limited resources but can also be applied in place of TCP-IP to interconnect more complex networks.   
 
 The graph below shows the conceptual model that characterizes and standardizes the communication. Its goal is the interoperability of diverse systems on a wide range of media with the use of a new set of open-source protocols. The graph partitions represent abstraction layers.
 
-```cpp  
+```
  ________________________________________________
 | 3 Network layer: PJON                          |
 | Local and shared network addressing            |

@@ -37,8 +37,8 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 #### Compliant tools
 - [ModuleInterface](https://github.com/fredilarsen/ModuleInterface) - easy config and value sync between IoT modules by Fred Larsen
 - [PJON-cython](https://github.com/xlfe/PJON-cython) - cython PJON wrapper by xlfe github user
-- [PJON-piper](https://github.com/Girgitt/PJON-piper) - command line wrapper by Zbigniew Zasieczny (outdated)
-- [PJON-python](https://github.com/Girgitt/PJON-python) - python interface by Zbigniew Zasieczny (outdated)
+- [PJON-piper](https://github.com/Girgitt/PJON-piper) - command line wrapper by Zbigniew Zasieczny
+- [PJON-python](https://github.com/Girgitt/PJON-python) - python interface by Zbigniew Zasieczny
 - [PJON-gRPC](https://github.com/Galitskiy/PJON-gRPC) - gRPC server-client by Oleg Galitskiy (outdated)
 
 #### Contribute

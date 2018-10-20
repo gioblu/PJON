@@ -63,7 +63,7 @@ The graph below shows the conceptual model that characterizes and standardizes t
 * Buses are identified with a 4 bytes bus id
 * Many buses can coexist on the same medium
 * Synchronous and or asynchronous acknowledgement can be requested (see [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md))
-* Network services are identified with a 16 bit service identifier  
+* Network services are identified with a 2 bytes service identifier  
 
 
 ### Bus

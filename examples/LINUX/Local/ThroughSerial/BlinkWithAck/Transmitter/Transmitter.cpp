@@ -7,15 +7,6 @@
 #include <string.h>
 #include <unistd.h>
 
-/* WiringPi RaspberryPi system access library is used to implement the Serial
-   system calls, so be sure to have it available for use */
-
-#include <wiringPi.h>
-
-#ifndef RPI
-  #define RPI true
-#endif
-
 #define TS_RESPONSE_TIME_OUT 35000
 /* Maximum accepted timeframe between transmission and synchronous
    acknowledgement. This timeframe is affected by latency and CRC computation.

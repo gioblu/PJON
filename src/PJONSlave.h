@@ -272,7 +272,7 @@ class PJONSlave : public PJON<Strategy> {
 
         if(this->data[overhead - CRC_overhead] == PJON_ID_REQUEST)
           if(
-            this->bus_id_equality(
+            PJONTools::bus_id_equality(
               this->data + ((overhead - CRC_overhead) + 1),
               rid
             )
@@ -296,7 +296,7 @@ class PJONSlave : public PJON<Strategy> {
 
         if(this->data[overhead - CRC_overhead] == PJON_ID_NEGATE)
           if(
-            this->bus_id_equality(
+            PJONTools::bus_id_equality(
               this->data + ((overhead - CRC_overhead) + 1),
               rid
             ) && this->_device_id == this->data[0]

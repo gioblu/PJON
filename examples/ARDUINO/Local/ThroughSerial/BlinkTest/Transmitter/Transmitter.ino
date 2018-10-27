@@ -1,7 +1,12 @@
+
+/* If you need non-blocking asynchronous operation include the
+   ThroughSerialAsync strategy using:
+   #define PJON_INCLUDE_TSA true */
 #include <PJON.h>
 
-// <Strategy name> bus(selected device id)
 PJON<ThroughSerial> bus(45);
+/* Use PJON<ThroughSerialAsync> bus(45);
+   instead if non-blocking asynchronous operation is required */
 
 void setup() {
   Serial.begin(9600);

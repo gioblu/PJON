@@ -7,7 +7,7 @@
 - [Routing](/documentation/routing.md)
 
 ### Data reception
-Define a function of type `void` that will be called if a correct message is received. This function receives 3 parameters: the received payload, its length and a pointer to a data structure of type `PJON_Packet_Info` that contains all packet's metadata:
+A function of type `void` can be defined and register to be called by the PJON object when a packet is received. This function receives 3 parameters: the received payload of type `uint8_t *`, its length of type `uint16_t` and a pointer to a data structure of type `const PJON_Packet_Info` that contains all packet's metadata:
 ```cpp
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   /* Make use of the payload before sending something, the buffer where payload points to is
@@ -48,11 +48,14 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
   Serial.println();
 }
 ```
-Inform the instance to call `receiver_function` when a correct message is received:
+Register the `receiver_function` as the receiver callback:
 ```cpp
 bus.set_receiver(receiver_function);
 ```
-To correctly receive data call the `receive` function at least once per loop cycle:
+
+To pass custom data to the receiver callback function, se the [ClassMemberCallback](../examples/ARDUINO/Local/SoftwareBitBang/ClassMemberCallback) example. This feature can be used for a lot of different use cases. Could be used to let multiple PJON objects call the same callback function, passing an `int` specifying which PJON instance has to be called, or a pointer to the PJON object, or an `enum` or whatever.
+
+To receive the `receive` function must be called at least once per loop cycle:
 ```cpp
 uint16_t response = bus.receive();
 ```
@@ -67,5 +70,3 @@ If you want to dedicate a certain timeframe to reception call the `receive` func
 uint16_t response = bus.receive(1000);
 ```
 Consider that SoftwareBitBang, OverSampling or AnalogSampling are strategies able receive data only while `bus.receive` is being executed, otherwise data is lost and transmitter will try again in future. In this particular case it is mandatory to dedicate a certain timeframe, depending on the duration of the other tasks, to efficiently receive data and avoid repetitions.
-
-To pass custom data to the receiver callback function, se the [ClassMemberCallback](../examples/ARDUINO/Local/SoftwareBitBang/ClassMemberCallback) example. This feature can be used for a lot of different use cases. Could be used to let multiple PJON objects call the same callback function, passing an `int` specifying which PJON instance has to be called, or a pointer to the PJON object, or an `enum` or whatever.

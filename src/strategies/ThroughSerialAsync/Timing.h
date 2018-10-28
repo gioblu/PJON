@@ -30,7 +30,7 @@
   #define TSA_INITIAL_DELAY      1000
 #endif
 
-/* Mamimum 32 microseconds random delay in case of collision */
+/* Maximum 32 microseconds random delay in case of collision */
 #ifndef TSA_COLLISION_DELAY
   #define TSA_COLLISION_DELAY      32
 #endif

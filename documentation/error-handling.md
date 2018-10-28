@@ -7,7 +7,7 @@
 - [Routing](/documentation/routing.md)
 
 ### Error handling
-PJON is designed to inform the user if an error is detected. A `void function` has to be defined as the error handler, it receives 2 parameters the first is the error code and the second is 1 byte additional data related to the error.
+PJON is designed to inform the user if an error is detected. A function of type `void` can be defined and registered to be called by the PJON object in case of error; it receives 3 parameters, the first is the error code of type `uint8_t`, the second is additional data related to the error of type `uint16_t` and the third is a general purpose custom pointer of type `void *`.
 
 Error types:
 - `PJON_CONNECTION_LOST` (value 101), `data` parameter contains lost packet's index in the packets buffer.

@@ -1,3 +1,4 @@
+### AnalogSampling
 
 **Medium:** Light |
 **Pins used:** 1 / 2
@@ -7,8 +8,10 @@
 `AnalogSampling` can also be used with separate emitter and receiver enabling cheap long range wireless LED and laser communication. The proposed circuit, technique and codebase were originally implemented in the far 2011, see the first [video documented experiment](https://www.youtube.com/watch?v=-Ul2j6ixbmE). Take a look at the [video introduction](https://www.youtube.com/watch?v=yIncPe8OPpg) for a brief showcase of its features.
 
 #### Compatibility
-- ATmega88/168/328 16MHz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
-- ATmega1280/2560 16MHz (Arduino Mega)
+| MCU              | Clock | Supported pins   | Supported modes |
+| ---------------- |------ | ---------------- | --------------- |
+| ATmega88/168/328 (Duemilanove, Uno, Nano, Pro) | 16MHz | A0, A1, A2, A3, A4, A5 | `1`, `2`, `3`, `4`, `5` |
+| ATmega2560 (Mega, Mega nano) | 16MHz | A0, A1, A2, A3, A4, A5 | `1`, `2`, `3` |
 
 #### Performance
 `AnalogSampling` works with the following communication modes:

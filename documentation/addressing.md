@@ -7,29 +7,36 @@
 - [Routing](/documentation/routing.md)
 
 ### Addressing
-PJON can be instantiated passing a predefined device id and optionally a bus id, if the network is private and not accessible from the outside world (wired network in home, business, industry) any sort of bus indexing can be used without worrying about bus id collision; if instead the network is connected to a shared medium, where other PJON users could transmit and receive data, it is strongly suggested to request a unique PJON bus id [here](http://www.pjon.org/get-bus-id.php) for your group of devices.
+
+PJON objects can operate in local or shared mode. The PJON protocol v3.0 in [local](/specification/PJON-protocol-specification-v3.0.md#local-mode) mode supports connectivity for up to 254 devices using a 1 byte device identifier, in [shared](/specification/PJON-protocol-specification-v3.0.md#shared-mode) mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices using an additional 4 bytes bus identifier.
+
+Instantiation in local mode:
 ```cpp  
   PJON<SoftwareBitBang> bus;
   // Device id PJON_NOT_ASSIGNED in local mode
 
   PJON<SoftwareBitBang> bus(44);
   // Device id 44 in local mode
-
-  uint8_t bus_id[4] = {1, 2, 3, 4};
-  PJON<SoftwareBitBang> bus(bus_id, 44);
-  // Device id 44, bus id 1.2.3.4 in shared mode
 ```
-Device id can also be set afterwards through a setter:
+Instantiation in shared mode:
+```cpp
+uint8_t bus_id[4] = {1, 2, 3, 4};
+PJON<SoftwareBitBang> bus(bus_id, 44);
+// Device id 44, bus id 1.2.3.4 in shared mode
+```
+if the network is private and not accessible from the outside world (wired network in home, business, industry) any sort of bus indexing can be used without worrying about bus id collision; if instead the network is connected to a shared medium where other PJON users could transmit and receive data, it is strongly suggested to request a unique PJON bus id [here](http://www.pjon.org/get-bus-id.php).
+
+Device id can also be set afterwards using `set_id`:
 ```cpp  
   bus.set_id(44);  
 ```
-Can be read through a getter:
+Device and bus id can be read using `device_id` or `bus_id`:
 ```cpp  
   bus.device_id(); // Get device id
   bus.bus_id;      // Get or set bus id
 ```
 
-### Dynamic Addressing
+#### Dynamic addressing
 `PJONMaster` and `PJONSlave` classes implement the master-slave and multi-master [dynamic addressing](/specification/PJON-dynamic-addressing-specification-v2.0.md) features. Slaves can be connected to a bus and can be hot-swapped, their id is automatically assigned by master and their presence can be optionally monitored. Master keeps an updated list of known dynamically addressed slaves. Use the `PJON` class if those features are not required.   
 
 #### PJONMaster
@@ -48,7 +55,7 @@ If addressing procedure debug is needed set the state of `bus.debug` accordingly
 ```cpp
 bus.debug = true;
 ```
-Slave presence check can be requested manually calling `check_slaves_presence`. This is a bandwidth consuming procedure because master contacts each known slave to determine if still online. If a slave is found unresponsive it is removed from the master list of known slaves. The more devices are connected the more bandwidth is consumed. Call this function seldom (every 5-10 seconds) to avoid bandwidth saturation.
+Slave presence check can be requested manually calling `check_slaves_presence`. This is a bandwidth consuming procedure because master contacts each known slave to determine if still online. If a slave is found unresponsive it is removed from the list of known slaves. The more devices are connected the more bandwidth is consumed. Call this function seldom (every 5-10 seconds) to avoid bandwidth saturation.
 ```cpp
 // Check if registered slaves are still present on the bus
 bus.check_slaves_presence();

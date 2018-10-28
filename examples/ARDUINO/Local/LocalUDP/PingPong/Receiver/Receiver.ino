@@ -9,15 +9,6 @@ uint8_t local_ip[] = { 192, 1, 1, 151 };
 // <Strategy name> bus(selected device id)
 PJON<LocalUDP> bus(44);
 
-void setup() {
-  Serial.begin(115200);
-  Serial.println("Receiver started.");
-  Ethernet.begin(mac, local_ip, gateway, gateway, subnet);
-
-  bus.begin();
-  bus.set_receiver(receiver_function);
-};
-
 uint32_t cnt = 0;
 uint32_t start = millis();
 
@@ -28,15 +19,24 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
     cnt++;
     bus.reply("P", 1);
   }
-}
+};
+
+void setup() {
+  Serial.begin(115200);
+  Serial.println("Receiver started.");
+  Ethernet.begin(mac, local_ip, gateway, gateway, subnet);
+
+  bus.begin();
+  bus.set_receiver(receiver_function);
+};
 
 void loop() {
   bus.receive();
   bus.update();
-  
-  if (millis() - start > 1000) {
+
+  if(millis() - start > 1000) {
     start = millis();
     Serial.print("PING/s: "); Serial.println(cnt);
     cnt = 0;
-  }  
+  }
 };

@@ -1,12 +1,12 @@
 
 #define PJON_PACKET_MAX_LENGTH 325 // Make the buffer big enough
 #define PJON_MAX_PACKETS         2 // Reduce number of packets not to empty memory
-/*  Acknowledge Latency maximum duration (1000 microseconds default).
-    Can be necessary to higher SWBB_RESPONSE_TIMEOUT to leave enough time to
-    receiver to compute the CRC and to respond with a synchronous acknowledgement
-    SWBB_RESPONSE_TIMEOUT can be reduced to higher communication speed if
-    devices are near and able to compute CRC fast enough. Now set to
-    4 milliseconds to give time to receive to compute CRC32 of a 300 bytes string. */
+
+/* Response timeout duration duration (1500 microseconds default).
+   SWBB_RESPONSE_TIMEOUT duration must be long enough for the receiver to have the
+   time to compute the CRC and to respond with a synchronous acknowledgement.
+   Below SWBB_RESPONSE_TIMEOUT is set to 4 milliseconds to give enough time to
+   the receiver to compute CRC32 of a 300 bytes string. */
 #define SWBB_RESPONSE_TIMEOUT 4000
 
 #include <PJON.h>
@@ -19,6 +19,13 @@ PJON<SoftwareBitBang> bus(bus_id, 45);
 
 char content[] = "012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789";
 
+void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
+  if(code == PJON_CONNECTION_LOST) {
+    Serial.print("Connection lost with device id ");
+    Serial.println(bus.packets[data].content[0], DEC);
+  }
+};
+
 void setup() {
   bus.strategy.set_pin(12);
   bus.set_error(error_handler);
@@ -26,14 +33,7 @@ void setup() {
   bus.send(44, content, 300);
 
   Serial.begin(115200);
-}
-
-void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
-  if(code == PJON_CONNECTION_LOST) {
-    Serial.print("Connection lost with device id ");
-    Serial.println(bus.packets[data].content[0], DEC);
-  }
-}
+};
 
 void loop() {
   if(!bus.update()) // If all packets are delivered, send another

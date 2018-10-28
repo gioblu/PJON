@@ -29,54 +29,42 @@ Changelog:
 ```
 
 ### PJON® Protocol specification v3.0
-The PJON protocol v3.0 in local mode supports connectivity for up to 254 devices, in shared mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices. Thanks to its modularity, dynamic packet format, low memory footprint and low overhead (5-22 bytes) PJON can be used as an alternative to 1-Wire or i2c to connect microcontrollers with limited resources but can also be applied in place of TCP-IP to interconnect more complex networks.   
+The PJON protocol v3.0 in local mode supports connectivity for up to 254 devices, in shared mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices. The packet format is dynamic therefore meta-data can be optionally included using the header as a bitmap of selected features supporting interoperability between systems configured differently and providing with high efficiency including only the protocol's features used and the overhead (5-22 bytes) effectively required. Thanks to its modularity, dynamic packet format, low memory footprint and low overhead PJON can be used as an alternative to 1-Wire, i2c or CAN to connect a local network of microcontrollers with limited resources but can also be applied in place of TCP-IP to interconnect more complex networks.   
 
 The graph below shows the conceptual model that characterizes and standardizes the communication. Its goal is the interoperability of diverse systems on a wide range of media with the use of a new set of open-source protocols. The graph partitions represent abstraction layers.
 
-```cpp  
- _____________________________________________
-| 7 Application layer                         |
-| Remote access, automation, data sharing     |
-|_____________________________________________|
-| 6 Presentation layer                        |
-| Encryption, encoding, data compression      |
-|_____________________________________________|
-| 5 Session layer                             |
-| Semi-permanent interactive exchange         |
-|_____________________________________________|
- You are here                                 
- _|___________________________________________
-| 4 Transport layer: PJON                     |
-| Error detection, traffic control,           |
-| network service identification,             |
-| asynchronous acknowledgement                |
-|_____________________________________________|
-| 3 Network layer: PJON                       |
-| Addressing, packet transmission,            |
-| packet identification, routing, switching,  |
-| synchronous acknowledgement                 |
-|_____________________________________________|
-| 2 Data link layer: PJDL, PJDLR, PJDLS, TSDL |
-| Collision avoidance, frame transmission,    |
-| synchronous response                        |
-|_____________________________________________|
-| 1 Physical layer                            |
-| Electric, radio, light impulses             |
-|_____________________________________________|
+```
+ ________________________________________________
+| 3 Network layer: PJON                          |
+| Local and shared network addressing            |
+| Broadcast or addressed packet transmission     |
+| Routing and switching                          |
+| Congestion control                             |
+| Error detection                                |
+| Packet identification                          |
+| Service identification                         |
+| Asynchronous acknowledgement                   |
+|________________________________________________|
+| 2 Data link layer: PJDL, PJDLR, PJDLS, TSDL    |
+| Multiple access                                |
+| Frame transmission                             |
+| Synchronous acknowledgement                    |
+|________________________________________________|
+| 1 Physical layer:                              |
+| Electric, radio or light impulses              |
+|________________________________________________|
 ```
 
 ### Basic concepts
-* Transmission occurs only if the communication medium is not in use
 * Packet transmission is regulated by a 1 byte header
 * Devices communicate through packets with a maximum length of 255 or 65535 bytes
-* Every device has an equal right to transmit and receive
-* Every device has a unique 1 byte id
-* Every device can obtain an id if available (see [Dynamic addressing specification v1.0](/specification/PJON-dynamic-addressing-specification-v2.0.md))
-* Every bus has a unique 4 bytes id
-* Every device can be connected to n PJON buses
+* Devices are identified by a unique 1 byte device id
+* Devices can obtain an id if available (see [Dynamic addressing specification v1.0](/specification/PJON-dynamic-addressing-specification-v2.0.md))
+* Buses are identified with a 4 bytes bus id
 * Many buses can coexist on the same medium
 * Synchronous and or asynchronous acknowledgement can be requested (see [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md))
-* Network service identifier using a 2 bytes port identification  
+* Network services are identified with a 2 bytes service identifier  
+
 
 ### Bus
 A PJON bus is made by a group of up to 254 devices transmitting and receiving on the same medium. Communication between devices occurs through packets and it is based on fairness or on the right of each device to equally share the bandwidth available.
@@ -96,6 +84,7 @@ ____|___________|___________|___________|___
 A PJON bus network is the result of n buses sharing the same medium and or being interconnected with other buses through routers. On a shared medium it is required the use a 4 bytes bus id to isolate a group of devices from communication of other buses nearby, enabling many to coexist and network on the same communication medium.
 ```cpp  
 TWO BUSES SHARING THE SAME MEDIUM
+1 collision domain
 
     BUS ID 0.0.0.1             BUS ID 0.0.0.2
  _______     _______         _______     _______
@@ -122,6 +111,7 @@ A Switch is a device that forwards packets transparently between directly connec
 A router is a device connected to n PJON devices or buses on n dedicated media, able to route packets from a device, a bus or a medium to another. The router can operate in a network with a tree topology and no loops forwarding packets transparently. Packets can be routed between indirectly connected buses if a routing table or a default gateway is used.
 ```cpp
 TWO BUSES CONNECTED THROUGH A ROUTER
+2 collision domains
 
    BUS ID 0.0.0.1                  BUS ID 0.0.0.2
  _______     _______             _______     _______

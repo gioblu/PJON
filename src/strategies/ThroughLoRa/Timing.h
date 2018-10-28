@@ -21,7 +21,7 @@
   #define TL_INITIAL_DELAY      1000
 #endif
 
-/* Mamimum 32 microseconds random delay in case of collision */
+/* Maximum 32 microseconds random delay in case of collision */
 #ifndef TL_COLLISION_DELAY
   #define TL_COLLISION_DELAY      32
 #endif

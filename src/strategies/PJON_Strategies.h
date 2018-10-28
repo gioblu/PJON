@@ -50,6 +50,10 @@
 #if defined(PJON_INCLUDE_TL)
   #include "ThroughLoRa/ThroughLora.h"
 #endif
+#if defined(PJON_INCLUDE_EN)
+  #include "ESPNOW/ESPNOW.h"
+#endif
+
 #if defined(PJON_INCLUDE_NONE)
   /* None for custom strategy inclusion */
 #endif

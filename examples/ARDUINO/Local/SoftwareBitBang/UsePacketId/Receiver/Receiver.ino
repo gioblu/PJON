@@ -16,6 +16,12 @@ int fail;
 // <Strategy name> bus(selected device id)
 PJON<SoftwareBitBang> bus(44);
 
+void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
+  Serial.print("Packet id: ");
+  Serial.println(packet_info.id);
+  Serial.flush();
+};
+
 void setup() {
   bus.strategy.set_pin(12);
   bus.set_receiver(receiver_function);
@@ -23,12 +29,6 @@ void setup() {
 
   Serial.begin(115200);
 };
-
-void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
-  Serial.print("Packet id: ");
-  Serial.println(packet_info.id);
-  Serial.flush();
-}
 
 void loop() {
   Serial.println("Starting 1 second communication speed test...");

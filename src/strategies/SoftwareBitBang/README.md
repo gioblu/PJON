@@ -19,17 +19,18 @@ ___|__________|________|___________|_______/\/\/\__| IO PIN
 It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to reduce externally induced interference. Pins can be optionally protected against overload adding a current limiting resistor to each connected pin. The resistor value can be obtained solving the following equation `R = (operating voltage / pin max current drain)`, for example to obtain the current limiting resistor value for an Arduino Uno simply substitute its characteristics: `R = (5v / 0.030A) = 166.66Ω`.
 
 #### Compatibility
-- ATmega88/168/328 16MHz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
-- ATmega2560 16MHz (Arduino Mega)
-- ATmega16u4/32u4 16MHz (Arduino Leonardo)
-- ATMega1284P 16MHz external oscillator
-- ATtiny84/84A 16MHz external oscillator
-- ATtiny85 16MHz external oscillator
-- SAMD (Arduino Zero)
-- ESP8266 v.1-7 80MHz AI-THINKER Modules
-- ESP8266 NodeMCU v0.9-1.0 80MHz
-- ESP32 Heltech WiFi LoRa
-- MK20DX256 96MHz (Teensy 3.1)
+| MCU              | Clock | Supported pins   |
+| ---------------- |------ | ---------------- |
+| ATtiny84/84A | 16MHz | 0, 1, 2, 3, 4 |
+| ATtiny85 (Digispark development board) | 16MHz | 1, 2 |
+| ATmega88/168/328 (Duemilanove, Uno, Nano, Pro) | 16MHz | 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 |
+| ATmega16u4/32u4 (Leonardo, Micro) | 16MHz | 2, 4, 8, 12 |
+| ATmega2560 (Mega, Mega nano) | 16MHz | 3, 4, 7, 8, 9, 10, 12 |
+| ATmega1284P | 16MHz | 18, 19, 20, 21, 22, 23, A0, A1, A2, A3, A4, A5, A6, A7 |
+| SAMD (Arduino Zero) | 48MHz |  |
+| MK20DX256 (Teensy 3.1) | 96MHz | All pins |
+| ESP8266 (NodeMCU, AI-THINKER modules) | 80/160MHz | D1 or GPIO 5 |
+| ESP32 (Heltech WiFi LoRa) | 160MHz | 12, 25 |
 
 #### Performance
 `SWBB_MODE` can be configured in 3 different modes, `1`, `2` and `3`:

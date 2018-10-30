@@ -1,4 +1,6 @@
 
+---
+
 #### Network layer
 - [PJON (Padded Jittering Operative Network) v3.0](/specification/PJON-protocol-specification-v3.0.md)
 - [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md)
@@ -10,6 +12,8 @@
 - [PJDLS (Padded Jittering Data Link Stuffed) v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
 - [TSDL (Tardy Serial Data Link) v2.0](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md)
 - [SFSP (Secure Frame Separation Protocol) v1.0](/specification/SFSP-frame-separation-specification-v1.0.md)
+
+---
 
 # PJDL v2.0
 ```

@@ -22,20 +22,23 @@ Related implementation: /src/strategies/AnalogSampling/
 Compliant versions: PJON v10.0 and following
 ```
 
-PJDLS (Padded Jittering Data Link byte Stuffed) is an asynchronous serial data link for low-data-rate applications that supports one or many to many communication optimized for optical wireless communication using light pulses. Frame separation is obtained with the use of [SFSP (Secure Frame Separation Protocol) v1.0](/specification/SFSP-frame-separation-specification-v1.0.md). PJDLS can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using one or two input-output pins.
+PJDLS (Padded Jittering Data Link byte Stuffed) is an asynchronous serial data link for low-data-rate applications that supports one or many to many communication optimized for optical wireless communication. Frame separation is obtained with the use of [SFSP (Secure Frame Separation Protocol) v1.0](/specification/SFSP-frame-separation-specification-v1.0.md). PJDLS can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using one or two input-output pins.
 
 ### Communication modes
 The proposed communication modes are the result of years of testing and optimization for light pulses communication and have been selected to be easily supported also by limited microcontrollers.  
 
 | MODE | Bit timing | Sync bit timing | Pad-bit ratio | Speed               |
 | ---- | ---------- | --------------- | ------------- | ------------------- |
-| 1    | 750        | 1050            | 1.4           | 128B/s  -  1024Bb   |
-| 2    | 572        | 728             | 1.2727        | 170B/s  -  1361Bb   |
-| 3    | 188        | 428             | 2.2765        | 471B/s  -  3773Bb   |
-| 4    | 128        | 290             | 2.2656        | 639B/s  -  5547Bb   |
-| 5    | 56         | 128             | 2.2857        | 1582B/s - 12658Bb   |
+| 1    | 750        | 1050            | 1.4           | 128B/s  -  1024Bd   |
+| 2    | 572        | 728             | 1.2727        | 170B/s  -  1361Bd   |
+| 3    | 188        | 428             | 2.2765        | 471B/s  -  3773Bd   |
+| 4    | 128        | 290             | 2.2656        | 639B/s  -  5547Bd   |
+| 5    | 56         | 128             | 2.2857        | 1582B/s - 12658Bd   |
 
 Binary timing durations are expressed in microseconds.
+
+### Medium access control
+PJDLS specifies a contention based random multiple access method that supports multi-master communication. Collisions can only occur when 2 or more devices start to transmit at the same time because devices can securely detect an ongoing transmission. When a collision occurs it can be detected by the receiver because of synchronization loss. In multi-master operation the maximum data throughput effectively available is 36.8% of the bandwidth (the same as slotted ALOHA). In master-slave operation the maximum data throughput is equal to the bandwidth.
 
 ### Byte transmission
 Byte transmission is composed by 10 bits, the first two are called synchronization pad and are used to obtain sampling synchronization. The synchronization pad is composed by a logic 1 padding bit longer than data bits and a logic 0 data bit. The following 8 data bits contain information in LSB-first (least significant bit first) order.

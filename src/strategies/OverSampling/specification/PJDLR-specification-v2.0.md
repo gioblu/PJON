@@ -9,7 +9,7 @@
 #### Data link layer
 - [PJDL (Padded Jittering Data Link) v2.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md)
 - **[PJDLR (Padded Jittering Data Link over Radio) v2.0](/src/strategies/OverSampling/specification/PJDLR-specification-v2.0.md)**
-- [PJDLS (Padded Jittering Data Link Stuffed) v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
+- [PJDLS (Padded Jittering Data Link byte Stuffed) v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
 - [TSDL (Tardy Serial Data Link) v2.0](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md)
 - [SFSP (Secure Frame Separation Protocol) v1.0](/specification/SFSP-frame-separation-specification-v1.0.md)
 
@@ -29,7 +29,7 @@ The proposed communication mode is the result of years of testing and optimizati
 
 | MODE | Bit timing | Sync bit timing | Pad-data ratio | Speed               |
 | ---- | ---------- | --------------- | -------------- | ------------------- |
-| 1    | 512        | 328             | 0.64           | 202B/s - 1620Bb     |
+| 1    | 512        | 328             | 0.64           | 202B/s - 1620Bd     |
 
 Binary timing durations are expressed in microseconds.
 

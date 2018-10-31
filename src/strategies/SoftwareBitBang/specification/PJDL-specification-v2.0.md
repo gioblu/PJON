@@ -53,7 +53,7 @@ The proposed communication modes are the result of years of testing and optimiza
 Binary timing durations are expressed in microseconds.
 
 ### Medium access control
-PJDL specifies a contention based random multiple access method that supports multi-master mode. Collisions can only occur when 2 or more devices start to transmit at the same time because devices can securely detect an ongoing transmission. When a collision occurs it can be detected by the receiver because of synchronization loss. In multi-master mode the maximum data throughput effectively available is 36.8% of the bandwidth (the same as slotted ALOHA). In master-slave mode the maximum data throughput is equal to the bandwidth.
+PJDL specifies a contention based random multiple access method that supports both master-slave and multi-master mode. In master-slave mode the maximum data throughput available is 100% of the bandwidth. Devices are able to securely detect an ongoing transmission therefore collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss. In multi-master mode the maximum data throughput effectively available is 36.8% of the bandwidth (the same as slotted ALOHA).
 
 ### Byte transmission
 Byte transmission is composed by 10 bits, the first two are called synchronization pad and are used to obtain sampling synchronization. The synchronization pad is composed by a logic 1 padding bit longer than data bits and a logic 0 data bit. The following 8 data bits contain information in LSB-first (least significant bit first) order.

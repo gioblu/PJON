@@ -91,7 +91,7 @@ When a frame is received a low performance microcontroller with an inaccurate cl
 
 `frame initializer expected duration - (sync bit 1 duration - sync bit 1 minimum acceptable duration)`
 
-To ensure 100% reliability the padding bit must be longer than data bits. Selecting a correct `padding bit / data bit` ratio, called pad-data ratio, frame initialization is 100% reliable, false positives can only occur because of externally induced interference. The padding bit duration must not be an exact multiple of the duration of one data bit, for this reason pad-data ratio of 1, 2, 3 or 4 must be avoided because a single or consecutive data bits may be erroneously interpreted as a padding bit.
+To ensure 100% reliability the padding bit must be longer than data bits. Frame initialization is 100% reliable, false positives can only occur because of externally induced interference. The padding bit duration must not be an exact multiple of the duration of one data bit, for this reason pad-data ratio of 1, 2, 3 or 4 must be avoided because a single or consecutive data bits may be erroneously interpreted as a padding bit.
 
 ### Synchronous response
 A frame transmission can be optionally followed by a synchronous response of its recipient.

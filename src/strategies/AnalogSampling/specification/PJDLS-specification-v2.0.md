@@ -16,10 +16,11 @@
 
 ## PJDLS v2.0
 ```
-Invented by Giovanni Blu Mitolo, released into the public domain
+Invented by Giovanni Blu Mitolo
 Originally published: 20/11/2017, latest revision: 31/10/2018
 Related implementation: /src/strategies/AnalogSampling/
 Compliant versions: PJON v10.0 and following
+Released into the public domain
 ```
 
 PJDLS (Padded Jittering Data Link byte Stuffed) is an asynchronous serial data link for low-data-rate applications that supports one or many to many communication optimized for optical wireless communication. Frame separation is obtained with the use of [SFSP (Secure Frame Separation Protocol) v1.0](/specification/SFSP-frame-separation-specification-v1.0.md). PJDLS can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using one or two input-output pins.

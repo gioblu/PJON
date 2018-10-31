@@ -16,10 +16,12 @@
 
 ## PJON® Protocol specification v3.0
 ```
-Invented by Giovanni Blu Mitolo, header feature proposed by Fred Larsen, released into the public domain
+Invented by Giovanni Blu Mitolo
+Header feature proposed by Fred Larsen
 Originally published: 10/04/2010, latest revision: 31/10/2018
 Related work: https://github.com/gioblu/PJON/
 Compliant implementations: PJON v10.0 and following
+Released into the public domain
 ```
 The PJON protocol v3.0 in local mode supports connectivity for up to 254 devices, in shared mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices. The packet format is dynamic therefore meta-data can be optionally included using the header as a bitmap of selected features supporting interoperability between systems configured differently and providing with high efficiency including only the protocol's features used and the overhead (5-22 bytes) effectively required. Thanks to its modularity, dynamic packet format, low memory footprint and low overhead PJON can be used as an alternative to 1-Wire, i2c or CAN to connect a local network of microcontrollers with limited resources but can also be applied in place of TCP-IP to interconnect more complex networks.   
 

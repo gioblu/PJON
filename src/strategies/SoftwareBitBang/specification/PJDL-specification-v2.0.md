@@ -17,10 +17,11 @@
 
 ## PJDL v2.0
 ```
-Invented by Giovanni Blu Mitolo, released into the public domain
+Invented by Giovanni Blu Mitolo
 Originally published: 10/04/2010, latest revision: 30/10/2018
 Related implementation: /src/strategies/SoftwareBitBang/
 Compliant versions: PJON 9.0 and following
+Released into the public domain
 ```
 PJDL (Padded Jittering Data Link) is an asynchronous serial data link for low-data-rate applications that supports one or many to many communication over a common conductive medium. PJDL can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin.
 

@@ -17,10 +17,12 @@
 
 ## PJDLR v2.0
 ```
-Invented by Giovanni Blu Mitolo, preamble feature proposed by Fred Larsen, released into the public domain
+Invented by Giovanni Blu Mitolo
+Preamble feature proposed by Fred Larsen
 Originally published: 10/04/2010, latest revision: 31/10/2018
 Related implementation: /src/strategies/OverSampling/
 Compliant versions: PJON v9.0 and following
+Released into the public domain
 ```
 PJDLR (Padded Jittering Data Link over Radio) is an asynchronous serial data link for low-data-rate applications that supports one or many to many communication optimized to obtain long range and high reliability using ASK, FSK or OOK radio transceivers. PJDLR can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using one or two input-output pins.
 

@@ -39,7 +39,7 @@ The graph above contains a packet transmission where the character `@` (decimal 
 The synchronous acknowledgement is a blocking procedure, can be used only within one collision domain but is efficient and has a short response delay.
 
 ### Asynchronous acknowledge
-The asynchronous acknowledgement is a non-blocking procedure, it is packet based and can travel across a network composed by many collision domains although. Between the packet reception and the asynchronous acknowledgement response the communication medium can be used by other devices.
+The asynchronous acknowledgement is a non-blocking procedure, it is packet based and can travel across a network composed by many collision domains. Between the packet reception and the asynchronous acknowledgement response the communication medium can be used by other devices.
 
 ```cpp
 Channel analysis               Transmission                Response

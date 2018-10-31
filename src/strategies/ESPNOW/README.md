@@ -1,5 +1,4 @@
-### ESPNOW
-
+## ESPNOW
 **Medium:** 802.11 Peer-to-peer
 
 With the `ESPNOW` PJON strategy, up to 10 ESP32 devices can use PJON to communicate with each other over
@@ -49,7 +48,7 @@ uint8_t dev_mac[6] = {0x02, 0x23, 0x34, 0x22, 0x33, 0x44 };
 bus.strategy.add_node(device_id, dev_mac);
 ```
 
-#### Safety warning
+### Safety warning
 In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger.
 When using ESPNOW keep in mind that all connected devices must be considered potentially compromised if the PMK is known
 or can be guessed, and therefore potentially manipulated or remotely actuated against your will. It should be considered

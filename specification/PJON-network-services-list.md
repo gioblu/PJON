@@ -14,7 +14,7 @@
 
 ---
 
-## PJON network services list
+## PJON® network services list
 This is the known network services port identification list:  
 
 | Port ID | Constant name               | Description/Link                    |
@@ -23,4 +23,4 @@ This is the known network services port identification list:
 | `1`     | `PJON_DYNAMIC_ADDRESSING`   | PJON [dynamic addressing](/specification/PJON-dynamic-addressing-specification-v2.0.md) |
 | `100`   | `MODULE_INTERFACE`          | [ModuleInterface](https://github.com/fredilarsen/ModuleInterface) automation protocol   |
 
-If you have developed or have ported a network service on top of PJON feel free to open an [issue](https://github.com/gioblu/PJON/issues) to obtain a known service identification.
+If you have developed a network service on top of PJON feel free to open an [issue](https://github.com/gioblu/PJON/issues) to obtain a service identification.

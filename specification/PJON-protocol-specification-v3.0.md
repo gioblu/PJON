@@ -14,7 +14,7 @@
 
 ---
 
-## PJON® Protocol specification v3.0
+## PJON® v3.0
 ```
 Invented by Giovanni Blu Mitolo
 Header feature proposed by Fred Larsen

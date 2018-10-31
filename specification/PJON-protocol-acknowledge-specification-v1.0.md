@@ -14,13 +14,13 @@
 
 ---
 
-## PJON® protocol acknowledge specification v1.0
+## PJON® acknowledge v1.0
 ```
 Invented by Giovanni Blu Mitolo
 Originally published: 17/10/2016, latest revision: 31/10/2018
 Related implementation: https://github.com/gioblu/PJON/
 Compliant versions: PJON v9.0 and following
-released into the public domain
+Released into the public domain
 ```
 PJON supports both synchronous and asynchronous acknowledgement that can be used individually or together.
 

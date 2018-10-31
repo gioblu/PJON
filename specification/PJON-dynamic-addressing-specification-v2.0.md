@@ -14,7 +14,7 @@
 
 ---
 
-## PJON® dynamic addressing specification v2.0
+## PJON® dynamic addressing v2.0
 ```
 Invented by Giovanni Blu Mitolo
 Originally published: 02/10/2016, latest revision: 31/10/2018

@@ -17,12 +17,12 @@
 ## PJON® protocol acknowledge specification v1.0
 ```
 Invented by Giovanni Blu Mitolo
-Originally published: 17/10/2016, latest revision: 15/10/2017
+Originally published: 17/10/2016, latest revision: 31/10/2018
 Related implementation: https://github.com/gioblu/PJON/
 Compliant versions: PJON v9.0 and following
 released into the public domain
 ```
-The PJON Standard supports both synchronous and asynchronous acknowledgement that can be used individually or together.
+PJON supports both synchronous and asynchronous acknowledgement that can be used individually or together.
 
 ### Synchronous acknowledge
 ```cpp
@@ -34,12 +34,12 @@ Channel analysis       Transmission                 Response
 |_____||____|__________|________|____|_________|____||_____|
 ```
 
-The graph above contains a standard packet transmission containing a synchronous acknowledgement request where the character `@` (decimal 64) is sent to device id `12`. As defined by the [PJON protocol layer specification v3.0](/specification/PJON-protocol-specification-v3.0.md) the third bit from right up in the header requests a synchronous acknowledgement response. How the synchronous acknowledgement procedure works depends on the data-link used, see [PJDL v2.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md), [PJDLR v2.0](/src/strategies/OverSampling/specification/PJDLR-specification-v2.0.md), [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) and [TSDL v2.0](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md) specification.
+The graph above contains a standard packet transmission containing a synchronous acknowledgement request where the character `@` (decimal 64) is sent to device id `12`. As defined by the [PJON protocol layer specification v3.0](/specification/PJON-protocol-specification-v3.0.md) the header's `ACK` bit with value 1 requests a synchronous acknowledgement response, see [PJDL v2.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md), [PJDLR v2.0](/src/strategies/OverSampling/specification/PJDLR-specification-v2.0.md), [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) and [TSDL v2.0](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md) specification.
 
-In a scenario where there is no direct connection between two devices, the synchronous acknowledgement procedure, that is based on sending a single byte `PJON_ACK` (decimal 6) cannot be applied successfully because of the presence of more than one collision domain and because of the impossibility for a switch or a router to safely transport a single byte response.
+The synchronous acknowledgement can be used only within one collision domain because it is impossible for a switch or a router to safely transport a single byte response.
 
 ### Asynchronous acknowledge
-The asynchronous acknowledge is provided using an entire packet, that can safely travel across the network directly, repeated or routed. Between the packet reception and the asynchronous acknowledgement response packet arrival the communication medium can be used by other devices if required.
+The asynchronous acknowledge is a packet that can travel across a network composed by many collision domains connected by switches or routers. Between the packet reception and the asynchronous acknowledgement response arrival the communication medium can be used by other devices.
 
 ```cpp
 Channel analysis               Transmission                Response
@@ -50,7 +50,7 @@ Channel analysis               Transmission                Response
 |__|________|______|___|______|______|__|_________|____|_____||___|
                        |RXINFO| TX INFO |       
 ```
-The graph above contains a standard packet transmission containing an asynchronous acknowledgement request where the character `@` (decimal 64) is sent to device id `12` containing its packet id `99`. As defined by the [PJON protocol specification v3.0](/specification/PJON-protocol-specification-v3.0.md) the fourth bit from right up in the header requests to transmitter an asynchronous acknowledgement response. The second bit from right up signals the inclusion of the sender's info necessary to send back an asynchronous acknowledgement packet when received. The first bit on left signals the presence of the packet id.
+The graph above contains a standard packet transmission where the character `@` (decimal 64) is sent to device id `12`. As defined by the [PJON protocol specification v3.0](/specification/PJON-protocol-specification-v3.0.md) the header's `ACK MODE` bit with value 1 requests to the recipient an asynchronous acknowledgement response, the `TX INFO` bit with value 1 signals the presence of the sender's info required to respond and the `PACKET ID` bit signals the presence of the packet id used for asynchronous acknowledgement identification. 
 
 ### PJON® recursive acknowledgement pattern
 The recursive acknowledgement pattern consists in the use of both synchronous and asynchronous acknowledgement.

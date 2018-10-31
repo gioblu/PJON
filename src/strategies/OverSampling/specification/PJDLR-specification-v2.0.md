@@ -33,6 +33,9 @@ The proposed communication mode is the result of years of testing and optimizati
 
 Binary timing durations are expressed in microseconds.
 
+### Medium access control
+PJDLR specifies a contention based random multiple access method that supports multi-master communication. Collisions can only occur when 2 or more devices start to transmit at the same time because devices can securely detect an ongoing transmission. When a collision occurs it can be detected by the receiver because of synchronization loss. In multi-master operation the maximum data throughput effectively available is 36.8% of the bandwidth (the same as slotted ALOHA). In master-slave operation the maximum data throughput is equal to the bandwidth.
+
 ### Byte transmission
 PJDLR byte transmission is composed by 10 bits, the first two are called synchronization pad and are used to obtain sampling synchronization. The synchronization pad is composed by a logic 1 padding bit shorter than data bits and a logic 0 data bit. The following 8 data bits contain information in LSB-first (least significant bit first) order.
 
@@ -63,7 +66,7 @@ Before a frame transmission, the communication medium is analysed, if logic 1 is
 |  1  | 0 |1|0|1|0|1|0|0000|11|00|1|0|00000|1|0|1|1|0|00000|1|00|
 |_____|___|_|_|_|_|_|_|____|__|__|_|_|_____|_|_|_|_|_|_____|_|__|
 ```
-When a frame is received a low performance microcontroller with an inaccurate clock can correctly synchronize with transmitter during the frame initializer and consequently each byte is received. The frame initializer is detected if 3 synchronization pads occurred and if their duration is coherent with its expected duration. To ensure 100% reliability the padding bit must be shorter than data bits. Selecting a correct `padding bit / data bit` ratio, called pad-data ratio, frame initialization is 100% reliable, false positives can only occur because of externally induced interference.      
+When a frame is received a low performance microcontroller with an inaccurate clock can correctly synchronize with transmitter during the frame initializer and consequently each byte is received. The frame initializer is detected if 3 synchronization pads occurred and if their duration is coherent with its expected duration. Frame initialization is 100% reliable, false positives can only occur because of externally induced interference.      
 
 ### Synchronous response
 A frame transmission can be optionally followed by a synchronous response of its recipient.
@@ -76,4 +79,4 @@ Transmission                                              Response
 |____|___|______||______||______|                 |____|___|_____|
 ```
 
-The maximum time dedicated to potential acknowledgement reception for a given application is estimated by adding the CRC computation time of the longest supported frame to the maximum latency of the hardware and the medium used.
+The maximum time dedicated to potential acknowledgement reception for a given application is estimated by adding the CRC computation time of the longest supported frame to the maximum latency and to the optional preamble duration.

@@ -2,6 +2,7 @@
 
 **Medium:** Wire |
 **Pins used:** 1 / 2
+
 `SoftwareBitBang` is an asynchronous serial data link designed for low-data-rate applications that requires one wire and no additional hardware to handle one or many to many communication. This implementation can run on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin. It is a valid alternative to 1-Wire because of its flexibility and reliability. Fault tolerance schemes can be easily implemented because the communication pins can be configured at runtime. Bus maximum length is limited by cable's resistance, by the voltage level used and by externally induced interference. It has been tested with up to 50 meters long insulated wires and results demonstrate the same performance achieved with shorter lengths. The maximum range is still unknown. Take a look at the [video introduction](https://www.youtube.com/watch?v=Vg5aSlD-VCU) for a brief showcase of its features.
 ```cpp
 PJDL SINGLE WIRE BUS                            ______

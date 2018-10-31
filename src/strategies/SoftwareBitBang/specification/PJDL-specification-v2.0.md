@@ -43,7 +43,7 @@ It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to
 ### Communication modes
 The proposed communication modes are the result of years of testing and optimization and have been selected to be easily supported by limited microcontrollers.  
 
-| MODE | Data bit duration | Padding bit duration | Pad-data ratio  | Data throughput     |
+| MODE | Data bit duration | Padding bit duration | Pad-data ratio  | Bandwidth           |
 | ---- | ----------------- | -------------------- | --------------- | ------------------- |
 | 1    | 40                | 112                  | 2.8             | 2.11kB/s  - 16944Bd |
 | 2    | 36                | 88                   | 2.444           | 2.42kB/s  - 19417Bd |
@@ -52,7 +52,7 @@ The proposed communication modes are the result of years of testing and optimiza
 Binary timing durations are expressed in microseconds.
 
 ### Medium access control
-PJDL specifies a dedicated contention based random multiple access method that supports multi-master communication. Collisions can only occur when 2 or more devices start to transmit at the same time because devices can securely detect an ongoing transmission. When a collision occurs it can be detected by the receiver because of synchronization loss. in multi-master operation the maximum data throughput is the same obtained implementing slotted ALOHA or 0.368 frames per frame duration (MODE1: 776B/s, MODE2: 890B/s, MODE3: 1240B/s) in the best case (no retransmissions). In master-slave operation the maximum data throughput is 1 frame per frame duration (MODE1: 2.11kB/s, MODE2: 2.42kB/s, MODE3: 3.37kB/s) in the best case.
+PJDL specifies a dedicated contention based random multiple access method that supports multi-master communication. Collisions can only occur when 2 or more devices start to transmit at the same time because devices can securely detect an ongoing transmission. When a collision occurs it can be detected by the receiver because of synchronization loss. In multi-master operation the maximum data throughput effectively available is 36.8% of the bandwidth (the same as slotted ALOHA). In master-slave operation the maximum data throughput is equal to the bandwidth.
 
 ### Byte transmission
 PJDL byte transmission is composed by 10 bits, the first two are called synchronization pad and are used to obtain sampling synchronization. The synchronization pad is composed by a logic 1 padding bit longer than data bits and a logic 0 data bit. The following 8 data bits contain information in LSB-first (least significant bit first) order.

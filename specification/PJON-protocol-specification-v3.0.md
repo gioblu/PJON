@@ -1,34 +1,24 @@
+### Specifications index
+
 #### Network layer
-- PJON (Padded Jittering Operative Network) Protocol specification: **[v3.0](/specification/PJON-protocol-specification-v3.0.md)**
-- PJON Acknowledge specification: [v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md)
-- PJON Dynamic addressing specification: [v2.0](/specification/PJON-dynamic-addressing-specification-v2.0.md)
-- PJON Network services: [list](/specification/PJON-network-services-list.md)
+- **[PJON (Padded Jittering Operative Network) v3.0](/specification/PJON-protocol-specification-v3.0.md)**
+- [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md)
+- [Dynamic addressing specification v2.0](/specification/PJON-dynamic-addressing-specification-v2.0.md)
+- [Network services list](/specification/PJON-network-services-list.md)
 #### Data link layer
-- PJDL (Padded Jittering Data Link) specification:
-[PJDL v2.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) - [PJDLR v2.0](/src/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) - [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
-- TSDL (Tardy Serial Data Link) specification: [TSDL v2.0](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md)
-- SFSP (Secure Frame Separation Protocol) specification: [SFSP v1.0](/specification/SFSP-frame-separation-specification-v1.0.md)
-
-```cpp
-/*
-Milan, Italy
-Originally published: 10/04/2010
-latest revision: 04/05/2018
-PJON® protocol layer specification v3.0
-Invented by Giovanni Blu Mitolo,
-header driven configuration proposed
-by Fred Larsen, released into the public domain
-
-Related work: https://github.com/gioblu/PJON/
-Compliant implementations: PJON v10.0 and following
-
-Changelog:
-- Port identification feature added
-- Packet id generalization
-*/
-```
+- [PJDL (Padded Jittering Data Link) v2.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md)
+- [PJDLR (Padded Jittering Data Link over Radio) v2.0](/src/strategies/OverSampling/specification/PJDLR-specification-v2.0.md)
+- [PJDLS (Padded Jittering Data Link byte Stuffed) v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
+- [TSDL (Tardy Serial Data Link) v2.0](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md)
+- [SFSP (Secure Frame Separation Protocol) v1.0](/specification/SFSP-frame-separation-specification-v1.0.md)
 
 ### PJON® Protocol specification v3.0
+```
+Invented by Giovanni Blu Mitolo, header feature proposed by Fred Larsen, released into the public domain
+Originally published: 10/04/2010, latest revision: 31/10/2018
+Related work: https://github.com/gioblu/PJON/
+Compliant implementations: PJON v10.0 and following
+```
 The PJON protocol v3.0 in local mode supports connectivity for up to 254 devices, in shared mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices. The packet format is dynamic therefore meta-data can be optionally included using the header as a bitmap of selected features supporting interoperability between systems configured differently and providing with high efficiency including only the protocol's features used and the overhead (5-22 bytes) effectively required. Thanks to its modularity, dynamic packet format, low memory footprint and low overhead PJON can be used as an alternative to 1-Wire, i2c or CAN to connect a local network of microcontrollers with limited resources but can also be applied in place of TCP-IP to interconnect more complex networks.   
 
 The graph below shows the conceptual model that characterizes and standardizes the communication. Its goal is the interoperability of diverse systems on a wide range of media with the use of a new set of open-source protocols. The graph partitions represent abstraction layers.

@@ -55,7 +55,7 @@ If this pattern is detected data reception starts, if not, interference, synchro
 ```
 
 ### Frame transmission
-Before a frame transmission, the communication medium is analysed, if logic 1 is present communication is detected and collision is avoided, If the medium is free for a duration longer than a byte plus a small random time, frame transmission starts with an optional preamble designed to enable signal gain tuning, a frame initializer composed by 3 consequent synchronization pads followed by data bytes. The presence of the synchronization pad between each byte ensures that also a frame composed of a series of bytes with decimal value 0 can be transmitted safely without risk of collision.
+Before a frame transmission, the communication medium is analysed, if logic 1 is present communication is detected and collision is avoided, If the medium is free for a duration longer than a byte plus a small random time, frame transmission starts with an optional preamble designed to enable signal gain tuning and a frame initializer composed by 3 consequent synchronization pads followed by data bytes. The presence of the synchronization pad between each byte ensures that also a frame composed of a series of bytes with decimal value 0 can be transmitted safely without risk of collision.
 
 ```cpp     
            INITIALIZER  DATA

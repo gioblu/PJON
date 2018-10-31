@@ -12,7 +12,9 @@
 - [TSDL (Tardy Serial Data Link) v2.0](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md)
 - [SFSP (Secure Frame Separation Protocol) v1.0](/specification/SFSP-frame-separation-specification-v1.0.md)
 
-### PJON® Protocol specification v3.0
+---
+
+## PJON® Protocol specification v3.0
 ```
 Invented by Giovanni Blu Mitolo, header feature proposed by Fred Larsen, released into the public domain
 Originally published: 10/04/2010, latest revision: 31/10/2018

@@ -1,5 +1,5 @@
 
----
+### Specifications index
 
 #### Network layer
 - [PJON (Padded Jittering Operative Network) v3.0](/specification/PJON-protocol-specification-v3.0.md)
@@ -15,7 +15,7 @@
 
 ---
 
-# PJDL v2.0
+## PJDL v2.0
 ```
 Invented by Giovanni Blu Mitolo, released into the public domain
 Originally published: 10/04/2010, latest revision: 30/10/2018
@@ -24,7 +24,7 @@ Compliant versions: PJON 9.0 and following
 ```
 PJDL (Padded Jittering Data Link) is an asynchronous serial data link for low-data-rate applications that supports one or many to many communication over a common conductive medium. PJDL can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin.
 
-## Physical layer
+### Physical layer
 The medium's maximum length is limited by the cable's resistance, by the voltage level used and by externally induced interference. It has been tested with up to 50 meters long insulated wires and results demonstrate the same performance achieved with shorter lengths. The maximum range is still unknown.
 ```cpp
 PJDL SINGLE WIRE BUS                            ______
@@ -40,7 +40,7 @@ ___|__________|________|___________|_______/\/\/\__| IO PIN
 ```
 It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to reduce externally induced interference. Pins can be optionally protected against overload adding a current limiting resistor to each connected pin. The resistor value can be obtained solving the following equation `R = (operating voltage / pin max current drain)`, for example to obtain the current limiting resistor value for an Arduino Uno simply substitute its characteristics: `R = (5v / 0.030A) = 166.66Ω`.
 
-## Communication modes
+### Communication modes
 The proposed communication modes are the result of years of testing and optimization and have been selected to be easily supported by limited microcontrollers.  
 
 | MODE | Data bit duration | Padding bit duration | Pad-data ratio  | Data throughput     |
@@ -51,10 +51,10 @@ The proposed communication modes are the result of years of testing and optimiza
 
 Binary timing durations are expressed in microseconds.
 
-## Medium access control
+### Medium access control
 PJDL specifies a dedicated contention based random multiple access method that supports multi-master communication. Collisions can only occur when 2 or more devices start to transmit at the same time because devices can securely detect an ongoing transmission. When a collision occurs it can be detected by the receiver because of synchronization loss. If the multi-master approach is used the maximum data throughput is the same obtained implementing slotted ALOHA or 0.368 frames per frame duration (776B/s in MODE1, 890B/s in MODE2 and 1240B/s in MODE3) in the best case (no retransmissions). If the master-slave approach is used the maximum data throughput is 1 frame per average frame duration (2.11kB/s in MODE1, 2.42kB/s in MODE2 and 3.37kB/s in MODE3) in the best case.
 
-## Byte transmission
+### Byte transmission
 PJDL byte transmission is composed by 10 bits, the first two are called synchronization pad and are used to obtain sampling synchronization. The synchronization pad is composed by a logic 1 padding bit longer than data bits and a logic 0 data bit. The following 8 data bits contain information in LSB-first (least significant bit first) order.
 
 The reception technique is based on 3 steps:
@@ -75,7 +75,7 @@ Minimum acceptable padding bit duration
 ```
 The synchronization pad adds overhead although it includes synchronization along with the data and eliminates the need of a dedicated clock line. The minimum acceptable padding bit duration is the timeframe in which a receiver initiating polling can correctly receive a byte. If the duration of the padding bit is shorter than the minimum acceptable duration the received signal is discarded. The minimum acceptable duration of the padding bit must be shorter than a padding bit duration; a large minimum acceptable duration reduces the chances of false positive's occurrences, a small minimum acceptable duration instead mitigates timing inaccuracies. The presence of the synchronization pad with its logic 1 between each byte also ensures that a frame composed of a series of bytes with decimal value 0 can be transmitted safely without risk of collision.
 
-## Frame transmission
+### Frame transmission
 Before a frame transmission the communication medium is analysed, if logic 1 is present ongoing communication is detected and collision is avoided, if logic 0 is detected for a duration of one byte plus a small random timeframe frame transmission starts with a symbol composed by 3 consequent synchronization pads followed by data bytes. The synchronization pad is used for both frame and byte initialization to reduce the implementation complexity.  
 ```cpp  
  ________ _________________ __________________________________
@@ -93,7 +93,7 @@ When a frame is received a low performance microcontroller with an inaccurate cl
 
 To ensure 100% reliability the padding bit must be longer than data bits. Selecting a correct `padding bit / data bit` ratio, called pad-data ratio, frame initialization is 100% reliable, false positives can only occur because of externally induced interference. The padding bit duration must not be an exact multiple of the duration of one data bit, for this reason pad-data ratio of 1, 2, 3 or 4 must be avoided because a single or consecutive data bits may be erroneously interpreted as a padding bit.
 
-## Synchronous response
+### Synchronous response
 A frame transmission can be optionally followed by a synchronous response by its recipient.
 ```cpp  
 Transmission                                    Response

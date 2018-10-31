@@ -16,7 +16,7 @@
 
 ## PJON® dynamic addressing specification v2.0
 ```
-Invented by Giovanni Blu Mitolo,
+Invented by Giovanni Blu Mitolo
 Originally published: 02/10/2016, latest revision: 31/10/2018
 Related implementation: https://github.com/gioblu/PJON/
 Compliant versions: PJON v9.0 and following

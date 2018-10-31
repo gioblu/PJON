@@ -25,6 +25,7 @@ released into the public domain
 PJON supports both synchronous and asynchronous acknowledgement that can be used individually or together.
 
 ### Synchronous acknowledge
+The synchronous acknowledgement is a blocking procedure, can be used only within one collision domain, although is efficient and has a short response delay because is composed by a single byte (decimal 6).
 ```cpp
 Channel analysis       Transmission                 Response
  _____  ____________________________________________  _____
@@ -35,8 +36,6 @@ Channel analysis       Transmission                 Response
 ```
 
 The graph above contains a packet transmission where the character `@` (decimal 64) is sent to device id `12`. As defined by the [PJON protocol layer specification v3.0](/specification/PJON-protocol-specification-v3.0.md) the header's `ACK` bit with value 1 requests a synchronous acknowledgement response, see [PJDL v2.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md), [PJDLR v2.0](/src/strategies/OverSampling/specification/PJDLR-specification-v2.0.md), [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) and [TSDL v2.0](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md) specification for additional information.
-
-The synchronous acknowledgement is a blocking procedure, can be used only within one collision domain but is efficient and has a short response delay.
 
 ### Asynchronous acknowledge
 The asynchronous acknowledgement is a non-blocking procedure, it is packet based and can travel across a network composed by many collision domains. Between the packet reception and the asynchronous acknowledgement response the communication medium can be used by other devices.

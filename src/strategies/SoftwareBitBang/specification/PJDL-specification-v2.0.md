@@ -92,10 +92,10 @@ When a frame is received a low performance microcontroller with an inaccurate cl
 
 `frame initializer expected duration - (sync bit 1 duration - sync bit 1 minimum acceptable duration)`
 
-To ensure 100% reliability the padding bit must be longer than data bits. Frame initialization is 100% reliable, false positives can only occur because of externally induced interference. The padding bit duration must not be an exact multiple of the duration of one data bit, for this reason pad-data ratio of 1, 2, 3 or 4 must be avoided because a single or consecutive data bits may be erroneously interpreted as a padding bit.
+To ensure 100% reliability the padding bit must be longer than data bits. Frame initialization is 100% reliable, false positives can only occur because of externally induced interference. The padding bit duration must not be an exact multiple of the duration of one data bit, for this reason a `padding bit / data bit` ratio or pad-data ratio of 1, 2, 3 or 4 must be avoided because one or multiple consecutive data bits may be erroneously interpreted as a padding bit.
 
 ### Synchronous response
-A frame transmission can be optionally followed by a synchronous response of its recipient.
+A frame transmission can be optionally followed by a synchronous response sent by its recipient.
 ```cpp  
 Transmission                                    Response
  ______  ______  ______  ______                   _____
@@ -105,7 +105,7 @@ Transmission                                    Response
 |______||______||______||______|                 |_____|
 ```
 
-Between frame transmission and a synchronous response there is a variable time which duration is influenced by latency and CRC computation time. In order to avoid other devices to consider the medium free and disrupt an ongoing exchange, sender cyclically transmits a short logic 1 (1/4 data bit duration) and consequently attempts to receive a response. On the other side the receiver can synchronize its response transmission after the last incoming high bit. If the acknowledgement is not correctly received the transmitter continues to keep busy the channel up to the maximum acceptable time between transmission and response.
+Between frame transmission and a synchronous response there is a variable time which duration is influenced by latency. In order to avoid other devices to detect the medium free for use and disrupt an ongoing exchange, the sender cyclically transmits a short logic 1 (1/4 data bit duration) and consequently attempts to receive a response. On the other side the receiver can synchronize its response transmission after the end of the last short logic 1. If the acknowledgement is not transmitted or not received the transmitter continues to keep busy the medium up to the maximum acceptable time between transmission and response.
 ```cpp  
 Transmission                                      Response
  ______  ______  ______  ______   _   _   _   _   _ _____
@@ -116,4 +116,4 @@ Transmission                                      Response
 
 ```
 
-The maximum time dedicated to potential acknowledgement reception for a given application is estimated by adding the CRC computation time of the longest supported frame to the maximum latency of the hardware and the medium used.
+The maximum time dedicated to potential acknowledgement reception for a given application can be determined practically transmitting the longest supported frame with the farthest physical distance between the two devices. The highest interval between packet transmission and acknowledgement measured plus a small margin is the correct timeout that should exclude acknowledgement losses. Consider that the longer this timeout is, the more bandwidth is wasted if the transmission is not successful.

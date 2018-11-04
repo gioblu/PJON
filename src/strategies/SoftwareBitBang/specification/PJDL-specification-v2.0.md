@@ -56,12 +56,12 @@ Binary timing durations are expressed in microseconds.
 PJDL specifies a contention based random multiple access method that supports both master-slave and multi-master mode. In master-slave mode the maximum data throughput available is 100% of the bandwidth. Devices are able to securely detect an ongoing transmission therefore collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss. In multi-master mode the maximum data throughput effectively available is 36.8% of the bandwidth (the same as slotted ALOHA).
 
 ### Byte transmission
-Byte transmission is composed by 10 bits, the first two are called synchronization pad and are used to obtain sampling synchronization. The synchronization pad is composed by a logic 1 padding bit longer than data bits and a logic 0 data bit. The following 8 data bits contain information in LSB-first (least significant bit first) order.
+Byte transmission is composed by 10 bits, the first two are called synchronization pad and are used to obtain sampling synchronization. The synchronization pad is composed by a high padding bit longer than data bits and a low data bit. The following 8 data bits contain information in LSB-first (least significant bit first) order.
 
 The reception technique is based on 3 steps:
-1. Find a logic 1 which duration is equal or acceptably shorter than the expected padding bit duration
+1. Find a high bit which duration is equal or acceptably shorter than the expected padding bit duration
 2. Synchronize to its falling edge
-3. Ensure it is followed by a logic 0 data bit
+3. Ensure it is followed by a low data bit
 4. If so reception starts, if not, interference, synchronization loss or simply absence of communication is detected
 
 ```cpp  
@@ -77,7 +77,7 @@ Minimum acceptable padding bit duration
 The synchronization pad adds overhead although it includes synchronization along with the data and eliminates the need of a dedicated clock line. The minimum acceptable padding bit duration is the time in which a receiver initiating polling can correctly receive a byte. If the duration of the padding bit is shorter than the minimum acceptable duration the received signal is discarded. The minimum acceptable duration of the padding bit must be shorter than a padding bit duration; a large minimum acceptable duration reduces the chances of false positive's occurrences, a small minimum acceptable duration instead mitigates timing inaccuracies. The presence of the synchronization pad between each byte also ensures that a frame composed of a series of bytes with decimal value 0 can be transmitted safely without risk of collision.
 
 ### Frame transmission
-Before a frame transmission the communication medium is analysed, if logic 1 is present communication is detected and collision is avoided, if logic 0 is detected for a duration of one byte plus a small random time, frame transmission starts with an initializer composed by 3 consequent synchronization pads followed by data bytes. The synchronization pad is used for both byte and frame initialization to reduce the implementation complexity.  
+Before a frame transmission the communication medium's state is analysed, if high communication is detected and collision is avoided, if low for a duration of one byte plus a small random time, frame transmission starts with an initializer composed by 3 consequent synchronization pads followed by data bytes. The synchronization pad is used for both byte and frame initialization to reduce the implementation complexity.  
 ```cpp  
  ________ _________________ __________________________________
 |ANALYSIS|   FRAME INIT    | DATA 1-65535 bytes               |
@@ -105,7 +105,7 @@ Transmission                                    Response
 |______||______||______||______|                 |_____|
 ```
 
-Between frame transmission and a synchronous response there is a variable time which duration is influenced by latency. In order to avoid other devices to detect the medium free for use and disrupt an ongoing exchange, the sender cyclically transmits a short logic 1 (1/4 data bit duration) and consequently attempts to receive a response. On the other side the receiver can synchronize its response transmission after the end of the last short logic 1. If the acknowledgement is not transmitted or not received the transmitter continues to keep busy the medium up to the maximum acceptable time between transmission and response.
+Between frame transmission and a synchronous response there is a variable time which duration is influenced by latency. In order to avoid other devices to detect the medium free for use and disrupt an ongoing exchange, the sender cyclically transmits a short high bit (1/4 data bit duration) and consequently attempts to receive a response. On the other side the receiver can synchronize its response transmission after the end of the last short high bit. If the acknowledgement is not transmitted or not received the transmitter continues to keep busy the medium up to the maximum acceptable time between transmission and response.
 ```cpp  
 Transmission                                      Response
  ______  ______  ______  ______   _   _   _   _   _ _____

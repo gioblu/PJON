@@ -39,7 +39,7 @@ The proposed communication modes are the result of years of testing and optimiza
 Binary timing durations are expressed in microseconds.
 
 ### Medium access control
-PJDLS specifies a contention based random multiple access method that supports both master-slave and multi-master mode. In master-slave mode the maximum data throughput available is 100% of the bandwidth. Devices are able to securely detect an ongoing transmission therefore collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss. In multi-master mode the maximum data throughput effectively available is 36.8% of the bandwidth (the same as slotted ALOHA).
+PJDLS specifies a variation of the carrier-sense, non-persistent random multiple access method (non-persistent CSMA). Devices can detect an ongoing transmission for this reason collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss.
 
 ### Byte transmission
 Byte transmission is composed by 10 bits, the first two are called synchronization pad and are used to obtain sampling synchronization. The synchronization pad is composed by a logic 1 padding bit longer than data bits and a logic 0 data bit. The following 8 data bits contain information in LSB-first (least significant bit first) order.
@@ -62,10 +62,10 @@ Minimum acceptable padding bit duration
 ```
 
 ### Frame transmission
-Before a frame transmission the communication medium is analysed, if any data is received communication is detected and collision is avoided, if logic 0 is detected for a duration of one byte plus a small random time, data is transmitted encapsulated in a [SFSP (Secure Frame Separation Protocol) v1.0](/specification/SFSP-frame-separation-specification-v1.0.md) frame.
+Before a frame transmission the communication medium is analysed, if any data is received communication is detected and collision is avoided, if logic 0 is detected for a duration longer than the response time-out plus a small random time, data is transmitted encapsulated in a [SFSP (Secure Frame Separation Protocol) v1.0](/specification/SFSP-frame-separation-specification-v1.0.md) frame.
 
 ### Synchronous response
-A frame transmission can be optionally followed by a synchronous response of its recipient.
+A frame transmission in both master-slave and multi-master modes can be optionally followed by a synchronous response of its recipient, all devices must use the same response time-out to avoid collisions. The acknowledgment reception phase must be shorter than the response time-out to be successful.
 
 ```cpp  
 Transmission                                    Response
@@ -75,4 +75,4 @@ Transmission                                    Response
 |  149  ||  H   ||  I   || 234 | LATENCY         |  6  |
 |_______||______||______||_____|                 |_____|
 ```
-The maximum time dedicated to potential acknowledgement reception for a given application is estimated by adding the CRC computation time of the longest supported frame to the maximum latency of the hardware and the medium used.
+The required response time-out for a given application can be determined practically transmitting the longest supported frame with the farthest physical distance between the two devices. The highest interval between packet transmission and acknowledgement measured plus a small margin is the correct time-out that should exclude acknowledgement losses.

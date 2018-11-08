@@ -36,17 +36,16 @@ The proposed communication mode is the result of years of testing and optimizati
 Binary timing durations are expressed in microseconds.
 
 ### Medium access control
-PJDLR specifies a contention based random multiple access method that supports both master-slave and multi-master mode. In master-slave mode the maximum data throughput available is 100% of the bandwidth. Devices are able to securely detect an ongoing transmission therefore collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss. In multi-master mode the maximum data throughput effectively available is 36.8% of the bandwidth (the same as slotted ALOHA).
+PJDLR specifies a variation of the carrier-sense, non-persistent random multiple access method (non-persistent CSMA). Devices can detect an ongoing transmission for this reason collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss.
 
 ### Byte transmission
-PJDLR byte transmission is composed by 10 bits, the first two are called synchronization pad and are used to obtain sampling synchronization. The synchronization pad is composed by a logic 1 padding bit shorter than data bits and a logic 0 data bit. The following 8 data bits contain information in LSB-first (least significant bit first) order.
+Byte transmission is composed by 10 bits, the first two are called synchronization pad and are used to obtain sampling synchronization. The synchronization pad is composed by a high padding bit shorter than data bits and a low data bit. The following 8 data bits contain information in LSB-first (least significant bit first) order.
 
 The reception technique is based on 3 steps:
-1. Find a logic 1 which duration is equal or shorter than the expected padding bit duration
+1. Find a high bit which duration is equal or acceptably shorter than the expected padding bit duration
 2. Synchronize to its falling edge
-3. Ensure it is followed by a logic 0 data bit
-
-If this pattern is detected data reception starts, if not, interference, synchronization loss or simply absence of communication is detected.
+3. Ensure it is followed by a low data bit
+4. If so reception starts, if not, interference, synchronization loss or simply absence of communication is detected
 ```cpp  
  _____ ___________________________
 | Pad | Byte                      |
@@ -57,7 +56,7 @@ If this pattern is detected data reception starts, if not, interference, synchro
 ```
 
 ### Frame transmission
-Before a frame transmission, the communication medium is analysed, if logic 1 is present communication is detected and collision is avoided, If the medium is free for a duration longer than a byte plus a small random time, frame transmission starts with an optional preamble designed to enable signal gain tuning and a frame initializer composed by 3 consequent synchronization pads followed by data bytes. The presence of the synchronization pad between each byte ensures that also a frame composed of a series of bytes with decimal value 0 can be transmitted safely without risk of collision.
+Before a frame transmission, the communication medium's state is analysed, if high communication is detected and collision is avoided, if low for a duration that is longer than the response time-out plus a small random time, frame transmission starts with an optional preamble designed to enable signal gain tuning and a frame initializer composed by 3 consequent synchronization pads followed by data bytes. The presence of the synchronization pad between each byte ensures that also a frame composed of a series of bytes with decimal value 0 can be transmitted safely without risk of collision.
 
 ```cpp     
            INITIALIZER  DATA
@@ -71,7 +70,7 @@ Before a frame transmission, the communication medium is analysed, if logic 1 is
 When a frame is received a low performance microcontroller with an inaccurate clock can correctly synchronize with transmitter during the frame initializer and consequently each byte is received. The frame initializer is detected if 3 synchronization pads occurred and if their duration is coherent with its expected duration. Frame initialization is 100% reliable, false positives can only occur because of externally induced interference.      
 
 ### Synchronous response
-A frame transmission can be optionally followed by a synchronous response of its recipient.
+A frame transmission in both master-slave and multi-master modes can be optionally followed by a synchronous response of its recipient, all devices must use the same response time-out to avoid collisions. The acknowledgment reception phase must be shorter than the response time-out to be successful.
 ```cpp  
 Transmission                                              Response
  ________ ______  ______  ______                   ________ _____
@@ -81,4 +80,4 @@ Transmission                                              Response
 |____|___|______||______||______|                 |____|___|_____|
 ```
 
-The maximum time dedicated to potential acknowledgement reception for a given application is estimated by adding the CRC computation time of the longest supported frame to the maximum latency and to the optional preamble duration.
+The required response time-out for a given application can be determined practically transmitting the longest supported frame with the farthest physical distance between the two devices. The highest interval between packet transmission and acknowledgement measured plus a small margin is the correct time-out that should exclude acknowledgement losses.

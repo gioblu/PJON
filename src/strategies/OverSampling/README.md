@@ -21,17 +21,16 @@
 #### How to use OverSampling
 Pass the `OverSampling` type as PJON template parameter to instantiate a new PJON object. All the other necessary information is present in the general [Documentation](/documentation).
 ```cpp  
-/* Maximum latency can be set defining OS_LATENCY
-   before PJON.h inclusion (default 4 milliseconds) */
-#define OS_LATENCY      4000
+// Set maximum latency in microseconds between transmission and response
+#define OS_LATENCY      2000
 
-/* Set the back-off exponential degree (default 4) */
-#define OS_BACK_OFF_DEGREE 4
+// Set the back-off exponential degree (default 5)
+#define OS_BACK_OFF_DEGREE 5
 
-/* Set the maximum sending attempts (default 20) */
-#define OS_MAX_ATTEMPTS   20
+// Set the maximum sending attempts (default 10)
+#define OS_MAX_ATTEMPTS   10
 
-/* Disable preamble setting a duration of 0 (higher if required) */
+// Preamble before transmission by default disabled
 #define OS_PREAMBLE_PULSE_WIDTH 0
 
 /* The values set above are by default producing a 3.2 seconds
@@ -82,7 +81,6 @@ RX/TX --/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 
 #### Known issues
 - In older versions, `OverSampling` was affected by ineffective and short range if used in `PJON_HALF_DUPLEX` mode. This issue has been fixed by suggesting the use of pins part of 2 different port groups.
-- In `PJON_HALF_DUPLEX` mode it may be required to use the preamble to let receiver's gain to be set back to the transmitter's signal magnitude before packet reception.
 
 #### Safety warning
 In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. Before any practical test or hardware purchase for a wireless [OverSampling](/src/strategies/OverSampling) radio setup, compliance with government requirements and regulations must be ensured.

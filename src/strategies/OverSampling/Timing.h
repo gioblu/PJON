@@ -63,16 +63,15 @@
   #define OS_PREAMBLE_PULSE_WIDTH 0
 #endif
 
-/* The default response timeout setup dedicates the transmission time of 1
-   byte plus 1 millisecond for latency and CRC computation. If receiver needs
-   more than OS_TIMEOUT to compute CRC and answer back ACK, transmitter will
-   not receive the incoming synchronous ACK, Higher or lower if necessary! */
+/* The default OS_LATENCY setup is 2000 microseconds. If receiver needs more
+   time to compute CRC and answer back ACK, transmitter will
+   not receive the incoming synchronous ACK. Set higher if required. */
 
 #ifndef OS_LATENCY
-  #define OS_LATENCY         4000
+  #define OS_LATENCY 2000
 #endif
 
-#define OS_TIMEOUT ((OS_BIT_WIDTH * 9) + OS_BIT_SPACER + OS_LATENCY)
+#define OS_TIMEOUT (OS_BIT_WIDTH * 9) + OS_BIT_SPACER + OS_LATENCY
 
 /* Maximum initial delay in milliseconds: */
 

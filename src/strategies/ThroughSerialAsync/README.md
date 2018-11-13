@@ -1,4 +1,4 @@
-### ThroughAsyncSerial
+## ThroughAsyncSerial
 
 **Medium:** Hardware/Software Serial port |
 **Pins used:** 1 or 2
@@ -7,7 +7,7 @@ With `ThroughSerialAsync` strategy, PJON can run through a software or hardware 
 
 This strategy is based upon the `ThroughSerial` but reception is asynchronous and completely non-blocking, making good use of hardware buffers and sparing time that `ThroughSerial` looses polling. It is not required to call `bus.receive()` with any delay, just call it frequently to see if there are any packets that have been received.
 
-#### Why PJON over Serial?
+### Why PJON over Serial?
 Serial communication is fast and reliable but it is often useless without all the features PJON contains. `ThroughAsyncSerial` has been developed to enable PJON communication through a serial data link. Adding PJON on top of Serial it is possible to leverage of the PJON protocol layer features like acknowledge, addressing, multiplexing, packet handling, 8 or 32-bit CRC and traffic control.  
 
 Being impossible to detect or avoid collisions over a serial port, `ThroughSerial` has been developed primarily to be used in master-slave mode. `ThroughSerial` in multi-master mode, being unable to detect or avoid collisions, operates using the slotted ALOHA medium access method. Of all contention based random multiple access methods, slotted ALOHA, which maximum data throughput is only 36.8% of the available bandwidth, is one of the least efficient and should not be applied in networks where many devices often need to arbitrarily transmit data.
@@ -16,7 +16,17 @@ Being impossible to detect or avoid collisions over a serial port, `ThroughSeria
 
 There is a default reception interval of 100 microseconds used to allow data to accumulate in the hardware UART buffer. This value is configurable using `bus.strategy.set_read_interval(100)` passing an arbitrary interval in microseconds. The read interval may require adjustment depending on UART RX buffer size and baud rate.  
 
-#### How to use ThroughAsyncSerial
+### Configuration
+Before including `PJON.h` it is possible to configure `ThroughSerialAsync` using predefined constants:
+
+| Constant                | Purpose                             | Supported value                            |
+| ----------------------- |------------------------------------ | ------------------------------------------ |
+| `TSA_READ_INTERVAL`     | minimum interval between receptions | Duration in microseconds (100 by default)  |
+| `TSA_BYTE_TIME_OUT`      | Maximum byte reception time-out     | Duration in microseconds (1000000 by default) |
+| `TSA_RESPONSE_TIME_OUT`  | Maximum response time-out           | Duration in microseconds (10000 by default) |
+| `TSA_BACK_OFF_DEGREE`  | Maximum back-off exponential degree | Numeric value (4 by default)               |
+| `TSA_MAX_ATTEMPTS`     | Maximum transmission attempts       | Numeric value (20 by default)              |
+
 Pass the `ThroughSerial` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
 ```cpp  
 #include PJON_INCLUDE_TAS
@@ -24,30 +34,6 @@ PJON<ThroughAsyncSerial> bus;
 ```
 Call the `begin` method on the `Serial` or `SoftwareSerial`  object you want to use for PJON communication and pass it to the `set_serial` method:
 ```cpp  
-/* Set 100 microseconds (default) as the minimum interval between every
-   Depending on the latency, baud rate and computation time the
-   optimal TSA_READ_INTERVAL value may variate.
-   Always set: TSA_READ_INTERVAL > (byte transmission time + latency) */
-#define TSA_READ_INTERVAL 100
-
-/* Set 1000000 microseconds or 1s (default) as the maximum timeframe for
-   byte reception. Always set:
-   TSA_BYTE_TIME_OUT > (byte transmission time + latency) */
-#define TSA_BYTE_TIME_OUT      1000000
-
-/* Set 10 milliseconds as the maximum timeframe between
-   transmission and synchronous acknowledgement response.
-   Its  optimal configuration is strictly related to the
-   maximum time needed by receiver to receive the packet, compute and
-   transmit back an ACK (decimal 6) */
-#define TSA_RESPONSE_TIME_OUT 10000
-
-// Set the back-off exponential degree (default 4)
-#define TSA_BACK_OFF_DEGREE 4
-
-// Set the maximum sending attempts (default 20)
-#define TSA_MAX_ATTEMPTS   20
-
 #include <PJON.h>
 
 PJON<ThroughAsyncSerial> bus;
@@ -75,6 +61,6 @@ HC-12 wireless module supports both synchronous and asynchronous acknowledgement
 
 All the other necessary information is present in the general [Documentation](/documentation).
 
-#### Known issues
+### Known issues
 - Transmission is still blocking, will be made non-blocking in the next versions.
 - acknowledgement procedure is still blocking, will be made non-blocking in the next versions.

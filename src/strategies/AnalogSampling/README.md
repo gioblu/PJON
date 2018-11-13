@@ -74,7 +74,7 @@ The picture below shows a bidirectional exchange where both packet and acknowled
 ![AnalogSampling PJDLS bidirectional exchange](images/AnalogSampling_PJDLS_LED_Transceiver.jpg)
 
 ### Configuration
-Before including `PJON.h` it is possible to configure `OverSampling` using predefined constants:
+Before including `PJON.h` it is possible to configure `AnalogSampling` using predefined constants:
 
 | Constant                  | Purpose                             | Supported value                            |
 | ------------------------- |------------------------------------ | ------------------------------------------ |

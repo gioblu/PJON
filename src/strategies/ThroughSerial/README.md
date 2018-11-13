@@ -8,7 +8,7 @@ With `ThroughSerial` strategy, PJON can run through a software or hardware Seria
 #### Why PJON over Serial?
 Serial communication is fast and reliable but it is often useless without all the features PJON contains. `ThroughSerial` has been developed to enable PJON communication through a serial data link. Adding PJON on top of Serial it is possible to leverage of the PJON protocol layer features like acknowledge, addressing, multiplexing, packet handling, 8 or 32-bit CRC and traffic control.
 
-Being impossible to detect or avoid collisions over a serial port, `ThroughSerial` has been developed primarily to be used in master-slave mode. `ThroughSerial` in multi-master mode, being unable to detect or avoid collisions, operates using the pure ALOHA medium access method. Of all contention based random multiple access methods, pure ALOHA, which maximum data throughput is only 18.4% of the available bandwidth, is the least efficient and should not be applied in networks where many devices often need to arbitrarily transmit data. 
+Being impossible to detect or avoid collisions over a serial port, `ThroughSerial` has been developed primarily to be used in master-slave mode. `ThroughSerial` in multi-master mode, being unable to detect or avoid collisions, operates using the slotted ALOHA medium access method. Of all contention based random multiple access methods, slotted ALOHA, which maximum data throughput is only 36.8% of the available bandwidth, is one of the least efficient and should not be applied in networks where many devices often need to arbitrarily transmit data.
 
 #### How to use ThroughSerial
 Pass the `ThroughSerial` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
@@ -17,22 +17,20 @@ PJON<ThroughSerial> bus;
 ```
 Call the `begin` method on the `Serial` or `SoftwareSerial`  object you want to use for PJON communication and pass it to the `set_serial` method:
 ```cpp  
-/* Set 5 milliseconds (default) as the maximum timeframe for
-   byte reception. Always set:
-   TX_MAX_RESPONSE_TIME > (byte transmission time + latency) */
-#define TS_BYTE_TIME_OUT      5000
+// Set 50 milliseconds (default) as the maximum timeframe for byte reception.
+#define TS_BYTE_TIME_OUT      50000
 
 /* Set 10 milliseconds as the maximum timeframe between
    transmission and synchronous acknowledgement response.
    This value is strictly related to the maximum time needed
    by receiver to receive and compute the packet.
-   Higher if necessary. */
+   Set higher if necessary. */
 #define TS_RESPONSE_TIME_OUT 10000
 
-/* Set the back-off exponential degree (default 4) */
+// Set the back-off exponential degree (default 4)
 #define TS_BACK_OFF_DEGREE 4
 
-/* Set the maximum sending attempts (default 20) */
+// Set the maximum sending attempts (default 20)
 #define TS_MAX_ATTEMPTS   20
 
 #include <PJON.h>

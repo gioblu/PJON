@@ -10,7 +10,7 @@ This strategy is based upon the `ThroughSerial` but reception is asynchronous an
 #### Why PJON over Serial?
 Serial communication is fast and reliable but it is often useless without all the features PJON contains. `ThroughAsyncSerial` has been developed to enable PJON communication through a serial data link. Adding PJON on top of Serial it is possible to leverage of the PJON protocol layer features like acknowledge, addressing, multiplexing, packet handling, 8 or 32-bit CRC and traffic control.  
 
-Being impossible to detect or avoid collisions over a serial port, `ThroughSerialAsync` has been developed primarily to be used in master-slave mode. `ThroughSerialAsync` in multi-master mode, being unable to detect or avoid collisions, operates using the pure ALOHA medium access method. Of all contention based random multiple access methods, pure ALOHA, which maximum data throughput is only 18.4% of the available bandwidth, is the least efficient and should not be applied in networks where many devices often need to arbitrarily transmit data.
+Being impossible to detect or avoid collisions over a serial port, `ThroughSerial` has been developed primarily to be used in master-slave mode. `ThroughSerial` in multi-master mode, being unable to detect or avoid collisions, operates using the slotted ALOHA medium access method. Of all contention based random multiple access methods, slotted ALOHA, which maximum data throughput is only 36.8% of the available bandwidth, is one of the least efficient and should not be applied in networks where many devices often need to arbitrarily transmit data.
 
 `ThroughSerialAsync` performs well if used with ESP8266 and ESP32 where blocking procedures can strongly degrade functionality. The reception phase is entirely non-blocking. Sending and acknowledgement however are still blocking.
 
@@ -42,10 +42,10 @@ Call the `begin` method on the `Serial` or `SoftwareSerial`  object you want to 
    transmit back an ACK (decimal 6) */
 #define TSA_RESPONSE_TIME_OUT 10000
 
-/* Set the back-off exponential degree (default 4) */
+// Set the back-off exponential degree (default 4)
 #define TSA_BACK_OFF_DEGREE 4
 
-/* Set the maximum sending attempts (default 20) */
+// Set the maximum sending attempts (default 20)
 #define TSA_MAX_ATTEMPTS   20
 
 #include <PJON.h>

@@ -3,7 +3,7 @@
 **Medium:** Wire |
 **Pins used:** 1 / 2
 
-`SoftwareBitBang` is an asynchronous serial data link designed for low-data-rate applications that requires one wire and no additional hardware to handle one or many to many communication. This implementation can run on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin. It is a valid alternative to 1-Wire because of its flexibility and reliability. Fault tolerance schemes can be easily implemented because the communication pins can be configured at runtime. Bus maximum length is limited by cable's resistance, by the voltage level used and by externally induced interference. It has been tested with up to 50 meters long insulated wires and results demonstrate the same performance achieved with shorter lengths. The maximum range is still unknown. Take a look at the [video introduction](https://www.youtube.com/watch?v=Vg5aSlD-VCU) for a brief showcase of its features.
+`SoftwareBitBang` is a software implementation of [PJDL (Padded Jittering Data Link](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md). It supports simplex and half-duplex asynchronous serial communication for up to 254 devices over one common wire. This implementation can run on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin. It is a valid alternative to 1-Wire because of its flexibility and reliability. Fault tolerance schemes can be easily implemented because the communication pins can be configured at runtime. Bus maximum length is limited by cable's resistance, by the voltage level used and by externally induced interference. It has been tested with up to 50 meters long insulated wires and results demonstrate the same performance achieved with shorter lengths. The maximum range is still unknown. Take a look at the [video introduction](https://www.youtube.com/watch?v=Vg5aSlD-VCU) for a brief showcase of its features.
 ```cpp
 PJDL SINGLE WIRE BUS                            ______
  ______    ______    ______    ______          |      |
@@ -42,34 +42,19 @@ When including and using the `SoftwareBitBang` strategy you have the complete ac
 
 Communication over one wire let you to experiment quickly and with creativity. The first suggested test, at the tester's risk, is to let two arduino boards communicate [through a living body](https://www.youtube.com/watch?v=caMit7nzJsM) touching with the left hand (should be harmless) the digital pin of the first board and with the right the pin of the other one. It is stunning to see highly accurate digital communication running through a living biological body. This opens the mind to creative solutions.
 
-### How to use SoftwareBitBang
+### Configuration
 Before including `PJON.h` it is possible to configure `SoftwareBitBang` using predefined constants:
+
+| Constant                | Purpose                             | Supported value                            |
+| ----------------------- |------------------------------------ | ------------------------------------------ |
+| `SWBB_MODE`             | Data transmission mode              | 1, 2, 3                                    |
+| `SWBB_RESPONSE_TIMEOUT` | Maximum response time-out           | Duration in microseconds (1500 by default) |
+| `SWBB_BACK_OFF_DEGREE`  | Maximum back-off exponential degree | Numeric value (4 by default)               |
+| `SWBB_MAX_ATTEMPTS`     | Maximum transmission attempts       | Numeric value (20 by default)              |
+
+`SoftwareBitBang` supports the use of input and output pins because separated signals may be required if additional circuitry is used for amplification or noise filtering. It also works if pins are directly connected as a simple point-to-point null-modem or cross-over serial link.
+
 ```cpp  
-/* SoftwareBitBang default SWBB_MODE: 1
-   (Transfer speed: 16.949kBb or 2.11kB/s) */
-
-// Set SWBB_MODE 2 before PJON.h inclusion
-// (Speed: 21.505kBd or 2.68kB/s)
-#define SWBB_MODE 2
-
-// Set SWBB_MODE 3 before PJON.h inclusion
-// (Architecture / Toolchain dependant)
-#define SWBB_MODE 3
-
-/* Synchronous acknowledgement response timeout
-   (1.5 milliseconds by default) If latency + CRC
-   computation > SWBB_RESPONSE_TIMEOUT
-   synchronous acknowledgement reliability could
-   be affected or disrupted higher
-   SWBB_RESPONSE_TIMEOUT if necessary. */
-#define SWBB_RESPONSE_TIMEOUT 1500
-
-// Set the back-off exponential degree (default 4)
-#define SWBB_BACK_OFF_DEGREE     4
-
-// Set the maximum sending attempts (default 20)
-#define SWBB_MAX_ATTEMPTS       20
-
 #include <PJON.h>
 
 PJON<SoftwareBitBang> bus;
@@ -82,8 +67,6 @@ void setup() {
 }
 ```
 After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance. All the other necessary information is present in the general [Documentation](/documentation).
-
-The SoftwareBitBang implementation permits the use of input and output pins because separated signals may be required if additional circuitry is used for amplification or noise filtering. It also works if pins are directly connected as a simple point-to-point null-modem or cross-over serial link.
 
 ### Why not interrupts?
 In the Arduino environment the use of libraries is really extensive and often the end user is not able to go over collisions. Very often a library is using hardware resources of the microcontroller, colliding with other libraries. This happens because in general Arduino boards have limited hardware resources. Software-defined bit-banging, is a stable and reliable solution that leads to "more predictable" results than interrupt driven procedures coexisting on limited microcontrollers without the developer and the end user knowing about it.

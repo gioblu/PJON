@@ -1,29 +1,29 @@
-### AnalogSampling
+## AnalogSampling
 
-**Medium:** Light |
+**Medium:** Light pulses |
 **Pins used:** 1 / 2
 
 `AnalogSampling` strategy or data link complies with [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md), it is designed to communicate data wirelessly using light impulses and its sampling technique is based on analog readings. This strategy is able to use a single LED for both photo-emission and photo-reception phases providing with wireless half-duplex connectivity between devices with a range of up to 5 meters. Most appliances have at least a useless energy consuming LED on board, right?
 
 `AnalogSampling` can also be used with separate emitter and receiver enabling cheap long range wireless LED and laser communication. The proposed circuit, technique and codebase were originally implemented in the far 2011, see the first [video documented experiment](https://www.youtube.com/watch?v=-Ul2j6ixbmE). Take a look at the [video introduction](https://www.youtube.com/watch?v=yIncPe8OPpg) for a brief showcase of its features.
 
-#### Compatibility
+### Compatibility
 | MCU              | Clock | Supported pins   | Supported modes |
 | ---------------- |------ | ---------------- | --------------- |
 | ATmega88/168/328 (Duemilanove, Uno, Nano, Pro) | 16MHz | A0, A1, A2, A3, A4, A5 | `1`, `2`, `3`, `4`, `5` |
 | ATmega2560 (Mega, Mega nano) | 16MHz | A0, A1, A2, A3, A4, A5 | `1`, `2`, `3` |
 
-#### Performance
+### Performance
 `AnalogSampling` works with the following communication modes:
-- `1` runs at 1024Bd or 128B/s
-- `2` runs at 1361Bd or 170B/s
-- `3` runs at 3773Bb or 471B/s
-- `4` runs at 5547Bb or 639B/s
-- `5` runs at 12658Bd or 1528B/s
+- `1` runs at 1024Bd or 128B/s (`AS_PRESCALE` 128)
+- `2` runs at 1361Bd or 170B/s (`AS_PRESCALE` 128)
+- `3` runs at 3773Bb or 471B/s (`AS_PRESCALE` 32)
+- `4` runs at 5547Bb or 639B/s (`AS_PRESCALE` 16)
+- `5` runs at 12658Bd or 1528B/s (`AS_PRESCALE` 8)
 
 Caution, mode `5` sets ADC clock prescale to a higher rate than manufacturer recommends as maximum ADC sample rate (prescale 16).
 
-#### What can be done?
+### What can be done?
 The most basic example is to connect two devices using a couple of visible light LEDs used as wireless transceivers.
 
 ![PJON AnalogSampling LED wireless communication](http://www.pjon.org/assets/images/PJON-AnalogSampling-half-duplex-led-communication.png)
@@ -73,33 +73,19 @@ The picture below shows a bidirectional exchange where both packet and acknowled
 
 ![AnalogSampling PJDLS bidirectional exchange](images/AnalogSampling_PJDLS_LED_Transceiver.jpg)
 
-#### How to use AnalogSampling
+### Configuration
+Before including `PJON.h` it is possible to configure `OverSampling` using predefined constants:
+
+| Constant                  | Purpose                             | Supported value                            |
+| ------------------------- |------------------------------------ | ------------------------------------------ |
+| `AS_MODE`                 | Data transmission mode              | 1, 2, 3, 4, 5                              |
+| `AS_RESPONSE_TIMEOUT`     | Maximum response time-out           | Duration in microseconds (15000 by default) |
+| `AS_BACK_OFF_DEGREE`      | Maximum back-off exponential degree | Numeric value (5 by default)               |
+| `AS_MAX_ATTEMPTS`         | Maximum transmission attempts       | Numeric value (10 by default)              |
+| `AS_PRESCALE`             | Set ADC pre-scaler                  | 8, 16, 32                                  |
+
 Pass the `AnalogSampling` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy. All the other necessary information is present in the general [Documentation](/documentation).
 ```cpp  
-// Predefine AS_MODE selecting communication mode if needed
-#define AS_MODE 1 // 1024Bd  or 128B/s
-#define AS_MODE 2 // 1361Bd  or 170B/s
-#define AS_MODE 3 // 3773Bb  or 471B/s  (ADC prescale 32)
-#define AS_MODE 4 // 5547Bb  or 639B/s  (ADC prescale 16)
-#define AS_MODE 5 // 12658Bd or 1528B/s (ADC prescale  8)
-
-/* Acknowledge maximum latency, 15000 microseconds default.
-   Could be necessary to higher AS_RESPONSE_TIMEOUT if sending
-   long packets because of the CRC computation time needed by
-   receiver before transmitting its acknowledge  */
-#define AS_RESPONSE_TIMEOUT 15000
-
-/* Set the back-off exponential degree (default 5) */
-#define AS_BACK_OFF_DEGREE      5
-
-/* Set the maximum sending attempts (default 10) */
-#define AS_MAX_ATTEMPTS        10
-
-/* The values set above are the default producing a 3.2 seconds
-   back-off timeout with 20 attempts. Higher SWBB_MAX_ATTEMPTS
-   to higher the back-off timeout, higher SWBB_BACK_OFF_DEGREE
-   to higher the interval between every attempt. */
-
 #include <PJON.h>
 
 PJON<AnalogSampling> bus;
@@ -117,12 +103,12 @@ void setup() {
 ```
 After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance.
 
-#### Known issues
+### Known issues
 - Direct sunlight or other light sources can affect receiver's sensitivity and maximum communication range
 - Long wires can degrade performance
 - Depending on the power supply voltage, LEDs could be overpowered, add a current limiting resistor if required
 - Oscilloscope's probe acting as a pull down resistor influences results and the required pull down resistor's value
 - A pull-down resistor is required to obtain optimal performance, see above
 
-#### Safety warning
+### Safety warning
 In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. When working with an [AnalogSampling](/src/strategies/AnalogSampling) LED or laser based setup safety glasses must be worn and transceivers must be operated cautiously to avoid potential eye injuries. Consider that with [AnalogSampling](/src/strategies/AnalogSampling) all LEDs that are physically connected to an ADC may be used maliciously to both download or upload data wirelessly, effectively circumventing many air-gapping techniques.   

@@ -4,17 +4,17 @@ A strategy is an abstraction layer which role is to physically transmit data. Th
 
 | Strategy      | Physical layer | Protocol | Pins needed   |
 | ------------- | -------------- | -------- | ------------- |
-| [SoftwareBitBang](../src/strategies/SoftwareBitBang) | Electrical impulses over conductive element | [PJDL](../src/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) | 1 or 2 |
-| [AnalogSampling](../src/strategies/AnalogSampling)  | Light pulses over air or optic fiber | [PJDLS](../src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) | 1 or 2 |
-| [EthernetTCP](../src/strategies/EthernetTCP)  | Electrical/radio impulses over wire/air | TCP | Ethernet port |
-| [LocalUDP](../src/strategies/LocalUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
-| [GlobalUDP](../src/strategies/GlobalUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
-| [OverSampling](../src/strategies/OverSampling)  | Electrical/radio impulses over wire/air | [PJDLR](../src/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) | 1 or 2 |
-| [ThroughSerial](../src/strategies/ThroughSerial)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md) | 1 or 2 |
-| [ThroughSerialAsync](../src/strategies/ThroughSerialAsync)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md) | 1 or 2 |
-| [ThroughLoRa](../src/strategies/ThroughLoRa)  | Radio impulses over air | LoRa | 3 or 4 |
-| [ESPNOW](../src/strategies/ESPNOW)  | Radio impulses over air | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) | WiFi link |
-| [Any](../src/strategies/Any)  | Virtual inheritance, any of the above | Any of the above | Any of the above |
+| [SoftwareBitBang](SoftwareBitBang) | Electrical impulses over conductive element | [PJDL](SoftwareBitBang/specification/PJDL-specification-v2.0.md) | 1 or 2 |
+| [AnalogSampling](AnalogSampling)  | Light pulses over air or optic fiber | [PJDLS](AnalogSampling/specification/PJDLS-specification-v2.0.md) | 1 or 2 |
+| [EthernetTCP](EthernetTCP)  | Electrical/radio impulses over wire/air | TCP | Ethernet port |
+| [LocalUDP](LocalUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
+| [GlobalUDP](GlobalUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
+| [OverSampling](OverSampling)  | Electrical/radio impulses over wire/air | [PJDLR](OverSampling/specification/PJDLR-specification-v2.0.md) | 1 or 2 |
+| [ThroughSerial](ThroughSerial)  | Electrical/radio impulses over wire/air | [TSDL](ThroughSerial/specification/TSDL-specification-v2.0.md) | 1 or 2 |
+| [ThroughSerialAsync](ThroughSerialAsync)  | Electrical/radio impulses over wire/air | [TSDL](ThroughSerial/specification/TSDL-specification-v2.0.md) | 1 or 2 |
+| [ThroughLoRa](ThroughLoRa)  | Radio impulses over air | LoRa | 3 or 4 |
+| [ESPNOW](ESPNOW)  | Radio impulses over air | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) | WiFi link |
+| [Any](Any)  | Virtual inheritance, any of the above | Any of the above | Any of the above |
 
 A `Strategy` is a class containing a set of methods used to physically send and receive data along with the required getters to handle retransmission and collision:
 

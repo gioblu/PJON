@@ -23,8 +23,8 @@
 
 #pragma once
 
-#include <strategies/Any/StrategyLinkBase.h>
-#include <strategies/Any/StrategyLink.h>
+#include "StrategyLinkBase.h"
+#include "StrategyLink.h"
 
 class Any {
 public:

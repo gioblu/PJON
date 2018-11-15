@@ -50,7 +50,7 @@ limitations under the License. */
   #define PJON_ROUTER_TABLE_SIZE 100
 #endif
 
-#include <PJONRouter.h>
+#include "PJONRouter.h"
 
 class PJONDynamicRouter : public PJONRouter {
 protected:

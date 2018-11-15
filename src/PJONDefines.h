@@ -52,8 +52,8 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 #pragma once
-#include <utils/crc/PJON_CRC8.h>
-#include <utils/crc/PJON_CRC32.h>
+#include "utils/crc/PJON_CRC8.h"
+#include "utils/crc/PJON_CRC32.h"
 
 /* Id used for broadcasting to all devices */
 #ifndef PJON_BROADCAST

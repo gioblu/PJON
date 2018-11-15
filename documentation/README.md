@@ -1,10 +1,18 @@
 
+## Documentation index
+- [Addressing](/documentation/addressing.md)
+- [Configuration](/documentation/configuration.md)
+- [Data reception](/documentation/data-reception.md)
+- [Data transmission](/documentation/data-transmission.md)
+- [Error handling](/documentation/error-handling.md)
+- [IO setup](/documentation/io-setup.md)
+- [Routing](/documentation/routing.md)
+
 PJON implements a totally software-defined network protocol stack in around 1500 lines of code, thanks to the [strategies](/src/strategies/README.md) abstraction it can operate transparently on different media, physical layers and other protocols. This library can be cross-compiled to work with any Arduino compatible device, Linux or Windows x86 or Apple machine.
 
 Thanks to the [interfaces](/src/interfaces/README.md) abstraction, PJON can be easily ported on any MCU or architecture that  exposes random generation, timing and IO system calls.
 
 ```cpp
-  Implementation model
        ___________________________________________________
       | Layer 3 Network                                   |
       | PJON                                              |
@@ -22,13 +30,3 @@ Thanks to the [interfaces](/src/interfaces/README.md) abstraction, PJON can be e
   --->| micros, random, delayMicroseconds ...             |
       |___________________________________________________|
 ```
-
-This library exposes a set of methods to easily configure and handle communication between devices:
-
-- [Addressing](/documentation/addressing.md)
-- [Configuration](/documentation/configuration.md)
-- [Data reception](/documentation/data-reception.md)
-- [Data transmission](/documentation/data-transmission.md)
-- [Error handling](/documentation/error-handling.md)
-- [IO setup](/documentation/io-setup.md)
-- [Routing](/documentation/routing.md)

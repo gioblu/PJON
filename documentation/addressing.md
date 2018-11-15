@@ -1,3 +1,5 @@
+
+### Documentation index
 - **[Addressing](/documentation/addressing.md)**
 - [Configuration](/documentation/configuration.md)
 - [Data reception](/documentation/data-reception.md)
@@ -6,7 +8,7 @@
 - [IO setup](/documentation/io-setup.md)
 - [Routing](/documentation/routing.md)
 
-### Addressing
+## Addressing
 
 PJON objects can operate in local or shared mode. The PJON protocol v3.0 in [local](/specification/PJON-protocol-specification-v3.0.md#local-mode) mode supports connectivity for up to 254 devices using a 1 byte device identifier, in [shared](/specification/PJON-protocol-specification-v3.0.md#shared-mode) mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices using an additional 4 bytes bus identifier.
 
@@ -36,10 +38,10 @@ Device and bus id can be read using `device_id` or `bus_id`:
   bus.bus_id;      // Get or set bus id
 ```
 
-#### Dynamic addressing
+### Dynamic addressing
 `PJONMaster` and `PJONSlave` classes implement the master-slave and multi-master [dynamic addressing](/specification/PJON-dynamic-addressing-specification-v2.0.md) features. Slaves can be connected to a bus and can be hot-swapped, their id is automatically assigned by master and their presence can be optionally monitored. Master keeps an updated list of known dynamically addressed slaves. Use the `PJON` class if those features are not required.   
 
-#### PJONMaster
+### PJONMaster
 The `PJONMaster` class implement master's dynamic addressing procedure which is totally automatic a requires no configuration, although some optional configuration is available.
 ```cpp
 // Optionally configurable maximum amount of slaves handled by master
@@ -90,7 +92,7 @@ void error_function(uint8_t code, uint8_t data, void *custom_pointer) {
 };
 ```
 
-#### PJONSlave
+### PJONSlave
 Use the `PJONSlave` class for slaves:
 ```cpp
 #include <PJONSlave.h>

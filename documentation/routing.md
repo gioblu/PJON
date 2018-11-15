@@ -1,4 +1,5 @@
 
+### Documentation index
 - [Addressing](/documentation/addressing.md)
 - [Configuration](/documentation/configuration.md)
 - [Data reception](/documentation/data-reception.md)
@@ -7,10 +8,10 @@
 - [IO setup](/documentation/io-setup.md)
 - **[Routing](/documentation/routing.md)**
 
-### Routing
+## Routing
 Transparent routing based on a tree topology has been implemented by Fred Larsen with the `PJONSimpleSwitch`, `PJONSwitch`, `PJONRouter`, `PJONDynamicRouter` and `PJONInteractiveRouter`. Those classes implement the following router roles:
 
-#### SimpleSwitch
+### SimpleSwitch
 [SimpleSwitch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/SimpleSwitch) connects two buses using the same strategy (`SoftwareBitBang` <=> `SoftwareBitBang`) primarily used to amplify signals and so extend the maximum range.
 ```cpp
  __________             ________              __________
@@ -67,7 +68,7 @@ void loop() {
 };
 ```
 
-#### Switch
+### Switch
 [Switch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/Switch) routes packets between locally attached buses also if different strategies or media are in use. It supports a default gateway to be able to act as a leaf in a larger network setup.
 ```cpp
  __________             ________              __________
@@ -76,7 +77,7 @@ void loop() {
 |__________|           |________|            |__________|
 ```
 
-#### Router
+### Router
 [Router](/examples/ARDUINO/Network/SoftwareBitBang/Router) routes between locally attached buses also if different strategies or media are in use, and remote buses reachable through the locally attached buses.
 ```cpp
                  ________
@@ -91,11 +92,11 @@ ________________| ROUTER |________________
 |__________|                 |__________|
 ```
 
-#### DynamicRouter
+### DynamicRouter
 [Dynamic router](/examples/ARDUINO/Network/SoftwareBitBang/Router/DynamicRouter) is a router that also populates a routing table of remote (not directly attached) buses observing traffic.
 
-#### Virtual bus
+### Virtual bus
 [Virtual bus](/examples/ARDUINO/Local/SoftwareBitBang/Tunneler) is a bus where multiple buses using potentially different media or strategies, connected through a router, have the same bus id (including the local bus case), and where the location of each device is automatically registered observing traffic.
 
-#### Interactive router
+### Interactive router
 [Interactive router](/examples/ARDUINO/Network/SoftwareBitBang/Switch/BlinkingSwitch) routes packets as a switch or router but it is also able to act as a device and have user-defined receive and error call-back.

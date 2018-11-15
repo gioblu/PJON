@@ -1,22 +1,22 @@
 
 ### What is a Strategy?
-The PJON network layer uses strategies to physically communicate data, a strategy is an abstraction layer which role is the data link or more simply to physically transmit data. Thanks to this abstraction layer PJON can operate transparently on a wide range of media and protocols. 11 strategies are proposed to communicate data through various media, take a look at the [strategies video introduction](https://www.youtube.com/watch?v=yPu45xoAHGg) for a brief showcase of their features.
+A strategy is an abstraction layer which role is to physically transmit data. Thanks to the strategies PJON can operate transparently on a wide range of media and protocols. Take a look at the [strategies video introduction](https://www.youtube.com/watch?v=yPu45xoAHGg) for a brief showcase of their features.
 
 | Strategy      | Physical layer | Protocol | Pins needed   |
 | ------------- | -------------- | -------- | ------------- |
-| [SoftwareBitBang](/src/strategies/SoftwareBitBang) | Electrical impulses over conductive element | [PJDL](../src/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) | 1 or 2 |
-| [AnalogSampling](/src/strategies/AnalogSampling)  | Light pulses over air or optic fiber | [PJDLS](../src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) | 1 or 2 |
-| [EthernetTCP](/src/strategies/EthernetTCP)  | Electrical/radio impulses over wire/air | TCP | Ethernet port |
-| [LocalUDP](/src/strategies/LocalUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
-| [GlobalUDP](/src/strategies/GlobalUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
-| [OverSampling](/src/strategies/OverSampling)  | Electrical/radio impulses over wire/air | [PJDLR](../src/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) | 1 or 2 |
-| [ThroughSerial](/src/strategies/ThroughSerial)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md) | 1 or 2 |
-| [ThroughSerialAsync](/src/strategies/ThroughSerialAsync)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md) | 1 or 2 |
-| [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio impulses over air | LoRa | 3 or 4 |
-| [ESPNOW](/src/strategies/ESPNOW)  | Radio impulses over air | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) | WiFi link |
-| [Any](/src/strategies/Any)  | Virtual inheritance, any of the above | Any of the above | Any of the above |
+| [SoftwareBitBang](../src/strategies/SoftwareBitBang) | Electrical impulses over conductive element | [PJDL](../src/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) | 1 or 2 |
+| [AnalogSampling](../src/strategies/AnalogSampling)  | Light pulses over air or optic fiber | [PJDLS](../src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) | 1 or 2 |
+| [EthernetTCP](../src/strategies/EthernetTCP)  | Electrical/radio impulses over wire/air | TCP | Ethernet port |
+| [LocalUDP](../src/strategies/LocalUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
+| [GlobalUDP](../src/strategies/GlobalUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
+| [OverSampling](../src/strategies/OverSampling)  | Electrical/radio impulses over wire/air | [PJDLR](../src/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) | 1 or 2 |
+| [ThroughSerial](../src/strategies/ThroughSerial)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md) | 1 or 2 |
+| [ThroughSerialAsync](../src/strategies/ThroughSerialAsync)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md) | 1 or 2 |
+| [ThroughLoRa](../src/strategies/ThroughLoRa)  | Radio impulses over air | LoRa | 3 or 4 |
+| [ESPNOW](../src/strategies/ESPNOW)  | Radio impulses over air | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) | WiFi link |
+| [Any](../src/strategies/Any)  | Virtual inheritance, any of the above | Any of the above | Any of the above |
 
-A Strategy is a class containing a set of methods used to physically send and receive data along with the required getters to handle retransmission and collision:
+A `Strategy` is a class containing a set of methods used to physically send and receive data along with the required getters to handle retransmission and collision:
 
 ```cpp
 bool begin(uint8_t additional_randomness = 0)
@@ -51,7 +51,7 @@ Sends a string of a certain length through the medium
 ```cpp
 uint16_t receive_string(uint8_t *string, uint16_t max_length) { ... };
 ```
-Receives a pointer where to store received information and an unsigned integer signaling the maximum string length. It should return the number of bytes received or `PJON_FAIL`.
+Receives a pointer where to store received information and an unsigned integer signalling the maximum string length. It should return the number of bytes received or `PJON_FAIL`.
 
 ```cpp
 void send_response(uint8_t response) { ... };
@@ -63,14 +63,13 @@ uint16_t receive_response() { ... };
 ```
 Receives a response from the packet's receiver
 
-You can define your own set of methods to use PJON with your own strategy on the medium you prefer. If you need other custom configuration or functions, those can be defined in your Strategy class. Other communication protocols could be used inside those methods to transmit and receive data:
-
 ```cpp
 // Simple Serial data link layer implementation example
 void send_response(uint8_t response) {
   Serial.print(response);
 };
 ```
+Above it is demonstrated how simply other communication protocols can be used to define a new custom strategy.
 
 ### How to define a new strategy
 To define the strategy you have only to create a new folder named for example `YourStrategyName` in `strategies`

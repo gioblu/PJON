@@ -8,6 +8,8 @@
 - [IO setup](/documentation/io-setup.md)
 - [Routing](/documentation/routing.md)
 
+---
+
 ## Data transmission
 The begin function must be called before starting communication, the lack of this call can lead to collisions after boot, so be sure to call it before making use of the instance.
 ```cpp  

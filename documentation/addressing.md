@@ -8,8 +8,9 @@
 - [IO setup](/documentation/io-setup.md)
 - [Routing](/documentation/routing.md)
 
-## Addressing
+---
 
+## Addressing
 PJON objects can operate in local or shared mode. The PJON protocol v3.0 in [local](/specification/PJON-protocol-specification-v3.0.md#local-mode) mode supports connectivity for up to 254 devices using a 1 byte device identifier, in [shared](/specification/PJON-protocol-specification-v3.0.md#shared-mode) mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices using an additional 4 bytes bus identifier.
 
 Instantiation in local mode:

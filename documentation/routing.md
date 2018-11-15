@@ -8,6 +8,8 @@
 - [IO setup](/documentation/io-setup.md)
 - **[Routing](/documentation/routing.md)**
 
+---
+
 ## Routing
 Transparent routing based on a tree topology has been implemented by Fred Larsen with the `PJONSimpleSwitch`, `PJONSwitch`, `PJONRouter`, `PJONDynamicRouter` and `PJONInteractiveRouter`. Those classes implement the following router roles:
 

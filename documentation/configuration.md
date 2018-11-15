@@ -8,6 +8,8 @@
 - [IO setup](/documentation/io-setup.md)
 - [Routing](/documentation/routing.md)
 
+---
+
 ## Configuration
 PJON uses predefined constants, setters and getters to support features and constraints configuration.  
 

@@ -23,7 +23,7 @@ Related work: https://github.com/gioblu/PJON/
 Compliant implementations: PJON v10.0 and following
 Released into the public domain
 ```
-The PJON protocol v3.0 in local mode supports connectivity for up to 254 devices, in shared mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices. The packet format is dynamic therefore meta-data can be optionally included using the header as a bitmap of selected features supporting interoperability between systems configured differently and providing with high efficiency including only the protocol's features used and the overhead (5-22 bytes) effectively required. Thanks to its modularity, dynamic packet format, low memory footprint and low overhead PJON can be used as an alternative to 1-Wire, i2c or CAN to connect a local network of microcontrollers with limited resources but can also be applied in place of TCP-IP to interconnect more complex networks.   
+The PJON protocol v3.0 in local mode supports connectivity for up to 254 devices, in shared mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices. The packet format is dynamic therefore meta-data can be optionally included using the header as a bitmap of selected features. It supports interoperability between systems using different header configurations and provides with high efficiency including only the protocol's features used and the overhead (5-22 bytes) effectively required. PJON can be used for simple low-data-rate applications as an alternative to 1-Wire, i2c or CAN but can also be applied in place of IP to interconnect more complex networks.   
 
 The graph below shows the conceptual model that characterizes and standardizes the communication. Its goal is the interoperability of diverse systems on a wide range of media with the use of a new set of open-source protocols. The graph partitions represent abstraction layers.
 
@@ -40,7 +40,7 @@ The graph below shows the conceptual model that characterizes and standardizes t
 | Asynchronous acknowledgement                   |
 |________________________________________________|
 | 2 Data link layer: PJDL, PJDLR, PJDLS, TSDL    |
-| Multiple access                                |
+| Medium access control                          |
 | Frame transmission                             |
 | Synchronous acknowledgement                    |
 |________________________________________________|
@@ -170,7 +170,7 @@ PJON supports both CRC8 and CRC32 to ensure safety on a wide range of use cases 
 CRC8 is calculated and appended to the initial meta-data (id, header and length) to ensure consistency, avoid false positives and the length corruption vulnerability that affects CAN (Controlled Area Network) and many other protocols.
 
 #### End CRC8/CRC32
-CRC8 is calculated on both data and meta-data and it is appended at the end of packets of up to 15 bytes length (including overhead). CRC32 is automatically used if packet length exceeds 15 bytes but can be optionally used for shorter than 15 bytes packets if higher accuracy is required.
+CRC8 is calculated on both data and meta-data and it is appended at the end of packets of up to 15 bytes length (including overhead). CRC32 must be used if packet length exceeds 15 bytes but can be optionally used also for shorter packets if higher accuracy is required.
 
 ### Packet transmission
 A default local packet transmission is an optionally bidirectional communication between two devices that can be divided in 3 different phases: **channel analysis**, **transmission** and optional **response**. In the channel analysis phase transmitter assess the medium's state before starting transmission to avoid collision. If the medium is free for use, transmission phase starts where the packet is entirely transmitted. The receiving device calculates CRC and starts the response phase transmitting a single byte, `PJON_ACK` (decimal 6) in case of correct data reception. If no acknowledgement is received, after an exponential back-off delay, the transmitter device retries until acknowledgement is received or a maximum number of attempts is reached and packet transmission discarded.

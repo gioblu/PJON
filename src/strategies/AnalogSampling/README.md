@@ -1,11 +1,10 @@
 ## AnalogSampling
 
-**Medium:** Light pulses |
-**Pins used:** 1 / 2
+**Medium**: light pulses over air or optic-fibre | **Pins used**: 1 or 2
 
 `AnalogSampling` strategy or data link complies with [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md), it is designed to communicate data wirelessly using light impulses and its sampling technique is based on analog readings. This strategy is able to use a single LED for both photo-emission and photo-reception phases providing with wireless half-duplex connectivity between devices with a range of up to 5 meters. Most appliances have at least a useless energy consuming LED on board, right?
 
-`AnalogSampling` can also be used with separate emitter and receiver enabling cheap long range wireless LED and laser communication. The proposed circuit, technique and codebase were originally implemented in the far 2011, see the first [video documented experiment](https://www.youtube.com/watch?v=-Ul2j6ixbmE). Take a look at the [video introduction](https://www.youtube.com/watch?v=yIncPe8OPpg) for a brief showcase of its features.
+`AnalogSampling` can also be used with separate emitter and receiver pins enabling cheap long range wireless communication using standard photo-diodes, light-emitting diodes or laser diodes. The proposed circuit, technique and codebase were originally implemented in the far 2011, see the first [video documented experiment](https://www.youtube.com/watch?v=-Ul2j6ixbmE). Take a look at the [video introduction](https://www.youtube.com/watch?v=yIncPe8OPpg) for a brief showcase of its features.
 
 ### Compatibility
 | MCU              | Clock | Supported pins   | Supported modes |
@@ -32,46 +31,9 @@ Leveraging of the interesting features of LEDs:
 - Emit light if powered by electricity
 - Emit a small but detectable amount of electricity if hit by light (photo-electric effect)
 
-It is possible to use LEDs as wireless (bidirectional) transceivers. This means that wireless half-duplex connectivity can be provided by a single LED per device. Not all LEDs behave as good as others so a preliminary evaluation of a set of different products is suggested:
+It is possible to use LEDs as wireless (bidirectional) transceivers. This means that wireless half-duplex connectivity can be provided by a single LED per device. See [LED selection](/documentation/LED-selection.md) to know more about how to choose the right LEDs and keep in mind that is necessary to add a 75K-5MΩ pull-down resistor connecting the A0 pin with ground to reduce the LED capacitance and externally induced interference.
 
-1. Position a couple of identical LEDs on a breadboard aiming at each other
-2. Connect one channel of the oscilloscope to the positive lead of one LED
-3. Power the connected LED with a 500Hz square wave
-4. Connect oscilloscope's remaining channel to the other LED's positive lead
-5. Connect all grounds together
-
-If you don't have a square wave generator you can use an Arduino:
-```cpp
-digitalWrite(12, HIGH);
-delay(1);
-digitalWrite(12, LOW);
-delay(1);
-```
-
-Looking at the 2 channels it should be observed:
-
-- The Transmitter's channel showing a crisp 5v signal
-- The Receiver's channel showing a lower voltage signal with transitions slopes
-
-Testing different LEDs with the same conditions shows that some produce a higher or lower voltage and transitions that are steeper or slower and more gradual. To obtain the best performance it is required to find a LED with the following characteristics:
-- Highest voltage produced when hit by light
-- Fastest and steepest transitions between states
-
-The picture below shows the [KCL5587S](https://datasheet.octopart.com/KCL5587S-Kodenshi-datasheet-62058055.pdf) that is evidently not the LED we are looking for.
-
-![AnalogSampling PJDLS bad LED](images/AnalogSampling_PJDLS_Bad_LED.jpg)
-
-The [L-53SF4C](https://www.rapidonline.com/pdf/55-9204_v1.pdf) instead is able to run flawlessly at MODE 3 (3773Bb or 471B/s):
-
-![AnalogSampling PJDLS good LED](images/AnalogSampling_PJDLS_Good_LED.jpg)
-
-It is necessary to add a 75K-5MΩ pull-down resistor connecting the A0 pin with ground to reduce the LED capacitance, bit transition slopes and externally induced interference.
-
-`AnalogSampling` can be used to experiment with short range infrared or visible light communication (i.e. remote control), medium range using light sources (i.e. cars transmitting data through front and backlights) or long range laser communication (i.e. data between ground and LEO).  
-
-The picture below shows a bidirectional exchange where both packet and acknowledgement are clearly visible:
-
-![AnalogSampling PJDLS bidirectional exchange](images/AnalogSampling_PJDLS_LED_Transceiver.jpg)
+`AnalogSampling` can be used to experiment with short range infrared or visible light communication (remote control, robot swarms, data streaming using lighting), medium range using light sources (cars transmitting data through front and backlights) or long range laser communication (data between ground and LEO).  
 
 ### Configuration
 Before including `PJON.h` it is possible to configure `AnalogSampling` using predefined constants:

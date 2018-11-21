@@ -11,9 +11,7 @@
 ---
 
 ## Documentation
-PJON implements a totally software-defined network protocol stack in around 1500 lines of code, thanks to the [strategies](/src/strategies/README.md) abstraction it can operate transparently on different media, physical layers and other protocols. This library can be cross-compiled to work with any Arduino compatible device, Linux or Windows x86 or Apple machine.
-
-Thanks to the [interfaces](/src/interfaces/README.md) abstraction, PJON can be easily ported on any MCU or architecture that  exposes random generation, timing and IO system calls.
+PJON implements a totally software-defined network protocol stack in around 1500 lines of code, thanks to the [strategies](/src/strategies/README.md) abstraction it can operate transparently on different media, physical layers and other protocols. Thanks to the [interfaces](/src/interfaces/README.md) abstraction PJON can be easily ported on any MCU or architecture. The graph below shows the implementation's architecture.
 
 ```cpp
        ___________________________________________________

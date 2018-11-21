@@ -742,7 +742,7 @@ class PJON {
 
     uint16_t send_packet(
       uint8_t id,
-      char *string,
+      const char *string,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
@@ -757,7 +757,7 @@ class PJON {
     uint16_t send_packet(
       uint8_t id,
       const uint8_t *b_id,
-      char *string,
+      const char *string,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,

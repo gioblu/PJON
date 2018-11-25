@@ -2,20 +2,20 @@
 - Acknowledge specification: [v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md)
 - Dynamic addressing specification: [v0.1](/specification/PJON-dynamic-addressing-specification-v0.1.md)
 - PJDL (Padded Jittering Data Link) specification:
-[PJDL v1.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) - [PJDLR v1.0](/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
+[PJDL v1.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) - [PJDLR v1.0](/src/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
 
 ```cpp
 /*
 Milan, Italy - 10/04/2010
-The PJON™ protocol specification is an invention and intellectual property
-of Giovanni Blu Mitolo - Copyright 2010-2017 All rights reserved
+The PJON® protocol specification is an invention and intellectual property
+of Giovanni Blu Mitolo - Copyright 2010-2018 All rights reserved
 
 Related work: https://github.com/gioblu/PJON
 Compliant implementation versions: PJON 1.0-3.0-beta
 */
 ```
 
-### PJON™ Protocol specification v0.1
+### PJON® Protocol specification v0.1
 The first experimental specification of the PJON protocol has been drafted with the goal of offering a new open-source, multi-master communications bus system Standard. Its more common applications are in the field of internet of things and embedded systems. Extended tests proved its effectiveness on different media like electricity, radio frequency and light.
 
 ### Basic concepts

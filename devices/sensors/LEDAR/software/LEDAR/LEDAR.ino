@@ -2,7 +2,7 @@
 /* LEDAR open-source reflectomoter
    Giovanni Blu Mitolo 2017 */
 
-#define LEDAR_VERSION           0
+#define LEDAR_VERSION           1
 
 #define PJON_PACKET_MAX_LENGTH 20
 #define PJON_MAX_PACKETS        2
@@ -17,9 +17,9 @@
 // Transmission interval
 #define LEDAR_INTERVAL        100
 // Reading iterations
-#define LEDAR_READINGS        500
+#define LEDAR_READINGS       2000
 // Presence detection threshold
-#define LEDAR_THRESHOLD      2500
+#define LEDAR_THRESHOLD      2000
 // Block incoming configuration
 #define LEDAR_ACCEPT_CONFIG  true
 
@@ -35,7 +35,22 @@ char packet[4] = {0, 0, 0, 0};
 // <Strategy name> bus(selected device id)
 PJON<SoftwareBitBang> bus(PJON_NOT_ASSIGNED);
 
+// Defines for setting and clearing register bits
+
+#ifndef cbi
+  #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
+#endif
+
+#ifndef sbi
+  #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
+#endif
+
 void setup() {
+  // set prescale to 32 (ADC 500KHz reading frequency)
+  sbi(ADCSRA,ADPS2);
+  cbi(ADCSRA,ADPS1);
+  sbi(ADCSRA,ADPS0);
+
   // Writing default configuration in EEPROM
   if(
     EEPROM.read(11) != 'L' ||
@@ -130,8 +145,8 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
     // Reading iterations update
     if(payload[0] == 'L') {
       readings = payload[1] << 8 | payload[2] & 0xFF;
-      EEPROM.update(3, payload[1] << 8);
-      EEPROM.update(4, payload[2] & 0xFF);
+      EEPROM.update(3, payload[1]);
+      EEPROM.update(4, payload[2]);
     }
     // Mode configuration
     if(payload[0] == 'M') {
@@ -151,8 +166,8 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
     // Interval configuration update
     if(payload[0] == 'T') {
       interval = payload[1] << 8 | payload[2] & 0xFF;
-      EEPROM.update(5, payload[1] << 8);
-      EEPROM.update(6, payload[2] & 0xFF);
+      EEPROM.update(5, payload[1]);
+      EEPROM.update(6, payload[2]);
     }
     // Configuration reset to default
     if(payload[0] == 'X') {
@@ -165,14 +180,15 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 void get_reflex(uint16_t iterations) {
   uint32_t ambient = 0;
   uint32_t reflex = 0;
-  for (uint16_t i = 0; i < iterations; i++)
+  for(uint16_t i = 0; i < iterations; i++)
     ambient = ambient + analogRead(LEDAR_RECEIVER_PIN);
-  digitalWrite(LEDAR_EMITTER_PIN, HIGH);
-  for (uint16_t i = 0; i < iterations; i++)
+  PJON_IO_WRITE(LEDAR_EMITTER_PIN, HIGH);
+  for(uint16_t i = 0; i < iterations; i++)
     reflex = reflex + analogRead(LEDAR_RECEIVER_PIN);
-  digitalWrite(LEDAR_EMITTER_PIN, LOW);
+  PJON_IO_WRITE(LEDAR_EMITTER_PIN, LOW);
   if(ambient > reflex) reflex = 0;
   else reflex = reflex - ambient;
+  if(reflex > 65535) reflex = 65535;
   packet[0] = (uint16_t)reflex >> 8;
   packet[1] = (uint16_t)reflex & 0xff;
   reading = reflex;
@@ -180,12 +196,7 @@ void get_reflex(uint16_t iterations) {
 
 void loop() {
   get_reflex(readings);
-  if(mode) {
+  if(mode || (!mode && (reading > threshold)))
     bus.send_packet(recipient_id, packet, 2);
-    bus.receive((uint32_t)(interval) * 1000);
-  } else {
-    if(reading > threshold)
-      bus.send_packet(recipient_id, packet, 2);
-    bus.receive((uint32_t)(interval) * 1000);
-  }
+  bus.receive((uint32_t)(interval) * 1000);
 };

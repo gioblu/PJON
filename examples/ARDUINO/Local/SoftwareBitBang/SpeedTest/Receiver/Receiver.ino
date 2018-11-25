@@ -21,6 +21,10 @@ int fail;
 // <Strategy name> bus(selected device id)
 PJON<SoftwareBitBang> bus(44);
 
+void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
+ // Do nothing to avoid affecting speed analysis
+};
+
 void setup() {
   bus.strategy.set_pin(12);
   bus.begin();
@@ -29,10 +33,6 @@ void setup() {
 
   Serial.begin(115200);
 };
-
-void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
- // Do nothing to avoid affecting speed analysis
-}
 
 void loop() {
   Serial.println("Starting 1 second communication speed test...");
@@ -55,19 +55,19 @@ void loop() {
   Serial.print("B - Total: ");
   Serial.print((unsigned int)((bus.packet_overhead(bus.last_packet_info.header) + 1) * test));
   Serial.println("B");
-  Serial.print("Absolute com speed: ");
+  Serial.print("Bandwidth: ");
   Serial.print(test * (20 + bus.packet_overhead(bus.last_packet_info.header) + 1));
   Serial.println("B/s");
-  Serial.print("Practical bandwidth: ");
+  Serial.print("Data throughput: ");
   Serial.print(test * 20);
   Serial.println("B/s");
   Serial.print("Packets sent: ");
   Serial.println(test);
-  Serial.print("Mistakes (error found with CRC) ");
+  Serial.print("Mistakes (error found with CRC): ");
   Serial.println(mistakes);
-  Serial.print("Fail (no answer from receiver) ");
+  Serial.print("Fail (no data found): ");
   Serial.println(fail);
-  Serial.print("Busy (Channel is busy or affected by interference) ");
+  Serial.print("Busy (Channel is busy or affected by interference): ");
   Serial.println(busy);
   Serial.print("Accuracy: ");
   Serial.print(100 - (100 / (test / mistakes)));

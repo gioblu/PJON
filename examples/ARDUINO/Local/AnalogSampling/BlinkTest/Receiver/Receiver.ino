@@ -10,9 +10,20 @@
 // <Strategy name> bus(selected device id)
 PJON<AnalogSampling> bus(44);
 
+void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
+  /* Make use of the payload before sending something, the buffer where payload points to is
+     overwritten when a new message is dispatched */
+  if(payload[0] == 'B') {
+    Serial.println("Received!");
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(5);
+    digitalWrite(LED_BUILTIN, LOW);
+  }
+};
+
 void setup() {
-  pinMode(13, OUTPUT);
-  digitalWrite(13, LOW); // Initialize LED 13 to be off
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW); // Initialize LED 13 to be off
 
   /* Use internal 1.1v analog reference (not available on Arduino Mega)
   DEFAULT: Default analog reference 5v (5v Arduino boards) or 3.3v (3.3V Arduino boards)
@@ -27,17 +38,6 @@ void setup() {
   bus.set_receiver(receiver_function);
   Serial.begin(115200);
 };
-
-void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
-  /* Make use of the payload before sending something, the buffer where payload points to is
-     overwritten when a new message is dispatched */
-  if(payload[0] == 'B') {
-    Serial.println("Received!");
-    digitalWrite(13, HIGH);
-    delay(5);
-    digitalWrite(13, LOW);
-  }
-}
 
 void loop() {
   bus.receive(1000);

@@ -13,15 +13,14 @@
 #include <SoftwareSerial.h>
 
 SoftwareSerial HC12(2, 3);
-int packet;
 
 // <Strategy name> bus(selected device id)
 PJON<ThroughSerial> bus(45);
 
 void setup() {
   // Initialize LED 13 to be off
-  pinMode(13, OUTPUT);
-  digitalWrite(13, LOW);
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
 
   Serial.begin(115200);
 
@@ -30,15 +29,14 @@ void setup() {
 
   // Pass the HC12 Serial instance you want to use for PJON communication
   bus.strategy.set_serial(&HC12);
-
-  bus.begin();
   bus.set_error(error_handler);
   bus.set_receiver(receiver_function);
-  packet = bus.send(44, "B", 1);
+  bus.begin();
+  bus.send(44, "B", 1);
 };
 
 
-void error_handler(uint8_t code, uint8_t data) {
+void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
   if(code == PJON_CONNECTION_LOST) {
     Serial.print("Connection with device ID ");
     Serial.print(bus.packets[data].content[0], DEC);
@@ -60,11 +58,11 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
   /* Make use of the payload before sending something, the buffer where payload points to is
      overwritten when a new message is dispatched */
   if((char)payload[0] == 'B') {
-    if(!bus.packets[packet].state)
-      packet = bus.reply("B", 1); // Avoid duplicate sending checking old packet state
-    digitalWrite(13, HIGH);
+    if(!bus.update()) // If all packets are delivered, send another
+      bus.reply("B", 1);
+    digitalWrite(LED_BUILTIN, HIGH);
     delay(5);
-    digitalWrite(13, LOW);
+    digitalWrite(LED_BUILTIN, LOW);
     delay(5);
   }
 };

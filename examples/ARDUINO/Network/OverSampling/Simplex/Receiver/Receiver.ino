@@ -1,6 +1,6 @@
 
-#define OS_GAIN_REFRESH_DELAY 0
-/* Gain refresh time of SRX882 module is around 100 milliseconds.
+#define OS_PREAMBLE_PULSE_WIDTH 0
+/* Gain refresh time of SRX882 module is 100 milliseconds.
    If only one pair of SRX and STX are used to connect 2 devices in SIMPLEX
    mode, there is no need to refresh receiver's gain, being communication
    mono-directional. */
@@ -18,19 +18,20 @@ uint8_t bus_id[] = {0, 0, 0, 1};
 // PJON object
 PJON<OverSampling> bus(bus_id, 44);
 
-void setup() {
-  bus.set_communication_mode(PJON_SIMPLEX);
-  bus.strategy.set_pins(11, PJON_NOT_ASSIGNED);
-
-  bus.begin();
-  bus.set_receiver(receiver_function);
-
-  Serial.begin(115200);
-};
-
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
  // Do nothing to avoid affecting speed analysis
 }
+
+void setup() {
+  Serial.begin(115200);
+
+  // Connect receiver module data output pin to Arduino pin 7
+  bus.strategy.set_pins(7, PJON_NOT_ASSIGNED);
+
+  bus.set_receiver(receiver_function);
+  bus.set_communication_mode(PJON_SIMPLEX);
+  bus.begin();
+};
 
 void loop() {
   Serial.println("Starting 1 second communication speed test...");
@@ -48,24 +49,26 @@ void loop() {
       fail++;
   }
 
-  Serial.print("Absolute com speed: ");
-  Serial.print(test * 28);
+  Serial.print("Bandwidth: ");
+  Serial.print(test * (20 + bus.packet_overhead(bus.data[1])));
   Serial.println("B/s");
-  Serial.print("Practical bandwidth: ");
+  Serial.print("Data throughput: ");
   Serial.print(test * 20);
   Serial.println("B/s");
   Serial.print("Packets sent: ");
   Serial.println(test);
-  Serial.print("Mistakes (error found with CRC) ");
+  Serial.print("Mistakes (error found with CRC): ");
   Serial.println(mistakes);
-  Serial.print("Fail (no answer from receiver) ");
+  Serial.print("Fail (no data found): ");
   Serial.println(fail);
-  Serial.print("Busy (Channel is busy or affected by interference) ");
+  Serial.print("Busy (Channel is busy or affected by interference): ");
   Serial.println(busy);
   Serial.print("Accuracy: ");
   Serial.print(100 - (100 / (test / mistakes)));
   Serial.println(" %");
   Serial.println(" --------------------- ");
+  // Avoid Serial interference during test flushing
+  Serial.flush();
 
   test = 0;
   mistakes = 0;

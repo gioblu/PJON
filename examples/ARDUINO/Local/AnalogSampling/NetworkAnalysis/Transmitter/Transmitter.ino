@@ -20,8 +20,8 @@ int packet;
 char content[] = "01234567890123456789";
 
 void setup() {
-  pinMode(13, OUTPUT);
-  digitalWrite(13, LOW); // Initialize LED 13 to be off
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW); // Initialize LED 13 to be off
 
   /* Use internal 1.1v analog reference (not available on Arduino Mega)
   DEFAULT: Default analog reference 5v (5v Arduino boards) or 3.3v (3.3V Arduino boards)
@@ -62,7 +62,7 @@ void loop() {
   Serial.print("B - Total: ");
   Serial.print((unsigned int)((bus.packet_overhead() + 1) * test));
   Serial.println("B");
-  Serial.print("Maximum Bandwidth: ");
+  Serial.print("Bandwidth: ");
   // length + packet overhead + PJON_ACK
   Serial.print((unsigned int)(test * (20 + bus.packet_overhead() + 1)));
   Serial.println("B/s");
@@ -73,7 +73,7 @@ void loop() {
   Serial.println((unsigned int)test);
   Serial.print("Mistakes (error found with CRC): ");
   Serial.println((unsigned int)mistakes);
-  Serial.print("Fail (no answer from receiver): ");
+  Serial.print("Fail (no acknowledge from receiver): ");
   Serial.println(fail);
   Serial.print("Busy (Channel is busy or affected by interference): ");
   Serial.println(busy);

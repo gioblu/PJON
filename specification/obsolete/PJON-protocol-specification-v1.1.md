@@ -2,14 +2,14 @@
 - Acknowledge specification: [v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md)
 - Dynamic addressing specification: [v0.1](/specification/PJON-dynamic-addressing-specification-v0.1.md)
 - PJDL (Padded Jittering Data Link) specification:
-[PJDL v1.1](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.1.md) - [PJDLR v1.1](/strategies/OverSampling/specification/PJDLR-specification-v1.1.md)
+[PJDL v1.1](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v1.1.md) - [PJDLR v1.1](/src/strategies/OverSampling/specification/PJDLR-specification-v1.1.md)
 
 ```cpp
 /*
 Milan, Italy - 28/03/2017
-The PJON™ protocol layer specification is an invention
+The PJON® protocol layer specification is an invention
 and intellectual property of Giovanni Blu Mitolo
-Copyright 2010-2017 All rights reserved
+Copyright 2010-2018 All rights reserved
 
 Related work: https://github.com/gioblu/PJON/
 Compliant implementation versions: PJON 6.0 and following
@@ -22,7 +22,7 @@ Changelog:
 */
 ```
 
-### PJON™ Protocol specification v1.1
+### PJON® Protocol specification v1.1
 With this release, the PJON protocol layer has been vastly extended and generalized aiming to interoperability and to offer a real and complete alternative to the actual set of standards used for networking today. The strong plus of the approach used by the protocol mechanism is high efficiency and low overhead thanks to the configuration driven packet format, enabling easy constrain to application needs.
 
 ### Network protocol stack model

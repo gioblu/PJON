@@ -1,12 +1,12 @@
 
 #define PJON_PACKET_MAX_LENGTH 325 // Make the buffer big enough
 #define PJON_MAX_PACKETS         2 // Reduce number of packets not to empty memory
-/*  Acknowledge Latency maximum duration (1000 microseconds default).
-    Can be necessary to higher SWBB_RESPONSE_TIMEOUT to leave enough time to
-    receiver to compute the CRC and to respond with a synchronous acknowledgement
-    SWBB_RESPONSE_TIMEOUT can be reduced to higher communication speed if
-    devices are near and able to compute CRC fast enough. Now set to
-    4 milliseconds to give time to receive to compute CRC32 of a 300 bytes string. */
+
+/* Response timeout duration duration (1500 microseconds default).
+   SWBB_RESPONSE_TIMEOUT duration must be long enough for the receiver to have the
+   time to compute the CRC and to respond with a synchronous acknowledgement.
+   Below SWBB_RESPONSE_TIMEOUT is set to 4 milliseconds to give enough time to
+   the receiver to compute CRC32 of a 300 bytes string. */
 #define SWBB_RESPONSE_TIMEOUT 4000
 
 #include <PJON.h>
@@ -19,21 +19,18 @@ int fail;
 // Bus id definition
 uint8_t bus_id[] = {0, 0, 0, 1};
 
+/* Debug. Packet's info can ben logged in serial monitor after each packet reception
+   although half of the bandwidth is lost doing so. Disable to test communication
+   at its full speed (1575kB/s) */
+bool debug = true;
+
 // PJON object
 PJON<SoftwareBitBang> bus(bus_id, 44);
-
-void setup() {
-  bus.strategy.set_pin(12);
-  bus.begin();
-
-  bus.set_receiver(receiver_function);
-
-  Serial.begin(115200);
-};
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   /* Make use of the payload before sending something, the buffer where payload points to is
      overwritten when a new message is dispatched */
+  if(!debug) return;
   Serial.print("Header: ");
   Serial.print(packet_info.header, BIN);
   // If packet formatted for a shared medium
@@ -63,7 +60,16 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 
   Serial.print(" Length: ");
   Serial.println(length);
-}
+};
+
+void setup() {
+  bus.strategy.set_pin(12);
+  bus.begin();
+
+  bus.set_receiver(receiver_function);
+
+  Serial.begin(115200);
+};
 
 void loop() {
   Serial.println("Starting 1 second communication speed test...");
@@ -81,19 +87,19 @@ void loop() {
       fail++;
   }
 
-  Serial.print("Absolute com speed: ");
+  Serial.print("Bandwidth: ");
   Serial.print(test * (300 + bus.packet_overhead() + 1));
   Serial.println("B/s");
-  Serial.print("Practical bandwidth: ");
+  Serial.print("Data throughput: ");
   Serial.print(test * 300);
   Serial.println("B/s");
   Serial.print("Packets sent: ");
   Serial.println(test);
-  Serial.print("Mistakes (error found with CRC) ");
+  Serial.print("Mistakes (error found with CRC): ");
   Serial.println(mistakes);
-  Serial.print("Fail (no answer from receiver) ");
+  Serial.print("Fail (no data found): ");
   Serial.println(fail);
-  Serial.print("Busy (Channel is busy or affected by interference) ");
+  Serial.print("Busy (Channel is busy or affected by interference): ");
   Serial.println(busy);
   Serial.print("Accuracy: ");
   Serial.print(100 - (100 / (test / mistakes)));

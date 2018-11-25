@@ -1,10 +1,10 @@
 
 // For printf used below
-#include <stdio.h>
+#include <cstdio>
 // PJON library
-#include <inttypes.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cinttypes>
+#include <cstdlib>
+#include <cstring>
 // RPI serial interface
 #include <wiringPi.h>
 #include <wiringSerial.h>
@@ -20,7 +20,7 @@
    physical distance and or if transmitting long packets. */
 
 #define PJON_INCLUDE_TS true // Include only ThroughSerial
-#include "PJON/PJON.h"
+#include <PJON.h>
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   /* Make use of the payload before sending something, the buffer where payload points to is

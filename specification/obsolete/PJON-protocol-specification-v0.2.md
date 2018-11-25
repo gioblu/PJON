@@ -3,13 +3,13 @@
 - Acknowledge specification: [v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md)
 - Dynamic addressing specification: [v0.1](/specification/PJON-dynamic-addressing-specification-v0.1.md)
 - PJDL (Padded Jittering Data Link) specification:
-[PJDL v0.1](/strategies/SoftwareBitBang/specification/padded-jittering-protocol-specification-v0.1.md) - [PJDL v1.0](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) - [PJDLR v1.0](/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
+[PJDL v0.1](/src/strategies/SoftwareBitBang/specification/padded-jittering-protocol-specification-v0.1.md) - [PJDL v1.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v1.0.md) - [PJDLR v1.0](/src/strategies/OverSampling/specification/PJDLR-specification-v1.0.md)
 
 ```cpp
 /*
 Milan, Italy - 19/08/2015
-The PJON™ protocol specification is an invention and intellectual property
-of Giovanni Blu Mitolo - Copyright 2010-2017 All rights reserved
+The PJON® protocol specification is an invention and intellectual property
+of Giovanni Blu Mitolo - Copyright 2010-2018 All rights reserved
 
 Related work: https://github.com/gioblu/PJON/
 Compliant implementation versions: PJON 3.0-beta-3.0
@@ -18,7 +18,7 @@ New feature: Bus identification
 */
 ```
 
-### PJON™ Protocol Specification v0.2
+### PJON® Protocol Specification v0.2
 After more than 4 years of testing, a second, experimental draft of the PJON protocol specification has been released to continue to pursue the goal of providing a new and open-source, multi-master communications bus system Standard. The main changes contains the addition of a IPv4 like 4 byte bus id. This extends the network capabilities of the PJON protocol from 254 devices of the 0.1 version to 1.090.921.692.930 devices supported by the 0.2 version. It is created to provide the community with a new and easy way to communicate data and build a network of devices. Its more common applications are in the field of the internet of things and embedded systems. Extended tests proved its effectiveness on different media like electricity, radio and light.
 
 ### Basic concepts

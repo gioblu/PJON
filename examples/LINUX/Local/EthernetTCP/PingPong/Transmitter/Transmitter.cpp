@@ -18,7 +18,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 
 void loop() {
   bus.update();
-  bus.receive(1000);
+  bus.receive(10000);
 
   if (millis() - start > 1000) {
     start = millis();

@@ -17,8 +17,8 @@ int latency = 1000;
 
 void setup() {
   // Initialize LED 13 to be off
-  pinMode(13, OUTPUT);
-  digitalWrite(13, LOW);
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
 
   // Set HC12 baudrate (you must use the one configured in HC12, default 9600)
   HC12.begin(9600);
@@ -37,9 +37,9 @@ void setup() {
   bus.send_repeatedly(44, "B", 1, 1500000);
 }
 
-void error_handler(uint8_t code, uint8_t data) {
+void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
   if(code == PJON_CONNECTION_LOST)
-    digitalWrite(13, HIGH); // Light up LED 13 if a packet transmission failed
+    digitalWrite(LED_BUILTIN, HIGH); // Light up LED 13 if a packet transmission failed
 }
 
 void loop() {

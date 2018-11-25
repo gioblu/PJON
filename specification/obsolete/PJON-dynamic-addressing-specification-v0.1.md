@@ -1,14 +1,14 @@
 - PJON (Padded Jittering Operative Network) Protocol specification: [v1.1](/specification/PJON-protocol-specification-v1.1.md)
 - Acknowledge specification: [v0.1](/specification/PJON-protocol-acknowledge-specification-v0.1.md)
 - Dynamic addressing specification: **[v0.1](/specification/PJON-dynamic-addressing-specification-v0.1.md)**
-- PJDL (Padded Jittering Data Link) specification: [PJDL v1.1](/strategies/SoftwareBitBang/specification/PJDL-specification-v1.1.md) - [PJDLR v1.1](/strategies/OverSampling/specification/PJDLR-specification-v1.1.md)
+- PJDL (Padded Jittering Data Link) specification: [PJDL v1.1](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v1.1.md) - [PJDLR v1.1](/src/strategies/OverSampling/specification/PJDLR-specification-v1.1.md)
 
 ```cpp
 /*
 Milan, Italy - 02/10/2016
-The PJON™ dynamic addressing specification is an invention
+The PJON® dynamic addressing specification is an invention
 and intellectual property of Giovanni Blu Mitolo
-Copyright 2010-2017 All rights reserved
+Copyright 2010-2018 All rights reserved
 
 Related work: https://github.com/gioblu/PJON/
 Compliant implementation versions: PJON 5.2 and following
@@ -21,7 +21,7 @@ Denmark, September 2016
 */
 ```
 
-### PJON™ dynamic addressing specification v0.1
+### PJON® dynamic addressing specification v0.1
 This draft defines the dynamic addressing procedure used by a device in multi-master configuration or the one imposed and regulated by master in a master-slave configuration.
 
 ### Master-slave dynamic addressing

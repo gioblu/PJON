@@ -29,7 +29,7 @@ Before including `PJON.h` it is possible to configure `ThroughSerialAsync` using
 
 Pass the `ThroughSerial` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
 ```cpp  
-#include PJON_INCLUDE_TAS
+#include PJON_INCLUDE_TSA
 PJON<ThroughAsyncSerial> bus;
 ```
 Call the `begin` method on the `Serial` or `SoftwareSerial`  object you want to use for PJON communication and pass it to the `set_serial` method:

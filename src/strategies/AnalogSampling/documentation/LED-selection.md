@@ -1,5 +1,5 @@
 
-### LED selection
+## LED selection
 Not all LEDs behave as good as others so a preliminary evaluation of a set of different products is suggested:
 
 1. Position a couple of identical LEDs on a breadboard aiming at each other

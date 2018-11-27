@@ -31,7 +31,7 @@ Leveraging of the interesting features of LEDs:
 - Emit light if powered by electricity
 - Emit a small but detectable amount of electricity if hit by light (photo-electric effect)
 
-It is possible to use LEDs as wireless (bidirectional) transceivers. This means that wireless half-duplex connectivity can be provided by a single LED per device. See the [LED selection](documentation/LED-selection.md) guide to know more about how to choose the right LEDs and keep in mind that is necessary to add a 75K-5MΩ pull-down resistor connecting the pin used with ground to reduce the LED capacitance and externally induced interference.
+It is possible to use LEDs as wireless (bidirectional) transceivers. This means that wireless half-duplex connectivity can be provided by a single LED per device. See the [LED selection](documentation/LED-selection.md) guide to know more about how to choose the right LEDs and keep in mind that is necessary to add a 75K-5MΩ pull-down resistor connecting the pin used with ground to reduce the LED capacitance and externally induced interference and that depending on the voltage level used LEDs could be overpowered, add a current limiting resistor if required.
 
 `AnalogSampling` can be used to experiment with short range infrared or visible light communication (remote control, robot swarms, data streaming using lighting), medium range using light sources (cars transmitting data through front and backlights) or long range laser communication (data between ground and LEO).  
 

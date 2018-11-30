@@ -506,7 +506,7 @@ class PJON {
             filter = true;
           }
         }
-        if(filter && known_packet_id(last_packet_info))
+        if(filter && known_packet_id(last_packet_info) && !_router)
           return PJON_ACK;
       #endif
 

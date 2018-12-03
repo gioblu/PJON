@@ -371,12 +371,13 @@ class PJON {
           + (header & PJON_PORT_BIT      ?  2 : 0)
           + (
               (
-                (header & PJON_ACK_MODE_BIT) ||
-                (header & PJON_PACKET_ID_BIT)
+                (
+                  (header & PJON_ACK_MODE_BIT) &&
+                  (header & PJON_TX_INFO_BIT)
+                ) || (header & PJON_PACKET_ID_BIT)
               ) ? 2 : 0
             )
-          + 1 // Header
-          + 1 // Header CRC
+          + 2 // header + header's CRC
       );
     };
 

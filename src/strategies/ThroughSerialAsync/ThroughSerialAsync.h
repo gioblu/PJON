@@ -55,7 +55,7 @@ class ThroughSerialAsync {
   public:
     uint8_t buffer[PJON_PACKET_MAX_LENGTH] = {0};
     uint16_t position = 0;
-    TSA_state_t state = TSA_WAITING;
+    TSA_state_t state = TSA_WAITING_START;
     PJON_SERIAL_TYPE serial;
 
     /* Returns suggested delay related to the attempts passed as parameter: */
@@ -83,7 +83,7 @@ class ThroughSerialAsync {
 
     bool can_start() {
       if(
-        (state != TSA_WAITING) ||
+        (state != TSA_WAITING_START) ||
         PJON_SERIAL_AVAILABLE(serial) ||
         ((uint32_t)(PJON_MICROS() - _last_reception_time) < TSA_TIME_IN)
       ) return false;
@@ -146,7 +146,7 @@ class ThroughSerialAsync {
         ) &&
         ((uint32_t)(PJON_MICROS() - _last_reception_time) > TSA_BYTE_TIME_OUT)
       ) {
-        state = TSA_WAITING;
+        state = TSA_WAITING_START;
         return TSA_FAIL;
       }
 
@@ -166,8 +166,8 @@ class ThroughSerialAsync {
               //return TSA_FAIL;
 			  break;  //breaks the while --> next case: TSA_RECEIVING
             }
-          };
-          if !(PJON_SERIAL_AVAILABLE(serial)) {
+          }
+          if (PJON_SERIAL_AVAILABLE(serial)==0) {
 			break;    //only breaks if no data available at serial
 		  }          
 		  //break;

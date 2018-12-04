@@ -389,7 +389,7 @@ class PJON {
 
     /* Try to receive data: */
 
-    uint16_t receive(bool force_attempt = 0) {
+    uint16_t receive() {
       uint16_t length = PJON_PACKET_MAX_LENGTH;
       uint16_t batch_length = 0;
       uint8_t  overhead = 0;
@@ -397,7 +397,7 @@ class PJON {
       bool async_ack = false;
       for(uint16_t i = 0; i < length; i++) {
         if(!batch_length) {
-          batch_length = strategy.receive_string(data + i, length - i,force_attempt);
+          batch_length = strategy.receive_string(data + i, length - i);
           if(batch_length == PJON_FAIL || batch_length == 0)
             return PJON_FAIL;
         }
@@ -524,7 +524,7 @@ class PJON {
 
     /* Try to receive data repeatedly with a maximum duration: */
 
-    uint16_t receive(uint32_t duration,bool force_attempt = 0) {
+    uint16_t receive(uint32_t duration) {
       uint32_t time = PJON_MICROS();
       uint16_t response;
       do response = receive();

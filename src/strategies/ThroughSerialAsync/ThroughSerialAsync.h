@@ -128,10 +128,10 @@ class ThroughSerialAsync {
 
 
     /* Receive a string: */
-	//force_attempt if serialbus is almost full (more than a thereshold) --> SerialEvent function for checking that!!
-    uint16_t receive_string(uint8_t *string, uint16_t max_length,bool force_attempt = 0) {
+	//force attempt if serialbus is almost full (more than a thereshold) --> SerialEvent function for checking that!!
+    uint16_t receive_string(uint8_t *string, uint16_t max_length) {
       if( // Reception attempts are spaced by an interval
-		!(force_attempt) &&
+		(PJON_SERIAL_AVAILABLE(serial)<50) &&
 		(_last_call_time &&
 		(uint32_t)(PJON_MICROS() - _last_call_time) < _read_interval)
       ) return TSA_FAIL;

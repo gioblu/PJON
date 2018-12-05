@@ -46,7 +46,7 @@ limitations under the License. */
 
 #pragma once
 
-#include <PJONSimpleSwitch.h>
+#include "PJONSimpleSwitch.h"
 
 class PJONAny : public PJONBus<Any> {
 public:

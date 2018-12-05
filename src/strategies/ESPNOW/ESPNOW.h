@@ -20,8 +20,7 @@
     limitations under the License. */
 
 #pragma once
-
-#include <interfaces/ARDUINO/ESPNOWHelper.h>
+#include "../../interfaces/ARDUINO/ESPNOWHelper.h"
 
 // Timeout waiting for an ACK. This can be increased if the latency is high.
 #ifndef EN_RESPONSE_TIMEOUT

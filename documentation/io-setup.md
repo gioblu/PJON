@@ -1,3 +1,5 @@
+
+### Documentation index
 - [Addressing](/documentation/addressing.md)
 - [Configuration](/documentation/configuration.md)
 - [Data reception](/documentation/data-reception.md)
@@ -6,7 +8,9 @@
 - **[IO setup](/documentation/io-setup.md)**
 - [Routing](/documentation/routing.md)
 
-### IO setup
+---
+
+## IO setup
 The physical layer configuration is handled by the [strategy](/src/strategies/README.md) entity, if you want to communicate bi-directionally on a single pin with [SoftwareBitBang](/src/strategies/SoftwareBitBang) or [AnalogSampling](/src/strategies/AnalogSampling) use:
 ```cpp  
  PJON<SoftwareBitBang> bus;

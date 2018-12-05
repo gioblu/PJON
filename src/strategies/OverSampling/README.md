@@ -1,11 +1,11 @@
-### OverSampling
+## OverSampling
 
 **Media:** Radio, Wire |
 **Pins used:** 1 / 2
 
 `OverSampling` strategy has been developed to enable a new software emulated simplex or half-duplex data link supporting one or many to many communication on a single channel or medium. It can be run on cheap and low performance microcontrollers, it supports communication for many devices connected to the same medium and stable operation in spite of interference. Its procedure has been specified to obtain long range and high reliability using FSK/ASK/OOK 315/433MHz radio transceivers available on the market. It complies with [PJDLR v2.0](/src/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) specification. Take a look at the [video introduction](https://www.youtube.com/watch?v=G1ckfsMzPns) for a brief showcase of its features.
 
-#### Compatibility
+### Compatibility
 | MCU              | Clock | Supported pins   |
 | ---------------- |------ | ---------------- |
 | ATmega88/168/328 (Duemilanove, Uno, Nano, Pro) | 16MHz | 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 |
@@ -13,31 +13,23 @@
 | ATmega2560 (Mega, Mega nano) | 16MHz | 3, 4, 7, 8, 9, 10, 12 |
 | ESP8266 | 80/160MHz | D0 or GPIO 16, D1 or GPIO 5 |
 
-#### Performance
+### Performance
 - Transfer speed: 202 B/s or 1620 Baud
 - Data throughput: 150 B/s
 - Range: 250 meters in urban environment / 5km with line of sight and ideal atmospheric conditions
 
-#### How to use OverSampling
+### Configuration
+Before including `PJON.h` it is possible to configure `OverSampling` using predefined constants:
+
+| Constant                  | Purpose                             | Supported value                            |
+| ------------------------- |------------------------------------ | ------------------------------------------ |
+| `OS_LATENCY`              | Maximum latency                     | Duration in microseconds (2000 by default) |
+| `OS_PREAMBLE_PULSE_WIDTH` | Transmission preamble configuration | Duration in microseconds (0 by default)    |
+| `OS_BACK_OFF_DEGREE`      | Maximum back-off exponential degree | Numeric value (5 by default)               |
+| `OS_MAX_ATTEMPTS`         | Maximum transmission attempts       | Numeric value (10 by default)              |
+
 Pass the `OverSampling` type as PJON template parameter to instantiate a new PJON object. All the other necessary information is present in the general [Documentation](/documentation).
 ```cpp  
-/* Maximum latency can be set defining OS_LATENCY
-   before PJON.h inclusion (default 4 milliseconds) */
-#define OS_LATENCY      4000
-
-/* Set the back-off exponential degree (default 4) */
-#define OS_BACK_OFF_DEGREE 4
-
-/* Set the maximum sending attempts (default 20) */
-#define OS_MAX_ATTEMPTS   20
-
-/* Disable preamble setting a duration of 0 (higher if required) */
-#define OS_PREAMBLE_PULSE_WIDTH 0
-
-/* The values set above are by default producing a 3.2 seconds
-   back-off timeout with 20 attempts. Higher OS_MAX_ATTEMPTS
-   to higher the back-off timeout, higher OS_BACK_OFF_DEGREE
-   to higher the interval between every attempt. */
 
 #include <PJON.h>
 
@@ -53,7 +45,7 @@ void setup() {
 ```
 After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance.
 
-#### Use OverSampling with cheap 433MHz transceivers
+### Use OverSampling with cheap 433MHz transceivers
 To build a real open-source PJON packet radio able to communicate up to 5km you need only a couple (for `PJON_SIMPLEX` mode) or two couples (for `PJON_HALF_DUPLEX` mode) of cheap 315/433MHz ASK/FSK/OOK transmitter and receiver modules (with a cost around 2/3 dollars each). Please be sure of the regulations your government imposes on radio transmission over these frequencies before use.
 
 ![PJON Oversampling packet radio](http://www.gioblu.com/PJON/PJON-OverSampling-packet-radio-STX882-SRX882.jpg)
@@ -62,7 +54,7 @@ The maximum detected range was experimented with a small packet radio transmitti
 
 If using `OverSampling`, the asynchronous acknowledgement is suggested as acknowledgement mechanism because includes in the packet's meta-info a packet id, avoiding duplicated receptions.
 
-#### Antenna design
+### Antenna design
 Experiments in `PJON_HALF_DUPLEX` mode have shown that it seems better to keep isolated the two antennas, using two different, not connected elements to transmit and receive. The first suggested antenna design is a wide beam dipole antenna made by two 173mm (quarter wavelength) or 345mm (half wavelength) long conductive elements, one connected to ground and the other connected to the input or output pin:
 ```cpp  
 173mm quarter wavelength / 345mm half wavelength
@@ -80,9 +72,8 @@ GND   --\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 RX/TX --/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ```
 
-#### Known issues
+### Known issues
 - In older versions, `OverSampling` was affected by ineffective and short range if used in `PJON_HALF_DUPLEX` mode. This issue has been fixed by suggesting the use of pins part of 2 different port groups.
-- In `PJON_HALF_DUPLEX` mode it may be required to use the preamble to let receiver's gain to be set back to the transmitter's signal magnitude before packet reception.
 
-#### Safety warning
+### Safety warning
 In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. Before any practical test or hardware purchase for a wireless [OverSampling](/src/strategies/OverSampling) radio setup, compliance with government requirements and regulations must be ensured.

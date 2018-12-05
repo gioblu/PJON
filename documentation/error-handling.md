@@ -1,3 +1,5 @@
+
+### Documentation index
 - [Addressing](/documentation/addressing.md)
 - [Configuration](/documentation/configuration.md)
 - [Data reception](/documentation/data-reception.md)
@@ -6,7 +8,9 @@
 - [IO setup](/documentation/io-setup.md)
 - [Routing](/documentation/routing.md)
 
-### Error handling
+---
+
+## Error handling
 PJON is designed to inform the user if an error is detected. A function of type `void` can be defined and registered to be called by the PJON object in case of error; it receives 3 parameters, the first is the error code of type `uint8_t`, the second is additional data related to the error of type `uint16_t` and the third is a general purpose custom pointer of type `void *`.
 
 Error types:

@@ -91,9 +91,9 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 #pragma once
-#include <interfaces/PJON_Interfaces.h>
-#include <PJONDefines.h>
-#include <strategies/PJON_Strategies.h>
+#include "interfaces/PJON_Interfaces.h"
+#include "PJONDefines.h"
+#include "strategies/PJON_Strategies.h"
 
 template<typename Strategy>
 class PJON {
@@ -371,12 +371,13 @@ class PJON {
           + (header & PJON_PORT_BIT      ?  2 : 0)
           + (
               (
-                (header & PJON_ACK_MODE_BIT) ||
-                (header & PJON_PACKET_ID_BIT)
+                (
+                  (header & PJON_ACK_MODE_BIT) &&
+                  (header & PJON_TX_INFO_BIT)
+                ) || (header & PJON_PACKET_ID_BIT)
               ) ? 2 : 0
             )
-          + 1 // Header
-          + 1 // Header CRC
+          + 2 // header + header's CRC
       );
     };
 
@@ -506,7 +507,7 @@ class PJON {
             filter = true;
           }
         }
-        if(filter && known_packet_id(last_packet_info))
+        if(filter && known_packet_id(last_packet_info) && !_router)
           return PJON_ACK;
       #endif
 
@@ -742,7 +743,7 @@ class PJON {
 
     uint16_t send_packet(
       uint8_t id,
-      char *string,
+      const char *string,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
@@ -757,7 +758,7 @@ class PJON {
     uint16_t send_packet(
       uint8_t id,
       const uint8_t *b_id,
-      char *string,
+      const char *string,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,

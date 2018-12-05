@@ -274,12 +274,12 @@ class ThroughSerialAsync {
 
     /* Send a string: */
 
-    void send_string(uint8_t *string, uint8_t length) {
+    void send_string(uint8_t *string, uint16_t length) {
       start_tx();
       uint16_t overhead = 2;
       // Add frame flag
       send_byte(TSA_START);
-      for (uint8_t b = 0; b < length; b++) {
+      for(uint16_t b = 0; b < length; b++) {
         // Byte-stuffing
         if(
           (string[b] == TSA_START) ||

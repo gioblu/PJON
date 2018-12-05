@@ -50,7 +50,7 @@ limitations under the License. */
 // Add virtual keyword to PJONSimpleSwitch functions
 #define PJON_ROUTER_NEED_INHERITANCE
 
-#include <PJONSwitch.h>
+#include "PJONSwitch.h"
 
 #ifndef PJON_ROUTER_TABLE_SIZE
   #define PJON_ROUTER_TABLE_SIZE 10

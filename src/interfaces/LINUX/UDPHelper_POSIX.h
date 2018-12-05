@@ -132,7 +132,7 @@ public:
 	uint16_t len = 0;
   public:
 	  Buf(uint16_t size) { len = size;  buf = new char[size]; }
-    ~Buf() { if (buf) delete buf;  }
+    ~Buf() { if (buf) delete[] buf;  }
     char* operator()() { return buf; }
 	uint16_t size() { return len; }
   };

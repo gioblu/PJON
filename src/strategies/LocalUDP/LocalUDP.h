@@ -21,9 +21,9 @@
 #pragma once
 
 #ifdef HAS_ETHERNETUDP
-  #include <interfaces/ARDUINO/UDPHelper_ARDUINO.h>
+  #include "../../interfaces/ARDUINO/UDPHelper_ARDUINO.h"
 #else
-  #include <interfaces/LINUX/UDPHelper_POSIX.h>
+  #include "../../interfaces/LINUX/UDPHelper_POSIX.h"
 #endif
 
 #include <PJONDefines.h>

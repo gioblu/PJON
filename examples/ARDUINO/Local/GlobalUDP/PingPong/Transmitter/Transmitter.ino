@@ -23,8 +23,7 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Transmitter started.");
   Ethernet.begin(mac, local_ip, gateway, gateway, subnet);
-  bus.strategy.add_node(44, remote_ip, 16001); // Repeat for each remote device
-  bus.strategy.set_port(16000);
+  bus.strategy.add_node(44, remote_ip); // Repeat for each remote device
 
   bus.set_receiver(receiver_function);
   bus.begin();

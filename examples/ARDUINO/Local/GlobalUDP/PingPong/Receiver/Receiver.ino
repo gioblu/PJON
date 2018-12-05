@@ -27,8 +27,7 @@ void setup() {
   Serial.println("Receiver started.");
   Ethernet.begin(mac, local_ip, gateway, gateway, subnet);
 
-  bus.strategy.add_node(45, remote_ip, 16000);
-  bus.strategy.set_port(16001);
+  bus.strategy.add_node(45, remote_ip);
   bus.set_receiver(receiver_function);
   bus.begin();
 };

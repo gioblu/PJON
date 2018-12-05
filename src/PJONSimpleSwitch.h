@@ -53,7 +53,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 #pragma once
-#include <PJON.h>
+#include "PJON.h"
 
 template<class Strategy>
 class PJONBus : public PJON<Strategy> {

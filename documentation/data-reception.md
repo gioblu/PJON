@@ -1,3 +1,5 @@
+
+### Documentation index
 - [Addressing](/documentation/addressing.md)
 - [Configuration](/documentation/configuration.md)
 - **[Data reception](/documentation/data-reception.md)**
@@ -6,7 +8,9 @@
 - [IO setup](/documentation/io-setup.md)
 - [Routing](/documentation/routing.md)
 
-### Data reception
+---
+
+## Data reception
 A function of type `void` can be defined and register to be called by the PJON object when a packet is received. This function receives 3 parameters: the received payload of type `uint8_t *`, its length of type `uint16_t` and a pointer to a data structure of type `const PJON_Packet_Info` that contains all packet's metadata:
 ```cpp
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {

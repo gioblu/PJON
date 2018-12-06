@@ -63,6 +63,10 @@ public:
     }
   }
 
+  void send_response(uint8_t *string, uint16_t length) {
+    send_string(string, length, udp.remoteIP(), udp.remotePort());
+  }
+
   void send_response(uint8_t response) {
     send_string(&response, 1, udp.remoteIP(), udp.remotePort());
   }

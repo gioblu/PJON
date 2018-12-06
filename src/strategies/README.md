@@ -9,6 +9,7 @@ A strategy is an abstraction layer used to physically transmit data. Thanks to t
 | [EthernetTCP](EthernetTCP)  | Electrical/radio impulses over wire/air | TCP | Ethernet port |
 | [LocalUDP](LocalUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
 | [GlobalUDP](GlobalUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
+| [DualUDP](DualUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
 | [OverSampling](OverSampling)  | Electrical/radio impulses over wire/air | [PJDLR](OverSampling/specification/PJDLR-specification-v2.0.md) | 1 or 2 |
 | [ThroughSerial](ThroughSerial)  | Electrical/radio impulses over wire/air | [TSDL](ThroughSerial/specification/TSDL-specification-v2.0.md) | 1 or 2 |
 | [ThroughSerialAsync](ThroughSerialAsync)  | Electrical/radio impulses over wire/air | [TSDL](ThroughSerial/specification/TSDL-specification-v2.0.md) | 1 or 2 |

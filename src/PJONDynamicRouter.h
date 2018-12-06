@@ -15,7 +15,7 @@
 
 PJONDynamicRouter has been contributed by Fred Larsen.
 
-It performs the same as PJONRouterExtended, but populates the routing table
+It performs the same as PJONRouter, but populates the routing table
 dynamically based on observed packets from remote buses.
 
 The PJON project is entirely financed by contributions of people like you and

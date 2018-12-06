@@ -56,6 +56,10 @@ limitations under the License. */
 #pragma once
 #include "PJONDynamicRouter.h"
 
+// If none of your devices have a device id above a specific number,
+// you can save some bytes of RAM by lowering this constant.
+// The constant must be higher than the highest device id that
+// can be encountered, and will limit the router to this range.
 #ifndef PJON_VIRTUALBUS_MAX_DEVICES
   #define PJON_VIRTUALBUS_MAX_DEVICES 255
 #endif

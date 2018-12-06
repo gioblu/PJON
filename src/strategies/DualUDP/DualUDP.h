@@ -321,7 +321,7 @@ public:
         if(
           pos != -1 &&
           (_send_attempts[pos] > (get_max_attempts() * DUDP_MAX_FAILURES)) &&
-          remove_node(pos)
+          remove_node((uint8_t)pos)
         ) pos = -1;
 
         if(pos == -1) { // UDP Broadcast, send to all receivers

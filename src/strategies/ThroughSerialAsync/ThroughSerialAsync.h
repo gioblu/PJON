@@ -73,7 +73,7 @@ class ThroughSerialAsync {
 
     bool begin(uint8_t additional_randomness = 0) {
       PJON_DELAY(PJON_RANDOM(TSA_INITIAL_DELAY) + additional_randomness);
-      _last_reception_time = 0;
+      _last_reception_time = PJON_MICROS();
       _last_byte = TSA_FAIL;
       return true;
     };
@@ -82,11 +82,12 @@ class ThroughSerialAsync {
     /* Check if the channel is free for transmission: */
 
     bool can_start() {
-      PJON_DELAY_MICROSECONDS(PJON_RANDOM(TSA_COLLISION_DELAY));
       if(
+        (state != TSA_WAITING) ||
         PJON_SERIAL_AVAILABLE(serial) ||
         ((uint32_t)(PJON_MICROS() - _last_reception_time) < TSA_TIME_IN)
       ) return false;
+      PJON_DELAY_MICROSECONDS(PJON_RANDOM(TSA_COLLISION_DELAY));
       return true;
     };
 
@@ -111,8 +112,8 @@ class ThroughSerialAsync {
       uint32_t time = PJON_MICROS();
       while((uint32_t)(PJON_MICROS() - time) < TSA_RESPONSE_TIME_OUT) {
         if(PJON_SERIAL_AVAILABLE(serial)) {
-          _last_reception_time = PJON_MICROS();
           int16_t read = PJON_SERIAL_READ(serial);
+          _last_reception_time = PJON_MICROS();
           if(read >= 0) {
             _last_byte = (uint8_t)read;
             return _last_byte;
@@ -137,19 +138,22 @@ class ThroughSerialAsync {
       _last_call_time = PJON_MICROS();
 
       if( // If reception timeout is reached discard data
-        _last_reception_time &&
+        (
+          (state == TSA_RECEIVING) ||
+          (state == TSA_WAITING_END) ||
+          (state == TSA_WAITING_ESCAPE)
+        ) &&
         ((uint32_t)(PJON_MICROS() - _last_reception_time) > TSA_BYTE_TIME_OUT)
       ) {
-        _last_reception_time = 0;
         state = TSA_WAITING;
         return TSA_FAIL;
       }
 
       switch(state) {
         case TSA_WAITING: {
-          _last_reception_time = 0;
           while(PJON_SERIAL_AVAILABLE(serial)) {
             uint8_t value = PJON_SERIAL_READ(serial);
+            _last_reception_time = PJON_MICROS();
             if(value == TSA_START) {
               state = TSA_RECEIVING;
               position = 0;
@@ -161,6 +165,7 @@ class ThroughSerialAsync {
         case TSA_RECEIVING: {
           while(PJON_SERIAL_AVAILABLE(serial)) {
             uint8_t value = PJON_SERIAL_READ(serial);
+            _last_reception_time = PJON_MICROS();
             if(value == TSA_START) {
               state = TSA_WAITING;
               return TSA_FAIL;
@@ -171,6 +176,7 @@ class ThroughSerialAsync {
                 return TSA_FAIL;
               } else {
                 value = PJON_SERIAL_READ(serial) ^ TSA_ESC;
+                _last_reception_time = PJON_MICROS();
                 if(
                   (value != TSA_START) &&
                   (value != TSA_ESC) &&
@@ -180,7 +186,6 @@ class ThroughSerialAsync {
                   return TSA_FAIL;
                 }
                 buffer[position++] = value;
-                _last_reception_time = PJON_MICROS();
                 continue;
               }
             }
@@ -201,15 +206,14 @@ class ThroughSerialAsync {
             }
 
             buffer[position++] = value;
-            _last_reception_time = PJON_MICROS();
           }
           return TSA_FAIL;
-          break;
         }
 
         case TSA_WAITING_ESCAPE: {
           if(PJON_SERIAL_AVAILABLE(serial)) {
             uint8_t value = PJON_SERIAL_READ(serial) ^ TSA_ESC;
+            _last_reception_time = PJON_MICROS();
             if(
               (value != TSA_START) &&
               (value != TSA_ESC) &&
@@ -228,6 +232,7 @@ class ThroughSerialAsync {
         case TSA_WAITING_END: {
           if(PJON_SERIAL_AVAILABLE(serial)) {
             uint8_t value = PJON_SERIAL_READ(serial);
+            _last_reception_time = PJON_MICROS();
             if(value == TSA_END) {
               state = TSA_DONE;
               return TSA_FAIL;
@@ -241,11 +246,8 @@ class ThroughSerialAsync {
 
         case TSA_DONE: {
           memcpy(&string[0], &buffer[0], position);
-          uint16_t len = position;
-          position = 0;
           state = TSA_WAITING;
-          _last_reception_time = 0;
-          return len;
+          return position;
         }
 
       };

@@ -1,4 +1,4 @@
-### DualUDP
+## DualUDP
 
 **Medium:** Ethernet port, wired or WiFi
 
@@ -10,12 +10,12 @@ Feature summary:
 * Can reach devices outside the LAN if they are added to the node table. These must have static IP, or send a packet to this device to be registered so that their IP is known.
 * Steps from UDP broadcast to directed packets after device discovery.
 
-#### Why PJON over DualUDP?
+### Why PJON over DualUDP?
 If a cabled or wireless Ethernet network exists, using this to let devices communicate can be easier than to pull new wires or utilize other radio communication modules.
 
 It can also be useful for connecting physically separate clusters of devices that are connected wired with the `SoftwareBitBang` strategy, or wirelessly with the `Oversampling` strategy, when a LAN or WAN is connecting the locations.
 
-#### How to use DualUDP
+### How to use DualUDP
 Pass the `DualUDP` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
 ```cpp  
   // Use DualUDP strategy with PJON device id 44
@@ -44,7 +44,7 @@ void setup() {
 }
 ```
 
-#### Node table
+### Node table
 DualUDP has a "node" table that is a list of devices with PJON id, IP address and port number (usually all using the same standard port number). A device in this table can be contacted directly by sending a packet specifically to its IP and port. The core functionality requires all relevant devices to be registered here, otherwise they cannot be reached or replied to because the IP address is not known.
 
 But since this is cumbersome, a couple of options have been added to make life simpler:
@@ -56,7 +56,7 @@ After starting, all packets will be broadcast, but as packets are ACKed or repli
 
 Note that the preprocessor define `DUDP_MAX_REMOTE_NODES` is important when using `autoregistration`. For a device it should be higher than the maximum number of other devices it will communicate with. Its default value of 10 is low to save memory, and in larger setups it must be increased, otherwise broadcast will be used for devices not registered in the table.
 
-#### Remote devices
+### Remote devices
 Devices not being present on the LAN will not be reached by broadcasts and will therefore not be automatically discovered unless they send a packet to this device. So if a master device has a fixed IP address and remote devices in different locations have the master in their node table and send a packet at startup and at regular intervals (in case master is restarted), communication will be established.
 
 Remote devices not sending any packet to this device will be unreachable unless they are manually added to the node table.
@@ -65,12 +65,12 @@ The node table can have one or more remote devices added to it at startup, with 
 
 All the IP addresses of the registered nodes should be reachable. UDP port forwarding can be used to obtain this through firewalls.
 
-#### Device removal from table
+### Device removal from table
 If a device cannot be reached for a number of times (`DUDP_MAX_FAILURES`), it will be removed from the node table if it has been added automatically. If it has been added programmatically before the communication starts, it is kept in a static part of the table and will never be removed.
 
 If a device is removed from the table, it will be "downgraded" to be reached by broadcast instead of directed packets. If it does ACK or sends a packet, it will again be added to the node table and "upgraded" to directed packets.
 
-#### Static IP address mode
+### Static IP address mode
 DualUDP can work in a static mode by requiring all devices to have static IP addresses and all remote devices to be registered as 'nodes' at setup. This allows it to talk equally to devices on the LAN and on remote networks, and have full control of a closed group.
 
 To work in full manual mode, disable the two options:

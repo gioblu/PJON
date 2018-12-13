@@ -5,7 +5,7 @@
 With the `DualUDP` PJON strategy, multiple devices with Ethernet ports can use PJON to communicate with each other over an Ethernet network, wired or over WiFi or both. Like the `GlobalUDP` strategy, this strategy is not limited to the local network
 and can therefore reach devices farther away, to another LAN connected through VPN, or potentially across the Internet (beware of security issues). Like the `DualUDP` strategy it will reach devices on the LAN without configuration.
 
-Feature summery:
+Feature summary:
 * Will autodiscover devices on the LAN. These can use DHCP assigned IP addresses.
 * Can reach devices outside the LAN if they are added to the node table. These must have static IP, or send a packet to this device to be registered so that their IP is known.
 * Steps from UDP broadcast to directed packets after device discovery.

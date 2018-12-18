@@ -21,15 +21,6 @@
 
 #pragma once
 
-/* - 1 mode performance:
-     Speed: 16.949kBb or 2.11kB/s
-     Promiscuous architecture/clock compatible
-   - 2 mode performance:
-     Speed: 21.505kBd or 2.68kB/s
-     Promiscuous architecture/clock compatible
-   - 3 mode performance:
-     Architecture/setup dependant, see Timing.h */
-
 /* Set here the selected transmission mode - default STANDARD */
 #ifndef SWBB_MODE
   #define SWBB_MODE         1
@@ -41,6 +32,10 @@
 // Used for pin handling
 #define SWBB_NOT_ASSIGNED 255
 
+/* Transmission speed modes (see Timing.h)
+   MODE   1: 1.95kB/s - 15625Bd
+   MODE   2: 2.21kB/s - 17696Bd
+   MODE   3: 2.94kB/s - 23529Bd */
 #include "Timing.h"
 
 class SoftwareBitBang {

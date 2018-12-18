@@ -44,11 +44,11 @@ It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to
 ### Communication modes
 The proposed communication modes are the result of years of testing and optimization and have been selected to be easily supported by limited microcontrollers.  
 
-| MODE | Data bit duration | Padding bit duration | Pad-data ratio  | Bandwidth           |
-| ---- | ----------------- | -------------------- | --------------- | ------------------- |
-| 1    | 40                | 112                  | 2.8             | 2.11kB/s  - 16944Bd |
-| 2    | 36                | 88                   | 2.444           | 2.42kB/s  - 19417Bd |
-| 3    | 24                | 80                   | 3.333           | 3.37kB/s  - 27027Bd |
+| MODE | Data bit duration | Padding bit duration | Pad-data ratio  | Bandwidth          |
+| ---- | ----------------- | -------------------- | --------------- | ------------------ |
+| 1    | 44                | 116                  | 2.636           | 1.95kB/s - 15625Bd |
+| 2    | 40                | 92                   | 2.300           | 2.21kB/s - 17696Bd |
+| 3    | 28                | 88                   | 3.142           | 2.94kB/s - 23529Bd |
 
 Binary timing durations are expressed in microseconds.
 

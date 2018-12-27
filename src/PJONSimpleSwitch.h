@@ -26,6 +26,17 @@ possible to use a PJONSimpleSwitch to handle leaf buses in a tree structure.
 A segmented bus is a "virtual" bus where ranges of its devices are  located
 in separate physical buses.
 
+NAT (network address translation) support is present, allowing a local bus
+to communicate with shared buses. To do this, the local bus must have the
+bus id set to a public/NAT bus id with which it can be reached from other
+buses, but be set to local mode and not shared mode.
+Any incoming packet to the public bus id will be forwarded into the local bus
+with the receiver bus id changed to 0.0.0.0 which is considered equivalent
+with a local bus address.
+Outgoing packets must be sent in shared mode with a sender bus id of 0.0.0.0,
+which will be replaced with the NAT address when forwarded by the switch,
+enabling receivers on shared buses to reply back to the local bus.
+
 The PJON project is entirely financed by contributions of people like you and
 its resources are solely invested to cover the development and maintenance
 costs, consider to make donation:
@@ -159,12 +170,38 @@ protected:
     uint8_t send_bus = current_bus;
     current_bus = receiver_bus;
 
+    // NAT support: If a shared packet comes from a local bus destined to a
+    // non-local receiver, then put the NAT address of the bus as the sender
+    //  bus id so that replies can find the route back via NAT.
+    uint8_t sender_bus_id[4];
+    memcpy(sender_bus_id, packet_info.sender_bus_id, 4);
+    if ((packet_info.header & PJON_MODE_BIT) && 
+        !(buses[sender_bus]->config & PJON_MODE_BIT) &&
+        memcmp(buses[sender_bus]->bus_id, buses[sender_bus]->localhost, 4)!=0 &&
+        memcmp(packet_info.sender_bus_id, buses[sender_bus]->localhost, 4)==0) {
+      // Replace sender bus id with public/NAT bus id in the packet
+      memcpy(&sender_bus_id, buses[sender_bus]->bus_id, 4);
+    }
+
+    // NAT support: If a shared packet comes with receiver bus id matching the
+    // NAT address of a local bus, then change the receiver bus id to 0.0.0.0 
+    // before forwarding the shared packet to the local bus.
+    uint8_t receiver_bus_id[4];
+    memcpy(receiver_bus_id, packet_info.receiver_bus_id, 4);
+    if ((packet_info.header & PJON_MODE_BIT) && 
+        !(buses[receiver_bus]->config & PJON_MODE_BIT) &&
+        memcmp(buses[receiver_bus]->bus_id, buses[receiver_bus]->localhost, 4)!=0 &&
+        memcmp(packet_info.receiver_bus_id, buses[receiver_bus]->bus_id, 4)==0) {
+      // Replace receiver bus id with 0.0.0.0 when sending to local bus
+      memcpy(receiver_bus_id, buses[receiver_bus]->localhost, 4);
+    }
+
     // Forward the packet
     uint16_t result = buses[receiver_bus]->send_from_id(
       packet_info.sender_id,
-      packet_info.sender_bus_id,
+      sender_bus_id,
       packet_info.receiver_id,
-      packet_info.receiver_bus_id,
+      receiver_bus_id,
       (const char*)payload,
       length,
       packet_info.header,
@@ -216,6 +253,16 @@ protected:
           packet_info.receiver_bus_id : buses[0]->localhost),
           packet_info.receiver_id, start_search
       );
+
+      /* The NAT case:
+      A. A shared packet comes in destined to the "public" bus id registered 
+         on the local bus. It will be found normally, and send_packet will
+         modify the receiver bus id to 0.0.0.0 before sending.
+      B. A shared packet comes in from the local bus, with sender bus id
+         0.0.0.0 and a valid receiver bus id. The receiver bus id will be
+         found normally, and send_packet will modify the sender bus id
+         from 0.0.0.0 to the registered public/NAT bus id of the local bus.
+      */      
 
       if(receiver_bus == PJON_NOT_ASSIGNED) receiver_bus = default_gateway;
 

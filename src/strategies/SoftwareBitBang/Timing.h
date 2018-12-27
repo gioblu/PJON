@@ -2,15 +2,18 @@
 /* PJON SoftwareBitBang strategy Transmission Timing table
    Copyright 2010-2018, Giovanni Blu Mitolo All rights reserved.
 
-   Often timing in two different architectures doesn't match. This happens
-   because code execution time can variate and also because time measurement
-   can be not perfectly equal on all systems. Arduino Duemilanove, Uno or
-   Nano timing is considered as master. All benchmarks should be executed with
-   NetworkAnalysis and SpeedTest examples.
+   Often timing in two different architectures do not match. Code execution
+   time can variate and time measurements can be not perfectly equal.
+   Arduino Duemilanove/UNO/Nano durations are used as master.
+   Consider that master durations defined below are shorter than specified
+   in the PJDL-specification-v2.1 to accomodate the input-output pin change
+   duration (4 microseconds) and effectively produce the specified durations.
 
-   MODE 1:  16.949kBb or 2.11kB/s
-   MODE 2:  19.417kBd or 2.42kB/s
-   MODE 3:  Architecture/Toolchain dependant
+   Benchmarks can be executed using NetworkAnalysis and SpeedTest examples.
+
+   MODE   1: 1.95kB/s - 15625Bd
+   MODE   2: 2.21kB/s - 17696Bd
+   MODE   3: 2.94kB/s - 23529Bd
 
    Use the same pin number on all connected devices to achieve maximum
    timing efficiency, not all different pin combinations work nominally

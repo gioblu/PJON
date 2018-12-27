@@ -28,15 +28,19 @@ It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to
 | ATmega2560 (Mega, Mega nano) | 16MHz | 3, 4, 7, 8, 9, 10, 12 |
 | ATmega1284P | 16MHz | 18, 19, 20, 21, 22, 23, A0, A1, A2, A3, A4, A5, A6, A7 |
 | SAMD (Arduino Zero) | 48MHz | ? |
+| STM32F1 | 72MHz | ? |
 | MK20DX256 (Teensy 3.1) | 96MHz | All pins |
 | ESP8266 (NodeMCU, AI-THINKER modules) | 80/160MHz | D1 or GPIO 5 |
 | ESP32 (Heltech WiFi LoRa) | 160MHz | 12, 25 |
 
 ### Performance
 `SWBB_MODE` can be configured in 3 different modes, `1`, `2` and `3`:
-- `1` runs at 16944Bd or 2.12kB/s cross-architecture, promiscuous clock/architecture compatible.
-- `2` runs at 19417Bd or 2.42kB/s cross-architecture, promiscuous clock/architecture compatible.
-- `3` runs a specific architecture at its maximum limits (non cross-architecture compatible), Arduino Duemilanove, Uno or nano for example runs at 27024Bd or 3378B/s, Arduino Zero can reach 48000Bd or 6000B/s.
+
+| Mode | Speed | Supported MCUs   |
+| ---- |------ | ---------------- |
+| `1`  | 1.95kB/s 15625Bd | ATtiny84/84A, ATtiny85, ATmega88/168/328, ATmega16u4/32u4, ATmega2560, SAMD, STM32F1, MK20DX256, ESP8266, ESP32 |  
+| `2`  | 2.21kB/s 17696Bd | ATtiny84/84A, ATtiny85, ATmega88/168/328, ATmega16u4/32u4, ATmega2560 |
+| `3`  | 2.94kB/s 23529Bd | ATmega88/168/328, SAMD |
 
 When including and using the `SoftwareBitBang` strategy you have the complete access to the microcontroller. This happens because `SoftwareBitBang` runs a completely software-defined implementation, transforming a painful walk in a nice flight.
 

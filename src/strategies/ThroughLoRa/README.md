@@ -1,4 +1,4 @@
-### ThroughLoRa
+## ThroughLoRa
 
 **Medium:** Radio, Wire | **Pins used:** 6
 
@@ -6,13 +6,13 @@ With `ThroughLora` strategy, PJON can run through a software or hardware SPI in 
 
 This strategy is a wrapper around  [Arduino LoRa library](https://github.com/sandeepmistry/arduino-LoRa) created by [Sandeep Mistry](https://github.com/sandeepmistry) so all the credit to the specific LoRa implementation goes to him.
 
-#### Compatibility
+### Compatibility
 - ATmega88/168/328 16MHz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
 - ATmega2560 16MHz (Arduino Mega)
 - ATmega16u4/32u4 16MHz (Arduino Leonardo)
 - STM32F103 ([Blue Pill](http://wiki.stm32duino.com/index.php?title=Blue_Pill))
 
-#### Getting started
+### Getting started
 1. Define `PJON_INCLUDE_TL` before including PJON header `<PJON.h>`
 2. Pass the `ThroughLora` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
 3. Configure the shield/module pins according to the correct connection. See [Hardware connection](#hardware-connection).
@@ -28,7 +28,7 @@ bus.strategy.setPins(10,9,2); //CS pin, Reset pin, Interrupt pin
 bus.strategy.setFrequency(868100000UL); //initialize 868 MHZ module
 ```
 
-#### Supported Shields/Modules
+### Supported Shields/Modules
 | Manufacturer                          | Hardware                                                     |
 | ------------------------------------- | ------------------------------------------------------------ |
 | [Dragino](http://www.dragino.com/)    | [Dragino Lora Shield](http://www.dragino.com/products/module/item/102-lora-shield.html) |
@@ -36,7 +36,7 @@ bus.strategy.setFrequency(868100000UL); //initialize 868 MHZ module
 | [Modtronix](http://modtronix.com/)    | [inAir4](http://modtronix.com/inair4.html) / [inAir9](http://modtronix.com/inair9.html) / [inAir9B](http://modtronix.com/inair9b.html) |
 | [Adafruit](https://www.adafruit.com/) | [Adafruit Feather 32u4 LoRa Radio (RFM9x)](https://learn.adafruit.com/adafruit-feather-32u4-radio-with-lora-radio-module/overview) |
 
-#### Hardware connection
+### Hardware connection
 | General Wiring | Arduino |
 | -------------- | ------- |
 | VCC            | 3.3V    |
@@ -51,14 +51,14 @@ bus.strategy.setFrequency(868100000UL); //initialize 868 MHZ module
 - `NSS`, `NRESET`, and `DIO0` pins can be changed by using `PJON.strategy.setPins(ss, reset, dio0)`.
 - `DIO0` pin is optional, it is only needed for receive callback mode. If `DIO0` pin is used, it **must** be interrupt capable via [`attachInterrupt(...)`](https://www.arduino.cc/en/Reference/AttachInterrupt).
 
-#### Usage Example
+### Usage Example
 Here are listed basic examples of a transmitter and receiver code. After tou include the necessary code to initialize the Lora module you can use the normal PJON functions to handle data communication.
 
 Keep in mind that to use the LoRa startegy you must download the [Arduino LoRa library](https://github.com/sandeepmistry/arduino-LoRa).
 
 More examples can be found in https://github.com/gioblu/PJON/tree/master/examples/ARDUINO/Local/ThroughLoRa
 
-#### Transmitter
+### Transmitter
 ```cpp
 #define PJON_INCLUDE_TL
 
@@ -78,7 +78,7 @@ void loop() {
 };
 ```
 
-#### Receiver
+### Receiver
 
 ```cpp
 #define PJON_INCLUDE_TL
@@ -121,7 +121,7 @@ This API is a specific wrapper around the [Arduino-LoRa library](https://github.
 
 All the LoRa API is accessible through the exposed strategy in a PJON instance. Ex: `bus.strategy`
 
-#### Setup
+### Setup
 
 Initialize the library with the specified frequency.
 
@@ -133,7 +133,7 @@ bus.strategy.setFrequency(frequency);
 
 Returns `1` on success, `0` on failure.
 
-#### Set pins
+### Set pins
 
 Override the default `NSS`, `NRESET`, and `DIO0` pins used by the library. **Must** be called before `LoRa.begin()`.
 
@@ -147,7 +147,7 @@ bus.strategy.setPins(ss, reset, dio0);
 
 This call is optional and only needs to be used if you need to change the default pins used.
 
-#### Configuration
+### Configuration
 
 ```cpp
 int rssi = bus.strategy.packetRssi();
@@ -219,5 +219,5 @@ byte b = bus.strategy.getRandom();
 ```
 Generate a random byte, based on the Wideband RSSI measurement.
 
-#### Safety warning
+### Safety warning
 In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. Before any practical test or hardware purchase for a wireless [ThroughLoRa](/src/strategies/ThroughLoRa) radio setup, compliance with government requirements and regulations must be ensured.

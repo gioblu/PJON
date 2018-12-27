@@ -1,4 +1,4 @@
-## ThroughAsyncSerial
+## ThroughSerialAsync
 
 **Medium:** Hardware/Software Serial port |
 **Pins used:** 1 or 2

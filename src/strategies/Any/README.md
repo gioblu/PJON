@@ -1,8 +1,8 @@
-### Any
+## Any
 
 The `Any` strategy includes virtual inheritance and let PJON objects change from a strategy to another after instantiation or a collection of PJON objects with different strategies to be treated agnostically.
 
-#### How to use Any
+### How to use Any
 Define a `StrategyLink` template class passing the desired strategy, then pass the type `Any` as PJON template parameter to instantiate a PJON object ready to communicate using this strategy.
 ```cpp  
 StrategyLink<SoftwareBitBang> link;

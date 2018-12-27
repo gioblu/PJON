@@ -195,6 +195,16 @@ Depending on header's `MODE` bit, PJON packets can contain basic or extended sup
 |____|__________|________|______|________|______|
 ```
 
+In local mode packets can be broadcasted to all devices sending to device id `0`. Acknowledgement is not supported therefore any broadcasted packet that requests synchronous and or asynchronous acknowledgement is ignored by recipients.
+
+```cpp
+ _______________________________________________
+| ID |  HEADER  | LENGTH | CRC8 |  DATA  | CRC8 |
+|----|----------|--------|------|--------|------|
+| 0  | 00000000 |   6    |      |   64   |      |
+|____|__________|________|______|________|______|
+```
+
 If header's `TX INFO` bit is high the sender's device id is included in the packet.
 
 ```cpp
@@ -213,6 +223,17 @@ If header's `MODE` bit is high [bus](/specification/PJON-protocol-specification-
 |ID| HEADER |LENGTH|CRC8|BUS ID|DATA|CRC8|
 |--|--------|------|----|------|----|----|
 |12|00000001|  10  |    | 0001 | 64 |    |
+|__|________|______|____|______|____|____|
+
+```
+
+In shared mode packets can be broadcasted to all devices sharing the same bus id sending to device id `0`. Acknowledgement is not supported, therefore any broadcasted packet that requests synchronous and or asynchronous acknowledgement is ignored by recipients.
+
+```cpp
+ ________________________________________
+|ID| HEADER |LENGTH|CRC8|BUS ID|DATA|CRC8|
+|--|--------|------|----|------|----|----|
+|0 |00000001|  10  |    | 0001 | 64 |    |
 |__|________|______|____|______|____|____|
 
 ```

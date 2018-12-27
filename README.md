@@ -39,6 +39,10 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 - [PJON-python](https://github.com/Girgitt/PJON-python) - python interface by Zbigniew Zasieczny
 - [PJON-gRPC](https://github.com/Halytskyi/PJON-gRPC) - gRPC server-client by Oleh Halytskyi
 
+### Academic studies
+Researchers are active in many universities worldwide using PJON in different environments. The following list contains all the known published academic studies about PJON:
+- [Definition and Application of PJON-PLC for sensor networks](https://repositorio.unican.es/xmlui/bitstream/handle/10902/14012/408952.pdf?sequence=1) by Jorge Gómez Segurola
+
 ### Contribute
 Feel free to send a pull request sharing something you have made that could help, if you want to support this project you can also try to solve an [issue](https://github.com/gioblu/PJON/issues). Thanks to the support, the expertise, the kindness and the talent of following contributors, the protocol's documentation, specification and implementation have been strongly tested, enhanced and verified:
 

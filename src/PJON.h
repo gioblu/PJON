@@ -412,7 +412,7 @@ class PJON {
           if(
             (
               !_router &&
-              ((data[1] & PJON_MODE_BIT) != (config & PJON_MODE_BIT))
+              ((config & PJON_MODE_BIT) && !(data[1] & PJON_MODE_BIT))
             ) || (
               data[0] == PJON_BROADCAST &&
               ((data[1] & PJON_ACK_MODE_BIT) || (data[1] & PJON_ACK_REQ_BIT))
@@ -453,12 +453,13 @@ class PJON {
           if(length > 15 && !(data[1] & PJON_CRC_BIT)) return PJON_BUSY;
         }
 
-        if((i >= 1) && (data[1] & PJON_MODE_BIT) && !_router)
-          if(
-            (i > (uint8_t)(3 + extended_length)) &&
-            (i < (uint8_t)(8 + extended_length))
-          ) if(bus_id[i - 4 - extended_length] != data[i])
-              return PJON_BUSY;
+        if(
+          ((data[1] & PJON_MODE_BIT) && !_router) &&
+          (i > (uint8_t)(3 + extended_length)) &&
+          (i < (uint8_t)(8 + extended_length))
+        ) if(config & PJON_MODE_BIT) {
+          if(bus_id[i - 4 - extended_length] != data[i]) return PJON_BUSY;
+        } else if(data[i] != 0) return PJON_BUSY; // Do not reject localhost
       }
 
       if(
@@ -616,7 +617,7 @@ class PJON {
           packet,
           length,
           0,
-          header,
+          ((header == PJON_NO_HEADER) ? last_packet_info.header : header),
           p_id,
           requested_port
         );

@@ -457,9 +457,11 @@ class PJON {
           ((data[1] & PJON_MODE_BIT) && !_router) &&
           (i > (uint8_t)(3 + extended_length)) &&
           (i < (uint8_t)(8 + extended_length))
-        ) if(config & PJON_MODE_BIT) {
-          if(bus_id[i - 4 - extended_length] != data[i]) return PJON_BUSY;
-        } else if(data[i] != 0) return PJON_BUSY; // Do not reject localhost
+        ) {
+          if(config & PJON_MODE_BIT) {
+            if(bus_id[i - 4 - extended_length] != data[i]) return PJON_BUSY;
+          } else if(data[i] != 0) return PJON_BUSY; // Do not reject localhost
+        }
       }
 
       if(

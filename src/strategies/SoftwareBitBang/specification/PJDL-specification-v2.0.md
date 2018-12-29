@@ -15,7 +15,7 @@
 
 ---
 
-## PJDL v2.0
+## PJDL v3.0
 ```
 Invented by Giovanni Blu Mitolo
 Originally published: 10/04/2010, latest revision: 30/10/2018

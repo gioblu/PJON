@@ -5,7 +5,7 @@
 - PJON known protocols: [list](/specification/PJON-known-protocols-list.md)
 #### Data link layer
 - PJDL (Padded Jittering Data Link) specification:
-[PJDL v2.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v2.0.md) - [PJDLR v2.0](/src/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) - [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
+[PJDL v3.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v3.0.md) - [PJDLR v2.0](/src/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) - [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
 - TSDL (Tardy Serial Data Link) specification: **[TSDL v2.0](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.0.md)**
 - SFSP (Secure Frame Separation Protocol) specification: [SFSP v1.0](/specification/SFSP-frame-separation-specification-v1.0.md)
 

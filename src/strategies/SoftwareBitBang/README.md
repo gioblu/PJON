@@ -38,7 +38,7 @@ It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to
 
 | Mode | Speed | Supported MCUs   |
 | ---- |------ | ---------------- |
-| `1`  | 1.95kB/s 15625Bd | ATtiny84/84A, ATtiny85, ATmega88/168/328, ATmega16u4/32u4, ATmega2560, SAMD, STM32F1, MK20DX256, ESP8266, ESP32 |  
+| `1`  | 1.95kB/s 15625Bd | ATtiny84/84A, ATtiny85, ATmega88/168/328, ATmega16u4/32u4, ATmega2560, ATmega1284P, SAMD, STM32F1, MK20DX256, ESP8266, ESP32 |  
 | `2`  | 2.21kB/s 17696Bd | ATtiny84/84A, ATtiny85, ATmega88/168/328, ATmega16u4/32u4, ATmega2560 |
 | `3`  | 2.94kB/s 23529Bd | ATmega88/168/328, SAMD |
 

@@ -71,7 +71,7 @@ Before using `ThroughLoRa` be sure to have [arduino-LoRa](https://github.com/san
 Before using `ESPNOW` be sure to have installed the required tools as described [here](/src/strategies/ESPNOW/README.md) and to have defined the `PJON_INCLUDE_EN` constant before including `PJON.h`.
 
 ### Network mode
-The network mode can be changed with `set_shared_network` during runtime, for example moving from [local](/specification/PJON-protocol-specification-v3.0.md#local-mode) to [shared](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v3.0.md#shared-mode) mode:
+The network mode can be changed with `set_shared_network` during runtime, for example moving from [local](/specification/PJON-protocol-specification-v3.1.md#local-mode) to [shared](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v3.1.md#shared-mode) mode:
 ```cpp  
   bus.set_shared_network(true);
 ```
@@ -132,7 +132,7 @@ See the [AsyncAck](/examples/ARDUINO/Network/SoftwareBitBang/AsyncAck) example t
 
 
 ### Packet identification
-If packet duplication avoidance is required it is possible to add a 2 bytes [packet identifier](/specification/PJON-protocol-specification-v3.0.md#packet-identification) to guarantee uniqueness.
+If packet duplication avoidance is required it is possible to add a 2 bytes [packet identifier](/specification/PJON-protocol-specification-v3.1.md#packet-identification) to guarantee uniqueness.
 define the `PJON_INCLUDE_PACKET_ID` as following. The use of a constant has been chosen to save more than 1kB on sketches where this feature is not used:
 ```cpp  
 #define PJON_INCLUDE_PACKET_ID true
@@ -148,7 +148,7 @@ Use `set_packet_id` to enable the packet identification feature:
 See the [UsePacketId](/examples/ARDUINO/Local/SoftwareBitBang/UsePacketId) example to see more in detail how the packet id can be used.
 
 ### Network service identification
-Configure the instance to include a [network service identifier](/specification/PJON-protocol-specification-v3.0.md#network-services) in the packet. Ports from 0 to 8000 are reserved to known network services which index is present in the [known network services list](/specification/PJON-network-services-list.md), ports from 8001 to 65535 are free for custom use cases:
+Configure the instance to include a [network service identifier](/specification/PJON-protocol-specification-v3.1.md#network-services) in the packet. Ports from 0 to 8000 are reserved to known network services which index is present in the [known network services list](/specification/PJON-network-services-list.md), ports from 8001 to 65535 are free for custom use cases:
 ```cpp  
   bus.include_port(false);      // Avoid port inclusion (default)  
   bus.include_port(true, 8001); // Include custom port

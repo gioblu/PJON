@@ -1,7 +1,7 @@
 ### Specifications index
 
 #### Network layer
-- **[PJON (Padded Jittering Operative Network) v3.0](/specification/PJON-protocol-specification-v3.0.md)**
+- **[PJON (Padded Jittering Operative Network) v3.1](/specification/PJON-protocol-specification-v3.1.md)**
 - [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md)
 - [Dynamic addressing specification v2.0](/specification/PJON-dynamic-addressing-specification-v2.0.md)
 - [Network services list](/specification/PJON-network-services-list.md)
@@ -14,7 +14,7 @@
 
 ---
 
-## PJON® v3.0
+## PJON® v3.1
 ```
 Invented by Giovanni Blu Mitolo
 Header feature proposed by Fred Larsen
@@ -130,14 +130,14 @@ HEADER BITMAP
 |ID    |LENGTH|    |     |MODE |     |INFO |     |
 |______|______|____|_____|_____|_____|_____|_____|
 ```
-1. `PACKET ID` bit informs if the packet contains (value 1) or not (value 0) a 2 bytes [packet id](/specification/PJON-protocol-specification-v3.0.md#packet-identification)
-2. `EXT. LENGTH` bit informs if the packet contains 1 (value 0) or 2 (value 1) bytes [length](/specification/PJON-protocol-specification-v3.0.md#extended-length)
-3. `CRC` bit signals which CRC is used, [CRC8](/specification/PJON-protocol-specification-v3.0.md#crc8-polynomial) (value 0) or [CRC32](/specification/PJON-protocol-specification-v3.0.md#crc32-polynomial) (value 1)
-4. `PORT` bit informs if the packet contains a 2 bytes [network service identifier](/specification/PJON-protocol-specification-v3.0.md#network-services) (value 1) or not (value 0)
+1. `PACKET ID` bit informs if the packet contains (value 1) or not (value 0) a 2 bytes [packet id](/specification/PJON-protocol-specification-v3.1.md#packet-identification)
+2. `EXT. LENGTH` bit informs if the packet contains 1 (value 0) or 2 (value 1) bytes [length](/specification/PJON-protocol-specification-v3.1.md#extended-length)
+3. `CRC` bit signals which CRC is used, [CRC8](/specification/PJON-protocol-specification-v3.1.md#crc8-polynomial) (value 0) or [CRC32](/specification/PJON-protocol-specification-v3.1.md#crc32-polynomial) (value 1)
+4. `PORT` bit informs if the packet contains a 2 bytes [network service identifier](/specification/PJON-protocol-specification-v3.1.md#network-services) (value 1) or not (value 0)
 5. `ACK MODE` bit signals [synchronous](/specification/PJON-protocol-acknowledge-specification-v1.0.md#synchronous-acknowledge) (value 0) or [asynchronous](/specification/PJON-protocol-acknowledge-specification-v1.0.md#asynchronous-acknowledge) (value 1) acknowledgement mode
 6. `ACK` bit informs if [acknowledgement](/specification/PJON-protocol-acknowledge-specification-v1.0.md) is requested (value 1) or not (value 0)
 7. `TX INFO` bit informs if the sender info are included (value 1) or not (value 0)
-8. `MODE` bit informs if the packet is formatted in [shared](/specification/PJON-protocol-specification-v3.0.md#shared-mode) (value 1) or [local](/specification/PJON-protocol-specification-v3.0.md#local-mode) mode (value 0)  
+8. `MODE` bit informs if the packet is formatted in [shared](/specification/PJON-protocol-specification-v3.1.md#shared-mode) (value 1) or [local](/specification/PJON-protocol-specification-v3.1.md#local-mode) mode (value 0)  
 
 Unacceptable header configuration states for standard transmission:
 * `----1-0-` or `ACK MODE` bit high, and `TX INFO` bit low (asynchronous acknowledgement requires transmitter info)
@@ -217,7 +217,7 @@ If header's `TX INFO` bit is high the sender's device id is included in the pack
 ```
 
 #### Shared mode
-If header's `MODE` bit is high [bus](/specification/PJON-protocol-specification-v3.0.md#bus) identification is added to the packet. Below, the same local transmission used as an example above is formatted to be sent in shared mode to device id `12` of bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient as requested by header's `MODE` bit.
+If header's `MODE` bit is high [bus](/specification/PJON-protocol-specification-v3.1.md#bus) identification is added to the packet. Below, the same local transmission used as an example above is formatted to be sent in shared mode to device id `12` of bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient as requested by header's `MODE` bit.
 ```cpp
  ________________________________________
 |ID| HEADER |LENGTH|CRC8|BUS ID|DATA|CRC8|

@@ -42,8 +42,8 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 ### Academic studies
 Researchers are active in many universities worldwide using PJON in different environments. The following list contains all the known published academic studies about PJON:
 - [Definition and Application of PJON-PLC for sensor networks](https://repositorio.unican.es/xmlui/bitstream/handle/10902/14012/408952.pdf?sequence=1) by Jorge Gómez Segurola, Ingeniería de Tecnologías de
-Telecomunicación, Universidad de Cantabria
-- [Biomimetic electronics](http://c.harl.ie/biomimetic.html) by Charlie Williams, Artist in Residency at Wageningen University (NL), with scientific input from researchers Vítor Martins dos Santos (Synthetic Biology), Diana Machado de Sousa (Microbiology) and Sabine Vreeburg (Plant Sciences Group)
+Telecomunicación - [Universidad de Cantabria](https://web.unican.es/) (ES)
+- [Biomimetic electronics](http://c.harl.ie/biomimetic.html) by Charlie Williams with scientific input from researchers Vítor Martins dos Santos, Diana Machado de Sousa and Sabine Vreeburg - Artist in Residency at [Wageningen University](https://www.wur.nl/en.htm) (NL)
 
 ### Contribute
 Feel free to send a pull request sharing something you have made that could help, if you want to support this project you can also try to solve an [issue](https://github.com/gioblu/PJON/issues). Thanks to the support, the expertise, the kindness and the talent of following contributors, the protocol's documentation, specification and implementation have been strongly tested, enhanced and verified:

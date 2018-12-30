@@ -55,7 +55,7 @@ ____|____________|____________|____________|_______| ID   254 |
 * Fall back to multi-master procedure if no master is present
 
 #### Procedure
-All communication to dynamically assign or request ids must be transmitted using CRC32 on the `PJON_DYNAMIC_ADDRESSING` port (see the [network services list v1.0](/src/strategies/ThroughSerial/specification/PJON-known-protocols-list-v1.0.md)).
+All communication to dynamically assign or request ids must be transmitted using CRC32 on the `PJON_DYNAMIC_ADDRESSING` port (see the [network services list v1.0](/specification/PJON-network-services-list.md)).
 
 Slave sends a `PJON_ID_REQUEST` to get a new id:
 ```cpp  

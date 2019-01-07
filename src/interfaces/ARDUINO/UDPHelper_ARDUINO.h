@@ -37,6 +37,9 @@ public:
   }
 
   uint16_t receive_string(uint8_t *string, uint16_t max_length) {
+    #ifdef PJON_ESP
+    udp.flush(); // Empty receive buffer so it is prepared for new packet
+    #endif
     uint16_t packetSize = udp.parsePacket();
     if(packetSize > 0) {
       uint32_t header = 0;

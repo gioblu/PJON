@@ -1,6 +1,6 @@
 
 /* PJON SoftwareBitBang strategy Transmission Timing table
-   Copyright 2010-2018, Giovanni Blu Mitolo All rights reserved.
+   Copyright 2010-2019, Giovanni Blu Mitolo All rights reserved.
 
    Often timing in two different architectures do not match. Code execution
    time can variate and time measurements can be not perfectly equal.

@@ -18,7 +18,7 @@ install:
 script:
   # Arduino based examples
   - pushd examples/ARDUINO >/dev/null && build_platform uno && popd >/dev/null
-  - pushd examples/ESP8266 >/dev/null; build_platform esp8266; popd >/dev/null
+  - pushd examples/ESP8266 >/dev/null; build_platform esp32; popd >/dev/null
   # Linux examples
   - pushd examples/LINUX/Local/EthernetTCP/PingPong/Receiver/ >/dev/null; make; popd >/dev/null
 notifications:

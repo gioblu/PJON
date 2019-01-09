@@ -12,7 +12,7 @@ PJON<SoftwareBitBang> busB(bus_id_B, PJON_NOT_ASSIGNED);
 uint32_t latency = 6000;
 
 void receiver_functionA(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
-  if(!busA.bus_id_equality(packet_info.receiver_bus_id, bus_id_B)) return;
+  if(!PJONTools::bus_id_equality(packet_info.receiver_bus_id, bus_id_B)) return;
   // Forward packet to bus 0.0.0.2
   if(packet_info.header & PJON_ACK_REQ_BIT)
     busA.strategy.send_response(PJON_ACK);
@@ -29,7 +29,7 @@ void receiver_functionA(uint8_t *payload, uint16_t length, const PJON_Packet_Inf
 }
 
 void receiver_functionB(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
-  if(!busB.bus_id_equality(packet_info.receiver_bus_id, bus_id_A)) return;
+  if(!PJONTools::bus_id_equality(packet_info.receiver_bus_id, bus_id_A)) return;
   // Forward packet to bus 0.0.0.1
   if(packet_info.header & PJON_ACK_REQ_BIT)
     busB.strategy.send_response(PJON_ACK);

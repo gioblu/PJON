@@ -15,7 +15,6 @@ before_install:
 install:
   - arduino --install-library "LoRa:0.5.0"
   - arduino --install-library "ArduinoJson:5.13.2"
-  - arduino --install-library "SoftwareSerial"
 script:
   # Arduino based examples
   - pushd examples/ARDUINO >/dev/null && build_platform mega && popd >/dev/null

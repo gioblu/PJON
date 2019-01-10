@@ -175,7 +175,7 @@ protected:
     //  bus id so that replies can find the route back via NAT.
     uint8_t sender_bus_id[4];
     memcpy(sender_bus_id, packet_info.sender_bus_id, 4);
-    if ((packet_info.header & PJON_MODE_BIT) && 
+    if ((packet_info.header & PJON_MODE_BIT) &&
         !(buses[sender_bus]->config & PJON_MODE_BIT) &&
         memcmp(buses[sender_bus]->bus_id, buses[sender_bus]->localhost, 4)!=0 &&
         memcmp(packet_info.sender_bus_id, buses[sender_bus]->localhost, 4)==0) {
@@ -184,11 +184,11 @@ protected:
     }
 
     // NAT support: If a shared packet comes with receiver bus id matching the
-    // NAT address of a local bus, then change the receiver bus id to 0.0.0.0 
+    // NAT address of a local bus, then change the receiver bus id to 0.0.0.0
     // before forwarding the shared packet to the local bus.
     uint8_t receiver_bus_id[4];
     memcpy(receiver_bus_id, packet_info.receiver_bus_id, 4);
-    if ((packet_info.header & PJON_MODE_BIT) && 
+    if ((packet_info.header & PJON_MODE_BIT) &&
         !(buses[receiver_bus]->config & PJON_MODE_BIT) &&
         memcmp(buses[receiver_bus]->bus_id, buses[receiver_bus]->localhost, 4)!=0 &&
         memcmp(packet_info.receiver_bus_id, buses[receiver_bus]->bus_id, 4)==0) {
@@ -255,14 +255,14 @@ protected:
       );
 
       /* The NAT case:
-      A. A shared packet comes in destined to the "public" bus id registered 
+      A. A shared packet comes in destined to the "public" bus id registered
          on the local bus. It will be found normally, and send_packet will
          modify the receiver bus id to 0.0.0.0 before sending.
       B. A shared packet comes in from the local bus, with sender bus id
          0.0.0.0 and a valid receiver bus id. The receiver bus id will be
          found normally, and send_packet will modify the sender bus id
          from 0.0.0.0 to the registered public/NAT bus id of the local bus.
-      */      
+      */
 
       if(receiver_bus == PJON_NOT_ASSIGNED) receiver_bus = default_gateway;
 
@@ -321,10 +321,10 @@ public:
   // Return the position of the bus currently calling a callback.
   // (It may return PJON_NOT_ASSIGNED if not doing a callback.)
   uint8_t get_callback_bus() const { return current_bus; }
-  
+
   // Return one of the buses, in the same order as sent to the constructor
   PJONBus<Strategy> &get_bus(const uint8_t ix) { return *(buses[ix]); }
-  
+
   static void receiver_function(
     uint8_t *payload,
     uint16_t length,

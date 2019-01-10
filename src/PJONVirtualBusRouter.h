@@ -119,7 +119,7 @@ protected:
       Serial.print(F("FORWARD NOACK ")); Serial.print(info.receiver_id); Serial.print(F(" to bus "));
       Serial.println(receiver_bus);
       #endif
-    } 
+    }
     else {
       RouterClass::send_packet(payload, length, receiver_bus, sender_bus, ack_sent, packet_info);
       #ifdef DEBUG_PRINT_PACKETS

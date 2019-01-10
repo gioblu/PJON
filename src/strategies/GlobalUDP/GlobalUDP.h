@@ -89,7 +89,7 @@ class GlobalUDP {
         else {
           // Update IP and port of existing node
           memcpy(_remote_ip[pos], sender_ip, 4);
-          _remote_port[pos] = sender_port; 
+          _remote_port[pos] = sender_port;
         }
       }
     }

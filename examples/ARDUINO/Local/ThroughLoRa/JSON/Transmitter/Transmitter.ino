@@ -18,9 +18,9 @@ void setup() {
 	Serial.println("LoRa Transmitter");
 
 	// Obligatory to initialize Radio with correct frequency
-	bus.strategy.setFrequency(868100000UL);
+	LoraPJON.strategy.setFrequency(868100000UL);
 	// Optional
-	bus.strategy.setSignalBandwidth(250E3);
+	LoraPJON.strategy.setSignalBandwidth(250E3);
 
 	LoraPJON.begin();
 }

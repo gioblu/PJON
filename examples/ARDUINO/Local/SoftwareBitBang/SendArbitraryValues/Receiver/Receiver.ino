@@ -22,7 +22,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 
   if((char)payload[0] == 'V') {
     Serial.print(" | Voltage: ");
-    Serial.print(payload[1] << 8 | payload[2] & 0xFF);
+    Serial.print((uint8_t)(payload[1] << 8) | (uint8_t)(payload[2] & 0xFF));
     Serial.print("mV");
     // Get back the original integer from the 2 separate bytes
   }

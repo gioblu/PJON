@@ -55,9 +55,11 @@ bus.strategy.set_RS485_rxe_pin(11);
 // Set RS485 transmission enable pin
 bus.strategy.set_RS485_txe_pin(12);
 ```
-See [RS485-Blink](../../examples/ARDUINO/Local/ThroughSerial/RS485-Blink) and [RS485-AsyncAck](../../examples/ARDUINO/Local/ThroughSerial/RS485-AsyncAck) examples.
+See the [Blink](../../../examples/ARDUINO/Local/ThroughSerialAsync/Blink) and [BlinkWithResponse](https://github.com/gioblu/PJON/tree/master/examples/ARDUINO/Local/ThroughSerialAsync/BlinkWithResponse) examples.
 
-HC-12 wireless module supports both synchronous and asynchronous acknowledgement, see [HC-12-Blink](../../examples/ARDUINO/Local/ThroughSerial/HC-12-Blink), [HC-12-SendAndReceive](../../examples/ARDUINO/Local/ThroughSerial/HC-12-SendAndReceive) and [HC-12-AsyncAck](../../examples/ARDUINO/Local/ThroughSerial/HC-12-AsyncAck) examples.
+Examples for `ThroughSerial` can be easily modifed to work with `ThroughSerialAsync`, see [RS485-Blink](../../../examples/ARDUINO/Local/ThroughSerial/RS485-Blink) and [RS485-AsyncAck](../../../examples/ARDUINO/Local/ThroughSerial/RS485-AsyncAck) examples. 
+
+HC-12 wireless module supports both synchronous and asynchronous acknowledgement, see [HC-12-Blink](../../../examples/ARDUINO/Local/ThroughSerial/HC-12-Blink), [HC-12-SendAndReceive](../../../examples/ARDUINO/Local/ThroughSerial/HC-12-SendAndReceive), [HC-12-LocalChat](../../../examples/ARDUINO/Local/ThroughSerial/HC-12-LocalChat) and [HC-12-AsyncAck](../../../examples/ARDUINO/Local/ThroughSerial/HC-12-AsyncAck) examples.
 
 All the other necessary information is present in the general [Documentation](/documentation).
 

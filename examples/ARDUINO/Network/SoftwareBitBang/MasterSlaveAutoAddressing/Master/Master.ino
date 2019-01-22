@@ -1,3 +1,8 @@
+
+/* This let the master receive a packet while trying to send another.
+   Avoids network instability */
+#define PJON_RECEIVE_WHILE_SENDING_BLOCKING true
+
 #include <PJONMaster.h>
 
 // Bus id definition

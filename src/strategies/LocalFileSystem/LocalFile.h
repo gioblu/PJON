@@ -20,18 +20,6 @@ class LocalFile {
     int receiveCounter;
 
     void readFileContent(unsigned char *stringdata, uint16_t length) {
-    // std::ifstream input( "pjon_content", std::ios::binary );
-    //  std::vector<unsigned char> buffer(std::istreambuf_iterator<char>(input), {});
-  
-    //  if (!buffer.empty()) {
-    //     unsigned char* buf = buffer.data();
-    //     int actualLength = buffer.size();
-    //     memcpy(stringdata, buf, actualLength);
-    //  } 
-    //   else
-    //   {
-    //     stringdata[0]=0;
-    //   }
         std::ifstream binFile("pjon_content", std::ios::in | std::ios::binary);
         if(binFile.is_open())
         {
@@ -53,8 +41,6 @@ class LocalFile {
       memcpy(buf, string, length);
       std::ofstream binFile;
       binFile.open ("pjon_content", std::ios::binary);
-      // binFile << string;
-      // binFile.close();
       binFile.write((char*)&buf[0], length);
       return 0;
     };
@@ -72,8 +58,6 @@ class LocalFile {
       memcpy(buf, string, length);
       std::ofstream binFile;
       binFile.open ("pjon_log1", std::ios::binary | std::ios::app);
-      // binFile << string;
-      // binFile.close();
       binFile.write((char*)&buf[0], length);
       return 0;
     };
@@ -97,13 +81,9 @@ class LocalFile {
 
     void clearFileOperationSemaphore() {
       if (fileOperationSemaphorePresent()) {
-        printf("removing semaphore...");
         while (remove( "pjon_semaphore")!=0) {
           std::this_thread::sleep_for(std::chrono::milliseconds(100));   
         };
-        printf("done\n");
-      } else {
-        printf("no semaphore to remove\n");
       }
     }
 
@@ -111,13 +91,11 @@ class LocalFile {
     uint16_t last_send_result = PJON_FAIL;
 
     uint32_t back_off(uint8_t attempts) { 
- //       printf("back_off %d\n", attempts);
         return attempts;
     };
 
     bool begin(uint8_t additional_randomness) {
     // create file to contain payload for all busses if not there
-      printf("begin\n");
       if (!contentFilePresent()) {
         std::ofstream file;
         file.open ("pjon_content");
@@ -132,54 +110,45 @@ class LocalFile {
     };
     
     void handle_collision() {
-      // printf("collide %d\n",++collisionCounter);
-      // while(fileOperationSemaphorePresent()) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-      // };
+     //  while(fileOperationSemaphorePresent()) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+     //  };
     };
 
     bool     can_start(){
       bool canStart = !fileOperationSemaphorePresent();
-      if (canStart) {
-        unsigned char buf[100];
-        readFileContent(buf,1);
-        if(buf[0]!=0) {
-          printf("!!!!!NO FILE SEMAPHORE BUT CONTENT!!!!!!!!!!!!!!\n");
-        }
-      }
-  //    printf("can_start %d for %d\n", canStart, sentCounter);
+      // if (canStart) {
+      //   unsigned char buf[100];
+      //   readFileContent(buf,1);
+      //   if(buf[0]!=0) {
+      //     printf("!!!!!NO FILE SEMAPHORE BUT CONTENT!!!!!!!!!!!!!!\n");
+      //   }
+      // }
         return canStart;
     };
     
     uint8_t  get_max_attempts() {
-  //    printf("get_max_attempts for %d\n", sentCounter);
         return 2;
     };
     
     uint16_t receive_string(uint8_t *string, uint16_t max_length) {
       readFileContent(string, max_length);
-      // clearFileOperationSemaphore();
       return max_length;
     };
     
     uint16_t receive_response() {
-      printf("receive_response %d for %d\n", last_send_result, sentCounter++);
       return last_send_result;
     };
     
     void send_response(uint8_t response) {
-      printf("send_response %d, %d\n", response, receiveCounter++);
       clearContent();
     };
     
     void send_string(uint8_t *string, uint16_t length) {
-      // if(fileOperationSemaphorePresent()) {
-      //   printf("Send faild, busy\n");
-      //   last_send_result = PJON_BUSY;
-      // } else 
         setFileOperationSemaphore();
-        logFileContent(string);
-        logFileContentWithLen(string, length);
+        #ifdef LOG 
+          logFileContentWithLen(string, length);
+        #endif
         writeFileContent(string, length); 
         
         last_send_result = PJON_ACK;

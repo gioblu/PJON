@@ -6,7 +6,7 @@
 bool didReceive = false;
 int busId =0;
 int receivedCnt = 0;
-int lastReceivedVal = -1;
+int lastReceivedVal = 0;
 int endVal=0;
 int errorCnt = 0;
 
@@ -16,15 +16,16 @@ static void receiver_function(uint8_t *payload, uint16_t length, const PJON_Pack
     memcpy(buffer, payload,length);
     char prefix[20];
     char postfix[20];
+    int client=0;
     int val=0;
-    sscanf(buffer, "%s %d and some %s", prefix, &val, postfix);
+    sscanf(buffer, "%s %d, sending %d and some %s", prefix, &client, &val, postfix);
     printf("Controller received  #%u '%s' on %u, value: %d\n",receivedCnt++,buffer,busId, val);
     if(lastReceivedVal != (val - 1)) {
         printf("Warning, we missed something, val: %d, received: %d\n", val, lastReceivedVal);
+        errorCnt++;
     } 
     lastReceivedVal = val;
     didReceive = lastReceivedVal==endVal;
-   // didReceive = true;
 }
 
 int main(int argc,  char** argv) 
@@ -42,5 +43,6 @@ int main(int argc,  char** argv)
         uint16_t resp = testBus.receive(1000);
     }
     printf("Total errors: %d\n", errorCnt);
+    while(true) {};
     return errorCnt; 
 } 

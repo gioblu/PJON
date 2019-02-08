@@ -40,9 +40,12 @@ int main(int argc,  char** argv)
 
     printf("Init done waiting for %d responses\n", endVal); 
     while (!didReceive) {
-        uint16_t resp = testBus.receive(1000);
+       std::this_thread::sleep_for(std::chrono::milliseconds(50));
+       uint16_t resp = testBus.receive();
     }
     printf("Total errors: %d\n", errorCnt);
-    while(true) {};
+    while(true) {
+         std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    };
     return errorCnt; 
 } 

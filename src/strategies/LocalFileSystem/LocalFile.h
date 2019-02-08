@@ -128,7 +128,7 @@ class LocalFile {
     };
     
     uint8_t  get_max_attempts() {
-        return 2;
+        return 10;
     };
     
     uint16_t receive_string(uint8_t *string, uint16_t max_length) {

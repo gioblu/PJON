@@ -110,9 +110,9 @@ class LocalFile {
     };
     
     void handle_collision() {
-     //  while(fileOperationSemaphorePresent()) {
+       while(fileOperationSemaphorePresent()) {
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
-     //  };
+       };
     };
 
     bool     can_start(){

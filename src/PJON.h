@@ -214,7 +214,7 @@ class PJON {
       } else {
         destination[index++] = (uint8_t)new_length;
         destination[index++] = PJON_crc8::compute((uint8_t *)destination, 3);
-      }
+      } 
       if(header & PJON_MODE_BIT) {
         PJONTools::copy_bus_id((uint8_t*) &destination[index], b_id);
         index += 4;

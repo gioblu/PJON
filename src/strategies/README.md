@@ -15,6 +15,7 @@ A strategy is an abstraction layer used to physically transmit data. Thanks to t
 | [ThroughSerialAsync](ThroughSerialAsync)  | Electrical/radio impulses over wire/air | [TSDL](ThroughSerial/specification/TSDL-specification-v2.1.md) | 1 or 2 |
 | [ThroughLoRa](ThroughLoRa)  | Radio impulses over air | LoRa | 3 or 4 |
 | [ESPNOW](ESPNOW)  | Radio impulses over air | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) | WiFi link |
+| [LocalFileSystem](LocalFileSystem)  | Shared file system | PJDL | None |
 | [Any](Any)  | Virtual inheritance, any of the above | Any of the above | Any of the above |
 
 A `Strategy` is a class containing a set of methods used to physically send and receive data along with the required getters to handle retransmission and collision:

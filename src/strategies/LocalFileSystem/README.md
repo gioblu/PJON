@@ -1,14 +1,8 @@
 ## LocalFile
 
-**Medium:** Hard disc
+**Medium:** Hard disk
 
-With the `LocalFile` PJON strategy hardware agnostic testing can be performed. This strategy is for developing and testing your business logic while not on a microcontroller but on PC.
-
-### Why PJON over LocalFile
-When developing often components that should communicate with each other reside on one hardware (Windows, Mac or Linux System).
-
-When testing the roundtrip to the actual microcontroller is cumbersome. This strategy can be used
-to test and develop your business logic or protocols without having to actually deploy sending and receiving components to actual hardware.
+`LocalFile` uses a local file present on the hard drive, it is generally useful for developing, simulating and testing your network on a real time operative system without having to deploy physical hardware.
 
 ### How to use LocalFile
 Pass the `LocalFile` type as PJON template parameter to instantiate a PJON object ready to communicate through this strategy.
@@ -16,12 +10,9 @@ Pass the `LocalFile` type as PJON template parameter to instantiate a PJON objec
   // Use LocalFile strategy with PJON device id 44
   PJON<LocalFile> bus(44);
 ```
-Often you want to use conditional compiling and exchange this strategy with the actual one on your targeted hardware.
+After testing or simulation you may want to use conditional compiling and exchange this strategy with the actual one on your target hardware. The [test](test/README.md) directory contains some examples and tests.  
 
 ### Known issues
 - Quite slow
 - Will write files `pjon_content` and `pjon_semaphore` to the current working directory. These
 files can be deleted when your client is not running.
-
-### Also read
-Readme.md in the tests for examples.

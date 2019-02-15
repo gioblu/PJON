@@ -1,6 +1,9 @@
 #include <stdint.h>
-// #define LINUX On Mac and Linux
-#define PJON_INCLUDE_LOCAL
+
+/* Define the LINUX constant if compiling on Mac or Linux
+   #define LINUX */
+
+#define PJON_INCLUDE_LF
 #include "PJON.h"
 
 bool didReceive = false;
@@ -26,15 +29,15 @@ static void receiver_function(uint8_t *payload, uint16_t length, const PJON_Pack
     if(lastReceivedVal != (val - 1)) {
         printf("Warning, we missed something, val: %d, received: %d\n", val, lastReceivedVal);
         errorCnt++;
-    } 
+    }
 
     lastReceivedVal = val;
-    
+
     didReceive = lastReceivedVal==endVal;
 }
 
-int main(int argc,  char** argv) 
-{ 
+int main(int argc,  char** argv)
+{
     busId = atoi(argv[1]);
     endVal = atoi(argv[2]);
     pingpong = atoi(argv[3]);
@@ -44,7 +47,7 @@ int main(int argc,  char** argv)
     testBus.set_receiver(receiver_function);
     testBus.begin();
 
-    printf("Init done waiting for %d responses\n", endVal); 
+    printf("Init done waiting for %d responses\n", endVal);
     while (!didReceive) {
        // Be 'nice' to other processes
        std::this_thread::sleep_for(std::chrono::milliseconds(50));
@@ -70,5 +73,5 @@ int main(int argc,  char** argv)
        // Be 'nice' to other processes
        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     };
-    return errorCnt; 
-} 
+    return errorCnt;
+}

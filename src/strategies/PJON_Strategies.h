@@ -56,8 +56,8 @@
 #if defined(PJON_INCLUDE_EN)
   #include "ESPNOW/ESPNOW.h"
 #endif
-#if defined(PJON_INCLUDE_LOCAL)
-  #include "LocalFileSystem/LocalFile.h"
+#if defined(PJON_INCLUDE_LF)
+  #include "LocalFile/LocalFile.h"
 #endif
 #if defined(PJON_INCLUDE_NONE)
   /* None for custom strategy inclusion */
@@ -68,8 +68,8 @@
     !defined(PJON_INCLUDE_OS)   && !defined(PJON_INCLUDE_SWBB) && \
     !defined(PJON_INCLUDE_TS)   && !defined(PJON_INCLUDE_NONE) && \
     !defined(PJON_INCLUDE_TSA)  && !defined(PJON_INCLUDE_DUDP) && \
-    !defined(PJON_INCLUDE_LOCAL)
-    
+    !defined(PJON_INCLUDE_LF)
+
   #include "Any/Any.h"
   #include "AnalogSampling/AnalogSampling.h"
   #include "OverSampling/OverSampling.h"

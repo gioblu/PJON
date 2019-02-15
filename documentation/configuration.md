@@ -48,23 +48,25 @@ In the example above the PJON object is instantiated passing [SoftwareBitBang](/
 | [ThroughSerialAsync](/src/strategies/ThroughSerialAsync)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md) | 1 or 2 |
 | [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio impulses over air | LoRa | 3 or 4 |
 | [ESPNOW](/src/strategies/ESPNOW)  | Radio impulses over air | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) | WiFi link |
+| [LocalFile](/src/strategies/LocalFile)  | Shared file system (for testing, simulation or inter-process communication) | None | None |
 | [Any](/src/strategies/Any)  | Virtual inheritance, any of the above | Any of the above | Any of the above |
 
-By default all strategies are included except `ThroughLoRa` and `ESPNOW`. To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before PJON inclusion to include only `SoftwareBitBang` strategy. More than one strategy related constant can defined in the same program if that is required.
+By default all strategies are included except `LocalFile`, `ThroughLoRa` and `ESPNOW`. To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before PJON inclusion to include only `SoftwareBitBang` strategy. More than one strategy related constant can defined in the same program if that is required.
 
 Supported definitions:
-- `PJON_INCLUDE_SWBB` includes SoftwareBitBang
-- `PJON_INCLUDE_AS` includes AnalogSampling
-- `PJON_INCLUDE_ETCP` includes EthernetTCP
-- `PJON_INCLUDE_GUDP` includes GlobalUDP
-- `PJON_INCLUDE_LUDP` includes LocalUDP
-- `PJON_INCLUDE_OS` includes OverSampling
-- `PJON_INCLUDE_TS` includes ThroughSerial
-- `PJON_INCLUDE_TSA` includes ThroughSerialAsync
-- `PJON_INCLUDE_TL` includes ThroughLoRa
-- `PJON_INCLUDE_EN` includes ESPNOW
-- `PJON_INCLUDE_ANY` includes Any
-- `PJON_INCLUDE_NONE` no strategy file included
+- `PJON_INCLUDE_SWBB` includes `SoftwareBitBang`
+- `PJON_INCLUDE_AS` includes `AnalogSampling`
+- `PJON_INCLUDE_ETCP` includes `EthernetTCP`
+- `PJON_INCLUDE_GUDP` includes `GlobalUDP`
+- `PJON_INCLUDE_LUDP` includes `LocalUDP`
+- `PJON_INCLUDE_OS` includes `OverSampling`
+- `PJON_INCLUDE_TS` includes `ThroughSerial`
+- `PJON_INCLUDE_TSA` includes `ThroughSerialAsync`
+- `PJON_INCLUDE_TL` includes `ThroughLoRa`
+- `PJON_INCLUDE_EN` includes `ESPNOW`
+- `PJON_INCLUDE_ANY` includes `Any`
+- `PJON_INCLUDE_LF` includes `LocalFile`
+- `PJON_INCLUDE_NONE` does not include any strategy
 
 Before using `ThroughLoRa` be sure to have [arduino-LoRa](https://github.com/sandeepmistry/arduino-LoRa) source available and to have defined the `PJON_INCLUDE_TL` constant before including `PJON.h`.
 

@@ -1,9 +1,9 @@
 #include <stdint.h>
 #include <chrono>
 #include <thread>
- 
+
 // #define LINUX On Mac and Linux
-#define PJON_INCLUDE_LOCAL
+#define PJON_INCLUDE_LF
 #include "PJON.h"
 
 bool didReceive = false;
@@ -16,19 +16,19 @@ static void receiver_function(uint8_t *payload, uint16_t length, const PJON_Pack
     didReceive = true;
 }
 
-int main(int argc,  char** argv) 
-{ 
+int main(int argc,  char** argv)
+{
     sendings = atoi(argv[1]);
     clients = atoi(argv[2]);
     printf("Sending %d to %d clients and counting errors\n", sendings, clients);
     PJON<LocalFile> testBus(1);
     testBus.set_receiver(receiver_function);
     testBus.begin();
-    printf("Init done\n"); 
+    printf("Init done\n");
     char tosend[100];
 
     for(int cnt = 1; cnt<=sendings;cnt++) {
-        
+
         for(int client = 2; client<=clients; client++) {
             sprintf(tosend, "hello %d, sending %d and some stuff", client, cnt);
             int result = PJON_BUSY;
@@ -46,5 +46,5 @@ int main(int argc,  char** argv)
         }
     }
     printf("Sender done, total errors: %d\n", errors);
-    return errors; 
-} 
+    return errors;
+}

@@ -48,7 +48,7 @@ In the example above the PJON object is instantiated passing [SoftwareBitBang](/
 | [ThroughSerialAsync](/src/strategies/ThroughSerialAsync)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md) | 1 or 2 |
 | [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio impulses over air | LoRa | 3 or 4 |
 | [ESPNOW](/src/strategies/ESPNOW)  | Radio impulses over air | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) | WiFi link |
-| [LocalFile](/src/strategies/LocalFile)  | Shared file system (for testing, simulation or inter-process communication) | None | None |
+| [LocalFile](/src/strategies/LocalFile)  | Shared file system in memory | None | None |
 | [Any](/src/strategies/Any)  | Virtual inheritance, any of the above | Any of the above | Any of the above |
 
 By default all strategies are included except `LocalFile`, `ThroughLoRa` and `ESPNOW`. To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before PJON inclusion to include only `SoftwareBitBang` strategy. More than one strategy related constant can defined in the same program if that is required.

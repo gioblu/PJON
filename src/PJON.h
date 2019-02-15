@@ -47,6 +47,7 @@ Credits to contributors:
 - Mauro Zancarlin: Systems engineering, testing, bugfix
 - Michael Teeww: Callback based reception, debugging
 - PaoloP74 github user: Library conversion to 1.x Arduino IDE
+- DetAtHome github user: LocalFile strategy 
 
 Bug reports:
 - per1234 github user: Fix keywords.txt separators

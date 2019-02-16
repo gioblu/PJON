@@ -47,6 +47,7 @@ Credits to contributors:
 - Mauro Zancarlin: Systems engineering, testing, bugfix
 - Michael Teeww: Callback based reception, debugging
 - PaoloP74 github user: Library conversion to 1.x Arduino IDE
+- DetAtHome github user: LocalFile strategy 
 
 Bug reports:
 - per1234 github user: Fix keywords.txt separators
@@ -214,7 +215,7 @@ class PJON {
       } else {
         destination[index++] = (uint8_t)new_length;
         destination[index++] = PJON_crc8::compute((uint8_t *)destination, 3);
-      }
+      } 
       if(header & PJON_MODE_BIT) {
         PJONTools::copy_bus_id((uint8_t*) &destination[index], b_id);
         index += 4;

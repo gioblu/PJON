@@ -52,7 +52,7 @@ int main(int argc,  char** argv)
        if (pingpong!=0 & resp==PJON_ACK) {
             int result = PJON_BUSY;
             while (result==PJON_BUSY) {
-                result = testBus.send_packet_blocking(1, lastReceivedData, strlen(lastReceivedData));
+                result = testBus.send_packet(1, lastReceivedData, strlen(lastReceivedData));
                 if (result!=PJON_BUSY) break;
                 std::this_thread::sleep_for(std::chrono::milliseconds(500));
             }

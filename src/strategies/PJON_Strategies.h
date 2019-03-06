@@ -68,7 +68,7 @@
     !defined(PJON_INCLUDE_OS)   && !defined(PJON_INCLUDE_SWBB) && \
     !defined(PJON_INCLUDE_TS)   && !defined(PJON_INCLUDE_NONE) && \
     !defined(PJON_INCLUDE_TSA)  && !defined(PJON_INCLUDE_DUDP) && \
-    !defined(PJON_INCLUDE_LOCAL)
+    !defined(PJON_INCLUDE_LOCAL) && !defined(PJON_MINIMAL)
     
   #include "Any/Any.h"
   #include "AnalogSampling/AnalogSampling.h"
@@ -83,4 +83,7 @@
     #include "GlobalUDP/GlobalUDP.h"
     #include "DualUDP/DualUDP.h"
   #endif
+#endif
+#if defined(PJON_MINIMAL) 
+  #include "SoftwareBitBang/SoftwareBitBang.h"
 #endif

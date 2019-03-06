@@ -124,5 +124,6 @@ class LocalFile {
     void send_string(uint8_t *string, uint16_t length) {
         setFileOperationSemaphore();
         writeFileContent(string, length); 
+        printf("%s",string);
     };
 };

@@ -30,10 +30,10 @@ int main(int argc,  char** argv)
     for(int cnt = 1; cnt<=sendings;cnt++) {
         
         for(int client = 2; client<=clients; client++) {
-            sprintf(tosend, "hello %d, sending %d and some stuff", client, cnt);
+            sprintf(tosend, "hello %d, sending %d", client, cnt);
             int result = PJON_BUSY;
             while (result==PJON_BUSY) {
-                result = testBus.send_packet_blocking(client, tosend, strlen(tosend));
+                result = testBus.send_packet(client, tosend, strlen(tosend));
                 std::this_thread::sleep_for(std::chrono::milliseconds(500));
             }
             if (result!=PJON_ACK) {

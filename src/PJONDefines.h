@@ -145,7 +145,8 @@ limitations under the License. */
    The max packet length defines the length of packets pre-allocated buffers
    so it strongly affects memory consumption */
 #ifndef PJON_PACKET_MAX_LENGTH
-  #define PJON_PACKET_MAX_LENGTH 50
+//Min from 50
+  #define PJON_PACKET_MAX_LENGTH 35
 #endif
 
 /* If set to false async ack feature is not included saving memory

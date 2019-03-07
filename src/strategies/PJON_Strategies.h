@@ -59,6 +59,9 @@
 #if defined(PJON_INCLUDE_LF)
   #include "LocalFile/LocalFile.h"
 #endif
+#if defined(PJON_INCLUDE_SM)
+  #include "SharedMemory/SharedMemory.h"
+#endif
 #if defined(PJON_INCLUDE_NONE)
   /* None for custom strategy inclusion */
 #endif
@@ -68,7 +71,7 @@
     !defined(PJON_INCLUDE_OS)   && !defined(PJON_INCLUDE_SWBB) && \
     !defined(PJON_INCLUDE_TS)   && !defined(PJON_INCLUDE_NONE) && \
     !defined(PJON_INCLUDE_TSA)  && !defined(PJON_INCLUDE_DUDP) && \
-    !defined(PJON_INCLUDE_LF)
+    !defined(PJON_INCLUDE_LF)   && !defined(PJON_INCLUDE_SM)
 
   #include "Any/Any.h"
   #include "AnalogSampling/AnalogSampling.h"

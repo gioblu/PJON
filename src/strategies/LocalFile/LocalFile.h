@@ -142,7 +142,7 @@ class LocalFile {
       return success;
     };
 
-    bool readNextPacketFromFile(const Record &record) {
+    bool readNextPacketFromFile(Record &record) {
       bool success = false;
       uint16_t lastRecordId, index[LF_QUEUESIZE];
       lock();

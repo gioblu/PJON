@@ -2,9 +2,7 @@
 
 **Medium:** Hard disk
 
-`LocalFile` uses a local file present on the hard drive, it is generally useful for developing, simulating and testing your network on a real time operative system without having to deploy physical hardware.
-
-It will let multiple processes on the same computer communicate together on a PJON bus via this file.
+`LocalFile` uses a file present on the hard drive to let multiple processes communicate on the same machine. It can be used for inter-process communication and for developing, simulating and testing applications and networks on a real time operative system without having to deploy physical hardware.
 
 ### Configuration
 
@@ -23,7 +21,7 @@ Pass the `LocalFile` type as PJON template parameter to instantiate a PJON objec
 ```
 After testing or simulation you may want to use conditional compiling and exchange this strategy with the actual one on your target hardware.
 
-The directory examples/LINUX/Local/LocalFile/PingPong contains examples. To build these on Linux, simply type "make". To build on Windows, open the solution file in Visual Studio 2017.
+The directory `examples/LINUX/Local/LocalFile/PingPong` contains examples. To build these on Linux, simply type "make". To build on Windows, open the solution file in Visual Studio 2017.
 
 Reading messages is based on polling. The poll interval in milliseconds is defined by the pre-processor definition `LF_POLLDELAY` which is 10 by default. Decreasing this value will increase the communication speed but also use more CPU and cause more disk activity.
 

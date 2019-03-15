@@ -275,6 +275,7 @@ inform the reader of their definition as macros in the global scope.
       uint8_t register saveSreg = SREG; \
       cli(); \
       bitWrite(*(A), PJON_IO_PIN_TO_BIT(P), V); \
+      sei(); \
       SREG = saveSreg; \
     }
 

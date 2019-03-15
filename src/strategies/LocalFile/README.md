@@ -23,9 +23,9 @@ After testing or simulation you may want to use conditional compiling and exchan
 
 The directory `examples/LINUX/Local/LocalFile/PingPong` contains examples. To build these on Linux, simply type "make". To build on Windows, open the solution file in Visual Studio 2017.
 
-Reading messages is based on polling. The poll interval in milliseconds is defined by the pre-processor definition `LF_POLLDELAY` which is 10 by default. Decreasing this value will increase the communication speed but also use more CPU and cause more disk activity.
+Reading messages is based on polling. The poll interval in milliseconds is defined by the pre-processor definition `LF_POLLDELAY`. Decreasing this value will increase the communication speed but also use more CPU and cause more disk activity.
 
-The strategy uses a file where messages are persisted. A queue of the last messages is kept there, with the queue size set by the pre-processor define `LF_QUEUESIZE` which is 20 by default.
+The strategy uses a file where messages are persisted. A queue of the last messages is kept there, with the queue size set by the pre-processor define `LF_QUEUESIZE`.
 
 ### Known issues
 - Will create the file `PJONLocalFile.dat` in the parent directory. This

@@ -41,15 +41,23 @@ The graph above contains a packet transmission where the character `@` (decimal 
 The asynchronous acknowledgement is a non-blocking procedure, it is packet based and can travel across a network composed by many collision domains. Between the packet reception and the asynchronous acknowledgement response the communication medium can be used by other devices.
 
 ```cpp
-Channel analysis               Transmission                Response
- ____________________________________________________________  ___
-|ID| HEADER |LENGTH|CRC|BUS ID|BUS ID|ID|PACKET ID|DATA|CRC32||ACK|
-|--|--------|------|---|------|------|--|---------|----|-----||---|
-|12|10001111|  20  |   | 0002 | 0001 |11|   99    | 64 |     || 6 |
-|__|________|______|___|______|______|__|_________|____|_____||___|
+Channel analysis               Transmission
+ ____________________________________________________________
+|ID| HEADER |LENGTH|CRC|BUS ID|BUS ID|ID|PACKET ID|DATA|CRC32|
+|--|--------|------|---|------|------|--|---------|----|-----|
+|12|10001011|  20  |   | 0002 | 0001 |11|   99    | 64 |     |
+|__|________|______|___|______|______|__|_________|____|_____|
                        |RXINFO| TX INFO |       
 ```
-The graph above contains a standard packet transmission where the character `@` (decimal 64) is sent to device id `12`. As defined by the [PJON protocol specification v3.1](/specification/PJON-protocol-specification-v3.1.md) the header's `ACK MODE` bit with value 1 requests to the recipient an asynchronous acknowledgement response, the `TX INFO` bit with value 1 signals the presence of the sender's info required to respond and the `PACKET ID` bit signals the presence of the packet id used for asynchronous acknowledgement identification.
+The graph above contains a standard packet transmission where the character `@` (decimal 64) is sent to device id `12`. As defined by the [PJON protocol specification v3.1](/specification/PJON-protocol-specification-v3.1.md) the header's `ACK MODE` bit with value 1 requests to the recipient an asynchronous acknowledgement response, the `TX INFO` bit with value 1 signals the presence of the sender's info required to respond and the `PACKET ID` bit signals the presence of the packet id used for asynchronous acknowledgement identification. Device `12` of bus `0.0.0.2` answers with an empty asynchronous acknowledgement packet to device `11` of bus `0.0.0.1`.
+```cpp
+ __ ________ ______ ___ _______ _______ __ _________ _____
+|ID| HEADER |LENGTH|CRC|BUS ID |BUS ID |ID|PACKET ID|CRC32|
+|--|--------|------|---|-------|-------|--|---------|-----|
+|11|00001011|  19  |   |0.0.0.1|0.0.0.2|12|   99    |     |
+|__|________|______|___|_______|_______|__|_________|_____|
+                       |RX INFO| TX INFO  |
+```
 
 ### PJON® recursive acknowledgement pattern
 The recursive acknowledgement pattern consists in the use of both synchronous and asynchronous acknowledgement.

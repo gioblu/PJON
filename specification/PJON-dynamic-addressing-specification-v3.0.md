@@ -23,8 +23,6 @@ Compliant versions: PJON v12.0 and following
 Released into the public domain
 ```
 Devices are physically and uniquely identified by a 5 bytes device address able to cover the whole PJON network address space (2^32*254 or 1.090.921.693.180 devices). Masters use unique bus ids to isolate traffic. Slaves are identified by their device address regardless of the master or the network addresses (bus and device ids) used by the network layer.
-
-### Master-slave dynamic addressing
 ```cpp  
  _________    _________    _________    _________
 | ID    1 |  | ID    2 |  | ID    3 |  | ID    4 |

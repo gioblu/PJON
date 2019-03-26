@@ -40,7 +40,7 @@ Device and bus id can be read using `device_id` or `bus_id`:
 ```
 
 ### Dynamic addressing
-`PJONMaster` and `PJONSlave` classes implement the master-slave and multi-master [dynamic addressing](/specification/PJON-dynamic-addressing-specification-v2.0.md) features. Slaves can be connected to a bus and can be hot-swapped, their id is automatically assigned by master and their presence can be optionally monitored. Master keeps an updated list of known dynamically addressed slaves. Use the `PJON` class if those features are not required.   
+`PJONMaster` and `PJONSlave` classes implement the [dynamic addressing](/specification/PJON-dynamic-addressing-specification-v3.0.md) features. Slaves are uniquely identified a 5 bytes unique device address, they can connect automatically to masters in range and can move in the network; disconnecting from one master and connect to another. Masters keep an updated list of known dynamically addressed slaves. Use the `PJON` class if those features are not required.   
 
 ### PJONMaster
 The `PJONMaster` class implement master's dynamic addressing procedure which is totally automatic a requires no configuration, although some optional configuration is available.
@@ -58,16 +58,6 @@ If addressing procedure debug is needed set the state of `bus.debug` accordingly
 ```cpp
 bus.debug = true;
 ```
-Slave presence check can be requested manually calling `check_slaves_presence`. This is a bandwidth consuming procedure because master contacts each known slave to determine if still online. If a slave is found unresponsive it is removed from the list of known slaves. The more devices are connected the more bandwidth is consumed. Call this function seldom (every 5-10 seconds) to avoid bandwidth saturation.
-```cpp
-// Check if registered slaves are still present on the bus
-bus.check_slaves_presence();
-```
-This is the list of the addressing errors possibly returned by the error call-back:
-
-- `PJON_ID_ACQUISITION_FAIL` (value 105), `data` parameter contains lost packet's id.
-- `PJON_DEVICES_BUFFER_FULL` (value 254), `data` parameter contains slaves buffer length.
-
 This is an example of how an error call-back can be defined:
 ```cpp
 
@@ -82,10 +72,6 @@ void error_function(uint8_t code, uint8_t data, void *custom_pointer) {
     Serial.println((uint8_t)bus.packets[data].content[0], DEC);
   }
   // PJONMaster related errors
-  if(code == PJON_ID_ACQUISITION_FAIL) {
-    Serial.print("Connection lost with device ");
-    Serial.println(data, DEC);
-  }
   if(code == PJON_DEVICES_BUFFER_FULL) {
     Serial.print("Master devices buffer is full with a length of ");
     Serial.println(data);
@@ -94,31 +80,21 @@ void error_function(uint8_t code, uint8_t data, void *custom_pointer) {
 ```
 
 ### PJONSlave
-Use the `PJONSlave` class for slaves:
+The `PJONSlave` class requires only the device address parameter; all the underlying network configuration and masters' discovery is done automatically.
+
 ```cpp
 #include <PJONSlave.h>
-// Bus id definition
-uint8_t bus_id[] = {0, 0, 0, 1};
-// PJON object
-PJONSlave<SoftwareBitBang> bus(bus_id, PJON_NOT_ASSIGNED);
-```
-Call `acquire_id_master_slave()` to acquire an id assigned by master:
-```cpp
-bus.acquire_id_master_slave();
-```
-Call `acquire_id_multi_master()` to acquire an id autonomously without the need of a master:
-```cpp
-bus.acquire_id_multi_master();
-```
-This is the list of the addressing errors possibly returned by the error call-back:
-- `PJON_ID_ACQUISITION_FAIL` (value 105), `data` parameter contains the failed request
 
-Requests list:
-- `PJON_ID_ACQUIRE` (value 199), multi-master id acquisition
-- `PJON_ID_REQUEST` (value 200), master-slave id request
-- `PJON_ID_CONFIRM` (value 201), master-slave id confirmation
-- `PJON_ID_NEGATE`  (value 203), master-slave id release
+/* Bus id - Initially set as localhost to demonstrate the ability of slaves to
+   find a master thanks to its advertisement no matter which bus id is used */
+uint8_t bus_id[] = {0, 0, 0, 0};
 
+// Device address (unique address of a physical device)
+uint8_t device_address[] = {1, 2, 3, 4, 5};
+
+// PJONSlave object
+PJONSlave<SoftwareBitBang> bus(device_address);
+```
 This is an example of how an error call-back can be defined:
 ```cpp
 void setup() {
@@ -133,8 +109,6 @@ void error_handler(uint8_t code, uint8_t data, void *custom_pointer) {
   }
   // PJONSlave related errors
   if(code == PJON_ID_ACQUISITION_FAIL) {
-    if(data == PJON_ID_ACQUIRE)
-      Serial.println("Multi-master auto addressing procedure failed.");
     if(data == PJON_ID_CONFIRM)
       Serial.println("Master-slave id confirmation procedure failed.");
     if(data == PJON_ID_NEGATE)
@@ -144,5 +118,4 @@ void error_handler(uint8_t code, uint8_t data, void *custom_pointer) {
   }
 };
 ```
-
 See the [MasterSlaveAutoAddressing](../examples/ARDUINO/Network/SoftwareBitBang/MasterSlaveAutoAddressing) example for a working showcase.

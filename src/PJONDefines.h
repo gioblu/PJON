@@ -85,12 +85,10 @@ limitations under the License. */
 #define PJON_NAK             21
 
 /* Dynamic addressing */
-#define PJON_ID_ACQUIRE     199
-#define PJON_ID_REQUEST     200
-#define PJON_ID_CONFIRM     201
+#define PJON_ID_DISCOVERY   200
+#define PJON_ID_REQUEST     201
+#define PJON_ID_CONFIRM     202
 #define PJON_ID_NEGATE      203
-#define PJON_ID_LIST        204
-#define PJON_ID_REFRESH     205
 
 /* INTERNAL CONSTANTS */
 #define PJON_FAIL         65535
@@ -167,16 +165,10 @@ limitations under the License. */
 
 /* Dynamic addressing port number */
 #define PJON_DYNAMIC_ADDRESSING_PORT    1
-/* Maximum number of device id collisions during auto-addressing */
-#define PJON_MAX_ACQUIRE_ID_COLLISIONS 10
-/* Delay between device id acquisition and self request (1000 milliseconds) */
-#define PJON_ACQUIRE_ID_DELAY        1000
-/* Master free id broadcast response interval (100 milliseconds) */
-#define PJON_ID_REQUEST_INTERVAL   100000
-/* Master ID_REQUEST and ID_NEGATE timeout */
-#define PJON_ADDRESSING_TIMEOUT   4000000
-/* Master reception time during LIST_ID broadcast (250 milliseconds) */
-#define PJON_LIST_IDS_TIME         250000
+/* Master ID_REQUEST and ID_NEGATE timeout (5 seconds) */
+#define PJON_ADDRESSING_TIMEOUT   5000000
+/* Master discovery broadcast interval (10 seconds) */
+#define PJON_DISCOVERY_INTERVAL   1000000
 
 struct PJON_Packet {
   uint8_t  attempts;
@@ -241,6 +233,21 @@ struct PJONTools {
 
   static bool bus_id_equality(const uint8_t *n_one, const uint8_t *n_two) {
     for(uint8_t i = 0; i < 4; i++)
+      if(n_one[i] != n_two[i])
+        return false;
+    return true;
+  };
+
+  /* Copy a device address: */
+
+  static void copy_address(uint8_t dest[], const uint8_t src[]) {
+    memcpy(dest, src, 5);
+  };
+
+  /* Check equality between two mac addresses */
+
+  static bool address_equality(const uint8_t *n_one, const uint8_t *n_two) {
+    for(uint8_t i = 0; i < 5; i++)
       if(n_one[i] != n_two[i])
         return false;
     return true;

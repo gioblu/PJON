@@ -40,10 +40,10 @@ Device and bus id can be read using `device_id` or `bus_id`:
 ```
 
 ### Dynamic addressing
-`PJONMaster` and `PJONSlave` classes implement the [dynamic addressing](/specification/PJON-dynamic-addressing-specification-v3.0.md) features. Slaves are uniquely identified a 5 bytes unique device address, they can connect automatically to masters in range and can move in the network; disconnecting from one master and connect to another. Masters keep an updated list of known dynamically addressed slaves. Use the `PJON` class if those features are not required.   
+`PJONMaster` and `PJONSlave` classes implement the [dynamic addressing](/specification/PJON-dynamic-addressing-specification-v3.0.md) features. Slaves are uniquely identified a 5 bytes unique device address, they can automatically discover masters in range, request for network addresses and move through the network disconnecting from one master and connecting to another. Masters keep an updated list of known dynamically addressed slaves. Use the `PJON` class if those features are not required.   
 
 ### PJONMaster
-The `PJONMaster` class implement master's dynamic addressing procedure which is totally automatic a requires no configuration, although some optional configuration is available.
+The `PJONMaster` class implement master's dynamic addressing procedure which is totally automatic a requires no configuration although some optional configuration is available.
 ```cpp
 // Optionally configurable maximum amount of slaves handled by master
 #define PJON_MAX_DEVICES 50
@@ -80,7 +80,7 @@ void error_function(uint8_t code, uint8_t data, void *custom_pointer) {
 ```
 
 ### PJONSlave
-The `PJONSlave` class requires only the device address parameter; all the underlying network configuration and masters' discovery is done automatically.
+The `PJONSlave` class requires only the device address parameter, all the underlying network configuration and masters' discovery is done automatically.
 
 ```cpp
 #include <PJONSlave.h>

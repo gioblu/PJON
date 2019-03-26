@@ -40,7 +40,7 @@ Device and bus id can be read using `device_id` or `bus_id`:
 ```
 
 ### Dynamic addressing
-`PJONMaster` and `PJONSlave` classes implement the [dynamic addressing](/specification/PJON-dynamic-addressing-specification-v3.0.md) features. Slaves are uniquely identified a 5 bytes unique device address, they can automatically discover masters in range, request for network addresses and move through the network disconnecting from one master and connecting to another. Masters keep an updated list of known dynamically addressed slaves. Use the `PJON` class if those features are not required.   
+`PJONMaster` and `PJONSlave` classes implement the [dynamic addressing](/specification/PJON-dynamic-addressing-specification-v3.0.md) features. Slaves are uniquely identified a 5 bytes unique device address, they can automatically discover masters, request device ids and move through the network disconnecting from one master and connecting to another. Masters keep an updated list of known dynamically addressed slaves. Use the `PJON` class if those features are not required.   
 
 ### PJONMaster
 The `PJONMaster` class implement master's dynamic addressing procedure which is totally automatic a requires no configuration although some optional configuration is available.

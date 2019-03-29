@@ -17,23 +17,27 @@
 ## PJON® dynamic addressing v3.0
 ```
 Invented by Giovanni Blu Mitolo
-Originally published: 22/03/2019
+Originally published: 26/03/2019
 Related implementation: https://github.com/gioblu/PJON/
 Compliant versions: PJON v12.0 and following
 Released into the public domain
 ```
-Devices are physically and uniquely identified by a 5 bytes device address able to cover the whole PJON network address space (2^32*254 or 1.090.921.693.180 devices). Masters use unique bus ids to isolate traffic. Slaves are identified by their device address regardless of the master or the network addresses (bus and device ids) used by the network layer.
+Slaves are physically and uniquely identified by a 5 bytes device address able to cover the whole PJON network address space (2^32*254 or 1.090.921.693.180 devices). Masters use unique bus ids to isolate traffic.
 ```cpp  
- _________    _________    _________    _________
-| ID    1 |  | ID    2 |  | ID    3 |  | ID    4 |
-| DA  101 |  | DA   41 |  | DA  945 |  | DA   22 |  __________
-|_________|  |_________|  |_________|  |_________| |  MASTER  |
-____|____________|____________|____________|_______| ID   254 |
- ___|_____    ___|_____    ___|_____    ___|_____  |__________|
-| ID    5 |  | ID    6 |  | ID    7 |  | ID    8 |
-| DA  723 |  | DA   35 |  | DA  585 |  | DA   66 |
-|_________|  |_________|  |_________|  |_________|
+ _____________    _____________
+| DEVICE ID 1 |  | DEVICE ID 2 |
+| D. ADDRESS  |  | D. ADDRESS  |
+| 0.0.3.98.1  |  | 0.0.0.12.54 |     ________________
+|_____________|  |_____________|    | MASTER ID  254 |
+_______|________________|___________| BUS ID 0.0.0.1 |
+ ______|______    ______|______     |________________|
+| DEVICE ID 3 |  | DEVICE ID 4 |
+| D. ADDRESS  |  | D. ADDRESS  |
+| 0.0.8.1.1   |  | 0.0.8.121.1 |
+|_____________|  |_____________|
 ```
+Regardless of the master or the network addresses used by the network layer, slaves remain uniquely identified by their own device address. In an isolated scenario device addresses can be generated and assigned as required. If the application is connected to a shared medium where collision with other system may occur, it is strongly suggested to request a unique device address [here](http://www.pjon.org/get-device-address.php).
+
 
 #### Procedure
 All communication used to request and assign ids is transmitted using CRC32 on the `PJON_DYNAMIC_ADDRESSING_PORT` port (decimal 1). Masters routinely broadcast a `PJON_ID_DISCOVERY` (decimal 200) advertisement to let slaves be aware of their presence.  

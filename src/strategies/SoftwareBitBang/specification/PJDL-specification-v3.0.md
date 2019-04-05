@@ -18,7 +18,7 @@
 ## PJDL v3.0
 ```
 Invented by Giovanni Blu Mitolo
-Originally published: 10/04/2010, latest revision: 30/10/2018
+Originally published: 10/04/2010, latest revision: 05/04/2019
 Related implementation: /src/strategies/SoftwareBitBang/
 Compliant versions: PJON 9.0 and following
 Released into the public domain
@@ -49,8 +49,9 @@ The proposed communication modes are the result of years of testing and optimiza
 | 1    | 44                | 116                  | 2.636           | 1.95kB/s - 15625Bd |
 | 2    | 40                | 92                   | 2.300           | 2.21kB/s - 17696Bd |
 | 3    | 28                | 88                   | 3.142           | 2.94kB/s - 23529Bd |
+| 4    | 26                | 60                   | 2.307           | 3.40kB/s - 27210Bd |
 
-Binary timing durations are expressed in microseconds.
+Durations are expressed in microseconds.
 
 ### Medium access control
 PJDL specifies a variation of the carrier-sense, non-persistent random multiple access method (non-persistent CSMA). Devices can detect an ongoing transmission for this reason collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss.

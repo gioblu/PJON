@@ -38,22 +38,13 @@
 
     virtual ~Serial();
 
-    /** Writes a NULL terminated string.
-     *
-     * @param buffer the string to send
-     *
-     * @return int the number of characters written
-     */
-    int write(const char buffer[]);
-
-    /** Writes a string of bytes to the serial port.
+    /** Writes a single byte (uint8_t) to the serial port.
      *
      * @param buffer pointer to the buffer containing the bytes
-     * @param buffLen the number of bytes in the buffer
      *
      * @return int the number of bytes written
      */
-    int write(char *buffer, int buffLen);
+    int writeByte(uint8_t *buffer);
 
     /** Reads a string of bytes from the serial port.
      *
@@ -63,19 +54,11 @@
      *
      * @return int the number of bytes read
      */
-    int read(char *buffer, int buffLen, bool nullTerminate = true);
+    int read(uint8_t *buffer, int buffLen, bool nullTerminate = true);
 
-    /** Writes a single character to the serial port
-    *
-    * @param buffer pointer to the buffer to be written to
-    *
-    * @return int the number of bytes written (should be always 1)
+    /** Returns single byte (uint8_t) from the receive buffer
     */
-    int putChar(char *buffer);
-
-    /** Returns single character from the receive buffer
-    */
-    char getChar();
+    uint8_t getByte();
 
     /** Returns true if there is data available in receive buffer
     */

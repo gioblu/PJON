@@ -117,34 +117,20 @@ Serial::~Serial() {
   CloseHandle(commHandle);
 };
 
-
-int Serial::write(const char *buffer) {
+int Serial::writeByte(uint8_t *buffer) {
   DWORD numWritten;
-  WriteFile(commHandle, buffer, strlen(buffer), &numWritten, NULL);
+  WriteFile(commHandle, buffer, 1, &numWritten, NULL);
   return numWritten;
 };
 
-
-int Serial::write(char *buffer, int buffLen) {
-  DWORD numWritten;
-  WriteFile(commHandle, buffer, buffLen, &numWritten, NULL);
-  return numWritten;
-};
-
-
-int Serial::putChar(char *buffer) {
-  return write(buffer, 1);
-};
-
-
-char Serial::getChar() {
-  char buff;
+uint8_t Serial::getByte() {
+  uint8_t buff;
   read(&buff, 1, false);
   return buff;
 };
 
 
-int Serial::read(char *buffer, int buffLen, bool nullTerminate) {
+int Serial::read(uint8_t *buffer, int buffLen, bool nullTerminate) {
   DWORD numRead;
   if(nullTerminate) --buffLen;
   BOOL ret = ReadFile(commHandle, buffer, buffLen, &numRead, NULL);

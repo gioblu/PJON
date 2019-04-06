@@ -20,7 +20,7 @@ struct PJON_crc32 {
   ) {
     uint8_t bits;
     uint32_t crc = ~previousCrc32; // same as previousCrc32 ^ 0xFFFFFFFF
-    unsigned char* current = (unsigned char*) data;
+    uint8_t * current = (uint8_t*) data;
     while(length--) {
       crc ^= *current++;
       bits = 8;

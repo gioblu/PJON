@@ -20,7 +20,7 @@ Before instantiating PJON it is possible to define the length of its buffers. Pr
 #define PJON_PACKET_MAX_LENGTH 20
 #include <PJON.h>
 /* PJON can store up to 1 packet of up to
-   20 characters - packet overhead
+   20 bytes - packet overhead
    (from 5 to 22 bytes depending by configuration) */
 ```
 

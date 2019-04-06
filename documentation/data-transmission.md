@@ -15,7 +15,7 @@ The begin function must be called before starting communication, the lack of thi
 ```cpp  
   bus.begin();
 ```
-The simplest way to send data is to use `send_packet`, this method composes the packet and tries to send it once. The first parameter is the device id of the recipient of type `uint8_t`, optionally you can pass the bus id of type `const uint8_t *`, then follows the payload of type `const char *` and its length of type `uint16_t`. This call implies a single attempt and has no guarantee of success, but logs the result of the attempted transmission:
+The simplest way to send data is to use `send_packet`, this method composes the packet and tries to send it once. The first parameter is the device id of the recipient of type `uint8_t`, optionally you can pass the bus id of type `const uint8_t *`, then follows the payload of type `const uint8_t *` and its length of type `uint16_t`. This call implies a single attempt and has no guarantee of success, but logs the result of the attempted transmission:
 ```cpp
 // Local
 
@@ -25,7 +25,7 @@ bus.send_packet(10, "Hi!", 3);
 // All optional parameters available
 bus.send_packet(
   10,             // Device id (uint8_t)
-  "Hello World!", // Content   (const char *)
+  "Hello World!", // Content   (const uint8_t *)
   12,             // Length    (uint16_t)
   bus.config,     // Header    (uint8_t)  - Use default config
   0,              // Packet id (uint16_t) - Don't include packet id
@@ -42,7 +42,7 @@ bus.send_packet(10, bus_id, "Hi!", 3);
 bus.send_packet(
   10,             // Device id (uint8_t)
   bus_id,         // Bus id    (const uint8_t *)
-  "Hello World!", // Content   (const char *)
+  "Hello World!", // Content   (const uint8_t *)
   12,             // Length    (uint16_t)
   bus.config,     // Header    (uint8_t)  - Use default config
   0,              // Packet id (uint16_t) - Don't include packet id
@@ -99,19 +99,19 @@ bus.send(100, bus_id, "Ciao, this is a test!", 21);
 
 // Local mode
 bus.send(
-  100,                       // (uint8_t)      Recipient device id
-  "Test including port id!", // (const char *) Content
-  23,                        // (uint16_t)     Length
-  bus.config,                // (uint8_t)      Packet header
-  1,                         // (uint16_t)     Packet id
-  8002                       // (uint16_t)     Port identification
+  100,                       // (uint8_t)         Recipient device id
+  "Test including port id!", // (const uint8_t *) Content
+  23,                        // (uint16_t)        Length
+  bus.config,                // (uint8_t)         Packet header
+  1,                         // (uint16_t)        Packet id
+  8002                       // (uint16_t)        Port identification
 );
 
 // Shared mode or using bus indexing
 bus.send(
   100,                       // (uint8_t)         Recipient device id
   bus_id,                    // (const uint8_t *) Recipient bus id
-  "Test including port id!", // (const char *)    Content
+  "Test including port id!", // (const uint8_t *) Content
   23,                        // (uint16_t)        Length
   bus.config,                // (uint8_t)         Packet header
   1,                         // (uint16_t)        Packet id
@@ -132,7 +132,7 @@ uint16_t one_second_test_shared =
   bus.send_repeatedly(
     100,                       // (uint8_t)         Recipient device id
     bus_id,                    // (const uint8_t *) Recipient bus id
-    "Test including port id!", // (const char *)    Content
+    "Test including port id!", // (const uint8_t *) Content
     23,                        // (uint16_t)        Length
     1000000,                   // (uint32_t)        Interval in microseconds
     bus.config,                // (uint8_t)         Packet header

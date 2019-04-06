@@ -211,6 +211,7 @@ public:
        (returns always true) */
 
     bool begin(uint8_t device_id) {
+      (void)device_id; // Avoid "unused parameter" warning
       return check_udp();
     };
 

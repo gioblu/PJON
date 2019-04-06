@@ -23,7 +23,7 @@ A `Strategy` is a class containing a set of methods used to physically send and 
 ```cpp
 bool begin(uint8_t did = 0)
 ```
-Receives an optional parameter of type `uint8_t` (when PJON calls `begin` it passes its own device id); returns `true` if the strategy is correctly initialized. There is no doubt that the strategy should now know about the PJON's device id, although that is practically useful in many cases.
+Receives an optional parameter of type `uint8_t` (when PJON calls `begin` it passes its own device id); returns `true` if the strategy is correctly initialized. There is no doubt that the strategy should not know about the PJON's device id, although that is practically useful in many cases.
 
 ```cpp
 uint32_t back_off(uint8_t attempts)

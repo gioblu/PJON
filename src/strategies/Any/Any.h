@@ -41,10 +41,10 @@ public:
     uint32_t back_off(uint8_t attempts) { return s->back_off(attempts); }
 
 
-    /* Begin method, to be called before transmission or reception: */
+    /* Begin method, to be called on initialization: */
 
-    bool begin(uint8_t additional_randomness = 0) {
-      return s->begin(additional_randomness);
+    bool begin(uint8_t did = 0) {
+      return s->begin(did);
     }
 
 

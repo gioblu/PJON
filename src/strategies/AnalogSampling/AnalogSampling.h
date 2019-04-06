@@ -100,10 +100,10 @@ class AnalogSampling {
     };
 
 
-    /* Begin method, to be called before transmission or reception:
+    /* Begin method, to be called on initialization:
        (returns always true) */
 
-    bool begin(uint8_t additional_randomness = 0) {
+    bool begin(uint8_t did = 0) {
       #ifdef ARDUINO
         // Set ADC clock prescale
         #if AS_PRESCALE ==  8
@@ -120,7 +120,7 @@ class AnalogSampling {
           sbi(ADCSRA, ADPS0);
         #endif
       #endif
-      PJON_DELAY(PJON_RANDOM(AS_INITIAL_DELAY) + additional_randomness);
+      PJON_DELAY(PJON_RANDOM(AS_INITIAL_DELAY) + did);
       compute_analog_read_duration();
       _last_byte = receive_byte();
       return true;

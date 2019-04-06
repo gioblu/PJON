@@ -28,9 +28,9 @@ public:
     virtual uint32_t back_off(uint8_t attempts) = 0;
 
 
-    /* Begin method, to be called before transmission or reception */
+    /* Begin method, to be called on initialization */
 
-    virtual bool begin(uint8_t additional_randomness = 0) = 0;
+    virtual bool begin(uint8_t did = 0) = 0;
 
 
     /* Check if the channel is free for transmission */

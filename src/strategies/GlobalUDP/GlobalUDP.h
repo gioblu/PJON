@@ -134,10 +134,10 @@ public:
     };
 
 
-    /* Begin method, to be called before transmission or reception:
+    /* Begin method, to be called on initialization:
        (returns always true) */
 
-    bool begin(uint8_t /*additional_randomness*/ = 0) { return check_udp(); };
+    bool begin(uint8_t /*did*/ = 0) { return check_udp(); };
 
 
     /* Check if the channel is free for transmission */

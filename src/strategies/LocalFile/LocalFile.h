@@ -216,7 +216,7 @@ class LocalFile {
       return 1000 * attempts;
     };
 
-    bool begin(uint8_t additional_randomness) {
+    bool begin(uint8_t did) {
       return openContentFile();
     };
 

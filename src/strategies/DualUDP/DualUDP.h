@@ -207,7 +207,7 @@ public:
       return 1000ul * attempts + PJON_RANDOM(10000);
     };
 
-    /* Begin method, to be called before transmission or reception:
+    /* Begin method, to be called on initialization:
        (returns always true) */
 
     bool begin(uint8_t device_id) {

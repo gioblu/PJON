@@ -32,10 +32,10 @@ public:
     }
 
 
-    /* Begin method, to be called before transmission or reception: */
+    /* Begin method, to be called on initialization: */
 
-    bool begin(uint8_t additional_randomness = 0) {
-      return strategy.begin(additional_randomness);
+    bool begin(uint8_t did = 0) {
+      return strategy.begin(did);
     }
 
 

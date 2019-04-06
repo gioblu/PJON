@@ -96,12 +96,12 @@ class ThroughLora {
 		return LoRa.random();
 	};
 
-    /* Begin method, to be called before transmission or reception:
+    /* Begin method, to be called on initialization:
        (returns always true) */
 
-    bool begin(uint8_t additional_randomness = 0) {
+    bool begin(uint8_t did = 0) {
       PJON_DELAY_MICROSECONDS(
-        PJON_RANDOM(TL_INITIAL_DELAY) + additional_randomness
+        PJON_RANDOM(TL_INITIAL_DELAY) + did
       );
       return true;
     };

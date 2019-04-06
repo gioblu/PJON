@@ -68,11 +68,11 @@ class ThroughSerialAsync {
     };
 
 
-    /* Begin method, to be called before transmission or reception:
+    /* Begin method, to be called on initialization:
        (returns always true) */
 
-    bool begin(uint8_t additional_randomness = 0) {
-      PJON_DELAY(PJON_RANDOM(TSA_INITIAL_DELAY) + additional_randomness);
+    bool begin(uint8_t did = 0) {
+      PJON_DELAY(PJON_RANDOM(TSA_INITIAL_DELAY) + did);
       _last_reception_time = PJON_MICROS();
       _last_byte = TSA_FAIL;
       return true;

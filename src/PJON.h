@@ -47,7 +47,7 @@ Credits to contributors:
 - Mauro Zancarlin: Systems engineering, testing, bugfix
 - Michael Teeww: Callback based reception, debugging
 - PaoloP74 github user: Library conversion to 1.x Arduino IDE
-- DetAtHome github user: LocalFile strategy 
+- DetAtHome github user: LocalFile strategy
 
 Bug reports:
 - per1234 github user: Fix keywords.txt separators
@@ -158,8 +158,8 @@ class PJON {
     uint16_t compose_packet(
       const uint8_t id,
       const uint8_t *b_id,
-      char *destination,
-      const char *source,
+      uint8_t *destination,
+      const uint8_t *source,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
@@ -215,7 +215,7 @@ class PJON {
       } else {
         destination[index++] = (uint8_t)new_length;
         destination[index++] = PJON_crc8::compute((uint8_t *)destination, 3);
-      } 
+      }
       if(header & PJON_MODE_BIT) {
         PJONTools::copy_bus_id((uint8_t*) &destination[index], b_id);
         index += 4;
@@ -276,7 +276,7 @@ class PJON {
     uint16_t dispatch(
       uint8_t id,
       const uint8_t *b_id,
-      const char *packet,
+      const uint8_t *packet,
       uint16_t length,
       uint32_t timing,
       uint8_t  header = PJON_NO_HEADER,
@@ -607,7 +607,7 @@ class PJON {
        deliver a response to a request. */
 
     uint16_t reply(
-      const char *packet,
+      const uint8_t *packet,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
@@ -631,7 +631,7 @@ class PJON {
 
     uint16_t send(
       uint8_t id,
-      const char *string,
+      const uint8_t *string,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
@@ -645,7 +645,7 @@ class PJON {
     uint16_t send(
       uint8_t id,
       const uint8_t *b_id,
-      const char *string,
+      const uint8_t *string,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
@@ -663,7 +663,7 @@ class PJON {
       const uint8_t *sender_bus_id,
       uint8_t id,
       const uint8_t *b_id,
-      const char *string,
+      const uint8_t *string,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
@@ -694,7 +694,7 @@ class PJON {
 
     uint16_t send_repeatedly(
       uint8_t id,
-      const char *string,
+      const uint8_t *string,
       uint16_t length,
       uint32_t timing,
       uint8_t  header = PJON_NO_HEADER,
@@ -712,7 +712,7 @@ class PJON {
     uint16_t send_repeatedly(
       uint8_t id,
       const uint8_t *b_id,
-      const char *string,
+      const uint8_t *string,
       uint16_t length,
       uint32_t timing,
       uint8_t  header = PJON_NO_HEADER,
@@ -726,7 +726,7 @@ class PJON {
 
     /* Transmit an already composed packet:  */
 
-    uint16_t send_packet(const char *string, uint16_t length) {
+    uint16_t send_packet(const uint8_t *string, uint16_t length) {
       if(!string) return PJON_FAIL;
       if(_mode != PJON_SIMPLEX && !strategy.can_start()) return PJON_BUSY;
       strategy.send_string((uint8_t *)string, length);
@@ -747,31 +747,31 @@ class PJON {
 
     uint16_t send_packet(
       uint8_t id,
-      const char *string,
+      const uint8_t *string,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
       if(!(length = compose_packet(
-        id, bus_id, (char *)data, string, length, header, p_id, requested_port
+        id, bus_id, data, string, length, header, p_id, requested_port
       ))) return PJON_FAIL;
-      return send_packet((char *)data, length);
+      return send_packet(data, length);
     };
 
     uint16_t send_packet(
       uint8_t id,
       const uint8_t *b_id,
-      const char *string,
+      const uint8_t *string,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
       if(!(length = compose_packet(
-        id, b_id, (char *)data, string, length, header, p_id, requested_port
+        id, b_id, data, string, length, header, p_id, requested_port
       ))) return PJON_FAIL;
-      return send_packet((char *)data, length);
+      return send_packet(data, length);
     };
 
     /* Transmit a packet without using the packet's buffer. Tries to transmit
@@ -781,7 +781,7 @@ class PJON {
     uint16_t send_packet_blocking(
       uint8_t id,
       const uint8_t *b_id,
-      const char *string,
+      const uint8_t *string,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
@@ -801,7 +801,7 @@ class PJON {
         if(!(length = compose_packet(
           id,
           b_id,
-          (char *)data,
+          data,
           string,
           old_length,
           header,
@@ -811,7 +811,7 @@ class PJON {
           _recursion--;
           return PJON_FAIL;
         }
-        state = send_packet((char*)data, length);
+        state = send_packet(data, length);
         if(state == PJON_ACK) {
           _recursion--;
           return state;
@@ -830,7 +830,7 @@ class PJON {
 
     uint16_t send_packet_blocking(
       uint8_t id,
-      const char *string,
+      const uint8_t *string,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,

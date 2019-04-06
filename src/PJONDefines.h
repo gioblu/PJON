@@ -116,8 +116,8 @@ limitations under the License. */
 /* 0 - CRC8 (1 byte) included at the end of the packet
    1 - CRC32 (4 bytes) included at the end of the packet */
 #define PJON_CRC_BIT        0B00100000
-/* 0 - 1 byte length (max 255 characters)
-   1 - 2 bytes length (max 65535 characters) */
+/* 0 - 1 byte long (max 255 bytes)
+   1 - 2 bytes long (max 65535 bytes) */
 #define PJON_EXT_LEN_BIT    0B01000000
 /* 0 - Packet id not present
    1 - Packet id present */
@@ -172,7 +172,7 @@ limitations under the License. */
 
 struct PJON_Packet {
   uint8_t  attempts;
-  char     content[PJON_PACKET_MAX_LENGTH];
+  uint8_t  content[PJON_PACKET_MAX_LENGTH];
   uint16_t length;
   uint32_t registration;
   uint16_t state;

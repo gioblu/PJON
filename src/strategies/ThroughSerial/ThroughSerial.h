@@ -153,7 +153,7 @@ class ThroughSerial {
       // No end flag, byte-stuffing violation
       if((max_length == 1) && (receive_byte() != TS_END))
         return TS_FAIL;
-      *string = result;
+      *string = (uint8_t)result;
       return 1;
     };
 

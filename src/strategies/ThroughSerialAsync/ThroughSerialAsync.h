@@ -74,7 +74,6 @@ class ThroughSerialAsync {
     bool begin(uint8_t did = 0) {
       PJON_DELAY(PJON_RANDOM(TSA_INITIAL_DELAY) + did);
       _last_reception_time = PJON_MICROS();
-      _last_byte = TSA_FAIL;
       return true;
     };
 
@@ -114,10 +113,6 @@ class ThroughSerialAsync {
         if(PJON_SERIAL_AVAILABLE(serial)) {
           int16_t read = PJON_SERIAL_READ(serial);
           _last_reception_time = PJON_MICROS();
-          if(read >= 0) {
-            _last_byte = (uint8_t)read;
-            return _last_byte;
-          }
         }
         #if defined(_WIN32)
           PJON_DELAY_MICROSECONDS(TSA_RESPONSE_TIME_OUT / 10);
@@ -390,7 +385,6 @@ class ThroughSerialAsync {
     uint16_t _flush_offset = TSA_FLUSH_OFFSET;
     uint32_t _bd;
   #endif
-    uint8_t  _last_byte;
     uint32_t _last_reception_time = 0;
     uint32_t _last_call_time = 0;
     uint8_t  _enable_RS485_rxe_pin = TSA_NOT_ASSIGNED;

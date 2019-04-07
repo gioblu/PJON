@@ -113,7 +113,7 @@ class ThroughSerialAsync {
         if(PJON_SERIAL_AVAILABLE(serial)) {
           int16_t read = PJON_SERIAL_READ(serial);
           _last_reception_time = PJON_MICROS();
-          if(read >= 0) return _last_byte;
+          if(read >= 0) return (uint8_t)read;
         }
         #if defined(_WIN32)
           PJON_DELAY_MICROSECONDS(TSA_RESPONSE_TIME_OUT / 10);

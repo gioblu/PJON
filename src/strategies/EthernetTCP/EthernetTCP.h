@@ -105,11 +105,11 @@ class EthernetTCP {
     void handle_collision() { };
 
 
-    /* Receive a string: */
+    /* Receive a frame: */
 
-    uint16_t receive_string(uint8_t *string, uint16_t max_length) {
+    uint16_t receive_frame(uint8_t *data, uint16_t max_length) {
       // Register supplied buffer as target for EthernetLink callback function
-      incoming_packet_buf_ptr = string;
+      incoming_packet_buf_ptr = data;
       current_buffer_size = max_length;
       incoming_packet_size = 0;
 
@@ -138,11 +138,11 @@ class EthernetTCP {
     };
 
 
-    /* Send a string: */
+    /* Send a frame: */
 
-    void send_string(uint8_t *string, uint16_t length) {
+    void send_frame(uint8_t *data, uint16_t length) {
       if(length > 0)
         last_send_result =
-          link.send((uint8_t)string[0], (const char*)string, length);
+          link.send((uint8_t)data[0], (const char*)data, length);
     };
 };

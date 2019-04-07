@@ -125,7 +125,7 @@ class ThroughSerialAsync {
 
     /* Receive a string: */
 
-    uint16_t receive_string(uint8_t *string, uint16_t max_length) {
+    uint16_t receive_frame(uint8_t *data, uint16_t max_length) {
       if( // Reception attempts are spaced by an interval
         _last_call_time &&
         (uint32_t)(PJON_MICROS() - _last_call_time) < _read_interval
@@ -241,7 +241,7 @@ class ThroughSerialAsync {
         }
 
         case TSA_DONE: {
-          memcpy(&string[0], &buffer[0], position);
+          memcpy(&data[0], &buffer[0], position);
           state = TSA_WAITING;
           return position;
         }
@@ -272,7 +272,7 @@ class ThroughSerialAsync {
 
     /* Send a string: */
 
-    void send_string(uint8_t *string, uint16_t length) {
+    void send_frame(uint8_t *data, uint16_t length) {
       start_tx();
       uint16_t overhead = 2;
       // Add frame flag
@@ -280,14 +280,14 @@ class ThroughSerialAsync {
       for(uint16_t b = 0; b < length; b++) {
         // Byte-stuffing
         if(
-          (string[b] == TSA_START) ||
-          (string[b] == TSA_ESC) ||
-          (string[b] == TSA_END)
+          (data[b] == TSA_START) ||
+          (data[b] == TSA_ESC) ||
+          (data[b] == TSA_END)
         ) {
           send_byte(TSA_ESC);
-          send_byte(string[b] ^ TSA_ESC);
+          send_byte(data[b] ^ TSA_ESC);
           overhead++;
-        } else send_byte(string[b]);
+        } else send_byte(data[b]);
       }
       send_byte(TSA_END);
       /* On RPI flush fails to wait until all bytes are transmitted

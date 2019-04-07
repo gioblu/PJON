@@ -48,9 +48,9 @@ public:
     virtual void handle_collision() = 0;
 
 
-    /* Receive a string: */
+    /* Receive a frame: */
 
-    virtual uint16_t receive_string(uint8_t *string, uint16_t max_length) = 0;
+    virtual uint16_t receive_frame(uint8_t *data, uint16_t max_length) = 0;
 
 
     /* Receive byte response: */
@@ -63,7 +63,7 @@ public:
     virtual void send_response(uint8_t response) = 0;
 
 
-    /* Send a string: */
+    /* Send a frame: */
 
-    virtual void send_string(uint8_t *string, uint16_t length) = 0;
+    virtual void send_frame(uint8_t *data, uint16_t length) = 0;
 };

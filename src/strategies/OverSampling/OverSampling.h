@@ -140,13 +140,13 @@ class OverSampling {
     };
 
 
-    /* Receive a string: */
+    /* Receive a frame: */
 
-    uint16_t receive_string(uint8_t *string, uint16_t max_length) {
+    uint16_t receive_frame(uint8_t *data, uint16_t max_length) {
       uint16_t result;
       if(max_length == PJON_PACKET_MAX_LENGTH) {
         uint32_t time = PJON_MICROS();
-        // Look for string initializer
+        // Look for frame initializer
         if(!sync() || !sync() || !sync()) return OS_FAIL;
         if( // Check its timing consistency
           (uint32_t)(PJON_MICROS() - time) <
@@ -155,7 +155,7 @@ class OverSampling {
       } // Receive incoming byte
       result = receive_byte();
       if(result == OS_FAIL) return OS_FAIL;
-      *string = result;
+      *data = result;
       return 1;
     };
 
@@ -212,13 +212,13 @@ class OverSampling {
     };
 
 
-    /* Send a string: */
+    /* Send a frame: */
 
-    void send_string(uint8_t *string, uint16_t length) {
+    void send_frame(uint8_t *data, uint16_t length) {
       PJON_IO_MODE(_output_pin, OUTPUT);
       // Send initial transmission preamble if required
       if(OS_PREAMBLE_PULSE_WIDTH) send_preamble();
-      // Send string init
+      // Send frame inititializer
       for(uint8_t i = 0; i < 3; i++) {
         PJON_IO_WRITE(_output_pin, HIGH);
         PJON_DELAY_MICROSECONDS(OS_BIT_SPACER);
@@ -226,7 +226,7 @@ class OverSampling {
         PJON_DELAY_MICROSECONDS(OS_BIT_WIDTH);
       } // Send data
       for(uint16_t b = 0; b < length; b++)
-        send_byte(string[b]);
+        send_byte(data[b]);
       PJON_IO_PULL_DOWN(_output_pin);
     };
 

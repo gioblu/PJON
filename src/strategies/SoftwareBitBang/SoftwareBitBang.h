@@ -151,9 +151,9 @@ class SoftwareBitBang {
     };
 
 
-    /* Receive a string: */
+    /* Receive a frame: */
 
-    uint16_t receive_string(uint8_t *string, uint16_t max_length) {
+    uint16_t receive_frame(uint8_t *data, uint16_t max_length) {
       uint16_t result;
       if(max_length == PJON_PACKET_MAX_LENGTH) {
         uint32_t time = PJON_MICROS();
@@ -168,7 +168,7 @@ class SoftwareBitBang {
       // Receive incoming bytes
       result = receive_byte();
       if(result == SWBB_FAIL) return SWBB_FAIL;
-      *string = result;
+      *data = result;
       return 1;
     };
 
@@ -228,7 +228,7 @@ class SoftwareBitBang {
     };
 
 
-    /* The string is prepended with a frame initializer composed by 3
+    /* The data is prepended with a frame initializer composed by 3
        synchronization pads to signal the start of a frame.
      _________________ __________________________________
     |   FRAME INIT    | DATA 1-65535 bytes               |
@@ -239,9 +239,9 @@ class SoftwareBitBang {
     | 1 |0| 1 |0| 1 |0| 1 |0|0000|11|00| 1 |0|00000|1|0|1|
     |___|_|___|_|___|_|___|_|____|__|__|___|_|_____|_|_|_|
 
-    Send a string: */
+    Send a frame: */
 
-    void send_string(uint8_t *string, uint16_t length) {
+    void send_frame(uint8_t *data, uint16_t length) {
       PJON_IO_MODE(_output_pin, OUTPUT);
       // Send frame initializer
       for(uint8_t i = 0; i < 3; i++) {
@@ -251,7 +251,7 @@ class SoftwareBitBang {
         PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH);
       } // Send data
       for(uint16_t b = 0; b < length; b++)
-        send_byte(string[b]);
+        send_byte(data[b]);
       PJON_IO_PULL_DOWN(_output_pin);
     };
 

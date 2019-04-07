@@ -136,14 +136,14 @@ class ThroughLora {
       return PJON_FAIL;
     };
 
-    /* Receive a string: */
+    /* Receive a frame: */
 
-    uint16_t receive_string(uint8_t *string, uint16_t max_length) {
+    uint16_t receive_frame(uint8_t *data, uint16_t max_length) {
       uint8_t frameSize = LoRa.parsePacket();
       if(frameSize > 0) {
         while(LoRa.available()) {
-          *string = LoRa.read();
-          string++;
+          *data = LoRa.read();
+          data++;
         }
         return frameSize;
       } else return PJON_FAIL;
@@ -163,12 +163,12 @@ class ThroughLora {
       end_tx();
     };
 
-    /* Send a string: */
+    /* Send a frame: */
 
-    void send_string(uint8_t *string, uint8_t length) {
+    void send_frame(uint8_t *data, uint8_t length) {
       start_tx();
       for(uint8_t b = 0; b < length; b++)
-        send_byte(string[b]);
+        send_byte(data[b]);
       end_tx();
     };
 

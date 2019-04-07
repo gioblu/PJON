@@ -54,10 +54,10 @@ public:
     void handle_collision() { strategy.handle_collision(); };
 
 
-    /* Receive a string: */
+    /* Receive a frame: */
 
-    uint16_t receive_string(uint8_t *string, uint16_t max_length) {
-      return strategy.receive_string(string, max_length);
+    uint16_t receive_frame(uint8_t *data, uint16_t max_length) {
+      return strategy.receive_frame(data, max_length);
     }
 
 
@@ -71,9 +71,9 @@ public:
     void send_response(uint8_t response) { strategy.send_response(response); }
 
 
-    /* Send a string: */
+    /* Send a frame: */
 
-    void send_string(uint8_t *string, uint16_t length) {
-      strategy.send_string(string, length);
+    void send_frame(uint8_t *data, uint16_t length) {
+      strategy.send_frame(data, length);
     }
 };

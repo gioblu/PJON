@@ -233,12 +233,12 @@ class LocalFile {
       return 10;
     };
 
-    uint16_t receive_string(uint8_t *string, uint16_t max_length) {
+    uint16_t receive_frame(uint8_t *data, uint16_t max_length) {
       Record record;
       if(readNextPacketFromFile(record)) {
         uint16_t length =
           record.length < max_length ? record.length : max_length;
-        memcpy(string, record.message, length);
+        memcpy(data, record.message, length);
         return length;
         // Relax polling to avoid stressing the disk and CPU too much
       }  else PJON_DELAY(LF_POLLDELAY);
@@ -249,12 +249,11 @@ class LocalFile {
       return last_send_result;
     };
 
-    void send_response(uint8_t response) {
-    };
+    void send_response(uint8_t response) { };
 
-    void send_string(uint8_t *string, uint16_t length) {
+    void send_frame(uint8_t *data, uint16_t length) {
       Record record;
-      memcpy(&record.message, string, length);
+      memcpy(&record.message, data, length);
       record.length = length;
       bool ok = writePacketToFile(record);
       last_send_result = ok ? PJON_ACK : PJON_FAIL;

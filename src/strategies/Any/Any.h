@@ -63,10 +63,10 @@ public:
     void handle_collision() { s->handle_collision(); };
 
 
-    /* Receive a string: */
+    /* Receive a frame: */
 
-    uint16_t receive_string(uint8_t *string, uint16_t max_length) {
-      return s->receive_string(string, max_length);
+    uint16_t receive_frame(uint8_t *data, uint16_t max_length) {
+      return s->receive_frame(data, max_length);
     }
 
 
@@ -80,9 +80,9 @@ public:
     void send_response(uint8_t response) { s->send_response(response); }
 
 
-    /* Send a string: */
+    /* Send a frame: */
 
-    void send_string(uint8_t *string, uint16_t length) {
-      s->send_string(string, length);
+    void send_frame(uint8_t *data, uint16_t length) {
+      s->send_frame(data, length);
     }
 };

@@ -399,7 +399,7 @@ class PJON {
       bool async_ack = false;
       for(uint16_t i = 0; i < length; i++) {
         if(!batch_length) {
-          batch_length = strategy.receive_string(data + i, length - i);
+          batch_length = strategy.receive_frame(data + i, length - i);
           if(batch_length == PJON_FAIL || batch_length == 0)
             return PJON_FAIL;
         }
@@ -631,28 +631,28 @@ class PJON {
 
     uint16_t send(
       uint8_t id,
-      const uint8_t *string,
+      const uint8_t *buffer,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
       return dispatch(
-        id, bus_id, string, length, 0, header, p_id, requested_port
+        id, bus_id, buffer, length, 0, header, p_id, requested_port
       );
     };
 
     uint16_t send(
       uint8_t id,
       const uint8_t *b_id,
-      const uint8_t *string,
+      const uint8_t *buffer,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
       return dispatch(
-        id, b_id, string, length, 0, header, p_id, requested_port
+        id, b_id, buffer, length, 0, header, p_id, requested_port
       );
     };
 
@@ -663,7 +663,7 @@ class PJON {
       const uint8_t *sender_bus_id,
       uint8_t id,
       const uint8_t *b_id,
-      const uint8_t *string,
+      const uint8_t *buffer,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
@@ -677,12 +677,12 @@ class PJON {
       uint16_t result = PJON_FAIL;
       #if(PJON_MAX_PACKETS > 0)
         result = dispatch(
-          id, b_id, string, length, 0, header, p_id, requested_port
+          id, b_id, buffer, length, 0, header, p_id, requested_port
         );
       #endif
       if(result == PJON_FAIL)
         result = send_packet_blocking(
-          id, b_id, string, length, header, p_id, requested_port
+          id, b_id, buffer, length, header, p_id, requested_port
         );
       PJONTools::copy_bus_id(bus_id, original_bus_id);
       set_id(original_device_id);
@@ -694,7 +694,7 @@ class PJON {
 
     uint16_t send_repeatedly(
       uint8_t id,
-      const uint8_t *string,
+      const uint8_t *buffer,
       uint16_t length,
       uint32_t timing,
       uint8_t  header = PJON_NO_HEADER,
@@ -702,7 +702,7 @@ class PJON {
       uint16_t requested_port = PJON_BROADCAST
     ) {
       return dispatch(
-        id, bus_id, string, length, timing, header, p_id, requested_port
+        id, bus_id, buffer, length, timing, header, p_id, requested_port
       );
     };
 
@@ -712,7 +712,7 @@ class PJON {
     uint16_t send_repeatedly(
       uint8_t id,
       const uint8_t *b_id,
-      const uint8_t *string,
+      const uint8_t *buffer,
       uint16_t length,
       uint32_t timing,
       uint8_t  header = PJON_NO_HEADER,
@@ -720,19 +720,19 @@ class PJON {
       uint16_t requested_port = PJON_BROADCAST
     ) {
       return dispatch(
-        id, b_id, string, length, timing, header, p_id, requested_port
+        id, b_id, buffer, length, timing, header, p_id, requested_port
       );
     };
 
     /* Transmit an already composed packet:  */
 
-    uint16_t send_packet(const uint8_t *string, uint16_t length) {
-      if(!string) return PJON_FAIL;
+    uint16_t send_packet(const uint8_t *buffer, uint16_t length) {
+      if(!buffer) return PJON_FAIL;
       if(_mode != PJON_SIMPLEX && !strategy.can_start()) return PJON_BUSY;
-      strategy.send_string((uint8_t *)string, length);
+      strategy.send_frame((uint8_t *)buffer, length);
       if(
-        string[0] == PJON_BROADCAST ||
-        !(string[1] & PJON_ACK_REQ_BIT) ||
+        buffer[0] == PJON_BROADCAST ||
+        !(buffer[1] & PJON_ACK_REQ_BIT) ||
         _mode == PJON_SIMPLEX
       ) return PJON_ACK;
       uint16_t response = strategy.receive_response();
@@ -747,14 +747,14 @@ class PJON {
 
     uint16_t send_packet(
       uint8_t id,
-      const uint8_t *string,
+      const uint8_t *buffer,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
       if(!(length = compose_packet(
-        id, bus_id, data, string, length, header, p_id, requested_port
+        id, bus_id, data, buffer, length, header, p_id, requested_port
       ))) return PJON_FAIL;
       return send_packet(data, length);
     };
@@ -762,14 +762,14 @@ class PJON {
     uint16_t send_packet(
       uint8_t id,
       const uint8_t *b_id,
-      const uint8_t *string,
+      const uint8_t *buffer,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
       uint16_t requested_port = PJON_BROADCAST
     ) {
       if(!(length = compose_packet(
-        id, b_id, data, string, length, header, p_id, requested_port
+        id, b_id, data, buffer, length, header, p_id, requested_port
       ))) return PJON_FAIL;
       return send_packet(data, length);
     };
@@ -781,7 +781,7 @@ class PJON {
     uint16_t send_packet_blocking(
       uint8_t id,
       const uint8_t *b_id,
-      const uint8_t *string,
+      const uint8_t *buffer,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
@@ -802,7 +802,7 @@ class PJON {
           id,
           b_id,
           data,
-          string,
+          buffer,
           old_length,
           header,
           p_id,
@@ -830,7 +830,7 @@ class PJON {
 
     uint16_t send_packet_blocking(
       uint8_t id,
-      const uint8_t *string,
+      const uint8_t *buffer,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
@@ -838,7 +838,7 @@ class PJON {
       uint32_t timeout = 3000000
     ) {
       return send_packet_blocking(
-        id, bus_id, string, length, header, p_id, requested_port, timeout
+        id, bus_id, buffer, length, header, p_id, requested_port, timeout
       );
     };
 

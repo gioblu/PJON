@@ -46,14 +46,14 @@ uint8_t get_max_attempts()
 Returns the maximum number of attempts in case of failed transmission.
 
 ```cpp
-void send_string(uint8_t *string, uint16_t length)
+void send_frame(uint8_t *data, uint16_t length)
 ```
-Receives a pointer to a string and its length and sends it through the medium. The sending procedure must be blocking.
+Receives a pointer to the data and its length and sends it through the medium. The sending procedure must be blocking.
 
 ```cpp
-uint16_t receive_string(uint8_t *string, uint16_t max_length) { ... };
+uint16_t receive_frame(uint8_t *data, uint16_t max_length) { ... };
 ```
-Receives a pointer where to store received information and an unsigned integer signalling the maximum string length. It should return the number of bytes received or `PJON_FAIL`.
+Receives a pointer where to store received information and an unsigned integer signalling the maximum data length. It should return the number of bytes received or `PJON_FAIL`.
 
 ```cpp
 void send_response(uint8_t response) { ... };
@@ -84,10 +84,10 @@ class YourStrategyName {
     bool     begin(uint8_t did) { ... };
     bool     can_start() { ... };
     uint8_t  get_max_attempts() { ... };
-    uint16_t receive_string(uint8_t *string, uint16_t max_length) { ... };
+    uint16_t receive_frame(uint8_t *data, uint16_t max_length) { ... };
     uint16_t receive_response() { ... };
     void     send_response(uint8_t response) { ... };
-    void     send_string(uint8_t *string, uint16_t length) { ... };
+    void     send_frame(uint8_t *data, uint16_t length) { ... };
 };
 ```
 

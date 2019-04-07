@@ -988,7 +988,7 @@ class PJON {
         const PJON_Packet_Info &packet_info
       ) {
         for(int i = 0; i < length; i++)
-          Serial.print((char)payload[i]);
+          Serial.print((uint8_t)payload[i]);
         Serial.print(" ");
         Serial.println(length);
       };

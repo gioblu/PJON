@@ -13,14 +13,10 @@
         > <
  ______-| |-__________________________________________________________________
 
-PJONMaster has been created to let slaves connect automatically to masters
-in range. Masters can be connected together through switches, routers or
-application servers. Devices can move in the network; disconnect from one
-router and connect to another and remain uniquely identified a 5 bytes
-unique device address.
-
-See the PJON® Dynamic addressing specification:
+PJONMaster class implements the dynamic addressing specification:
 - v3.0 specification/PJON-dynamic-addressing-specification-v3.0.md
+
+Masters routinely advertise their presence and lead the addressing procedure.
  _____________________________________________________________________________
 
 This software is experimental and it is distributed "AS IS" without any
@@ -79,7 +75,7 @@ class PJONMaster : public PJON<Strategy> {
       PJON<Strategy>::send(
         PJON_NOT_ASSIGNED,
         b_id,
-        (char *)r,
+        (uint8_t *)r,
         7,
         PJON<Strategy>::config | (_required_config & ~PJON_TX_INFO_BIT),
         0,
@@ -138,12 +134,12 @@ class PJONMaster : public PJON<Strategy> {
     /* Enable continuous advertisement: */
 
     void enable_advertisement() {
-      char request[] = {PJON_ID_DISCOVERY};
+      uint8_t request[] = {PJON_ID_DISCOVERY};
       if(_adv == PJON_MAX_PACKETS)
         _adv = PJON<Strategy>::send_repeatedly(
           PJON_BROADCAST,
           this->bus_id,
-          (char *)request,
+          (uint8_t *)request,
           1,
           PJON_DISCOVERY_INTERVAL,
           PJON<Strategy>::config | _required_config,
@@ -254,11 +250,11 @@ class PJONMaster : public PJON<Strategy> {
        PJON_ID_NEGATE forcing it to abandon its own device id. */
 
     void negate_id(uint8_t id) {
-      char response[] = {PJON_ID_NEGATE};
+      uint8_t response[] = {PJON_ID_NEGATE};
       PJON<Strategy>::send(
         id,
         this->bus_id,
-        (char *)response,
+        (uint8_t *)response,
         1,
         PJON<Strategy>::config | _required_config,
         0,

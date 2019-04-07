@@ -13,14 +13,12 @@
         > <
  ______-| |-__________________________________________________________________
 
-PJONSlave has been created to let slaves connect automatically to masters
-in range. Masters can be connected together through switches, routers or
-application servers. Devices can move in the network; disconnect from one
-router and connect to another and remain uniquely identified a 5 bytes
-unique device address.
+ PJONSlave class implements the dynamic addressing specification:
+ - v3.0 specification/PJON-dynamic-addressing-specification-v3.0.md
 
-PJON® Dynamic addressing specification:
-- v3.0 specification/PJON-dynamic-addressing-specification-v3.0.md
+ Slaves can move through the network; waive a device id obtained by a master
+ and request another from a reachable master while remaining uniquely
+ identified a 5 bytes unique device address.
  _____________________________________________________________________________
 
 This software is experimental and it is distributed "AS IS" without any
@@ -60,13 +58,13 @@ class PJONSlave : public PJON<Strategy> {
 
     /* Basic single byte request to master: */
 
-    bool send_to_master(char req) {
+    bool send_to_master(uint8_t req) {
       connected = false;
       uint8_t r[] = {req, _da[0], _da[1], _da[2], _da[3], _da[4]};
       if(this->send_packet_blocking(
         PJON_MASTER_ID,
         this->bus_id,
-        (char *)r,
+        (uint8_t *)r,
         6,
         this->config | _required_config,
         0,

@@ -134,7 +134,7 @@ protected:
     uint8_t &start_bus
   ) {
     for(uint8_t i=start_bus; i<bus_count; i++) {
-      if(PJONTools::bus_id_equality(bus_id, buses[i]->bus_id)) {
+      if(PJONTools::id_equality(bus_id, buses[i]->bus_id)) {
         // Check if bus is segmented and if device belongs to bus's segment
         if(
           (buses[i]->segment_count <= 1) || // Not segmented
@@ -202,7 +202,7 @@ protected:
       sender_bus_id,
       packet_info.receiver_id,
       receiver_bus_id,
-      (const char*)payload,
+      (const uint8_t*)payload,
       length,
       packet_info.header,
       packet_info.id,

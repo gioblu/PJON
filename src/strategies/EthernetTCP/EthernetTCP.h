@@ -143,6 +143,6 @@ class EthernetTCP {
     void send_frame(uint8_t *data, uint16_t length) {
       if(length > 0)
         last_send_result =
-          link.send((uint8_t)data[0], (const char*)data, length);
+          link.send((uint8_t)data[0], (const uint8_t*)data, length);
     };
 };

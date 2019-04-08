@@ -203,12 +203,12 @@ typedef void (*link_error)(
 );
 
 class TmpBuffer {
-    char *buf = NULL;
+    uint8_t *buf = NULL;
     uint16_t len = 0;
   public:
-    TmpBuffer(uint16_t size) { len = size;  buf = new char[size]; }
+    TmpBuffer(uint16_t size) { len = size;  buf = new uint8_t[size]; }
     ~TmpBuffer() { if (buf) delete buf;  }
-    char* operator()() { return buf; }
+    uint8_t* operator()() { return buf; }
     uint16_t size() { return len; }
 };
 
@@ -744,7 +744,7 @@ public:
   uint16_t send(
     TCPHelperClient &client,
     uint8_t id,
-    const char *packet,
+    const uint8_t *packet,
     uint16_t length
   ) {
     // Assume we are connected. Try to deliver the package
@@ -805,7 +805,7 @@ public:
     TCPHelperClient &client,
     int16_t id,
     bool master,
-    const char *contents,
+    const uint8_t *contents,
     uint16_t length
   ) {
     if(master) { // Creating outgoing connections
@@ -820,7 +820,7 @@ public:
       bool ok = true;
       uint32_t head = htonl(ETCP_SINGLE_SOCKET_HEADER);
       uint8_t numpackets_out = length > 0 ? 1 : 0;
-      char buf[5];
+      uint8_t buf[5];
       memcpy(buf, &head, 4);
       memcpy(&buf[4], &numpackets_out, 1);
       if(ok) ok = client.write((uint8_t*) &buf, 5) == 5;
@@ -1101,7 +1101,7 @@ public:
 
   uint16_t send_with_duration(
     uint8_t id,
-    const char *packet,
+    const uint8_t *packet,
     uint16_t length,
     uint32_t duration_us
   ) {
@@ -1210,7 +1210,7 @@ public:
 
   uint16_t send(
     uint8_t id,
-    const char *packet,
+    const uint8_t *packet,
     uint16_t length,
     uint32_t = 0 // timing_us
   ) {

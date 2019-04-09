@@ -155,11 +155,11 @@ public:
     void handle_collision() { };
 
 
-    /* Receive a string: */
+    /* Receive a frame: */
 
-    uint16_t receive_string(uint8_t *string, uint16_t max_length) {
-      uint16_t length = udp.receive_string(string, max_length);
-      if (length != PJON_FAIL) autoregister_sender(string, length);
+    uint16_t receive_frame(uint8_t *data, uint16_t max_length) {
+      uint16_t length = udp.receive_frame(data, max_length);
+      if (length != PJON_FAIL) autoregister_sender(data, length);
       return length;
     }
 
@@ -174,7 +174,7 @@ public:
       uint8_t result[8];
       uint16_t reply_length = 0;
       do {
-        reply_length = receive_string(result, sizeof result);
+        reply_length = receive_frame(result, sizeof result);
 
         // We expect 1, if packet is larger it is not our ACK
         if(reply_length == 1)
@@ -194,18 +194,18 @@ public:
     };
 
 
-    /* Send a string: */
+    /* Send a frame: */
 
-    void send_string(uint8_t *string, uint16_t length) {
+    void send_frame(uint8_t *data, uint16_t length) {
       if(length > 0) {
-        uint8_t id = string[0]; // Package always starts with a receiver id
+        uint8_t id = data[0]; // Package always starts with a receiver id
         if (id == 0) { // Broadcast, send to all receivers
           for(uint8_t pos = 0; pos < _remote_node_count; pos++)
-            udp.send_string(string, length, _remote_ip[pos], _remote_port[pos]);
+            udp.send_frame(data, length, _remote_ip[pos], _remote_port[pos]);
         } else { // To a specific receiver
           int16_t pos = find_remote_node(id);
           if (pos != -1) {
-            udp.send_string(string, length, _remote_ip[pos], _remote_port[pos]);
+            udp.send_frame(data, length, _remote_ip[pos], _remote_port[pos]);
           }
         }
       }

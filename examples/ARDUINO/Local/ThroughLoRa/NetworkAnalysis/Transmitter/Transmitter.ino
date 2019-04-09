@@ -15,7 +15,7 @@ int fail;
 PJON<ThroughLora> bus(45);
 
 int packet;
-char content[] = "01234567890123456789";
+uint8_t content[] = "01234567890123456789";
 
 void setup() {
 	// Obligatory to initialize Radio with correct frequency

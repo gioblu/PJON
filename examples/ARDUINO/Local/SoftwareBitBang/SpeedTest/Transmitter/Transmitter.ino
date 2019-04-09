@@ -16,7 +16,7 @@
 // <Strategy name> bus(selected device id)
 PJON<SoftwareBitBang> bus(45);
 
-char content[] = "01234567890123456789";
+uint8_t content[] = "01234567890123456789";
 
 void setup() {
   bus.strategy.set_pin(12);

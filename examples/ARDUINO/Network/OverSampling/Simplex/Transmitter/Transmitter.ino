@@ -12,7 +12,7 @@ uint8_t bus_id[] = {0, 0, 0, 1};
 // PJON object
 PJON<OverSampling> bus(bus_id, 45);
 
-char content[] = "01234567890123456789";
+uint8_t content[] = "01234567890123456789";
 
 void setup() {
   Serial.begin(115200);

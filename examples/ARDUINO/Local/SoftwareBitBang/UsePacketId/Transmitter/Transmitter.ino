@@ -12,7 +12,7 @@
 PJON<SoftwareBitBang> bus(45);
 
 int packet;
-char content[] = "01234567890123456789";
+uint8_t content[] = "01234567890123456789";
 
 void setup() {
   bus.set_packet_id(true);

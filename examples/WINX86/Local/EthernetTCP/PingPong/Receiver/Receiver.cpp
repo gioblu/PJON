@@ -2,7 +2,7 @@
 #include <PJON.h>
 
 // Address of remote device
-uint8_t remote_ip[] = { 192, 168, 1, 78 };
+uint8_t remote_ip[] = {127, 0, 0, 1};
 
 PJON<EthernetTCP> bus(44);
 

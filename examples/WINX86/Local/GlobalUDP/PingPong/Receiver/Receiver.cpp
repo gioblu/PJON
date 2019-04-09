@@ -1,15 +1,15 @@
 #define PJON_INCLUDE_GUDP
 #include <PJON.h>
 
-// Address of remote device
-uint8_t remote_ip[] = { 192, 1, 1, 34 };
+// IP Address of the receiver
+uint8_t remote_ip[] = {127, 0, 0, 1};
 
 PJON<GlobalUDP> bus(44);
 
 uint32_t count = 0;
 
 static void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
-	bus.reply("P", 1);
+	bus.reply((uint8_t *)"P", 1);
 	count++;
  };
 

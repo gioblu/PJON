@@ -23,7 +23,7 @@ void setup() {
 
   bus.set_receiver(receiver_function);
   bus.begin();
-  bus.send_repeatedly(44, "P", 1, 100000); // Send P to device 44 repeatedly
+  bus.send_repeatedly(44, (uint8_t *)"P", 1, 100000); // Send P to device 44 repeatedly
 };
 
 void loop() {

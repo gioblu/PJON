@@ -21,7 +21,7 @@ void setup() {
   bus.strategy.set_pin(12);
   bus.set_error(error_handler);
   bus.begin();
-  bus.send_repeatedly(45, "B", 1, 500000);
+  bus.send_repeatedly(45, (uint8_t *)"B", 1, 500000);
   Serial.begin(115200);
 }
 

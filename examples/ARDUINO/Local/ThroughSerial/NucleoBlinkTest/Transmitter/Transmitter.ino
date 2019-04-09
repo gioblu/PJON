@@ -14,7 +14,7 @@ void setup() {
   bus.strategy.set_serial(&Serial1);
   bus.begin();
   // Send B to device 44 10 times per second
-  bus.send_repeatedly(44, "B", 1, 100000);
+  bus.send_repeatedly(44, (uint8_t *)"B", 1, 100000);
 };
 
 void loop() {

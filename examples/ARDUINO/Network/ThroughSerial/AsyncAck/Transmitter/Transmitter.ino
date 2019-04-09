@@ -31,7 +31,7 @@ void setup() {
   bus.begin();
 
   // Send B to device 44 every 1.5s
-  bus.send_repeatedly(44, "B", 1, 1500000);
+  bus.send_repeatedly(44, (uint8_t *)"B", 1, 1500000);
 };
 
 void loop() {

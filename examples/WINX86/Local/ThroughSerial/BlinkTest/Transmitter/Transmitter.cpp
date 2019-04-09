@@ -56,7 +56,7 @@ int main() {
     printf("Success, initiating BlinkTest repeated transmission... \n");
 
     while(true)
-      if(bus.send_packet(44, "B", 1) == PJON_ACK) {
+      if(bus.send_packet(44, (uint8_t *)"B", 1) == PJON_ACK) {
         bus.receive(1000000);
         printf("Device blinked as requested! \n");
       } else printf("Failure! \n");

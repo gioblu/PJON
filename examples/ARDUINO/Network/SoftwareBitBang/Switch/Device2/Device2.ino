@@ -22,12 +22,12 @@ void setup() {
   bus.strategy.set_pin(12);
   bus.set_receiver(receiver_function);
   bus.begin();
-  bus.send(44, remote_bus_id, "B", 1);
+  bus.send(44, remote_bus_id, (uint8_t *)"B", 1);
 }
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   if((char)payload[0] == 'B') {
-    bus.reply("B", 1);
+    bus.reply((uint8_t *)"B", 1);
     static bool led_on = false;
     digitalWrite(LED_BUILTIN, led_on ? HIGH : LOW);
     led_on = !led_on;

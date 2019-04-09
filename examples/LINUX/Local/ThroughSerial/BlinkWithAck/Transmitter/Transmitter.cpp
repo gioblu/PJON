@@ -33,7 +33,7 @@ int main() {
 
   while(true) {
     usleep(100000);
-    if(bus.send_packet(44, "B", 1) == PJON_ACK) {
+    if(bus.send_packet(44, (uint8_t *)"B", 1) == PJON_ACK) {
       printf("Device blinked as requested! \n");
     } else printf("Failure! \n");
     bus.update();

@@ -33,7 +33,7 @@ void setup() {
   Serial.println("Transmitter started.");
   bus.set_receiver(receiver_function);
   bus.begin();
-  bus.send_repeatedly(44, "P", 1, 100000); // Send P to device 44 10 times per second
+  bus.send_repeatedly(44, (uint8_t *)"P", 1, 100000); // Send P to device 44 10 times per second
 };
 
 void loop() {

@@ -28,7 +28,7 @@ void loop() {
 
   if (bus.get_packets_count() == 0 && !wait_for_reply) {
     wait_for_reply = 1;
-    bus.send(44, "P", 1); // Send P to device 44 repeatedly
+    bus.send(44, (uint8_t *)"P", 1); // Send P to device 44 repeatedly
   }
 
   if(millis() - start > 1000) {

@@ -57,7 +57,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
      overwritten when a new message is dispatched */
   if((char)payload[0] == 'B') {
     if(!bus.update()) // If all packets are delivered, send another
-      bus.reply("B", 1);
+      bus.reply((uint8_t *)"B", 1);
     digitalWrite(LED_BUILTIN, HIGH);
     delay(5);
     digitalWrite(LED_BUILTIN, LOW);

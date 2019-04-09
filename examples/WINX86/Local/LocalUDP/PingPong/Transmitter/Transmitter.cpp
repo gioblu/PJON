@@ -26,7 +26,7 @@ int main() {
   printf("Transmitter started.\n");
   bus.set_receiver(receiver_function);
   bus.begin();
-  bus.send_repeatedly(44, "P", 1, 10000);
+  bus.send_repeatedly(44, (uint8_t *)"P", 1, 10000);
   while (true) loop();
   return 0;
 }

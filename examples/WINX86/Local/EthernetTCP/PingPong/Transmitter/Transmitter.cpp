@@ -11,6 +11,7 @@ uint32_t count = 0;
 
 static void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
 	count++;
+  bus.send(44, (uint8_t *)"P", 1);
 };
 
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
@@ -41,6 +42,7 @@ int main() {
   bus.strategy.link.set_id(bus.device_id());
   bus.strategy.link.add_node(44, remote_ip, 16001);
   bus.strategy.link.start_listening(16000);
+  bus.set_error(error_handler);
   bus.begin();
   bus.send(44, (uint8_t *)"P", 1);
 

@@ -36,7 +36,7 @@ public:
     return udp.begin(_port);
   }
 
-  uint16_t receive_string(uint8_t *string, uint16_t max_length) {
+  uint16_t receive_frame(uint8_t *data, uint16_t max_length) {
     #ifdef PJON_ESP
     udp.flush(); // Empty receive buffer so it is prepared for new packet
     #endif
@@ -46,14 +46,14 @@ public:
       uint16_t len = udp.read((char *) &header, 4);
       if(len != 4 || header != _magic_header) return PJON_FAIL; // Not an expected packet
       if (packetSize > 4 + max_length) return PJON_FAIL;
-      len = udp.read(string, packetSize - 4);
+      len = udp.read(data, packetSize - 4);
       if (len != packetSize - 4) return PJON_FAIL;
       return packetSize - 4;
     }
     return PJON_FAIL;
   }
 
-  void send_string(uint8_t *string, uint16_t length, IPAddress remote_ip, uint16_t remote_port) {
+  void send_frame(uint8_t *data, uint16_t length, IPAddress remote_ip, uint16_t remote_port) {
     if(length > 0) {
       udp.beginPacket(remote_ip, remote_port);
       #if defined(ESP32)
@@ -61,25 +61,25 @@ public:
       #else
         udp.write((const char*) &_magic_header, 4);
       #endif
-      udp.write(string, length);
+      udp.write(data, length);
       udp.endPacket();
     }
   }
 
-  void send_response(uint8_t *string, uint16_t length) {
-    send_string(string, length, udp.remoteIP(), udp.remotePort());
+  void send_response(uint8_t *data, uint16_t length) {
+    send_frame(data, length, udp.remoteIP(), udp.remotePort());
   }
 
   void send_response(uint8_t response) {
-    send_string(&response, 1, udp.remoteIP(), udp.remotePort());
+    send_frame(&response, 1, udp.remoteIP(), udp.remotePort());
   }
 
-  void send_string(uint8_t *string, uint16_t length, uint8_t remote_ip[], uint16_t remote_port) {
+  void send_frame(uint8_t *data, uint16_t length, uint8_t remote_ip[], uint16_t remote_port) {
     IPAddress address(remote_ip);
-    send_string(string, length, address, remote_port);
+    send_frame(data, length, address, remote_port);
   }
 
-  void send_string(uint8_t *string, uint16_t length) {
+  void send_frame(uint8_t *data, uint16_t length) {
     // Broadcast on local subnet, global broadcast may not be accepted
     IPAddress broadcastIp;
 #ifdef PJON_ESP
@@ -88,7 +88,7 @@ public:
 #else
     broadcastIp = _broadcast;
 #endif
-    send_string(string, length, broadcastIp, _port);
+    send_frame(data, length, broadcastIp, _port);
   }
 
   void set_magic_header(uint32_t magic_header) { _magic_header = magic_header; }

@@ -97,7 +97,7 @@ public:
     return true;
   }
 
-  uint16_t receive_string(uint8_t *string, uint16_t max_length) {
+  uint16_t receive_frame(uint8_t *string, uint16_t max_length) {
     struct sockaddr_storage src_addr;
     socklen_t src_addr_len=sizeof(src_addr);
     ssize_t count=recvfrom(_fd,(char*)string,max_length,0,(struct sockaddr*)&src_addr,&src_addr_len);
@@ -108,10 +108,10 @@ public:
 #endif
       return false; // Reception failed
     } else if (count==max_length || count < 4) {
-      //printf("FAIL receive_string recvfrom %d\n", count);
+      //printf("FAIL receive_frame recvfrom %d\n", count);
       return false; // Too large packet
     } else {
-      //printf("OK receive_string recvfrom %d, maxize %d\n", count, max_length);
+      //printf("OK receive_frame recvfrom %d, maxize %d\n", count, max_length);
       // Remember sender's address
       memcpy(&_remote_sender_addr, &src_addr, sizeof(_remote_sender_addr));
 
@@ -138,34 +138,34 @@ public:
   };
 
 
-  void send_string(const uint8_t *string, uint16_t length, const sockaddr_in &remote_addr) {
+  void send_frame(const uint8_t *string, uint16_t length, const sockaddr_in &remote_addr) {
     if(length > 0) {
       Buf buffer(4 + length);
       memcpy(buffer(), &_magic_header, 4);
       memcpy(&(buffer()[4]), string, length);
       int res = sendto(_fd,buffer(),buffer.size(),0,(const sockaddr *)&remote_addr,sizeof(remote_addr));
-      //printf("send_string %d sendto %d\n", length, res);
+      //printf("send_frame %d sendto %d\n", length, res);
     }
   }
 
   void send_response(uint8_t *string, uint16_t length) {
-    send_string((const uint8_t *)string, length, _remote_sender_addr);
+    send_frame((const uint8_t *)string, length, _remote_sender_addr);
   }
 
   void send_response(uint8_t response) {
-    send_string((const uint8_t *)&response, 1, _remote_sender_addr);
+    send_frame((const uint8_t *)&response, 1, _remote_sender_addr);
   }
 
-  void send_string(const uint8_t *string, uint16_t length) {
+  void send_frame(const uint8_t *string, uint16_t length) {
 	_remote_receiver_addr.sin_port = htons(_port);
     _remote_receiver_addr.sin_addr.s_addr = INADDR_BROADCAST;
-    send_string(string, length, _remote_receiver_addr);
+    send_frame(string, length, _remote_receiver_addr);
   }
 
-  void send_string(const uint8_t *string, uint16_t length, uint8_t *remote_ip, uint16_t remote_port) {
+  void send_frame(const uint8_t *string, uint16_t length, uint8_t *remote_ip, uint16_t remote_port) {
 	_remote_receiver_addr.sin_port = htons(remote_port);
 	_remote_receiver_addr.sin_addr.s_addr = *(uint32_t*)remote_ip;
-    send_string(string, length, _remote_receiver_addr);
+    send_frame(string, length, _remote_receiver_addr);
   }
 
   void set_magic_header(uint32_t magic_header) { _magic_header = magic_header; }

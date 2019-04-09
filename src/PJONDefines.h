@@ -255,34 +255,34 @@ struct PJONTools {
 
   /* Fill a PJON_Packet_Info struct with data parsing a packet: */
 
-  static void parse_header(const uint8_t *packet, PJON_Packet_Info &packet_info) {
-    memset(&packet_info, 0, sizeof packet_info);
+  static void parse_header(const uint8_t *packet, PJON_Packet_Info &info) {
+    memset(&info, 0, sizeof info);
     uint8_t index = 0;
-    packet_info.receiver_id = packet[index++];
+    info.receiver_id = packet[index++];
     bool extended_length = packet[index] & PJON_EXT_LEN_BIT;
-    packet_info.header = packet[index++];
+    info.header = packet[index++];
     index += extended_length + 2; // + LENGTH + HEADER CRC
-    if(packet_info.header & PJON_MODE_BIT) {
-      copy_bus_id(packet_info.receiver_bus_id, packet + index);
+    if(info.header & PJON_MODE_BIT) {
+      copy_bus_id(info.receiver_bus_id, packet + index);
       index += 4;
-      if(packet_info.header & PJON_TX_INFO_BIT) {
-        copy_bus_id(packet_info.sender_bus_id, packet + index);
+      if(info.header & PJON_TX_INFO_BIT) {
+        copy_bus_id(info.sender_bus_id, packet + index);
         index += 4;
       }
     }
-    if(packet_info.header & PJON_TX_INFO_BIT)
-      packet_info.sender_id = packet[index++];
+    if(info.header & PJON_TX_INFO_BIT)
+      info.sender_id = packet[index++];
     #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
-      if(((packet_info.header & PJON_ACK_MODE_BIT) &&
-          (packet_info.header & PJON_TX_INFO_BIT)
-        ) || packet_info.header & PJON_PACKET_ID_BIT
+      if(((info.header & PJON_ACK_MODE_BIT) &&
+          (info.header & PJON_TX_INFO_BIT)
+        ) || info.header & PJON_PACKET_ID_BIT
       ) {
-        packet_info.id =
+        info.id =
           (packet[index] << 8) | (packet[index + 1] & 0xFF);
         index += 2;
       }
     #endif
-    if(packet_info.header & PJON_PORT_BIT)
-      packet_info.port = (packet[index] << 8) | (packet[index + 1] & 0xFF);
+    if(info.header & PJON_PORT_BIT)
+      info.port = (packet[index] << 8) | (packet[index + 1] & 0xFF);
   };
 };

@@ -64,7 +64,7 @@ class PJONSlave : public PJON<Strategy> {
       if(this->send_packet_blocking(
         PJON_MASTER_ID,
         this->bus_id,
-        (uint8_t *)r,
+        r,
         6,
         this->config | _required_config,
         0,
@@ -134,9 +134,7 @@ class PJONSlave : public PJON<Strategy> {
           }
           if(
             (this->data[overhead] == PJON_ID_REQUEST) &&
-            PJONTools::address_equality(
-              (uint8_t *)&this->data[(overhead + 1)], _da
-            )
+            PJONTools::address_equality(&this->data[(overhead + 1)], _da)
           ) {
             // slave acks if finds its own device address
             this->strategy.send_response(PJON_ACK);
@@ -241,7 +239,7 @@ class PJONSlave : public PJON<Strategy> {
     PJON_Receiver _slave_receiver;
     /* Required configuration for the dynamic addressing procedure */
     uint8_t       _required_config =
-      PJON_TX_INFO_BIT | PJON_CRC_BIT | PJON_ACK_REQ_BIT | PJON_PORT_BIT &
+      (PJON_TX_INFO_BIT | PJON_CRC_BIT | PJON_ACK_REQ_BIT | PJON_PORT_BIT) &
       ~(PJON_ACK_MODE_BIT | PJON_PACKET_ID_BIT)
     ;
 };

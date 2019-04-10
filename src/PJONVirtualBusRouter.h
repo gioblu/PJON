@@ -138,10 +138,10 @@ protected:
       PJON_Packet_Info info;
       #if PJON_MAX_PACKETS == 0
       RouterClass::buses[RouterClass::current_bus]->
-        parse((uint8_t *)(RouterClass::buses[RouterClass::current_bus]->data), info);
+        parse((RouterClass::buses[RouterClass::current_bus]->data), info);
       #else
       RouterClass::buses[RouterClass::current_bus]->
-        parse((uint8_t *)(RouterClass::buses[RouterClass::current_bus]->packets[packet].content), info);
+        parse((RouterClass::buses[RouterClass::current_bus]->packets[packet].content), info);
       #endif
       if (info.receiver_id < PJON_VIRTUALBUS_MAX_DEVICES && is_vbus(info.receiver_bus_id)) {
         // Unregister the device if we got an error trying to deliver to the attached

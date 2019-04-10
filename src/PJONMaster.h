@@ -75,7 +75,7 @@ class PJONMaster : public PJON<Strategy> {
       PJON<Strategy>::send(
         PJON_NOT_ASSIGNED,
         b_id,
-        (uint8_t *)r,
+        r,
         7,
         PJON<Strategy>::config | (_required_config & ~PJON_TX_INFO_BIT),
         0,
@@ -139,7 +139,7 @@ class PJONMaster : public PJON<Strategy> {
         _adv = PJON<Strategy>::send_repeatedly(
           PJON_BROADCAST,
           this->bus_id,
-          (uint8_t *)request,
+          request,
           1,
           PJON_DISCOVERY_INTERVAL,
           PJON<Strategy>::config | _required_config,
@@ -254,7 +254,7 @@ class PJONMaster : public PJON<Strategy> {
       PJON<Strategy>::send(
         id,
         this->bus_id,
-        (uint8_t *)response,
+        response,
         1,
         PJON<Strategy>::config | _required_config,
         0,

@@ -21,9 +21,9 @@ A strategy is an abstraction layer used to physically transmit data. Thanks to t
 A `Strategy` is a class containing a set of methods used to physically send and receive data along with the required getters to handle retransmission and collision:
 
 ```cpp
-bool begin(uint8_t additional_randomness = 0)
+bool begin(uint8_t did = 0)
 ```
-Receives an optional parameter of type `uint8_t` used for randomness and returns `true` if the strategy is correctly initialized.
+Receives an optional parameter of type `uint8_t` (when PJON calls `begin` it passes its own device id); returns `true` if the strategy is correctly initialized. There is no doubt that the strategy should not know about the PJON's device id, although that is practically useful in many cases.
 
 ```cpp
 uint32_t back_off(uint8_t attempts)
@@ -46,14 +46,14 @@ uint8_t get_max_attempts()
 Returns the maximum number of attempts in case of failed transmission.
 
 ```cpp
-void send_string(uint8_t *string, uint16_t length)
+void send_frame(uint8_t *data, uint16_t length)
 ```
-Receives a pointer to a string and its length and sends it through the medium. The sending procedure must be blocking.
+Receives a pointer to the data and its length and sends it through the medium. The sending procedure must be blocking.
 
 ```cpp
-uint16_t receive_string(uint8_t *string, uint16_t max_length) { ... };
+uint16_t receive_frame(uint8_t *data, uint16_t max_length) { ... };
 ```
-Receives a pointer where to store received information and an unsigned integer signalling the maximum string length. It should return the number of bytes received or `PJON_FAIL`.
+Receives a pointer where to store received information and an unsigned integer signalling the maximum data length. It should return the number of bytes received or `PJON_FAIL`.
 
 ```cpp
 void send_response(uint8_t response) { ... };
@@ -81,13 +81,13 @@ directory and write the necessary file `YourStrategyName.h`:
 class YourStrategyName {
   public:
     uint32_t back_off(uint8_t attempts) { ... };
-    bool     begin(uint8_t additional_randomness) { ... };
+    bool     begin(uint8_t did) { ... };
     bool     can_start() { ... };
     uint8_t  get_max_attempts() { ... };
-    uint16_t receive_string(uint8_t *string, uint16_t max_length) { ... };
+    uint16_t receive_frame(uint8_t *data, uint16_t max_length) { ... };
     uint16_t receive_response() { ... };
     void     send_response(uint8_t response) { ... };
-    void     send_string(uint8_t *string, uint16_t length) { ... };
+    void     send_frame(uint8_t *data, uint16_t length) { ... };
 };
 ```
 

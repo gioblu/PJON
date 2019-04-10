@@ -1,6 +1,6 @@
 
 /* PJON dynamic Strategy inclusion
-   _____________________________________________________________________________
+   ___________________________________________________________________________
 
     Copyright 2018 Giovanni Blu Mitolo gioscarab@gmail.com
 
@@ -59,9 +59,6 @@
 #if defined(PJON_INCLUDE_LF)
   #include "LocalFile/LocalFile.h"
 #endif
-#if defined(PJON_INCLUDE_SM)
-  #include "SharedMemory/SharedMemory.h"
-#endif
 #if defined(PJON_INCLUDE_NONE)
   /* None for custom strategy inclusion */
 #endif
@@ -78,6 +75,7 @@
   #include "OverSampling/OverSampling.h"
   #include "SoftwareBitBang/SoftwareBitBang.h"
   #include "ThroughSerial/ThroughSerial.h"
+  #include "ThroughSerialAsync/ThroughSerialAsync.h"
   /* Avoid ATtiny44/84/45/85 missing inclusion error */
   #if !defined(__AVR_ATtiny45__) && !defined(__AVR_ATtiny85__) && \
       !defined(__AVR_ATtiny44__) && !defined(__AVR_ATtiny84__)

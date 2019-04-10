@@ -41,10 +41,10 @@ public:
     uint32_t back_off(uint8_t attempts) { return s->back_off(attempts); }
 
 
-    /* Begin method, to be called before transmission or reception: */
+    /* Begin method, to be called on initialization: */
 
-    bool begin(uint8_t additional_randomness = 0) {
-      return s->begin(additional_randomness);
+    bool begin(uint8_t did = 0) {
+      return s->begin(did);
     }
 
 
@@ -63,10 +63,10 @@ public:
     void handle_collision() { s->handle_collision(); };
 
 
-    /* Receive a string: */
+    /* Receive a frame: */
 
-    uint16_t receive_string(uint8_t *string, uint16_t max_length) {
-      return s->receive_string(string, max_length);
+    uint16_t receive_frame(uint8_t *data, uint16_t max_length) {
+      return s->receive_frame(data, max_length);
     }
 
 
@@ -80,9 +80,9 @@ public:
     void send_response(uint8_t response) { s->send_response(response); }
 
 
-    /* Send a string: */
+    /* Send a frame: */
 
-    void send_string(uint8_t *string, uint16_t length) {
-      s->send_string(string, length);
+    void send_frame(uint8_t *data, uint16_t length) {
+      s->send_frame(data, length);
     }
 };

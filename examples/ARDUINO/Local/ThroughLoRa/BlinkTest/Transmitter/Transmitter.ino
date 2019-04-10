@@ -14,7 +14,7 @@ void setup() {
 	bus.strategy.setFrequency(868100000UL);
 	// Optional
 	bus.strategy.setSignalBandwidth(250E3);
-	
+
 	bus.begin();
 	bus.send_repeatedly(44, "B", 1, 1000000); // Send B to device 44 every second
 };

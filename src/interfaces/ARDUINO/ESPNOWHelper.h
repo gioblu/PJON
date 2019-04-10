@@ -192,7 +192,7 @@ public:
       return true;
   };
 
-  uint16_t receive_string(uint8_t *string, uint16_t max_length) {
+  uint16_t receive_frame(uint8_t *data, uint16_t max_length) {
     // see if there's any received data waiting
     espnow_packet_t packet;
 
@@ -217,7 +217,7 @@ public:
           return PJON_FAIL;
         }
 
-        memcpy(string, packet.data + 2, len);
+        memcpy(data, packet.data + 2, len);
         free(packet.data);
         // Update last mac received from
         memcpy(last_mac, packet.mac_addr, ESP_NOW_ETH_ALEN);
@@ -231,8 +231,8 @@ public:
     return PJON_FAIL;
   };
 
-  void send_string(
-    uint8_t *string,
+  void send_frame(
+    uint8_t *data,
     uint16_t length,
     uint8_t dest_mac[ESP_NOW_ETH_ALEN]
   ) {
@@ -245,7 +245,7 @@ public:
     uint8_t len = length;
     packet[0] = _magic_header[0] ^ len;
     packet[1] = _magic_header[1] ^ len;
-    memcpy(packet + 2, string, len);
+    memcpy(packet + 2, data, len);
     packet[len + 2] = _magic_header[2] ^ len;
     packet[len + 3] = _magic_header[3] ^ len;
 
@@ -256,12 +256,12 @@ public:
   };
 
   void send_response(uint8_t response) {
-    send_string(&response, 1, last_mac);
+    send_frame(&response, 1, last_mac);
   };
 
-  void send_string(uint8_t *string, uint16_t length) {
+  void send_frame(uint8_t *data, uint16_t length) {
     // Broadcast
-    send_string(string, length, espnow_broadcast_mac);
+    send_frame(data, length, espnow_broadcast_mac);
   };
 
   void set_magic_header(uint8_t *magic_header) {

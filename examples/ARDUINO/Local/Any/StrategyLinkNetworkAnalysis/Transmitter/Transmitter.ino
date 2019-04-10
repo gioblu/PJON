@@ -23,7 +23,7 @@ StrategyLink<SoftwareBitBang> link;
 PJON<Any> bus(44);
 
 int packet;
-char content[] = "01234567890123456789";
+uint8_t content[] = "01234567890123456789";
 
 void setup() {
   link.strategy.set_pin(12);

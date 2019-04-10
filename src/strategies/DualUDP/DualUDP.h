@@ -207,10 +207,11 @@ public:
       return 1000ul * attempts + PJON_RANDOM(10000);
     };
 
-    /* Begin method, to be called before transmission or reception:
+    /* Begin method, to be called on initialization:
        (returns always true) */
 
     bool begin(uint8_t device_id) {
+      (void)device_id; // Avoid "unused parameter" warning
       return check_udp();
     };
 
@@ -226,15 +227,15 @@ public:
 
     void handle_collision() { };
 
-    /* Receive a string: */
+    /* Receive a frame: */
 
-    uint16_t receive_string(uint8_t *string, uint16_t max_length) {
-      uint16_t length = udp.receive_string(string, max_length);
+    uint16_t receive_frame(uint8_t *data, uint16_t max_length) {
+      uint16_t length = udp.receive_frame(data, max_length);
       // Then get the IP address and port number of the sender
       udp.get_sender( _last_in_sender_ip,  _last_in_sender_port);
       if(length != PJON_FAIL && length > 4) {
         // Extract some info from the header
-        PJONTools::parse_header(string, _packet_info);
+        PJONTools::parse_header(data, _packet_info);
          _last_in_receiver_id = _packet_info.receiver_id;
          _last_in_sender_id = _packet_info.sender_id;
         // Autoregister sender if the packet was sent directly
@@ -254,7 +255,7 @@ public:
       uint8_t result[10];
       uint16_t reply_length = 0;
       do {
-        reply_length = receive_string(result, sizeof result);
+        reply_length = receive_frame(result, sizeof result);
         if(reply_length == PJON_FAIL) continue;
 
         // Ignore full PJON packets, we expect only a tiny response packet
@@ -302,13 +303,13 @@ public:
       udp.send_response(buf, 3);
     };
 
-    /* Send a string: */
+    /* Send a frame: */
 
-    void send_string(uint8_t *string, uint16_t length) {
+    void send_frame(uint8_t *data, uint16_t length) {
       _did_broadcast = false;
       if(length > 4) {
         // Extract some info from the header
-        PJONTools::parse_header(string, _packet_info);
+        PJONTools::parse_header(data, _packet_info);
          _last_out_receiver_id = _packet_info.receiver_id;
          _last_out_sender_id = _packet_info.sender_id;
 
@@ -325,14 +326,14 @@ public:
         ) pos = -1;
 
         if(pos == -1) { // UDP Broadcast, send to all receivers
-          if(_auto_discovery) udp.send_string(string, length);
+          if(_auto_discovery) udp.send_frame(data, length);
           _did_broadcast = true;
           #ifdef DUDP_DEBUG_PRINT
             Serial.print("Broadcast, id ");
             Serial.println(_last_out_receiver_id);
           #endif
         } else { // To a specific IP+port
-          udp.send_string(string, length, _remote_ip[pos], _remote_port[pos]);
+          udp.send_frame(data, length, _remote_ip[pos], _remote_port[pos]);
           _send_attempts[pos]++;
         }
       }

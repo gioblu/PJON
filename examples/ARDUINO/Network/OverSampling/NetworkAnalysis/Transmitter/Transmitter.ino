@@ -12,7 +12,7 @@ uint8_t bus_id[] = {0, 0, 0, 1};
 PJON<OverSampling> bus(bus_id, 44);
 
 int packet;
-char content[] = "01234567890123456789"; // First 4 bytes left empty for bus id
+uint8_t content[] = "01234567890123456789"; // First 4 bytes left empty for bus id
 
 void setup() {
   /* When using more than one pin always use pins connected to

@@ -100,10 +100,10 @@ class AnalogSampling {
     };
 
 
-    /* Begin method, to be called before transmission or reception:
+    /* Begin method, to be called on initialization:
        (returns always true) */
 
-    bool begin(uint8_t additional_randomness = 0) {
+    bool begin(uint8_t did = 0) {
       #ifdef ARDUINO
         // Set ADC clock prescale
         #if AS_PRESCALE ==  8
@@ -120,7 +120,7 @@ class AnalogSampling {
           sbi(ADCSRA, ADPS0);
         #endif
       #endif
-      PJON_DELAY(PJON_RANDOM(AS_INITIAL_DELAY) + additional_randomness);
+      PJON_DELAY(PJON_RANDOM(AS_INITIAL_DELAY) + did);
       compute_analog_read_duration();
       _last_byte = receive_byte();
       return true;
@@ -255,9 +255,9 @@ class AnalogSampling {
     };
 
 
-    /* Receive a string: */
+    /* Receive a frame: */
 
-    uint16_t receive_string(uint8_t *string, uint16_t max_length) {
+    uint16_t receive_frame(uint8_t *data, uint16_t max_length) {
       uint16_t result;
       // No initial flag, byte-stuffing violation
       if(max_length == PJON_PACKET_MAX_LENGTH)
@@ -279,7 +279,7 @@ class AnalogSampling {
       // No end flag, byte-stuffing violation
       if(max_length == 1 && receive_byte() != AS_END)
         return AS_FAIL;
-      *string = result;
+      *data = result;
       return 1;
     };
 
@@ -325,21 +325,21 @@ class AnalogSampling {
     };
 
 
-    /* Send a string: */
+    /* Send a frame: */
 
-    void send_string(uint8_t *string, uint16_t length) {
+    void send_frame(uint8_t *data, uint16_t length) {
       PJON_IO_MODE(_output_pin, OUTPUT);
       // Add frame flag
       send_byte(AS_START);
       for(uint16_t b = 0; b < length; b++)
         if( // Byte-stuffing
-          (string[b] == AS_START) ||
-          (string[b] == AS_ESC) ||
-          (string[b] == AS_END)
+          (data[b] == AS_START) ||
+          (data[b] == AS_ESC) ||
+          (data[b] == AS_END)
         ) {
           send_byte(AS_ESC);
-          send_byte(string[b] ^ AS_ESC);
-        } else send_byte(string[b]);
+          send_byte(data[b] ^ AS_ESC);
+        } else send_byte(data[b]);
       send_byte(AS_END);
       PJON_IO_PULL_DOWN(_output_pin);
     };

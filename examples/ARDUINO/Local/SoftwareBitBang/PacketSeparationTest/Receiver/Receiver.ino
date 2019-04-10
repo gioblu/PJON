@@ -58,7 +58,7 @@ void loop() {
   test = 0, fail = 0, percent = 0;
   time = millis();
   while(test < attempts) {
-    if(swbb.receive_string(data, PJON_PACKET_MAX_LENGTH) != PJON_FAIL)
+    if(swbb.receive_frame(data, PJON_PACKET_MAX_LENGTH) != PJON_FAIL)
       fail++;
     test++;
     if(!(test % (attempts / 50))) {

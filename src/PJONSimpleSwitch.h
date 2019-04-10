@@ -202,7 +202,7 @@ protected:
       sender_bus_id,
       packet_info.receiver_id,
       receiver_bus_id,
-      (const char*)payload,
+      (const uint8_t*)payload,
       length,
       packet_info.header,
       packet_info.id,

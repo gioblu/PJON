@@ -37,7 +37,7 @@ void loop() {
     Serial.flush();
 
     /* Send a "V", break the int in two bytes */
-    char content[3] = {'V', (char)(voltage >> 8), (char)(voltage & 0xFF)};
+    uint8_t content[3] = {'V', (uint8_t)(voltage >> 8), (uint8_t)(voltage & 0xFF)};
 
     unsigned long send_time = micros();
     /* Use a blocking version of send. */

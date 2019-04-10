@@ -12,7 +12,7 @@ uint32_t start = millis();
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   if(payload[0] == 'P') {
     cnt++;
-    bus.reply((uint8_t *)"P", 1);
+    bus.reply("P", 1);
   }
 };
 

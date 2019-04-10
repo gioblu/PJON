@@ -45,7 +45,7 @@ void setup() {
   bus.set_receiver(receiver_function);
   bus.begin();
 
-  bus.send_repeatedly(44, (uint8_t *)"B", 1, 1000000);
+  bus.send_repeatedly(44, "B", 1, 1000000);
 
   Serial.begin(115200);
 };

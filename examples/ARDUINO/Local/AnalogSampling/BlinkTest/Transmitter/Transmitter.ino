@@ -21,7 +21,7 @@ void setup() {
 };
 
 void loop() {
-  if(bus.send_packet(44, (uint8_t *)"B",1) == PJON_ACK)
+  if(bus.send_packet(44, "B",1) == PJON_ACK)
     digitalWrite(LED_BUILTIN, HIGH);
   delay(5);
   digitalWrite(LED_BUILTIN, LOW);

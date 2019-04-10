@@ -30,7 +30,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
     static bool led_on = false;
     digitalWrite(LED_BUILTIN, led_on ? HIGH : LOW);
     led_on = !led_on;
-    bus.reply((uint8_t *)"B", 1);
+    bus.reply("B", 1);
   }
 }
 

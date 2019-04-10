@@ -19,7 +19,7 @@ void setup() {
   bus.strategy.set_pin(12);
   bus.set_receiver(receiver_function);
   bus.begin();
-  bus.send_repeatedly(100, (uint8_t *)"B", 1, 250000);
+  bus.send_repeatedly(100, "B", 1, 250000);
 };
 
 void loop() {

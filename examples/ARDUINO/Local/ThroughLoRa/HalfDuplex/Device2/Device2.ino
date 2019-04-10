@@ -21,7 +21,7 @@ void setup() {
 	bus.strategy.setSignalBandwidth(250E3);
 
 	bus.begin();
-	bus.send(44, (uint8_t *)"B", 1);
+	bus.send(44, "B", 1);
 	Serial.begin(115200);
 };
 
@@ -29,7 +29,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 	/* Make use of the payload before sending something, the buffer where payload points to is
 	   overwritten when a new message is dispatched */
 	if ((char)payload[0] == 'B') {
-		bus.reply((uint8_t *)"B", 1);
+		bus.reply("B", 1);
 		digitalWrite(LED_BUILTIN, HIGH);
 		delay(5);
 		digitalWrite(LED_BUILTIN, LOW);

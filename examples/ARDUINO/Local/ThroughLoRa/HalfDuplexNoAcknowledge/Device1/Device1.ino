@@ -23,7 +23,7 @@ void setup() {
 
 	bus.begin();
 
-	bus.send_repeatedly(45, (uint8_t *)"B", 1, 1000000);
+	bus.send_repeatedly(45, "B", 1, 1000000);
 
 	Serial.begin(115200);
 };

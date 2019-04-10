@@ -53,7 +53,7 @@ int main() {
     bus.strategy.set_serial(&serial_handle);
     printf("Opening bus... \n");
     bus.begin();
-    bus.send_repeatedly(44, (uint8_t *)"B", 1, 1000000);
+    bus.send_repeatedly(44, "B", 1, 1000000);
     printf("Success, initiating BlinkTest repeated transmission... \n");
 
     while(true) {

@@ -21,7 +21,7 @@ void setup() {
   bus.strategy.set_pin(7);
   bus.set_receiver(receiver_function);
   bus.begin();
-  bus.send_repeatedly(45, remote_bus_id, (uint8_t *)"B", 1, 250000);
+  bus.send_repeatedly(45, remote_bus_id, "B", 1, 250000);
 }
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {

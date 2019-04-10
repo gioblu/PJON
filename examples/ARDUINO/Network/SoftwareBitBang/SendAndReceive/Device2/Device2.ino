@@ -11,7 +11,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
      overwritten when a new message is dispatched */
   if((char)payload[0] == 'B') {
     if(!bus.update()) // If all packets are delivered, send another
-      bus.reply((uint8_t *)"B", 1);
+      bus.reply("B", 1);
     digitalWrite(LED_BUILTIN, HIGH);
     delay(2);
     digitalWrite(LED_BUILTIN, LOW);
@@ -26,7 +26,7 @@ void setup() {
   bus.strategy.set_pin(12);
   bus.set_receiver(receiver_function);
   bus.begin();
-  bus.send(44, (uint8_t *)"B", 1);
+  bus.send(44, "B", 1);
 
   Serial.begin(115200);
 };

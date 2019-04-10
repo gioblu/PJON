@@ -58,7 +58,7 @@ bus.strategy.link.keep_connection(true);
   bus.set_receiver(receiver_function);
   bus.strategy.link.start_listening();
   bus.begin();
-  bus.send_repeatedly(44, (uint8_t *)"B", 1, 100000);
+  bus.send_repeatedly(44, "B", 1, 100000);
 
   while (true) loop();
   return 0;

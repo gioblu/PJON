@@ -9,7 +9,7 @@ PJON<EthernetTCP> bus(44);
 uint32_t count = 0;
 
 static void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
-	bus.reply((uint8_t *)"P", 1);
+	bus.reply("P", 1);
 	count++;
  };
 

@@ -12,7 +12,7 @@ void setup() {
   bus.set_receiver(receiver_function);
   bus.strategy.set_serial(&Serial); // Pass the Serial object you want to use for communication
   bus.begin();
-  bus.send_repeatedly(44, (uint8_t *)"B", 1, 100000); // Send B to device id 44 10 times per second
+  bus.send_repeatedly(44, "B", 1, 100000); // Send B to device id 44 10 times per second
 };
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {

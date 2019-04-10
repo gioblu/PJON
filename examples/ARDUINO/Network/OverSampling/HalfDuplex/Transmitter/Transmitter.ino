@@ -46,7 +46,7 @@ void setup() {
   bus.set_error(error_handler);
   bus.begin();
 
-  packet = bus.send_repeatedly(44, (uint8_t *)"B", 1, 2000000);
+  packet = bus.send_repeatedly(44, "B", 1, 2000000);
   /* Send B to device 44 every 2 seconds.
      Try to avoid to consinuosly jam the entire zone around you.
      Consider that many appliances and remotes around you are affected by

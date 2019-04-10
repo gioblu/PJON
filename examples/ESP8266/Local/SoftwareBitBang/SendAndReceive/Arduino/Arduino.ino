@@ -29,7 +29,7 @@ void setup() {
   bus.set_receiver(receiver_function);
   bus.strategy.set_pin(12);
   bus.begin();
-  bus.send(44, (uint8_t *)"B", 1);
+  bus.send(44, "B", 1);
 };
 
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
@@ -56,7 +56,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
   if((char)payload[0] == 'B') {
     Serial.println("BLINK");
     if(!bus.update()) // If all packets are delivered, send another
-      bus.reply((uint8_t *)"B", 1);
+      bus.reply("B", 1);
     digitalWrite(LED_BUILTIN, HIGH);
     delay(5);
     digitalWrite(LED_BUILTIN, LOW);

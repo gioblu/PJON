@@ -29,7 +29,7 @@ int main() {
   printf("Opening bus... \n");
   bus.begin();
   printf("Attempting to send a packet... \n");
-  bus.send(44, (uint8_t *)"B", 1);
+  bus.send(44, "B", 1);
   printf("Attempting to roll bus... \n");
   bus.update();
   printf("Attempting to receive from bus... \n");

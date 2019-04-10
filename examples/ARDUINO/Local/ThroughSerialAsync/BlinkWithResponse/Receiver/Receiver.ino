@@ -22,7 +22,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
     digitalWrite(13, HIGH);
     delay(30);
     digitalWrite(13, LOW);
-    bus.reply((uint8_t *)"B", 1);
+    bus.reply("B", 1);
   }
 };
 

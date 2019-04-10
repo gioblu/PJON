@@ -58,11 +58,11 @@ class ThroughSerial {
       return result;
     };
 
-    /* Begin method, to be called before transmission or reception:
+    /* Begin method, to be called on initialization:
        (returns always true) */
 
-    bool begin(uint8_t additional_randomness = 0) {
-      PJON_DELAY(PJON_RANDOM(TS_INITIAL_DELAY) + additional_randomness);
+    bool begin(uint8_t did = 0) {
+      PJON_DELAY(PJON_RANDOM(TS_INITIAL_DELAY) + did);
       _last_reception_time = 0;
       _last_byte = receive_byte();
       return true;
@@ -125,9 +125,9 @@ class ThroughSerial {
     };
 
 
-    /* Receive a string: */
+    /* Receive a frame: */
 
-    uint16_t receive_string(uint8_t *string, uint16_t max_length) {
+    uint16_t receive_frame(uint8_t *data, uint16_t max_length) {
       uint16_t result;
       // No initial flag, byte-stuffing violation
       if(max_length == PJON_PACKET_MAX_LENGTH)
@@ -153,7 +153,7 @@ class ThroughSerial {
       // No end flag, byte-stuffing violation
       if((max_length == 1) && (receive_byte() != TS_END))
         return TS_FAIL;
-      *string = result;
+      *data = (uint8_t)result;
       return 1;
     };
 
@@ -176,9 +176,9 @@ class ThroughSerial {
     };
 
 
-    /* Send a string: */
+    /* Send a frame: */
 
-    void send_string(uint8_t *string, uint16_t length) {
+    void send_frame(uint8_t *data, uint16_t length) {
       start_tx();
       uint16_t overhead = 2;
       // Add frame flag
@@ -186,14 +186,14 @@ class ThroughSerial {
       for(uint16_t b = 0; b < length; b++) {
         // Byte-stuffing
         if(
-          (string[b] == TS_START) ||
-          (string[b] == TS_ESC) ||
-          (string[b] == TS_END)
+          (data[b] == TS_START) ||
+          (data[b] == TS_ESC) ||
+          (data[b] == TS_END)
         ) {
           send_byte(TS_ESC);
-          send_byte(string[b] ^ TS_ESC);
+          send_byte(data[b] ^ TS_ESC);
           overhead++;
-        } else send_byte(string[b]);
+        } else send_byte(data[b]);
       }
       send_byte(TS_END);
       /* On RPI flush fails to wait until all bytes are transmitted

@@ -21,7 +21,7 @@ void receiver_functionA(uint8_t *payload, uint16_t length, const PJON_Packet_Inf
     packet_info.sender_bus_id,
     packet_info.receiver_id,
     packet_info.receiver_bus_id,
-    (char *)payload,
+    (uint8_t *)payload,
     length,
     packet_info.header,
     packet_info.id
@@ -38,7 +38,7 @@ void receiver_functionB(uint8_t *payload, uint16_t length, const PJON_Packet_Inf
     packet_info.sender_bus_id,
     packet_info.receiver_id,
     packet_info.receiver_bus_id,
-    (char *)payload,
+    (uint8_t *)payload,
     length,
     packet_info.header,
     packet_info.id

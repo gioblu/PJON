@@ -13,22 +13,10 @@
         > <
  ______-| |-__________________________________________________________________
 
-PJONMaster has been created by Giovanni Blu Mitolo with the support
-of Fred Larsen and is inspired by the work of Thomas Snaidero:
-"Modular components for eye tracking, in the interest of helping persons with
- severely impaired motor skills."
-Master Thesis, IT University of Copenhagen, Denmark, September 2016
+PJONMaster class implements the dynamic addressing specification:
+- v3.0 specification/PJON-dynamic-addressing-specification-v3.0.md
 
-PJON® Dynamic addressing specification:
-- v1.0 specification/PJON-dynamic-addressing-specification-v1.0.md
-
-The PJON project is entirely financed by contributions of people like you and
-its resources are solely invested to cover the development and maintenance
-costs, consider to make donation:
-- Paypal:   https://www.paypal.me/PJON
-- Bitcoin:  1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD
-- Ethereum: 0xf34AEAF3B149454522019781668F9a2d1762559b
-Thank you and happy tinkering!
+Masters routinely advertise their presence and lead the addressing procedure.
  _____________________________________________________________________________
 
 This software is experimental and it is distributed "AS IS" without any
@@ -51,29 +39,21 @@ limitations under the License. */
 #pragma once
 #include "PJON.h"
 
-/* Reference to device */
-struct Device_reference {
-  uint8_t  packet_index = 0;
+// Reference for each slave
+struct PJON_Slaves_reference {
   uint32_t registration = 0;
-  uint32_t rid          = 0;
-  bool     state        = 0;
+  uint8_t  device_address[5];
+  uint8_t  state = 0;
 };
 
-template<typename Strategy = SoftwareBitBang>
+template<typename Strategy>
 class PJONMaster : public PJON<Strategy> {
   public:
     bool debug = false;
-    Device_reference ids[PJON_MAX_DEVICES];
-    uint8_t required_config =
-      PJON_TX_INFO_BIT | PJON_CRC_BIT | PJON_ACK_REQ_BIT;
+    PJON_Slaves_reference ids[PJON_MAX_DEVICES];
 
     /* PJONMaster bus default initialization:
-       State: Local (bus_id: 0.0.0.0)
-       Acknowledge: true (Acknowledge is requested)
-       device id: MASTER (254)
-       Mode: PJON_HALF_DUPLEX
-       Sender info: true (Sender info are included in the packet)
-       Strategy: SoftwareBitBang */
+       device id: MASTER (254) */
 
     PJONMaster() : PJON<Strategy>(PJON_MASTER_ID) {
       set_default();
@@ -87,40 +67,17 @@ class PJONMaster : public PJON<Strategy> {
       set_default();
     };
 
-    /* Add a device reference: */
+    /* Approve id sending PJON_ID_REQUEST, device address, id approved */
 
-    bool add_id(uint8_t id, uint32_t rid, bool state) {
-      if(unique_rid(rid) && !ids[id - 1].state && !ids[id - 1].rid) {
-        ids[id - 1].rid = rid;
-        ids[id - 1].state = state;
-        return true;
-      }
-      return false;
-    };
-
-    /* Confirm a device id sending a repeated broadcast containing:
-    PJON_ID_REQUEST - RID (4 byte random id) - DEVICE ID (the new assigned) */
-
-    void approve_id(uint8_t *b_id, uint32_t rid) {
-      char response[6];
-      uint16_t state = reserve_id(rid);
-      if(state == PJON_DEVICES_BUFFER_FULL) return;
-      if(state == PJON_FAIL) return negate_id(PJON_NOT_ASSIGNED, b_id, rid);
-
-      response[0] = PJON_ID_REQUEST;
-      response[1] = (uint8_t)((uint32_t)(rid) >> 24);
-      response[2] = (uint8_t)((uint32_t)(rid) >> 16);
-      response[3] = (uint8_t)((uint32_t)(rid) >>  8);
-      response[4] = (uint8_t)((uint32_t)(rid));
-      response[5] = (uint8_t)(state);
-
-      ids[response[5] - 1].packet_index = PJON<Strategy>::send_repeatedly(
-        PJON_BROADCAST,
+    void approve_id(uint8_t *b_id, uint8_t *da) {
+      uint8_t id = reserve_id(da);
+      uint8_t r[7] = {PJON_ID_REQUEST, da[0], da[1], da[2], da[3], da[4], id};
+      PJON<Strategy>::send(
+        PJON_NOT_ASSIGNED,
         b_id,
-        response,
-        6,
-        PJON_ID_REQUEST_INTERVAL,
-        PJON<Strategy>::config | required_config | PJON_PORT_BIT,
+        r,
+        7,
+        PJON<Strategy>::config | (_required_config & ~PJON_TX_INFO_BIT),
         0,
         PJON_DYNAMIC_ADDRESSING_PORT
       );
@@ -130,79 +87,65 @@ class PJONMaster : public PJON<Strategy> {
 
     void begin() {
       PJON<Strategy>::begin();
-      list_ids();
+      enable_advertisement();
     };
 
-    /* Confirm device ID insertion in list: */
+    /* Confirm device id insertion in list: */
 
-    bool confirm_id(uint32_t rid, uint8_t id) {
-      if(ids[id - 1].rid == rid && !ids[id - 1].state) {
-        if(
-          (uint32_t)(PJON_MICROS() - ids[id - 1].registration) <
-          PJON_ADDRESSING_TIMEOUT
-        ) {
-          ids[id - 1].state = true;
-          PJON<Strategy>::remove(ids[id - 1].packet_index);
-          return true;
-        }
+    bool confirm_id(uint8_t id, uint8_t *device_address) {
+      if(
+        PJONTools::address_equality(
+          ids[id - 1].device_address,
+          device_address
+        ) && (ids[id - 1].state > 0)
+      ) {
+        ids[id - 1].state = 1;
+        return true;
       }
       return false;
     };
 
-    /* Count active devices: */
+    /* Count active slaves: */
 
     uint8_t count_active_ids() {
-      uint8_t result = 0;
+      uint8_t c = 0;
       for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++)
-        if(ids[i].state) result++;
-      return result;
+        if(ids[i].state == 1) c++;
+      return c;
     };
 
-    /* Empty a single element or the whole buffer: */
+    /* Delete a device id reference from buffer: */
 
-    void delete_id_reference(uint8_t id = 0) {
-      if(!id) {
-        for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++) {
-          if(!ids[i].state && ids[i].rid)
-            this->remove(ids[i].packet_index);
-          ids[i].packet_index = 0;
-          ids[i].registration = 0;
-          ids[i].rid = 0;
-          ids[i].state = false;
-        }
-      } else if(id > 0 && id < PJON_MAX_DEVICES) {
-        if(!ids[id - 1].state && ids[id - 1].rid)
-          this->remove(ids[id - 1].packet_index);
-        ids[id - 1].packet_index = 0;
+    void delete_id_reference(uint8_t id) {
+      if(id > 0 && id < PJON_MAX_DEVICES) {
         ids[id - 1].registration = 0;
-        ids[id - 1].rid   = 0;
-        ids[id - 1].state = false;
+        ids[id - 1].state = 0;
       }
     };
 
-    /* Check slaves presence contacting all known devices and waiting for
-       a synchronous acknowledge. If no answer is received the slave is
-       removed from the list (bandwidth consuming, use rarely): */
+    /* Disable continuous advertisement: */
 
-    void check_slaves_presence() {
-      char request = PJON_ID_ACQUIRE;
-      for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++) {
-        if(ids[i].state && ids[i].rid)
-          if(
-            PJON<Strategy>::send_packet_blocking(
-              i + 1,
-              this->bus_id,
-              &request,
-              1,
-              PJON<Strategy>::config | required_config | PJON_PORT_BIT,
-              0,
-              PJON_DYNAMIC_ADDRESSING_PORT
-            ) != PJON_ACK
-          ) {
-            delete_id_reference(i + 1);
-            error(PJON_ID_ACQUISITION_FAIL, i + 1);
-          }
-      }
+    void disable_advertisement() {
+      if(_adv < PJON_MAX_PACKETS)
+        PJON<Strategy>::remove(_adv);
+      _adv = PJON_MAX_PACKETS;
+    };
+
+    /* Enable continuous advertisement: */
+
+    void enable_advertisement() {
+      uint8_t request[] = {PJON_ID_DISCOVERY};
+      if(_adv == PJON_MAX_PACKETS)
+        _adv = PJON<Strategy>::send_repeatedly(
+          PJON_BROADCAST,
+          this->bus_id,
+          request,
+          1,
+          PJON_DISCOVERY_INTERVAL,
+          PJON<Strategy>::config | _required_config,
+          0,
+          PJON_DYNAMIC_ADDRESSING_PORT
+        );
     };
 
     /* Master error handler: */
@@ -227,17 +170,22 @@ class PJONMaster : public PJON<Strategy> {
       PJON_Packet_Info p_i;
       memcpy(&p_i, &packet_info, sizeof(PJON_Packet_Info));
       p_i.custom_pointer = _custom_pointer;
-      if(!handle_addressing() || debug)
-        _master_receiver(payload, length, p_i);
+      if(!handle_addressing()) {
+        if(
+          (p_i.sender_id != PJON_BROADCAST) &&
+          (p_i.sender_id < PJON_MAX_DEVICES) &&
+          (ids[p_i.sender_id - 1].state == 0)
+        ) return negate_id(p_i.sender_id);
+      } else if(!debug) return;
+      _master_receiver(payload, length, p_i);
     };
 
-    /* Handle addressing procedure if related: */
+    /* Handle addressing procedure if required: */
 
     bool handle_addressing() {
       bool filter = false;
       uint8_t overhead = PJON<Strategy>::packet_overhead(this->data[1]);
       uint8_t CRC_overhead = (this->data[1] & PJON_CRC_BIT) ? 4 : 1;
-
       if(
         (this->last_packet_info.header & PJON_PORT_BIT) &&
         (this->last_packet_info.header & PJON_TX_INFO_BIT) &&
@@ -246,52 +194,39 @@ class PJONMaster : public PJON<Strategy> {
       ) {
         filter = true;
         uint8_t request = this->data[overhead - CRC_overhead];
-        uint32_t rid =
-          (uint32_t)(this->data[(overhead - CRC_overhead) + 1]) << 24 |
-          (uint32_t)(this->data[(overhead - CRC_overhead) + 2]) << 16 |
-          (uint32_t)(this->data[(overhead - CRC_overhead) + 3]) <<  8 |
-          (uint32_t)(this->data[(overhead - CRC_overhead) + 4]);
+        uint8_t sender_id = this->last_packet_info.sender_id;
+        uint32_t offset = (overhead - CRC_overhead) + 1;
 
         if(request == PJON_ID_REQUEST)
-          approve_id(this->last_packet_info.sender_bus_id, rid);
+          approve_id(
+            this->last_packet_info.sender_bus_id,
+            (uint8_t*) &this->data[offset]
+          );
 
         if(request == PJON_ID_CONFIRM)
-          if(!confirm_id(rid, this->data[(overhead - CRC_overhead) + 5]))
-            negate_id(
-              this->last_packet_info.sender_id,
-              this->last_packet_info.sender_bus_id,
-              rid
-            );
-
-        if(request == PJON_ID_REFRESH)
-          if(!add_id(this->data[(overhead - CRC_overhead) + 5], rid, 1))
-            negate_id(
-              this->last_packet_info.sender_id,
-              this->last_packet_info.sender_bus_id,
-              rid
-            );
+          if(
+            !confirm_id(
+              sender_id,
+              (uint8_t*) &this->data[offset]
+            )
+          ) negate_id(sender_id);
 
         if(request == PJON_ID_NEGATE)
           if(
-            this->data[(overhead - CRC_overhead) + 5] ==
-            this->last_packet_info.sender_id
-          )
-            if(rid == ids[this->last_packet_info.sender_id - 1].rid)
-              if(
-                PJONTools::bus_id_equality(
-                  this->last_packet_info.sender_bus_id,
-                  this->bus_id
-                )
-              ) delete_id_reference(this->last_packet_info.sender_id);
+              PJONTools::address_equality(
+                (uint8_t*) &this->data[offset],
+                ids[sender_id - 1].device_address
+              )
+            ) delete_id_reference(sender_id);
       }
       return filter;
     };
 
-    /* Remove reserved id which expired (Remove never confirmed ids): */
+    /* Remove reserved id which expired (never confirmed ids): */
 
     void free_reserved_ids_expired() {
       for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++)
-        if(!ids[i].state && ids[i].rid) {
+        if(ids[i].state == 255) {
           if(
             (uint32_t)(PJON_MICROS() - ids[i].registration) <
             PJON_ADDRESSING_TIMEOUT
@@ -302,90 +237,64 @@ class PJONMaster : public PJON<Strategy> {
 
     /* Get device id from RID: */
 
-    uint8_t get_id_from_rid(uint32_t rid) {
+    uint8_t get_index_from_device_address(uint8_t *device_address) {
       for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++)
-        if(rid == ids[i].rid) return i + 1;
-      return PJON_NOT_ASSIGNED;
+        if(
+          ids[i].state == 1 &&
+          PJONTools::address_equality(ids[i].device_address, device_address))
+          return i;
+      return PJON_MAX_DEVICES;
     };
 
-    /* Check for device rid uniqueness in the reference buffer: */
+    /* Negate a device id sending a packet to the slave containing
+       PJON_ID_NEGATE forcing it to abandon its own device id. */
 
-    bool unique_rid(uint32_t rid) {
-      for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++)
-        if(ids[i].rid == rid) return false;
-      return true;
-    };
-
-    /* Broadcast a PJON_ID_LIST request to all devices: */
-
-    void list_ids() {
-      uint32_t time = PJON_MICROS();
-      char request = PJON_ID_LIST;
-      while((uint32_t)(PJON_MICROS() - time) < PJON_ADDRESSING_TIMEOUT) {
-        PJON<Strategy>::send_packet(
-          PJON_BROADCAST,
-          this->bus_id,
-          &request,
-          1,
-          PJON<Strategy>::config | required_config | PJON_PORT_BIT,
-          0,
-          PJON_DYNAMIC_ADDRESSING_PORT
-        );
-        receive(PJON_LIST_IDS_TIME);
-      }
-    };
-
-    /* Negate a device id request sending a packet to the device containing
-       ID_NEGATE forcing the slave to make a new request. */
-
-    void negate_id(uint8_t id, uint8_t *b_id, uint32_t rid) {
-      uint8_t response[5] = {
-        (uint8_t)PJON_ID_NEGATE,
-        (uint8_t)((uint32_t)(rid) >> 24),
-        (uint8_t)((uint32_t)(rid) >> 16),
-        (uint8_t)((uint32_t)(rid) >>  8),
-        (uint8_t)((uint32_t)(rid))
-      };
-
-      PJON<Strategy>::send_packet_blocking(
+    void negate_id(uint8_t id) {
+      uint8_t response[] = {PJON_ID_NEGATE};
+      PJON<Strategy>::send(
         id,
-        b_id,
-        (char *)response,
-        5,
-        PJON<Strategy>::config | required_config | PJON_PORT_BIT,
+        this->bus_id,
+        response,
+        1,
+        PJON<Strategy>::config | _required_config,
         0,
         PJON_DYNAMIC_ADDRESSING_PORT
       );
+      // Keep id busy to avoid in flight packets to reach the wrong device
+      ids[id - 1].registration = PJON_MICROS();
+      ids[id - 1].state = 255;
     };
 
     /* Reserve a device id and wait for its confirmation: */
 
-    uint16_t reserve_id(uint32_t rid) {
-      if(!unique_rid(rid)) return PJON_FAIL;
+    uint8_t reserve_id(uint8_t *device_address) {
+      uint8_t index = get_index_from_device_address(device_address);
+      // If already present pass its index.
+      if(ids[index].state == 1) return index + 1;
+      /* When using unreliable data-links this should help accomodate
+      occasional losses and avoid numerous re-negotiations, consider that
+      no measure is taken to avoid potential device address collisions. */
       for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++)
-        if(!ids[i].state && !ids[i].rid) {
+        if(ids[i].state == 0) {
           ids[i].registration = PJON_MICROS();
-          ids[i].rid = rid;
-          ids[i].state = false;
+          PJONTools::copy_address(ids[i].device_address, device_address);
+          ids[i].state = 255;
           return i + 1;
         }
       error(PJON_DEVICES_BUFFER_FULL, PJON_MAX_DEVICES);
-      return PJON_DEVICES_BUFFER_FULL;
+      return 0;
     };
 
-/* Master receive function: */
+    /* Master receive function: */
 
     uint16_t receive() {
       return PJON<Strategy>::receive();
     };
 
-    /* Try to receive a packet repeatedly with a maximum duration: */
+    /* Try to receive a packet repeatedly for a given duration: */
 
     uint16_t receive(uint32_t duration) {
-      uint32_t time = PJON_MICROS();
-      while((uint32_t)(PJON_MICROS() - time) <= duration)
-        if(receive() == PJON_ACK) return PJON_ACK;
-      return PJON_FAIL;
+      return PJON<Strategy>::receive(duration);
     };
 
     /* Static receiver hander: */
@@ -413,8 +322,10 @@ class PJONMaster : public PJON<Strategy> {
       PJON<Strategy>::set_custom_pointer(this);
       PJON<Strategy>::set_error(static_error_handler);
       PJON<Strategy>::set_receiver(static_receiver_handler);
-      delete_id_reference();
-      this->include_port(true);
+      for(uint8_t i = 0; i < PJON_MAX_DEVICES; i++) {
+        ids[i].registration = 0;
+        ids[i].state = 0;
+      }
     };
 
     /* Master receiver function setter: */
@@ -437,7 +348,12 @@ class PJONMaster : public PJON<Strategy> {
     };
 
   private:
+    uint16_t        _adv = PJON_MAX_PACKETS;
     void           *_custom_pointer;
     PJON_Receiver   _master_receiver;
     PJON_Error      _master_error;
+    uint8_t         _required_config =
+      (PJON_TX_INFO_BIT | PJON_CRC_BIT | PJON_ACK_REQ_BIT | PJON_PORT_BIT) &
+      ~(PJON_ACK_MODE_BIT | PJON_PACKET_ID_BIT)
+    ;
 };

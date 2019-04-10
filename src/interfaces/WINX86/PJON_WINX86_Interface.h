@@ -89,7 +89,8 @@
   #endif
 
   #if !defined(PJON_IO_WRITE)
-    #define PJON_IO_WRITE(P, V)
+    // Avoid warning C4390 (empty controlled statement)
+    #define PJON_IO_WRITE(P, V) (void)0
   #endif
 
   #if !defined(PJON_IO_READ)
@@ -97,11 +98,13 @@
   #endif
 
   #if !defined(PJON_IO_MODE)
-    #define PJON_IO_MODE(P, V)
+    // Avoid warning C4390 (empty controlled statement)
+    #define PJON_IO_MODE(P, V) (void)0
   #endif
 
   #if !defined(PJON_IO_PULL_DOWN)
-    #define PJON_IO_PULL_DOWN(P)
+    // Avoid warning C4390 (empty controlled statement)
+    #define PJON_IO_PULL_DOWN(P) (void)0
   #endif
 
   /* Random ----------------------------------------------------------------- */
@@ -120,7 +123,7 @@
   /* Serial ----------------------------------------------------------------- */
 
   #ifndef PJON_SERIAL_TYPE
-    #define PJON_SERIAL_TYPE Serial * 
+    #define PJON_SERIAL_TYPE Serial *
   #endif
 
   #ifndef PJON_SERIAL_AVAILABLE
@@ -128,11 +131,11 @@
   #endif
 
   #ifndef PJON_SERIAL_WRITE
-    #define PJON_SERIAL_WRITE(S, C) S->putChar((char*)&C)
+    #define PJON_SERIAL_WRITE(S, C) S->writeByte(&C)
   #endif
 
   #ifndef PJON_SERIAL_READ
-    #define PJON_SERIAL_READ(S) S->getChar()
+    #define PJON_SERIAL_READ(S) S->getByte()
   #endif
 
   #ifndef PJON_SERIAL_FLUSH

@@ -3,7 +3,7 @@
 #### Network layer
 - **[PJON (Padded Jittering Operative Network) v3.1](/specification/PJON-protocol-specification-v3.1.md)**
 - [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md)
-- [Dynamic addressing specification v2.0](/specification/PJON-dynamic-addressing-specification-v2.0.md)
+- [Dynamic addressing specification v3.0](/specification/PJON-dynamic-addressing-specification-v3.0.md)
 - [Network services list](/specification/PJON-network-services-list.md)
 #### Data link layer
 - [PJDL (Padded Jittering Data Link) v3.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v3.0.md)
@@ -53,7 +53,7 @@ The graph below shows the conceptual model that characterizes and standardizes t
 * Packet transmission is regulated by a 1 byte header
 * Devices communicate through packets with a maximum length of 255 or 65535 bytes
 * Devices are identified by a unique 1 byte device id
-* Devices can obtain an id if available (see [Dynamic addressing specification v1.0](/specification/PJON-dynamic-addressing-specification-v2.0.md))
+* Devices can obtain an id if available (see [Dynamic addressing specification v3.0](/specification/PJON-dynamic-addressing-specification-v3.0.md))
 * Buses are identified with a 4 bytes bus id
 * Many buses can coexist on the same medium
 * Synchronous and or asynchronous acknowledgement can be requested (see [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md))

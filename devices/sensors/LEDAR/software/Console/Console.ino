@@ -88,7 +88,7 @@ void loop() {
       if((char)packet[0] == 'C') {
         packet[1] = (uint8_t)string_number.toInt();
         packet_length = 2;
-        bus.send(LEDAR_id, (char *)packet, packet_length);
+        bus.send(LEDAR_id, packet, packet_length);
         Serial.print("Setting LEDAR configuration: ");
         Serial.print(packet[1]);
         Serial.flush();
@@ -98,7 +98,7 @@ void loop() {
         packet[1] = string_number.toInt() >> 8;
         packet[2] = string_number.toInt() & 0xFF;
         packet_length = 3;
-        bus.send(LEDAR_id, (char *)packet, packet_length);
+        bus.send(LEDAR_id, packet, packet_length);
         Serial.print("Setting LEDAR detection threshold: ");
         Serial.print(string_number.toInt());
         Serial.flush();
@@ -106,7 +106,7 @@ void loop() {
       // Reading request
       if((char)packet[0] == 'E') {
         packet_length = 1;
-        bus.send(LEDAR_id, (char *)packet, packet_length);
+        bus.send(LEDAR_id, packet, packet_length);
         Serial.println("Reading requested.");
         Serial.flush();
       }
@@ -114,7 +114,7 @@ void loop() {
       if((char)packet[0] == 'I') {
         packet_length = 2;
         packet[1] = (uint8_t)string_number.toInt();
-        bus.send(LEDAR_id, (char *)packet, packet_length);
+        bus.send(LEDAR_id, packet, packet_length);
         LEDAR_id = packet[1];
         Serial.print("Setting LEDAR id: ");
         Serial.println(packet[1]);
@@ -125,7 +125,7 @@ void loop() {
         packet[1] = string_number.toInt() >> 8;
         packet[2] = string_number.toInt() & 0xFF;
         packet_length = 3;
-        bus.send(LEDAR_id, (char *)packet, packet_length);
+        bus.send(LEDAR_id, packet, packet_length);
         Serial.print("Setting reading iterations count: ");
         Serial.println(string_number.toInt());
         Serial.flush();
@@ -134,7 +134,7 @@ void loop() {
       if((char)packet[0] == 'M' )  {
         packet[1] = (uint8_t)string_number.toInt();
         packet_length = 2;
-        bus.send(LEDAR_id, (char *)packet, packet_length);
+        bus.send(LEDAR_id, packet, packet_length);
         Serial.print("Setting mode: ");
         Serial.println(packet[1]);
         Serial.flush();
@@ -142,7 +142,7 @@ void loop() {
       // Block further incoming configuration
       if((char)packet[0] == 'Q') {
         packet_length = 1;
-        bus.send(LEDAR_id, (char *)packet, packet_length);
+        bus.send(LEDAR_id, packet, packet_length);
         Serial.println("Blocking further incoming configuration!");
         Serial.println("Flash the LEDAR with LEDAR.ino to unblock!");
         Serial.print(packet[1]);
@@ -152,7 +152,7 @@ void loop() {
       if((char)packet[0] == 'R') {
         packet[1] = (uint8_t)string_number.toInt();
         packet_length = 2;
-        bus.send(LEDAR_id, (char *)packet, packet_length);
+        bus.send(LEDAR_id, packet, packet_length);
         Serial.println("Recipient id update: ");
         Serial.print(packet[1]);
         bus.set_id(packet[1]);
@@ -163,7 +163,7 @@ void loop() {
         packet[1] = string_number.toInt() >> 8;
         packet[2] = string_number.toInt() & 0xFF;
         packet_length = 3;
-        bus.send(LEDAR_id, (char *)packet, packet_length);
+        bus.send(LEDAR_id, packet, packet_length);
         Serial.print("Setting transmission interval: ");
         Serial.println(string_number.toInt());
         Serial.flush();
@@ -171,7 +171,7 @@ void loop() {
       // Configuration reset to default
       if((char)packet[0] == 'X') {
         packet_length = 1;
-        bus.send(LEDAR_id, (char *)packet, packet_length);
+        bus.send(LEDAR_id, packet, packet_length);
         Serial.print("Executing configuration reset!");
         Serial.flush();
       }

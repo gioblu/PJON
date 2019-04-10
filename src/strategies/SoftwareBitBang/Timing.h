@@ -13,7 +13,8 @@
 
    MODE   1: 1.95kB/s - 15625Bd
    MODE   2: 2.21kB/s - 17696Bd
-   MODE   3: 2.94kB/s - 23529Bd
+   MODE   3: 2.97kB/s - 23529Bd
+   MODE   4: 3.40kB/s - 27210Bd
 
    Use the same pin number on all connected devices to achieve maximum
    timing efficiency, not all different pin combinations work nominally
@@ -44,12 +45,20 @@
   #endif
   #if SWBB_MODE == 3
     #if F_CPU == 16000000L
-      /* Speed: 27.027kBd or 3.378kB/s
-         Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
+      /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
       #define SWBB_BIT_WIDTH   24
       #define SWBB_BIT_SPACER  80
       #define SWBB_ACCEPTANCE  40
       #define SWBB_READ_DELAY   8
+    #endif
+  #endif
+  #if SWBB_MODE == 4
+    #if F_CPU == 16000000L
+      /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
+      #define SWBB_BIT_WIDTH   22
+      #define SWBB_BIT_SPACER  56
+      #define SWBB_ACCEPTANCE  30
+      #define SWBB_READ_DELAY   9
     #endif
   #endif
 #endif
@@ -232,6 +241,20 @@
   #endif
   #ifndef SWBB_READ_DELAY
     #define SWBB_READ_DELAY   8
+  #endif
+#endif
+#if SWBB_MODE == 4
+  #ifndef SWBB_BIT_WIDTH
+    #define SWBB_BIT_WIDTH   22
+  #endif
+  #ifndef SWBB_BIT_SPACER
+    #define SWBB_BIT_SPACER  56
+  #endif
+  #ifndef SWBB_ACCEPTANCE
+    #define SWBB_ACCEPTANCE  30
+  #endif
+  #ifndef SWBB_READ_DELAY
+    #define SWBB_READ_DELAY   9
   #endif
 #endif
 

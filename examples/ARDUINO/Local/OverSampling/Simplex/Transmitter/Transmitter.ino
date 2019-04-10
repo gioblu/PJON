@@ -9,7 +9,7 @@
 // <Strategy name> bus(selected device id)
 PJON<OverSampling> bus(45);
 
-char content[] = "01234567890123456789";
+uint8_t content[] = "01234567890123456789";
 
 void setup() {
   // Connect STX882 data output pin in Arduino pin 7

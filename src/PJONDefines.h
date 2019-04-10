@@ -85,12 +85,10 @@ limitations under the License. */
 #define PJON_NAK             21
 
 /* Dynamic addressing */
-#define PJON_ID_ACQUIRE     199
-#define PJON_ID_REQUEST     200
-#define PJON_ID_CONFIRM     201
+#define PJON_ID_DISCOVERY   200
+#define PJON_ID_REQUEST     201
+#define PJON_ID_CONFIRM     202
 #define PJON_ID_NEGATE      203
-#define PJON_ID_LIST        204
-#define PJON_ID_REFRESH     205
 
 /* INTERNAL CONSTANTS */
 #define PJON_FAIL         65535
@@ -118,8 +116,8 @@ limitations under the License. */
 /* 0 - CRC8 (1 byte) included at the end of the packet
    1 - CRC32 (4 bytes) included at the end of the packet */
 #define PJON_CRC_BIT        0B00100000
-/* 0 - 1 byte length (max 255 characters)
-   1 - 2 bytes length (max 65535 characters) */
+/* 0 - 1 byte long (max 255 bytes)
+   1 - 2 bytes long (max 65535 bytes) */
 #define PJON_EXT_LEN_BIT    0B01000000
 /* 0 - Packet id not present
    1 - Packet id present */
@@ -167,20 +165,14 @@ limitations under the License. */
 
 /* Dynamic addressing port number */
 #define PJON_DYNAMIC_ADDRESSING_PORT    1
-/* Maximum number of device id collisions during auto-addressing */
-#define PJON_MAX_ACQUIRE_ID_COLLISIONS 10
-/* Delay between device id acquisition and self request (1000 milliseconds) */
-#define PJON_ACQUIRE_ID_DELAY        1000
-/* Master free id broadcast response interval (100 milliseconds) */
-#define PJON_ID_REQUEST_INTERVAL   100000
-/* Master ID_REQUEST and ID_NEGATE timeout */
-#define PJON_ADDRESSING_TIMEOUT   4000000
-/* Master reception time during LIST_ID broadcast (250 milliseconds) */
-#define PJON_LIST_IDS_TIME         250000
+/* Master ID_REQUEST and ID_NEGATE timeout (5 seconds) */
+#define PJON_ADDRESSING_TIMEOUT   5000000
+/* Master discovery broadcast interval (10 seconds) */
+#define PJON_DISCOVERY_INTERVAL   1000000
 
 struct PJON_Packet {
   uint8_t  attempts;
-  char     content[PJON_PACKET_MAX_LENGTH];
+  uint8_t  content[PJON_PACKET_MAX_LENGTH];
   uint16_t length;
   uint32_t registration;
   uint16_t state;
@@ -246,36 +238,51 @@ struct PJONTools {
     return true;
   };
 
+  /* Copy a device address: */
+
+  static void copy_address(uint8_t dest[], const uint8_t src[]) {
+    memcpy(dest, src, 5);
+  };
+
+  /* Check equality between two mac addresses */
+
+  static bool address_equality(const uint8_t *n_one, const uint8_t *n_two) {
+    for(uint8_t i = 0; i < 5; i++)
+      if(n_one[i] != n_two[i])
+        return false;
+    return true;
+  };
+
   /* Fill a PJON_Packet_Info struct with data parsing a packet: */
 
-  static void parse_header(const uint8_t *packet, PJON_Packet_Info &packet_info) {
-    memset(&packet_info, 0, sizeof packet_info);
+  static void parse_header(const uint8_t *packet, PJON_Packet_Info &info) {
+    memset(&info, 0, sizeof info);
     uint8_t index = 0;
-    packet_info.receiver_id = packet[index++];
+    info.receiver_id = packet[index++];
     bool extended_length = packet[index] & PJON_EXT_LEN_BIT;
-    packet_info.header = packet[index++];
+    info.header = packet[index++];
     index += extended_length + 2; // + LENGTH + HEADER CRC
-    if(packet_info.header & PJON_MODE_BIT) {
-      copy_bus_id(packet_info.receiver_bus_id, packet + index);
+    if(info.header & PJON_MODE_BIT) {
+      copy_bus_id(info.receiver_bus_id, packet + index);
       index += 4;
-      if(packet_info.header & PJON_TX_INFO_BIT) {
-        copy_bus_id(packet_info.sender_bus_id, packet + index);
+      if(info.header & PJON_TX_INFO_BIT) {
+        copy_bus_id(info.sender_bus_id, packet + index);
         index += 4;
       }
     }
-    if(packet_info.header & PJON_TX_INFO_BIT)
-      packet_info.sender_id = packet[index++];
+    if(info.header & PJON_TX_INFO_BIT)
+      info.sender_id = packet[index++];
     #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
-      if(((packet_info.header & PJON_ACK_MODE_BIT) &&
-          (packet_info.header & PJON_TX_INFO_BIT)
-        ) || packet_info.header & PJON_PACKET_ID_BIT
+      if(((info.header & PJON_ACK_MODE_BIT) &&
+          (info.header & PJON_TX_INFO_BIT)
+        ) || info.header & PJON_PACKET_ID_BIT
       ) {
-        packet_info.id =
+        info.id =
           (packet[index] << 8) | (packet[index + 1] & 0xFF);
         index += 2;
       }
     #endif
-    if(packet_info.header & PJON_PORT_BIT)
-      packet_info.port = (packet[index] << 8) | (packet[index + 1] & 0xFF);
+    if(info.header & PJON_PORT_BIT)
+      info.port = (packet[index] << 8) | (packet[index + 1] & 0xFF);
   };
 };

@@ -30,7 +30,7 @@ uint16_t readings;
 uint8_t  recipient_id;
 uint16_t threshold;
 uint32_t reading = 0;
-char packet[4] = {0, 0, 0, 0};
+uint8_t packet[4] = {0, 0, 0, 0};
 
 // <Strategy name> bus(selected device id)
 PJON<SoftwareBitBang> bus(PJON_NOT_ASSIGNED);

@@ -12,8 +12,8 @@ Surrogate, and receives BLINK replies back.
 Device 44 is the example:
 ARDUINO/Local/SoftwareBitBang/BlinkWithResponse/Receiver.
 
-This demonstrates the concept with a process on a PC or a RPI transparently 
-being part of a SWBB bus via a Surrogate. The Surrogate will "phone home" 
+This demonstrates the concept with a process on a PC or a RPI transparently
+being part of a SWBB bus via a Surrogate. The Surrogate will "phone home"
 to the RemoteWorker to create a permanent link.
 The two alternative modes differ in the speed and the number of sockets used.
 ETCP_SINGLE_DIRECTION is fastest and recommended if not on limited hardware.

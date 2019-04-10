@@ -26,12 +26,12 @@ uint8_t bus_id[] = {0, 0, 0, 1};
 PJON<SoftwareBitBang> bus(bus_id, 45);
 
 int packet;
-char content[] = "01234567890123456789"; // First 10 bytes left empty for bus id
+uint8_t content[] = "01234567890123456789"; // First 10 bytes left empty for bus id
 
 void setup() {
   bus.strategy.set_pin(12);
   bus.begin();
-  header = bus.config | PJON_CRC_BIT; // Force CRC32 
+  header = bus.config | PJON_CRC_BIT; // Force CRC32
   Serial.begin(115200);
   Serial.println("PJON - Network analysis");
   Serial.println("Starting a 1 second communication test..");

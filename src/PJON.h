@@ -159,7 +159,7 @@ class PJON {
       const uint8_t id,
       const uint8_t *b_id,
       uint8_t *destination,
-      const uint8_t *source,
+      const void *source,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
@@ -276,7 +276,7 @@ class PJON {
     uint16_t dispatch(
       uint8_t id,
       const uint8_t *b_id,
-      const uint8_t *packet,
+      const void *packet,
       uint16_t length,
       uint32_t timing,
       uint8_t  header = PJON_NO_HEADER,
@@ -607,7 +607,7 @@ class PJON {
        deliver a response to a request. */
 
     uint16_t reply(
-      const uint8_t *packet,
+      const void *payload,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
@@ -617,7 +617,7 @@ class PJON {
         return dispatch(
           last_packet_info.sender_id,
           last_packet_info.sender_bus_id,
-          packet,
+          payload,
           length,
           0,
           ((header == PJON_NO_HEADER) ? last_packet_info.header : header),
@@ -631,7 +631,7 @@ class PJON {
 
     uint16_t send(
       uint8_t id,
-      const uint8_t *payload,
+      const void *payload,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
@@ -645,7 +645,7 @@ class PJON {
     uint16_t send(
       uint8_t id,
       const uint8_t *b_id,
-      const uint8_t *payload,
+      const void *payload,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
@@ -663,7 +663,7 @@ class PJON {
       const uint8_t *sender_bus_id,
       uint8_t id,
       const uint8_t *b_id,
-      const uint8_t *payload,
+      const void *payload,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
@@ -694,7 +694,7 @@ class PJON {
 
     uint16_t send_repeatedly(
       uint8_t id,
-      const uint8_t *payload,
+      const void *payload,
       uint16_t length,
       uint32_t timing,
       uint8_t  header = PJON_NO_HEADER,
@@ -712,7 +712,7 @@ class PJON {
     uint16_t send_repeatedly(
       uint8_t id,
       const uint8_t *b_id,
-      const uint8_t *payload,
+      const void *payload,
       uint16_t length,
       uint32_t timing,
       uint8_t  header = PJON_NO_HEADER,
@@ -747,7 +747,7 @@ class PJON {
 
     uint16_t send_packet(
       uint8_t id,
-      const uint8_t *payload,
+      const void *payload,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
@@ -762,7 +762,7 @@ class PJON {
     uint16_t send_packet(
       uint8_t id,
       const uint8_t *b_id,
-      const uint8_t *payload,
+      const void *payload,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
@@ -781,7 +781,7 @@ class PJON {
     uint16_t send_packet_blocking(
       uint8_t id,
       const uint8_t *b_id,
-      const uint8_t *payload,
+      const void *payload,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,
@@ -830,7 +830,7 @@ class PJON {
 
     uint16_t send_packet_blocking(
       uint8_t id,
-      const uint8_t *payload,
+      const void *payload,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
       uint16_t p_id = 0,

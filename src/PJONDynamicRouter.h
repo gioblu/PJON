@@ -17,14 +17,6 @@ PJONDynamicRouter has been contributed by Fred Larsen.
 
 It performs the same as PJONRouter, but populates the routing table
 dynamically based on observed packets from remote buses.
-
-The PJON project is entirely financed by contributions of people like you and
-its resources are solely invested to cover the development and maintenance
-costs, consider to make donation:
-- Paypal:   https://www.paypal.me/PJON
-- Bitcoin:  1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD
-- Ethereum: 0xf34AEAF3B149454522019781668F9a2d1762559b
-Thank you and happy tinkering!
  _____________________________________________________________________________
 
 This software is experimental and it is distributed "AS IS" without any

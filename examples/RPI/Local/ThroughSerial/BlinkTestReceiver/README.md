@@ -1,4 +1,4 @@
-Thanks to the addition of the [interfaces](https://github.com/gioblu/PJON/tree/master/src/interfaces), it is finally possible to use PJON on a Raspberry Pi (or more generally on a Linux machine). For now only the ThoughSerial strategy has been ported for Raspberry Pi. A library providing the low level methods is necessary, for now PJON works using `wiringPi` that should be already installed in the default raspbian distribution.
+Thanks to the addition of the [interfaces](https://github.com/gioblu/PJON/tree/master/src/interfaces), it is finally possible to use PJON on a Raspberry Pi (or more generally on a Linux machine). A library providing the low level methods is necessary, for now PJON works using `wiringPi` that should be already installed in the default raspbian distribution.
 
 If in your case it is missing, type `sudo apt-get install wiringPi`
 

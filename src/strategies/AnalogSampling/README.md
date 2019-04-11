@@ -20,7 +20,7 @@
 - `4` runs at 5547Bb or 639B/s (`AS_PRESCALE` 16)
 - `5` runs at 12658Bd or 1528B/s (`AS_PRESCALE` 8)
 
-Caution, mode `5` sets ADC clock prescale to a higher rate than manufacturer recommends as maximum ADC sample rate (prescale 16).
+Caution, mode `5` sets the ADC clock prescale to a higher rate than the manufacturer recommends as maximum ADC sample rate (prescale 16).
 
 ### What can be done?
 The most basic example is to connect two devices using a couple of visible light LEDs used as wireless transceivers.

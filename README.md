@@ -30,7 +30,7 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 ### Specifications
 - [PJON v3.1](specification/PJON-protocol-specification-v3.1.md)
 - [PJON Acknowledge v1.0](specification/PJON-protocol-acknowledge-specification-v1.0.md)
-- [PJON Dynamic addressing v2.0](specification/PJON-dynamic-addressing-specification-v2.0.md)
+- [PJON Dynamic addressing v3.0](specification/PJON-dynamic-addressing-specification-v3.0.md)
 - [PJDL v3.0](src/strategies/SoftwareBitBang/specification/PJDL-specification-v3.0.md) - [PJDLR v2.0](src/strategies/OverSampling/specification/PJDLR-specification-v2.0.md) - [PJDLS v2.0](src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) - [TSDL v2.1](src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md)
 
 ### Compliant tools

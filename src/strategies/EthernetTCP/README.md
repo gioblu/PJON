@@ -40,7 +40,7 @@ In the standard mode, each device will listen for incoming socket connections on
 
 To simplify traffic crossing firewalls, the use of a single-socket configuration, calling `link.single_socket(true)` is available. It makes one device create a connection to another device with a fixed IP and a firewall opening / port forwarding. Packets can be sent in both directions on this single socket, even if one device has dynamic IP address and no incoming firewall openings.
 
-A use case for this is having a master device, and a slave device in a different location that connect to the master to send or receive packets. Only the master needs a fixed IP address and one firewall opening / port forwarding.
+A use case for this is having a master device, and a slave device in a different location that connects to the master to send or receive packets. Only the master needs a fixed IP address and one firewall opening / port forwarding.
 
 Using the single-socket configuration, calling `link.single_socket(true)`, will cause some traffic (poll requests) to flow each time PJON update() or receive() are called even when no packets are being sent.
 

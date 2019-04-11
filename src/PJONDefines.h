@@ -15,7 +15,7 @@
 
 For the PJON® Protocol specification see the specification directory.
 
-Thanks to the support, the expertise, the kindness and the talent of following
+Thanks to the support, expertise, kindness and talent of the following
 contributors, the protocol's documentation, specification and implementation
 have been strongly tested, enhanced and verified:
 

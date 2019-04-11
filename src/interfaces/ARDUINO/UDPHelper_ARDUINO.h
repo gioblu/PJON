@@ -84,7 +84,7 @@ public:
     IPAddress broadcastIp;
 #ifdef PJON_ESP
     // 255.255.255.255 may not work, be more specific
-    broadcastIp = ~WiFi.subnetMask() | WiFi.localIP();
+    broadcastIp = ~(uint32_t)WiFi.subnetMask() | (uint32_t)WiFi.localIP();
 #else
     broadcastIp = _broadcast;
 #endif

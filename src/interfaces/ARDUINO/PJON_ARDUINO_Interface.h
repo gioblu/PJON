@@ -144,7 +144,7 @@
 
   /* Byte order translation functions ------------------------------------- */
 
-  #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+  #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ && !defined(PJON_ESP)
 
     #ifndef htons // Host to network short
       #define htons(x) ( ((uint16_t)(x) << 8 & 0xFF00) | \
@@ -167,7 +167,7 @@
     #endif
   #endif
 
-  #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+  #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__ && !defined(PJON_ESP)
     #define htons(x) (x)
     #define htonl(x) (x)
     #define ntohs(x) (x)

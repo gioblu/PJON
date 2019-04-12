@@ -7,10 +7,11 @@
 
 // Define WiFi country configuration
 static wifi_country_t wifi_country = {
-  "AU",
-  1,
-  14,
-  WIFI_COUNTRY_POLICY_MANUAL
+  cc:     "AU",
+  schan:  1,
+  nchan:  14,
+  max_tx_power: 1,
+  policy: WIFI_COUNTRY_POLICY_MANUAL
 };
 
 // Use the PJON_INCLUDE_EN to include the ESPNOW strategy

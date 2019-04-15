@@ -15,63 +15,28 @@
 
 For the PJON® Protocol specification see the specification directory.
 
-Compliant tools:
-- ModuleInterface - Easy config and value sync between IOT modules
-  https://github.com/fredilarsen/ModuleInterface
-- cython PJON wrapper by xlfe github user
-  https://github.com/xlfe/PJON-cython
-- Command line PJON wrapper over pipes by Zbigniew Zasieczny
-  https://github.com/Girgitt/PJON-piper
-- PJON-python - PJON running on Python by Zbigniew Zasieczny
-  https://github.com/Girgitt/PJON-python
-- PJON-gRPC - gRPC server-client by Oleg Galitskiy (outdated)
-  https://github.com/Galitskiy/PJON-gRPC
+Thanks to the support, expertise, kindness and talent of the following
+contributors, the protocol's documentation, specification and implementation
+have been strongly tested, enhanced and verified:
 
-Credits to contributors:
-- Fred Larsen: Systems engineering, header driven communication, debugging
-- Zbigniew Zasieczny: WINX86 interface
-- Matheus Garbelini: ThroughLora strategy
-- sticilface github user: SoftwareBitBang Teensy support, ThroughSerialAsync
-- xlfe github user: LINUX serial support
-- osman-aktepe github user: SoftwareBitBang STM32F1 support
-- Jorgen-VikingGod github user: SoftwareBitBang ESP32 support
-- drtrigon github user: LINUX ThroughSerial examples, missing warning report
-- Wilfried Klaas: SoftwareBitBang ATtiny44/84 support
-- 4ib3r github user: Memory optimization configurable strategies inclusion
-- budaics github user: ATtiny85 16MHz external clock testing and wiki page
-- Pantovich github user: Update returning number of packets to be delivered
-- Adrian Sławiński: Fix to enable SimpleModbusMasterV2 compatibility
-- Esben Soeltoft: SoftwareBitBang Arduino Zero support
-- Alex Grishin: SoftwareBitBang ESP8266 support
-- Andrew Grande: Testing, support, bugfix
-- Mauro Zancarlin: Systems engineering, testing, bugfix
-- Michael Teeww: Callback based reception, debugging
-- PaoloP74 github user: Library conversion to 1.x Arduino IDE
-- DetAtHome github user: LocalFile strategy
+  Fred Larsen, Zbigniew Zasieczny, Matheus Garbelini, sticilface,
+  Felix Barbalet, Oleh Halitskiy, fabpolli, Adrian Sławiński,
+  Osman Selçuk Aktepe, Jorgen-VikingGod, drtrigon, Endre Karlson,
+  Wilfried Klaas, budaics, ibantxo, gonnavis, maxidroms83, Evgeny Dontsov,
+  zcattacz, Valerii Koval, Ivan Kravets, Esben Soeltoft, Alex Grishin,
+  Andrew Grande, Michael Teeww, Paolo Paolucci, per1234, Santiago Castro,
+  pacproduct, elusive-code, Emanuele Iannone, Christian Pointner,
+  Fabian Gärtner, Mauro Mombelli, Remo Kallio, hyndruide, sigmaeo, filogranaf,
+  Maximiliano Duarte, Viktor Szépe, Shachar Limor, Andrei Volkau, maniekq,
+  DetAtHome and Michael Branson.
 
-Bug reports:
-- per1234 github user: Fix keywords.txt separators
-- bryant1410 github user: Debug readme format
-- pacproduct github user: Added missing mode configuration PJON_SIMPLEX ex.
-- elusive-code github user: PJONMaster reset bug
-- Franketto arduino forum user: PJON ThroughSerial over RS485 delay issue
-- Zbigniew Zasieczny: Header reference inconsistency report
-- DanRoad reddit user: can_start ThroughSerial bugfix
-- Remo Kallio: Packet index 0 bugfix
-- Emanuele Iannone: Forcing PJON_SIMPLEX in OverSamplingSimplex
-- Christian Pointner: Fixed compiler warnings
-- Andrew Grande: ESP8266 example watchdog error bug fix
-- Fabian Gärtner: receive function and big packets bugfix
-- Mauro Mombelli: Code cleanup
-- Shachar Limor: Blink example pinMode bugfix
+Compatible tools:
 
-The PJON project is entirely financed by contributions of people like you and
-its resources are solely invested to cover the development and maintenance
-costs, consider to make donation:
-- Paypal:   https://www.paypal.me/PJON
-- Bitcoin:  1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD
-- Ethereum: 0xf34AEAF3B149454522019781668F9a2d1762559b
-Thank you and happy tinkering!
+  - ModuleInterface - https://github.com/fredilarsen/ModuleInterface
+  - PJON-cython     - https://github.com/xlfe/PJON-cython
+  - PJON-piper      - https://github.com/Girgitt/PJON-piper
+  - PJON-python     - https://github.com/Girgitt/PJON-python
+  - PJON-gRPC       - https://github.com/Galitskiy/PJON-gRPC
  _____________________________________________________________________________
 
 This software is experimental and it is distributed "AS IS" without any

@@ -56,12 +56,12 @@ uint16_t receive_frame(uint8_t *data, uint16_t max_length) { ... };
 Receives a pointer where to store received information and an unsigned integer signalling the maximum data length. It should return the number of bytes received or `PJON_FAIL`.
 
 ```cpp
-void send_response(uint8_t response) { ... };
+void send_response(uint8_t response)
 ```
 Send a response to the packet's transmitter.
 
 ```cpp
-uint16_t receive_response() { ... };
+uint16_t receive_response()
 ```
 Receives a response from the packet's receiver.
 
@@ -80,14 +80,14 @@ directory and write the necessary file `YourStrategyName.h`:
 ```cpp
 class YourStrategyName {
   public:
-    uint32_t back_off(uint8_t attempts) { ... };
-    bool     begin(uint8_t did) { ... };
-    bool     can_start() { ... };
-    uint8_t  get_max_attempts() { ... };
-    uint16_t receive_frame(uint8_t *data, uint16_t max_length) { ... };
-    uint16_t receive_response() { ... };
-    void     send_response(uint8_t response) { ... };
-    void     send_frame(uint8_t *data, uint16_t length) { ... };
+    uint32_t back_off(uint8_t attempts) { };
+    bool     begin(uint8_t did) { };
+    bool     can_start() { };
+    uint8_t  get_max_attempts() { };
+    uint16_t receive_frame(uint8_t *data, uint16_t max_length) { };
+    uint16_t receive_response() { };
+    void     send_response(uint8_t response) { };
+    void     send_frame(uint8_t *data, uint16_t length) { };
 };
 ```
 

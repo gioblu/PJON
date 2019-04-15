@@ -30,6 +30,7 @@ All the other necessary information is present in the general [Documentation](/d
 
 ### Known issues
 - Firewall may block `LocalUDP` packets, edit its configuration to allow them
+- If using `LocalUDP` on a LAN with an attached WiFi router in access point mode, high `LocalUDP` traffic may lower the WiFi bandwidth because the access point sends `LocalUDP` broadcasts over WiFi. If this is a problem, `DualUDP` strategy may be a better alternative.
 
 ### Safety warning
 In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. When connecting a local bus to the internet using [EthernetTCP](/src/strategies/EthernetTCP) or [GlobalUDP](/src/strategies/GlobalUDP) all connected devices must be considered potentially compromised, potentially manipulated or remotely actuated against your will. It should be considered a good practice not to connect to the internet systems that may create a damage (fire, flood, data-leak) if hacked.

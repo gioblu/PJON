@@ -15,23 +15,28 @@
 
 For the PJON® Protocol specification see the specification directory.
 
-Compliant tools:
-- ModuleInterface - Easy config and value sync between IOT modules
- https://github.com/fredilarsen/ModuleInterface
-- Command line PJON wrapper over unnamed pipes by Zbigniew Zasieczny
- https://github.com/Girgitt/PJON-piper
-- PJON-python - PJON running on Python by Zbigniew Zasieczny
- https://github.com/Girgitt/PJON-python
-- PJON-gRPC - gRPC server-client by Oleg Galitskiy
- https://github.com/Galitskiy/PJON-gRPC
+Thanks to the support, expertise, kindness and talent of the following
+contributors, the protocol's documentation, specification and implementation
+have been strongly tested, enhanced and verified:
 
- The PJON project is entirely financed by contributions of people like you and
- its resources are solely invested to cover the development and maintenance
- costs, consider to make donation:
- - Paypal:   https://www.paypal.me/PJON
- - Bitcoin:  1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD
- - Ethereum: 0xf34AEAF3B149454522019781668F9a2d1762559b
- Thank you and happy tinkering!
+  Fred Larsen, Zbigniew Zasieczny, Matheus Garbelini, sticilface,
+  Felix Barbalet, Oleh Halitskiy, fabpolli, Adrian Sławiński,
+  Osman Selçuk Aktepe, Jorgen-VikingGod, drtrigon, Endre Karlson,
+  Wilfried Klaas, budaics, ibantxo, gonnavis, maxidroms83, Evgeny Dontsov,
+  zcattacz, Valerii Koval, Ivan Kravets, Esben Soeltoft, Alex Grishin,
+  Andrew Grande, Michael Teeww, Paolo Paolucci, per1234, Santiago Castro,
+  pacproduct, elusive-code, Emanuele Iannone, Christian Pointner,
+  Fabian Gärtner, Mauro Mombelli, Remo Kallio, hyndruide, sigmaeo, filogranaf,
+  Maximiliano Duarte, Viktor Szépe, Shachar Limor, Andrei Volkau, maniekq,
+  DetAtHome and Michael Branson.
+
+Compatible tools:
+
+  - ModuleInterface - https://github.com/fredilarsen/ModuleInterface
+  - PJON-cython     - https://github.com/xlfe/PJON-cython
+  - PJON-piper      - https://github.com/Girgitt/PJON-piper
+  - PJON-python     - https://github.com/Girgitt/PJON-python
+  - PJON-gRPC       - https://github.com/Galitskiy/PJON-gRPC
  _____________________________________________________________________________
 
 This software is experimental and it is distributed "AS IS" without any

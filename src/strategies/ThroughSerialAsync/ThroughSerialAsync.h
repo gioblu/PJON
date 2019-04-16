@@ -254,7 +254,11 @@ class ThroughSerialAsync {
     /* Send a byte and wait for its transmission end */
 
     void send_byte(uint8_t b) {
-      PJON_SERIAL_WRITE(serial, b);
+      uint32_t time = PJON_MICROS();
+      while(
+        (PJON_SERIAL_WRITE(serial, b) != 1) &&
+        ((uint32_t)(PJON_MICROS() - time) < TSA_BYTE_TIME_OUT)
+      );
     };
 
 

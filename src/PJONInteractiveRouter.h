@@ -27,14 +27,6 @@ Probably it is wise to use this functionality only on routers using
 strategies that are not timing-critical, for example on buffered media like
 serial or Ethernet. If used on timing-critical strategies like SWBB, the
 receiver callback should be really fast.
-
-The PJON project is entirely financed by contributions of people like you and
-its resources are solely invested to cover the development and maintenance
-costs, consider to make donation:
-- Paypal:   https://www.paypal.me/PJON
-- Bitcoin:  1FupxAyDTuAMGz33PtwnhwBm4ppc7VLwpD
-- Ethereum: 0xf34AEAF3B149454522019781668F9a2d1762559b
-Thank you and happy tinkering!
  _____________________________________________________________________________
 
 This software is experimental and it is distributed "AS IS" without any

@@ -9,6 +9,7 @@ static wifi_country_t wifi_country = {
   cc:     "AU",
   schan:  1,
   nchan:  14,
+  max_tx_power: 1,
   policy: WIFI_COUNTRY_POLICY_MANUAL
 };
 

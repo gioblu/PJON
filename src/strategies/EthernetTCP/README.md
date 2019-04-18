@@ -38,9 +38,9 @@ If the device will only talk to one other device with the single-socket configur
 ### Single socket
 In the standard mode, each device will listen for incoming socket connections on one port while creating outgoing connections to other devices for outgoing packets. So there is one connection in each direction, allowing packets to be sent in parallel in different directions, as far as that goes with single-threaded programs. Establishing sockets in both directions requires both devices to have fixed IP addresses, and if there are firewalls in between, there must be openings or port-forwarding in both directions.
 
-To simplify traffic crossing firewalls, the use of a single-socket configuration, calling `link.single_socket(true)` is available. It makes one device create a connection to another device with a fixed IP and a firewall opening / port forwarding. Packets can be send in both directions on this single socket, even if one device has dynamic IP address and no incoming firewall openings.
+To simplify traffic crossing firewalls, the use of a single-socket configuration, calling `link.single_socket(true)` is available. It makes one device create a connection to another device with a fixed IP and a firewall opening / port forwarding. Packets can be sent in both directions on this single socket, even if one device has dynamic IP address and no incoming firewall openings.
 
-A use case for this is having a master device, and a slave device in a different location that connect to the master to send or receive packets. Only the master needs a fixed IP address and one firewall opening / port forwarding.
+A use case for this is having a master device, and a slave device in a different location that connects to the master to send or receive packets. Only the master needs a fixed IP address and one firewall opening / port forwarding.
 
 Using the single-socket configuration, calling `link.single_socket(true)`, will cause some traffic (poll requests) to flow each time PJON update() or receive() are called even when no packets are being sent.
 
@@ -58,7 +58,7 @@ This mode is also based on permanently connected sockets.
 When communicating on a LAN between multiple devices, the standard mode should be used. This will open a socket from a sender to a receiver for each packet to be sent, send the packet, receive an ACK, and close the socket.
 In this scenario, the LocalUDP or GlobalUDP strategies may be smaller and more efficient strategies.
 
-When communicating through firewalls, or only one of the devices having a fixed IP address, the configuration should be single-direction with `link.single_Initiate_direction(true)` or single-socket with `link.single_socket(true)`.
+When communicating through firewalls, or only one of the devices having a fixed IP address, the configuration should be single-direction with `link.single_initiate_direction(true)` or single-socket with `link.single_socket(true)`.
 
 One use case is to have a PJON program on a computer not able to run a strategy like SWBB take part in a SWBB bus by using a Surrogate. So a Windows/Linux/Raspberry program can communicate with all devices on a SWBB bus via an Arduino running the Surrogate example sketch. The program will talk to the Surrogate via EthernetTCP in single-direction or single-socket mode, and the Surrogate will forward messages in both directions between the ETCP bus and the SWBB bus.
 

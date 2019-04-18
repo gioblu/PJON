@@ -34,7 +34,7 @@
     Transfer speed: 1620Bb or 202B/s
     Absolute  communication speed: 180B/s (data length 20 of characters)
     Data throughput: 150B/s (data length 20 of characters)
-    Range: 250m with no direct line of sight, 5km with direct line of sight  */
+    Range: 250m with no line of sight, 5 km with direct line of sight */
 
 #ifndef OS_MODE
   #define OS_MODE 1

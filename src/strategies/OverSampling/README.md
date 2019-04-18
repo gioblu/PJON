@@ -16,7 +16,7 @@
 ### Performance
 - Transfer speed: 202 B/s or 1620 Baud
 - Data throughput: 150 B/s
-- Range: 250 meters in urban environment / 5km with line of sight and ideal atmospheric conditions
+- Range: 250 meters with no line of sight, 5 km with line of sight and ideal atmospheric conditions
 
 ### Configuration
 Before including `PJON.h` it is possible to configure `OverSampling` using predefined constants:
@@ -46,7 +46,7 @@ void setup() {
 After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance.
 
 ### Use OverSampling with cheap 433MHz transceivers
-To build a real open-source PJON packet radio able to communicate up to 5km you need only a couple (for `PJON_SIMPLEX` mode) or two couples (for `PJON_HALF_DUPLEX` mode) of cheap 315/433MHz ASK/FSK/OOK transmitter and receiver modules (with a cost around 2/3 dollars each). Please be sure of the regulations your government imposes on radio transmission over these frequencies before use.
+To build a real open-source PJON packet radio able to communicate up to 5 km you need only a couple (for `PJON_SIMPLEX` mode) or two couples (for `PJON_HALF_DUPLEX` mode) of cheap 315/433MHz ASK/FSK/OOK transmitter and receiver modules (with a cost around 2/3 dollars each). Please be sure of the regulations your government imposes on radio transmission over these frequencies before use.
 
 ![PJON Oversampling packet radio](http://www.gioblu.com/PJON/PJON-OverSampling-packet-radio-STX882-SRX882.jpg)
 

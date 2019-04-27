@@ -78,7 +78,7 @@
   #include "ThroughSerialAsync/ThroughSerialAsync.h"
   /* Avoid ATtiny44/84/45/85 and STM32F1 missing inclusion error */
   #if !defined(__AVR_ATtiny45__) && !defined(__AVR_ATtiny85__) && \
-      !defined(__AVR_ATtiny44__) && !defined(__AVR_ATtiny84__) && !defined(STM32F1xx)
+      !defined(__AVR_ATtiny44__) && !defined(__AVR_ATtiny84__) && !defined(ARDUINO_ARCH_STM32)
     #include "EthernetTCP/EthernetTCP.h"
     #include "LocalUDP/LocalUDP.h"
     #include "GlobalUDP/GlobalUDP.h"

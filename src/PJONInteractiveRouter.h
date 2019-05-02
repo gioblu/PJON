@@ -80,7 +80,8 @@ protected:
     // Take care of other's packets
     if(!packet_is_for_me)
       RouterClass::dynamic_receiver_function(payload, length, packet_info);
-
+    else if(packet_info.header & PJON_ACK_REQ_BIT)
+      RouterClass::buses[RouterClass::current_bus]->send_synchronous_acknowledge();
     // Call the receive callback _after_ the packet has been delivered
     if(router || packet_is_for_me) {
       // The packet is for ME :-)

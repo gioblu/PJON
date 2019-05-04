@@ -21,7 +21,7 @@ Pass the `LocalFile` type as PJON template parameter to instantiate a PJON objec
 ```
 After testing or simulation you may want to use conditional compiling and exchange this strategy with the actual one on your target hardware.
 
-The directory `examples/LINUX/Local/LocalFile/PingPong` contains examples. To build these on Linux, simply type "make". To build on Windows, open the solution file in Visual Studio 2017.
+The directory [examples/LINUX/Local/LocalFile/PingPong](examples/LINUX/Local/LocalFile/PingPong) contains examples. To build these on Linux, simply type "make". To build on Windows, open the solution file in Visual Studio 2017.
 
 Reading messages is based on polling. The poll interval in milliseconds is defined by the pre-processor definition `LF_POLLDELAY`. Decreasing this value will increase the communication speed but also use more CPU and cause more disk activity.
 

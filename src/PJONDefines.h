@@ -193,14 +193,14 @@ struct PJON_Packet_Record {
 
 /* Last received packet Metainfo */
 struct PJON_Packet_Info {
-  uint8_t header = 0;
-  uint16_t id = 0;
-  uint8_t receiver_id = 0;
+  uint8_t header;
+  uint16_t id;
+  uint8_t receiver_id;
   uint8_t receiver_bus_id[4];
-  uint8_t sender_id = 0;
+  uint8_t sender_id;
   uint8_t sender_bus_id[4];
-  uint16_t port = 0;
-  void *custom_pointer = NULL;
+  uint16_t port;
+  void *custom_pointer;
 };
 
 typedef void (* PJON_Receiver)(

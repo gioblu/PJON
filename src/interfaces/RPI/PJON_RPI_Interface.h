@@ -83,7 +83,7 @@
   #endif
 
   #ifndef PJON_SERIAL_WRITE
-    #define PJON_SERIAL_WRITE(S, C) serialPutchar(S, C)
+    #define PJON_SERIAL_WRITE(S, C) write(S, &C, 1)
   #endif
 
   #ifndef PJON_SERIAL_READ

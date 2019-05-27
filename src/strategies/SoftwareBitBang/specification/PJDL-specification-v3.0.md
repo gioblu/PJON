@@ -26,7 +26,7 @@ Released into the public domain
 PJDL (Padded Jittering Data Link) is an asynchronous serial data link for low-data-rate applications that supports one or many to many communication over a common conductive medium. PJDL can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin.
 
 ### Physical layer
-The medium's maximum length is limited by the wiring resistance, by the voltage level used and by externally induced interference. It has been tested with up to 50 meters long insulated wires and results demonstrate the same performance achieved with shorter lengths. The maximum range is still unknown.
+The medium's maximum length is limited by the wiring resistance, by the voltage level used and by externally induced interference. It has been tested with up to 100 meters long insulated wires and results demonstrate the same performance achieved with shorter lengths. The maximum range is still unknown.
 ```cpp
 PJDL SINGLE WIRE BUS                            ______
  ______    ______    ______    ______          |      |

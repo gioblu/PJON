@@ -992,6 +992,29 @@ class PJON {
             strategy.back_off(packets[i].attempts)
           )
         ) {
+
+          #ifdef PJON_INJECT_ATTEMPTS
+          //mxb added to replace last byte of payload with packet[i].attempts and recalculate checksum
+          uint16_t new_length = packets[i].length;
+          if(packets[i].content[1] & PJON_CRC_BIT) {
+            packets[i].content[packets[i].length-5] = packets[i].attempts;
+            uint32_t computed_crc =
+              PJON_crc32::compute((uint8_t *)packets[i].content, new_length - 4);
+            packets[i].content[new_length - 4] =
+              (uint8_t)((uint32_t)(computed_crc) >> 24);
+            packets[i].content[new_length - 3] =
+              (uint8_t)((uint32_t)(computed_crc) >> 16);
+            packets[i].content[new_length - 2] =
+              (uint8_t)((uint32_t)(computed_crc) >>  8);
+            packets[i].content[new_length - 1] =
+              (uint8_t)((uint32_t)computed_crc);
+          } else {
+            packets[i].content[packets[i].length-1] = packets[i].attempts;
+            packets[i].content[new_length - 1] =
+            PJON_crc8::compute((uint8_t *)packets[i].content, new_length - 1);
+          }
+          #endif
+
           if(!(sync_ack && async_ack && packets[i].state == PJON_ACK))
             packets[i].state = // Avoid resending sync-acked async ack packets
               send_packet(packets[i].content, packets[i].length);

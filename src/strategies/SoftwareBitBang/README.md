@@ -27,7 +27,7 @@ It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to
 | ATmega16u4/32u4 (Leonardo, Micro) | 16MHz | 2, 4, 8, 12 |
 | ATmega2560 (Mega, Mega nano) | 16MHz | 3, 4, 7, 8, 9, 10, 12 |
 | ATmega1284P | 16MHz | 18, 19, 20, 21, 22, 23, A0, A1, A2, A3, A4, A5, A6, A7 |
-| SAMD (Arduino Zero) | 48MHz | ? |
+| SAMD (Arduino Zero) | 48MHz | D0, D1, D3, A0, A1 |
 | STM32F1 | 72MHz | ? |
 | MK20DX256 (Teensy 3.1) | 96MHz | All pins |
 | ESP8266 (NodeMCU, AI-THINKER modules) | 80/160MHz | D1 or GPIO 5 |

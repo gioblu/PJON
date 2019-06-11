@@ -131,11 +131,13 @@
 /* Arduino Zero ----------------------------------------------------------- */
 #if defined(ARDUINO_SAMD_ZERO)
   #if SWBB_MODE == 1
-  /* Added by Esben Soeltoft - 03/09/2016 */
-    #define SWBB_BIT_WIDTH   40
-    #define SWBB_BIT_SPACER 112
+  /* Added by Esben Soeltoft - 03/09/2016
+     Updated by Giovanni Blu Mitolo - 31/05/2019
+     Working on pin: D0, D1, D3, A0, A1 */
+    #define SWBB_BIT_WIDTH   43
+    #define SWBB_BIT_SPACER 115
     #define SWBB_ACCEPTANCE  40
-    #define SWBB_READ_DELAY   4
+    #define SWBB_READ_DELAY  -1
   #endif
   #if SWBB_MODE == 3
   /* Added by Esben Soeltoft - 09/03/2016

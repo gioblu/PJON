@@ -45,7 +45,7 @@ PJDLS specifies a variation of the carrier-sense, non-persistent random multiple
 Byte transmission is composed by 10 bits, the first two are called synchronization pad and are used to obtain sampling synchronization. The synchronization pad is composed by a logic 1 padding bit longer than data bits and a logic 0 data bit. The following 8 data bits contain information in LSB-first (least significant bit first) order.
 
 The reception technique is based on 3 steps:
-1. Find a logic 1 which duration is equal or acceptably shorter than the expected padding bit duration
+1. Find a high bit which duration is equal to or acceptably shorter than a high padding bit
 2. Synchronize to its falling edge
 3. Ensure it is followed by a logic 0 data bit
 

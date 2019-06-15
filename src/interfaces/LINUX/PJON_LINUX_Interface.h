@@ -67,7 +67,7 @@
   int serialGetCharacter(const int fd);
 
   #ifndef PJON_LINUX_SEPARATE_DEFINITION
-    #include "PJON_LINUX_Interface.cpp"
+    #include "PJON_LINUX_Interface.inl"
   #endif
 
   /* Generic constants ---------------------------------------------------- */

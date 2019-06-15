@@ -228,6 +228,13 @@ static void PJON_dummy_error_handler(
 ) {};
 
 struct PJONTools {
+  /* Bus id used as localhost (used by shared mode broadcast and NAT) */
+
+  static const uint8_t* localhost() {
+    static const uint8_t lh[4] = {0, 0, 0, 0};
+    return lh;
+  };
+
   /* Copy a bus id: */
 
   static void copy_bus_id(uint8_t dest[], const uint8_t src[]) {

@@ -193,14 +193,14 @@ struct PJON_Packet_Record {
 
 /* Last received packet Metainfo */
 struct PJON_Packet_Info {
-  uint8_t header = 0;
-  uint16_t id = 0;
-  uint8_t receiver_id = 0;
+  uint8_t header;
+  uint16_t id;
+  uint8_t receiver_id;
   uint8_t receiver_bus_id[4];
-  uint8_t sender_id = 0;
+  uint8_t sender_id;
   uint8_t sender_bus_id[4];
-  uint16_t port = 0;
-  void *custom_pointer = NULL;
+  uint16_t port;
+  void *custom_pointer;
 };
 
 typedef void (* PJON_Receiver)(
@@ -280,10 +280,11 @@ struct PJONTools {
       if(info.header & PJON_TX_INFO_BIT) {
         copy_bus_id(info.sender_bus_id, packet + index);
         index += 4;
-      }
-    }
+      } else copy_bus_id(info.sender_bus_id, localhost());
+    } else copy_bus_id(info.receiver_bus_id, localhost());
     if(info.header & PJON_TX_INFO_BIT)
       info.sender_id = packet[index++];
+    else info.sender_id = 0;
     #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
       if(((info.header & PJON_ACK_MODE_BIT) &&
           (info.header & PJON_TX_INFO_BIT)
@@ -293,8 +294,11 @@ struct PJONTools {
           (packet[index] << 8) | (packet[index + 1] & 0xFF);
         index += 2;
       }
+    #else
+      info.id = 0;
     #endif
     if(info.header & PJON_PORT_BIT)
       info.port = (packet[index] << 8) | (packet[index + 1] & 0xFF);
+    else info.port = PJON_BROADCAST;
   };
 };

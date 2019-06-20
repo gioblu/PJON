@@ -186,27 +186,11 @@ class OverSampling {
       }
     };
 
-
-    /* Send preamble with a requested number of pulses: */
-
-    void send_preamble() {
-      #if OS_PREAMBLE_PULSE_WIDTH > 0
-        PJON_IO_WRITE(_output_pin, HIGH);
-        uint32_t time = PJON_MICROS();
-        while((uint32_t)(PJON_MICROS() - time) < OS_PREAMBLE_PULSE_WIDTH);
-        PJON_IO_WRITE(_output_pin, LOW);
-        PJON_DELAY_MICROSECONDS(OS_TIMEOUT - OS_BIT_WIDTH);
-      #endif
-    };
-
-
     /* Send byte response to package transmitter */
 
     void send_response(uint8_t response) {
       PJON_IO_PULL_DOWN(_input_pin);
       PJON_IO_MODE(_output_pin, OUTPUT);
-      // Send initial transmission preamble if required
-      if(OS_PREAMBLE_PULSE_WIDTH) send_preamble();
       send_byte(response);
       PJON_IO_PULL_DOWN(_output_pin);
     };
@@ -216,8 +200,6 @@ class OverSampling {
 
     void send_frame(uint8_t *data, uint16_t length) {
       PJON_IO_MODE(_output_pin, OUTPUT);
-      // Send initial transmission preamble if required
-      if(OS_PREAMBLE_PULSE_WIDTH) send_preamble();
       // Send frame inititializer
       for(uint8_t i = 0; i < 3; i++) {
         PJON_IO_WRITE(_output_pin, HIGH);

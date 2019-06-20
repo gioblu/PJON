@@ -56,13 +56,6 @@
   #define OS_BIT_SPACER      328  // 340 microseconds detected by oscilloscope
 #endif
 
-/* Preamble data sent for receiver to tune its gain to incoming signal dB.
-   By default disabled, set a duration if required. */
-
-#ifndef OS_PREAMBLE_PULSE_WIDTH
-  #define OS_PREAMBLE_PULSE_WIDTH 0
-#endif
-
 /* The default OS_LATENCY setup is 2000 microseconds. If receiver needs more
    time to compute CRC and answer back ACK, transmitter will
    not receive the incoming synchronous ACK. Set higher if required. */

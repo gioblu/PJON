@@ -24,7 +24,6 @@ Before including `PJON.h` it is possible to configure `OverSampling` using prede
 | Constant                  | Purpose                             | Supported value                            |
 | ------------------------- |------------------------------------ | ------------------------------------------ |
 | `OS_LATENCY`              | Maximum latency                     | Duration in microseconds (2000 by default) |
-| `OS_PREAMBLE_PULSE_WIDTH` | Transmission preamble configuration | Duration in microseconds (0 by default)    |
 | `OS_BACK_OFF_DEGREE`      | Maximum back-off exponential degree | Numeric value (5 by default)               |
 | `OS_MAX_ATTEMPTS`         | Maximum transmission attempts       | Numeric value (10 by default)              |
 

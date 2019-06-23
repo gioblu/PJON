@@ -13,17 +13,18 @@ This example test the communication reliability between 2 devices using the `Sof
 - Devices must share common ground
 ```
 
-### Result
-- **Packet overhead** or additional data added to handle transmission
-- **Absolute communication speed** or available bandwidth
-- **Data throughput** or `available bandwidth - packet overhead`  
-- **Accuracy** or `packets sent / packets received with mistakes` ratio
-- **Mistakes** or errors detected with CRC
-- **Fail** or packet transmission failure
-- **Busy** or when the medium is detected busy
+The test result can be evaluated thanks to the following terms:
+* `Packet overhead` or how many bytes are added by PJON to data
+* `Bandwidth` or maximum amount of bytes transmitted in a second
+* `Data throughput` or how many data bytes are transmitted every second
+* `Packets sent` or number of packets transmitted in the test window
+* `Mistakes` or how many errors detected with CRC
+* `Fail` or number of transmission failures occurred in the test window
+* `Busy` or how many times the channel is found busy
+* `Accuracy` or ratio between correct packets and packets that contain mistakes
 
-### Interpreting results
-Thanks to this sketch it is possible to test the effects of `PJON` and `SoftwareBitBang` configuration on communication speed and performance. It is also possible to use this sketch to test the signal-to-noise ratio or SNR of an existing network.
-
-- If the bus state is often detected **busy** you may need to add a 1-5MΩ pull-down resistor to reduce externally induced interference.
-- If CRC mistakes or failed transmissions occur it may be because of timing inconsistency, the devices you are testing may not have already a dedicated set of timing in `Timing.h`. Feel free to open an [issue](https://github.com/gioblu/PJON/issues) here.
+The result can be interpreted as follows:
+- Many `Fail` and or `Mistakes` may mean that the maximum communication range between devices has been reached
+- Many `Busy` and or `Mistakes` and or low `Bandwidth` may mean that interference is present, see [mitigate interference](https://github.com/gioblu/PJON/wiki/Mitigate-interference)
+- Many `Fail` and or `Mistakes` and or low `Bandwidth` may indicate a bad timing configuration, if you are porting a new MCU/architecture to [SoftwareBitBang](https://github.com/gioblu/PJON/tree/master/strategies/SoftwareBitBang) consider different timing configuration may be required because of system discrepancies. Try tweaking `SWBB_BIT_WIDTH`, `SWBB_BIT_SPACER`, `SWBB_READ_DELAY` and `SWBB_ACCEPTANCE` in `Timing.h`
+- Low performance also after painstaking timing tweaks may indicate that the new MCU/architecture may not be fast enough to run SoftwareBitBang at the mode you are working with, try using a faster clock or optimize digital I/O perfomance or choosing a slower mode.

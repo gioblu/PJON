@@ -18,6 +18,7 @@
     #if F_CPU == 16000000L
       #define OS_BIT_WIDTH   512
       #define OS_BIT_SPACER  328
+      #define OS_ACCEPTANCE   78
     #endif
   #endif
 #endif
@@ -27,6 +28,7 @@
   #if OS_MODE == 1
     #define OS_BIT_WIDTH     508
     #define OS_BIT_SPACER    332
+    #define OS_ACCEPTANCE     82
   #endif
 #endif
 
@@ -35,6 +37,7 @@
   #if OS_MODE == 1
     #define OS_BIT_WIDTH     508
     #define OS_BIT_SPACER    332
+    #define OS_ACCEPTANCE     82
   #endif
 #endif
 
@@ -56,15 +59,7 @@
   #define OS_BIT_SPACER      328  // 340 microseconds detected by oscilloscope
 #endif
 
-/* The default OS_LATENCY setup is 2000 microseconds. If receiver needs more
-   time to compute CRC and answer back ACK, transmitter will
-   not receive the incoming synchronous ACK. Set higher if required. */
-
-#ifndef OS_LATENCY
-  #define OS_LATENCY 2000
-#endif
-
-#define OS_TIMEOUT (OS_BIT_WIDTH * 9) + OS_BIT_SPACER + OS_LATENCY
+#define OS_TIMEOUT         10000  // 10 milliseconds maximum sync ack timeout
 
 /* Maximum initial delay in milliseconds: */
 

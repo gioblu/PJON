@@ -19,7 +19,7 @@
 
 #pragma once
 
-#ifdef LINUX
+#if defined(LINUX) || defined(ANDROID)
   #include <stdio.h>
   #include <stdint.h>
   #include <inttypes.h>

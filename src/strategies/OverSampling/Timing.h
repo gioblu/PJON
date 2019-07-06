@@ -47,6 +47,7 @@
     #if F_CPU == 80000000L
       #define OS_BIT_WIDTH   520
       #define OS_BIT_SPACER  332
+      #define OS_ACCEPTANCE   82
     #endif
   #endif
 #endif
@@ -57,6 +58,10 @@
 
 #ifndef OS_BIT_SPACER
   #define OS_BIT_SPACER      328  // 340 microseconds detected by oscilloscope
+#endif
+
+#ifndef OS_ACCEPTANCE
+  #define OS_ACCEPTANCE       78  // 340 microseconds detected by oscilloscope
 #endif
 
 #define OS_TIMEOUT         10000  // 10 milliseconds maximum sync ack timeout

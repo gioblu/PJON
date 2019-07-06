@@ -169,8 +169,8 @@ protected:
     memcpy(sender_bus_id, packet_info.sender_bus_id, 4);
     if ((packet_info.header & PJON_MODE_BIT) &&
         !(buses[sender_bus]->config & PJON_MODE_BIT) &&
-        memcmp(buses[sender_bus]->bus_id, buses[sender_bus]->localhost, 4)!=0 &&
-        memcmp(packet_info.sender_bus_id, buses[sender_bus]->localhost, 4)==0) {
+        memcmp(buses[sender_bus]->bus_id, PJONTools::localhost(), 4)!=0 &&
+        memcmp(packet_info.sender_bus_id, PJONTools::localhost(), 4)==0) {
       // Replace sender bus id with public/NAT bus id in the packet
       memcpy(&sender_bus_id, buses[sender_bus]->bus_id, 4);
     }
@@ -182,10 +182,10 @@ protected:
     memcpy(receiver_bus_id, packet_info.receiver_bus_id, 4);
     if ((packet_info.header & PJON_MODE_BIT) &&
         !(buses[receiver_bus]->config & PJON_MODE_BIT) &&
-        memcmp(buses[receiver_bus]->bus_id, buses[receiver_bus]->localhost, 4)!=0 &&
+        memcmp(buses[receiver_bus]->bus_id, PJONTools::localhost(), 4)!=0 &&
         memcmp(packet_info.receiver_bus_id, buses[receiver_bus]->bus_id, 4)==0) {
       // Replace receiver bus id with 0.0.0.0 when sending to local bus
-      memcpy(receiver_bus_id, buses[receiver_bus]->localhost, 4);
+      memcpy(receiver_bus_id, PJONTools::localhost(), 4);
     }
 
     // Forward the packet
@@ -242,7 +242,7 @@ protected:
     do {
       uint8_t receiver_bus = find_bus_with_id((const uint8_t*)
           ((packet_info.header & PJON_MODE_BIT) != 0 ?
-          packet_info.receiver_bus_id : buses[0]->localhost),
+          packet_info.receiver_bus_id : PJONTools::localhost()),
           packet_info.receiver_id, start_search
       );
 

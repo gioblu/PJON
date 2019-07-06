@@ -1,10 +1,4 @@
 
-
-#define OS_PREAMBLE_PULSE_WIDTH 0
-/* If only one pair of SRX and STX are used to connect 2 devices in SIMPLEX
-   mode, being communication mono-directional, there is no need to include
-   the preamble pulse. */
-
 #include <PJON.h>
 
 float test;

@@ -1,7 +1,7 @@
 
 /* OverSampling 1 or 2 wires software-emulated data link
    used as a Strategy by PJON (included in version v3.0)
-   Compliant with PJDLR (Padded Jittering Data Link Radio) specification v2.0
+   Compliant with PJDLR (Padded Jittering Data Link Radio) specification v3.0
 
    It uses the over-sampling method to receive data, that is generally
    implemented on physical layers characterized by low bandwidth and high
@@ -124,18 +124,29 @@ class OverSampling {
       return OS_FAIL;
     };
 
-
-    /* Receive byte response */
+    /* Receive byte response:
+       Transmitter emits a OS_BIT_SPACER / 2 long bit and tries
+       to get a response cyclically for OS_TIMEOUT microseconds.
+       Receiver then can blindly send PJON_ACK  */
 
     uint16_t receive_response() {
-      if(_output_pin != OS_NOT_ASSIGNED && _output_pin != _input_pin)
+      if(_output_pin != _input_pin && _output_pin != OS_NOT_ASSIGNED)
         PJON_IO_WRITE(_output_pin, LOW);
       uint16_t response = OS_FAIL;
       uint32_t time = PJON_MICROS();
       while(
-        (response != PJON_ACK) &&
-        ((uint32_t)(PJON_MICROS() - OS_TIMEOUT) <= time)
-      ) response = receive_byte();
+        response == OS_FAIL &&
+        (uint32_t)(PJON_MICROS() - OS_TIMEOUT) <= time
+      ) {
+        PJON_IO_WRITE(_input_pin, LOW);
+        response = receive_byte();
+        if(response != PJON_ACK) {
+          PJON_IO_MODE(_output_pin, OUTPUT);
+          PJON_IO_WRITE(_output_pin, HIGH);
+          PJON_DELAY_MICROSECONDS(OS_BIT_SPACER / 2);
+          PJON_IO_PULL_DOWN(_output_pin);
+        }
+      }
       return response;
     };
 
@@ -186,38 +197,22 @@ class OverSampling {
       }
     };
 
-
-    /* Send preamble with a requested number of pulses: */
-
-    void send_preamble() {
-      #if OS_PREAMBLE_PULSE_WIDTH > 0
-        PJON_IO_WRITE(_output_pin, HIGH);
-        uint32_t time = PJON_MICROS();
-        while((uint32_t)(PJON_MICROS() - time) < OS_PREAMBLE_PULSE_WIDTH);
-        PJON_IO_WRITE(_output_pin, LOW);
-        PJON_DELAY_MICROSECONDS(OS_TIMEOUT - OS_BIT_WIDTH);
-      #endif
-    };
-
-
-    /* Send byte response to package transmitter */
+    /* Send byte response:
+       Transmitter sends a OS_BIT_SPACER / 2 microseconds long HIGH bit and
+       tries to receive a response cyclically for OS_TIMEOUT
+       microseconds. Receiver then can blindly send PJON_ACK */
 
     void send_response(uint8_t response) {
       PJON_IO_PULL_DOWN(_input_pin);
       PJON_IO_MODE(_output_pin, OUTPUT);
-      // Send initial transmission preamble if required
-      if(OS_PREAMBLE_PULSE_WIDTH) send_preamble();
       send_byte(response);
       PJON_IO_PULL_DOWN(_output_pin);
     };
-
 
     /* Send a frame: */
 
     void send_frame(uint8_t *data, uint16_t length) {
       PJON_IO_MODE(_output_pin, OUTPUT);
-      // Send initial transmission preamble if required
-      if(OS_PREAMBLE_PULSE_WIDTH) send_preamble();
       // Send frame inititializer
       for(uint8_t i = 0; i < 3; i++) {
         PJON_IO_WRITE(_output_pin, HIGH);
@@ -243,13 +238,13 @@ class OverSampling {
         ((uint32_t)(PJON_MICROS() - time) < OS_BIT_SPACER) &&
         PJON_IO_READ(_input_pin)
       ) value = (value * 0.999) + (PJON_IO_READ(_input_pin) * 0.001);
-      /* Save how much time passed */
-      time = PJON_MICROS();
       /* If the pin value is in average more than 0.5, is a 1, and if lasted
-         more than ACCEPTANCE (a minimum HIGH duration) and what is coming
+         more than OS_ACCEPTANCE (a minimum HIGH duration) and what is coming
          after is a LOW bit probably a byte is coming so try to receive it. */
+      if(PJON_MICROS() - time < OS_ACCEPTANCE) return false;
       if(value > 0.5) {
         value = 0.5;
+        time = PJON_MICROS();
         while((uint32_t)(PJON_MICROS() - time) < OS_BIT_WIDTH)
           value = (value * 0.999) + (PJON_IO_READ(_input_pin) * 0.001);
         if(value < 0.5) return true;

@@ -2,7 +2,7 @@
 /* SoftwareBitBang
    1 or 2 wires software emulated asynchronous serial data link layer
    used as a Strategy by PJON (included in version v3.0)
-   Compliant with PJDL (Padded Jittering Data Link) specification v2.0
+   Compliant with PJDL (Padded Jittering Data Link) specification v4.0
    ___________________________________________________________________________
 
     Copyright 2010-2019 Giovanni Blu Mitolo gioscarab@gmail.com
@@ -139,7 +139,7 @@ class SoftwareBitBang {
         (uint32_t)(PJON_MICROS() - SWBB_RESPONSE_TIMEOUT) <= time
       ) {
         PJON_IO_WRITE(_input_pin, LOW);
-        response = receive_byte();
+        if(sync()) response = receive_byte();
         if(response == SWBB_FAIL) {
           PJON_IO_MODE(_output_pin, OUTPUT);
           PJON_IO_WRITE(_output_pin, HIGH);
@@ -193,10 +193,7 @@ class SoftwareBitBang {
     detected at byte level. */
 
     void send_byte(uint8_t b) {
-      PJON_IO_WRITE(_output_pin, HIGH);
-      PJON_DELAY_MICROSECONDS(SWBB_BIT_SPACER);
-      PJON_IO_WRITE(_output_pin, LOW);
-      PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH);
+      pulse(1);
       for(uint8_t mask = 0x01; mask; mask <<= 1) {
         PJON_IO_WRITE(_output_pin, b & mask);
         PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH);
@@ -223,6 +220,7 @@ class SoftwareBitBang {
         PJON_IO_READ(_input_pin)
       );
       PJON_IO_MODE(_output_pin, OUTPUT);
+      pulse(1);
       send_byte(response);
       PJON_IO_PULL_DOWN(_output_pin);
     };
@@ -243,15 +241,9 @@ class SoftwareBitBang {
 
     void send_frame(uint8_t *data, uint16_t length) {
       PJON_IO_MODE(_output_pin, OUTPUT);
-      // Send frame initializer
-      for(uint8_t i = 0; i < 3; i++) {
-        PJON_IO_WRITE(_output_pin, HIGH);
-        PJON_DELAY_MICROSECONDS(SWBB_BIT_SPACER);
-        PJON_IO_WRITE(_output_pin, LOW);
-        PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH);
-      } // Send data
+      pulse(3); // Send frame initializer
       for(uint16_t b = 0; b < length; b++)
-        send_byte(data[b]);
+        send_byte(data[b]); // Send data
       PJON_IO_PULL_DOWN(_output_pin);
     };
 
@@ -295,6 +287,16 @@ class SoftwareBitBang {
       return false;
     };
 
+    /* Emit synchronization pulse: */
+
+    void pulse(uint8_t n) {
+      while(n--) {
+        PJON_IO_WRITE(_output_pin, HIGH);
+        PJON_DELAY_MICROSECONDS(SWBB_BIT_SPACER);
+        PJON_IO_WRITE(_output_pin, LOW);
+        PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH);
+      }
+    };
 
     /* Set the communicaton pin: */
 

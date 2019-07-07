@@ -27,8 +27,8 @@ Released into the public domain
 12/02/2017 v1.0 - Added frame initializer and response collision avoidance  
 31/03/2017 v1.1 - Added physical layer info
 24/09/2017 v2.0 - Added communication modes 1, 2 and 3
-29/12/2018 v3.0 - Added communication mode 4 and medium access control info
-03/07/2019 v4.0 - Acknowledgement initializer added
+29/12/2018 v3.0 - Added medium access control info and communication mode 4
+03/07/2019 v4.0 - Response initializer added
 ```
 PJDL (Padded Jittering Data Link) is an asynchronous serial data link for low-data-rate applications that supports one or many to many communication over a common conductive medium. PJDL can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin.
 
@@ -105,12 +105,12 @@ To ensure 100% reliability the padding bit must be longer than data bits. Frame 
 ### Synchronous response
 A frame transmission can be optionally followed by a synchronous response sent by its recipient. Between frame transmission and a synchronous response there is a variable time which duration is influenced by latency.
 ```cpp  
-Transmission                                    Response
- ______  ______  ______  ______                   _____
-| INIT || BYTE || BYTE || BYTE | CRC COMPUTATION | ACK |
-|------||------||------||------|-----------------|-----|
-|      ||      ||      ||      | LATENCY         |  6  |
-|______||______||______||______|                 |_____|
+Transmission                                        Response
+ ______  ______  ______                              _____
+| BYTE || BYTE || BYTE | CRC COMPUTATION / LATENCY  | ACK |
+|------||------||------|----------------------------|-----|
+|      ||      ||      |                            |  6  |
+|______||______||______|                            |_____|
 ```  
 In order to avoid other devices to detect the medium free for use and disrupt an ongoing exchange, the sender cyclically transmits a short high bit (1/4 data bit duration) and consequently attempts to receive a response. The receiver must synchronize its response to the falling edge of the last short high bit, and, in order to avoid false positives in case of collision, must transmit its response prepended with an additional synchronization pulse. If the response is not transmitted or not received the transmitter continues to keep busy the medium up to the maximum acceptable time between transmission and response.
 ```cpp  

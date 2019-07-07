@@ -30,7 +30,7 @@ Released into the public domain
 29/12/2018 v3.0 - Added medium access control info and communication mode 4
 03/07/2019 v4.0 - Response initializer added
 ```
-PJDL (Padded Jittering Data Link) is an asynchronous serial data link for low-data-rate applications that supports one or many to many communication over a common conductive medium. PJDL can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin.
+PJDL (Padded Jittering Data Link) is an asynchronous serial data link for low-data-rate applications that supports both master-slave and multi-master communication over a common conductive medium. PJDL can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin.
 
 ### Physical layer
 The medium's maximum length is limited by the wiring resistance, by the voltage level used and by externally induced interference. It has been tested with up to 100 meters long insulated wires and results demonstrate the same performance achieved with shorter lengths. The maximum range is still unknown.
@@ -114,7 +114,7 @@ Transmission                                        Response
 ```  
 In order to avoid other devices to detect the medium free for use and disrupt an ongoing exchange, the sender cyclically transmits a short high bit (1/4 data bit duration) and consequently attempts to receive a response. The receiver must synchronize its response to the falling edge of the last short high bit, and, in order to avoid false positives in case of collision, must transmit its response prepended with an additional synchronization pulse. If the response is not transmitted or not received the transmitter continues to keep busy the medium up to the maximum acceptable time between transmission and response.
 ```cpp  
-Transmission end                                Response
+Transmission end                                    Response
  ______  ______  ______   _   _   _   _   _   _ ____ _____  
 | BYTE || BYTE || BYTE | | | | | | | | | | | | |SYNC| ACK |
 |------||------||------| | | | | | | | | | | | |----|-----|

@@ -7,7 +7,7 @@
 - [Dynamic addressing specification v3.0](/specification/PJON-dynamic-addressing-specification-v3.0.md)
 - [Network services list](/specification/PJON-network-services-list.md)
 #### Data link layer
-- **[PJDL (Padded Jittering Data Link) v3.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v3.0.md)**
+- **[PJDL (Padded Jittering Data Link) v4.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md)**
 - [PJDLR (Padded Jittering Data Link over Radio) v3.0](/src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md)
 - [PJDLS (Padded Jittering Data Link byte Stuffed) v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
 - [TSDL (Tardy Serial Data Link) v2.1](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md)
@@ -15,15 +15,22 @@
 
 ---
 
-## PJDL v3.0
+## PJDL v4.0
 ```
 Invented by Giovanni Blu Mitolo
-Originally published: 10/04/2010, latest revision: 05/04/2019
+Originally published: 10/04/2010, latest revision: 07/07/2019
 Related implementation: /src/strategies/SoftwareBitBang/
-Compliant versions: PJON 9.0 and following
+Compliant versions: PJON v12.0 and following
 Released into the public domain
+
+10/04/2010 v0.1 - First experimental release
+12/02/2017 v1.0 - Added frame initializer and response collision avoidance  
+31/03/2017 v1.1 - Added physical layer info
+24/09/2017 v2.0 - Added communication modes 1, 2 and 3
+29/12/2018 v3.0 - Added medium access control info and communication mode 4
+03/07/2019 v4.0 - Response initializer added
 ```
-PJDL (Padded Jittering Data Link) is an asynchronous serial data link for low-data-rate applications that supports one or many to many communication over a common conductive medium. PJDL can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin.
+PJDL (Padded Jittering Data Link) is an asynchronous serial data link for low-data-rate applications that supports both master-slave and multi-master communication over a common conductive medium. PJDL can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin.
 
 ### Physical layer
 The medium's maximum length is limited by the wiring resistance, by the voltage level used and by externally induced interference. It has been tested with up to 100 meters long insulated wires and results demonstrate the same performance achieved with shorter lengths. The maximum range is still unknown.
@@ -54,7 +61,7 @@ The proposed communication modes are the result of years of testing and optimiza
 Durations are expressed in microseconds.
 
 ### Medium access control
-PJDL specifies a variation of the carrier-sense, non-persistent random multiple access method (non-persistent CSMA). Devices can detect an ongoing transmission for this reason collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss.
+PJDL specifies a variation of the carrier-sense, non-persistent random multiple access method (non-persistent CSMA). Devices can detect an ongoing transmission for this reason collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss or by the transmitter if an active collision avoidance procedure is implemented.
 
 ### Byte transmission
 Byte transmission is composed by 10 bits, the first two are called synchronization pad and are used to obtain sampling synchronization. The synchronization pad is composed by a high padding bit longer than data bits and a low data bit. The following 8 data bits contain information in LSB-first (least significant bit first) order.
@@ -96,25 +103,22 @@ When a frame is received a low performance microcontroller with an inaccurate cl
 To ensure 100% reliability the padding bit must be longer than data bits. Frame initialization is 100% reliable, false positives can only occur because of externally induced interference. The padding bit duration must not be an exact multiple of the duration of one data bit, for this reason a `padding bit / data bit` ratio or pad-data ratio of 1, 2, 3 or 4 must be avoided because one or multiple consecutive data bits may be erroneously interpreted as a padding bit.
 
 ### Synchronous response
-A frame transmission can be optionally followed by a synchronous response sent by its recipient.
+A frame transmission can be optionally followed by a synchronous response sent by its recipient. Between frame transmission and a synchronous response there is a variable time which duration is influenced by latency.
 ```cpp  
-Transmission                                    Response
- ______  ______  ______  ______                   _____
-| INIT || BYTE || BYTE || BYTE | CRC COMPUTATION | ACK |
-|------||------||------||------|-----------------|-----|
-|      ||      ||      ||      | LATENCY         |  6  |
-|______||______||______||______|                 |_____|
-```
-
-Between frame transmission and a synchronous response there is a variable time which duration is influenced by latency. In order to avoid other devices to detect the medium free for use and disrupt an ongoing exchange, the sender cyclically transmits a short high bit (1/4 data bit duration) and consequently attempts to receive a response. On the other side the receiver can synchronize its response transmission after the end of the last short high bit. If the acknowledgement is not transmitted or not received the transmitter continues to keep busy the medium up to the maximum acceptable time between transmission and response.
+Transmission                                        Response
+ ______  ______  ______                              _____
+| BYTE || BYTE || BYTE | CRC COMPUTATION / LATENCY  | ACK |
+|------||------||------|----------------------------|-----|
+|      ||      ||      |                            |  6  |
+|______||______||______|                            |_____|
+```  
+In order to avoid other devices to detect the medium free for use and disrupt an ongoing exchange, the sender cyclically transmits a short high bit (1/4 data bit duration) and consequently attempts to receive a response. The receiver must synchronize its response to the falling edge of the last short high bit, and, in order to avoid false positives in case of collision, must transmit its response prepended with an additional synchronization pulse. If the response is not transmitted or not received the transmitter continues to keep busy the medium up to the maximum acceptable time between transmission and response.
 ```cpp  
-Transmission                                      Response
- ______  ______  ______  ______   _   _   _   _   _ _____
-| INIT || BYTE || BYTE || BYTE | | | | | | | | | | | ACK |
-|------||------||------||------| | | | | | | | | | |-----|
-|      ||      ||      ||      | | | | | | | | | | |  6  |
-|______||______||______||______|_| |_| |_| |_| |_| |_____|
-
+Transmission end                                    Response
+ ______  ______  ______   _   _   _   _   _   _ ____ _____  
+| BYTE || BYTE || BYTE | | | | | | | | | | | | |SYNC| ACK |
+|------||------||------| | | | | | | | | | | | |----|-----|
+|      ||      ||      | | | | | | | | | | | | |    |  6  |
+|______||______||______|_| |_| |_| |_| |_| |_| |____|_____|
 ```
-
-The maximum time dedicated to potential acknowledgement reception for a given application can be determined practically transmitting the longest supported frame with the farthest physical distance between the two devices. The highest interval between packet transmission and acknowledgement measured plus a small margin is the correct timeout that should exclude acknowledgement losses. Consider that the longer this timeout is, the more bandwidth is wasted if the transmission is not successful.
+The maximum time dedicated to potential response reception for a given application can be determined practically transmitting the longest supported frame with the farthest physical distance between the two devices. The highest interval between packet transmission and response measured plus a small margin is the correct timeout that should exclude response losses. Consider that the longer this timeout is, the more bandwidth is wasted if the transmission is not successful.

@@ -7,7 +7,7 @@
 - [Dynamic addressing specification v3.0](/specification/PJON-dynamic-addressing-specification-v3.0.md)
 - [Network services list](/specification/PJON-network-services-list.md)
 #### Data link layer
-- [PJDL (Padded Jittering Data Link) v3.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v3.0.md)
+- [PJDL (Padded Jittering Data Link) v4.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md)
 - **[PJDLR (Padded Jittering Data Link over Radio) v3.0](/src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md)**
 - [PJDLS (Padded Jittering Data Link byte Stuffed) v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
 - [TSDL (Tardy Serial Data Link) v2.1](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md)
@@ -18,12 +18,18 @@
 ## PJDLR v3.0
 ```
 Invented by Giovanni Blu Mitolo
-Originally published: 10/04/2010, latest revision: 26/06/2019
+Originally published: 10/04/2010, latest revision: 07/07/2019
 Related implementation: /src/strategies/OverSampling/
 Compliant versions: PJON v12.0 and following
 Released into the public domain
+
+10/04/2010 v0.1 - First experimental release
+18/01/2017 v1.0 - Packet preamble added
+31/03/2017 v1.1 - Response info added
+31/10/2018 v2.0 - Frame initializer and mode 1 info added
+07/07/2019 v3.0 - Response jittering wave and initializer added
 ```
-PJDLR (Padded Jittering Data Link over Radio) is an asynchronous serial data link for low-data-rate applications that supports one or many to many communication optimized to obtain long range and high reliability using ASK, FSK or OOK radio transceivers. PJDLR can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using one or two input-output pins.
+PJDLR (Padded Jittering Data Link over Radio) is an asynchronous serial data link for low-data-rate applications that supports both master-slave and multi-master communication and it is optimized to obtain long range and high reliability using ASK, FSK or OOK radio transceivers. PJDLR can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using one or two input-output pins.
 
 ### Communication modes
 The proposed communication mode is the result of years of testing and optimization for ASK/FSK radio transceivers and have been selected to be easily supported also by low quality hardware.  
@@ -35,7 +41,7 @@ The proposed communication mode is the result of years of testing and optimizati
 Binary timing durations are expressed in microseconds.
 
 ### Medium access control
-PJDLR specifies a variation of the carrier-sense, non-persistent random multiple access method (non-persistent CSMA). Devices can detect an ongoing transmission for this reason collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss.
+PJDLR specifies a variation of the carrier-sense, non-persistent random multiple access method (non-persistent CSMA). Devices can detect an ongoing transmission for this reason collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss or by the transmitter if an active collision avoidance procedure is implemented.
 
 ### Byte transmission
 Byte transmission is composed by 10 bits, the first two are called synchronization pad and are used to obtain sampling synchronization. The synchronization pad is composed by a high padding bit shorter than data bits and a low data bit. The following 8 data bits contain information in LSB-first (least significant bit first) order.
@@ -69,15 +75,22 @@ Before a frame transmission, the communication medium's state is analysed, if hi
 When a frame is received a low performance microcontroller with an inaccurate clock can correctly synchronize with transmitter during the frame initializer and consequently each byte is received. The frame initializer is detected if 3 synchronization pads occurred and if their duration is coherent with its expected duration. Frame initialization is 100% reliable, false positives can only occur because of externally induced interference.      
 
 ### Synchronous response
-Between frame transmission and a synchronous response there is a variable interval which duration is influenced by latency. In order to avoid other devices to detect the medium free for use and disrupt an ongoing exchange, the sender cyclically transmits a short high bit (1/2 high padding bit) and consequently attempts to receive a response. On the other side the receiver can safely transmit its response as soon as possible without caring about the state of the medium. If the acknowledgement is not transmitted or not received the transmitter continues to keep busy the medium up to the maximum acceptable time between transmission and response.
+A frame transmission can be optionally followed by a synchronous response sent by its recipient. Between frame transmission and a synchronous response there is a variable time which duration is influenced by latency.
 ```cpp  
-Transmission                                      Response
- ______  ______  ______  ______   _   _   _   _   _ _____
-| INIT || BYTE || BYTE || BYTE | | | | | | | | | | | ACK |
-|------||------||------||------| | | | | | | | | | |-----|
-|      ||      ||      ||      | | | | | | | | | | |  6  |
-|______||______||______||______|_| |_| |_| |_| |_| |_____|
-
+Transmission                                        Response
+ ______  ______  ______                              _____
+| BYTE || BYTE || BYTE | CRC COMPUTATION / LATENCY  | ACK |
+|------||------||------|----------------------------|-----|
+|      ||      ||      |                            |  6  |
+|______||______||______|                            |_____|
+```  
+In order to avoid other devices to detect the medium free for use and disrupt an ongoing exchange, the sender cyclically transmits a short high bit (1/2 high padding bit duration) and consequently attempts to receive a response. The receiver can transmit its response as soon as possible, and, in order to avoid false positives in case of collision, must transmit its response prepended with an additional synchronization pulse. If the response is not transmitted or not received the transmitter continues to keep busy the medium up to the maximum acceptable time between transmission and response.
+```cpp  
+Transmission end                                    Response
+ ______  ______  ______   _   _   _   _   _   _ ____ _____  
+| BYTE || BYTE || BYTE | | | | | | | | | | | | |SYNC| ACK |
+|------||------||------| | | | | | | | | | | | |----|-----|
+|      ||      ||      | | | | | | | | | | | | |    |  6  |
+|______||______||______|_| |_| |_| |_| |_| |_| |____|_____|
 ```
-
-The maximum time dedicated to potential acknowledgement reception for a given application can be determined practically transmitting the longest supported frame with the farthest physical distance between the two devices. The highest interval between packet transmission and acknowledgement measured, plus a small margin, is the correct timeout that should exclude acknowledgement losses. Consider that the longer this timeout is, the more bandwidth is wasted if the transmission is not successful.
+The maximum time dedicated to potential response reception for a given application can be determined practically transmitting the longest supported frame with the farthest physical distance between the two devices. The highest interval between packet transmission and response measured plus a small margin is the correct timeout that should exclude response losses. Consider that the longer this timeout is, the more bandwidth is wasted if the transmission is not successful.

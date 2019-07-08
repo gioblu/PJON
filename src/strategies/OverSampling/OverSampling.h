@@ -139,7 +139,7 @@ class OverSampling {
         (uint32_t)(PJON_MICROS() - OS_TIMEOUT) <= time
       ) {
         PJON_IO_WRITE(_input_pin, LOW);
-        response = receive_byte();
+        if(sync()) response = receive_byte();
         if(response != PJON_ACK) {
           PJON_IO_MODE(_output_pin, OUTPUT);
           PJON_IO_WRITE(_output_pin, HIGH);
@@ -187,10 +187,7 @@ class OverSampling {
     of communication is detected at byte level. */
 
     void send_byte(uint8_t b) {
-      PJON_IO_WRITE(_output_pin, HIGH);
-      PJON_DELAY_MICROSECONDS(OS_BIT_SPACER);
-      PJON_IO_WRITE(_output_pin, LOW);
-      PJON_DELAY_MICROSECONDS(OS_BIT_WIDTH);
+      pulse(1);
       for(uint8_t mask = 0x01; mask; mask <<= 1) {
         PJON_IO_WRITE(_output_pin, b & mask);
         PJON_DELAY_MICROSECONDS(OS_BIT_WIDTH);
@@ -205,6 +202,7 @@ class OverSampling {
     void send_response(uint8_t response) {
       PJON_IO_PULL_DOWN(_input_pin);
       PJON_IO_MODE(_output_pin, OUTPUT);
+      pulse(1);
       send_byte(response);
       PJON_IO_PULL_DOWN(_output_pin);
     };
@@ -213,15 +211,9 @@ class OverSampling {
 
     void send_frame(uint8_t *data, uint16_t length) {
       PJON_IO_MODE(_output_pin, OUTPUT);
-      // Send frame inititializer
-      for(uint8_t i = 0; i < 3; i++) {
-        PJON_IO_WRITE(_output_pin, HIGH);
-        PJON_DELAY_MICROSECONDS(OS_BIT_SPACER);
-        PJON_IO_WRITE(_output_pin, LOW);
-        PJON_DELAY_MICROSECONDS(OS_BIT_WIDTH);
-      } // Send data
+      pulse(3); // Send frame inititializer
       for(uint16_t b = 0; b < length; b++)
-        send_byte(data[b]);
+        send_byte(data[b]); // Send data
       PJON_IO_PULL_DOWN(_output_pin);
     };
 
@@ -253,6 +245,16 @@ class OverSampling {
       return false;
     };
 
+    /* Emit synchronization pulse: */
+
+    void pulse(uint8_t n) {
+      while(n--) {
+        PJON_IO_WRITE(_output_pin, HIGH);
+        PJON_DELAY_MICROSECONDS(OS_BIT_SPACER);
+        PJON_IO_WRITE(_output_pin, LOW);
+        PJON_DELAY_MICROSECONDS(OS_BIT_WIDTH);
+      }
+    };
 
     /* Set the communicaton pin: */
 

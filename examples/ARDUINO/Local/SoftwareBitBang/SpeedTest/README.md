@@ -1,5 +1,5 @@
-## NetworkAnalysis example
-This example test the communication reliability between 2 devices using the `SoftwareBitBang` strategy. Two Arduino compatible devices are connected sharing ground and a single wire used for communication connected to pin `12`. `Transmitter` device sends packets at maximum speed keeping track of results. After 1 second results are printed in the Serial monitor. `Receiver` device is programmed to simply receive data continuously.
+## SpeedTest example
+This example test the communication reliability between 2 devices using the `SoftwareBitBang` strategy. Two Arduino compatible devices are connected sharing ground and a single wire used for communication connected to pin `12`. `Transmitter` device sends packets at maximum speed, the `Receiver` device prints the test result in the serial monitor. After 1 second results are printed in the Serial monitor.
 
 ```cpp  
  Arduino UNO        Arduino UNO

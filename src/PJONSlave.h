@@ -185,10 +185,7 @@ class PJONSlave : public PJON<Strategy> {
       PJON<Strategy>::set_error(static_error_handler);
       PJON<Strategy>::set_router(true);
       connected = false;
-      PJONTools::copy_bus_id(
-        this->bus_id,
-        this->localhost
-      );
+      PJONTools::copy_bus_id(this->bus_id, PJONTools::localhost());
       this->set_id(PJON_NOT_ASSIGNED);
     };
 

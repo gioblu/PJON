@@ -28,7 +28,7 @@ have been strongly tested, enhanced and verified:
   pacproduct, elusive-code, Emanuele Iannone, Christian Pointner,
   Fabian Gärtner, Mauro Mombelli, Remo Kallio, hyndruide, sigmaeo, filogranaf,
   Maximiliano Duarte, Viktor Szépe, Shachar Limor, Andrei Volkau, maniekq,
-  DetAtHome, Michael Branson and chestwood96.
+  DetAtHome, Michael Branson, chestwood96 and Mattze96.
 
 Compatible tools:
 
@@ -67,7 +67,6 @@ class PJON {
     Strategy strategy;
     uint8_t config = PJON_TX_INFO_BIT | PJON_ACK_REQ_BIT;
     uint8_t bus_id[4] = {0, 0, 0, 0};
-    const uint8_t localhost[4] = {0, 0, 0, 0};
     uint8_t data[PJON_PACKET_MAX_LENGTH];
     PJON_Packet_Info last_packet_info;
     PJON_Packet packets[PJON_MAX_PACKETS];
@@ -871,7 +870,7 @@ class PJON {
 
     void set_default() {
       _mode = PJON_HALF_DUPLEX;
-      if(!PJONTools::bus_id_equality(bus_id, localhost))
+      if(!PJONTools::bus_id_equality(bus_id, PJONTools::localhost()))
         set_shared_network(true);
       set_error(PJON_dummy_error_handler);
       set_receiver(PJON_dummy_receiver_handler);

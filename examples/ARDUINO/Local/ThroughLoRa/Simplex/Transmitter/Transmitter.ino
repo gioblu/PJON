@@ -32,8 +32,6 @@ void setup() {
 }
 
 void loop() {
-	bus.update();
-
-	if (!bus.packets[packet].state)
+	if(!bus.update())
 		packet = bus.send(44, content, 20);
 };

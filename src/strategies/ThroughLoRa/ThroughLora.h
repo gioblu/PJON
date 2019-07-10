@@ -125,15 +125,10 @@ class ThroughLora {
       PJON_DELAY_MICROSECONDS(PJON_RANDOM(TL_COLLISION_DELAY));
     };
 
-    /* Receive byte response */
+    /* Receive byte response (not supported) */
 
     uint16_t receive_response() {
-      uint32_t time = PJON_MICROS();
-      while((uint32_t)(PJON_MICROS() - time) < TL_RESPONSE_TIME_OUT) {
-        uint8_t frame_size = LoRa.parsePacket();
-        if(frame_size > 0) return LoRa.read();
-      }
-      return PJON_FAIL;
+      return PJON_ACK;
     };
 
     /* Receive a frame: */
@@ -155,12 +150,10 @@ class ThroughLora {
       LoRa.write(b);
     };
 
-    /* Send byte response to the packet's transmitter */
+    /* Send byte response to the packet's transmitter (not supported) */
 
     void send_response(uint8_t response) {
-      start_tx();
-      send_byte(response);
-      end_tx();
+      return;
     };
 
     /* Send a frame: */

@@ -23,7 +23,7 @@
 
 /* Maximum 32 microseconds random delay in case of collision */
 #ifndef TL_COLLISION_DELAY
-  #define TL_COLLISION_DELAY      32
+  #define TL_COLLISION_DELAY      64
 #endif
 
 /* Set 100 milliseconds as the maximum timeframe between transmission and
@@ -35,12 +35,12 @@
   #define TL_RESPONSE_TIME_OUT 100000UL
 #endif
 
-/* Maximum transmission attempts */
+/* Maximum transmission attempts (re-transmission not supported) */
 #ifndef TL_MAX_ATTEMPTS
-  #define TL_MAX_ATTEMPTS         10
+  #define TL_MAX_ATTEMPTS          0
 #endif
 
-/* Back-off exponential degree */
+/* Back-off exponential degree (re-transmission not supported) */
 #ifndef TL_BACK_OFF_DEGREE
-  #define TL_BACK_OFF_DEGREE       3
+  #define TL_BACK_OFF_DEGREE       1
 #endif

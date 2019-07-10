@@ -15,6 +15,8 @@ void setup() {
 
 	bus.set_error(error_handler);
 	bus.set_receiver(receiver_function);
+	// Synchronous acknowledgement is not supported
+	bus.set_synchronous_acknowledge(false);
 	// Obligatory to initialize Radio with correct frequency
 	bus.strategy.setFrequency(868100000UL);
 	// Optional
@@ -37,11 +39,6 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 }
 
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
-	if (code == PJON_CONNECTION_LOST) {
-		Serial.print("Connection with device ID ");
-		Serial.print(bus.packets[data].content[0], DEC);
-		Serial.println(" is lost.");
-	}
 	if (code == PJON_PACKETS_BUFFER_FULL) {
 		Serial.print("Packet buffer is full, has now a length of ");
 		Serial.println(data, DEC);

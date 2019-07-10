@@ -50,7 +50,9 @@ The reception technique is based on 3 steps:
 1. Find a high bit which duration is equal to or acceptably shorter than a high padding bit
 2. Synchronize to its falling edge
 3. Ensure it is followed by a low data bit
-4. If so reception starts, if not, interference, synchronization loss or simply absence of communication is detected
+
+If so reception starts, if not, interference, synchronization loss or simply absence of communication is detected.
+
 ```cpp  
  _____ ___________________________
 | Pad | Byte                      |

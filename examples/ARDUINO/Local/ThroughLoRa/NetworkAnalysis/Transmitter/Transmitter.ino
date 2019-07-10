@@ -18,6 +18,8 @@ int packet;
 uint8_t content[] = "01234567890123456789";
 
 void setup() {
+	// Synchronous acknowledgement is not supported
+	bus.set_synchronous_acknowledge(false);
 	// Obligatory to initialize Radio with correct frequency
 	bus.strategy.setFrequency(868100000UL);
 	// Optional
@@ -32,18 +34,13 @@ void setup() {
 }
 
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
-	if (code == PJON_CONNECTION_LOST) {
-		Serial.print("Connection with device ID ");
-		Serial.print(data);
-		Serial.println(" is lost.");
-	}
-	if (code == PJON_PACKETS_BUFFER_FULL) {
+	if(code == PJON_PACKETS_BUFFER_FULL) {
 		Serial.print("Packet buffer is full, has now a length of ");
 		Serial.println(bus.packets[data].content[0], DEC);
 		Serial.println("Possible wrong bus configuration!");
 		Serial.println("higher PJON_MAX_PACKETS if necessary.");
 	}
-	if (code == PJON_CONTENT_TOO_LONG) {
+	if(code == PJON_CONTENT_TOO_LONG) {
 		Serial.print("Content is too long, length: ");
 		Serial.println(data);
 	}

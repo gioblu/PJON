@@ -10,6 +10,8 @@
 PJON<ThroughLora> bus(44);
 
 void setup() {
+	// Synchronous acknowledgement is not supported
+	bus.set_synchronous_acknowledge(false);
 	// Obligatory to initialize Radio with correct frequency
 	bus.strategy.setFrequency(868100000UL);
 	// Optional

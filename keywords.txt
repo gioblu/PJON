@@ -18,6 +18,7 @@ PJONRouter	KEYWORD1
 PJONDynamicRouter	KEYWORD1
 PJONInteractiveRouter	KEYWORD1
 PJONVirtualBusRouter	KEYWORD1
+PJONTools	KEYWORD1
 AnalogSampling	KEYWORD1
 SoftwareBitBang	KEYWORD1
 OverSampling	KEYWORD1

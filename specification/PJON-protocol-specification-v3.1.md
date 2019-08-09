@@ -173,7 +173,7 @@ CRC8 is calculated and appended to the initial meta-data (id, header and length)
 CRC8 is calculated on both data and meta-data and it is appended at the end of packets of up to 15 bytes length (including overhead). CRC32 must be used if packet length exceeds 15 bytes but can be optionally used also for shorter packets if higher accuracy is required.
 
 ### Packet transmission
-A default local packet transmission is an optionally bidirectional communication between two devices that can be divided in 3 different phases: **channel analysis**, **transmission** and optional **response**. In the channel analysis phase transmitter assess the medium's state before starting transmission to avoid collision. If the medium is free for use, transmission phase starts where the packet is entirely transmitted. The receiving device calculates CRC and starts the response phase transmitting a single byte, `PJON_ACK` (decimal 6) in case of correct data reception. If no acknowledgement is received, after an exponential back-off delay, the transmitter device retries until acknowledgement is received or a maximum number of attempts is reached and packet transmission discarded.
+A local packet transmission is an optionally bidirectional communication between two devices that can be divided in 3 phases: **channel analysis**, **transmission** and optional **response**. In the channel analysis phase the medium's state is assessed before starting transmission to avoid collision. If the medium is free for use, the transmission phase starts in which the packet is entirely transmitted. The receiving device computes the CRC and starts the response phase transmitting an acknowledge (decimal 6) in case of correct data reception. If no acknowledgement is received, after an exponential back-off delay, the transmitter retries until the acknowledgement is received or a maximum number of attempts is reached.
 
 ```cpp
 Channel analysis            Transmission               Response
@@ -252,16 +252,16 @@ If header's `TX INFO` bit is high the sender's device and bus id are included in
 #### Extended length
 The graph below shows a packet transmission where the length is represented with 2 bytes supporting up to 65535 bytes length as requested by the header's `EXT. LENGTH` bit. If the extended length feature is used, CRC32 must be applied setting the header's `CRC` bit high.
 ```cpp
- ______________________________________________
-|ID| HEADER |LEN 1|LEN 2|CRC8|BUS ID|DATA|CRC32|
-|--|--------|-----|-----|----|------|----|-----|
-|12|01100001|  0  | 14  |    | 0001 | 64 |     |
-|__|________|_____|_____|____|______|____|_____|
+ _______________________________________
+|ID| HEADER |LEN 1|LEN 2|CRC8|DATA|CRC32|
+|--|--------|-----|-----|----|----|-----|
+|12|01100000|  0  | 10  |    | 64 |     |
+|__|________|_____|_____|____|____|_____|
 
 ```
 
 #### Packet identification
-The graph below shows a packet transmission where a 2 bytes packet identifier is added as requested by header's `PACKET ID` bit. This feature is provided to avoid duplications and guarantee packet uniqueness. The receiver filters packets containing a packet identifier and sender information that already appeared previously.
+The graph below shows a packet in which a 2 bytes packet identifier is added as requested by header's `PACKET ID` bit. This feature is provided to avoid duplications and guarantee packet uniqueness. The receiver filters packets containing a packet identifier and sender information that already appeared previously.
 ```cpp
  _____________________________________________________________
 |ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|PACKET ID|DATA|CRC32|

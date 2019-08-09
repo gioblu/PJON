@@ -99,7 +99,7 @@ Before a frame transmission the communication medium's state is analysed, if hig
 ```
 When a frame is received a low performance microcontroller with an inaccurate clock can correctly synchronize with transmitter during the frame initializer and consequently each byte is received. On receiver's side a frame reception starts if 3 synchronization pads are detected and if their duration is equal or higher than:
 
-`frame initializer expected duration - (sync bit 1 duration - sync bit 1 minimum acceptable duration)`
+`frame initializer duration - (padding bit duration - padding bit minimum acceptable duration)`
 
 To ensure 100% reliability the padding bit must be longer than data bits. Frame initialization is 100% reliable, false positives can only occur because of externally induced interference. The padding bit duration must not be an exact multiple of the duration of one data bit, for this reason a `padding bit / data bit` ratio or pad-data ratio of 1, 2, 3 or 4 must be avoided because one or multiple consecutive data bits may be erroneously interpreted as a padding bit.
 

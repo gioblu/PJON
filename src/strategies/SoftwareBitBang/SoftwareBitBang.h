@@ -1,6 +1,6 @@
 
 /* SoftwareBitBang
-   1 or 2 wires software emulated asynchronous serial data link layer
+   1 or 2 wires software-defined asynchronous serial data link layer
    used as a Strategy by PJON (included in version v3.0)
    Compliant with PJDL (Padded Jittering Data Link) specification v4.0
    ___________________________________________________________________________

@@ -79,7 +79,7 @@ When a frame is received a low performance microcontroller with an inaccurate cl
 ### Synchronous response
 A frame transmission can be optionally followed by a synchronous response sent by its recipient. Between frame transmission and a synchronous response there is a variable time which duration is influenced by latency.
 ```cpp  
-Transmission                                        Response
+Transmission end                                    Response
  ______  ______  ______                              _____
 | BYTE || BYTE || BYTE | CRC COMPUTATION / LATENCY  | ACK |
 |------||------||------|----------------------------|-----|

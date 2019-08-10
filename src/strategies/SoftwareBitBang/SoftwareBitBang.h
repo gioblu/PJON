@@ -33,9 +33,10 @@
 #define SWBB_NOT_ASSIGNED 255
 
 /* Transmission speed modes (see Timing.h)
-   MODE   1: 1.95kB/s - 15625Bd
-   MODE   2: 2.21kB/s - 17696Bd
-   MODE   3: 2.94kB/s - 23529Bd */
+  MODE   1: 1.95kB/s - 15625Bd
+  MODE   2: 2.21kB/s - 17696Bd
+  MODE   3: 2.94kB/s - 23529Bd
+  MODE   4: 3.40kB/s - 27210Bd */
 #include "Timing.h"
 
 class SoftwareBitBang {

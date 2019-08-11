@@ -18,31 +18,32 @@
 ```
 Invented by Giovanni Blu Mitolo
 Header feature proposed by Fred Larsen
-Originally published: 10/04/2010, latest revision: 31/10/2018
+Originally published: 10/04/2010, latest revision: 12/08/2019
 Related work: https://github.com/gioblu/PJON/
 Compliant implementations: PJON v10.0 and following
 Released into the public domain
 ```
-The PJON protocol v3.1 in local mode supports connectivity for up to 254 devices, in shared mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices. The packet format is dynamic therefore meta-data can be optionally included using the header as a bitmap of selected features. It supports interoperability between systems using a different header configuration and provides with high efficiency including only the protocol's features used and the overhead (5-22 bytes) effectively required. PJON can be used for simple low-data-rate applications as an alternative to 1-Wire, i2c or CAN but can also be applied in place of IP to interconnect more complex networks.   
+The PJON protocol v3.1 in local mode supports connectivity for up to 254 devices, in shared mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices. The packet format is dynamic therefore meta-data can be optionally included using the header as a bitmap of selected features. It supports interoperability between systems that use a different configuration and provides with high efficiency including only the protocol's features used and the overhead effectively required (5-22 bytes). PJON can be used for simple low-data-rate applications as an alternative to 1-Wire, i2c or CAN but can also be applied in place of IP to interconnect more complex networks.   
 
-The graph below shows the conceptual model that characterizes and standardizes the communication. Its goal is the interoperability of diverse systems on a wide range of media with the use of a new set of open-source protocols. The graph partitions represent abstraction layers.
+The graph below shows the conceptual model that characterizes and standardizes the communication. Its goal is the interoperability of diverse systems on a wide range of media with the use of a new set of Open Standards. The graph partitions represent abstraction layers.
 
 ```
  ________________________________________________
 | 3 Network layer: PJON                          |
-| Local and shared network addressing            |
-| Broadcast or addressed packet transmission     |
 | Routing and switching                          |
-| Congestion control                             |
-| Error detection                                |
-| Packet identification                          |
-| Service identification                         |
 | Asynchronous acknowledgement                   |
+| Congestion control                             |
+| Packet transmission                            |
+| Service identification                         |
+| Packet identification                          |
+| Error detection                                |
+| Local and shared network identification        |
+| Broadcast                                      |
 |________________________________________________|
 | 2 Data link layer: PJDL, PJDLR, PJDLS, TSDL    |
-| Medium access control                          |
-| Frame transmission                             |
 | Synchronous acknowledgement                    |
+| Frame transmission                             |
+| Medium access control                          |
 |________________________________________________|
 | 1 Physical layer:                              |
 | Electric, radio or light impulses              |
@@ -50,14 +51,14 @@ The graph below shows the conceptual model that characterizes and standardizes t
 ```
 
 ### Basic concepts
-* Packet transmission is regulated by a 1 byte header
+* Packet transmission is regulated by a 8 bits header
 * Devices communicate through packets with a maximum length of 255 or 65535 bytes
-* Devices are identified by a unique 1 byte device id
+* Devices are identified by a unique 8 bits device id
 * Devices can obtain an id if available (see [Dynamic addressing specification v3.0](/specification/PJON-dynamic-addressing-specification-v3.0.md))
-* Buses are identified with a 4 bytes bus id
+* Buses are identified with a 32 bits bus id
 * Many buses can coexist on the same medium
 * Synchronous and or asynchronous acknowledgement can be requested (see [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md))
-* Network services are identified with a 2 bytes service identifier  
+* Network services are identified with a 16 bits service identifier  
 
 
 ### Bus
@@ -75,7 +76,7 @@ ____|___________|___________|___________|___
 ```
 
 ### Bus network
-A PJON bus network is the result of n buses sharing the same medium and or being interconnected with other buses through routers. On a shared medium it is required the use a 4 bytes bus id to isolate a group of devices from communication of other buses nearby, enabling many to coexist and network on the same communication medium.
+A PJON bus network is the result of n buses sharing the same medium and or being interconnected with other buses through routers. On a shared medium it is required the use a 32 bits bus id to isolate a group of devices from communication of other buses nearby, enabling many to coexist and network on the same communication medium.
 ```cpp  
 TWO BUSES SHARING THE SAME MEDIUM
 1 collision domain
@@ -130,10 +131,10 @@ HEADER BITMAP
 |ID    |LENGTH|    |     |MODE |     |INFO |     |
 |______|______|____|_____|_____|_____|_____|_____|
 ```
-1. `PACKET ID` bit informs if the packet contains (value 1) or not (value 0) a 2 bytes [packet id](/specification/PJON-protocol-specification-v3.1.md#packet-identification)
+1. `PACKET ID` bit informs if the packet contains (value 1) or not (value 0) a 16 bits [packet id](/specification/PJON-protocol-specification-v3.1.md#packet-identification)
 2. `EXT. LENGTH` bit informs if the packet contains 1 (value 0) or 2 (value 1) bytes [length](/specification/PJON-protocol-specification-v3.1.md#extended-length)
 3. `CRC` bit signals which CRC is used, [CRC8](/specification/PJON-protocol-specification-v3.1.md#crc8-polynomial) (value 0) or [CRC32](/specification/PJON-protocol-specification-v3.1.md#crc32-polynomial) (value 1)
-4. `PORT` bit informs if the packet contains a 2 bytes [network service identifier](/specification/PJON-protocol-specification-v3.1.md#network-services) (value 1) or not (value 0)
+4. `PORT` bit informs if the packet contains a 16 bits [network service identifier](/specification/PJON-protocol-specification-v3.1.md#network-services) (value 1) or not (value 0)
 5. `ACK MODE` bit signals [synchronous](/specification/PJON-protocol-acknowledge-specification-v1.0.md#synchronous-acknowledge) (value 0) or [asynchronous](/specification/PJON-protocol-acknowledge-specification-v1.0.md#asynchronous-acknowledge) (value 1) acknowledgement mode
 6. `ACK` bit informs if [acknowledgement](/specification/PJON-protocol-acknowledge-specification-v1.0.md) is requested (value 1) or not (value 0)
 7. `TX INFO` bit informs if the sender info are included (value 1) or not (value 0)
@@ -250,7 +251,7 @@ If header's `TX INFO` bit is high the sender's device and bus id are included in
 ```
 
 #### Extended length
-The graph below shows a packet transmission where the length is represented with 2 bytes supporting up to 65535 bytes length as requested by the header's `EXT. LENGTH` bit. If the extended length feature is used, CRC32 must be applied setting the header's `CRC` bit high.
+The graph below shows a packet transmission where the length is represented with 16 bits supporting up to 65535 bytes length as requested by the header's `EXT. LENGTH` bit. If the extended length feature is used, CRC32 must be applied setting the header's `CRC` bit high.
 ```cpp
  _______________________________________
 |ID| HEADER |LEN 1|LEN 2|CRC8|DATA|CRC32|
@@ -261,7 +262,7 @@ The graph below shows a packet transmission where the length is represented with
 ```
 
 #### Packet identification
-The graph below shows a packet in which a 2 bytes packet identifier is added as requested by header's `PACKET ID` bit. This feature is provided to avoid duplications and guarantee packet uniqueness. The receiver filters packets containing a packet identifier and sender information that already appeared previously.
+The graph below shows a packet in which a 16 bits packet identifier is added as requested by header's `PACKET ID` bit. This feature is provided to avoid duplications and guarantee packet uniqueness. The receiver filters packets containing a packet identifier and sender information that already appeared previously.
 ```cpp
  _____________________________________________________________
 |ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|PACKET ID|DATA|CRC32|
@@ -272,7 +273,7 @@ The graph below shows a packet in which a 2 bytes packet identifier is added as 
 ```
 
 #### Network services
-PJON supports a network service identifier by using a 2 bytes port id. Thanks to this feature many services can operate and be identified safely. Ports from `0` to `8000` are reserved to known services which index is present in the [known network services list](/specification/PJON-network-services-list.md), ports from `8001` to `65535` are free for custom use cases. The graph below shows a packet transmission where port 8002 is inserted in the packet and header's `PORT` bit is high to signal its presence.
+PJON supports a network service identifier by using a 16 bits port id. Thanks to this feature many services can operate and be identified safely. Ports from `0` to `8000` are reserved to known services which index is present in the [known network services list](/specification/PJON-network-services-list.md), ports from `8001` to `65535` are free for custom use cases. The graph below shows a packet transmission where port 8002 is inserted in the packet and header's `PORT` bit is high to signal its presence.
 ```cpp
  _________________________________________
 |ID| HEADER |LENGTH|CRC8|PORT ID|DATA|CRC8|

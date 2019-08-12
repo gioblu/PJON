@@ -235,21 +235,6 @@ struct PJONTools {
     return true;
   };
 
-  /* Copy a device address: */
-
-  static void copy_address(uint8_t dest[], const uint8_t src[]) {
-    memcpy(dest, src, 5);
-  };
-
-  /* Check equality between two mac addresses */
-
-  static bool address_equality(const uint8_t *n_one, const uint8_t *n_two) {
-    for(uint8_t i = 0; i < 5; i++)
-      if(n_one[i] != n_two[i])
-        return false;
-    return true;
-  };
-
   /* Fill a PJON_Packet_Info struct with data parsing a packet: */
 
   static void parse_header(const uint8_t *packet, PJON_Packet_Info &info) {

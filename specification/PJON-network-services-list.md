@@ -19,7 +19,6 @@ This is the known network services port identification list:
 | Port ID | Constant name               | Description/Link                    |
 | ------- | --------------------------- | ----------------------------------- |
 | `0`     | `PJON_BROADCAST`            | All ports are acceptable            |
-| `1`     | `PJON_DYNAMIC_ADDRESSING`   | PJON [dynamic addressing](/specification/PJON-dynamic-addressing-specification-v3.0.md) |
 | `100`   | `MODULE_INTERFACE`          | [ModuleInterface](https://github.com/fredilarsen/ModuleInterface) automation protocol   |
 
 If you have developed a network service on top of PJON feel free to open an [issue](https://github.com/gioblu/PJON/issues) to obtain a service identification.

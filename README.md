@@ -18,7 +18,6 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 ### Features
 - Cross-compilation support with the [interfaces](src/interfaces) system calls abstraction   
 - Multi-media support with the [strategies](src/strategies) data link layer abstraction
-- Master-slave or multi-master [dynamic addressing](specification/PJON-dynamic-addressing-specification-v3.0.md)
 - Hot-swap support, no need of system reset or shut down when replacing or adding devices
 - Configurable synchronous and/or asynchronous [acknowledgement](specification/PJON-protocol-acknowledge-specification-v1.0.md)
 - Configurable 2 level addressing (device and bus id) for scalable applications
@@ -30,7 +29,6 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 ### Specifications
 - [PJON v3.1](specification/PJON-protocol-specification-v3.1.md)
 - [PJON Acknowledge v1.0](specification/PJON-protocol-acknowledge-specification-v1.0.md)
-- [PJON Dynamic addressing v3.0](specification/PJON-dynamic-addressing-specification-v3.0.md)
 - [PJDL v4.0](src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md) - [PJDLR v3.0](src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) - [PJDLS v2.0](src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) - [TSDL v2.1](src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md)
 
 ### Compliant tools

@@ -53,7 +53,6 @@ The graph below shows the conceptual model that characterizes and standardizes t
 * Packet transmission is regulated by a 8 bits header
 * Devices communicate through packets with a maximum length of 255 or 65535 bytes
 * Devices are identified by a unique 8 bits device id
-* Devices can obtain an id if available (see [Dynamic addressing specification v3.0](/specification/PJON-dynamic-addressing-specification-v3.0.md))
 * Buses are identified with a 32 bits bus id
 * Many buses can coexist on the same medium
 * Synchronous and or asynchronous acknowledgement can be requested (see [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md))

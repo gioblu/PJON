@@ -4,7 +4,6 @@
 #### Network layer
 - [PJON (Padded Jittering Operative Network) v3.1](/specification/PJON-protocol-specification-v3.1.md)
 - [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md)
-- [Dynamic addressing specification v3.0](/specification/PJON-dynamic-addressing-specification-v3.0.md)
 - [Network services list](/specification/PJON-network-services-list.md)
 #### Data link layer
 - [PJDL (Padded Jittering Data Link) v4.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md)
@@ -50,7 +49,9 @@ The reception technique is based on 3 steps:
 1. Find a high bit which duration is equal to or acceptably shorter than a high padding bit
 2. Synchronize to its falling edge
 3. Ensure it is followed by a low data bit
-4. If so reception starts, if not, interference, synchronization loss or simply absence of communication is detected
+
+If so reception starts, if not, interference, synchronization loss or simply absence of communication is detected.
+
 ```cpp  
  _____ ___________________________
 | Pad | Byte                      |
@@ -77,7 +78,7 @@ When a frame is received a low performance microcontroller with an inaccurate cl
 ### Synchronous response
 A frame transmission can be optionally followed by a synchronous response sent by its recipient. Between frame transmission and a synchronous response there is a variable time which duration is influenced by latency.
 ```cpp  
-Transmission                                        Response
+Transmission end                                    Response
  ______  ______  ______                              _____
 | BYTE || BYTE || BYTE | CRC COMPUTATION / LATENCY  | ACK |
 |------||------||------|----------------------------|-----|

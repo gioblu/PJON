@@ -1,7 +1,7 @@
 
 ![PJON](http://www.gioblu.com/PJON/PJON-github-header-tiny.png)
 ## PJON v11.2
-PJON® (Padded Jittering Operative Network) is an Arduino compatible, multi-master, multi-media network protocol. It proposes a new Open Standard, it is designed as a framework and implements a totally software-defined network protocol stack that can be easily cross-compiled on many MCUs and architectures like ATtiny, ATmega, ESP8266, ESP32, STM32, Teensy, Raspberry Pi, Linux, Windows x86 and Apple machines. It is a valid tool to quickly and comprehensibly build a network of devices. Visit [wiki](https://github.com/gioblu/PJON/wiki) and [documentation](documentation/README.md) to know more about the [PJON protocol](specification/PJON-protocol-specification-v3.1.md).
+PJON® (Padded Jittering Operative Network) is an Arduino compatible, multi-master, multi-media network protocol. It proposes a new Open Standard, it is designed as a framework and implements a totally software-defined network protocol stack that can be easily cross-compiled on many MCUs and architectures like ATtiny, ATmega, SAMD, ESP8266, ESP32, STM32, Teensy, Raspberry Pi, Linux, Windows x86, Apple and Android. With PJON® you can build a decentralized network infrastructure in minutes, handle data locally, control devices and network with neighbours for free. Visit [wiki](https://github.com/gioblu/PJON/wiki) and [documentation](documentation/README.md) to know more about the [PJON protocol](specification/PJON-protocol-specification-v3.1.md).
 
 [![Get PJON bus id](https://img.shields.io/badge/get-PJON%20bus%20id-lightgrey.svg)](http://www.pjon.org/get-bus-id.php)
 [![Get PJON device address](https://img.shields.io/badge/get-PJON%20device%20address-lightgrey.svg)](http://www.pjon.org/get-device-address.php)
@@ -9,7 +9,7 @@ PJON® (Padded Jittering Operative Network) is an Arduino compatible, multi-mast
 
 PJON is used in thousands of devices and its community has spread worldwide because of the following 6 key factors:
 - **New technology**: [PJON](specification/PJON-protocol-specification-v3.1.md) is an experimental network protocol stack crafted in 8 years of research and experimentation. It was originally developed as an open-source alternative to i2c and 1-Wire but during development its scope and features have been extended to cover use cases where IP is generally applied. PJON has been engineered to have a variable footprint (3.5-8.2 kB program memory) and overhead (5-22 bytes per packet) depending on its configuration.
-- **Multi-media support**: PJON packets can be transmitted on a wide range of media and protocols like TCP, UDP, Serial, RS485 and LoRa. The PJON network protocol stack specifies and implements also the [PJDL](src/strategies/SoftwareBitBang/specification/PJDL-specification-v3.0.md) wired data link able to communicate data through a single common conductive element shared by up to 255 devices, [PJDLR](src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) wireless data link compatible with many ASK/FSK/OOK radio modules, and also [PJDLS](src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) wireless data link able to communicate through light pulses using off the shelf LEDs and laser diodes easing integration and enabling a lot of applications.
+- **Multi-media support**: PJON packets can be transmitted on a wide range of media and protocols like TCP, UDP, Serial, RS485 and LoRa. The PJON network protocol stack specifies and implements also the [PJDL](src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md) wired data link able to communicate data through a single common conductive element shared by up to 255 devices, [PJDLR](src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) wireless data link compatible with many ASK/FSK/OOK radio modules, and also [PJDLS](src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) wireless data link able to communicate through light pulses using off the shelf LEDs and laser diodes easing integration and enabling a lot of applications.
 - **Increased security**: Devices using Ethernet/WiFi are often vulnerable to ransomware, cyber warfare and private data leak. PJON has been engineered to enhance security not necessarily implementing the standard network protocol stack together with its vulnerabilities where it is not absolutely necessary offering a set of alternatives for many use cases.
 - **Increased reliability**: Many protocols massively applied worldwide like 1-Wire, i2c and CAN expose dangerous vulnerabilities, their error detection algorithms are weak and they are not resilient to interference. The PJON network protocol stack is based on years of analysis and study not to make the same repeated mistakes present in most alternatives and provide with a set of simpler and more efficient solutions.
 - **High flexibility**: PJON is totally software-defined and its implementation is designed to be easily extensible. it builds out-of-the-box in all supported devices and operates transparently on top of any supported protocol or medium.
@@ -18,7 +18,6 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 ### Features
 - Cross-compilation support with the [interfaces](src/interfaces) system calls abstraction   
 - Multi-media support with the [strategies](src/strategies) data link layer abstraction
-- Master-slave or multi-master [dynamic addressing](specification/PJON-dynamic-addressing-specification-v3.0.md)
 - Hot-swap support, no need of system reset or shut down when replacing or adding devices
 - Configurable synchronous and/or asynchronous [acknowledgement](specification/PJON-protocol-acknowledge-specification-v1.0.md)
 - Configurable 2 level addressing (device and bus id) for scalable applications
@@ -30,7 +29,6 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 ### Specifications
 - [PJON v3.1](specification/PJON-protocol-specification-v3.1.md)
 - [PJON Acknowledge v1.0](specification/PJON-protocol-acknowledge-specification-v1.0.md)
-- [PJON Dynamic addressing v3.0](specification/PJON-dynamic-addressing-specification-v3.0.md)
 - [PJDL v4.0](src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md) - [PJDLR v3.0](src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) - [PJDLS v2.0](src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) - [TSDL v2.1](src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md)
 
 ### Compliant tools

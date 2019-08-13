@@ -13,12 +13,12 @@ PJON<ThroughLora> LoraPJON(44);
 void setup() {
 	Serial.begin(115200);
 	Serial.println("LoRa Receiver");
-
+	// Synchronous acknowledgement is not supported
+  bus.set_synchronous_acknowledge(false);
 	// Obligatory to initialize Radio with correct frequency
 	LoraPJON.strategy.setFrequency(868100000UL);
 	// Optional
 	LoraPJON.strategy.setSignalBandwidth(250E3);
-
 	LoraPJON.begin();
 	//LoraPJON.set_communication_mode(PJON_SIMPLEX); //Optional disable ACK
 	LoraPJON.set_receiver(receiver_function);

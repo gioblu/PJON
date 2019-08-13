@@ -6,6 +6,8 @@ With `ThroughLora` strategy, PJON can run through a software or hardware SPI in 
 
 This strategy is a wrapper around  [Arduino LoRa library](https://github.com/sandeepmistry/arduino-LoRa) created by [Sandeep Mistry](https://github.com/sandeepmistry) so all the credit to the specific LoRa implementation goes to him.
 
+Consider that, because of the inherent limitations of LoRa, the synchronous acknowledgement is not supported.
+
 ### Compatibility
 - ATmega88/168/328 16MHz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
 - ATmega2560 16MHz (Arduino Mega)
@@ -70,7 +72,10 @@ void setup() {
   // Obligatory to initialize Radio with correct frequency
   bus.strategy.setFrequency(868100000UL);
   bus.begin();
-  bus.send_repeatedly(44, "B", 1, 1000000); // Send B to device 44 every second
+  // Synchronous acknowledgement is not supported
+  bus.set_synchronous_acknowledge(false);
+  // Send B to device 44 every second
+  bus.send_repeatedly(44, "B", 1, 1000000);
 };
 
 void loop() {
@@ -95,10 +100,11 @@ void setup() {
 
   // Obligatory to initialize Radio with correct frequency
   bus.strategy.setFrequency(868100000UL);
+  // Synchronous acknowledgement is not supported
+  bus.set_synchronous_acknowledge(false);
   // Optional
   bus.strategy.setSignalBandwidth(250E3);
   bus.begin();
-
   bus.set_receiver(receiver_function);
 };
 

@@ -1,5 +1,5 @@
 
-/* OverSampling 1 or 2 wires software-emulated data link
+/* OverSampling 1 or 2 wires software-defined data link
    used as a Strategy by PJON (included in version v3.0)
    Compliant with PJDLR (Padded Jittering Data Link Radio) specification v3.0
 

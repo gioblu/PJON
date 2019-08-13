@@ -4,7 +4,6 @@
 #### Network layer
 - [PJON (Padded Jittering Operative Network) v3.1](/specification/PJON-protocol-specification-v3.1.md)
 - [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md)
-- [Dynamic addressing specification v3.0](/specification/PJON-dynamic-addressing-specification-v3.0.md)
 - [Network services list](/specification/PJON-network-services-list.md)
 #### Data link layer
 - **[PJDL (Padded Jittering Data Link) v4.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md)**
@@ -70,7 +69,8 @@ The reception technique is based on 3 steps:
 1. Find a high bit which duration is equal to or acceptably shorter than a high padding bit
 2. Synchronize to its falling edge
 3. Ensure it is followed by a low data bit
-4. If so reception starts, if not, interference, synchronization loss or simply absence of communication is detected
+
+If so reception starts, if not, interference, synchronization loss or simply absence of communication is detected.
 
 ```cpp  
  ___________ ___________________________
@@ -98,14 +98,14 @@ Before a frame transmission the communication medium's state is analysed, if hig
 ```
 When a frame is received a low performance microcontroller with an inaccurate clock can correctly synchronize with transmitter during the frame initializer and consequently each byte is received. On receiver's side a frame reception starts if 3 synchronization pads are detected and if their duration is equal or higher than:
 
-`frame initializer expected duration - (sync bit 1 duration - sync bit 1 minimum acceptable duration)`
+`frame initializer duration - (padding bit duration - padding bit minimum acceptable duration)`
 
 To ensure 100% reliability the padding bit must be longer than data bits. Frame initialization is 100% reliable, false positives can only occur because of externally induced interference. The padding bit duration must not be an exact multiple of the duration of one data bit, for this reason a `padding bit / data bit` ratio or pad-data ratio of 1, 2, 3 or 4 must be avoided because one or multiple consecutive data bits may be erroneously interpreted as a padding bit.
 
 ### Synchronous response
 A frame transmission can be optionally followed by a synchronous response sent by its recipient. Between frame transmission and a synchronous response there is a variable time which duration is influenced by latency.
 ```cpp  
-Transmission                                        Response
+Transmission end                                    Response
  ______  ______  ______                              _____
 | BYTE || BYTE || BYTE | CRC COMPUTATION / LATENCY  | ACK |
 |------||------||------|----------------------------|-----|

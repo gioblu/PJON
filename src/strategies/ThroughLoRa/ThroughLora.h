@@ -55,46 +55,46 @@ class ThroughLora {
       LoRa.setPins(cs_pin, reset_pin, dio0_pin);
     };
 
-	void setSpreadingFactor(uint8_t spreadingFactor) {
-	  LoRa.setSpreadingFactor(spreadingFactor);
-	};
+    void setSpreadingFactor(uint8_t spreadingFactor) {
+      LoRa.setSpreadingFactor(spreadingFactor);
+    };
 
-	void setCodingRate4(uint8_t codingRate) {
-	  LoRa.setCodingRate4(codingRate);
-	};
+    void setCodingRate4(uint8_t codingRate) {
+      LoRa.setCodingRate4(codingRate);
+    };
 
-	void setPreambleLength(uint16_t preambleLength) {
-		LoRa.setPreambleLength(preambleLength);
-	};
+    void setPreambleLength(uint16_t preambleLength) {
+      LoRa.setPreambleLength(preambleLength);
+    };
 
-	void setSyncWord(uint8_t syncWord) {
-		LoRa.setSyncWord(syncWord);
-	};
+    void setSyncWord(uint8_t syncWord) {
+      LoRa.setSyncWord(syncWord);
+    };
 
-	void setCRC(bool enableCRC) {
-		if (enableCRC) LoRa.enableCrc();
-		else LoRa.disableCrc();
-	};
+    void setCRC(bool enableCRC) {
+      if (enableCRC) LoRa.enableCrc();
+      else LoRa.disableCrc();
+    };
 
-	void setTxPower(uint8_t txPower) {
-		LoRa.setTxPower(txPower);
-	};
+    void setTxPower(uint8_t txPower) {
+      LoRa.setTxPower(txPower);
+    };
 
-	void setTxPower(uint8_t txPower, uint8_t boostPin) {
-		LoRa.setTxPower(txPower, boostPin);
-	};
+    void setTxPower(uint8_t txPower, uint8_t boostPin) {
+      LoRa.setTxPower(txPower, boostPin);
+    };
 
-	void idle(uint8_t txPower, uint8_t boostPin) {
-		LoRa.idle();
-	};
+    void idle(uint8_t txPower, uint8_t boostPin) {
+      LoRa.idle();
+    };
 
-	void sleep(uint8_t txPower, uint8_t boostPin) {
-		LoRa.sleep();
-	};
+    void sleep(uint8_t txPower, uint8_t boostPin) {
+      LoRa.sleep();
+    };
 
-	uint8_t getRandom() {
-		return LoRa.random();
-	};
+    uint8_t getRandom() {
+      return LoRa.random();
+    };
 
     /* Begin method, to be called on initialization:
        (returns always true) */
@@ -125,15 +125,10 @@ class ThroughLora {
       PJON_DELAY_MICROSECONDS(PJON_RANDOM(TL_COLLISION_DELAY));
     };
 
-    /* Receive byte response */
+    /* Receive byte response (not supported) */
 
     uint16_t receive_response() {
-      uint32_t time = PJON_MICROS();
-      while((uint32_t)(PJON_MICROS() - time) < TL_RESPONSE_TIME_OUT) {
-        uint8_t frame_size = LoRa.parsePacket();
-        if(frame_size > 0) return LoRa.read();
-      }
-      return PJON_FAIL;
+      return PJON_ACK;
     };
 
     /* Receive a frame: */
@@ -155,12 +150,10 @@ class ThroughLora {
       LoRa.write(b);
     };
 
-    /* Send byte response to the packet's transmitter */
+    /* Send byte response to the packet's transmitter (not supported) */
 
     void send_response(uint8_t response) {
-      start_tx();
-      send_byte(response);
-      end_tx();
+      return;
     };
 
     /* Send a frame: */

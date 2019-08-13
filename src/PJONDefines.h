@@ -65,19 +65,9 @@ limitations under the License. */
   #define PJON_BROADCAST        0
 #endif
 
-/* Master device id */
-#ifndef PJON_MASTER_ID
-  #define PJON_MASTER_ID      254
-#endif
-
 /* Device id of still unindexed devices */
 #ifndef PJON_NOT_ASSIGNED
   #define PJON_NOT_ASSIGNED   255
-#endif
-
-/* Maximum devices handled by master */
-#ifndef PJON_MAX_DEVICES
-  #define PJON_MAX_DEVICES   25
 #endif
 
 /* Communication modes */
@@ -88,12 +78,6 @@ limitations under the License. */
 #define PJON_ACK              6
 #define PJON_BUSY           666
 #define PJON_NAK             21
-
-/* Dynamic addressing */
-#define PJON_ID_DISCOVERY   200
-#define PJON_ID_REQUEST     201
-#define PJON_ID_CONFIRM     202
-#define PJON_ID_NEGATE      203
 
 /* INTERNAL CONSTANTS */
 #define PJON_FAIL         65535
@@ -132,8 +116,6 @@ limitations under the License. */
 #define PJON_CONNECTION_LOST     101
 #define PJON_PACKETS_BUFFER_FULL 102
 #define PJON_CONTENT_TOO_LONG    104
-#define PJON_ID_ACQUISITION_FAIL 105
-#define PJON_DEVICES_BUFFER_FULL 254
 
 /* CONSTRAINTS: */
 
@@ -166,14 +148,7 @@ limitations under the License. */
 /* Maximum packet ids record kept in memory (to avoid duplicated exchanges) */
 #ifndef PJON_MAX_RECENT_PACKET_IDS
   #define PJON_MAX_RECENT_PACKET_IDS 10
-#endif
-
-/* Dynamic addressing port number */
-#define PJON_DYNAMIC_ADDRESSING_PORT    1
-/* Master ID_REQUEST and ID_NEGATE timeout (5 seconds) */
-#define PJON_ADDRESSING_TIMEOUT   5000000
-/* Master discovery broadcast interval (10 seconds) */
-#define PJON_DISCOVERY_INTERVAL   1000000
+#endif  
 
 struct PJON_Packet {
   uint8_t  attempts;
@@ -245,21 +220,6 @@ struct PJONTools {
 
   static bool bus_id_equality(const uint8_t *n_one, const uint8_t *n_two) {
     for(uint8_t i = 0; i < 4; i++)
-      if(n_one[i] != n_two[i])
-        return false;
-    return true;
-  };
-
-  /* Copy a device address: */
-
-  static void copy_address(uint8_t dest[], const uint8_t src[]) {
-    memcpy(dest, src, 5);
-  };
-
-  /* Check equality between two mac addresses */
-
-  static bool address_equality(const uint8_t *n_one, const uint8_t *n_two) {
-    for(uint8_t i = 0; i < 5; i++)
       if(n_one[i] != n_two[i])
         return false;
     return true;

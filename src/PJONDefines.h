@@ -65,19 +65,9 @@ limitations under the License. */
   #define PJON_BROADCAST        0
 #endif
 
-/* Master device id */
-#ifndef PJON_MASTER_ID
-  #define PJON_MASTER_ID      254
-#endif
-
 /* Device id of still unindexed devices */
 #ifndef PJON_NOT_ASSIGNED
   #define PJON_NOT_ASSIGNED   255
-#endif
-
-/* Maximum devices handled by master */
-#ifndef PJON_MAX_DEVICES
-  #define PJON_MAX_DEVICES   25
 #endif
 
 /* Communication modes */

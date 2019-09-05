@@ -132,14 +132,14 @@ HEADER BITMAP
 1. `PACKET ID` bit informs if the packet contains (value 1) or not (value 0) a 16 bits [packet id](/specification/PJON-protocol-specification-v3.1.md#packet-identification)
 2. `EXT. LENGTH` bit informs if the packet contains 1 (value 0) or 2 (value 1) bytes [length](/specification/PJON-protocol-specification-v3.1.md#extended-length)
 3. `CRC` bit signals which CRC is used, [CRC8](/specification/PJON-protocol-specification-v3.1.md#crc8-polynomial) (value 0) or [CRC32](/specification/PJON-protocol-specification-v3.1.md#crc32-polynomial) (value 1)
-4. `PORT` bit informs if the packet contains a 16 bits [network service identifier](/specification/PJON-protocol-specification-v3.1.md#network-services) (value 1) or not (value 0)
+4. `PORT` bit informs if a 16 bits [network service identifier](/specification/PJON-protocol-specification-v3.1.md#network-services) is contained (value 1) or not (value 0)
 5. `ACK MODE` bit signals [synchronous](/specification/PJON-protocol-acknowledge-specification-v1.0.md#synchronous-acknowledge) (value 0) or [asynchronous](/specification/PJON-protocol-acknowledge-specification-v1.0.md#asynchronous-acknowledge) (value 1) acknowledgement mode
 6. `ACK` bit informs if [acknowledgement](/specification/PJON-protocol-acknowledge-specification-v1.0.md) is requested (value 1) or not (value 0)
 7. `TX INFO` bit informs if the sender info are included (value 1) or not (value 0)
 8. `MODE` bit informs if the packet is formatted in [shared](/specification/PJON-protocol-specification-v3.1.md#shared-mode) (value 1) or [local](/specification/PJON-protocol-specification-v3.1.md#local-mode) mode (value 0)  
 
 Unacceptable header configuration states for standard transmission:
-* `----1-0-` or `ACK MODE` bit high, and `TX INFO` bit low (asynchronous acknowledgement requires transmitter info)
+* `----1-0-` or `ACK MODE` bit high, and `TX INFO` bit low (requires transmitter info)
 * `-10-----` or `EXT. LENGTH` bit high and `CRC` bit low (forced CRC32 for length > 15)
 
 Unacceptable header configuration states for a broadcast transmission:

@@ -20,16 +20,16 @@ The simplest way to send data is to use `send_packet`, this method composes the 
 // Local
 
 // Send to device id 10 the string "Hi!"
-bus.send_packet(10, (uint8_t)"Hi!", 3);
+bus.send_packet(10, "Hi!", 3);
 
 // All optional parameters available
 bus.send_packet(
-  10,                 // Device id (uint8_t)
-  "Hello",            // Payload   (const void *)
-  12,                 // Length    (uint16_t)
-  bus.config,         // Header    (uint8_t)  - Use default config
-  0,                  // Packet id (uint16_t) - Don't include packet id
-  8002                // Port      (uint16_t)
+  10,         // Device id (uint8_t)
+  "Hello",    // Payload   (const void *)
+  12,         // Length    (uint16_t)
+  bus.config, // Header    (uint8_t)  - Use default config
+  0,          // Packet id (uint16_t) - Don't include packet id
+  8002        // Port      (uint16_t)
 );
 
 // Shared or using bus indexing
@@ -40,13 +40,13 @@ bus.send_packet(10, bus_id, "Hi!", 3);
 
 // All optional parameters available
 bus.send_packet(
-  10,                 // Device id (uint8_t)
-  bus_id,             // Bus id    (uint8_t *)
-  "Hello",            // Payload   (const void *)
-  12,                 // Length    (uint16_t)
-  bus.config,         // Header    (uint8_t)  - Use default config
-  0,                  // Packet id (uint16_t) - Don't include packet id
-  8002                // Port      (uint16_t)
+  10,         // Device id (uint8_t)
+  bus_id,     // Bus id    (uint8_t *)
+  "Hello",    // Payload   (const void *)
+  12,         // Length    (uint16_t)
+  bus.config, // Header    (uint8_t)  - Use default config
+  0,          // Packet id (uint16_t) - Don't include packet id
+  8002        // Port      (uint16_t)
 );
 ```
 The sending is executed as soon as the method is called and it returns the following values:
@@ -99,23 +99,23 @@ bus.send(100, bus_id, "Ciao, this is a test!", 21);
 
 // Local mode
 bus.send(
-  100,                       // (uint8_t)      Recipient device id
-  "Test port id",            // (const void *) Payload
-  23,                        // (uint16_t)     Length
-  bus.config,                // (uint8_t)      Packet header
-  1,                         // (uint16_t)     Packet id
-  8002                       // (uint16_t)     Port identification
+  100,            // (uint8_t)      Recipient device id
+  "Test port id", // (const void *) Payload
+  23,             // (uint16_t)     Length
+  bus.config,     // (uint8_t)      Packet header
+  1,              // (uint16_t)     Packet id
+  8002            // (uint16_t)     Port identification
 );
 
 // Shared mode or using bus indexing
 bus.send(
-  100,                       // (uint8_t)      Recipient device id
-  bus_id,                    // (uint8_t *)    Recipient bus id
-  "Test port id",            // (const void *) Payload
-  23,                        // (uint16_t)     Length
-  bus.config,                // (uint8_t)      Packet header
-  1,                         // (uint16_t)     Packet id
-  8002                       // (uint16_t)     Port identification
+  100,            // (uint8_t)      Recipient device id
+  bus_id,         // (uint8_t *)    Recipient bus id
+  "Test port id", // (const void *) Payload
+  23,             // (uint16_t)     Length
+  bus.config,     // (uint8_t)      Packet header
+  1,              // (uint16_t)     Packet id
+  8002            // (uint16_t)     Port identification
 );
 
 ```
@@ -130,14 +130,14 @@ uint16_t one_second_test =
 // Shared sending example including all optional parameters
 uint16_t one_second_test_shared =
   bus.send_repeatedly(
-    100,                       // (uint8_t)      Recipient device id
-    bus_id,                    // (uint8_t *)    Recipient bus id
-    "Test port id",            // (const void *) Payload
-    23,                        // (uint16_t)     Length
-    1000000,                   // (uint32_t)     Interval in microseconds
-    bus.config,                // (uint8_t)      Packet header
-    1,                         // (uint16_t)     Packet id
-    8002                       // (uint16_t)     Port identification
+    100,            // (uint8_t)      Recipient device id
+    bus_id,         // (uint8_t *)    Recipient bus id
+    "Test port id", // (const void *) Payload
+    23,             // (uint16_t)     Length
+    1000000,        // (uint32_t)     Interval in microseconds
+    bus.config,     // (uint8_t)      Packet header
+    1,              // (uint16_t)     Packet id
+    8002            // (uint16_t)     Port identification
   );
 ```
 `send_repeatedly` returns the id of the packet in the packet's buffer as `send` does, to remove this repeated transmission simply:

@@ -1,3 +1,7 @@
+
+// Include only SoftwareBitBang strategy
+#define PJON_INCLUDE_SWBB
+
 #include <PJON.h>
 
 /* In this example it is demonstrated how to connect an ESP8266 module and an

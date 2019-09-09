@@ -27,7 +27,7 @@ void setup() {
 
   bus.set_error(error_handler);
   bus.set_receiver(receiver_function);
-  bus.strategy.set_pin(5); // ESP8266 GPIO 5 or pin D1
+  bus.strategy.set_pin(D1); // ESP8266 GPIO 5 or pin D1
   bus.begin();
   bus.send(45, "B", 1);
 };

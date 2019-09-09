@@ -10,7 +10,7 @@ PJON<SoftwareBitBang> bus(45);
 uint8_t content[] = "01234567890123456789";
 
 void setup() {
-  bus.strategy.set_pin(5); // ESP8266 GPIO 5 or pin D1
+  bus.strategy.set_pin(D1); // ESP8266 GPIO 5 or pin D1
   bus.set_error(error_handler);
   bus.begin();
 

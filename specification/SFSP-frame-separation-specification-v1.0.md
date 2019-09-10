@@ -39,9 +39,9 @@ ESC:    187 - 10111011 - 0xBB - »
 |  149  | |  23  || 76  ||149^ESC||  52  | | 234 |
 |_______| |______||_____||_______||______| |_____|
                      |     |
-                     |  2 Data byte containing START is xored with ESC
+                     |  2 START is xored with ESC
                      |
-                  1 Flags inside data are escaped
+                  1 START or 149 is escaped
 
 ```
 

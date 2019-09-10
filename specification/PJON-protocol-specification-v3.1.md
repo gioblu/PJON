@@ -17,7 +17,8 @@
 ```
 Invented by Giovanni Blu Mitolo
 Header feature proposed by Fred Larsen
-Originally published: 10/04/2010, latest revision: 12/08/2019
+Originally published: 10/04/2010
+Latest revision: 10/09/2019
 Related work: https://github.com/gioblu/PJON/
 Compliant implementations: PJON v10.0 and following
 Released into the public domain
@@ -56,7 +57,7 @@ The graph below shows the conceptual model that characterizes and standardizes t
 * Buses are identified with a 32 bits bus id
 * Many buses can coexist on the same medium
 * Synchronous and or asynchronous acknowledgement can be requested (see [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md))
-* Network services are identified with a 16 bits service identifier  
+* Network services are identified with a 16 bits port id  
 
 
 ### Bus
@@ -79,25 +80,25 @@ A PJON bus network is the result of n buses sharing the same medium and or being
 TWO BUSES SHARING THE SAME MEDIUM
 1 collision domain
 
-    BUS ID 0.0.0.1             BUS ID 0.0.0.2
- _______     _______         _______     _______
-|       |   |       |       |       |   |       |
-| ID 1  |   | ID 2  |       | ID 1  |   | ID 2  |
-|_______|   |_______|       |_______|   |_______|
-______|___________|______________|___________|___
-       ___|___                     ___|___
-      |       |                   |       |
-      | ID 3  |                   | ID 3  |
-      |_______|                   |_______|
+    BUS ID 0.0.0.1            BUS ID 0.0.0.2
+ _______     _______        _______     _______
+|       |   |       |      |       |   |       |
+| ID 1  |   | ID 2  |      | ID 1  |   | ID 2  |
+|_______|   |_______|      |_______|   |_______|
+______|___________|_____________|___________|___
+       ___|___                    ___|___
+      |       |                  |       |
+      | ID 3  |                  | ID 3  |
+      |_______|                  |_______|
 ```
 
 ### Switch
 A Switch is a device that forwards packets transparently between directly connected buses also if different physical layers or data-links are in use. It can rely on a default gateway to operate as a leaf in a larger tree network.
 ```cpp
- ______             ________             ______
-|      | PJDL bus  |        | PJDLR bus |      |
-| ID 1 |___________| SWITCH |___________| ID 2 |
-|______|           |________|           |______|
+ ______            ________             ______
+|      | PJDL bus |        | PJDLR bus |      |
+| ID 1 |__________| SWITCH |___________| ID 2 |
+|______|          |________|           |______|
 ```
 
 ### Router

@@ -16,7 +16,8 @@
 ## PJDLS v2.0
 ```
 Invented by Giovanni Blu Mitolo
-Originally published: 20/11/2017, latest revision: 31/10/2018
+Originally published: 20/11/2017
+Latest revision: 31/10/2018
 Related implementation: /src/strategies/AnalogSampling/
 Compliant versions: PJON v10.0 and following
 Released into the public domain

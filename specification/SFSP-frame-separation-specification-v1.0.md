@@ -21,7 +21,7 @@ Related work: https://github.com/gioblu/PJON/
 Compliant implementations: PJON v10.0 and following
 Released into the public domain
 ```
-SFSP has been specified to obtain reliable frame separation using byte stuffing and xor based flag obfuscation. It is similar to SLIP and its variations, although uses a more cautious approach, appending at the end of the frame an `END` flag to exclude a set of vulnerabilities. Its overhead is 1.33 times higher if compared to SLIP's but it is more reliable thanks to the presence of the `END` flag. SFSP uses a xor based flag obfuscation method to avoid the occurrence of flags within a frame. Its procedure is lightweight and more efficient if compared with the flag transposition method used by SLIP that requires more memory and operations to be executed. The suggested sampling and transmission strategy is byte-by-byte. SFSP is designed to support fast on the fly encoding and decoding implementations with no need of additional buffers.
+SFSP has been specified to obtain reliable frame separation using byte stuffing and xor based flag obfuscation. It is similar to SLIP and its variations, although uses a more cautious approach, appending at the end of the frame an `END` flag to exclude a set of vulnerabilities. Its overhead is 1.33 times higher if compared to SLIP's but it is more reliable thanks to the presence of the `START` flag. SFSP uses a xor based flag obfuscation method to avoid the occurrence of flags within a frame. Its procedure is lightweight and more efficient if compared with the flag transposition method used by SLIP that requires more memory and operations to be executed. The suggested sampling and transmission strategy is byte-by-byte. SFSP is designed to support fast on the fly encoding and decoding implementations with no need of additional buffers.
 
 ### Frame transmission
 Frame transmission starts with a `START` flag (decimal 149), followed by data bytes. When `START`, `END` (decimal 234) or `ESC` flag (decimal 76) occurs in data, it is prepended with an `ESC` flag and its value is xored with the `ESC` flag to avoid the presence of `START`, `END` or `ESC` flag in data. `END` is appended at the end of the frame.
@@ -39,9 +39,9 @@ ESC:    187 - 10111011 - 0xBB - »
 |  149  | |  23  || 76  ||149^ESC||  52  | | 234 |
 |_______| |______||_____||_______||______| |_____|
                      |     |
-                     |  2 Data byte containing START is xored with ESC
+                     |  2 START is xored with ESC
                      |
-                  1 Flags inside data are escaped
+                  1 START or 149 is escaped
 
 ```
 

@@ -17,7 +17,8 @@
 ```
 Invented by Giovanni Blu Mitolo
 Header feature proposed by Fred Larsen
-Originally published: 10/04/2010, latest revision: 12/08/2019
+Originally published: 10/04/2010
+Latest revision: 10/09/2019
 Related work: https://github.com/gioblu/PJON/
 Compliant implementations: PJON v10.0 and following
 Released into the public domain
@@ -56,7 +57,7 @@ The graph below shows the conceptual model that characterizes and standardizes t
 * Buses are identified with a 32 bits bus id
 * Many buses can coexist on the same medium
 * Synchronous and or asynchronous acknowledgement can be requested (see [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md))
-* Network services are identified with a 16 bits service identifier  
+* Network services are identified with a 16 bits port id  
 
 
 ### Bus
@@ -79,25 +80,25 @@ A PJON bus network is the result of n buses sharing the same medium and or being
 TWO BUSES SHARING THE SAME MEDIUM
 1 collision domain
 
-    BUS ID 0.0.0.1             BUS ID 0.0.0.2
- _______     _______         _______     _______
-|       |   |       |       |       |   |       |
-| ID 1  |   | ID 2  |       | ID 1  |   | ID 2  |
-|_______|   |_______|       |_______|   |_______|
-______|___________|______________|___________|___
-       ___|___                     ___|___
-      |       |                   |       |
-      | ID 3  |                   | ID 3  |
-      |_______|                   |_______|
+    BUS ID 0.0.0.1            BUS ID 0.0.0.2
+ _______     _______        _______     _______
+|       |   |       |      |       |   |       |
+| ID 1  |   | ID 2  |      | ID 1  |   | ID 2  |
+|_______|   |_______|      |_______|   |_______|
+______|___________|_____________|___________|___
+       ___|___                    ___|___
+      |       |                  |       |
+      | ID 3  |                  | ID 3  |
+      |_______|                  |_______|
 ```
 
 ### Switch
 A Switch is a device that forwards packets transparently between directly connected buses also if different physical layers or data-links are in use. It can rely on a default gateway to operate as a leaf in a larger tree network.
 ```cpp
- ______             ________             ______
-|      | PJDL bus  |        | PJDLR bus |      |
-| ID 1 |___________| SWITCH |___________| ID 2 |
-|______|           |________|           |______|
+ ______            ________             ______
+|      | PJDL bus |        | PJDLR bus |      |
+| ID 1 |__________| SWITCH |___________| ID 2 |
+|______|          |________|           |______|
 ```
 
 ### Router
@@ -132,14 +133,14 @@ HEADER BITMAP
 1. `PACKET ID` bit informs if the packet contains (value 1) or not (value 0) a 16 bits [packet id](/specification/PJON-protocol-specification-v3.1.md#packet-identification)
 2. `EXT. LENGTH` bit informs if the packet contains 1 (value 0) or 2 (value 1) bytes [length](/specification/PJON-protocol-specification-v3.1.md#extended-length)
 3. `CRC` bit signals which CRC is used, [CRC8](/specification/PJON-protocol-specification-v3.1.md#crc8-polynomial) (value 0) or [CRC32](/specification/PJON-protocol-specification-v3.1.md#crc32-polynomial) (value 1)
-4. `PORT` bit informs if the packet contains a 16 bits [network service identifier](/specification/PJON-protocol-specification-v3.1.md#network-services) (value 1) or not (value 0)
+4. `PORT` bit informs if a 16 bits [network service identifier](/specification/PJON-protocol-specification-v3.1.md#network-services) is contained (value 1) or not (value 0)
 5. `ACK MODE` bit signals [synchronous](/specification/PJON-protocol-acknowledge-specification-v1.0.md#synchronous-acknowledge) (value 0) or [asynchronous](/specification/PJON-protocol-acknowledge-specification-v1.0.md#asynchronous-acknowledge) (value 1) acknowledgement mode
 6. `ACK` bit informs if [acknowledgement](/specification/PJON-protocol-acknowledge-specification-v1.0.md) is requested (value 1) or not (value 0)
 7. `TX INFO` bit informs if the sender info are included (value 1) or not (value 0)
 8. `MODE` bit informs if the packet is formatted in [shared](/specification/PJON-protocol-specification-v3.1.md#shared-mode) (value 1) or [local](/specification/PJON-protocol-specification-v3.1.md#local-mode) mode (value 0)  
 
 Unacceptable header configuration states for standard transmission:
-* `----1-0-` or `ACK MODE` bit high, and `TX INFO` bit low (asynchronous acknowledgement requires transmitter info)
+* `----1-0-` or `ACK MODE` bit high, and `TX INFO` bit low (requires transmitter info)
 * `-10-----` or `EXT. LENGTH` bit high and `CRC` bit low (forced CRC32 for length > 15)
 
 Unacceptable header configuration states for a broadcast transmission:

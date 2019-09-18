@@ -17,7 +17,7 @@ void setup() {
 	Serial.begin(115200);
 	Serial.println("LoRa Transmitter");
 	// Synchronous acknowledgement is not supported
-  bus.set_synchronous_acknowledge(false);
+  LoraPJON.set_synchronous_acknowledge(false);
 	// Obligatory to initialize Radio with correct frequency
 	LoraPJON.strategy.setFrequency(868100000UL);
 	// Optional

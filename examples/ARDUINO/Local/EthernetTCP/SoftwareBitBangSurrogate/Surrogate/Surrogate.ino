@@ -59,7 +59,7 @@ void receiver_functionA(uint8_t *payload, uint16_t length, const PJON_Packet_Inf
     packet_info.sender_id,
     packet_info.sender_bus_id,
     DEVICE_ID,
-    PJONTools:localhost(),
+    PJONTools::localhost(),
     (uint8_t *)payload,
     length,
     packet_info.header,

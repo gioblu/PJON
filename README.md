@@ -7,6 +7,7 @@ If you are interested to support the development of this project buy the [PJON p
 
 [![Get PJON bus id](https://img.shields.io/badge/get-PJON%20bus%20id-lightgrey.svg)](http://www.pjon.org/get-bus-id.php)
 [![Join the chat at https://gitter.im/gioblu/PJON](https://badges.gitter.im/gioblu/PJON.svg)](https://gitter.im/gioblu/PJON?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Buy PJON products at www.pjon-technologies.com](https://img.shields.io/badge/buy-PJON-brightgreen)](https://www.pjon-technologies.com)
 
 PJON is used in thousands of devices and its community has spread worldwide because of the following 6 key factors:
 - **New technology**: [PJON](specification/PJON-protocol-specification-v3.1.md) is an experimental network protocol stack crafted in 8 years of research and experimentation. It was originally developed as an open-source alternative to i2c and 1-Wire but during development its scope and features have been extended to cover use cases where IP is generally applied. PJON has been engineered to have a variable footprint (4.2-8.2 kB program memory) and overhead (5-22 bytes per packet) depending on its configuration.

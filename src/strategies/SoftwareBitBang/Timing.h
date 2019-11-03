@@ -23,8 +23,9 @@
 #pragma once
 
 /* ATmega88/168/328 - Arduino Duemilanove, Uno, Nano, Mini, Pro, Pro mini */
-#if defined(__AVR_ATmega88__)  || defined(__AVR_ATmega168__) || \
-    defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
+#if defined(__AVR_ATmega88__)  || defined(__AVR_ATmega168__)  || \
+    defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__) || \
+    defined(__AVR_ATmega328PB__)
   #if SWBB_MODE == 1
     #if F_CPU == 16000000L
       /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */

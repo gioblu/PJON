@@ -94,8 +94,9 @@ inform the reader of their definition as macros in the global scope.
 
 /* AVR ATmega88/168/328/328P - Arduino Duemilanove, Uno, Nano, Mini, Pro -- */
 
-#if defined(__AVR_ATmega88__)  || defined(__AVR_ATmega168__) || \
-    defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
+#if defined(__AVR_ATmega88__)  || defined(__AVR_ATmega168__)  || \
+    defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__) || \
+    defined(__AVR_ATmega328PB__)
   #define PJON_IO_PIN_TO_PORT_REG(P) \
     ((P <= 7) ? &PORTD : ((P >= 8 && P <= 13) ? &PORTB : &PORTC))
   #define PJON_IO_PIN_TO_DDR_REG(P) \

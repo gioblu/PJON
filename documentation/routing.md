@@ -14,7 +14,7 @@
 Transparent routing based on a tree topology has been implemented by Fred Larsen with the `PJONSimpleSwitch`, `PJONSwitch`, `PJONRouter`, `PJONDynamicRouter` and `PJONInteractiveRouter`. Those classes implement the following router roles:
 
 ### SimpleSwitch
-[SimpleSwitch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/SimpleSwitch) connects two buses using the same strategy (`SoftwareBitBang` <=> `SoftwareBitBang`) primarily used to amplify signals and so extend the maximum range. It is useful instead of `PJONSwitch` to save memory when the same strategy is used in all buses. It avoids virtual inheritance so it is faster and has a smaller footprint.
+[SimpleSwitch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/SimpleSwitch) connects two buses using the same strategy. In this example a `SoftwareBitBang` <=> `SoftwareBitBang` switch is created. It can be used to amplify signals and so extend the maximum range or in more complex setups selectively switch packets as requested by its configuration. It can be used instead of `PJONSwitch` to save memory when the same strategy is used in all buses. It avoids virtual inheritance so it is faster and has a smaller footprint.
 ```cpp
  __________             ________              __________
 |          | SWBB bus  |        | SWBB bus   |          |
@@ -32,16 +32,16 @@ Polling time can be optionally configured:
 ```cpp
 PJONBus<SoftwareBitBang> bus2(
   PJON_NOT_ASSIGNED, // Switch device id
-  1000               // Polling time in microseconds
+  1000 // Polling time in microseconds
 );
 ```
 Device id ranges can be optionally configured:
 ```cpp
 PJONBus<SoftwareBitBang> bus2(
   PJON_NOT_ASSIGNED, // Switch device id
-  1000,              // Polling time in microseconds
-  2,                 // 2 ranges present (1-127, 128-254)
-  0,                 // range 1 in use here (1-127)
+  1000, // Polling time in microseconds
+  2, // 2 ranges present (1-127, 128-254)
+  0, // range 1 in use here (1-127)
 );
 ```
 After the `PJONBus` definitions, a `PJONSimpleSwitch` instance can be created:
@@ -79,7 +79,7 @@ void loop() {
 ```
 
 ### Switch
-[Switch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/Switch) routes packets between locally attached buses also if different strategies or media are in use. It supports a default gateway to be able to act as a leaf in a larger network setup. Thanks to the `PJONSwitch` class, with few lines of code, a switch that operates multiple strategies can be created:
+[Switch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/Switch) routes packets between locally attached buses also if different strategies or media are in use. It supports a default gateway to be able to act as a leaf in a larger network setup. Thanks to the `PJONSwitch` class, with few lines of code, a switch that operates multiple strategies can be created. In this example a `SoftwareBitBang` <=> `AnalogSampling` switch is created:
 ```cpp
 /* Connect SoftwareBitBang bus with an AnalogSampling bus:
 
@@ -89,31 +89,52 @@ void loop() {
 |_______|BUS ID 0.0.0.1 |______|BUS ID 0.0.0.2|_______|
 
 See below */
-
+```
+Create `StrategyLink` instances with the selected strategies:
+```cpp
 StrategyLink<SoftwareBitBang> link1;
 StrategyLink<AnalogSampling> link2;
-
+```
+Create `PJONAny` instances configuring the bus id:
+```cpp
 PJONAny bus1(&link1, (uint8_t[4]){0,0,0,1});
 PJONAny bus2(&link2, (uint8_t[4]){0,0,0,2});
-
+```
+Polling time can be optionally configured:
+```cpp
+PJONAny bus1(
+  &link1,
+  (uint8_t[4]){0,0,0,1},
+  PJON_NOT_ASSIGNED, // Switch device id
+  1000 // Polling in microseconds
+);
+```
+Device id ranges can be optionally configured:
+```cpp
+PJONAny bus1(
+  &link1,
+  (uint8_t[4]){0,0,0,1},
+  PJON_NOT_ASSIGNED, // Switch device id
+  1000, // Polling in microseconds
+  2, // 2 ranges present (1-127, 128-254)
+  0 // Range 1 in use (1-127)
+);
+```
+Create the `PJONSwitch` instance passing the `PJONAny` instances:
+```cpp
 PJONSwitch router(2, (PJONAny*[2]){&bus1, &bus2});
-
 ```
 Configure each strategy and the `router` instance as required:
 ```cpp
 void setup() {
-  // Tell SoftwareBitBang which pin is used
   link1.strategy.set_pin(12);
-  // Tell AnalogSampling which pin is used
   link2.strategy.set_pin(A0);
-  // Start router operation
   router.begin();
 }
 ```
 Call the `loop` function as often as possible to achieve optimal performance:
 ```cpp
 void loop() {
-  // Execute router operation
   router.loop();
 }
 ```

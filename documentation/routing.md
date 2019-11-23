@@ -28,14 +28,14 @@ The `SimpleSwitch` class provides with configurable transparent packet switching
 PJONBus<SoftwareBitBang> bus1(PJON_NOT_ASSIGNED);
 PJONBus<SoftwareBitBang> bus2(PJON_NOT_ASSIGNED);
 ```
-Optionally polling time can be configured:
+Polling time can be optionally configured:
 ```cpp
 PJONBus<SoftwareBitBang> bus2(
   PJON_NOT_ASSIGNED, // Switch device id
   1000               // Polling time in microseconds
 );
 ```
-Optionally device id ranges can be statically configured:
+Device id ranges can be optionally configured:
 ```cpp
 PJONBus<SoftwareBitBang> bus2(
   PJON_NOT_ASSIGNED, // Switch device id
@@ -52,7 +52,7 @@ PJONSimpleSwitch<SoftwareBitBang> router(
   (PJONBus<SoftwareBitBang>*[2]){&bus1,&bus2} // Bus array
 );
 ```
-Can be optionally defined a default gateway:
+A default gateway can be optionally configured:
 ```cpp
 PJONSimpleSwitch<SoftwareBitBang> router(
   2, // Length of the bus array
@@ -60,7 +60,7 @@ PJONSimpleSwitch<SoftwareBitBang> router(
   122 // Statically defined default gateway device id
 );
 ```
-Then configure each strategy and the `router` instance as required:
+Configure each strategy and the `router` instance as required:
 ```cpp
 
 void setup() {
@@ -70,7 +70,7 @@ void setup() {
   router.begin();
 }
 ```
-Then call the `loop` function as often as possible to achieve optimal performance:
+Call the `loop` function as often as possible to achieve optimal performance:
 ```cpp
 
 void loop() {
@@ -99,7 +99,7 @@ PJONAny bus2(&link2, (uint8_t[4]){0,0,0,2});
 PJONSwitch router(2, (PJONAny*[2]){&bus1, &bus2});
 
 ```
-Then configure each strategy and the `router` instance as required:
+Configure each strategy and the `router` instance as required:
 ```cpp
 void setup() {
   // Tell SoftwareBitBang which pin is used
@@ -110,7 +110,7 @@ void setup() {
   router.begin();
 }
 ```
-Then call the `loop` function as often as possible to achieve optimal performance:
+Call the `loop` function as often as possible to achieve optimal performance:
 ```cpp
 void loop() {
   // Execute router operation

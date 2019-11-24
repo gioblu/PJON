@@ -14,12 +14,16 @@
 Transparent routing based on a tree topology has been implemented by Fred Larsen with the [PJONSimpleSwitch](#simpleswitch), [PJONSwitch](#switch), [PJONRouter](#router), [PJONDynamicRouter](#dynamicrouter), [PJONInteractiveRouter](#interactiverouter) and [PJONVirtualBusRouter](#virtual-bus).
 
 ### SimpleSwitch
-the [PJONSimpleSwitch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/SimpleSwitch) class connects two buses using the same strategy. In this example a `SoftwareBitBang` <=> `SoftwareBitBang` switch is created. It can be used to amplify signals and so extend the maximum range or in more complex setups selectively switch packets as requested by its configuration. It can be used instead of `PJONSwitch` to save memory when the same strategy is used in all buses. It avoids virtual inheritance so it is faster and has a smaller footprint.
+The [PJONSimpleSwitch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/SimpleSwitch) class connects two buses using the same strategy. In this example a `SoftwareBitBang` <=> `SoftwareBitBang` switch is created. It can be used to amplify signals and so extend the maximum range or in more complex setups selectively switch packets as requested by its configuration. It can be used instead of `PJONSwitch` to save memory when the same strategy is used in all buses. It avoids virtual inheritance so it is faster and has a smaller footprint.
 ```cpp
  __________             ________              __________
 |          | SWBB bus  |        | SWBB bus   |          |
 | DEVICE 1 |___________| SWITCH |____________| DEVICE 2 |
 |__________|           |________|            |__________|
+```
+The first thing to do is to include the `PJONSimpleSwitch` class:
+```cpp
+#include <PJONSimpleSwitch.h>
 ```
 The `SimpleSwitch` class provides with configurable transparent packet switching between buses using the same strategy. `SimpleSwitch` requires a tree topology (it does not contain any loop detection procedure). The `SimpleSwitch` class receives as a parameter the length and the array of 2 or more `PJONBus` instances:
 ```cpp
@@ -86,9 +90,11 @@ The [PJONSwitch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/Switch) class tr
  _______     WIRED       ______    WIRELESS    _______
 |       |SoftwareBitBang|      |AnalogSampling|       |
 |DEVICE1|_______________|SWITCH| _ _ _ _ _ _ _|DEVICE2|
-|_______|BUS ID 0.0.0.1 |______|BUS ID 0.0.0.2|_______|
-
-See below */
+|_______|BUS ID 0.0.0.1 |______|BUS ID 0.0.0.2|_______| */
+```
+The first thing to do is to include the `PJONSwitch` class:
+```cpp
+#include <PJONSwitch.h>
 ```
 Create `StrategyLink` instances with the selected strategies:
 ```cpp
@@ -139,7 +145,7 @@ void loop() {
 }
 ```
 ### Router
-the [PJONRouter](/examples/ARDUINO/Network/SoftwareBitBang/Router) class routes between both locally attached buses also if different strategies or media are in use, and remote buses reachable through the locally attached buses. In this example simple a router is created:
+The [PJONRouter](/examples/ARDUINO/Network/SoftwareBitBang/Router) class routes between both locally attached buses also if different strategies or media are in use, and remote buses reachable through the locally attached buses. In this example simple a router is created:
 ```cpp
                  ________
     Bus 0.0.0.3 |        | Bus 0.0.0.4
@@ -151,6 +157,10 @@ ________________| ROUTER |________________
 |          |                 |          |
 | DEVICE 1 |                 | DEVICE 2 |
 |__________|                 |__________|
+```
+The first thing to do is to include the `PJONRouter` class:
+```cpp
+#include <PJONRouter.h>
 ```
 Create `StrategyLink` instances with the selected strategies:
 ```cpp
@@ -202,6 +212,10 @@ ________________| ROUTER |________________
 | DEVICE 1 |                 | DEVICE 2 |
 |__________|                 |__________|
 ```
+The first thing to do is to include the `PJONDynamicRouter` class:
+```cpp
+#include <PJONDynamicRouter.h>
+```
 Create `StrategyLink` instances with the selected strategies:
 ```cpp
 StrategyLink<SoftwareBitBang> link1;
@@ -230,8 +244,9 @@ void loop() {
   router.loop();
 }
 ```
-### Virtual bus
-[Virtual bus](/examples/ARDUINO/Local/SoftwareBitBang/Tunneler) is a bus where multiple buses using potentially different media or strategies, connected through a router, have the same bus id (including the local bus case), and where the location of each device is automatically registered observing traffic.
 
 ### InteractiveRouter
 [Interactive router](/examples/ARDUINO/Network/SoftwareBitBang/Switch/BlinkingSwitch) routes packets as a switch or router but it is also able to act as a device and have user-defined receive and error call-back.
+
+### Virtual bus
+[Virtual bus](/examples/ARDUINO/Local/SoftwareBitBang/Tunneler) is a bus where multiple buses using potentially different media or strategies, connected through a router, have the same bus id (including the local bus case), and where the location of each device is automatically registered observing traffic.

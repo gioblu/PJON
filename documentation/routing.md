@@ -14,7 +14,7 @@
 Transparent routing based on a tree topology has been implemented by Fred Larsen with the [PJONSimpleSwitch](#simpleswitch), [PJONSwitch](#switch), [PJONRouter](#router), [PJONDynamicRouter](#dynamicrouter), [PJONInteractiveRouter](#interactiverouter) and [PJONVirtualBusRouter](#virtual-bus).
 
 ### SimpleSwitch
-[SimpleSwitch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/SimpleSwitch) connects two buses using the same strategy. In this example a `SoftwareBitBang` <=> `SoftwareBitBang` switch is created. It can be used to amplify signals and so extend the maximum range or in more complex setups selectively switch packets as requested by its configuration. It can be used instead of `PJONSwitch` to save memory when the same strategy is used in all buses. It avoids virtual inheritance so it is faster and has a smaller footprint.
+the [PJONSimpleSwitch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/SimpleSwitch) class connects two buses using the same strategy. In this example a `SoftwareBitBang` <=> `SoftwareBitBang` switch is created. It can be used to amplify signals and so extend the maximum range or in more complex setups selectively switch packets as requested by its configuration. It can be used instead of `PJONSwitch` to save memory when the same strategy is used in all buses. It avoids virtual inheritance so it is faster and has a smaller footprint.
 ```cpp
  __________             ________              __________
 |          | SWBB bus  |        | SWBB bus   |          |
@@ -79,7 +79,7 @@ void loop() {
 ```
 
 ### Switch
-[Switch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/Switch) routes packets between locally attached buses also if different strategies or media are in use. It supports a default gateway to be able to act as a leaf in a larger network setup. Thanks to the `PJONSwitch` class, with few lines of code, a switch that operates multiple strategies can be created. In this example a `SoftwareBitBang` <=> `AnalogSampling` switch is created:
+The [PJONSwitch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/Switch) class transparently switches packets between locally attached buses also if different strategies or media are in use. It supports a default gateway to be able to act as a leaf in a larger network setup. Thanks to the `PJONSwitch` class, with few lines of code, a switch that operates multiple strategies can be created. In this example a `SoftwareBitBang` <=> `AnalogSampling` switch is created:
 ```cpp
 /* Connect SoftwareBitBang bus with an AnalogSampling bus:
 
@@ -97,8 +97,8 @@ StrategyLink<AnalogSampling> link2;
 ```
 Create `PJONAny` instances configuring the bus id:
 ```cpp
-PJONAny bus1(&link1, (uint8_t[4]){0,0,0,1});
-PJONAny bus2(&link2, (uint8_t[4]){0,0,0,2});
+PJONAny bus1(&link1, (uint8_t[4]){0, 0, 0, 1});
+PJONAny bus2(&link2, (uint8_t[4]){0, 0, 0, 2});
 ```
 Polling time can be optionally configured:
 ```cpp
@@ -139,7 +139,7 @@ void loop() {
 }
 ```
 ### Router
-[Router](/examples/ARDUINO/Network/SoftwareBitBang/Router) routes between locally attached buses also if different strategies or media are in use, and remote buses reachable through the locally attached buses.
+the [PJONRouter](/examples/ARDUINO/Network/SoftwareBitBang/Router) class routes between both locally attached buses also if different strategies or media are in use, and remote buses reachable through the locally attached buses. In this example simple a router is created:
 ```cpp
                  ________
     Bus 0.0.0.3 |        | Bus 0.0.0.4
@@ -152,7 +152,42 @@ ________________| ROUTER |________________
 | DEVICE 1 |                 | DEVICE 2 |
 |__________|                 |__________|
 ```
+Create `StrategyLink` instances with the selected strategies:
+```cpp
+StrategyLink<SoftwareBitBang> link1;
+StrategyLink<OverSampling> link2;
+```
+Create `PJONAny` instances configuring the bus id:
+```cpp
+PJONAny bus1(&link1, (uint8_t[4]){0, 0, 0, 3});
+PJONAny bus2(&link2, (uint8_t[4]){0, 0, 0, 4});
+```
+Create the `PJONRouter` instance passing the `PJONAny` instances:
+```cpp
+PJONRouter router(2, (PJONAny*[2]){&bus1, &bus2});
+```
+Configure each strategy and the `router` instance as required:
+```cpp
+void setup() {
+  link1.strategy.set_pin(7);
+  link2.strategy.set_pin(12);
 
+  router.add((const uint8_t[4]){0,0,0,1}, 0);
+  router.add((const uint8_t[4]){0,0,0,2}, 1);
+
+  router.begin();
+}
+```
+Calling `router.add` and passing the bus id and the index of the attached bus, it is possible to configure which remote buses are reachable through locally attached buses, in the example below bus id `0.0.0.1` is configured as reachable through the local bus `0` or `link1`:
+```cpp
+router.add((const uint8_t[4]){0,0,0,1}, 0);
+```
+Call the `loop` function as often as possible to achieve optimal performance:
+```cpp
+void loop() {
+  router.loop();
+}
+```
 ### DynamicRouter
 [Dynamic router](/examples/ARDUINO/Network/SoftwareBitBang/Router/DynamicRouter) is a router that also populates a routing table of remote (not directly attached) buses observing traffic.
 

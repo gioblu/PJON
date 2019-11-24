@@ -189,8 +189,47 @@ void loop() {
 }
 ```
 ### DynamicRouter
-[Dynamic router](/examples/ARDUINO/Network/SoftwareBitBang/Router/DynamicRouter) is a router that also populates a routing table of remote (not directly attached) buses observing traffic.
-
+The [PJONDynamicRouter](/examples/ARDUINO/Network/SoftwareBitBang/Router/DynamicRouter) is a router that also populates a routing table of remote (not directly attached) buses observing traffic. It can offer the same features provided by the `PJONRouter` class with no need of manual configuration. To do so, the `PJONDynamicRouter` class uses a routing table that is dynamically updated, for this reason uses more memory if compared with `PJONRouter`. Use the `PJON_ROUTER_TABLE_SIZE` constant to configure the number of entries that are `100` by default.
+```cpp
+                 ________
+    Bus 0.0.0.3 |        | Bus 0.0.0.4
+________________| ROUTER |________________
+      |  Pin 7  |________|  Pin 12 |
+      |                            |
+      | Bus 0.0.0.1    Bus 0.0.0.2 |
+ _____|____                   _____|____
+|          |                 |          |
+| DEVICE 1 |                 | DEVICE 2 |
+|__________|                 |__________|
+```
+Create `StrategyLink` instances with the selected strategies:
+```cpp
+StrategyLink<SoftwareBitBang> link1;
+StrategyLink<OverSampling> link2;
+```
+Create `PJONAny` instances configuring the bus id:
+```cpp
+PJONAny bus1(&link1, (uint8_t[4]){0, 0, 0, 3});
+PJONAny bus2(&link2, (uint8_t[4]){0, 0, 0, 4});
+```
+Create the `PJONRouter` instance passing the `PJONAny` instances:
+```cpp
+PJONDynamicRouter router(2, (PJONAny*[2]){&bus1, &bus2});
+```
+Configure each strategy and the `router` instance as required:
+```cpp
+void setup() {
+  link1.strategy.set_pin(7);
+  link2.strategy.set_pin(12);
+  router.begin();
+}
+```
+Unlike the `PJONRouter` class, `PJONDynamicRouter` does not need any configuration and will learn how to reach devices observing the incoming traffic. Call the `loop` function as often as possible to achieve optimal performance:
+```cpp
+void loop() {
+  router.loop();
+}
+```
 ### Virtual bus
 [Virtual bus](/examples/ARDUINO/Local/SoftwareBitBang/Tunneler) is a bus where multiple buses using potentially different media or strategies, connected through a router, have the same bus id (including the local bus case), and where the location of each device is automatically registered observing traffic.
 

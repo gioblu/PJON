@@ -1,7 +1,7 @@
 
 ![PJON](http://www.gioblu.com/PJON/PJON-github-header-tiny.png)
 ## PJON 12.0
-PJON® (Padded Jittering Operative Network) is an arduino-compatible, multi-master, multi-media network protocol. It proposes a new Open Standard, it is designed as a framework and implements a totally software-defined network protocol stack that can be easily cross-compiled on many MCUs and architectures like ATtiny, ATmega, SAMD, ESP8266, ESP32, STM32, Teensy, Raspberry Pi, Linux, Windows x86, Apple and Android. PJON operates on a wide range of media and protocols like TCP, UDP, ESPNOW, USB, Serial, RS485, LoRa, PJDL, PJDLR and PJDLS. If you want to know more about PJON visit the [wiki](https://github.com/gioblu/PJON/wiki).
+PJON® (Padded Jittering Operative Network) is an arduino-compatible, multi-master, multi-media network protocol. It proposes a new Open Standard, it is designed as a framework and implements a totally software-defined network protocol stack that can be easily cross-compiled on many MCUs and architectures like ATtiny, ATmega, SAMD, ESP8266, ESP32, STM32, Teensy, Raspberry Pi, Linux, Windows x86, Apple and Android. PJON operates on a wide range of media and protocols like TCP, UDP, ESPNOW, USB, Serial, RS485, LoRa, PJDL, PJDLR and PJDLS.
 
 [![Get PJON bus id](https://img.shields.io/badge/get-PJON%20bus%20id-lightgrey.svg)](http://www.pjon.org/get-bus-id.php)
 [![Join the chat at https://gitter.im/gioblu/PJON](https://badges.gitter.im/gioblu/PJON.svg)](https://gitter.im/gioblu/PJON?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -30,8 +30,8 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 - [PJDL v4.0](src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md) - [PJDLR v3.0](src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) - [PJDLS v2.0](src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) - [TSDL v2.1](src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md)
 
 ### Publications
-- [PJON protocol handbook](https://www.pjon-technologies.com/collections/frontpage/products/pjon-protocol-hand-book) by Giovanni Blu Mitolo, distributed by [PJON Technologies srl](https://www.pjon-technologies.com)
-- [PJON 12.0 big box](https://www.pjon-technologies.com/collections/frontpage/products/pjon-protocol-12-0-big-box) by Giovanni Blu Mitolo, distributed by [PJON Technologies srl](https://www.pjon-technologies.com)
+- [PJON protocol handbook](https://www.pjon-technologies.com/collections/frontpage/products/pjon-protocol-hand-book) by Giovanni Blu Mitolo - Distributed by [PJON Technologies srl](https://www.pjon-technologies.com)
+- [PJON 12.0 big box](https://www.pjon-technologies.com/collections/frontpage/products/pjon-protocol-12-0-big-box) by Giovanni Blu Mitolo - Distributed by [PJON Technologies srl](https://www.pjon-technologies.com)
 
 ### Academic studies
 Researchers are active in many universities worldwide using PJON in different environments. The following list contains all the known published academic studies about PJON:

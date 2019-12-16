@@ -89,7 +89,7 @@ protected:
       return PJON_NOT_ASSIGNED;
 #if (PJON_VIRTUALBUS_ROUTE_TIMEOUT != 0)
     // Forget the device location if no packet from it has been observed for some time
-    if ((uint32_t)(millis() - device_last_activity_time[device_id]) 
+    if ((uint32_t)(PJON_MILLIS() - device_last_activity_time[device_id])
         > (uint32_t)PJON_VIRTUALBUS_ROUTE_TIMEOUT*1000)
       device_via_attached_bus[device_id] = PJON_NOT_ASSIGNED;
 #endif
@@ -111,8 +111,8 @@ protected:
       #endif
       device_via_attached_bus[device_id] = attached_bus;
 #if (PJON_VIRTUALBUS_ROUTE_TIMEOUT != 0)
-      device_last_activity_time[device_id] = millis();
-#endif      
+      device_last_activity_time[device_id] = PJON_MILLIS();
+#endif
     }
   }
 

@@ -84,10 +84,10 @@
 
 // Max size of key and value in MQTTT_MODE_MIRROR_TRANSLATE mode
 #ifndef MQTTT_KEY_SIZE
-  #define MQTTT_KEY_SIZE 30
+  #define MQTTT_KEY_SIZE 15
 #endif
 #ifndef MQTTT_VALUE_SIZE
-  #define MQTTT_VALUE_SIZE 30
+  #define MQTTT_VALUE_SIZE 15
 #endif
 
 #define MQTTT_MODE_BUS_RAW 0
@@ -98,6 +98,11 @@
 // Select which mode to use
 #ifndef MQTTT_MODE
   #define MQTTT_MODE MQTTT_MODE_BUS_RAW
+#endif
+
+// The maximum number of keys to be translated in MIRROR_TRANSLATE mode
+#ifndef MQTTT_TRANSLATION_TABLE_SIZE
+  #define MQTTT_TRANSLATION_TABLE_SIZE 5
 #endif
 
 class MQTTTranslate {
@@ -111,6 +116,21 @@ class MQTTTranslate {
     #if (MQTTT_MODE == MQTTT_MODE_MIRROR_TRANSLATE)
     char key[MQTTT_KEY_SIZE];
     char value[MQTTT_VALUE_SIZE];
+    // Translation table
+    uint8_t translation_count = 0;
+    char pjon_keys[MQTTT_TRANSLATION_TABLE_SIZE][MQTTT_KEY_SIZE];
+    char mqtt_keys[MQTTT_TRANSLATION_TABLE_SIZE][MQTTT_KEY_SIZE];
+    
+    bool translate(char *key, uint8_t len, bool to_mqtt) {
+      for (uint8_t i=0; i<translation_count; i++) {
+        if (strcmp(key, to_mqtt ? pjon_keys[i] : mqtt_keys[i]) == 0) {
+          strncpy(key, to_mqtt ? mqtt_keys[i] : pjon_keys[i], min(len, MQTTT_KEY_SIZE));
+          key[len-1] = 0;
+          return true;
+        }
+      }
+      return false;
+    }
     #endif
 
     static void static_receiver(const char *topic, const uint8_t *payload, uint16_t len, void *callback_object) {
@@ -150,6 +170,7 @@ class MQTTTranslate {
           uint8_t l = min(start - device_start + len -1, sizeof key -1);
           strncpy(key, start+1, l);
           key[l] = 0; // Null terminate
+          translate(key, sizeof key, false);
           l = min(len, sizeof value-1);
           strncpy(value, (const char*)payload, l);
           value[l] = 0; // Null terminate
@@ -288,12 +309,12 @@ public:
           uint8_t l = min(e-v, sizeof key-1);
           strncpy(key, v, l); // Complete topic like /pjon/device44/output/temperature
           key[l] = 0;
-          if (lowercase_topics) for (uint8_t i=0; i<l; i++) key[i] = tolower(key[i]);
           l = min(c-e-1, sizeof value-1);
           strncpy(value, e+1, l);
           value[l] = 0;
           *p = '/';
-          translate(key, sizeof key, true);
+          if (!translate(key, sizeof key, true))
+            if (lowercase_topics) for (char *k=key; *k!=0; k++) *k = tolower(*k);
           strcpy(p+1, key);
           send_cnt += mqttclient.publish(mqttclient.topic_buf(), (uint8_t*)value, strlen(value), retain, qos);
           v = c-d >= plen ? NULL : c+1;
@@ -329,13 +350,23 @@ public:
       last_send_success = mqttclient.publish(mqttclient.topic_buf(), data, length, retain, qos);
     };
 
-    void translate(char *key, uint8_t len, bool to_mqtt) {
-    }
-
     const char *find_value_separator(const char *value, uint16_t len) {
       // This does the job of a strchr but accepting that null-terminator may be missing
       const char *p = value;
       while (p != NULL && (p-value < len) && *p != ',' && *p != 0) p++;
       return p;
     }
+    
+     #if (MQTTT_MODE == MQTTT_MODE_MIRROR_TRANSLATE)
+     bool add_translation(const char *pjon_key, const char *mqtt_key) {
+      if (translation_count >= MQTTT_TRANSLATION_TABLE_SIZE) return false;
+      strncpy(pjon_keys[translation_count], pjon_key, MQTTT_KEY_SIZE);
+      pjon_keys[translation_count][MQTTT_KEY_SIZE-1] = 0;
+      strncpy(mqtt_keys[translation_count], mqtt_key, MQTTT_KEY_SIZE);
+      mqtt_keys[translation_count][MQTTT_KEY_SIZE-1] = 0;
+      for (char *p=mqtt_keys[translation_count]; *p!=0; p++) *p = tolower(*p);
+      translation_count++;
+      return true;
+    }
+    #endif
 };

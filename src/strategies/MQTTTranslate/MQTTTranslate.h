@@ -136,6 +136,28 @@ class MQTTTranslate {
     static void static_receiver(const char *topic, const uint8_t *payload, uint16_t len, void *callback_object) {
       if (callback_object) ((MQTTTranslate*)callback_object)->receiver(topic, payload, len);
     }
+    
+    #if (MQTTT_MODE == MQTTT_MODE_BUS_JSON)
+    bool find_next_json_key(const char **p, const char *last) {
+      while (**p && *p < last && **p != '{' && **p != ',') (*p)++; // Find start brace or comma
+      if (!**p || *p >= last) return false;
+      (*p)++; // Skip start brace or comma {"to":44,"from":"45","data":"sgfsdf"}
+      while (**p && *p < last && **p != '\"') (*p)++; // Skip until double quote
+      if (**p != '\"' || *p >= last) return false;
+      (*p)++; // Point to first char of key
+      return true;
+    }
+
+    bool find_next_json_value(const char **p, const char *last) {
+      while (**p && *p < last && **p != ':') (*p)++; // Find colon
+      if (!**p || *p >= last) return false;
+      (*p)++; // Skip colon {"to":44,"from":"45","data":"sgfsdf"}
+      while (**p && *p < last && (**p == ' ' || **p == '\t')) (*p)++; // Skip potential whitespace
+      if (!**p || *p >= last) return false;
+      if (**p == '\"' && *p < last) (*p)++; // Skip leading quote if present
+      return true;
+    }
+    #endif
 
     void receiver(const char *topic, const uint8_t *payload, uint16_t len) {
       #if (MQTTT_MODE == MQTTT_MODE_BUS_RAW)
@@ -147,8 +169,24 @@ class MQTTTranslate {
       #if (MQTTT_MODE == MQTTT_MODE_BUS_JSON)
       // Must assume that payload is text, unless UUencoding/base64encoding
       // {"to": to_id, "from": from id, "data": "payload"}
-      // const char *p = (const char *)payload;
-      // TODO: Finish parsing JSON
+      uint8_t sender_id = 0, receiver_id = 0;
+      const char *p = (const char*)payload, *last = p+len-1;
+      bool found = false;
+      while (find_next_json_key(&p, last)) { // to, from or data
+        if (strncmp(p, "to\"", 3)==0 && find_next_json_value(&p, last)) receiver_id = atoi(p);
+        else if (strncmp(p, "from\"", 5)==0 && find_next_json_value(&p, last)) sender_id = atoi(p);
+        else if (strncmp(p, "data\"", 5)==0 && find_next_json_value(&p, last)) {
+          const char *p2 = p;
+          while (p2-(const char*)payload+1 < len && *p2 && *p2 != '\"') p2++;
+          if (*p2 == '\"') { found = true; payload = (uint8_t*)p; len = p2 - p; }
+        }
+      }
+      if (receiver_id == 0 || !found) return;
+      // Package the data message into a PJON packet
+      uint8_t h = header;
+      if (sender_id != 0) header |= PJON_TX_INFO_BIT;
+      incoming_packet_size = PJONTools::compose_packet(sender_id, bus_id, receiver_id,
+        bus_id, packet_buffer, payload, len, h);
       #endif
       #if (MQTTT_MODE == MQTTT_MODE_MIRROR_TRANSLATE || MQTTT_MODE == MQTTT_MODE_MIRROR_DIRECT)
       // Parse topic to get source device id
@@ -187,7 +225,7 @@ class MQTTTranslate {
       incoming_packet_size = PJONTools::compose_packet(receiver_id, bus_id, receiver_id,
         bus_id, packet_buffer, payload, len, header);
       #endif
-    };
+    }
 public:
     ReconnectingMqttClient mqttclient;
     bool retain = false; // Leave message in broker for clients to receive at connect
@@ -198,7 +236,7 @@ public:
     uint8_t header = 0;
     bool lowercase_topics = true;
     
-    void set_config(uint8_t id, const uint8_t bus_id[], uint8_t header) {
+    void set_config(uint8_t id, const uint8_t bus_id[4], uint8_t header) {
       my_id = id; 
       if (bus_id != NULL) memcpy(this->bus_id, bus_id, 4);
       this->header = header;
@@ -278,14 +316,14 @@ public:
       PJONTools::parse_header(data, _packet_info);
 
       // Compose topic
-// TODO: Wath buffer size      
+// TODO: Make sure not accessing outside buffer
       uint8_t len = strlen(topic.c_str());
       strcpy(mqttclient.topic_buf(), topic.c_str());
       char *p = &mqttclient.topic_buf()[len];
       strcpy(p, "/device"); p += 7;
       #if (MQTTT_MODE == MQTTT_MODE_MIRROR_TRANSLATE || MQTTT_MODE == MQTTT_MODE_MIRROR_DIRECT)
       itoa(_packet_info.sender_id, p, 10);
-      strcat(p, "/output"); // like pjon/device44/output
+      strcat(p, "/output"); // Like pjon/device44/output
       p = &p[strlen(p)]; // End of /output
       #else // One of the bus modes, publish to receiver device
       itoa(_packet_info.receiver_id, p, 10);
@@ -340,7 +378,8 @@ public:
       p = &p[strlen(p)];
       strcpy(p, ",\"data\":\""); p+= 9;
       uint8_t payload_len = length - overhead;
-      strncpy(p, (const char*)&data[overhead - crc_size], payload_len); p+= payload_len;
+      strncpy(p, (const char*)&data[overhead - crc_size], payload_len); p[payload_len] = 0;
+      p += strlen(p);
       strcpy(p, "\"}"); p += 2;
       data = packet_buffer;
       length = ((uint8_t*)p - packet_buffer);

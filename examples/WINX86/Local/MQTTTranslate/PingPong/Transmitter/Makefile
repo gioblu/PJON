@@ -1,2 +1,2 @@
 all:
-	g++ -DLINUX -I. -I../../../../../../PJON/src -I../../../../../src -I../../../../../../ArduinoJson/src GenericModuleMasterHttp.cpp -o GenericModuleMasterHttp -std=c++11
+	g++ -DLINUX -I. -I../../../../../../../ReconnectingMqttClient/src -I../../../../../../src Transmitter.cpp -o Transmitter -std=c++11

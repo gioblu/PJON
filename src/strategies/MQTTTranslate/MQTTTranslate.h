@@ -71,6 +71,9 @@
 #pragma once
 #include <PJONDefines.h>
 #include <ReconnectingMqttClient.h>
+#ifndef ARDUINO
+#include <stdlib.h>
+#endif
 
 #define MQTTT_DEFAULT_PORT                   1883
 #ifndef MQTTT_RESPONSE_TIMEOUT
@@ -254,14 +257,18 @@ public:
     bool begin(uint8_t device_id = 0) {
       my_id = device_id;
       mqttclient.set_receive_callback(static_receiver, this);
-      String sub_topic = topic + "/device" + device_id;
+      char *p = (char*)packet_buffer;
+      strcpy(p, topic.c_str());
+      strcat(p, "/device");
+      p = &p[strlen(p)];
+      p += mqttclient.uint8toa(device_id, p); // Now like pjon/device44
       #if (MQTTT_MODE == MQTTT_MODE_MIRROR_TRANSLATE)
-      sub_topic += "/input/+"; // All input topics
+      strcat(p, "/input/+");
       #endif
       #if (MQTTT_MODE == MQTTT_MODE_MIRROR_DIRECT)
-      sub_topic += "/input"; // Only one input topic
+      strcat(p, "/input"); // Only one input topic
       #endif
-      mqttclient.subscribe(sub_topic.c_str(), qos);
+      mqttclient.subscribe((const char*)packet_buffer, qos);
       return mqttclient.connect();
     };
 
@@ -322,11 +329,11 @@ public:
       char *p = &mqttclient.topic_buf()[len];
       strcpy(p, "/device"); p += 7;
       #if (MQTTT_MODE == MQTTT_MODE_MIRROR_TRANSLATE || MQTTT_MODE == MQTTT_MODE_MIRROR_DIRECT)
-      itoa(_packet_info.sender_id, p, 10);
+      p += mqttclient.uint8toa(_packet_info.sender_id, p);
       strcat(p, "/output"); // Like pjon/device44/output
       p = &p[strlen(p)]; // End of /output
       #else // One of the bus modes, publish to receiver device
-      itoa(_packet_info.receiver_id, p, 10);
+      mqttclient.uint8toa(_packet_info.receiver_id, p);
       #endif
       #if (MQTTT_MODE != MQTTT_MODE_BUS_RAW)
       uint8_t overhead = PJONTools::packet_overhead(_packet_info.header);
@@ -371,11 +378,9 @@ public:
       // {"to": to_id, "from": from id, "data": "payload"}
       p = (char *) packet_buffer;;
       strcpy(p, "{\"to\":"); p += 6;      
-      itoa(_packet_info.receiver_id, p, 10);
-      p = &p[strlen(p)];
+      p += mqttclient.uint8toa(_packet_info.receiver_id, p);
       strcpy(p, ",\"from\":"); p+= 8;
-      itoa(_packet_info.sender_id, p, 10);
-      p = &p[strlen(p)];
+      p += mqttclient.uint8toa(_packet_info.sender_id, p);
       strcpy(p, ",\"data\":\""); p+= 9;
       uint8_t payload_len = length - overhead;
       strncpy(p, (const char*)&data[overhead - crc_size], payload_len); p[payload_len] = 0;

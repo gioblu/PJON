@@ -148,7 +148,7 @@ limitations under the License. */
 /* Maximum packet ids record kept in memory (to avoid duplicated exchanges) */
 #ifndef PJON_MAX_RECENT_PACKET_IDS
   #define PJON_MAX_RECENT_PACKET_IDS 10
-#endif  
+#endif
 
 struct PJON_Packet {
   uint8_t  attempts;

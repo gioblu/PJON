@@ -225,7 +225,117 @@ struct PJONTools {
     return true;
   };
 
-  /* Fill a PJON_Packet_Info struct with data parsing a packet: */
+  /* Composes a packet in PJON format: */
+
+  static uint16_t compose_packet(
+    const uint8_t sender_id,
+    const uint8_t *sender_bus_id,
+    const uint8_t receiver_id,
+    const uint8_t *receiver_bus_id,
+    uint8_t *destination,
+    const void *source,
+    uint16_t length,
+    uint8_t header = 0,
+    uint16_t packet_id = 0,
+    uint16_t destination_port = PJON_BROADCAST,
+    uint16_t source_port = PJON_BROADCAST
+  ) {
+    uint8_t index = 0;
+    if(length > 255) header |= PJON_EXT_LEN_BIT;
+    if(destination_port != PJON_BROADCAST) header |= PJON_PORT_BIT;
+
+    if(
+      (header & PJON_PORT_BIT) &&
+      (destination_port == PJON_BROADCAST) &&
+      (source_port == PJON_BROADCAST)
+    ) header &= ~PJON_PORT_BIT;
+
+    if(receiver_id == PJON_BROADCAST)
+      header &= ~(PJON_ACK_REQ_BIT | PJON_ACK_MODE_BIT);
+    uint16_t new_length = length + packet_overhead(header);
+    bool extended_length = header & PJON_EXT_LEN_BIT;
+
+    #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
+      bool add_packet_id =
+        ((header & PJON_ACK_MODE_BIT) && (header & PJON_TX_INFO_BIT)) ||
+        (header & PJON_PACKET_ID_BIT);
+    #else
+      (void)packet_id; // Avoid unused variable compiler warning
+    #endif
+
+    if(new_length > 15 && !(header & PJON_CRC_BIT)) {
+      header |= PJON_CRC_BIT;
+      new_length = (uint16_t)(length + packet_overhead(header));
+    }
+
+    if(new_length > 255 && !extended_length) {
+      header |= PJON_EXT_LEN_BIT;
+      new_length = (uint16_t)(length + packet_overhead(header));
+    }
+
+    if(new_length >= PJON_PACKET_MAX_LENGTH)
+      return new_length;
+
+    destination[index++] = receiver_id;
+    destination[index++] = (uint8_t)header;
+    if(extended_length) {
+      destination[index++] = (uint8_t)(new_length >> 8);
+      destination[index++] = (uint8_t)new_length;
+      destination[index++] = PJON_crc8::compute((uint8_t *)destination, 4);
+    } else {
+      destination[index++] = (uint8_t)new_length;
+      destination[index++] = PJON_crc8::compute((uint8_t *)destination, 3);
+    }
+    if(header & PJON_MODE_BIT) {
+      PJONTools::copy_bus_id((uint8_t*) &destination[index], receiver_bus_id);
+      index += 4;
+      if(header & PJON_TX_INFO_BIT) {
+        PJONTools::copy_bus_id((uint8_t*) &destination[index], sender_bus_id);
+        index += 4;
+      }
+    }
+    if(header & PJON_TX_INFO_BIT) destination[index++] = sender_id;
+
+    #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
+      if(add_packet_id) {
+        destination[index++] = (uint8_t)(packet_id >> 8);
+        destination[index++] = (uint8_t)packet_id;
+      }
+    #endif
+
+    if(header & PJON_PORT_BIT) {
+      if(destination_port != PJON_BROADCAST) {
+        destination[index++] = (uint8_t)(destination_port >> 8);
+        destination[index++] = (uint8_t)destination_port;
+      } else if(source_port != PJON_BROADCAST) {
+        destination[index++] = (uint8_t)(source_port >> 8);
+        destination[index++] = (uint8_t)source_port;
+      }
+    }
+
+    memcpy(
+      destination + (new_length - length - PJONTools::crc_overhead(header)),
+      source,
+      length
+    );
+
+    if(header & PJON_CRC_BIT) {
+      uint32_t computed_crc =
+        PJON_crc32::compute((uint8_t *)destination, new_length - 4);
+      destination[new_length - 4] =
+        (uint8_t)((uint32_t)(computed_crc) >> 24);
+      destination[new_length - 3] =
+        (uint8_t)((uint32_t)(computed_crc) >> 16);
+      destination[new_length - 2] =
+        (uint8_t)((uint32_t)(computed_crc) >>  8);
+      destination[new_length - 1] =
+        (uint8_t)((uint32_t)computed_crc);
+    } else destination[new_length - 1] =
+      PJON_crc8::compute((uint8_t *)destination, new_length - 1);
+    return new_length;
+  };
+
+  /* Fills a PJON_Packet_Info struct with data parsing a packet: */
 
   static void parse_header(const uint8_t *packet, PJON_Packet_Info &info) {
     memset(&info, 0, sizeof info);

@@ -120,113 +120,31 @@ class PJON {
     /* Compose packet in PJON format: */
 
     uint16_t compose_packet(
-      const uint8_t id,
-      const uint8_t *b_id,
+      const uint8_t rx_id,
+      const uint8_t *rx_bus_id,
       uint8_t *destination,
       const void *source,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
-      uint16_t p_id = 0,
-      uint16_t requested_port = PJON_BROADCAST
+      uint16_t packet_id = 0,
+      uint16_t rx_port = PJON_BROADCAST
     ) {
-      uint8_t index = 0;
-      if(header == PJON_NO_HEADER) header = config;
-      if(length > 255) header |= PJON_EXT_LEN_BIT;
-      if((config & PJON_PORT_BIT) || (requested_port != PJON_BROADCAST))
-        header |= PJON_PORT_BIT;
-
-      if(
-        (header & PJON_PORT_BIT) &&
-        (requested_port == PJON_BROADCAST) &&
-        (port == PJON_BROADCAST)
-      ) header &= ~PJON_PORT_BIT;
-
-      if(id == PJON_BROADCAST)
-        header &= ~(PJON_ACK_REQ_BIT | PJON_ACK_MODE_BIT);
-      uint16_t new_length = length + packet_overhead(header);
-      bool extended_length = header & PJON_EXT_LEN_BIT;
-
-      #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
-        bool add_packet_id =
-          ((header & PJON_ACK_MODE_BIT) && (header & PJON_TX_INFO_BIT)) ||
-          (header & PJON_PACKET_ID_BIT);
-        if(!p_id && add_packet_id) p_id = new_packet_id();
-      #else
-        (void)p_id; // Avoid unused variable compiler warning
-      #endif
-
-      if(new_length > 15 && !(header & PJON_CRC_BIT)) {
-        header |= PJON_CRC_BIT;
-        new_length = (uint16_t)(length + packet_overhead(header));
-      }
-
-      if(new_length > 255 && !extended_length) {
-        header |= PJON_EXT_LEN_BIT;
-        new_length = (uint16_t)(length + packet_overhead(header));
-      }
-
-      if(new_length >= PJON_PACKET_MAX_LENGTH) {
-        _error(PJON_CONTENT_TOO_LONG, new_length, _custom_pointer);
-        return 0;
-      }
-
-      destination[index++] = id;
-      destination[index++] = (uint8_t)header;
-      if(extended_length) {
-        destination[index++] = (uint8_t)(new_length >> 8);
-        destination[index++] = (uint8_t)new_length;
-        destination[index++] = PJON_crc8::compute((uint8_t *)destination, 4);
-      } else {
-        destination[index++] = (uint8_t)new_length;
-        destination[index++] = PJON_crc8::compute((uint8_t *)destination, 3);
-      }
-      if(header & PJON_MODE_BIT) {
-        PJONTools::copy_bus_id((uint8_t*) &destination[index], b_id);
-        index += 4;
-        if(header & PJON_TX_INFO_BIT) {
-          PJONTools::copy_bus_id((uint8_t*) &destination[index], bus_id);
-          index += 4;
-        }
-      }
-      if(header & PJON_TX_INFO_BIT) destination[index++] = _device_id;
-
-      #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
-        if(add_packet_id) {
-          destination[index++] = (uint8_t)(p_id >> 8);
-          destination[index++] = (uint8_t)p_id;
-        }
-      #endif
-
-      if(header & PJON_PORT_BIT) {
-        if(requested_port != PJON_BROADCAST) {
-          destination[index++] = (uint8_t)(requested_port >> 8);
-          destination[index++] = (uint8_t)requested_port;
-        } else if(port != PJON_BROADCAST) {
-          destination[index++] = (uint8_t)(port >> 8);
-          destination[index++] = (uint8_t)port;
-        }
-      }
-
-      memcpy(
-        destination + (new_length - length - (header & PJON_CRC_BIT ? 4 : 1)),
+      uint16_t l = PJONTools::compose_packet(
+        _device_id,
+        bus_id,
+        rx_id,
+        rx_bus_id,
+        destination,
         source,
-        length
+        length,
+        (header == PJON_NO_HEADER) ? config : header,
+        (!packet_id) ? PJONTools::new_packet_id(_packet_id_seed++) : packet_id,
+        rx_port,
+        port
       );
-
-      if(header & PJON_CRC_BIT) {
-        uint32_t computed_crc =
-          PJON_crc32::compute((uint8_t *)destination, new_length - 4);
-        destination[new_length - 4] =
-          (uint8_t)((uint32_t)(computed_crc) >> 24);
-        destination[new_length - 3] =
-          (uint8_t)((uint32_t)(computed_crc) >> 16);
-        destination[new_length - 2] =
-          (uint8_t)((uint32_t)(computed_crc) >>  8);
-        destination[new_length - 1] =
-          (uint8_t)((uint32_t)computed_crc);
-      } else destination[new_length - 1] =
-        PJON_crc8::compute((uint8_t *)destination, new_length - 1);
-      return new_length;
+      if(l < PJON_PACKET_MAX_LENGTH) return l;
+      _error(PJON_CONTENT_TOO_LONG, l, _custom_pointer);
+      return 0;
     };
 
     /* Get device id: */

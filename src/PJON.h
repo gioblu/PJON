@@ -234,25 +234,9 @@ class PJON {
 
     /* Calculate packet overhead: */
 
-    uint8_t packet_overhead(uint8_t  header = PJON_NO_HEADER) const {
-      header = (header == PJON_NO_HEADER) ? config : header;
-      return (
-        (
-          (header & PJON_MODE_BIT) ?
-            (header & PJON_TX_INFO_BIT   ? 10 : 5) :
-            (header & PJON_TX_INFO_BIT   ?  2 : 1)
-        ) + (header & PJON_EXT_LEN_BIT   ?  2 : 1)
-          + (header & PJON_CRC_BIT       ?  4 : 1)
-          + (header & PJON_PORT_BIT      ?  2 : 0)
-          + (
-              (
-                (
-                  (header & PJON_ACK_MODE_BIT) &&
-                  (header & PJON_TX_INFO_BIT)
-                ) || (header & PJON_PACKET_ID_BIT)
-              ) ? 2 : 0
-            )
-          + 2 // header + header's CRC
+    uint8_t packet_overhead(uint8_t header = PJON_NO_HEADER) const {
+      return PJONTools::packet_overhead(
+        (header == PJON_NO_HEADER) ? config : header
       );
     };
 
@@ -393,7 +377,7 @@ class PJON {
         return PJON_BUSY;
 
       _receiver(
-        data + (overhead - (data[1] & PJON_CRC_BIT ? 4 : 1)),
+        data + (overhead - PJONTools::crc_overhead(data[1])),
         length - overhead,
         last_packet_info
       );
@@ -443,7 +427,7 @@ class PJON {
             if(packets[i].timing) {
               uint8_t offset = packet_overhead(actual_info.header);
               uint8_t crc_offset =
-                ((actual_info.header & PJON_CRC_BIT) ? 4 : 1);
+                PJONTools::crc_overhead(actual_info.header);
               dispatch(
                 actual_info.receiver_id,
                 (uint8_t *)actual_info.receiver_bus_id,

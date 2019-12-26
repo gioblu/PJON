@@ -210,6 +210,35 @@ struct PJONTools {
     return lh;
   };
 
+  /* Calculates the packet's overhead using the header: */
+
+  static uint8_t packet_overhead(uint8_t header) {
+    return (
+      (
+        (header & PJON_MODE_BIT) ?
+          (header & PJON_TX_INFO_BIT   ? 10 : 5) :
+          (header & PJON_TX_INFO_BIT   ?  2 : 1)
+      ) + (header & PJON_EXT_LEN_BIT   ?  2 : 1)
+        + (header & PJON_CRC_BIT       ?  4 : 1)
+        + (header & PJON_PORT_BIT      ?  2 : 0)
+        + (
+            (
+              (
+                (header & PJON_ACK_MODE_BIT) &&
+                (header & PJON_TX_INFO_BIT)
+              ) || (header & PJON_PACKET_ID_BIT)
+            ) ? 2 : 0
+          )
+        + 2 // header + header's CRC
+    );
+  };
+
+  /* Calculates the packet's CRC overhead using the header: */
+
+  static uint8_t crc_overhead(uint8_t header) {
+    return (header & PJON_CRC_BIT) ? 4 : 1;
+  };
+
   /* Generates a new unique packet id: */
 
   static uint16_t new_packet_id(uint16_t seed) {

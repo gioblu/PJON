@@ -232,14 +232,6 @@ class PJON {
       return packets_count;
     };
 
-    /* Generate a new packet id: */
-
-    uint16_t new_packet_id() {
-      _packet_id_seed += 1;
-      if(!_packet_id_seed) _packet_id_seed = 1;
-      return _packet_id_seed;
-    };
-
     /* Calculate packet overhead: */
 
     uint8_t packet_overhead(uint8_t  header = PJON_NO_HEADER) const {
@@ -459,7 +451,7 @@ class PJON {
                 packets[i].length - offset,
                 packets[i].timing,
                 actual_info.header,
-                new_packet_id(),
+                PJONTools::new_packet_id(_packet_id_seed++),
                 actual_info.port,
                 i
               );

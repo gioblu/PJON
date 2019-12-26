@@ -210,6 +210,13 @@ struct PJONTools {
     return lh;
   };
 
+  /* Generates a new unique packet id: */
+
+  static uint16_t new_packet_id(uint16_t seed) {
+    if(!(++seed)) seed = 1;
+    return seed;
+  };
+
   /* Copy a bus id: */
 
   static void copy_bus_id(uint8_t dest[], const uint8_t src[]) {

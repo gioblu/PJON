@@ -46,7 +46,6 @@ void setup()
 
 void loop()
 {
-  //ArduinoOTA.handle();
   bus.update();
   bus.receive();
 

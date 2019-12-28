@@ -156,8 +156,8 @@ public:
     esp_err_t ret = nvs_flash_init();
     if (
         ret == ESP_ERR_NVS_NO_FREE_PAGES // ||
-        // ret == ESP_ERR_NVS_NEW_VERSION_FOUND
-        // error: ESP_ERR_NVS_NEW_VERSION_FOUND was not declared in this scope
+                                         // ret == ESP_ERR_NVS_NEW_VERSION_FOUND
+                                         // error: ESP_ERR_NVS_NEW_VERSION_FOUND was not declared in this scope
     )
     {
       ESP_ERROR_CHECK(nvs_flash_erase());
@@ -189,7 +189,7 @@ public:
     ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
     ESP_ERROR_CHECK(esp_wifi_set_mode(ESPNOW_WIFI_MODE));
 
-    //These two steps are required BEFORE the channel can be assigned
+    //These two steps are required BEFORE the channel can be set
     // As per the documentation from Espressif:
     // https://docs.espressif.com/projects/esp-idf/en/latest/api-reference/network/esp_wifi.html#_CPPv420esp_wifi_set_channel7uint8_t18wifi_second_chan_t
     ESP_ERROR_CHECK(esp_wifi_start());

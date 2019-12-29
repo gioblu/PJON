@@ -77,12 +77,15 @@ class PJON {
       PJON_Packet_Record recent_packet_ids[PJON_MAX_RECENT_PACKET_IDS];
     #endif
 
-    /* PJON bus default initialization:
-       State: Local (bus_id: 0.0.0.0)
-       Acknowledge: true (Acknowledge is requested)
-       device id: PJON_NOT_ASSIGNED (255)
-       Mode: PJON_HALF_DUPLEX
-       Sender info: true (Sender info are included in the packet) */
+    /* PJON initialization with no parameters:
+        State: Local (bus_id: 0.0.0.0)
+        Synchronous acknowledge: true
+        Asynchronous acknowledge: false
+        device id: PJON_NOT_ASSIGNED (255)
+        Mode: PJON_HALF_DUPLEX
+        Sender info: true (Sender info are included in the packet)
+
+       PJON<SoftwareBitBang> bus; */
 
     PJON() : strategy(Strategy()) {
       _device_id = PJON_NOT_ASSIGNED;
@@ -90,7 +93,7 @@ class PJON {
     };
 
     /* PJON initialization passing device id:
-       PJON bus(1); */
+       PJON<SoftwareBitBang> bus(1); */
 
     PJON(uint8_t device_id) : strategy(Strategy()) {
       _device_id = device_id;
@@ -99,7 +102,7 @@ class PJON {
 
     /* PJON initialization passing bus and device id:
        uint8_t my_bus = {1, 1, 1, 1};
-       PJON bus(my_bys, 1); */
+       PJON<SoftwareBitBang> bus(my_bys, 1); */
 
     PJON(const uint8_t *b_id, uint8_t device_id) : strategy(Strategy()) {
       PJONTools::copy_bus_id(bus_id, b_id);
@@ -745,8 +748,7 @@ class PJON {
     };
 
     /* Configure packet id presence:
-       TRUE: include packet id
-       FALSE: Avoid packet id inclusion */
+       TRUE: include packet id, FALSE: Avoid packet id inclusion */
 
     void set_packet_id(bool state) {
       set_config_bit(state, PJON_PACKET_ID_BIT);
@@ -835,30 +837,17 @@ class PJON {
       random_seed = seed;
     };
 
-    /* Pass as a parameter a function you previously defined in your
-       code that is called when a message is received.
-       Inside there you can code how to react when data is received.
-
-      void receiver_function(
-        uint8_t *payload,
-        uint16_t length,
-        const PJON_Packet_Info &packet_info
-      ) {
-        for(int i = 0; i < length; i++)
-          Serial.print((uint8_t)payload[i]);
-        Serial.print(" ");
-        Serial.println(length);
-      };
-
-      bus.set_receiver(receiver_function); */
+    /* Pass as a parameter a receiver function you previously defined in your
+       code that should be called when a message is received.
+       Inside there you can code how to react when data is received. */
 
     void set_receiver(PJON_Receiver r) {
       _receiver = r;
     };
 
     /* Configure if device acts as a router:
-       FALSE: device receives messages only for its bus and device id
-       TRUE:  The receiver function is always called if data is received */
+       TRUE: device receives messages only for its bus and device id
+       FALSE: receiver function is always called if data is received */
 
     void set_router(bool state) {
       _router = state;

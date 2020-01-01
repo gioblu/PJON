@@ -43,6 +43,7 @@ In the example above the PJON object is instantiated passing [SoftwareBitBang](/
 | [LocalUDP](/src/strategies/LocalUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
 | [GlobalUDP](/src/strategies/GlobalUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
 | [DualUDP](/src/strategies/DualUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
+| [MQTTTranslate](/src/strategies/MQTTTranslate)  | Electrical/radio impulses over wire/air | MQTT | Ethernet port |
 | [OverSampling](/src/strategies/OverSampling)  | Electrical/radio impulses over wire/air | [PJDLR](../src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) | 1 or 2 |
 | [ThroughSerial](/src/strategies/ThroughSerial)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md) | 1 or 2 |
 | [ThroughSerialAsync](/src/strategies/ThroughSerialAsync)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md) | 1 or 2 |

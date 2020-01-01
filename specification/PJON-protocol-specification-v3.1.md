@@ -124,20 +124,20 @@ The header is a bitmap of the meta-data contained and the configuration required
 
 ```cpp
 HEADER BITMAP
-    1      2     3    4    5     6     7     8
+    8      7     6    5     4     3     2      1
  ______ ______ ____ _____ _____ _____ _____ _____
 |PACKET|EXT.  |CRC |PORT |ACK  | ACK |TX   |MODE |
 |ID    |LENGTH|    |     |MODE |     |INFO |     |
 |______|______|____|_____|_____|_____|_____|_____|
 ```
-1. `PACKET ID` bit informs if the packet contains (value 1) or not (value 0) a 16 bits [packet id](/specification/PJON-protocol-specification-v3.1.md#packet-identification)
-2. `EXT. LENGTH` bit informs if the packet contains 1 (value 0) or 2 (value 1) bytes [length](/specification/PJON-protocol-specification-v3.1.md#extended-length)
-3. `CRC` bit signals which CRC is used, [CRC8](/specification/PJON-protocol-specification-v3.1.md#crc8-polynomial) (value 0) or [CRC32](/specification/PJON-protocol-specification-v3.1.md#crc32-polynomial) (value 1)
-4. `PORT` bit informs if a 16 bits [network service identifier](/specification/PJON-protocol-specification-v3.1.md#network-services) is contained (value 1) or not (value 0)
-5. `ACK MODE` bit informs if the [asynchronous acknowledgement](/specification/PJON-protocol-acknowledge-specification-v1.0.md#asynchronous-acknowledge) is requested (value 1) or not (value 0)
-6. `ACK` bit informs if the [synchronous acknowledgement](/specification/PJON-protocol-acknowledge-specification-v1.0.md#synchronous-acknowledge) is requested (value 1) or not (value 0)
-7. `TX INFO` bit informs if the sender info are included (value 1) or not (value 0)
-8. `MODE` bit informs if the packet is formatted in [shared](/specification/PJON-protocol-specification-v3.1.md#shared-mode) (value 1) or [local](/specification/PJON-protocol-specification-v3.1.md#local-mode) mode (value 0)  
+1. `MODE` bit informs if the packet is formatted in [shared](/specification/PJON-protocol-specification-v3.1.md#shared-mode) (value 1) or [local](/specification/PJON-protocol-specification-v3.1.md#local-mode) mode (value 0)  
+2. `TX INFO` bit informs if the sender info are included (value 1) or not (value 0)
+3. `ACK` bit informs if the [synchronous acknowledgement](/specification/PJON-protocol-acknowledge-specification-v1.0.md#synchronous-acknowledge) is requested (value 1) or not (value 0)
+4. `ACK MODE` bit informs if the [asynchronous acknowledgement](/specification/PJON-protocol-acknowledge-specification-v1.0.md#asynchronous-acknowledge) is requested (value 1) or not (value 0)
+5. `PORT` bit informs if a 16 bits [network service identifier](/specification/PJON-protocol-specification-v3.1.md#network-services) is contained (value 1) or not (value 0)
+6. `CRC` bit signals which CRC is used, [CRC8](/specification/PJON-protocol-specification-v3.1.md#crc8-polynomial) (value 0) or [CRC32](/specification/PJON-protocol-specification-v3.1.md#crc32-polynomial) (value 1)
+7. `EXT. LENGTH` bit informs if the packet contains 8 (value 0) or 16 bits (value 1) [length](/specification/PJON-protocol-specification-v3.1.md#extended-length)
+8. `PACKET ID` bit informs if the packet contains (value 1) or not (value 0) a 16 bits [packet id](/specification/PJON-protocol-specification-v3.1.md#packet-identification)
 
 Unacceptable header configuration states for standard transmission:
 * `----1-0-` or `ACK MODE` bit high, and `TX INFO` bit low (requires transmitter info)
@@ -173,7 +173,7 @@ CRC8 is calculated and appended to the initial meta-data (id, header and length)
 CRC8 is calculated on both data and meta-data and it is appended at the end of packets of up to 15 bytes length (including overhead). CRC32 must be used if packet length exceeds 15 bytes but can be optionally used also for shorter packets if higher accuracy is required.
 
 ### Packet transmission
-A local packet transmission is an optionally bidirectional communication between two devices that can be divided in 3 phases: **channel analysis**, **transmission** and optional **response**. In the channel analysis phase the medium's state is assessed before starting transmission to avoid collision. If the medium is free for use, the transmission phase starts in which the packet is entirely transmitted. The receiving device computes the CRC and starts the response phase transmitting an acknowledge (decimal 6) in case of correct data reception. If no acknowledgement is received, after an exponential back-off delay, the transmitter retries until the acknowledgement is received or a maximum number of attempts is reached.
+A local packet transmission is an optionally bidirectional communication between two devices that can be divided in 3 phases: **channel analysis**, **transmission** and optional **response**. In the channel analysis phase the medium's state is assessed before starting transmission to avoid collision. If the medium is free for use, the transmission phase starts in which the packet is entirely transmitted in network byte order. The receiving device computes the CRC and starts the response phase transmitting an acknowledge (decimal 6) in case of correct data reception. If no acknowledgement is received, after an exponential back-off delay, the transmitter retries until the acknowledgement is received or a maximum number of attempts is reached.
 
 ```cpp
 Channel analysis            Transmission               Response

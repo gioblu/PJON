@@ -19,7 +19,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 void setup() {
   printf("Transmitter started.\n");
   bus.set_receiver(receiver_function);
-  bus.strategy.mqttclient.set_address(broker_ip, 1883, "transmitter");
+  bus.strategy.set_address(broker_ip, 1883, "transmitter");
   bus.begin();
   bus.send_repeatedly(44, "P", 1, 10000); // Send P to device 44 repeatedly
 };

@@ -1,9 +1,9 @@
 
-/* MQTTTranslate is a Strategy for the PJON framework (included in version v5.2)
-   It supports delivering PJON packets over Ethernet TCP on local network (LAN),
-   as a MQTT protocol client. This strategy is using the ReconnectingMqttClient
-   library: https://github.com/fredilarsen/ReconnectingMqttClient
-   
+/* MQTTTranslate uses the ReconnectingMqttClient
+   https://github.com/fredilarsen/ReconnectingMqttClient
+   library to deliver PJON packets over TCP on local network (LAN) as a MQTT
+   protocol client.
+
    This strategy works in one of four modes.
    The first two modes are for allowing a PJON bus via MQTT, the first mode is
    "closed" and the second is "open" to use by non-PJON programs.
@@ -15,15 +15,15 @@
      from any other PJON strategy. This strategy requires that all senders and
      receivers are linked with PJON for encoding/decoding, so other systems
      are not easily connected.
-   
-   * "JSON bus mode" will send JSON packets with to, from and data, delivered 
-     to a topic like pjon/device45 (where 45 is a receiver device id). Each 
+
+   * "JSON bus mode" will send JSON packets with to, from and data, delivered
+     to a topic like pjon/device45 (where 45 is a receiver device id). Each
      device will subscribe to a topic with its own name and will receive
      packets like
        {to:45,from:44,data:"message text sent from device 44 to device 45"}.
 
-   * "Device mirror, translating" mode will not use JSON encapsulation of 
-     values, and will publish to its own topic, not the receiver's. It will 
+   * "Device mirror, translating" mode will not use JSON encapsulation of
+     values, and will publish to its own topic, not the receiver's. It will
      publish to a "output" folder and subscribe to an "input" folder. An
      outgoing packet with payload "P=44.1,T=22.0" would result in the topics
        pjon/device44/output/temperature, with a value "44.1"
@@ -38,7 +38,7 @@
 
    * "Device mirror, direct" works like the first device mirror mode, but will
      just pass the payload on without any translation, leaving the formatting
-     to the user. It will not split packets into separate topics but transfer 
+     to the user. It will not split packets into separate topics but transfer
      the packets as-is to one output topic and from one input topic:
        pjon/device44/output
        pjon/device44/input
@@ -46,12 +46,12 @@
      plain text like "P=44.1,T=22.0" or a JSON text.
 
    The "Translate" in the strategy name is because a translation table can be
-   used to translate PJON packet contents to MQTT topics and back. This is to 
-   enable PJON packets to remain small ("t=44.3") between devices with limited 
+   used to translate PJON packet contents to MQTT topics and back. This is to
+   enable PJON packets to remain small ("t=44.3") between devices with limited
    memory, while the MQTT packets are made more explicit ("temperature") to
    support longer name syntax in external systems.
-  
-   Compliant with the PJON protocol layer specification v0.3
+
+   Compliant with the PJON protocol layer specification v3.1
    _____________________________________________________________________________
 
     MQTTTranslate strategy proposed and developed by Fred Larsen 07/12/2019
@@ -246,6 +246,16 @@ public:
     }
     void set_qos(uint8_t qos) { this->qos = qos; }
     void set_topic(const char *topic) { this->topic = topic; }
+
+    /* Set the broker's ip, the port used and the topic */
+
+    void set_address(
+      const uint8_t server_ip[4],
+      const uint16_t server_port,
+      const char *client_id
+    ) {
+      mqttclient.set_address(server_ip, server_port, client_id);
+    }
 
     /* Returns the suggested delay related to the attempts passed as parameter: */
 

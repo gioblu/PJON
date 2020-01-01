@@ -22,7 +22,7 @@ void setup() {
 //  bus.strategy.set_topic("pjon");
 //  bus.strategy.set_id(bus.device_id());
   bus.set_receiver(receiver_function);
-  bus.strategy.mqttclient.set_address(broker_ip, 1883, "transmitter");
+  bus.strategy.set_address(broker_ip, 1883, "transmitter");
   bus.begin();
   bus.send_repeatedly(44, "P", 1, 100000); // Send P to device 44 repeatedly
 };

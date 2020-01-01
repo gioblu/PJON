@@ -43,11 +43,11 @@ In the example above the PJON object is instantiated passing [SoftwareBitBang](/
 | [ThroughSerial](/src/strategies/ThroughSerial)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md) | 1 or 2 |
 | [ThroughSerialAsync](/src/strategies/ThroughSerialAsync)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md) | 1 or 2 |
 | [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio impulses over air | [LoRa](https://lora-alliance.org/sites/default/files/2018-07/lorawan1.0.3.pdf) | 3 or 4 |
-| [EthernetTCP](/src/strategies/EthernetTCP)  | Electrical/radio impulses over wire/air | [TCP](https://tools.ietf.org/html/rfc793) | Ethernet port |
-| [LocalUDP](/src/strategies/LocalUDP)  | Electrical/radio impulses over wire/air | [UDP](https://tools.ietf.org/html/rfc768) | Ethernet port |
-| [GlobalUDP](/src/strategies/GlobalUDP)  | Electrical/radio impulses over wire/air | [UDP](https://tools.ietf.org/html/rfc768) | Ethernet port |
-| [DualUDP](/src/strategies/DualUDP)  | Electrical/radio impulses over wire/air | [UDP](https://tools.ietf.org/html/rfc768) | Ethernet port |
-| [MQTTTranslate](/src/strategies/MQTTTranslate)  | Electrical/radio impulses over wire/air | [MQTT](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.pdf) | Ethernet port |
+| [EthernetTCP](/src/strategies/EthernetTCP)  | Electrical/radio impulses over wire/air | [TCP](https://tools.ietf.org/html/rfc793) | Ethernet or WiFi |
+| [LocalUDP](/src/strategies/LocalUDP)  | Electrical/radio impulses over wire/air | [UDP](https://tools.ietf.org/html/rfc768) | Ethernet or WiFi |
+| [GlobalUDP](/src/strategies/GlobalUDP)  | Electrical/radio impulses over wire/air | [UDP](https://tools.ietf.org/html/rfc768) | Ethernet or WiFi |
+| [DualUDP](/src/strategies/DualUDP)  | Electrical/radio impulses over wire/air | [UDP](https://tools.ietf.org/html/rfc768) | Ethernet or WiFi |
+| [MQTTTranslate](/src/strategies/MQTTTranslate)  | Electrical/radio impulses over wire/air | [MQTT](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.pdf) | Ethernet or WiFi |
 | [ESPNOW](/src/strategies/ESPNOW)  | Radio impulses over air | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) | WiFi link |
 | [LocalFile](/src/strategies/LocalFile)  | Shared file system in memory | None | None |
 | [Any](/src/strategies/Any)  | Virtual inheritance, any of the above | Any of the above | Any of the above |

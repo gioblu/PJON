@@ -182,38 +182,53 @@ Channel analysis            Transmission               Response
 |-----||----|----------|--------|------|--------|------||-----|
 |  0  || 12 | 00000100 |   6    |      |   64   |      ||  6  |
 |_____||____|__________|________|______|________|______||_____|
+ BITS: | 8  |    8     |   8    |  8   |   8    |  8   |
+       |____|__________|________|______|________|______|
 ```
 
 #### Local mode
 Depending on header's `MODE` bit, PJON packets can contain basic or extended support to identification. Local mode required by header's `MODE` bit low supports connectivity for up to 254 devices. In the graph below is represented the simplest local mode packet format sending `@` (decimal 64) to device `12`:
 
 ```cpp
- _______________________________________________
-| ID |  HEADER  | LENGTH | CRC8 |  DATA  | CRC8 |
-|----|----------|--------|------|--------|------|
-| 12 | 00000000 |   6    |      |   64   |      |
-|____|__________|________|______|________|______|
+ _________________________________
+|ID| HEADER |LENGTH|CRC8|DATA|CRC8|
+|--|--------|------|----|----|----|
+|12|00000000|  6   |    | 64 |    |
+|__|________|______|____|____|____|
+|8 |   8    |  8   | 8  |  8 | 8  | 48 bits
+|__|________|______|____|____|____|
+
 ```
 
 In local mode packets can be broadcasted to all devices sending to device id `0`. Acknowledgement is not supported therefore any broadcasted packet that requests synchronous and or asynchronous acknowledgement is ignored by recipients.
 
 ```cpp
- _______________________________________________
-| ID |  HEADER  | LENGTH | CRC8 |  DATA  | CRC8 |
-|----|----------|--------|------|--------|------|
-| 0  | 00000000 |   6    |      |   64   |      |
-|____|__________|________|______|________|______|
+ _________________________________
+|ID| HEADER |LENGTH|CRC8|DATA|CRC8|
+|--|--------|------|----|----|----|
+|0 |00000000|  6   |    | 64 |    |
+|__|________|______|____|____|____|
+|8 |   8    |  8   | 8  |  8 | 8  | 48 bits
+|__|________|______|____|____|____|
+
+
 ```
 
 If header's `TX INFO` bit is high the sender's device id is included in the packet.
 
 ```cpp
- ______________________________________________________
-| ID |  HEADER  | LENGTH | CRC8 |  ID  |  DATA  | CRC8 |
-|----|----------|--------|------|------|--------|------|
-| 12 | 00000010 |   7    |      |  11  |   64   |      |
-|____|__________|________|______|______|________|______|
-                                |TXINFO|
+                        ____
+                       | TX |
+                       | ID |
+ _______________________\__/_________
+|ID| HEADER |LENGTH|CRC8|ID|DATA|CRC8|
+|--|--------|------|----|--|----|----|
+|12|00000010|  7   |    |11| 64 |    |
+|__|________|______|____|__|____|____|
+|8 |   8    |  8   | 8  |8 | 8  | 8  | 56 bits
+|__|________|______|____|__|____|____|
+
+
 ```
 
 #### Shared mode
@@ -223,6 +238,8 @@ If header's `MODE` bit is high [bus](/specification/PJON-protocol-specification-
 |ID| HEADER |LENGTH|CRC8|BUS ID|DATA|CRC8|
 |--|--------|------|----|------|----|----|
 |12|00000001|  10  |    | 0001 | 64 |    |
+|__|________|______|____|______|____|____|
+|8 |   8    |  8   | 8  |  32  | 8  | 8  | 80 bits
 |__|________|______|____|______|____|____|
 
 ```
@@ -235,18 +252,23 @@ In shared mode packets can be broadcasted to all devices sharing the same bus id
 |--|--------|------|----|------|----|----|
 |0 |00000001|  10  |    | 0001 | 64 |    |
 |__|________|______|____|______|____|____|
+|8 |   8    |  8   | 8  |  32  | 8  | 8  | 80 bits
+|__|________|______|____|______|____|____|
 
 ```
 
 If header's `TX INFO` bit is high the sender's device and bus id are included in the packet. In the example below device id `11` of bus id `0.0.0.1` send to device id `12` of bus id `0.0.0.1`.
 
 ```cpp
- __________________________________________________
+                                _________
+                               | TX INFO |
+ ______________________________|_________|_________
 |ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|DATA|CRC8|
 |--|--------|------|----|------|------|--|----|----|
 |12|00000011|  15  |    | 0001 | 0001 |11| 64 |    |
 |__|________|______|____|______|______|__|____|____|
-                        |RXINFO| TX INFO |
+|8 |   8    |  8   | 8  |  32  |  32  |8 | 8  | 8  | 120 bits
+|__|________|______|____|______|______|__|____|____|
 ```
 
 #### Extended length
@@ -257,18 +279,24 @@ The graph below shows a packet transmission where the length is represented with
 |--|--------|-----|-----|----|----|-----|
 |12|01100000|  0  | 10  |    | 64 |     |
 |__|________|_____|_____|____|____|_____|
+|8 |   8    |  8  | 8   | 8  | 8  |  32 | 80 bits
+|__|________|_____|_____|____|____|_____|
 
 ```
 
 #### Packet identification
 The graph below shows a packet in which a 16 bits packet identifier is added as requested by header's `PACKET ID` bit. This feature is provided to avoid duplications and guarantee packet uniqueness. The receiver filters packets containing a packet identifier and sender information that already appeared previously.
 ```cpp
- _____________________________________________________________
+                                _________
+                               | TX INFO |
+ ______________________________|_________|____________________
 |ID| HEADER |LENGTH|CRC8|BUS ID|BUS ID|ID|PACKET ID|DATA|CRC32|
 |--|--------|------|----|------|------|--|---------|----|-----|
 |12|10100011|  20  |    | 0002 | 0001 |11|   999   | 64 |     |
 |__|________|______|____|______|______|__|_________|____|_____|
-                        |RXINFO| TX INFO |            
+|8 |   8    |  8   | 8  |  32  |  32  |8 |   16    | 8  | 32  | 160 bits
+|__|________|______|____|______|______|__|_________|____|_____|
+
 ```
 
 #### Network services
@@ -278,5 +306,7 @@ PJON supports a network service identifier by using a 16 bits port id. Thanks to
 |ID| HEADER |LENGTH|CRC8|PORT ID|DATA|CRC8|
 |--|--------|------|----|-------|----|----|
 |12|00010000|  8   |    | 8002  | 64 |    |
+|__|________|______|____|_______|____|____|
+|8 |   8    |  8   | 8  |  16   | 8  | 8  | 64 bits
 |__|________|______|____|_______|____|____|
 ```

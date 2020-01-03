@@ -22,7 +22,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 void setup() {
   printf("Receiver started.\n");
   bus.set_receiver(receiver_function);
-  bus.strategy.mqttclient.set_address(broker_ip, 1883, "receiver");
+  bus.strategy.set_address(broker_ip, 1883, "receiver");
   bus.begin();
 };
 

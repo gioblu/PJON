@@ -289,9 +289,8 @@ struct PJONTools {
     uint16_t new_length = length + packet_overhead(header);
     bool extended_length = header & PJON_EXT_LEN_BIT;
     #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
-      bool add_packet_id =
-        ((header & PJON_ACK_MODE_BIT) && (header & PJON_TX_INFO_BIT)) ||
-        (header & PJON_PACKET_ID_BIT);
+      if(header & PJON_ACK_MODE_BIT)
+        header |= (PJON_TX_INFO_BIT | PJON_PACKET_ID_BIT);
     #else
       (void)packet_id; // Avoid unused variable compiler warning
     #endif
@@ -329,7 +328,7 @@ struct PJONTools {
     }
     if(header & PJON_TX_INFO_BIT) destination[index++] = sender_id;
     #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
-      if(add_packet_id) {
+      if(header & PJON_PACKET_ID_BIT) {
         destination[index++] = (uint8_t)(packet_id >> 8);
         destination[index++] = (uint8_t)packet_id;
       }
@@ -385,12 +384,8 @@ struct PJONTools {
       info.sender_id = packet[index++];
     else info.sender_id = 0;
     #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
-      if(((info.header & PJON_ACK_MODE_BIT) &&
-          (info.header & PJON_TX_INFO_BIT)
-        ) || info.header & PJON_PACKET_ID_BIT
-      ) {
-        info.id =
-          (packet[index] << 8) | (packet[index + 1] & 0xFF);
+      if(info.header & PJON_PACKET_ID_BIT) {
+        info.id = (packet[index] << 8) | (packet[index + 1] & 0xFF);
         index += 2;
       }
     #else

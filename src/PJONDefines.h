@@ -167,19 +167,22 @@ struct PJON_Packet_Record {
   uint16_t id;
   uint8_t  header;
   uint8_t  sender_id;
-  uint8_t  sender_bus_id[4];
+  #ifndef PJON_LOCAL
+    uint8_t  sender_bus_id[4];
+  #endif
 };
 
-/* Last received packet Metainfo */
 struct PJON_Packet_Info {
   uint8_t header;
   uint16_t id;
   uint8_t receiver_id;
-  uint8_t receiver_bus_id[4];
   uint8_t sender_id;
-  uint8_t sender_bus_id[4];
   uint16_t port;
-  void *custom_pointer;
+  #ifndef PJON_LOCAL
+    uint8_t receiver_bus_id[4];
+    uint8_t sender_bus_id[4];
+    void *custom_pointer;
+  #endif
 };
 
 typedef void (* PJON_Receiver)(
@@ -288,20 +291,15 @@ struct PJONTools {
     #else
       (void)packet_id; // Avoid unused variable compiler warning
     #endif
-
     if(new_length > 15 && !(header & PJON_CRC_BIT)) {
       header |= PJON_CRC_BIT;
       new_length = (uint16_t)(length + packet_overhead(header));
     }
-
     if(new_length > 255 && !extended_length) {
       header |= PJON_EXT_LEN_BIT;
       new_length = (uint16_t)(length + packet_overhead(header));
     }
-
-    if(new_length >= PJON_PACKET_MAX_LENGTH)
-      return new_length;
-
+    if(new_length >= PJON_PACKET_MAX_LENGTH) return new_length;
     destination[index++] = receiver_id;
     destination[index++] = (uint8_t)header;
     if(extended_length) {
@@ -312,14 +310,19 @@ struct PJONTools {
       destination[index++] = (uint8_t)new_length;
       destination[index++] = PJON_crc8::compute((uint8_t *)destination, 3);
     }
-    if(header & PJON_MODE_BIT) {
-      PJONTools::copy_bus_id((uint8_t*) &destination[index], receiver_bus_id);
-      index += 4;
-      if(header & PJON_TX_INFO_BIT) {
-        PJONTools::copy_bus_id((uint8_t*) &destination[index], sender_bus_id);
+    #ifndef PJON_LOCAL
+      if(header & PJON_MODE_BIT) {
+        PJONTools::copy_bus_id((uint8_t*) &destination[index], receiver_bus_id);
         index += 4;
+        if(header & PJON_TX_INFO_BIT) {
+          PJONTools::copy_bus_id((uint8_t*) &destination[index], sender_bus_id);
+          index += 4;
+        }
       }
-    }
+    #else
+      (void)sender_bus_id;
+      (void)receiver_bus_id;
+    #endif
     if(header & PJON_TX_INFO_BIT) destination[index++] = sender_id;
     #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
       if(header & PJON_PACKET_ID_BIT) {
@@ -366,14 +369,16 @@ struct PJONTools {
     bool extended_length = packet[index] & PJON_EXT_LEN_BIT;
     info.header = packet[index++];
     index += extended_length + 2; // + LENGTH + HEADER CRC
-    if(info.header & PJON_MODE_BIT) {
-      copy_bus_id(info.receiver_bus_id, packet + index);
-      index += 4;
-      if(info.header & PJON_TX_INFO_BIT) {
-        copy_bus_id(info.sender_bus_id, packet + index);
+    #ifndef PJON_LOCAL
+      if(info.header & PJON_MODE_BIT) {
+        copy_bus_id(info.receiver_bus_id, packet + index);
         index += 4;
-      } else copy_bus_id(info.sender_bus_id, localhost());
-    } else copy_bus_id(info.receiver_bus_id, localhost());
+        if(info.header & PJON_TX_INFO_BIT) {
+          copy_bus_id(info.sender_bus_id, packet + index);
+          index += 4;
+        } else copy_bus_id(info.sender_bus_id, localhost());
+      } else copy_bus_id(info.receiver_bus_id, localhost());
+    #endif
     if(info.header & PJON_TX_INFO_BIT)
       info.sender_id = packet[index++];
     else info.sender_id = 0;

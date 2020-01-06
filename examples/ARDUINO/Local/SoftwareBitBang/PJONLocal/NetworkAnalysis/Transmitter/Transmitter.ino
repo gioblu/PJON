@@ -12,6 +12,8 @@
 
 //#define SWBB_RESPONSE_TIMEOUT 1000
 
+// Include only SoftwareBitBang
+#define PJON_INCLUDE_SWBB
 // Include PJONLocal
 #include <PJONLocal.h>
 
@@ -54,13 +56,13 @@ void loop() {
     if(response == PJON_FAIL) fail++;
   }
   Serial.print("Packet Overhead: ");
-  Serial.print(bus.packet_overhead(bus.data[1]) + 1);
+  Serial.print(bus.packet_overhead(bus.config) + 1);
   Serial.print("B - Total: ");
-  Serial.print((unsigned int)((bus.packet_overhead(bus.data[1]) + 1) * test));
+  Serial.print((unsigned int)((bus.packet_overhead(bus.config) + 1) * test));
   Serial.println("B");
   Serial.print("Bandwidth: ");
   // length + packet overhead + PJON_ACK
-  Serial.print((unsigned int)(test * (20 + bus.packet_overhead(bus.data[1]) + 1)));
+  Serial.print((unsigned int)(test * (20 + bus.packet_overhead(bus.config) + 1)));
   Serial.println("B/s");
   Serial.print("Data throughput: ");
   Serial.print((unsigned int)(test * 20));

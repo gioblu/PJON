@@ -60,95 +60,99 @@ limitations under the License. */
 #include "utils/crc/PJON_CRC8.h"
 #include "utils/crc/PJON_CRC32.h"
 
+/* Protocol symbols: */
+#define PJON_ACK                      6
+#define PJON_BUSY                   666
+#define PJON_NAK                     21
+
 /* Id used for broadcasting to all devices */
 #ifndef PJON_BROADCAST
-  #define PJON_BROADCAST        0
+  #define PJON_BROADCAST              0
 #endif
 
 /* Device id of still unindexed devices */
 #ifndef PJON_NOT_ASSIGNED
-  #define PJON_NOT_ASSIGNED   255
+  #define PJON_NOT_ASSIGNED         255
 #endif
 
-/* Communication modes */
-#define PJON_SIMPLEX        150
-#define PJON_HALF_DUPLEX    151
+/* Internal constants: */
+#define PJON_FAIL                 65535
+#define PJON_TO_BE_SENT              74
 
-/* Protocol symbols */
-#define PJON_ACK              6
-#define PJON_BUSY           666
-#define PJON_NAK             21
+/* Communication modes: */
+#define PJON_SIMPLEX                150
+#define PJON_HALF_DUPLEX            151
 
-/* INTERNAL CONSTANTS */
-#define PJON_FAIL         65535
-#define PJON_TO_BE_SENT      74
+/* Header bits definition: */
 
 /* No header present (unacceptable value used)*/
-#define PJON_NO_HEADER      0B01001000
-/* HEADER BITS DEFINITION: */
+#define PJON_NO_HEADER       0B01001000
 /* 0 - Local network
    1 - Shared  network */
-#define PJON_MODE_BIT       0B00000001
+#define PJON_MODE_BIT        0B00000001
 /* 0 - No info inclusion
    1 - Local:  Sender device id included
        Shared: Sender device id + Sender bus id */
-#define PJON_TX_INFO_BIT    0B00000010
+#define PJON_TX_INFO_BIT     0B00000010
 /* 0 - Synchronous acknowledgement disabled
    1 - Synchronous acknowledgement enabled */
-#define PJON_ACK_REQ_BIT    0B00000100
+#define PJON_ACK_REQ_BIT     0B00000100
 /* 0 - Asynchronous acknowledgement disabled
    1 - Asynchronous acknowledgement enabled */
-#define PJON_ACK_MODE_BIT   0B00001000
+#define PJON_ACK_MODE_BIT    0B00001000
 /* 0 - No port id contained
    1 - Port id contained (2 bytes integer) */
-#define PJON_PORT_BIT       0B00010000
+#define PJON_PORT_BIT        0B00010000
 /* 0 - CRC8 (1 byte) included at the end of the packet
    1 - CRC32 (4 bytes) included at the end of the packet */
-#define PJON_CRC_BIT        0B00100000
+#define PJON_CRC_BIT         0B00100000
 /* 0 - 1 byte long (max 255 bytes)
    1 - 2 bytes long (max 65535 bytes) */
-#define PJON_EXT_LEN_BIT    0B01000000
+#define PJON_EXT_LEN_BIT     0B01000000
 /* 0 - Packet id not present
    1 - Packet id present */
-#define PJON_PACKET_ID_BIT  0B10000000
+#define PJON_PACKET_ID_BIT   0B10000000
 
-/* ERRORS: */
-#define PJON_CONNECTION_LOST     101
-#define PJON_PACKETS_BUFFER_FULL 102
-#define PJON_CONTENT_TOO_LONG    104
+/* Errors: */
 
-/* CONSTRAINTS: */
+#define PJON_CONNECTION_LOST        101
+#define PJON_PACKETS_BUFFER_FULL    102
+#define PJON_CONTENT_TOO_LONG       104
+
+/* Constraints: */
 
 /* Packet buffer length, if full PJON_PACKETS_BUFFER_FULL error is thrown.
    The packet buffer is preallocated, so its length strongly affects
    memory consumption */
 #ifndef PJON_MAX_PACKETS
-  #define PJON_MAX_PACKETS 5
+  #define PJON_MAX_PACKETS            5
 #endif
 
 /* Max packet length, higher if necessary.
    The max packet length defines the length of packets pre-allocated buffers
    so it strongly affects memory consumption */
 #ifndef PJON_PACKET_MAX_LENGTH
-  #define PJON_PACKET_MAX_LENGTH 50
+  #define PJON_PACKET_MAX_LENGTH     50
 #endif
 
 /* If set to false async ack feature is not included saving memory
    (it saves around 1kB of memory) */
 #ifndef PJON_INCLUDE_ASYNC_ACK
-  #define PJON_INCLUDE_ASYNC_ACK false
+  #define PJON_INCLUDE_ASYNC_ACK  false
 #endif
 
 /* If set to false packet id feature is not included saving memory
    (it saves around 1kB of memory) */
 #ifndef PJON_INCLUDE_PACKET_ID
-  #define PJON_INCLUDE_PACKET_ID false
+  #define PJON_INCLUDE_PACKET_ID  false
 #endif
 
 /* Maximum packet ids record kept in memory (to avoid duplicated exchanges) */
 #ifndef PJON_MAX_RECENT_PACKET_IDS
   #define PJON_MAX_RECENT_PACKET_IDS 10
 #endif
+
+/* Data structures: */
 
 struct PJON_Packet {
   uint8_t  attempts;

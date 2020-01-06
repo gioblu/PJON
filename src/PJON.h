@@ -61,6 +61,18 @@ limitations under the License. */
 #include "PJONDefines.h"
 #include "strategies/PJON_Strategies.h"
 
+static void PJON_dummy_receiver_handler(
+  uint8_t *,               // payload
+  uint16_t,                // length
+  const PJON_Packet_Info & // packet_info
+) {};
+
+static void PJON_dummy_error_handler(
+  uint8_t,  // code
+  uint16_t, // data
+  void *    // custom_pointer
+) {};
+
 template<typename Strategy>
 class PJON {
   public:

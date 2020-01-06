@@ -184,23 +184,13 @@ typedef void (* PJON_Receiver)(
   const PJON_Packet_Info &packet_info
 );
 
-static void PJON_dummy_receiver_handler(
-  uint8_t *,               // payload
-  uint16_t,                // length
-  const PJON_Packet_Info & // packet_info
-) {};
-
 typedef void (* PJON_Error)(
   uint8_t code,
   uint16_t data,
   void *custom_pointer
 );
 
-static void PJON_dummy_error_handler(
-  uint8_t,  // code
-  uint16_t, // data
-  void *    // custom_pointer
-) {};
+/* PJON general purpose functions: */
 
 struct PJONTools {
   /* Bus id used as localhost (used by shared mode broadcast and NAT) */

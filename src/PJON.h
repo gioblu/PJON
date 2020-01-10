@@ -28,7 +28,8 @@ have been strongly tested, enhanced and verified:
   pacproduct, elusive-code, Emanuele Iannone, Christian Pointner,
   Fabian Gärtner, Mauro Mombelli, Remo Kallio, hyndruide, sigmaeo, filogranaf,
   Maximiliano Duarte, Viktor Szépe, Shachar Limor, Andrei Volkau, maniekq,
-  DetAtHome, Michael Branson, chestwood96, Mattze96 and Steven Bense.
+  DetAtHome, Michael Branson, chestwood96, Mattze96, Steven Bense
+  and Jack Anderson.
 
 Compatible tools:
 

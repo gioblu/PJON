@@ -33,7 +33,7 @@ Released into the public domain
 PJDL (Padded Jittering Data Link) is an asynchronous serial data link for low-data-rate applications that supports both master-slave and multi-master communication over a common conductive medium. PJDL can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin.
 
 ### Physical layer
-The medium's maximum length is limited by the wiring resistance, by the voltage level used and by externally induced interference. It has been tested with up to 1000 meters long insulated wires and results demonstrate the same performance achieved with shorter lengths. The maximum range is still unknown.
+The medium's maximum length is limited by the wiring resistance, by the voltage level used and by externally induced interference. The maximum length of the bus can reach between 800 and 2000 meters depending on the mode used.
 ```cpp
 PJDL SINGLE WIRE BUS                           ______
  ______    ______    ______    ______         |      |
@@ -46,17 +46,17 @@ ___|__________|________|___________|______/\/\/\__| IO PIN
 |DEVICE|  |DEVICE|  |DEVICE|  |DEVICE| |__/\/\/\__  GND
 |______|  |______|  |______|  |______|    1-5 MΩ    
 ```
-It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to reduce externally induced interference. Pins can be optionally protected against overload adding a current limiting resistor to each connected pin. The resistor value can be obtained solving the following equation `R = (operating voltage / pin max current drain)`, for example to obtain the current limiting resistor value for an Arduino Uno simply substitute its characteristics: `R = (5v / 0.030A) = 166.66Ω`.
+It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above to reduce externally induced interference. The longer is the length of the cable and the higher is the amount of induced interference, the lower should be the resistance of the pull-down resistor. Pins can be optionally protected against overload adding a current limiting resistor to each connected pin. The resistor value can be obtained solving the following equation `R = (operating voltage / pin max current drain)`, for example to obtain the current limiting resistor value for an Arduino Uno simply substitute its characteristics: `R = (5v / 0.030A) = 166.66Ω`.
 
 ### Communication modes
 The proposed communication modes are the result of years of testing and optimization and have been selected to be easily supported by limited microcontrollers.  
 
-| MODE | Data bit duration | Padding bit duration | Pad-data ratio  | Bandwidth          |
-| ---- | ----------------- | -------------------- | --------------- | ------------------ |
-| 1    | 44                | 116                  | 2.636           | 1.95kB/s - 15625Bd |
-| 2    | 40                | 92                   | 2.300           | 2.21kB/s - 17696Bd |
-| 3    | 28                | 88                   | 3.142           | 2.94kB/s - 23529Bd |
-| 4    | 26                | 60                   | 2.307           | 3.40kB/s - 27210Bd |
+| MODE | Data bit duration | Padding bit duration | Pad-data ratio  | Bandwidth          | Range |
+| ---- | ----------------- | -------------------- | --------------- | ------------------ | ----- |
+| 1    | 44                | 116                  | 2.636           | 1.95kB/s - 15625Bd | 2000m |
+| 2    | 40                | 92                   | 2.300           | 2.21kB/s - 17696Bd | 1600m |
+| 3    | 28                | 88                   | 3.142           | 2.94kB/s - 23529Bd | 1200m |
+| 4    | 26                | 60                   | 2.307           | 3.40kB/s - 27210Bd |  800m |
 
 Durations are expressed in microseconds.
 

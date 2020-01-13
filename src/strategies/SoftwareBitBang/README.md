@@ -3,7 +3,7 @@
 **Medium:** Wire |
 **Pins used:** 1 / 2
 
-`SoftwareBitBang` is a software implementation of [PJDL (Padded Jittering Data Link)](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md). It supports simplex and half-duplex asynchronous serial communication for up to 254 devices over one common wire. This implementation can run on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin. It is a valid alternative to 1-Wire because of its flexibility and reliability. Fault tolerance schemes can be easily implemented because the communication pins can be configured at runtime. Bus maximum length is limited by cable's resistance, by the voltage level used and by externally induced interference. It has been tested with up to 1000 meters long insulated wires and results demonstrate the same performance achieved with shorter lengths. The maximum range is still unknown. Take a look at the [video introduction](https://www.youtube.com/watch?v=GWlhKD5lz5w) for a brief showcase of its features.
+`SoftwareBitBang` is a software implementation of [PJDL (Padded Jittering Data Link)](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md). It supports simplex and half-duplex asynchronous serial communication for up to 254 devices over one common wire. This implementation can run on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin. It is a valid alternative to 1-Wire because of its flexibility and reliability. Fault tolerance schemes can be easily implemented because the communication pins can be configured at runtime. The maximum length of the bus can reach between 800 and 2000 meters depending on the mode used. Take a look at the [video introduction](https://www.youtube.com/watch?v=GWlhKD5lz5w) for a brief showcase of its features.
 ```cpp
 PJDL SINGLE WIRE BUS                            ______
  ______    ______    ______    ______          |      |
@@ -36,12 +36,12 @@ It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to
 ### Performance
 `SWBB_MODE` can be configured in 4 different modes, `1`, `2`, `3` and `4`:
 
-| Mode | Speed | Supported MCUs   |
-| ---- |------ | ---------------- |
-| `1`  | 1.95kB/s 15625Bd | ATtiny84/84A, ATtiny85, ATmega88/168/328, ATmega16u4/32u4, ATmega2560, ATmega1284P, SAMD, STM32F1, MK20DX256, ESP8266, ESP32 |  
-| `2`  | 2.21kB/s 17696Bd | ATtiny84/84A, ATtiny85, ATmega88/168/328, ATmega16u4/32u4, ATmega2560 |
-| `3`  | 2.94kB/s 23529Bd | ATtiny84/84A, ATtiny85, ATmega88/168/328 |
-| `4`  | 3.40kB/s 27210Bd | ATtiny84/84A, ATtiny85, ATmega88/168/328 |
+| Mode | Speed | Range | Supported MCUs   |
+| ---- | ----- |------ | ---------------- |
+| `1`  | 1.95kB/s 15625Bd | 2000m | ATtiny84/84A, ATtiny85, ATmega88/168/328, ATmega16u4/32u4, ATmega2560, ATmega1284P, SAMD, STM32F1, MK20DX256, ESP8266, ESP32 |  
+| `2`  | 2.21kB/s 17696Bd | 1600m | ATtiny84/84A, ATtiny85, ATmega88/168/328, ATmega16u4/32u4, ATmega2560 |
+| `3`  | 2.94kB/s 23529Bd | 1200m | ATtiny84/84A, ATtiny85, ATmega88/168/328 |
+| `4`  | 3.40kB/s 27210Bd |  800m | ATtiny84/84A, ATtiny85, ATmega88/168/328 |
 
 When including and using the `SoftwareBitBang` strategy you have the complete access to the microcontroller. This happens because `SoftwareBitBang` runs a completely software-defined implementation, transforming a painful walk in a nice flight.
 

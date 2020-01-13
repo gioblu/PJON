@@ -44,7 +44,7 @@ ___|__________|________|___________|______/\/\/\__| IO PIN
  ___|__    __|___    ___|__    ___|__  |  110-180 Ω
 |      |  |      |  |      |  |      | |  
 |DEVICE|  |DEVICE|  |DEVICE|  |DEVICE| |__/\/\/\__  GND
-|______|  |______|  |______|  |______|    1-5 MΩ    
+|______|  |______|  |______|  |______|    8 kΩ - 5 MΩ    
 ```
 It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above to reduce externally induced interference. The longer is the length of the cable and the higher is the amount of induced interference, the lower should be the resistance of the pull-down resistor. Pins can be optionally protected against overload adding a current limiting resistor to each connected pin. The resistor value can be obtained solving the following equation `R = (operating voltage / pin max current drain)`, for example to obtain the current limiting resistor value for an Arduino Uno simply substitute its characteristics: `R = (5v / 0.030A) = 166.66Ω`.
 

@@ -1,5 +1,5 @@
+#define PJON_INCLUDE_MQTT
 #include <PJON.h>
-#include <strategies/MQTTTranslate/MQTTTranslate.h>
 
 // Ethernet configuration for this device
 byte mac[] = {0xDA, 0xCA, 0x7E, 0xEF, 0xFE, 0x5D};

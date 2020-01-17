@@ -58,12 +58,13 @@ Supported definitions:
 - `PJON_INCLUDE_SWBB` includes `SoftwareBitBang`
 - `PJON_INCLUDE_AS` includes `AnalogSampling`
 - `PJON_INCLUDE_ETCP` includes `EthernetTCP`
-- `PJON_INCLUDE_GUDP` includes `GlobalUDP`
 - `PJON_INCLUDE_LUDP` includes `LocalUDP`
+- `PJON_INCLUDE_GUDP` includes `GlobalUDP`
 - `PJON_INCLUDE_OS` includes `OverSampling`
 - `PJON_INCLUDE_TS` includes `ThroughSerial`
 - `PJON_INCLUDE_TSA` includes `ThroughSerialAsync`
 - `PJON_INCLUDE_TL` includes `ThroughLoRa`
+- `PJON_INCLUDE_MQTT` includes `MQTTTranslate`
 - `PJON_INCLUDE_EN` includes `ESPNOW`
 - `PJON_INCLUDE_ANY` includes `Any`
 - `PJON_INCLUDE_LF` includes `LocalFile`

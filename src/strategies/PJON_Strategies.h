@@ -38,6 +38,9 @@
 #if defined(PJON_INCLUDE_DUDP)
   #include "DualUDP/DualUDP.h"
 #endif
+#if defined(PJON_INCLUDE_MQTT)
+  #include "MQTTTranslate/MQTTTranslate.h"
+#endif
 #if defined(PJON_INCLUDE_OS)
   #include "OverSampling/OverSampling.h"
 #endif

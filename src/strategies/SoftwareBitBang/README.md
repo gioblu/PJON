@@ -5,18 +5,18 @@
 
 `SoftwareBitBang` is a software implementation of [PJDL (Padded Jittering Data Link)](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md). It supports simplex and half-duplex asynchronous serial communication for up to 254 devices over one common wire. This implementation can run on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin. It is a valid alternative to 1-Wire because of its flexibility and reliability. Fault tolerance schemes can be easily implemented because the communication pins can be configured at runtime. The maximum length of the bus can reach between 800 and 2000 meters depending on the mode used. Take a look at the [video introduction](https://www.youtube.com/watch?v=GWlhKD5lz5w) for a brief showcase of its features.
 ```cpp
-PJDL SINGLE WIRE BUS                            ______
- ______    ______    ______    ______          |      |
-|      |  |      |  |      |  |      |         |DEVICE|
-|DEVICE|  |DEVICE|  |DEVICE|  |DEVICE|         |______|
-|______|  |______|  |______|  |______|             |
-___|__________|________|___________|_______/\/\/\__| IO PIN
- ___|__    __|___    ___|__    ___|__   |  110-180 Ω
-|      |  |      |  |      |  |      |  |  
-|DEVICE|  |DEVICE|  |DEVICE|  |DEVICE|  |__/\/\/\__  GND
-|______|  |______|  |______|  |______|     1-5 MΩ    
+PJDL SINGLE WIRE BUS                           ______
+ ______    ______    ______    ______         |      |
+|      |  |      |  |      |  |      |        |DEVICE|
+|DEVICE|  |DEVICE|  |DEVICE|  |DEVICE|        |______|
+|______|  |______|  |______|  |______|            |
+___|__________|________|___________|______/\/\/\__| IO PIN
+ ___|__    __|___    ___|__    ___|__  |  110-180 Ω
+|      |  |      |  |      |  |      | |  
+|DEVICE|  |DEVICE|  |DEVICE|  |DEVICE| |__/\/\/\__  GND
+|______|  |______|  |______|  |______|    8 kΩ - 5 MΩ    
 ```
-It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to reduce externally induced interference. Pins can be optionally protected against overload adding a current limiting resistor to each connected pin. The resistor value can be obtained solving the following equation `R = (operating voltage / pin max current drain)`, for example to obtain the current limiting resistor value for an Arduino Uno simply substitute its characteristics: `R = (5v / 0.030A) = 166.66Ω`.
+It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above to reduce externally induced interference. The longer is the length of the cable and the higher is the amount of induced interference, the lower should be the resistance of the pull-down resistor. Pins can be optionally protected against overload adding a current limiting resistor to each connected pin. The resistor value can be obtained solving the following equation `R = (operating voltage / pin max current drain)`, for example to obtain the current limiting resistor value for an Arduino Uno simply substitute its characteristics: `R = (5v / 0.030A) = 166.66Ω`.
 
 ### Compatibility
 | MCU              | Clock | Supported pins   |

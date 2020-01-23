@@ -46,7 +46,17 @@
 
 // Timeout waiting for an ACK. This can be increased if the latency is high
 #ifndef DUDP_RESPONSE_TIMEOUT
-  #define DUDP_RESPONSE_TIMEOUT          10000ul
+  #define DUDP_RESPONSE_TIMEOUT          50000ul
+#endif
+
+// Backoff function that can be overridden depending on network and devices
+#ifndef DUDP_BACKOFF
+  #define DUDP_BACKOFF(attempts) (100000ul * attempts + PJON_RANDOM(10000))
+#endif
+
+// Max number of retries
+#ifndef DUDP_MAX_RETRIES
+  #define DUDP_MAX_RETRIES 5
 #endif
 
 // The size of the node table
@@ -204,7 +214,7 @@ public:
     /* Returns the suggested delay related to attempts passed as parameter: */
 
     uint32_t back_off(uint8_t attempts) {
-      return 1000ul * attempts + PJON_RANDOM(10000);
+      return attempts == 0 ? 0 : DUDP_BACKOFF(attempts);
     };
 
     /* Begin method, to be called on initialization:
@@ -221,7 +231,7 @@ public:
 
     /* Returns the maximum number of attempts for each transmission: */
 
-    static uint8_t get_max_attempts() { return 5; };
+    static uint8_t get_max_attempts() { return DUDP_MAX_RETRIES; };
 
     /* Handle a collision (empty because handled on Ethernet level): */
 
@@ -275,7 +285,6 @@ public:
         // and a delayed ACK is still a confirmation of the correct route.
         //if(_last_in_sender_id != _last_out_receiver_id) continue;
 
-        // We expect 1, if packet is larger it is not our ACK
         if(code == PJON_ACK) {
           // Autoregister sender of ACK
           int16_t pos = autoregister_sender();

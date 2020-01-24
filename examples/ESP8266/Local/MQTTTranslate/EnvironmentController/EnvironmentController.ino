@@ -11,7 +11,6 @@
 #define MQTTT_MODE MQTTT_MODE_MIRROR_TRANSLATE
 #include <PJON.h>
 
-
 // <Strategy name> bus(selected device id)
 PJON<MQTTTranslate> bus(45);
 
@@ -21,7 +20,6 @@ const char* password = "MyNetworkPassword";
 
 // IP address of MQTT broker
 const uint8_t broker_ip[] = { 192, 168, 1, 71 };
-
 
 float pressure = 1.0, temperature = 20.0;               // "Measurements"
 float pressure_target = 1.0, temperature_target = 20.0; // "Targets"
@@ -62,7 +60,7 @@ void loop() {
     // Send outputs to broker
     char buf[30];
     sprintf(buf, "P=%f,T=%g", pressure, temperature);
-    bus.send(44, buf, strlen(buf));
+    bus.send(PJON_BROADCAST, buf, strlen(buf));
 
     // Adjust to get closer to target, simulate a regulator
     pressure += (pressure_target - pressure) / 10;

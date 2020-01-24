@@ -11,30 +11,49 @@
 ---
 
 ## Addressing
-PJON objects can operate in local or shared mode. The PJON protocol v3.1 in [local](/specification/PJON-protocol-specification-v3.1.md#local-mode) mode supports connectivity for up to 254 devices using a 1 byte device identifier, in [shared](/specification/PJON-protocol-specification-v3.1.md#shared-mode) mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices using an additional 4 bytes bus identifier.
+PJON objects can operate in local or shared mode. The PJON protocol v3.1 in [local](/specification/PJON-protocol-specification-v3.1.md#local-mode) mode supports connectivity for up to 254 devices using a 8bits device identifier, in [shared](/specification/PJON-protocol-specification-v3.1.md#shared-mode) mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices using a 32bits bus identifier and a 8bits device identifier.
 
-Instantiation in local mode:
+### Instantiation in local mode
+
+The simples way to instantiate PJON in local mode is the following:
 ```cpp  
   PJON<SoftwareBitBang> bus;
-  // Device id PJON_NOT_ASSIGNED in local mode
-
-  PJON<SoftwareBitBang> bus(44);
-  // Device id 44 in local mode
 ```
+When the object is instantiated without passing parameters it operates in local mode and the device identifier is set to 255 or `PJON_NOT_ASSIGNED`. PJON objects can be instantiated passing the device identifier:
+```cpp
+  PJON<SoftwareBitBang> bus(44);
+```
+`bus` receives packets for device identifier 44 and ignores all others.
+
+### Set device identifier after instantiation
+
+Device id can be set or changed after instantiation using `set_id`:
+```cpp  
+  bus.set_id(44);  
+```
+0 or `PJON_BROADCAST` is reserved for broadcasting and should not be used as a device identifier.
+
+### Get device identifier after instantiation
+
+The device identifier of an object can be read after instantiation using `device_id`:
+```cpp  
+  uint8_t id = bus.device_id(); // Get device id
+```
+`device_id` returns 255 or `PJON_NOT_ASSIGNED` if the instance is initialised without configuring its device identifier.
+
+### Instantiation in shared mode
+
+if the medium used is private and not accessible from the outside world (wired network in home, business, industry) any  bus indexing scheme can be used without worrying about bus id collision; if instead the network uses a shared medium, such as commonly used radio frequencies like LoRa, it is strongly suggested to request a unique PJON bus id [here](http://www.pjon.org/get-bus-id.php) to avoid collisions.
+
 Instantiation in shared mode:
 ```cpp
 uint8_t bus_id[4] = {1, 2, 3, 4};
 PJON<SoftwareBitBang> bus(bus_id, 44);
 // Device id 44, bus id 1.2.3.4 in shared mode
 ```
-if the network is private and not accessible from the outside world (wired network in home, business, industry) any sort of bus indexing can be used without worrying about bus id collision; if instead the network is connected to a shared medium where other PJON users could transmit and receive data, it is strongly suggested to request a unique PJON bus id [here](http://www.pjon.org/get-bus-id.php).
+### Get or set bus identifier after instantiation
 
-Device id can also be set afterwards using `set_id`:
+The bus id can be read and set after initialisation using `bus_id`:
 ```cpp  
-  bus.set_id(44);  
-```
-Device and bus id can be read using `device_id` or `bus_id`:
-```cpp  
-  bus.device_id(); // Get device id
-  bus.bus_id;      // Get or set bus id
+  bus.bus_id; // Get or set bus id
 ```

@@ -269,9 +269,14 @@ public:
       mqttclient.set_receive_callback(static_receiver, this);
       char *p = (char*)packet_buffer;
       strcpy(p, topic.c_str());
-      strcat(p, "/device");
-      p = &p[strlen(p)];
-      p += mqttclient.uint8toa(device_id, p); // Now like pjon/device44
+      if (device_id == PJON_NOT_ASSIGNED) {
+        strcat(p, "/+"); // Pick up for all devices
+        p += 2;
+      } else { // For one single device id
+        strcat(p, "/device");
+        p = &p[strlen(p)];
+        p += mqttclient.uint8toa(device_id, p); // Now like pjon/device44
+      }
       #if (MQTTT_MODE == MQTTT_MODE_MIRROR_TRANSLATE)
       strcat(p, "/input/+");
       #endif
@@ -319,8 +324,7 @@ public:
     };
 
 
-    /* Send byte response to package transmitter.
-       We have the IP so we can skip broadcasting and reply directly. */
+    /* Send byte response to package transmitter */
 
     void send_response(uint8_t response) { // Empty
     };

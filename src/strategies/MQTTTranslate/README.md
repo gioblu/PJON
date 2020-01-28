@@ -22,9 +22,11 @@ Before including `PJON.h` it is possible to configure `MQTTTranslate` using pred
 | ------------------ |--------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | `MQTTT_MODE`       | Select mode                                  | `MQTTT_MODE_BUS_RAW`, `MQTTT_MODE_BUS_JSON`, `MQTTT_MODE_MIRROR_TRANSLATE`, `MQTTT_MODE_MIRROR_DIRECT` |
 
-Pass the `MQTTTranslate` type as PJON template parameter to instantiate a PJON object ready to communicate through this strategy.
+Define the `PJON_INCLUDE_MQTT` constant before including the library and pass the `MQTTTranslate` type as PJON template parameter to instantiate an object ready to communicate using this strategy:
 
 ```cpp  
+  #define PJON_INCLUDE_MQTT // Include MQTTTranslate strategy
+  #include <PJON.h> // Include the PJON library
   // Use MQTTTranslate strategy with PJON device id 44
   PJON<MQTTTranslate> bus(44);
   uint8_t broker_ip[] = { 127, 0, 0, 1 };

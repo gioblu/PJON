@@ -6,9 +6,14 @@
 // topic pjon/device45/input/temperature. Observe the value of the topic
 // pjon/device45/output/temperature change gradually from 20 to 24.
 
+// By defining MQTTT_USE_MAC the MQTT topic will be changed from
+// pjon/device<device id> to pjon/<MAC address in hex>. In this case
+// a device id does not need to be set. This can be useful to produce a
+// series of identical devices without flashing with individual ids.
+
 #define PJON_INCLUDE_MQTT
-#define PJON_INCLUDE_ETCP
 #define MQTTT_MODE MQTTT_MODE_MIRROR_TRANSLATE
+//#define MQTTT_USE_MAC
 #include <PJON.h>
 
 // <Strategy name> bus(selected device id)
@@ -45,7 +50,7 @@ void setup() {
   Serial.printf("Now listening at IP %s\n", WiFi.localIP().toString().c_str());
 
   bus.set_receiver(receiver_function);
-  bus.strategy.set_address(broker_ip, 1883, "transmitter");
+  bus.strategy.set_address(broker_ip, 1883, "environment");
   bus.strategy.add_translation("P","pressure");
   bus.strategy.add_translation("T","temperature");
   bus.begin();

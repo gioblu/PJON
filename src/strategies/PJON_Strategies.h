@@ -39,6 +39,7 @@
   #include "DualUDP/DualUDP.h"
 #endif
 #if defined(PJON_INCLUDE_MQTT)
+  #include "EthernetTCP/EthernetTCP.h"
   #include "MQTTTranslate/MQTTTranslate.h"
 #endif
 #if defined(PJON_INCLUDE_OS)

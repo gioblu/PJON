@@ -1,5 +1,4 @@
 #define PJON_INCLUDE_MQTT
-#define PJON_INCLUDE_ETCP
 #define MQTTT_MODE MQTTT_MODE_MIRROR_DIRECT
 #define PJON_INCLUDE_SWBB
 #define PJON_MAX_PACKETS 2
@@ -7,7 +6,7 @@
 
 // Ethernet configuration for this device
 byte mac[] = {0xDA, 0xCA, 0x7E, 0xEF, 0xFE, 0x5D};
-uint8_t broker_ip[] = { 192, 1, 1, 71 };
+uint8_t broker_ip[] = { 192, 168, 1, 71 };
 
 // <Strategy name> bus(selected device id)
 #define PJON_GATEWAY_ID 254
@@ -52,6 +51,7 @@ void setup() {
   mqtt.strategy.add_translation("P","pressure");
   mqtt.strategy.add_translation("T","temperature");
   #endif
+  mqtt.strategy.set_subscribe_all(true); // Subscribe to all devices' input topics
   mqtt.set_router(true);
   mqtt.begin();
 };

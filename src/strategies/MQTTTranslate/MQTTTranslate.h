@@ -51,6 +51,11 @@
    memory, while the MQTT packets are made more explicit ("temperature") to
    support longer name syntax in external systems.
 
+   The preprocessor define MQTTT_USE_MAC can be set when using one of the 
+   MIRROR modes, to change the topic name from i.e. /pjon/device44/output to
+   pjon/AE7804FEA7D0/output. This can be useful to avoid setting a device id
+   and instead just use the MAC address as a unique subject identifier.
+
    Compliant with the PJON protocol layer specification v3.1
    _____________________________________________________________________________
 
@@ -108,6 +113,10 @@
   #define MQTTT_TRANSLATION_TABLE_SIZE 5
 #endif
 
+#if defined(MQTTT_USE_MAC) && ((MQTTT_MODE == MQTTT_MODE_MIRROR_TRANSLATE) || (MQTTT_MODE == MQTTT_MODE_MIRROR_DIRECT))
+  #define MQTTT_MAC
+#endif
+
 class MQTTTranslate {
     bool last_send_success = false;
     
@@ -115,6 +124,16 @@ class MQTTTranslate {
 // TODO: Eliminate extra buffer -- is the on in the MqttClient not enough?    
     uint8_t packet_buffer[MQTTT_BUFFER_SIZE];
     PJON_Packet_Info _packet_info; // Used for parsing incoming and outgoing packets
+
+    #ifdef MQTTT_MAC
+    uint8_t mac[6];
+
+    char *add_mac(char *p) {
+      sprintf(p, "/%2X%2X%2X%2X%2X%2X", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+      p += strlen(p);
+      return p;
+    }
+    #endif
 
     #if (MQTTT_MODE == MQTTT_MODE_MIRROR_TRANSLATE)
     char key[MQTTT_KEY_SIZE];
@@ -192,10 +211,15 @@ class MQTTTranslate {
         bus_id, packet_buffer, payload, len, h);
       #endif
       #if (MQTTT_MODE == MQTTT_MODE_MIRROR_TRANSLATE || MQTTT_MODE == MQTTT_MODE_MIRROR_DIRECT)
-      // Parse topic to get source device id
-      uint8_t receiver_id = my_id;
-      const char *device_start = strstr(topic, "/device");
-      if (device_start) receiver_id = (uint8_t) atoi(&device_start[7]);
+        uint8_t receiver_id = my_id;
+        #ifdef MQTTT_MAC
+        // Parse topic to get source device MAC
+        const char *device_start = strstr(topic, "/");
+        #else
+        // Parse topic to get source device id
+        const char *device_start = strstr(topic, "/device");
+        if (device_start) receiver_id = (uint8_t) atoi(&device_start[7]);
+        #endif
       #endif
       #if (MQTTT_MODE == MQTTT_MODE_MIRROR_TRANSLATE)
       // Split into multiple topics (must assume a specific payload format to parse):
@@ -229,6 +253,7 @@ class MQTTTranslate {
         bus_id, packet_buffer, payload, len, header);
       #endif
     }
+
 public:
     ReconnectingMqttClient mqttclient;
     bool retain = false; // Leave message in broker for clients to receive at connect
@@ -238,7 +263,8 @@ public:
     uint8_t bus_id[4] = {0,0,0,0};
     uint8_t header = 0;
     bool lowercase_topics = true;
-    
+    bool subscribe_all = false; // Read input from all devices or just my own topic?
+
     void set_config(uint8_t id, const uint8_t bus_id[4], uint8_t header) {
       my_id = id; 
       if (bus_id != NULL) memcpy(this->bus_id, bus_id, 4);
@@ -246,6 +272,14 @@ public:
     }
     void set_qos(uint8_t qos) { this->qos = qos; }
     void set_topic(const char *topic) { this->topic = topic; }
+    
+
+    /* Subscribe to input from all devices, not only this device?
+       This is needed to use router mode in PJON.
+    */    
+    
+    void set_subscribe_all(bool yes) { subscribe_all = yes; }
+
 
     /* Set the broker's ip, the port used and the topic */
 
@@ -257,6 +291,7 @@ public:
       mqttclient.set_address(server_ip, server_port, client_id);
     }
 
+
     /* Returns the suggested delay related to the attempts passed as parameter: */
 
     uint32_t back_off(uint8_t attempts) { return 10000; };
@@ -265,18 +300,27 @@ public:
     /* Begin method, to be called on initialization */
 
     bool begin(uint8_t device_id = 0) {
+      #ifdef MQTTT_MAC
+      PJON_GET_MAC(mac);
+      #endif
       my_id = device_id;
       mqttclient.set_receive_callback(static_receiver, this);
       char *p = (char*)packet_buffer;
       strcpy(p, topic.c_str());
-      if (device_id == PJON_NOT_ASSIGNED) {
-        strcat(p, "/+"); // Pick up for all devices
-        p += 2;
-      } else { // For one single device id
-        strcat(p, "/device");
-        p = &p[strlen(p)];
-        p += mqttclient.uint8toa(device_id, p); // Now like pjon/device44
-      }
+      p += strlen(p);
+      #ifdef MQTTT_MAC
+        // In this mode (MIRROR modes), I are only interested in my own input
+        p = add_mac(p); // Adds slash and MAC
+      #else
+        if (subscribe_all) {
+          strcpy(p, "/+"); // Pick up for all devices
+          p += 2;
+        } else { // For one single device id
+          strcpy(p, "/device");
+          p += strlen(p);
+          p += mqttclient.uint8toa(device_id, p); // Now like pjon/device44
+        }
+      #endif
       #if (MQTTT_MODE == MQTTT_MODE_MIRROR_TRANSLATE)
       strcat(p, "/input/+");
       #endif
@@ -337,17 +381,25 @@ public:
       PJONTools::parse_header(data, _packet_info);
 
       // Compose topic
-// TODO: Make sure not accessing outside buffer
       uint8_t len = strlen(topic.c_str());
+      if (len >= SMCTOPICSIZE) return;
       strcpy(mqttclient.topic_buf(), topic.c_str());
       char *p = &mqttclient.topic_buf()[len];
-      strcpy(p, "/device"); p += 7;
-      #if (MQTTT_MODE == MQTTT_MODE_MIRROR_TRANSLATE || MQTTT_MODE == MQTTT_MODE_MIRROR_DIRECT)
-      p += mqttclient.uint8toa(_packet_info.sender_id, p);
-      strcat(p, "/output"); // Like pjon/device44/output
-      p = &p[strlen(p)]; // End of /output
-      #else // One of the bus modes, publish to receiver device
-      mqttclient.uint8toa(_packet_info.receiver_id, p);
+      #ifdef MQTTT_MAC
+        if (p-mqttclient.topic_buf()+7+7 >= SMCTOPICSIZE) return;
+        p = add_mac(p);
+        strcpy(p, "/output");
+        p += strlen(p); // End of /output
+      #else
+        if (p-mqttclient.topic_buf()+7+3+7 >= SMCTOPICSIZE) return;
+        strcpy(p, "/device"); p += 7;
+        #if (MQTTT_MODE == MQTTT_MODE_MIRROR_TRANSLATE || MQTTT_MODE == MQTTT_MODE_MIRROR_DIRECT)
+        p += mqttclient.uint8toa(_packet_info.sender_id, p);
+        strcat(p, "/output"); // Like pjon/device44/output
+        p = &p[strlen(p)]; // End of /output
+        #else // One of the bus modes, publish to receiver device
+        mqttclient.uint8toa(_packet_info.receiver_id, p);
+        #endif
       #endif
       #if (MQTTT_MODE != MQTTT_MODE_BUS_RAW)
       uint8_t overhead = PJONTools::packet_overhead(_packet_info.header);
@@ -371,9 +423,10 @@ public:
           l = min(c-e-1, sizeof value-1);
           strncpy(value, e+1, l);
           value[l] = 0;
-          *p = '/';
           if (!translate(key, sizeof key, true))
             if (lowercase_topics) for (char *k=key; *k!=0; k++) *k = tolower(*k);
+          if (p-mqttclient.topic_buf()+1+strlen(key) >= SMCTOPICSIZE) return;  
+          *p = '/';
           strcpy(p+1, key);
           send_cnt += mqttclient.publish(mqttclient.topic_buf(), (uint8_t*)value, strlen(value), retain, qos);
           v = c-d >= plen ? NULL : c+1;
@@ -390,8 +443,9 @@ public:
       #if (MQTTT_MODE == MQTTT_MODE_BUS_JSON)
       // Must assume that payload is text, unless UUencoding/base64encoding
       // {"to": to_id, "from": from id, "data": "payload"}
-      p = (char *) packet_buffer;;
-      strcpy(p, "{\"to\":"); p += 6;      
+      p = (char *) packet_buffer;
+      if (6+3+8+3+9+payload_len+2 >= MQTTT_BUFFER_SIZE) return;
+      strcpy(p, "{\"to\":"); p += 6;
       p += mqttclient.uint8toa(_packet_info.receiver_id, p);
       strcpy(p, ",\"from\":"); p+= 8;
       p += mqttclient.uint8toa(_packet_info.sender_id, p);

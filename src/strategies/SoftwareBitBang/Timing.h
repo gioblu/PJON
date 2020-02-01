@@ -83,15 +83,16 @@
       #define SWBB_READ_DELAY   8
     #endif
   #endif
+/* This will work only in one direction, if PB is the receiver WIDTH should be 23, as transmitter WIDTH should be 24.
   #if SWBB_MODE == 3
     #if F_CPU == 16000000L
-      /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
       #define SWBB_BIT_WIDTH   23
       #define SWBB_BIT_SPACER  84
       #define SWBB_ACCEPTANCE  40
       #define SWBB_READ_DELAY   9
     #endif
   #endif
+*/
 #endif
 
 

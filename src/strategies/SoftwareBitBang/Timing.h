@@ -63,7 +63,7 @@
   #endif
 #endif
 
-/* ATmega328PB */
+/* ATmega328PB ------------------------------------------------------------ */
 #if defined(__AVR_ATmega328PB__)
   #if SWBB_MODE == 1
     #if F_CPU == 16000000L

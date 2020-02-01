@@ -23,9 +23,8 @@
 #pragma once
 
 /* ATmega88/168/328 - Arduino Duemilanove, Uno, Nano, Mini, Pro, Pro mini */
-#if defined(__AVR_ATmega88__)  || defined(__AVR_ATmega168__)  || \
-    defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__) || \
-    defined(__AVR_ATmega328PB__)
+#if defined(__AVR_ATmega88__)  || defined(__AVR_ATmega168__) || \
+    defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
   #if SWBB_MODE == 1
     #if F_CPU == 16000000L
       /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
@@ -63,6 +62,38 @@
     #endif
   #endif
 #endif
+
+/* ATmega328PB */
+#if defined(__AVR_ATmega328PB__)
+  #if SWBB_MODE == 1
+    #if F_CPU == 16000000L
+      /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
+      #define SWBB_BIT_WIDTH   37
+      #define SWBB_BIT_SPACER 110
+      #define SWBB_ACCEPTANCE  56
+      #define SWBB_READ_DELAY   4
+    #endif
+  #endif
+  #if SWBB_MODE == 2
+    #if F_CPU == 16000000L
+      /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
+      #define SWBB_BIT_WIDTH   33
+      #define SWBB_BIT_SPACER  88
+      #define SWBB_ACCEPTANCE  56
+      #define SWBB_READ_DELAY   8
+    #endif
+  #endif
+  #if SWBB_MODE == 3
+    #if F_CPU == 16000000L
+      /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
+      #define SWBB_BIT_WIDTH   23
+      #define SWBB_BIT_SPACER  84
+      #define SWBB_ACCEPTANCE  40
+      #define SWBB_READ_DELAY   9
+    #endif
+  #endif
+#endif
+
 
 /* ATmega16/32U4 - Arduino Leonardo/Micro --------------------------------- */
 #if defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__)

@@ -67,7 +67,7 @@
 #if defined(__AVR_ATmega328PB__)
   #if SWBB_MODE == 1
     #if F_CPU == 16000000L
-      /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
+      /* Working on pin: 10 */
       #define SWBB_BIT_WIDTH   37
       #define SWBB_BIT_SPACER 110
       #define SWBB_ACCEPTANCE  56
@@ -76,7 +76,7 @@
   #endif
   #if SWBB_MODE == 2
     #if F_CPU == 16000000L
-      /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
+      /* Working on pin: 10 */
       #define SWBB_BIT_WIDTH   33
       #define SWBB_BIT_SPACER  88
       #define SWBB_ACCEPTANCE  56

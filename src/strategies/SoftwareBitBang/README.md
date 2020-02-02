@@ -24,7 +24,7 @@ It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above 
 | ATtiny84/84A | 16MHz | 0, 1, 2, 3, 4 |
 | ATtiny85 (Digispark development board) | 16MHz | 1, 2 |
 | ATmega88/168/328 (Duemilanove, Uno, Nano, Pro) | 16MHz | 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 |
-| ATmega328PB | 16MHz | ? |
+| ATmega328PB | 16MHz | 10 |
 | ATmega16u4/32u4 (Leonardo, Micro) | 16MHz | 2, 4, 8, 12 |
 | ATmega2560 (Mega, Mega nano) | 16MHz | 3, 4, 7, 8, 9, 10, 12 |
 | ATmega1284P | 16MHz | 18, 19, 20, 21, 22, 23, A0, A1, A2, A3, A4, A5, A6, A7 |

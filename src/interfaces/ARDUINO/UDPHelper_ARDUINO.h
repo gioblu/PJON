@@ -43,18 +43,18 @@ public:
       uint32_t header = 0;
       int16_t len = udp.read((char *) &header, 4), remaining = packet_size - len;
       if (len == -1) return result;
-      if(len == 4 && header == _magic_header && packet_size <= 4 + max_length) {
+      if(len == 4 && header == _magic_header && (unsigned)packet_size <= 4 + max_length) {
         len = udp.read(data, packet_size - 4);
         if (len == -1) return result;
         if (len == packet_size - 4) result = packet_size - 4;
         remaining -= len;
       }
-      if (remaining > 0) { 
-        // We must still read every byte because some implementations 
-        // (like ESP32) will not clear the receive buffer and therefore will 
+      if (remaining > 0) {
+        // We must still read every byte because some implementations
+        // (like ESP32) will not clear the receive buffer and therefore will
         // not receive any more packets otherwise.
         while (remaining > 0 && len > 0) {
-          len = udp.read(data, remaining <= max_length ? remaining : max_length);
+          len = udp.read(data, (unsigned)remaining <= max_length ? remaining : max_length);
           if (len > 0) remaining -= len;
         }
       }

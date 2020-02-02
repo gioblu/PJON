@@ -52,7 +52,7 @@ In the example above the PJON object is instantiated passing [SoftwareBitBang](/
 | [LocalFile](/src/strategies/LocalFile)  | Shared file system in memory | None | None |
 | [Any](/src/strategies/Any)  | Virtual inheritance, any of the above | Any of the above | Any of the above |
 
-By default all strategies are included except `LocalFile`, `ThroughLoRa` and `ESPNOW`. To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before PJON inclusion to include only `SoftwareBitBang` strategy. More than one strategy related constant can defined in the same program if that is required.
+By default all strategies are included except `MQTTTranslate`, `LocalFile`, `ThroughLoRa` and `ESPNOW`. To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before including the library to select only the `SoftwareBitBang` strategy. More than one strategy related constants can defined in the same program if that is required.
 
 Supported definitions:
 - `PJON_INCLUDE_SWBB` includes `SoftwareBitBang`
@@ -70,9 +70,11 @@ Supported definitions:
 - `PJON_INCLUDE_LF` includes `LocalFile`
 - `PJON_INCLUDE_NONE` does not include any strategy
 
-Before using `ThroughLoRa` be sure to have [arduino-LoRa](https://github.com/sandeepmistry/arduino-LoRa) source available and to have defined the `PJON_INCLUDE_TL` constant before including `PJON.h`.
+Before using `ThroughLoRa` be sure to have [arduino-LoRa](https://github.com/sandeepmistry/arduino-LoRa) library available and to have defined the `PJON_INCLUDE_TL` constant before including `PJON.h`.
 
 Before using `ESPNOW` be sure to have installed the required tools as described [here](/src/strategies/ESPNOW/README.md) and to have defined the `PJON_INCLUDE_EN` constant before including `PJON.h`.
+
+Before using `MQTTTranslate` be sure to have the [ReconnectingMqttClient](https://github.com/fredilarsen/ReconnectingMqttClient) library available and to have defined the `PJON_INCLUDE_MQTT` constant before including `PJON.h`.
 
 ### Network mode
 The network mode can be changed with `set_shared_network` during runtime, for example moving from [local](/specification/PJON-protocol-specification-v3.1.md#local-mode) to [shared](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v3.1.md#shared-mode) mode:

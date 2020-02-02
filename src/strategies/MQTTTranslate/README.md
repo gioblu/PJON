@@ -14,6 +14,14 @@ MQTTTranslate uses the [ReconnectingMqttClient](https://github.com/fredilarsen/R
 
 The "Translate" in the strategy name is because a translation table can be used to translate PJON packet contents to MQTT topics and back. This is to enable PJON packets to remain small `t=44.3` between devices with limited memory, while the MQTT packets are made more explicit `temperature` to support longer name syntax in external systems.
 
+#### MAC address usage
+
+The topic names like `pjon/device45/output/temperature` in the two MIRROR modes can be replaced with topic names containing the MAC address of the Ethernet/WiFi card of the device, like `pjon/DACA7EEFFE5D/output/temperature`. This is selected by setting the `MQTTT_USE_MAC` preprocessor definition.
+
+This gives the option to flash the same sketch without modifications to a lot of devices that will all appear in dedicated topics, to enable plug and play.
+
+Note that this functionality does not cover Windows/Linux/OsX in this release.
+
 ### Configuration
 
 Before including `PJON.h` it is possible to configure `MQTTTranslate` using predefined constants:

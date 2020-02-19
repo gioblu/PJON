@@ -30,19 +30,19 @@ The graph below shows the conceptual model that characterizes and standardizes t
 ```
  ________________________________________________
 | 3 Network layer: PJON                          |
-| - Optional features                            |
+|- Optional features ----------------------------|
 | Routing and switching                          |
 | Asynchronous acknowledgement                   |
-| Service identification                         |
-| Packet identification                          |
-| Bus identification                             |
+| Service identification (16 bits)               |
+| Packet identification (16 bits)                |
+| Bus identification (32 bits)                   |
 | Sender identification                          |
 | Packet transmission, maximum length 65535B     |
-| - Core features                                |
+|- Core features --------------------------------|
 | Congestion control                             |
 | Packet transmission, maximum length 255B       |
 | Error detection                                |
-| Device identification                          |
+| Device identification (8 bits)                 |
 | Broadcast                                      |
 |________________________________________________|
 | 2 Data link layer: PJDL, PJDLR, PJDLS, TSDL    |

@@ -18,7 +18,7 @@
 Invented by Giovanni Blu Mitolo
 Header feature proposed by Fred Larsen
 Originally published: 10/04/2010
-Latest revision: 10/09/2019
+Latest revision: 19/02/2020
 Related work: https://github.com/gioblu/PJON/
 Compliant implementations: PJON v10.0 and following
 Released into the public domain
@@ -30,14 +30,19 @@ The graph below shows the conceptual model that characterizes and standardizes t
 ```
  ________________________________________________
 | 3 Network layer: PJON                          |
+| - Optional features                            |
 | Routing and switching                          |
 | Asynchronous acknowledgement                   |
-| Congestion control                             |
-| Packet transmission                            |
 | Service identification                         |
 | Packet identification                          |
+| Bus identification                             |
+| Sender identification                          |
+| Packet transmission, maximum length 65535B     |
+| - Core features                                |
+| Congestion control                             |
+| Packet transmission, maximum length 255B       |
 | Error detection                                |
-| Local and shared network identification        |
+| Device identification                          |
 | Broadcast                                      |
 |________________________________________________|
 | 2 Data link layer: PJDL, PJDLR, PJDLS, TSDL    |

@@ -39,7 +39,7 @@ static int serial_get_char(struct tty_serial* tty)
 #endif
 
 #ifndef PJON_MICROS
-#define PJON_MICROS k_uptime_get
+#define PJON_MICROS 1000*k_uptime_get
 #endif
 
 // serial port handling

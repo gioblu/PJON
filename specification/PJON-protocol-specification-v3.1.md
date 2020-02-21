@@ -172,10 +172,10 @@ PJON supports both CRC8 and CRC32 to ensure safety on a wide range of use cases 
 `CRC32 IEEE 802.3` bit-reversed polynomial implicit +1 notation, or `0xedb88320`, selected for its high performance on a wide range of lengths, while also being widely evaluated and accepted as a good polynomial.
 
 #### Initial meta-data CRC8
-CRC8 is calculated and appended to the initial meta-data (id, header and length) to ensure consistency, avoid false positives and the length corruption vulnerability that affects CAN (Controlled Area Network) and many other protocols.
+CRC8 is calculated and appended to the initial meta-data (device id, header and length) to ensure consistency and avoid the length corruption vulnerability that affects CAN (Controlled Area Network) and many other protocols.
 
 #### End CRC8/CRC32
-CRC8 is calculated on both data and meta-data and it is appended at the end of packets of up to 15 bytes length (including overhead). CRC32 must be used if packet length exceeds 15 bytes but can be optionally used also for shorter packets if higher accuracy is required.
+CRC8 is calculated on both data and meta-data and it is appended at the end of packets of up to 15 bytes length (overhead included). CRC32 must be used if the packet length exceeds 15 bytes but can be optionally used also for shorter packets if more secure error detection is required.
 
 ### Packet transmission
 A local packet transmission is an optionally bidirectional communication between two devices that can be divided in 3 phases: **channel analysis**, **transmission** and optional **response**. In the channel analysis phase the medium's state is assessed before starting transmission to avoid collision. If the medium is free for use, the transmission phase starts in which the packet is entirely transmitted in network byte order. The receiving device computes the CRC and starts the response phase transmitting an acknowledge (decimal 6) in case of correct data reception. If no acknowledgement is received, after an exponential back-off delay, the transmitter retries until the acknowledgement is received or a maximum number of attempts is reached.

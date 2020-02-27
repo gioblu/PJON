@@ -271,6 +271,7 @@ public:
       this->header = header;
     }
     void set_qos(uint8_t qos) { this->qos = qos; }
+    void set_retain(bool retain) { this->retain = retain; }
     void set_topic(const char *topic) { this->topic = topic; }
     
 

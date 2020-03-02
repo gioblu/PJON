@@ -50,7 +50,7 @@ Communication over a single wire enables quick and creative experimentation. The
 
 ![PJDL communication over 2000m twisted pair](images/PJDL-2000m-mode4-twistedpair-8.2k-pulldown-60-series.png)
 
-The end of a SoftwareBitBang frame transmitted over a 800m twisted pair using mode `4`, test done by [Jack Anderson](https://github.com/jdaandersj). Bits are substantially deformed but the exchange occurs nominally.
+The picture above shows a [PJDL](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md) frame transmitted over a 800m twisted pair using mode `4` (test done by [Jack Anderson](https://github.com/jdaandersj)). Although bits are substantially deformed the exchange occurs nominally and performance is not affected.
 
 ### Configuration
 Before including `PJON.h` it is possible to configure `SoftwareBitBang` using predefined constants:

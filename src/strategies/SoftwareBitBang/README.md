@@ -3,7 +3,7 @@
 **Medium:** Wire |
 **Pins used:** 1 / 2
 
-`SoftwareBitBang` is a software implementation of [PJDL (Padded Jittering Data Link)](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md). It supports simplex and half-duplex asynchronous serial communication for up to 254 devices over one common wire. This implementation can run on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin. It is a valid alternative to 1-Wire because of its flexibility and reliability. Fault tolerance schemes can be easily implemented because the communication pins can be configured at runtime. The maximum length of the bus can reach between 800 and 2000 meters depending on the mode used. Take a look at the [video introduction](https://www.youtube.com/watch?v=GWlhKD5lz5w) for a brief showcase of its features.
+`SoftwareBitBang` is a software implementation of [PJDL (Padded Jittering Data Link)](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md). It supports simplex and half-duplex asynchronous serial communication for up to 254 devices over a single wire. The maximum length of the bus can reach between 800 and 2000 meters depending on the mode used. It is a valid alternative to 1-Wire because of its flexibility and reliability. Fault tolerance schemes can be easily implemented because communication pins can be configured at runtime. Take a look at the [video introduction](https://www.youtube.com/watch?v=GWlhKD5lz5w) for a brief showcase of its features.
 ```cpp
 PJDL SINGLE WIRE BUS                           ______
  ______    ______    ______    ______         |      |
@@ -46,7 +46,11 @@ It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above 
 
 When including and using the `SoftwareBitBang` strategy you have the complete access to the microcontroller. This happens because `SoftwareBitBang` runs a completely software-defined implementation, transforming a painful walk in a nice flight.
 
-Communication over a single wire enables quick and creative experimentation. The first suggested test, at the tester's risk, is to let two arduino boards communicate [through a living body](https://www.youtube.com/watch?v=caMit7nzJsM) touching with the left hand (should be harmless) the digital pin of the first board and with the right the pin of the other one. It is stunning to see highly accurate digital communication running through a living biological body. This opens the mind to creative solutions.
+Communication over a single wire enables quick and creative experimentation. The first suggested test, at the tester's risk, is to let two Arduino boards communicate [through a living body](https://www.youtube.com/watch?v=caMit7nzJsM) touching with the left hand the digital pin of the first board and with the right the pin of the other one (should be harmless). It is stunning to see it working perfectly through the human body, although it also works through water and other conductors.
+
+![PJDL communication over 2000m twisted pair](../images/PJDL-2000m-Mode-4-Twisted-Pair-8.2kohm-pull-down-60ohm-series-min.png)
+
+The end of a SoftwareBitBang frame transmitted over a 2000m twisted pair, test done by [Jack Anderson](https://github.com/jdaandersj). Bits are substantially deformed but the exchange occurs nominally.
 
 ### Configuration
 Before including `PJON.h` it is possible to configure `SoftwareBitBang` using predefined constants:

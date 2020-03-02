@@ -48,7 +48,7 @@ When including and using the `SoftwareBitBang` strategy you have the complete ac
 
 Communication over a single wire enables quick and creative experimentation. The first suggested test, at the tester's risk, is to let two Arduino boards communicate [through a living body](https://www.youtube.com/watch?v=caMit7nzJsM) touching with the left hand the digital pin of the first board and with the right the pin of the other one (should be harmless). It is stunning to see it working perfectly through the human body, although it also works through water and other conductors.
 
-![PJDL communication over 2000m twisted pair](images/PJDL-2000m-Mode-4-Twisted-Pair-8.2kohm-pull-down-60ohm-series-min.png)
+![PJDL communication over 2000m twisted pair](images/PJDL-2000m-mode4-twistedpair-8.2k-pulldown-60-series.png)
 
 The end of a SoftwareBitBang frame transmitted over a 800m twisted pair using mode `4`, test done by [Jack Anderson](https://github.com/jdaandersj). Bits are substantially deformed but the exchange occurs nominally.
 

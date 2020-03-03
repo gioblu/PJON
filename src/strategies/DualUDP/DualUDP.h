@@ -49,9 +49,16 @@
   #define DUDP_RESPONSE_TIMEOUT          50000ul
 #endif
 
+// Minimum time interval in ms between send attempts. Some devices go into 
+// contention if sending too fast. This can be overridden in an interface
+// for a device type, or in user sketches.
+#ifndef DUDP_MINIMUM_SEND_INTERVAL_MS 
+  #define DUDP_MINIMUM_SEND_INTERVAL_MS  8
+#endif
+
 // Backoff function that can be overridden depending on network and devices
 #ifndef DUDP_BACKOFF
-  #define DUDP_BACKOFF(attempts) (100000ul * attempts + PJON_RANDOM(10000))
+  #define DUDP_BACKOFF(attempts) (1000ul * attempts + PJON_RANDOM(500))
 #endif
 
 // Max number of retries
@@ -86,6 +93,7 @@ class DualUDP {
     // Remember the details of the last outgoing packet
     uint8_t          _last_out_receiver_id = 0;
     uint8_t          _last_out_sender_id = 0;
+    uint32_t         _last_out_time = 0;
 
     // Remember the details of the last incoming packet
     PJON_Packet_Info _packet_info; // Also used for last outgoing
@@ -214,7 +222,7 @@ public:
     /* Returns the suggested delay related to attempts passed as parameter: */
 
     uint32_t back_off(uint8_t attempts) {
-      return attempts == 0 ? 0 : DUDP_BACKOFF(attempts);
+      return DUDP_BACKOFF(attempts);
     };
 
     /* Begin method, to be called on initialization:
@@ -227,7 +235,10 @@ public:
 
     /* Check if the channel is free for transmission */
 
-    bool can_start() { return check_udp(); };
+    bool can_start() {
+      return check_udp() && ((uint32_t)(PJON_MILLIS() - _last_out_time) >=
+        DUDP_MINIMUM_SEND_INTERVAL_MS);
+    };
 
     /* Returns the maximum number of attempts for each transmission: */
 
@@ -345,6 +356,7 @@ public:
           udp.send_frame(data, length, _remote_ip[pos], _remote_port[pos]);
           _send_attempts[pos]++;
         }
+        _last_out_time = millis();
       }
     };
 

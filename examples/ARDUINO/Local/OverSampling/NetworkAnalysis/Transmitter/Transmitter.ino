@@ -11,19 +11,6 @@ PJON<OverSampling> bus(45);
 int packet;
 uint8_t content[] = "01234567890123456789";
 
-void setup() {
-  /* When using more than one pin always use pins connected to
-     a different port group to avoid cross-talk. */
-  bus.strategy.set_pins(7, 12);
-  bus.set_error(error_handler);
-  bus.begin();
-
-  Serial.begin(115200);
-  Serial.println("PJON - Network analysis");
-  Serial.println("Starting a 5 second communication test..");
-  Serial.println();
-}
-
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
   if(code == PJON_CONNECTION_LOST) {
     Serial.print("Connection with device ID ");
@@ -41,6 +28,19 @@ void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
     Serial.println(data);
   }
 };
+
+void setup() {
+  /* When using more than one pin always use pins connected to
+     a different port group to avoid cross-talk. */
+  bus.strategy.set_pins(7, 12);
+  bus.set_error(error_handler);
+  bus.begin();
+
+  Serial.begin(115200);
+  Serial.println("PJON - Network analysis");
+  Serial.println("Starting a 5 second communication test..");
+  Serial.println();
+}
 
 void loop() {
   long time = millis();

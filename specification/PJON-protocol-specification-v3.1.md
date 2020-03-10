@@ -169,13 +169,13 @@ PJON supports both CRC8 and CRC32 to ensure safety on a wide range of use cases 
              x^12 + x^11 + x^10 + x^8 + x^7 +
              x^5 + x^4 + x^2 + x + 1
 ```
-`CRC32 IEEE 802.3` bit-reversed polynomial implicit +1 notation, or `0xedb88320`, selected for its high performance on a wide range of lengths, while also being widely evaluated and accepted as a good polynomial.
+`CRC32 IEEE 802.3` bit-reversed polynomial implicit +1 notation, or `0xedb88320`, is selected for its high performance on a wide range of lengths, while also being widely evaluated and accepted as a good polynomial.
 
 #### Initial meta-data CRC8
 CRC8 is calculated and appended to the initial meta-data (device id, header and length) to ensure consistency and avoid the length corruption vulnerability that affects CAN (Controlled Area Network) and many other protocols.
 
 #### End CRC8/CRC32
-CRC8 is appended at the end of packets of up to 15 bytes length (overhead included). CRC32 must be appended instead if the packet length exceeds 15 bytes but can be optionally used for shorter packets, setting the `CRC` bit to 1, if more secure error detection is required.
+CRC8 is appended at the end of packets of up to 15 bytes length (overhead included). CRC32 is instead used if the packet's length exceeds 15 bytes but can be optionally applied in shorter packets setting the `CRC` bit high if more secure error detection is required.
 
 ### Packet transmission
 A local packet transmission is an optionally bidirectional communication between two devices that can be divided in 3 phases: **channel analysis**, **transmission** and optional **response**. In the channel analysis phase the medium's state is assessed before starting transmission to avoid collision. If the medium is free for use, the transmission phase starts in which the packet is entirely transmitted in network byte order. The receiving device computes the CRC and starts the response phase transmitting an acknowledge (decimal 6) in case of correct data reception. If no acknowledgement is received, after an exponential back-off delay, the transmitter retries until the acknowledgement is received or a maximum number of attempts is reached.
@@ -219,7 +219,7 @@ In local mode packets can be broadcasted to all devices sending to device id `0`
 
 ```
 
-If header's `TX INFO` bit is high the sender's device id is included in the packet.
+If header's `TX INFO` bit is high the sender's device id is included in the packet. In the example below device id `11` sends `@` to device id `12`.
 
 ```cpp
                         ____
@@ -237,7 +237,7 @@ If header's `TX INFO` bit is high the sender's device id is included in the pack
 ```
 
 #### Shared mode
-If header's `MODE` bit is high [bus](/specification/PJON-protocol-specification-v3.1.md#bus) identification is added to the packet. Below, the same local transmission used as an example above is formatted to be sent in shared mode to device id `12` of bus id `0.0.0.1`. The packet's content is prepended with the bus id of the recipient as requested by header's `MODE` bit.
+If header's `MODE` bit is high [bus](/specification/PJON-protocol-specification-v3.1.md#bus) identification is added to the packet. Below, the same local transmission used as an example above is formatted to be sent in shared mode to device id `12` of bus id `0.0.0.1`. The packet's payload is prepended with the bus id of the recipient as requested by header's `MODE` bit.
 ```cpp
  ________________________________________
 |ID| HEADER |LENGTH|CRC8|BUS ID|DATA|CRC8|
@@ -262,7 +262,7 @@ In shared mode packets can be broadcasted to all devices sharing the same bus id
 
 ```
 
-If header's `TX INFO` bit is high the sender's device and bus id are included in the packet. In the example below device id `11` of bus id `0.0.0.1` send to device id `12` of bus id `0.0.0.1`.
+If header's `TX INFO` bit is high the sender's device and bus id are included in the packet. In the example below device id `11` of bus id `0.0.0.1` sends to device id `12` of bus id `0.0.0.1`.
 
 ```cpp
                                 _________

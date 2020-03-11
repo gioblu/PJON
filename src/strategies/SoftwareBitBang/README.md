@@ -3,7 +3,7 @@
 **Medium:** Wire |
 **Pins used:** 1 / 2
 
-`SoftwareBitBang` is a software implementation of [PJDL (Padded Jittering Data Link)](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md). It supports simplex and half-duplex asynchronous serial communication for up to 254 devices over a single wire. The maximum length of the bus can reach between 800 and 2000 meters depending on the mode used. It is a valid alternative to 1-Wire because of its flexibility and reliability. Fault tolerance schemes can be easily implemented because communication pins can be configured at runtime. Take a look at the [video introduction](https://www.youtube.com/watch?v=GWlhKD5lz5w) for a brief showcase of its features.
+`SoftwareBitBang` is a software implementation of [PJDL (Padded Jittering Data Link)](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md). It supports simplex and half-duplex asynchronous serial communication for up to 254 devices over a single wire. The maximum length of the bus can reach between 800 and 2000 meters depending on the mode used. It is a valid alternative to 1-Wire because of its flexibility and reliability. Fault tolerance schemes can be easily implemented because communication pins can be configured at runtime. Take a look at the [video introduction](https://www.youtube.com/watch?v=GWlhKD5lz5w) for a brief showcase of its features.
 ```cpp
 PJDL SINGLE WIRE BUS                           ______
  ______    ______    ______    ______         |      |
@@ -50,7 +50,7 @@ Communication over a single wire enables quick and creative experimentation. The
 
 ![PJDL communication over 2000m twisted pair](images/PJDL-2000m-mode4-twistedpair-8.2k-pulldown-60-series.png)
 
-The picture above shows a [PJDL](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md) frame transmitted over a 800m twisted pair using mode `4` (test done by [Jack Anderson](https://github.com/jdaandersj)). Although bits are substantially deformed the exchange occurs nominally and performance is not affected.
+The picture above shows a [PJDL](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md) frame transmitted over a 800m twisted pair using mode `4` (test done by [Jack Anderson](https://github.com/jdaandersj)). Although bits are substantially deformed the exchange occurs nominally and performance is not affected.
 
 ### Configuration
 Before including `PJON.h` it is possible to configure `SoftwareBitBang` using predefined constants:

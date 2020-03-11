@@ -11,7 +11,7 @@
 ---
 
 ## Addressing
-PJON objects can operate in local or shared mode. The PJON protocol v3.1 in [local](/specification/PJON-protocol-specification-v3.1.md#local-mode) mode supports connectivity for up to 254 devices using a 8bits device identifier, in [shared](/specification/PJON-protocol-specification-v3.1.md#shared-mode) mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices using a 32bits bus identifier and a 8bits device identifier.
+PJON objects can operate in local or shared mode. The PJON protocol v3.1 in [local](/specification/PJON-protocol-specification-v3.2.md#local-mode) mode supports connectivity for up to 254 devices using a 8bits device identifier, in [shared](/specification/PJON-protocol-specification-v3.2.md#shared-mode) mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices using a 32bits bus identifier and a 8bits device identifier.
 
 ### Local mode
 

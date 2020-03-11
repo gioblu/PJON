@@ -2,11 +2,11 @@
 ### Specifications index
 
 #### Network layer
-- [PJON (Padded Jittering Operative Network) v3.1](/specification/PJON-protocol-specification-v3.1.md)
+- [PJON (Padded Jittering Operative Network) v3.2](/specification/PJON-protocol-specification-v3.2.md)
 - [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md)
 - [Network services list](/specification/PJON-network-services-list.md)
 #### Data link layer
-- **[PJDL (Padded Jittering Data Link) v4.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md)**
+- **[PJDL (Padded Jittering Data Link) v4.1](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md)**
 - [PJDLR (Padded Jittering Data Link over Radio) v3.0](/src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md)
 - [PJDLS (Padded Jittering Data Link byte Stuffed) v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
 - [TSDL (Tardy Serial Data Link) v2.1](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md)
@@ -14,11 +14,11 @@
 
 ---
 
-## PJDL v4.0
+## PJDL v4.1
 ```
 Invented by Giovanni Blu Mitolo
 Originally published: 10/04/2010
-Latest revision: 07/07/2019
+Latest revision: 10/03/2020
 Related implementation: /src/strategies/SoftwareBitBang/
 Compliant versions: PJON v12.0 and following
 Released into the public domain
@@ -29,6 +29,7 @@ Released into the public domain
 24/09/2017 2.0 - Modes 1, 2, 3
 29/12/2018 3.0 - Medium access control info, mode 4
 03/07/2019 4.0 - Response initializer
+10/03/2020 4.1 - Maximum range experimentally determined
 ```
 PJDL (Padded Jittering Data Link) is an asynchronous serial data link for low-data-rate applications that supports both master-slave and multi-master communication over a common conductive medium. PJDL can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin.
 

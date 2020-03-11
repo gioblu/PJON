@@ -1,11 +1,11 @@
 ### Specifications index
 
 #### Network layer
-- [PJON (Padded Jittering Operative Network) v3.1](/specification/PJON-protocol-specification-v3.1.md)
+- [PJON (Padded Jittering Operative Network) v3.2](/specification/PJON-protocol-specification-v3.2.md)
 - **[Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md)**
 - [Network services list](/specification/PJON-network-services-list.md)
 #### Data link layer
-- [PJDL (Padded Jittering Data Link) v4.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md)
+- [PJDL (Padded Jittering Data Link) v4.1](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md)
 - [PJDLR (Padded Jittering Data Link over Radio) v3.0](/src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md)
 - [PJDLS (Padded Jittering Data Link byte Stuffed) v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
 - [TSDL (Tardy Serial Data Link) v2.1](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md)
@@ -35,7 +35,7 @@ Channel analysis       Transmission                 Response
 |_____||____|__________|________|____|_________|____||_____|
 ```
 
-The graph above contains a packet transmission where the character `@` (decimal 64) is sent to device id `12`. As defined by the [PJON protocol layer specification v3.1](/specification/PJON-protocol-specification-v3.1.md) the header's `ACK` bit with value 1 requests a synchronous acknowledgement response, see [PJDL v4.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md), [PJDLR v3.0](/src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md), [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) and [TSDL v2.1](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md) specification for additional information.
+The graph above contains a packet transmission where the character `@` (decimal 64) is sent to device id `12`. As defined by the [PJON protocol layer specification v3.2](/specification/PJON-protocol-specification-v3.2.md) the header's `ACK` bit with value 1 requests a synchronous acknowledgement response, see [PJDL v4.1](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md), [PJDLR v3.0](/src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md), [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) and [TSDL v2.1](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md) specification for additional information.
 
 ### Asynchronous acknowledge
 The asynchronous acknowledgement is a non-blocking procedure, it is packet based and can travel across a network composed by many collision domains. Between the packet reception and the asynchronous acknowledgement response the communication medium can be used by other devices.
@@ -49,7 +49,7 @@ Channel analysis               Transmission
 |__|________|______|___|______|______|__|_________|____|_____|
                        |RXINFO| TX INFO |       
 ```
-The graph above contains a standard packet transmission where the character `@` (decimal 64) is sent to device id `12`. As defined by the [PJON protocol specification v3.1](/specification/PJON-protocol-specification-v3.1.md) the header's `ACK MODE` bit with value 1 requests to the recipient an asynchronous acknowledgement response, the `TX INFO` bit with value 1 signals the presence of the sender's info required to respond and the `PACKET ID` bit signals the presence of the packet id used for asynchronous acknowledgement identification. Device `12` of bus `0.0.0.2` answers with an empty asynchronous acknowledgement packet to device `11` of bus `0.0.0.1`.
+The graph above contains a standard packet transmission where the character `@` (decimal 64) is sent to device id `12`. As defined by the [PJON protocol specification v3.2](/specification/PJON-protocol-specification-v3.2.md) the header's `ACK MODE` bit with value 1 requests to the recipient an asynchronous acknowledgement response, the `TX INFO` bit with value 1 signals the presence of the sender's info required to respond and the `PACKET ID` bit signals the presence of the packet id used for asynchronous acknowledgement identification. Device `12` of bus `0.0.0.2` answers with an empty asynchronous acknowledgement packet to device `11` of bus `0.0.0.1`.
 ```cpp
  __ ________ ______ ___ _______ _______ __ _________ _____
 |ID| HEADER |LENGTH|CRC|BUS ID |BUS ID |ID|PACKET ID|CRC32|

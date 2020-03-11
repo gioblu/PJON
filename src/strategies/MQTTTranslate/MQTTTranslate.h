@@ -51,12 +51,12 @@
    memory, while the MQTT packets are made more explicit ("temperature") to
    support longer name syntax in external systems.
 
-   The preprocessor define MQTTT_USE_MAC can be set when using one of the 
+   The preprocessor define MQTTT_USE_MAC can be set when using one of the
    MIRROR modes, to change the topic name from i.e. /pjon/device44/output to
    pjon/AE7804FEA7D0/output. This can be useful to avoid setting a device id
    and instead just use the MAC address as a unique subject identifier.
 
-   Compliant with the PJON protocol layer specification v3.1
+   Compliant with the PJON protocol layer specification v3.2
    _____________________________________________________________________________
 
     MQTTTranslate strategy proposed and developed by Fred Larsen 07/12/2019

@@ -139,8 +139,7 @@ class SoftwareBitBang {
         response == SWBB_FAIL &&
         (uint32_t)(PJON_MICROS() - SWBB_RESPONSE_TIMEOUT) <= time
       ) {
-        // The input pin is briefly set as an output to pull-down the bus
-        PJON_IO_MODE(_input_pin, OUTPUT);
+        PJON_IO_WRITE(_input_pin, LOW);
         if(sync()) response = receive_byte();
         if(response == SWBB_FAIL) {
           PJON_IO_MODE(_output_pin, OUTPUT);

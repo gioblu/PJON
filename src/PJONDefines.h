@@ -385,7 +385,7 @@ struct PJONTools {
     else info.sender_id = 0;
     #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
       if(
-        info.header & PJON_PACKET_ID_BIT || (
+        (info.header & PJON_PACKET_ID_BIT) || (
           (info.header & PJON_ACK_MODE_BIT) && (info.header & PJON_TX_INFO_BIT)
         )
       ) {

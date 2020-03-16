@@ -286,12 +286,6 @@ struct PJONTools {
       header &= ~(PJON_ACK_REQ_BIT | PJON_ACK_MODE_BIT);
     uint16_t new_length = length + packet_overhead(header);
     bool extended_length = header & PJON_EXT_LEN_BIT;
-    #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
-      if(header & PJON_ACK_MODE_BIT)
-        header |= (PJON_TX_INFO_BIT | PJON_PACKET_ID_BIT);
-    #else
-      (void)packet_id; // Avoid unused variable compiler warning
-    #endif
     if(new_length > 15 && !(header & PJON_CRC_BIT)) {
       header |= PJON_CRC_BIT;
       new_length = (uint16_t)(length + packet_overhead(header));
@@ -326,10 +320,16 @@ struct PJONTools {
     #endif
     if(header & PJON_TX_INFO_BIT) destination[index++] = sender_id;
     #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
-      if(header & PJON_PACKET_ID_BIT) {
+      if(
+        (header & PJON_PACKET_ID_BIT) || (
+          (header & PJON_ACK_MODE_BIT) && (header & PJON_TX_INFO_BIT)
+        )
+      ) {
         destination[index++] = (uint8_t)(packet_id >> 8);
         destination[index++] = (uint8_t)packet_id;
       }
+    #else
+      (void)packet_id; // Avoid unused variable compiler warning
     #endif
     if(header & PJON_PORT_BIT) {
       if(destination_port != PJON_BROADCAST) {
@@ -384,7 +384,11 @@ struct PJONTools {
       info.sender_id = packet[index++];
     else info.sender_id = 0;
     #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
-      if(info.header & PJON_PACKET_ID_BIT) {
+      if(
+        info.header & PJON_PACKET_ID_BIT || (
+          (info.header & PJON_ACK_MODE_BIT) && (info.header & PJON_TX_INFO_BIT)
+        )
+      ) {
         info.id = (packet[index] << 8) | (packet[index + 1] & 0xFF);
         index += 2;
       }

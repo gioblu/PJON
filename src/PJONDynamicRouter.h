@@ -1,7 +1,7 @@
 
  /*-O//\         __     __
    |-gfo\       |__| | |  | |\ | ®
-   |!y°o:\      |  __| |__| | \| 12.0
+   |!y°o:\      |  __| |__| | \| 12.1
    |y"s§+`\     multi-master, multi-media bus network protocol
   /so+:-..`\    Copyright 2010-2020 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\

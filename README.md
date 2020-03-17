@@ -1,6 +1,6 @@
 
 ![PJON](http://www.gioblu.com/PJON/PJON-github-header-tiny.png)
-## PJON 12.0
+## PJON 12.1
 PJON® (Padded Jittering Operative Network) is an arduino-compatible, multi-master, multi-media network protocol. It proposes a new Open Standard, it is designed as a framework and implements a totally software-defined network protocol stack that can be easily cross-compiled on many MCUs and architectures like ATtiny, ATmega, SAMD, ESP8266, ESP32, STM32, Teensy, Raspberry Pi, Linux, Windows x86, Apple and Android. PJON operates on a wide range of media and protocols like TCP, UDP, MQTT, ESPNOW, USB, Serial, RS485, LoRa, PJDL, PJDLR and PJDLS.
 
 [![Get PJON bus id](https://img.shields.io/badge/get-PJON%20bus%20id-lightgrey.svg)](http://www.pjon.org/get-bus-id.php)

@@ -4,7 +4,7 @@ A strategy is an abstraction layer used to physically transmit data. Thanks to t
 
 | Strategy      | Physical layer | Protocol | Pins needed   |
 | ------------- | -------------- | -------- | ------------- |
-| [SoftwareBitBang](SoftwareBitBang) | Electrical impulses over conductive element | [PJDL](SoftwareBitBang/specification/PJDL-specification-v4.1.md) | 1 or 2 |
+| [SoftwareBitBang](SoftwareBitBang) | Electrical impulses over wire | [PJDL](SoftwareBitBang/specification/PJDL-specification-v4.1.md) | 1 or 2 |
 | [OverSampling](OverSampling)  | Electrical/radio impulses over wire/air | [PJDLR](OverSampling/specification/PJDLR-specification-v3.0.md) | 1 or 2 |
 | [AnalogSampling](AnalogSampling)  | Light pulses over air or optic fiber | [PJDLS](AnalogSampling/specification/PJDLS-specification-v2.0.md) | 1 or 2 |
 | [ThroughSerial](ThroughSerial)  | Electrical/radio impulses over wire/air | [TSDL](ThroughSerial/specification/TSDL-specification-v2.1.md) | 1 or 2 |

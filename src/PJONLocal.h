@@ -20,7 +20,7 @@ buffering, although it conserves interoperability with other classes.
 
 This class has been developed to enable PJON networking on very limited
 microcontrollers, like ATtiny45, ATtiny84 and ATtiny85, where even 1kB
-or program memory and 100B of ram make a difference.
+of program memory and 100B of ram make a difference.
 
   For examples see examples/ARDUINO/Local/SoftwareBitBang/PJONLocal/
 

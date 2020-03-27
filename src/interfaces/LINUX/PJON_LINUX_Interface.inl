@@ -6,6 +6,8 @@
 #endif
 
 #include "PJON_LINUX_Interface.h"
+#include "/usr/include/asm-generic/termbits.h"
+#include "/usr/include/asm-generic/ioctls.h"
 
 auto start_ts = std::chrono::high_resolution_clock::now();
 auto start_ts_ms = std::chrono::high_resolution_clock::now();
@@ -50,49 +52,21 @@ void delay(uint32_t delay_value_ms) {
 int serialOpen(const char *device, const int baud) {
   speed_t bd;
   int fd;
-  int state;
-  struct termios config;
-
-  switch(baud) {
-    case     200:	bd =     B200; break;
-    case     300:	bd =     B300; break;
-    case     600:	bd =     B600; break;
-    case    1200:	bd =    B1200; break;
-    case    1800:	bd =    B1800; break;
-    case    2400:	bd =    B2400; break;
-    case    4800:	bd =    B4800; break;
-    case    9600:	bd =    B9600; break;
-    case   19200:	bd =   B19200; break;
-    case   38400:	bd =   B38400; break;
-    case   57600:	bd =   B57600; break;
-    case  115200:	bd =  B115200; break;
-    case  230400:	bd =  B230400; break;
-    #if !defined(__APPLE__) && !defined(__FreeBSD__)
-      case  460800:	bd =  B460800; break;
-      case  500000:	bd =  B500000; break;
-      case  576000:	bd =  B576000; break;
-      case  921600:	bd =  B921600; break;
-      case 1000000:	bd = B1000000; break;
-      case 1152000:	bd = B1152000; break;
-      case 1500000:	bd = B1500000; break;
-      case 2000000:	bd = B2000000; break;
-      case 2500000:	bd = B2500000; break;
-      case 3000000:	bd = B3000000; break;
-      case 3500000:	bd = B3500000; break;
-      case 4000000:	bd = B4000000; break;
-    #endif
-    default: return -2;
-  }
 
   if((fd = open(device, O_NDELAY | O_NOCTTY | O_NONBLOCK | O_RDWR)) == -1)
   return -1;
 
   fcntl(fd, F_SETFL, O_RDWR);
-  tcgetattr(fd, &config);
-  cfmakeraw(&config);
-  cfsetispeed(&config, bd);
-  cfsetospeed(&config, bd);
 
+  struct termios2 config;
+  int r = ioctl(fd, TCGETS2, &config);
+  if(r) {
+    return -1;
+  }
+
+  config.c_ispeed = config.c_ospeed = baud;
+  config.c_cflag &= ~CBAUD;
+  config.c_cflag |= BOTHER;
   config.c_cflag |= (CLOCAL | CREAD);
   config.c_cflag &= ~(CSTOPB | CSIZE | PARENB);
   config.c_cflag |= CS8;
@@ -101,10 +75,10 @@ int serialOpen(const char *device, const int baud) {
   config.c_cc [VMIN] = 0;
   config.c_cc [VTIME] = 50; // 5 seconds reception timeout
 
-  tcsetattr(fd, TCSANOW, &config);
-  ioctl(fd, TIOCMGET, &state);
-  state |= (TIOCM_DTR | TIOCM_RTS);
-  ioctl(fd, TIOCMSET, &state);
+  r = ioctl(fd, TCSETS2, &config);
+  if(r) {
+    return -1;
+  }
 
   usleep(10000);	// Sleep for 10 milliseconds
   return fd;

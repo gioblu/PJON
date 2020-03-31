@@ -33,6 +33,8 @@ void setup() {
   Serial.print(bus.device_id());
   Serial.println(" A0 pin voltage cyclical record sending...");
   Serial.println("This example demonstrates how to send arbitrary data types");
+  // Avoid simultaneous transmission of Serial and SoftwareBitBang data
+  Serial.flush();
   r.id = 0;
 }
 

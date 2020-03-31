@@ -23,6 +23,8 @@ void setup() {
   Serial.print("PJON - Device id ");
   Serial.print(bus.device_id());
   Serial.println(" A0 pin voltage cyclical packet sending...");
+  // Avoid simultaneous transmission of Serial and SoftwareBitBang data
+  Serial.flush();
 }
 
 

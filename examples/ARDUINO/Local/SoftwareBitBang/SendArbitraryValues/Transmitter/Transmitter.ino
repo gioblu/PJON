@@ -11,7 +11,7 @@
 
 // <Strategy name> bus(selected device id)
 PJON<SoftwareBitBang> bus(45);
-unsigned long time;
+uint32_t myTime;
 int packet;
 int voltage;
 
@@ -19,7 +19,7 @@ void setup() {
   bus.strategy.set_pin(12);
   bus.begin();
   Serial.begin(115200);
-  time = millis();
+  myTime = millis();
   Serial.print("PJON - Device id ");
   Serial.print(bus.device_id());
   Serial.println(" A0 pin voltage cyclical packet sending...");
@@ -29,8 +29,8 @@ void setup() {
 
 
 void loop() {
-  if(millis() - time > 2500) {
-    time = millis();
+  if(millis() - myTime > 2500) {
+    myTime = millis();
     voltage = (float)(5.0 / (1023.0 / analogRead(A0))) * 1000;
     Serial.print("Voltage: ");
     Serial.print(voltage, DEC);

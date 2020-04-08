@@ -59,23 +59,39 @@ int serialOpen(const char *device, const int baud) {
   fcntl(fd, F_SETFL, O_RDWR);
 
   struct termios2 config;
+  int state;
   int r = ioctl(fd, TCGETS2, &config);
   if(r) {
     return -1;
   }
+  // sets the terminal to something like the "raw" mode of the old Version 7 terminal driver
+  config.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP
+                   | INLCR | IGNCR | ICRNL | IXON);
+  config.c_cflag &= ~(CSTOPB | CSIZE | PARENB);
+  config.c_cflag |= CS8;
+  config.c_lflag &= ~(ECHO | ECHOE | ECHONL | ICANON | ISIG | IEXTEN);
+  config.c_oflag &= ~OPOST;
 
+  // sets the baudrate
   config.c_ispeed = config.c_ospeed = baud;
   config.c_cflag &= ~CBAUD;
   config.c_cflag |= BOTHER;
+
   config.c_cflag |= (CLOCAL | CREAD);
-  config.c_cflag &= ~(CSTOPB | CSIZE | PARENB);
-  config.c_cflag |= CS8;
-  config.c_lflag &= ~(ECHO | ECHOE | ICANON | ISIG);
-  config.c_oflag &= ~OPOST;
   config.c_cc [VMIN] = 0;
   config.c_cc [VTIME] = 50; // 5 seconds reception timeout
-
+  
   r = ioctl(fd, TCSETS2, &config);
+  if(r) {
+    return -1;
+  }
+
+  r = ioctl(fd, TIOCMGET, &state);
+  if(r) {
+    return -1;
+  }
+  state |= (TIOCM_DTR | TIOCM_RTS);
+  r = ioctl(fd, TIOCMSET, &state);
   if(r) {
     return -1;
   }

@@ -61,9 +61,8 @@ int serialOpen(const char *device, const int baud) {
   struct termios2 config;
   int state;
   int r = ioctl(fd, TCGETS2, &config);
-  if(r) {
-    return -1;
-  }
+  if(r) return -1;
+
   // sets the terminal to something like the "raw" mode of the old Version 7 terminal driver
   config.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP
                    | INLCR | IGNCR | ICRNL | IXON);
@@ -80,21 +79,16 @@ int serialOpen(const char *device, const int baud) {
   config.c_cflag |= (CLOCAL | CREAD);
   config.c_cc [VMIN] = 0;
   config.c_cc [VTIME] = 50; // 5 seconds reception timeout
-  
+
   r = ioctl(fd, TCSETS2, &config);
-  if(r) {
-    return -1;
-  }
+  if(r) return -1;
 
   r = ioctl(fd, TIOCMGET, &state);
-  if(r) {
-    return -1;
-  }
+  if(r) return -1;
+
   state |= (TIOCM_DTR | TIOCM_RTS);
   r = ioctl(fd, TIOCMSET, &state);
-  if(r) {
-    return -1;
-  }
+  if(r) return -1;
 
   usleep(10000);	// Sleep for 10 milliseconds
   return fd;

@@ -1,10 +1,10 @@
+
 // For printf used below
 #include <stdio.h>
 // PJON library
 #include <inttypes.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #define TS_RESPONSE_TIME_OUT 35000
 /* Maximum accepted timeframe between transmission and synchronous
@@ -15,11 +15,18 @@
 #define PJON_INCLUDE_TS true // Include only ThroughSerial
 #include <PJON.h>
 
-#define BLINK_FREQUENCY 1000000 // 1 Blink per second
+void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
+  /* Make use of the payload before sending something, the buffer where payload points to is
+     overwritten when a new message is dispatched */
+  printf("BLINK... \n");
+  fflush(stdout);
+};
+
 
 int main() {
   printf("PJON instantiation... \n");
-  PJON<ThroughSerial> bus(45);
+  PJON<ThroughSerial> bus(44);
+  bus.set_receiver(receiver_function);
   uint32_t baud_rate = 9600;
   printf("Opening serial... \n");
 
@@ -33,17 +40,16 @@ int main() {
 
   printf("Opening bus... \n");
   bus.begin();
-  printf("Success, initiating BlinkTest repeated transmission... \n");
-  uint32_t myTime = PJON_MICROS();
+  printf("Attempting to roll bus... \n");
+  bus.update();
+  printf("Attempting to receive from bus... \n");
+  bus.receive();
+  printf("Success! \n");
+
   while(true) {
-    if((uint32_t)(PJON_MICROS() - myTime) > BLINK_FREQUENCY) {
-      uint16_t result = bus.send_packet(44, "B", 1);
-      if(result == PJON_ACK)
-        printf("Packet transmission successful! \n");
-      else printf("Packet transmission unsuccessful! Result: %d \n", result);
-      myTime = PJON_MICROS();
-    }
     bus.update();
     bus.receive();
   }
+
+  return 0;
 };

@@ -6,20 +6,20 @@
 #include <string.h>
 #include <unistd.h>
 
-#define TS_RESPONSE_TIME_OUT 35000
+#define TSA_RESPONSE_TIME_OUT 35000
 /* Maximum accepted timeframe between transmission and synchronous
    acknowledgement. This timeframe is affected by latency and CRC computation.
    Could be necessary to higher this value if devices are separated by long
    physical distance and or if transmitting long packets. */
 
-#define PJON_INCLUDE_TS true // Include only ThroughSerial
+#define PJON_INCLUDE_TSA true // Include only ThroughSerialAsync
 #include <PJON.h>
 
 #define BLINK_FREQUENCY 1000000 // 1 Blink per second
 
 int main() {
   printf("PJON instantiation... \n");
-  PJON<ThroughSerial> bus(45);
+  PJON<ThroughSerialAsync> bus(45);
   uint32_t baud_rate = 9600;
   printf("Opening serial... \n");
 

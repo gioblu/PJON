@@ -1,25 +1,31 @@
+
 // For printf used below
 #include <stdio.h>
 // PJON library
 #include <inttypes.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
-#define TS_RESPONSE_TIME_OUT 35000
+#define TSA_RESPONSE_TIME_OUT 35000
 /* Maximum accepted timeframe between transmission and synchronous
    acknowledgement. This timeframe is affected by latency and CRC computation.
    Could be necessary to higher this value if devices are separated by long
    physical distance and or if transmitting long packets. */
 
-#define PJON_INCLUDE_TS true // Include only ThroughSerial
+#define PJON_INCLUDE_TSA true // Include only ThroughSerialAsync
 #include <PJON.h>
 
-#define BLINK_FREQUENCY 1000000 // 1 Blink per second
+void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
+  /* Make use of the payload before sending something, the buffer where payload points to is
+     overwritten when a new message is dispatched */
+  if(payload[0] == 'B') {
+    printf("BLINK\n");
+  }
+}
 
 int main() {
   printf("PJON instantiation... \n");
-  PJON<ThroughSerial> bus(45);
+  PJON<ThroughSerialAsync> bus(45);
   uint32_t baud_rate = 9600;
   printf("Opening serial... \n");
 
@@ -30,20 +36,15 @@ int main() {
   printf("Setting serial... \n");
   bus.strategy.set_serial(s);
   bus.strategy.set_baud_rate(baud_rate);
+  bus.set_receiver(receiver_function);
 
   printf("Opening bus... \n");
   bus.begin();
   printf("Success, initiating BlinkTest repeated transmission... \n");
-  uint32_t myTime = PJON_MICROS();
+  bus.send_repeatedly(44, "B", 1, 1000000); // Send B to device 44 every second
+
   while(true) {
-    if((uint32_t)(PJON_MICROS() - myTime) > BLINK_FREQUENCY) {
-      uint16_t result = bus.send_packet(44, "B", 1);
-      if(result == PJON_ACK)
-        printf("Packet transmission successful! \n");
-      else printf("Packet transmission unsuccessful! Result: %d \n", result);
-      myTime = PJON_MICROS();
-    }
     bus.update();
-    bus.receive();
+    bus.receive(1000);
   }
 };

@@ -1,6 +1,6 @@
 
 /* PJON Linux Interface
-
+   13/04/2020 - callalilychen, Use termios2 for generic baudrate support
    ___________________________________________________________________________
 
     Copyright 2018 Fred Larsen

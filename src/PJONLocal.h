@@ -14,9 +14,9 @@
  ______-| |-__________________________________________________________________
 
 PJONLocal implements a subset of the PJON protocol's features. It does support
-only local mode, does not support the asynchronous acknowledge and packet
-queueing, infact it can transmit only one packet at a time without any
-buffering, although it conserves interoperability with other classes.
+only local mode and does not support packet queueing, infact it can transmit
+only one packet at a time without any buffering, although it conserves
+interoperability with other classes.
 
 This class has been developed to enable PJON networking on very limited
 microcontrollers, like ATtiny45, ATtiny84 and ATtiny85, where even 1kB

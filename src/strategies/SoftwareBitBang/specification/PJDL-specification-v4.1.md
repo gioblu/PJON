@@ -3,7 +3,7 @@
 
 #### Network layer
 - [PJON (Padded Jittering Operative Network) v3.2](/specification/PJON-protocol-specification-v3.2.md)
-- [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md)
+- [Acknowledge specification v2.0](/specification/PJON-protocol-acknowledge-specification-v2.0.md)
 - [Network services list](/specification/PJON-network-services-list.md)
 #### Data link layer
 - **[PJDL (Padded Jittering Data Link) v4.1](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md)**

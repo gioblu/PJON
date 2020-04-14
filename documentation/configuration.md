@@ -121,22 +121,6 @@ The [synchronous acknowledgement](/specification/PJON-protocol-acknowledge-speci
   bus.set_synchronous_acknowledge(false);
 ```
 
-If the [asynchronous acknowledgement](/specification/PJON-protocol-acknowledge-specification-v1.0.md#asynchronous-acknowledge) feature is required you need to define the `PJON_INCLUDE_ASYNC_ACK` as following. The use of a constant has been chosen to save more than 1kB on sketches where this feature is not used (the packet id is used by the asynchronous acknowledgement process, so if necessary, play with that responsibly):
-```cpp  
-#define PJON_INCLUDE_ASYNC_ACK true
-// Max number of old packet ids stored to avoid duplication
-#define PJON_MAX_RECENT_PACKET_IDS 10  // by default 10
-// If packet duplication occurs, higher PJON_MAX_RECENT_PACKET_IDS
-#include <PJON.h>
-```
-Use `set_asynchronous_acknowledge` to enable the asynchronous acknowledgement:
-```cpp  
-  // Enable async ack
-  bus.set_asynchronous_acknowledge(true);
-```
-See the [AsyncAck](/examples/ARDUINO/Network/SoftwareBitBang/AsyncAck) example to see more in detail how the asynchronous acknowledgement can be used.
-
-
 ### Packet identification
 If packet duplication avoidance is required it is possible to add a 2 bytes [packet identifier](/specification/PJON-protocol-specification-v3.2.md#packet-identification) to guarantee uniqueness.
 define the `PJON_INCLUDE_PACKET_ID` as following. The use of a constant has been chosen to save more than 1kB on sketches where this feature is not used:

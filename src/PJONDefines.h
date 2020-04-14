@@ -98,9 +98,9 @@ limitations under the License. */
 /* 0 - Synchronous acknowledgement disabled
    1 - Synchronous acknowledgement enabled */
 #define PJON_ACK_REQ_BIT     0B00000100
-/* 0 - Asynchronous acknowledgement disabled
-   1 - Asynchronous acknowledgement enabled */
-#define PJON_ACK_MODE_BIT    0B00001000
+
+// RESERVED FOR MAC FEATURE  0B00001000
+
 /* 0 - No port id contained
    1 - Port id contained (2 bytes integer) */
 #define PJON_PORT_BIT        0B00010000
@@ -134,12 +134,6 @@ limitations under the License. */
    so it strongly affects memory consumption */
 #ifndef PJON_PACKET_MAX_LENGTH
   #define PJON_PACKET_MAX_LENGTH     50
-#endif
-
-/* If set to false async ack feature is not included saving memory
-   (it saves around 1kB of memory) */
-#ifndef PJON_INCLUDE_ASYNC_ACK
-  #define PJON_INCLUDE_ASYNC_ACK  false
 #endif
 
 /* If set to false packet id feature is not included saving memory
@@ -219,14 +213,7 @@ struct PJONTools {
       ) + (header & PJON_EXT_LEN_BIT   ?  2 : 1)
         + (header & PJON_CRC_BIT       ?  4 : 1)
         + (header & PJON_PORT_BIT      ?  2 : 0)
-        + (
-            (
-              (
-                (header & PJON_ACK_MODE_BIT) &&
-                (header & PJON_TX_INFO_BIT)
-              ) || (header & PJON_PACKET_ID_BIT)
-            ) ? 2 : 0
-          )
+        + (header & PJON_PACKET_ID_BIT ?  2 : 0)
         + 2 // header + header's CRC
     );
   };
@@ -282,8 +269,7 @@ struct PJONTools {
       (destination_port == PJON_BROADCAST) &&
       (source_port == PJON_BROADCAST)
     ) header &= ~PJON_PORT_BIT;
-    if(receiver_id == PJON_BROADCAST)
-      header &= ~(PJON_ACK_REQ_BIT | PJON_ACK_MODE_BIT);
+    if(receiver_id == PJON_BROADCAST) header &= ~(PJON_ACK_REQ_BIT);
     uint16_t new_length = length + packet_overhead(header);
     bool extended_length = header & PJON_EXT_LEN_BIT;
     if(new_length > 15 && !(header & PJON_CRC_BIT)) {
@@ -319,12 +305,8 @@ struct PJONTools {
       (void)receiver_bus_id;
     #endif
     if(header & PJON_TX_INFO_BIT) destination[index++] = sender_id;
-    #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
-      if(
-        (header & PJON_PACKET_ID_BIT) || (
-          (header & PJON_ACK_MODE_BIT) && (header & PJON_TX_INFO_BIT)
-        )
-      ) {
+    #if(PJON_INCLUDE_PACKET_ID)
+      if(header & PJON_PACKET_ID_BIT) {
         destination[index++] = (uint8_t)(packet_id >> 8);
         destination[index++] = (uint8_t)packet_id;
       }
@@ -379,12 +361,8 @@ struct PJONTools {
     if(info.header & PJON_TX_INFO_BIT)
       info.sender_id = packet[index++];
     else info.sender_id = 0;
-    #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
-      if(
-        (info.header & PJON_PACKET_ID_BIT) || (
-          (info.header & PJON_ACK_MODE_BIT) && (info.header & PJON_TX_INFO_BIT)
-        )
-      ) {
+    #if(PJON_INCLUDE_PACKET_ID)
+      if(info.header & PJON_PACKET_ID_BIT) {
         info.id = (packet[index] << 8) | (packet[index + 1] & 0xFF);
         index += 2;
       }

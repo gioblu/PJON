@@ -86,14 +86,13 @@ class PJON {
     uint16_t port = PJON_BROADCAST;
     uint8_t random_seed = A0;
 
-    #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
+    #if(PJON_INCLUDE_PACKET_ID)
       PJON_Packet_Record recent_packet_ids[PJON_MAX_RECENT_PACKET_IDS];
     #endif
 
     /* PJON initialization with no parameters:
         State: Local (bus_id: 0.0.0.0)
         Synchronous acknowledge: true
-        Asynchronous acknowledge: false
         device id: PJON_NOT_ASSIGNED (255)
         Mode: PJON_HALF_DUPLEX
         Sender info: true (Sender info are included in the packet)
@@ -128,7 +127,7 @@ class PJON {
     void begin() {
       PJON_RANDOM_SEED(PJON_ANALOG_READ(random_seed) + _device_id);
       strategy.begin(_device_id);
-      #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
+      #if(PJON_INCLUDE_PACKET_ID)
         _packet_id_seed = PJON_RANDOM(65535) + _device_id;
       #endif
     };
@@ -205,32 +204,6 @@ class PJON {
       return PJON_FAIL;
     };
 
-    /* Check if a packet id is already dispatched in buffer: */
-
-    bool dispatched(PJON_Packet_Info info) {
-      PJON_Packet_Info actual_info;
-      for(uint16_t i = 0; i < PJON_MAX_PACKETS; i++) {
-        parse((uint8_t *)packets[i].content, actual_info);
-        if(
-          packets[i].state && packets[i].state != PJON_ACK &&
-          (actual_info.header & PJON_ACK_MODE_BIT) &&
-          (actual_info.header & PJON_TX_INFO_BIT)
-        )
-          if(
-            actual_info.id == info.id &&
-            info.sender_id == actual_info.receiver_id &&
-            (
-              !(info.header & PJON_MODE_BIT) ? true :
-              PJONTools::bus_id_equality(
-                info.receiver_bus_id,
-                actual_info.receiver_bus_id
-              )
-            )
-          ) return true;
-      }
-      return false;
-    };
-
     /* Get count of packets:
        Don't pass any parameter to count all dispatched packets
        Pass a device id to count all it's related packets */
@@ -269,7 +242,6 @@ class PJON {
       uint16_t batch_length = 0;
       uint8_t  overhead = 0;
       bool extended_length = false;
-      bool async_ack = false;
       for(uint16_t i = 0; i < length; i++) {
         if(!batch_length) {
           batch_length = strategy.receive_frame(data + i, length - i);
@@ -288,31 +260,21 @@ class PJON {
               !_router &&
               ((config & PJON_MODE_BIT) && !(data[1] & PJON_MODE_BIT))
             ) || (
-              data[0] == PJON_BROADCAST &&
-              ((data[1] & PJON_ACK_MODE_BIT) || (data[1] & PJON_ACK_REQ_BIT))
-            ) || (
-              (data[1] & PJON_ACK_MODE_BIT) && !(data[1] & PJON_TX_INFO_BIT)
+              (data[0] == PJON_BROADCAST) && (data[1] & PJON_ACK_REQ_BIT)
             ) || (
               (data[1] & PJON_EXT_LEN_BIT) && !(data[1] & PJON_CRC_BIT)
-            ) || (
-              !PJON_INCLUDE_ASYNC_ACK && (data[1] & PJON_ACK_MODE_BIT)
             ) || (
               !PJON_INCLUDE_PACKET_ID && (data[1] & PJON_PACKET_ID_BIT)
             )
           ) return PJON_BUSY;
           extended_length = data[i] & PJON_EXT_LEN_BIT;
           overhead = packet_overhead(data[i]);
-          async_ack = (
-            PJON_INCLUDE_ASYNC_ACK &&
-            (data[1] & PJON_ACK_MODE_BIT) &&
-            (data[1] & PJON_TX_INFO_BIT)
-          );
         }
 
         if((i == 2) && !extended_length) {
           length = data[i];
           if(
-            length < (uint8_t)(overhead + !async_ack) ||
+            length < (uint8_t)(overhead + 1) ||
             length >= PJON_PACKET_MAX_LENGTH
           ) return PJON_BUSY;
           if(length > 15 && !(data[1] & PJON_CRC_BIT)) return PJON_BUSY;
@@ -321,7 +283,7 @@ class PJON {
         if((i == 3) && extended_length) {
           length = (data[i - 1] << 8) | (data[i] & 0xFF);
           if(
-            length < (uint8_t)(overhead + !async_ack) ||
+            length < (uint8_t)(overhead + 1) ||
             length >= PJON_PACKET_MAX_LENGTH
           ) return PJON_BUSY;
           if(length > 15 && !(data[1] & PJON_CRC_BIT)) return PJON_BUSY;
@@ -358,34 +320,12 @@ class PJON {
 
       parse(data, last_packet_info);
 
-      #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
-        bool filter =
-          (last_packet_info.header & PJON_PACKET_ID_BIT) ? true : false;
-        /* If a packet requesting asynchronous acknowledgement is received
-           send the acknowledgement packet back to the packet's transmitter */
-        if(async_ack && !_router) {
-          if(_auto_delete && length == overhead)
-            if(handle_asynchronous_acknowledgment(last_packet_info))
-              return PJON_ACK;
-          if(length > overhead) {
-            if(!dispatched(last_packet_info)) {
-              dispatch(
-                last_packet_info.sender_id,
-                (uint8_t *)last_packet_info.sender_bus_id,
-                NULL,
-                0,
-                0,
-                config | PJON_ACK_MODE_BIT | PJON_TX_INFO_BIT,
-                last_packet_info.id,
-                last_packet_info.port
-              );
-              update();
-            }
-            filter = true;
-          }
-        }
-        if(filter && known_packet_id(last_packet_info) && !_router)
-          return PJON_ACK;
+      #if(PJON_INCLUDE_PACKET_ID)
+        if(
+          !_router &&
+          (last_packet_info.header & PJON_PACKET_ID_BIT) &&
+          known_packet_id(last_packet_info)
+        ) return PJON_ACK;
       #endif
 
       if((port != PJON_BROADCAST) && (port != last_packet_info.port))
@@ -424,46 +364,6 @@ class PJON {
       }
     };
 
-    /* Remove a packet from buffer passing its packet id as reference: */
-
-    bool handle_asynchronous_acknowledgment(PJON_Packet_Info packet_info) {
-      PJON_Packet_Info actual_info;
-      for(uint16_t i = 0; i < PJON_MAX_PACKETS; i++) {
-        parse((uint8_t *)packets[i].content, actual_info);
-        if(actual_info.id == packet_info.id)
-          if(actual_info.receiver_id == packet_info.sender_id && (
-            (!(actual_info.header & PJON_MODE_BIT) &&
-             !(packet_info.header & PJON_MODE_BIT)) ? true :
-              PJONTools::bus_id_equality(
-                actual_info.receiver_bus_id,
-                packet_info.sender_bus_id
-              )
-          )) {
-            if(packets[i].timing) {
-              uint8_t offset = packet_overhead(actual_info.header);
-              uint8_t crc_offset =
-                PJONTools::crc_overhead(actual_info.header);
-              dispatch(
-                actual_info.receiver_id,
-                (uint8_t *)actual_info.receiver_bus_id,
-                packets[i].content + (offset - crc_offset),
-                packets[i].length - offset,
-                packets[i].timing,
-                actual_info.header,
-                PJONTools::new_packet_id(_packet_id_seed++),
-                actual_info.port,
-                i
-              );
-              packets[i].attempts = 0;
-              return true;
-            }
-            remove(i);
-            return true;
-          }
-      }
-      return false;
-    };
-
     /* Remove all packets from the buffer:
        Don't pass any parameter to delete all packets
        Pass a device id to delete all it's related packets  */
@@ -473,6 +373,22 @@ class PJON {
         if(packets[i].state == 0) continue;
         if(!device_id || packets[i].content[0] == device_id) remove(i);
       }
+    };
+
+    /* Reset a packet sending present in the buffer: */
+
+    bool reset_packet(uint16_t id) {
+      if(!packets[id].timing) {
+        if(_auto_delete) {
+          remove(id);
+          return true;
+        }
+      } else {
+        packets[id].attempts = 0;
+        packets[id].registration = PJON_MICROS();
+        packets[id].state = PJON_TO_BE_SENT;
+      }
+      return false;
     };
 
     /* Schedule a packet sending to the sender of the last packet received.
@@ -737,14 +653,6 @@ class PJON {
       set_config_bit(state, PJON_ACK_REQ_BIT);
     };
 
-    /* Configure asynchronous acknowledge presence:
-       TRUE: Send back asynchronous acknowledge packet
-       FALSE: Avoid acknowledge packet transmission */
-
-    void set_asynchronous_acknowledge(bool state) {
-      set_config_bit(state, PJON_ACK_MODE_BIT);
-    };
-
     /* Configure CRC selected for packet checking:
        TRUE: CRC32, FALSE: CRC8 */
 
@@ -875,9 +783,6 @@ class PJON {
       for(uint16_t i = 0; i < PJON_MAX_PACKETS; i++) {
         if(packets[i].state == 0) continue;
         packets_count++;
-        bool async_ack = (packets[i].content[1] & PJON_ACK_MODE_BIT) &&
-          (packets[i].content[1] & PJON_TX_INFO_BIT);
-        bool sync_ack = (packets[i].content[1] & PJON_ACK_REQ_BIT);
 
         if(
           (uint32_t)(PJON_MICROS() - packets[i].registration) >
@@ -886,34 +791,16 @@ class PJON {
             strategy.back_off(packets[i].attempts)
           )
         ) {
-          if(!(sync_ack && async_ack && packets[i].state == PJON_ACK))
-            packets[i].state = // Avoid resending sync-acked async ack packets
+          if(packets[i].state != PJON_ACK)
+            packets[i].state =
               send_packet(packets[i].content, packets[i].length);
         } else continue;
 
         packets[i].attempts++;
 
         if(packets[i].state == PJON_ACK) {
-          if(!packets[i].timing) {
-            if(
-              _auto_delete && (
-                (
-                  packets[i].length == packet_overhead(packets[i].content[1])
-                  && async_ack
-                ) || !(packets[i].content[1] & PJON_ACK_MODE_BIT)
-              )
-            ) {
-              remove(i);
-              packets_count--;
-            }
-          } else {
-            if(!async_ack) {
-              packets[i].attempts = 0;
-              packets[i].registration = PJON_MICROS();
-              packets[i].state = PJON_TO_BE_SENT;
-            }
-          }
-          if(!async_ack) continue;
+          packets_count -= reset_packet(i);
+          continue;
         }
 
         if(packets[i].state != PJON_FAIL && packets[i].state != PJON_ACK)
@@ -921,63 +808,54 @@ class PJON {
 
         if(packets[i].attempts > strategy.get_max_attempts()) {
           _error(PJON_CONNECTION_LOST, i, _custom_pointer);
-          if(!packets[i].timing) {
-            if(_auto_delete) {
-              remove(i);
-              packets_count--;
-            }
-          } else {
-            packets[i].attempts = 0;
-            packets[i].registration = PJON_MICROS();
-            packets[i].state = PJON_TO_BE_SENT;
-          }
+          packets_count -= reset_packet(i);
         }
       }
       return packets_count;
     };
 
+    #if(PJON_INCLUDE_PACKET_ID)
+
     /* Check if the packet id and its transmitter info are already present in
        buffer of recently received packets, if not add it to the buffer. */
 
     bool known_packet_id(PJON_Packet_Info info) {
-      #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
-        for(uint8_t i = 0; i < PJON_MAX_RECENT_PACKET_IDS; i++)
-          if(
-            info.id == recent_packet_ids[i].id &&
-            info.sender_id == recent_packet_ids[i].sender_id && (
-              (
-                (info.header & PJON_MODE_BIT) &&
-                (recent_packet_ids[i].header & PJON_MODE_BIT) &&
-                PJONTools::bus_id_equality(
-                  (uint8_t *)info.sender_bus_id,
-                  (uint8_t *)recent_packet_ids[i].sender_bus_id
-                )
-              ) || (
-                !(info.header & PJON_MODE_BIT) &&
-                !(recent_packet_ids[i].header & PJON_MODE_BIT)
+      for(uint8_t i = 0; i < PJON_MAX_RECENT_PACKET_IDS; i++)
+        if(
+          info.id == recent_packet_ids[i].id &&
+          info.sender_id == recent_packet_ids[i].sender_id && (
+            (
+              (info.header & PJON_MODE_BIT) &&
+              (recent_packet_ids[i].header & PJON_MODE_BIT) &&
+              PJONTools::bus_id_equality(
+                (uint8_t *)info.sender_bus_id,
+                (uint8_t *)recent_packet_ids[i].sender_bus_id
               )
+            ) || (
+              !(info.header & PJON_MODE_BIT) &&
+              !(recent_packet_ids[i].header & PJON_MODE_BIT)
             )
-          ) return true;
-        save_packet_id(info);
-      #endif
+          )
+        ) return true;
+      save_packet_id(info);
       return false;
     };
 
     /* Save packet id in the buffer: */
 
     void save_packet_id(PJON_Packet_Info info) {
-      #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
-        for(uint8_t i = PJON_MAX_RECENT_PACKET_IDS - 1; i > 0; i--)
-          recent_packet_ids[i] = recent_packet_ids[i - 1];
-        recent_packet_ids[0].id = info.id;
-        recent_packet_ids[0].header = info.header;
-        recent_packet_ids[0].sender_id = info.sender_id;
-        PJONTools::copy_bus_id(
-          recent_packet_ids[0].sender_bus_id,
-          info.sender_bus_id
-        );
-      #endif
+      for(uint8_t i = PJON_MAX_RECENT_PACKET_IDS - 1; i > 0; i--)
+        recent_packet_ids[i] = recent_packet_ids[i - 1];
+      recent_packet_ids[0].id = info.id;
+      recent_packet_ids[0].header = info.header;
+      recent_packet_ids[0].sender_id = info.sender_id;
+      PJONTools::copy_bus_id(
+        recent_packet_ids[0].sender_bus_id,
+        info.sender_bus_id
+      );
     };
+
+    #endif
 
   private:
     bool          _auto_delete = true;

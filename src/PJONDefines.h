@@ -340,11 +340,7 @@ struct PJONTools {
         destination[index++] = (uint8_t)source_port;
       }
     }
-    memcpy(
-      destination + (new_length - length - PJONTools::crc_overhead(header)),
-      source,
-      length
-    );
+    memcpy(destination + index, source, length);
     if(header & PJON_CRC_BIT) {
       uint32_t computed_crc =
         PJON_crc32::compute((uint8_t *)destination, new_length - 4);

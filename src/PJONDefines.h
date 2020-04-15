@@ -231,13 +231,13 @@ struct PJONTools {
     return seed;
   };
 
-  /* Copy a bus id: */
+  /* Copy an id: */
 
   static void copy_id(uint8_t dest[], const uint8_t src[], uint8_t length) {
     memcpy(dest, src, length);
   };
 
-  /* Check equality between two bus ids */
+  /* Check equality between two ids: */
 
   static bool id_equality(
     const uint8_t *n_one,

@@ -69,9 +69,9 @@ static void PJON_dummy_receiver_handler(
 ) {};
 
 static void PJON_dummy_error_handler(
-  uint8_t,  // code
-  uint16_t, // data
-  void *    // custom_pointer
+  uint8_t,                  // code
+  uint16_t,                 // data
+  void *                    // custom_pointer
 ) {};
 
 template<typename Strategy>
@@ -117,7 +117,7 @@ class PJON {
        PJON<SoftwareBitBang> bus(my_bys, 1); */
 
     PJON(const uint8_t *b_id, uint8_t device_id) : strategy(Strategy()) {
-      PJONTools::copy_bus_id(bus_id, b_id);
+      PJONTools::copy_id(bus_id, b_id, 4);
       _device_id = device_id;
       set_default();
     };
@@ -460,9 +460,9 @@ class PJON {
     ) {
       uint8_t original_device_id = _device_id;
       uint8_t original_bus_id[4];
-      PJONTools::copy_bus_id(original_bus_id, bus_id);
+      PJONTools::copy_id(original_bus_id, bus_id, 4);
       set_id(tx_id);
-      PJONTools::copy_bus_id(bus_id, tx_bus_id);
+      PJONTools::copy_id(bus_id, tx_bus_id, 4);
       uint16_t result = PJON_FAIL;
       #if(PJON_MAX_PACKETS > 0)
         result = dispatch(
@@ -473,7 +473,7 @@ class PJON {
         result = send_packet_blocking(
           rx_id, rx_bus_id, payload, length, header, packet_id, rx_port
         );
-      PJONTools::copy_bus_id(bus_id, original_bus_id);
+      PJONTools::copy_id(bus_id, original_bus_id, 4);
       set_id(original_device_id);
       return result;
     };
@@ -686,7 +686,7 @@ class PJON {
 
     void set_default() {
       _mode = PJON_HALF_DUPLEX;
-      if(!PJONTools::bus_id_equality(bus_id, PJONTools::localhost()))
+      if(!PJONTools::id_equality(bus_id, PJONTools::localhost(), 4))
         set_shared_network(true);
       set_error(PJON_dummy_error_handler);
       set_receiver(PJON_dummy_receiver_handler);
@@ -827,9 +827,10 @@ class PJON {
             (
               (info.header & PJON_MODE_BIT) &&
               (recent_packet_ids[i].header & PJON_MODE_BIT) &&
-              PJONTools::bus_id_equality(
+              PJONTools::id_equality(
                 (uint8_t *)info.sender_bus_id,
-                (uint8_t *)recent_packet_ids[i].sender_bus_id
+                (uint8_t *)recent_packet_ids[i].sender_bus_id,
+                4
               )
             ) || (
               !(info.header & PJON_MODE_BIT) &&
@@ -849,9 +850,10 @@ class PJON {
       recent_packet_ids[0].id = info.id;
       recent_packet_ids[0].header = info.header;
       recent_packet_ids[0].sender_id = info.sender_id;
-      PJONTools::copy_bus_id(
+      PJONTools::copy_id(
         recent_packet_ids[0].sender_bus_id,
-        info.sender_bus_id
+        info.sender_bus_id,
+        4
       );
     };
 

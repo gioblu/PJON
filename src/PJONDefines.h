@@ -233,14 +233,18 @@ struct PJONTools {
 
   /* Copy a bus id: */
 
-  static void copy_bus_id(uint8_t dest[], const uint8_t src[]) {
-    memcpy(dest, src, 4);
+  static void copy_id(uint8_t dest[], const uint8_t src[], uint8_t length) {
+    memcpy(dest, src, length);
   };
 
   /* Check equality between two bus ids */
 
-  static bool bus_id_equality(const uint8_t *n_one, const uint8_t *n_two) {
-    for(uint8_t i = 0; i < 4; i++)
+  static bool id_equality(
+    const uint8_t *n_one,
+    const uint8_t *n_two,
+    uint8_t length
+  ) {
+    for(uint8_t i = 0; i < length; i++)
       if(n_one[i] != n_two[i])
         return false;
     return true;
@@ -293,10 +297,10 @@ struct PJONTools {
     }
     #ifndef PJON_LOCAL
       if(header & PJON_MODE_BIT) {
-        PJONTools::copy_bus_id((uint8_t*) &destination[index], receiver_bus_id);
+        copy_id((uint8_t*) &destination[index], receiver_bus_id, 4);
         index += 4;
         if(header & PJON_TX_INFO_BIT) {
-          PJONTools::copy_bus_id((uint8_t*) &destination[index], sender_bus_id);
+          copy_id((uint8_t*) &destination[index], sender_bus_id, 4);
           index += 4;
         }
       }
@@ -350,13 +354,13 @@ struct PJONTools {
     index += extended_length + 2; // + LENGTH + HEADER CRC
     #ifndef PJON_LOCAL
       if(info.header & PJON_MODE_BIT) {
-        copy_bus_id(info.receiver_bus_id, packet + index);
+        copy_id(info.receiver_bus_id, packet + index, 4);
         index += 4;
         if(info.header & PJON_TX_INFO_BIT) {
-          copy_bus_id(info.sender_bus_id, packet + index);
+          copy_id(info.sender_bus_id, packet + index, 4);
           index += 4;
-        } else copy_bus_id(info.sender_bus_id, localhost());
-      } else copy_bus_id(info.receiver_bus_id, localhost());
+        } else copy_id(info.sender_bus_id, localhost(), 4);
+      } else copy_id(info.receiver_bus_id, localhost(), 4);
     #endif
     if(info.header & PJON_TX_INFO_BIT)
       info.sender_id = packet[index++];

@@ -1,9 +1,9 @@
 
  /*-O//\         __     __
    |-gfo\       |__| | |  | |\ | ®
-   |!y°o:\      |  __| |__| | \| v11.2
+   |!y°o:\      |  __| |__| | \| 12.1
    |y"s§+`\     multi-master, multi-media bus network protocol
-  /so+:-..`\    Copyright 2010-2019 by Giovanni Blu Mitolo gioscarab@gmail.com
+  /so+:-..`\    Copyright 2010-2020 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
   |5/:%&-a3f.:;\
   \+//u/+g%{osv,,\
@@ -32,7 +32,7 @@ receiver callback should be really fast.
 This software is experimental and it is distributed "AS IS" without any
 warranty, use it at your own risk.
 
-Copyright 2010-2019 by Giovanni Blu Mitolo gioscarab@gmail.com
+Copyright 2010-2020 by Giovanni Blu Mitolo gioscarab@gmail.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

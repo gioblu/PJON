@@ -3,20 +3,20 @@
 **Medium:** Wire |
 **Pins used:** 1 / 2
 
-`SoftwareBitBang` is a software implementation of [PJDL (Padded Jittering Data Link)](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md). It supports simplex and half-duplex asynchronous serial communication for up to 254 devices over one common wire. This implementation can run on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin. It is a valid alternative to 1-Wire because of its flexibility and reliability. Fault tolerance schemes can be easily implemented because the communication pins can be configured at runtime. Bus maximum length is limited by cable's resistance, by the voltage level used and by externally induced interference. It has been tested with up to 100 meters long insulated wires and results demonstrate the same performance achieved with shorter lengths. The maximum range is still unknown. Take a look at the [video introduction](https://www.youtube.com/watch?v=Vg5aSlD-VCU) for a brief showcase of its features.
+`SoftwareBitBang` is a software implementation of [PJDL (Padded Jittering Data Link)](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md). It supports simplex and half-duplex asynchronous serial communication for up to 254 devices over a single wire. The maximum length of the bus can reach between 800 and 2000 meters depending on the mode used. It is a valid alternative to 1-Wire because of its flexibility and reliability. Fault tolerance schemes can be easily implemented because communication pins can be configured at runtime. Take a look at the [video introduction](https://www.youtube.com/watch?v=GWlhKD5lz5w) for a brief showcase of its features.
 ```cpp
-PJDL SINGLE WIRE BUS                            ______
- ______    ______    ______    ______          |      |
-|      |  |      |  |      |  |      |         |DEVICE|
-|DEVICE|  |DEVICE|  |DEVICE|  |DEVICE|         |______|
-|______|  |______|  |______|  |______|             |
-___|__________|________|___________|_______/\/\/\__| IO PIN
- ___|__    __|___    ___|__    ___|__   |  110-180 Ω
-|      |  |      |  |      |  |      |  |  
-|DEVICE|  |DEVICE|  |DEVICE|  |DEVICE|  |__/\/\/\__  GND
-|______|  |______|  |______|  |______|     1-5 MΩ    
+PJDL SINGLE WIRE BUS                           ______
+ ______    ______    ______    ______         |      |
+|      |  |      |  |      |  |      |        |DEVICE|
+|DEVICE|  |DEVICE|  |DEVICE|  |DEVICE|        |______|
+|______|  |______|  |______|  |______|            |
+___|__________|________|___________|______/\/\/\__| IO PIN
+ ___|__    __|___    ___|__    ___|__  |  110-180 Ω
+|      |  |      |  |      |  |      | |  
+|DEVICE|  |DEVICE|  |DEVICE|  |DEVICE| |__/\/\/\__  GND
+|______|  |______|  |______|  |______|    8 kΩ - 5 MΩ    
 ```
-It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to reduce externally induced interference. Pins can be optionally protected against overload adding a current limiting resistor to each connected pin. The resistor value can be obtained solving the following equation `R = (operating voltage / pin max current drain)`, for example to obtain the current limiting resistor value for an Arduino Uno simply substitute its characteristics: `R = (5v / 0.030A) = 166.66Ω`.
+It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above to reduce externally induced interference. The longer is the length of the cable and the higher is the amount of induced interference, the lower should be the resistance of the pull-down resistor. Pins can be optionally protected against overload adding a current limiting resistor to each connected pin. The resistor value can be obtained solving the following equation `R = (operating voltage / pin max current drain)`, for example to obtain the current limiting resistor value for an Arduino Uno simply substitute its characteristics: `R = (5v / 0.030A) = 166.66Ω`.
 
 ### Compatibility
 | MCU              | Clock | Supported pins   |
@@ -24,6 +24,7 @@ It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to
 | ATtiny84/84A | 16MHz | 0, 1, 2, 3, 4 |
 | ATtiny85 (Digispark development board) | 16MHz | 1, 2 |
 | ATmega88/168/328 (Duemilanove, Uno, Nano, Pro) | 16MHz | 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 |
+| ATmega328PB | 16MHz | 10 |
 | ATmega16u4/32u4 (Leonardo, Micro) | 16MHz | 2, 4, 8, 12 |
 | ATmega2560 (Mega, Mega nano) | 16MHz | 3, 4, 7, 8, 9, 10, 12 |
 | ATmega1284P | 16MHz | 18, 19, 20, 21, 22, 23, A0, A1, A2, A3, A4, A5, A6, A7 |
@@ -36,16 +37,20 @@ It is suggested to add 1-5 MΩ pull-down resistor as shown in the graph above to
 ### Performance
 `SWBB_MODE` can be configured in 4 different modes, `1`, `2`, `3` and `4`:
 
-| Mode | Speed | Supported MCUs   |
-| ---- |------ | ---------------- |
-| `1`  | 1.95kB/s 15625Bd | ATtiny84/84A, ATtiny85, ATmega88/168/328, ATmega16u4/32u4, ATmega2560, ATmega1284P, SAMD, STM32F1, MK20DX256, ESP8266, ESP32 |  
-| `2`  | 2.21kB/s 17696Bd | ATtiny84/84A, ATtiny85, ATmega88/168/328, ATmega16u4/32u4, ATmega2560 |
-| `3`  | 2.94kB/s 23529Bd | ATtiny84/84A, ATtiny85, ATmega88/168/328 |
-| `4`  | 3.40kB/s 27210Bd | ATtiny84/84A, ATtiny85, ATmega88/168/328 |
+| Mode | Speed | Range | Supported MCUs   |
+| ---- | ----- |------ | ---------------- |
+| `1`  | 1.95kB/s 15625Bd | 2000m | ATtiny84/84A, ATtiny85, ATmega88/168/328, ATmega328PB, ATmega16u4/32u4, ATmega2560, ATmega1284P, SAMD, STM32F1, MK20DX256, ESP8266, ESP32 |  
+| `2`  | 2.21kB/s 17696Bd | 1600m | ATtiny84/84A, ATtiny85, ATmega88/168/328, ATmega328PB, ATmega16u4/32u4, ATmega2560 |
+| `3`  | 2.94kB/s 23529Bd | 1200m | ATtiny84/84A, ATtiny85, ATmega88/168/328 |
+| `4`  | 3.40kB/s 27210Bd |  800m | ATtiny84/84A, ATtiny85, ATmega88/168/328 |
 
 When including and using the `SoftwareBitBang` strategy you have the complete access to the microcontroller. This happens because `SoftwareBitBang` runs a completely software-defined implementation, transforming a painful walk in a nice flight.
 
-Communication over a single wire enables quick and creative experimentation. The first suggested test, at the tester's risk, is to let two arduino boards communicate [through a living body](https://www.youtube.com/watch?v=caMit7nzJsM) touching with the left hand (should be harmless) the digital pin of the first board and with the right the pin of the other one. It is stunning to see highly accurate digital communication running through a living biological body. This opens the mind to creative solutions.
+Communication over a single wire enables quick and creative experimentation. The first suggested test, at the tester's risk, is to let two Arduino boards communicate [through a living body](https://www.youtube.com/watch?v=caMit7nzJsM) touching with the left hand the digital pin of the first board and with the right the pin of the other one (should be harmless). It is stunning to see it working perfectly through the human body, although it also works through water and other conductors.
+
+![PJDL communication over 2000m twisted pair](images/PJDL-2000m-mode4-twistedpair-8.2k-pulldown-60-series.png)
+
+The picture above shows a [PJDL](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md) frame transmitted over a 800m twisted pair using mode `4` (test done by [Jack Anderson](https://github.com/jdaandersj)). Although bits are substantially deformed the exchange occurs nominally and performance is not affected.
 
 ### Configuration
 Before including `PJON.h` it is possible to configure `SoftwareBitBang` using predefined constants:

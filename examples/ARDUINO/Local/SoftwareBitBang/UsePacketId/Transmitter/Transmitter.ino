@@ -14,6 +14,13 @@ PJON<SoftwareBitBang> bus(45);
 int packet;
 uint8_t content[] = "01234567890123456789";
 
+void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
+  if(code == PJON_CONNECTION_LOST) {
+    Serial.print("Connection lost with device id ");
+    Serial.println(bus.packets[data].content[0], DEC);
+  }
+};
+
 void setup() {
   bus.set_packet_id(true);
   bus.strategy.set_pin(12);
@@ -23,13 +30,6 @@ void setup() {
   packet = bus.send(44, content, 20);
   Serial.begin(115200);
 }
-
-void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
-  if(code == PJON_CONNECTION_LOST) {
-    Serial.print("Connection lost with device id ");
-    Serial.println(bus.packets[data].content[0], DEC);
-  }
-};
 
 void loop() {
   if(!bus.update()) packet = bus.send(44, content, 20);

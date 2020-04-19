@@ -32,6 +32,8 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
   Serial.print("mV | Record id: ");
   Serial.println(r.id);
   Serial.println();
+  // Avoid simultaneous transmission of Serial and SoftwareBitBang data
+  Serial.flush();
 };
 
 void setup() {

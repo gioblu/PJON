@@ -1,6 +1,6 @@
 
 /* PJON SoftwareBitBang strategy Transmission Timing table
-   Copyright 2010-2019, Giovanni Blu Mitolo All rights reserved.
+   Copyright 2010-2020, Giovanni Blu Mitolo All rights reserved.
 
    Often timing in two different architectures do not match. Code execution
    time can variate and time measurements can be not perfectly equal.
@@ -62,6 +62,29 @@
     #endif
   #endif
 #endif
+
+/* ATmega328PB ------------------------------------------------------------ */
+#if defined(__AVR_ATmega328PB__)
+  #if SWBB_MODE == 1
+    #if F_CPU == 16000000L
+      /* Working on pin: 10 */
+      #define SWBB_BIT_WIDTH   37
+      #define SWBB_BIT_SPACER 110
+      #define SWBB_ACCEPTANCE  56
+      #define SWBB_READ_DELAY   4
+    #endif
+  #endif
+  #if SWBB_MODE == 2
+    #if F_CPU == 16000000L
+      /* Working on pin: 10 */
+      #define SWBB_BIT_WIDTH   33
+      #define SWBB_BIT_SPACER  88
+      #define SWBB_ACCEPTANCE  56
+      #define SWBB_READ_DELAY   8
+    #endif
+  #endif
+#endif
+
 
 /* ATmega16/32U4 - Arduino Leonardo/Micro --------------------------------- */
 #if defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__)

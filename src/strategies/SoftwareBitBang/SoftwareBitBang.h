@@ -1,11 +1,11 @@
 
 /* SoftwareBitBang
-   1 or 2 wires software emulated asynchronous serial data link layer
+   1 or 2 wires software-defined asynchronous serial data link layer
    used as a Strategy by PJON (included in version v3.0)
-   Compliant with PJDL (Padded Jittering Data Link) specification v4.0
+   Compliant with PJDL (Padded Jittering Data Link) specification v4.1
    ___________________________________________________________________________
 
-    Copyright 2010-2019 Giovanni Blu Mitolo gioscarab@gmail.com
+    Copyright 2010-2020 Giovanni Blu Mitolo gioscarab@gmail.com
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -33,9 +33,10 @@
 #define SWBB_NOT_ASSIGNED 255
 
 /* Transmission speed modes (see Timing.h)
-   MODE   1: 1.95kB/s - 15625Bd
-   MODE   2: 2.21kB/s - 17696Bd
-   MODE   3: 2.94kB/s - 23529Bd */
+  MODE   1: 1.95kB/s - 15625Bd
+  MODE   2: 2.21kB/s - 17696Bd
+  MODE   3: 2.94kB/s - 23529Bd
+  MODE   4: 3.40kB/s - 27210Bd */
 #include "Timing.h"
 
 class SoftwareBitBang {

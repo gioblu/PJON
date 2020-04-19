@@ -1,5 +1,5 @@
-/* Similar to the Switch but with a blinking RGB led indicating each packet 
-   that is forwarded with blue and green for each direction respectively, 
+/* Similar to the Switch but with a blinking RGB led indicating each packet
+   that is forwarded with blue and green for each direction respectively,
    plus errors in red. */
 
 #define PJON_MAX_PACKETS 3
@@ -23,6 +23,11 @@ const int ERROR_LED_PIN = 4, SWBB_LED_PIN = 5, LUDP_LED_PIN = 6;
 const int LED_DURATION = 100; // how long each packet transfer shall be visible (ms)
 uint32_t error_on_time = 0, swbb_on_time = 0, ludp_on_time = 0;
 
+void error_handler(uint8_t code, uint16_t data, void *custom_ptr) {
+  digitalWrite(ERROR_LED_PIN, HIGH);
+  error_on_time = millis();  
+}
+
 void setup() {
   while (Ethernet.begin(mac) == 0) delay(5000); // Wait for DHCP response
   link1.strategy.set_pin(7);
@@ -31,7 +36,7 @@ void setup() {
   router.set_error(error_handler);
   router.set_virtual_bus(0); // Enable virtual bus
   router.begin();
-  
+
   // Init pins for external LEDs
   pinMode(ERROR_LED_PIN, OUTPUT);
   pinMode(SWBB_LED_PIN, OUTPUT);
@@ -47,11 +52,6 @@ void loop() {
 void sendnotification_function(const uint8_t * const payload, const uint16_t length, const uint8_t receiver_bus,
                                const uint8_t sender_bus, const PJON_Packet_Info &packet_info) {
   light_led(sender_bus);
-}
-
-void error_handler(uint8_t code, uint16_t data, void *custom_ptr) {
-  digitalWrite(ERROR_LED_PIN, HIGH);
-  error_on_time = millis();  
 }
 
 void light_led(uint8_t bus_number) {

@@ -37,20 +37,29 @@ public:
   }
 
   uint16_t receive_frame(uint8_t *data, uint16_t max_length) {
-    #ifdef PJON_ESP
-    udp.flush(); // Empty receive buffer so it is prepared for new packet
-    #endif
-    uint16_t packetSize = udp.parsePacket();
-    if(packetSize > 0) {
+    uint16_t result = PJON_FAIL;
+    int16_t packet_size = udp.parsePacket();
+    if(packet_size > 0) {
       uint32_t header = 0;
-      uint16_t len = udp.read((char *) &header, 4);
-      if(len != 4 || header != _magic_header) return PJON_FAIL; // Not an expected packet
-      if (packetSize > 4 + max_length) return PJON_FAIL;
-      len = udp.read(data, packetSize - 4);
-      if (len != packetSize - 4) return PJON_FAIL;
-      return packetSize - 4;
+      int16_t len = udp.read((char *) &header, 4), remaining = packet_size - len;
+      if (len == -1) return result;
+      if(len == 4 && header == _magic_header && (unsigned)packet_size <= 4 + max_length) {
+        len = udp.read(data, packet_size - 4);
+        if (len == -1) return result;
+        if (len == packet_size - 4) result = packet_size - 4;
+        remaining -= len;
+      }
+      if (remaining > 0) {
+        // We must still read every byte because some implementations
+        // (like ESP32) will not clear the receive buffer and therefore will
+        // not receive any more packets otherwise.
+        while (remaining > 0 && len > 0) {
+          len = udp.read(data, (unsigned)remaining <= max_length ? remaining : max_length);
+          if (len > 0) remaining -= len;
+        }
+      }
     }
-    return PJON_FAIL;
+    return result;
   }
 
   void send_frame(uint8_t *data, uint16_t length, IPAddress remote_ip, uint16_t remote_port) {

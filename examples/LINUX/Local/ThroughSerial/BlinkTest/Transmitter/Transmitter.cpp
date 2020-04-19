@@ -20,7 +20,10 @@ int main() {
   PJON<ThroughSerial> bus(45);
   uint32_t baud_rate = 9600;
   printf("Opening serial... \n");
-  int s = serialOpen("/dev/ttyACM0", baud_rate);
+
+  // The name of the serial port may need to be edited
+  int s = serialOpen("/dev/ttyUSB0", baud_rate);
+
   if(int(s) < 0) printf("Serial open fail!");
   printf("Setting serial... \n");
   bus.strategy.set_serial(s);
@@ -28,8 +31,8 @@ int main() {
 
   printf("Opening bus... \n");
   bus.begin();
-  printf("Attempting to send a packet... \n");
-  bus.send(44, "B", 1);
+  printf("Attempting to send a B every second... \n");
+  bus.send_repeatedly(44, "B", 1, 1000000);
   printf("Attempting to roll bus... \n");
   bus.update();
   printf("Attempting to receive from bus... \n");

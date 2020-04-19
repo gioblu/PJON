@@ -1,9 +1,9 @@
 
  /*-O//\         __     __
    |-gfo\       |__| | |  | |\ | ®
-   |!y°o:\      |  __| |__| | \| v11.2
+   |!y°o:\      |  __| |__| | \| 12.1
    |y"s§+`\     multi-master, multi-media bus network protocol
-  /so+:-..`\    Copyright 2010-2019 by Giovanni Blu Mitolo gioscarab@gmail.com
+  /so+:-..`\    Copyright 2010-2020 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
   |5/:%&-a3f.:;\
   \+//u/+g%{osv,,\
@@ -31,7 +31,7 @@ and reducing traffic.
 This software is experimental and it is distributed "AS IS" without any
 warranty, use it at your own risk.
 
-Copyright 2010-2019 by Giovanni Blu Mitolo gioscarab@gmail.com
+Copyright 2010-2020 by Giovanni Blu Mitolo gioscarab@gmail.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -56,12 +56,25 @@ limitations under the License. */
   #define PJON_VIRTUALBUS_MAX_DEVICES 255
 #endif
 
+// After having observed a device on one bus it is associated with that bus
+// and packets will not be forwarded to other buses.
+// This setting can activate a timeout so that if there is no traffic from a
+// device for a certain time, its position is cleared and packets will be
+// forwared to all buses. This allows a device to be moved from behind one
+// router to behind another without restarting routers. The value is in seconds.
+#ifndef PJON_VIRTUALBUS_ROUTE_TIMEOUT_S
+  #define PJON_VIRTUALBUS_ROUTE_TIMEOUT_S 0
+#endif
+
 template<class RouterClass>
 class PJONVirtualBusRouter : public RouterClass {
 protected:
   // The array position of one (any) of the parts of the virtual bus.
   uint8_t virtual_bus = PJON_NOT_ASSIGNED;
   uint8_t device_via_attached_bus[PJON_VIRTUALBUS_MAX_DEVICES];
+#if (PJON_VIRTUALBUS_ROUTE_TIMEOUT != 0)
+  uint32_t device_last_activity_time[PJON_VIRTUALBUS_MAX_DEVICES];
+#endif
 
   // Support for disabling ACK for devices with unknown location
   bool unknown_device_location = false;
@@ -74,6 +87,12 @@ protected:
   uint8_t find_vbus_with_device(const uint8_t *bus_id, const uint8_t device_id) {
     if (!is_vbus(bus_id) || device_id >= PJON_VIRTUALBUS_MAX_DEVICES)
       return PJON_NOT_ASSIGNED;
+#if (PJON_VIRTUALBUS_ROUTE_TIMEOUT != 0)
+    // Forget the device location if no packet from it has been observed for some time
+    if ((uint32_t)(PJON_MILLIS() - device_last_activity_time[device_id])
+        > (uint32_t)PJON_VIRTUALBUS_ROUTE_TIMEOUT*1000)
+      device_via_attached_bus[device_id] = PJON_NOT_ASSIGNED;
+#endif
     return device_via_attached_bus[device_id];
   }
 
@@ -91,6 +110,9 @@ protected:
       }
       #endif
       device_via_attached_bus[device_id] = attached_bus;
+#if (PJON_VIRTUALBUS_ROUTE_TIMEOUT != 0)
+      device_last_activity_time[device_id] = PJON_MILLIS();
+#endif
     }
   }
 

@@ -2,12 +2,11 @@
 ### Specifications index
 
 #### Network layer
-- [PJON (Padded Jittering Operative Network) v3.1](/specification/PJON-protocol-specification-v3.1.md)
+- [PJON (Padded Jittering Operative Network) v3.2](/specification/PJON-protocol-specification-v3.2.md)
 - [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md)
-- [Dynamic addressing specification v3.0](/specification/PJON-dynamic-addressing-specification-v3.0.md)
 - [Network services list](/specification/PJON-network-services-list.md)
 #### Data link layer
-- [PJDL (Padded Jittering Data Link) v4.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md)
+- [PJDL (Padded Jittering Data Link) v4.1](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md)
 - **[PJDLR (Padded Jittering Data Link over Radio) v3.0](/src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md)**
 - [PJDLS (Padded Jittering Data Link byte Stuffed) v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
 - [TSDL (Tardy Serial Data Link) v2.1](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md)
@@ -18,16 +17,17 @@
 ## PJDLR v3.0
 ```
 Invented by Giovanni Blu Mitolo
-Originally published: 10/04/2010, latest revision: 07/07/2019
+Originally published: 10/04/2010
+Latest revision: 07/07/2019
 Related implementation: /src/strategies/OverSampling/
 Compliant versions: PJON v12.0 and following
 Released into the public domain
 
 10/04/2010 v0.1 - First experimental release
-18/01/2017 v1.0 - Packet preamble added
-31/03/2017 v1.1 - Response info added
-31/10/2018 v2.0 - Frame initializer and mode 1 info added
-07/07/2019 v3.0 - Response jittering wave and initializer added
+18/01/2017 v1.0 - Packet preamble
+31/03/2017 v1.1 - Response info
+31/10/2018 v2.0 - Frame initializer, mode 1
+07/07/2019 v3.0 - Response made safe, response initializer
 ```
 PJDLR (Padded Jittering Data Link over Radio) is an asynchronous serial data link for low-data-rate applications that supports both master-slave and multi-master communication and it is optimized to obtain long range and high reliability using ASK, FSK or OOK radio transceivers. PJDLR can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using one or two input-output pins.
 
@@ -79,12 +79,12 @@ When a frame is received a low performance microcontroller with an inaccurate cl
 ### Synchronous response
 A frame transmission can be optionally followed by a synchronous response sent by its recipient. Between frame transmission and a synchronous response there is a variable time which duration is influenced by latency.
 ```cpp  
-Transmission                                        Response
- ______  ______  ______                              _____
-| BYTE || BYTE || BYTE | CRC COMPUTATION / LATENCY  | ACK |
-|------||------||------|----------------------------|-----|
-|      ||      ||      |                            |  6  |
-|______||______||______|                            |_____|
+Transmission end                                   Response
+ ______  ______  ______                             _____
+| BYTE || BYTE || BYTE | CRC COMPUTATION / LATENCY | ACK |
+|------||------||------|---------------------------|-----|
+|      ||      ||      |                           |  6  |
+|______||______||______|                           |_____|
 ```  
 In order to avoid other devices to detect the medium free for use and disrupt an ongoing exchange, the sender cyclically transmits a short high bit (1/2 high padding bit duration) and consequently attempts to receive a response. The receiver can transmit its response as soon as possible, and, in order to avoid false positives in case of collision, must transmit its response prepended with an additional synchronization pulse. If the response is not transmitted or not received the transmitter continues to keep busy the medium up to the maximum acceptable time between transmission and response.
 ```cpp  

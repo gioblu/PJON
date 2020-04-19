@@ -19,6 +19,7 @@ PJON<SoftwareBitBang> bus(44);
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   Serial.print("Packet id: ");
   Serial.println(packet_info.id);
+  // Avoid simultaneous transmission of Serial and SoftwareBitBang data
   Serial.flush();
 };
 

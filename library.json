@@ -2,7 +2,7 @@
   "name": "PJON",
   "description": "PJON is an open-source, multi-master, multi-media network protocol stack",
   "homepage": "https://www.pjon.org",
-  "keywords": "communication, bus, protocol, network, multi, master, media",
+  "keywords": "pjon, communication, bus, protocol, network, multimaster, iot, ethernet, wifi, tcp, udp, usb, rs232, rs485, ask, fsk, ook, pjdl, pjdlr, pjdls, lora, arduino, esp8266, esp32, teensy, attiny, windows, linux, apple, android",
   "license": "Apache-2.0",
   "authors":
   {
@@ -15,7 +15,7 @@
     "type": "git",
     "url": "https://github.com/gioblu/PJON.git"
   },
-  "version": "11.2",
+  "version": "12.1",
   "examples": [
     "examples/*/*/*/*/*.ino",
     "examples/*/*/*/*/*.h",

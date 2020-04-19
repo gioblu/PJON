@@ -16,19 +16,6 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
   }
 };
 
-void setup() {
-  Serial.begin(115200);
-
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW); // Initialize LED 13 to be off
-
-  bus.set_error(error_handler);
-  bus.set_receiver(receiver_function);
-  bus.strategy.set_pin(12);
-  bus.begin();
-  bus.send(45, "B", 1);
-};
-
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
   if(code == PJON_CONNECTION_LOST) {
     Serial.print("Connection with device ID ");
@@ -45,6 +32,19 @@ void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
     Serial.print("Content is too long, length: ");
     Serial.println(data);
   }
+};
+
+void setup() {
+  Serial.begin(115200);
+
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW); // Initialize LED 13 to be off
+
+  bus.set_error(error_handler);
+  bus.set_receiver(receiver_function);
+  bus.strategy.set_pin(12);
+  bus.begin();
+  bus.send(45, "B", 1);
 };
 
 void loop() {

@@ -14,6 +14,11 @@ PJON<ThroughSerial> bus(45);
 // 5 milliseconds maximum expected latency, higher if necessary
 uint32_t latency = 5000;
 
+void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
+  if(code == PJON_CONNECTION_LOST)
+    digitalWrite(LED_BUILTIN, HIGH); // Light up LED 13 if a packet transmission failed
+};
+
 void setup() {
   // Initialize LED 13 to be off
   pinMode(LED_BUILTIN, OUTPUT);
@@ -31,12 +36,7 @@ void setup() {
   bus.begin();
   // Send B to device 44 every 1.5s
   bus.send_repeatedly(44, "B", 1, 1500000);
-}
-
-void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
-  if(code == PJON_CONNECTION_LOST)
-    digitalWrite(LED_BUILTIN, HIGH); // Light up LED 13 if a packet transmission failed
-}
+};
 
 void loop() {
     bus.update();

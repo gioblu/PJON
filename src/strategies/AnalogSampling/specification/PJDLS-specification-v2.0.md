@@ -1,12 +1,11 @@
 ### Specifications index
 
 #### Network layer
-- [PJON (Padded Jittering Operative Network) v3.1](/specification/PJON-protocol-specification-v3.1.md)
+- [PJON (Padded Jittering Operative Network) v3.2](/specification/PJON-protocol-specification-v3.2.md)
 - [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md)
-- [Dynamic addressing specification v3.0](/specification/PJON-dynamic-addressing-specification-v3.0.md)
 - [Network services list](/specification/PJON-network-services-list.md)
 #### Data link layer
-- [PJDL (Padded Jittering Data Link) v4.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md)
+- [PJDL (Padded Jittering Data Link) v4.1](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md)
 - [PJDLR (Padded Jittering Data Link over Radio) v3.0](/src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md)
 - **[PJDLS (Padded Jittering Data Link byte Stuffed) v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)**
 - [TSDL (Tardy Serial Data Link) v2.1](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md)
@@ -17,7 +16,8 @@
 ## PJDLS v2.0
 ```
 Invented by Giovanni Blu Mitolo
-Originally published: 20/11/2017, latest revision: 31/10/2018
+Originally published: 20/11/2017
+Latest revision: 31/10/2018
 Related implementation: /src/strategies/AnalogSampling/
 Compliant versions: PJON v10.0 and following
 Released into the public domain

@@ -4,16 +4,17 @@ A strategy is an abstraction layer used to physically transmit data. Thanks to t
 
 | Strategy      | Physical layer | Protocol | Pins needed   |
 | ------------- | -------------- | -------- | ------------- |
-| [SoftwareBitBang](SoftwareBitBang) | Electrical impulses over conductive element | [PJDL](SoftwareBitBang/specification/PJDL-specification-v3.0.md) | 1 or 2 |
-| [AnalogSampling](AnalogSampling)  | Light pulses over air or optic fiber | [PJDLS](AnalogSampling/specification/PJDLS-specification-v2.0.md) | 1 or 2 |
-| [EthernetTCP](EthernetTCP)  | Electrical/radio impulses over wire/air | TCP | Ethernet port |
-| [LocalUDP](LocalUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
-| [GlobalUDP](GlobalUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
-| [DualUDP](DualUDP)  | Electrical/radio impulses over wire/air | UDP | Ethernet port |
+| [SoftwareBitBang](SoftwareBitBang) | Electrical impulses over wire | [PJDL](SoftwareBitBang/specification/PJDL-specification-v4.1.md) | 1 or 2 |
 | [OverSampling](OverSampling)  | Electrical/radio impulses over wire/air | [PJDLR](OverSampling/specification/PJDLR-specification-v3.0.md) | 1 or 2 |
+| [AnalogSampling](AnalogSampling)  | Light pulses over air or optic fiber | [PJDLS](AnalogSampling/specification/PJDLS-specification-v2.0.md) | 1 or 2 |
 | [ThroughSerial](ThroughSerial)  | Electrical/radio impulses over wire/air | [TSDL](ThroughSerial/specification/TSDL-specification-v2.1.md) | 1 or 2 |
 | [ThroughSerialAsync](ThroughSerialAsync)  | Electrical/radio impulses over wire/air | [TSDL](ThroughSerial/specification/TSDL-specification-v2.1.md) | 1 or 2 |
-| [ThroughLoRa](ThroughLoRa)  | Radio impulses over air | LoRa | 3 or 4 |
+| [ThroughLoRa](ThroughLoRa)  | Radio impulses over air | [LoRa](https://lora-alliance.org/sites/default/files/2018-07/lorawan1.0.3.pdf) | 3 or 4 |
+| [EthernetTCP](EthernetTCP)  | Electrical/radio impulses over wire/air | [TCP](https://tools.ietf.org/html/rfc793) | Ethernet of WiFi |
+| [LocalUDP](LocalUDP)  | Electrical/radio impulses over wire/air | [UDP](https://tools.ietf.org/html/rfc768) | Ethernet of WiFi |
+| [GlobalUDP](GlobalUDP)  | Electrical/radio impulses over wire/air | [UDP](https://tools.ietf.org/html/rfc768) | Ethernet of WiFi |
+| [DualUDP](DualUDP)  | Electrical/radio impulses over wire/air | [UDP](https://tools.ietf.org/html/rfc768) | Ethernet of WiFi |
+| [MQTTTranslate](MQTTTranslate)  | Electrical/radio impulses over wire/air | [MQTT](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.pdf) | Ethernet of WiFi |
 | [ESPNOW](ESPNOW)  | Radio impulses over air | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) | WiFi link |
 | [LocalFile](LocalFile)  | Shared file system in memory | None | None |
 | [Any](Any)  | Virtual inheritance, any of the above | Any of the above | Any of the above |

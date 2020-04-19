@@ -3,7 +3,7 @@
 /*
 Milan, Italy - 18/01/2017
 PJDLR (Padded jittering data link) specification is an invention and intellectual property
-of Giovanni Blu Mitolo - Copyright 2010-2019 All rights reserved
+of Giovanni Blu Mitolo - Copyright 2010-2020 All rights reserved
 
 Related work: /src/strategies/SoftwareBitBang/
 Compliant implementation versions: PJON 7.0-7.1

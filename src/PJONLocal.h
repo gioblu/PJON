@@ -119,19 +119,16 @@ class PJONLocal {
       uint16_t packet_id = 0,
       uint16_t rx_port = PJON_BROADCAST
     ) {
-      uint16_t l = PJONTools::compose_packet(
-        _device_id,
-        PJONTools::localhost(),
-        id,
-        PJONTools::localhost(),
-        destination,
-        source,
-        length,
-        (header == PJON_NO_HEADER) ? config : header,
-        (!packet_id) ? PJONTools::new_packet_id(_packet_id_seed++) : packet_id,
-        rx_port,
-        port
-      );
+      PJON_Packet_Info info;
+      info.rx.id = id;
+      info.tx.id = _device_id;
+      info.header = (header == PJON_NO_HEADER) ? config : header;
+      if(!packet_id && (info.header & PJON_PACKET_ID_BIT))
+        info.id = PJONTools::new_packet_id(_packet_id_seed++);
+      else info.id = packet_id;
+      info.port = (rx_port == PJON_BROADCAST) ? port : rx_port;
+      uint16_t l =
+        PJONTools::compose_packet(info, destination, source, length);
       return l;
     };
 
@@ -181,15 +178,12 @@ class PJONLocal {
         if(i == 1) {
           if(
             (buffer[1] & PJON_MODE_BIT) ||
-            (buffer[1] & PJON_ACK_MODE_BIT) || (
-              (buffer[0] == PJON_BROADCAST) &&
-              (buffer[1] & PJON_ACK_REQ_BIT)
+            (buffer[1] & PJON_MAC_BIT)  || (
+              (buffer[0] == PJON_BROADCAST) && (buffer[1] & PJON_ACK_REQ_BIT)
             ) || (
-              (buffer[1] & PJON_EXT_LEN_BIT) &&
-              !(buffer[1] & PJON_CRC_BIT)
+              (buffer[1] & PJON_EXT_LEN_BIT) && !(buffer[1] & PJON_CRC_BIT)
             ) || (
-              !PJON_INCLUDE_PACKET_ID &&
-              (buffer[1] & PJON_PACKET_ID_BIT)
+              !PJON_INCLUDE_PACKET_ID && (buffer[1] & PJON_PACKET_ID_BIT)
             )
           ) return 0;
           extended_length = buffer[i] & PJON_EXT_LEN_BIT;

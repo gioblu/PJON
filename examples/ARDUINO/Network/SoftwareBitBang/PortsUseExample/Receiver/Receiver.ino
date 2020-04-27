@@ -21,25 +21,25 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
     // If packet formatted for a shared medium
     if(packet_info.header & PJON_MODE_BIT) {
       Serial.print(" Receiver bus id: ");
-      Serial.print(packet_info.receiver_bus_id[0]);
-      Serial.print(packet_info.receiver_bus_id[1]);
-      Serial.print(packet_info.receiver_bus_id[2]);
-      Serial.print(packet_info.receiver_bus_id[3]);
+      Serial.print(packet_info.rx.bus_id[0]);
+      Serial.print(packet_info.rx.bus_id[1]);
+      Serial.print(packet_info.rx.bus_id[2]);
+      Serial.print(packet_info.rx.bus_id[3]);
       Serial.print(" Receiver id: ");
-      Serial.print(packet_info.receiver_id);
+      Serial.print(packet_info.rx.id);
       // If sender info is included
       if(packet_info.header & PJON_TX_INFO_BIT) {
         Serial.print(" Sender bus id: ");
-        Serial.print(packet_info.sender_bus_id[0]);
-        Serial.print(packet_info.sender_bus_id[1]);
-        Serial.print(packet_info.sender_bus_id[2]);
-        Serial.print(packet_info.sender_bus_id[3]);
+        Serial.print(packet_info.tx.bus_id[0]);
+        Serial.print(packet_info.tx.bus_id[1]);
+        Serial.print(packet_info.tx.bus_id[2]);
+        Serial.print(packet_info.tx.bus_id[3]);
       }
     }
     // If sender device id is included
     if(packet_info.header & PJON_TX_INFO_BIT) {
       Serial.print(" Sender id: ");
-      Serial.print(packet_info.sender_id);
+      Serial.print(packet_info.tx.id);
     }
     // Payload Length
     Serial.print(" Length: ");

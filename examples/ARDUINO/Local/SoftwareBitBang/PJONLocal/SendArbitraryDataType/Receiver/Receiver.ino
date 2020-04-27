@@ -36,9 +36,9 @@ void loop() {
   if(length) {
     uint8_t *payload = bus.get_payload(data);
     Serial.print("Receiver device id: ");
-    Serial.print(info.receiver_id);
+    Serial.print(info.rx.id);
     Serial.print(" | Transmitter device id: ");
-    Serial.println(info.sender_id);
+    Serial.println(info.tx.id);
 
     /* Copy received data in buffer */
     memcpy(&r, payload, sizeof(r));

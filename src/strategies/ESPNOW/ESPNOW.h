@@ -69,7 +69,7 @@ class ESPNOW {
         // First get PJON sender id from incoming packet
         PJON_Packet_Info packet_info;
         PJONTools::parse_header(message, packet_info);
-        uint8_t sender_id = packet_info.sender_id;
+        uint8_t sender_id = packet_info.tx.id;
         if(sender_id == 0) {
           ESP_LOGE("ESPNOW", "AutoRegister parsing failed");
           return; // If parsing fails, it will be 0

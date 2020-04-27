@@ -395,18 +395,18 @@ public:
         if (p-mqttclient.topic_buf()+7+3+7 >= SMCTOPICSIZE) return;
         strcpy(p, "/device"); p += 7;
         #if (MQTTT_MODE == MQTTT_MODE_MIRROR_TRANSLATE || MQTTT_MODE == MQTTT_MODE_MIRROR_DIRECT)
-        p += mqttclient.uint8toa(_packet_info.sender_id, p);
+        p += mqttclient.uint8toa(_packet_info.tx.id, p);
         strcat(p, "/output"); // Like pjon/device44/output
         p = &p[strlen(p)]; // End of /output
         #else // One of the bus modes, publish to receiver device
-        mqttclient.uint8toa(_packet_info.receiver_id, p);
+        mqttclient.uint8toa(_packet_info.rx.id, p);
         #endif
       #endif
       #if (MQTTT_MODE != MQTTT_MODE_BUS_RAW)
       uint8_t overhead = PJONTools::packet_overhead(_packet_info.header);
-      uint8_t crc_size = PJONTools::crc_overhead(_packet_info.header);  
+      uint8_t crc_size = PJONTools::crc_overhead(_packet_info.header);
       #endif
-      
+
       // Re-compose packet in other modes than RAW
       #if (MQTTT_MODE == MQTTT_MODE_MIRROR_TRANSLATE)
       // Split into multiple topics (must assume a specific payload format to parse):
@@ -447,9 +447,9 @@ public:
       p = (char *) packet_buffer;
       if (6+3+8+3+9+payload_len+2 >= MQTTT_BUFFER_SIZE) return;
       strcpy(p, "{\"to\":"); p += 6;
-      p += mqttclient.uint8toa(_packet_info.receiver_id, p);
+      p += mqttclient.uint8toa(_packet_info.rx.id, p);
       strcpy(p, ",\"from\":"); p+= 8;
-      p += mqttclient.uint8toa(_packet_info.sender_id, p);
+      p += mqttclient.uint8toa(_packet_info.tx.id, p);
       strcpy(p, ",\"data\":\""); p+= 9;
       uint8_t payload_len = length - overhead;
       strncpy(p, (const char*)&data[overhead - crc_size], payload_len); p[payload_len] = 0;

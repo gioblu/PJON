@@ -257,13 +257,13 @@ public:
       if(length != PJON_FAIL && length > 4) {
         // Extract some info from the header
         PJONTools::parse_header(data, _packet_info);
-         _last_in_receiver_id = _packet_info.receiver_id;
-         _last_in_sender_id = _packet_info.sender_id;
+         _last_in_receiver_id = _packet_info.rx.id;
+         _last_in_sender_id = _packet_info.tx.id;
         // Autoregister sender if the packet was sent directly
         if(
-          _packet_info.sender_id != PJON_NOT_ASSIGNED &&
+          _packet_info.tx.id != PJON_NOT_ASSIGNED &&
           _last_out_sender_id != PJON_NOT_ASSIGNED &&
-          _packet_info.receiver_id == _last_out_sender_id
+          _packet_info.rx.id == _last_out_sender_id
         ) autoregister_sender();
       }
       return length;
@@ -330,8 +330,8 @@ public:
       if(length > 4) {
         // Extract some info from the header
         PJONTools::parse_header(data, _packet_info);
-         _last_out_receiver_id = _packet_info.receiver_id;
-         _last_out_sender_id = _packet_info.sender_id;
+         _last_out_receiver_id = _packet_info.rx.id;
+         _last_out_sender_id = _packet_info.tx.id;
 
         // Locate receiver in table unless it is a PJON broadcast (receiver 0)
         int16_t pos = -1;

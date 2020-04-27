@@ -23,15 +23,15 @@ bool router = false;
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   const char *msg = (const char *)payload;
   // Forward to MQTT topic pjon/device45/output if from device 45
-  mqtt.send_from_id(packet_info.sender_id, PJONTools::localhost(), 
-    packet_info.receiver_id, PJONTools::localhost(), 
+  mqtt.send_from_id(packet_info.tx.id, PJONTools::localhost(),
+    packet_info.rx.id, PJONTools::localhost(),
     payload, length, packet_info.header, packet_info.id, packet_info.port);
-  cnt_to_mqtt++;  
+  cnt_to_mqtt++;
 };
 
 void receiver_function_mqtt(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   // Send to device 45 if source topic is pjon/device45/input
-  bus.send(packet_info.receiver_id, payload, length);
+  bus.send(packet_info.rx.id, payload, length);
   cnt_from_mqtt++;
 };
 
@@ -64,7 +64,7 @@ void loop() {
 
   if(millis() - start > 1000) {
     start = millis();
-    Serial.print("Routed packets to MQTT: "); Serial.print(cnt_to_mqtt); 
+    Serial.print("Routed packets to MQTT: "); Serial.print(cnt_to_mqtt);
     Serial.print(", from MQTT: "); Serial.println(cnt_from_mqtt);
     cnt_from_mqtt = cnt_to_mqtt = 0;
   }

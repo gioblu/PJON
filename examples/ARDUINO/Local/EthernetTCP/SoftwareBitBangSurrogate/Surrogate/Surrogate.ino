@@ -56,8 +56,8 @@ void setup() {
 void receiver_functionA(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   // Forward packet to RemoteWorker on bus B, preserving the original sender id
   busB.send_from_id(
-    packet_info.sender_id,
-    packet_info.sender_bus_id,
+    packet_info.tx.id,
+    packet_info.tx.bus_id,
     DEVICE_ID,
     PJONTools::localhost(),
     (uint8_t *)payload,
@@ -73,8 +73,8 @@ void receiver_functionB(uint8_t *payload, uint16_t length, const PJON_Packet_Inf
   // single_initiate_direction listening mode.
   // Forward packet to specified target device on bus A
   busA.send_packet_blocking(
-    packet_info.receiver_id,
-    packet_info.receiver_bus_id,
+    packet_info.rx.id,
+    packet_info.rx.bus_id,
     (uint8_t *)payload,
     length,
     packet_info.header,

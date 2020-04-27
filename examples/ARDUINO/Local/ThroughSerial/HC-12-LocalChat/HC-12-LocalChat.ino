@@ -56,10 +56,10 @@ uint8_t recipient = 0;
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   // Received messages sender id and content are printed here
-  if(packet_info.sender_id == recipient || packet_info.sender_id == PJON_BROADCAST) {
+  if(packet_info.tx.id == recipient || packet_info.tx.id == PJON_BROADCAST) {
     Serial.print("user ");
-    Serial.print(packet_info.sender_id);
-    Serial.print((packet_info.receiver_id == PJON_BROADCAST) ? " " : ": ");
+    Serial.print(packet_info.tx.id);
+    Serial.print((packet_info.rx.id == PJON_BROADCAST) ? " " : ": ");
     for(uint16_t i = 0; i < length; i++)
       Serial.print((char)payload[i]);
     Serial.println();

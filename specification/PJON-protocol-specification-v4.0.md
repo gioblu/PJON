@@ -143,7 +143,7 @@ HEADER BITMAP
 1. `MODE` bit informs if the packet is formatted in [shared](/specification/PJON-protocol-specification-v4.0.md#shared-mode) (value 1) or [local](/specification/PJON-protocol-specification-v4.0.md#local-mode) mode (value 0)  
 2. `TX INFO` bit informs if the sender info are included (value 1) or not (value 0)
 3. `ACK` bit informs if the [synchronous acknowledgement](/specification/PJON-protocol-acknowledge-specification-v1.0.md#synchronous-acknowledge) is requested (value 1) or not (value 0)
-4. `MAC` bit informs if sender's and recipient's [network interface identification](/specification/PJON-protocol-specification-v4.0.md#hardware-identification), or MAC address, are included (value 1) or not (value 0)
+4. `MAC` bit informs if sender's and recipient's [hardware identification](/specification/PJON-protocol-specification-v4.0.md#hardware-identification), or MAC address, are included (value 1) or not (value 0)
 5. `PORT` bit informs if a 16 bits [network service identifier](/specification/PJON-protocol-specification-v4.0.md#network-services) is included (value 1) or not (value 0)
 6. `CRC` bit signals which CRC is used, [CRC8](/specification/PJON-protocol-specification-v4.0.md#crc8-polynomial) (value 0) or [CRC32](/specification/PJON-protocol-specification-v4.0.md#crc32-polynomial) (value 1)
 7. `EXT. LENGTH` bit informs if the packet contains 8 (value 0) or 16 bits (value 1) [length](/specification/PJON-protocol-specification-v4.0.md#extended-length)

@@ -56,7 +56,7 @@
    pjon/AE7804FEA7D0/output. This can be useful to avoid setting a device id
    and instead just use the MAC address as a unique subject identifier.
 
-   Compliant with the PJON protocol layer specification v3.2
+   Compliant with the PJON protocol layer specification v4.0
    _____________________________________________________________________________
 
     MQTTTranslate strategy proposed and developed by Fred Larsen 07/12/2019

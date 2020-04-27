@@ -1,7 +1,7 @@
 ### Specifications index
 
 #### Network layer
-- [PJON (Padded Jittering Operative Network) v3.2](/specification/PJON-protocol-specification-v3.2.md)
+- [PJON (Padded Jittering Operative Network) v4.0](/specification/PJON-protocol-specification-v4.0.md)
 - **[Acknowledge specification v2.0](/specification/PJON-protocol-acknowledge-specification-v2.0.md)**
 - [Network services list](/specification/PJON-network-services-list.md)
 #### Data link layer
@@ -35,4 +35,4 @@ Channel analysis       Transmission                 Response
 |_____||____|__________|________|____|_________|____||_____|
 ```
 
-The graph above contains a packet transmission where the character `@` (decimal 64) is sent to device id `12`. As defined by the [PJON protocol layer specification v3.2](/specification/PJON-protocol-specification-v3.2.md), the header's `ACK` bit high requests a synchronous acknowledgement response, see [PJDL v4.1](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md), [PJDLR v3.0](/src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md), [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) and [TSDL v2.1](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md) specification for additional information.
+The graph above contains a packet transmission where the character `@` (decimal 64) is sent to device id `12`. As defined by the [PJON protocol layer specification v4.0](/specification/PJON-protocol-specification-v4.0.md), the header's `ACK` bit high requests a synchronous acknowledgement response, see [PJDL v4.1](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md), [PJDLR v3.0](/src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md), [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) and [TSDL v2.1](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md) specification for additional information.

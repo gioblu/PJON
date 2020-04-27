@@ -2,7 +2,7 @@
 
 #### Network layer
 - **[PJON (Padded Jittering Operative Network) v3.2](/specification/PJON-protocol-specification-v3.2.md)**
-- [Acknowledge specification v2.0](/specification/PJON-protocol-acknowledge-specification-v2.0.md)
+- [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md)
 - [Network services list](/specification/PJON-network-services-list.md)
 #### Data link layer
 - [PJDL (Padded Jittering Data Link) v4.1](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md)
@@ -32,6 +32,7 @@ The graph below shows the conceptual model that characterizes and standardizes t
 | 3 Network layer: PJON                          |
 |- Optional features ----------------------------|
 | Routing and switching                          |
+| Asynchronous acknowledgement                   |
 | Service identification (16 bits)               |
 | Packet identification (16 bits)                |
 | Bus identification (32 bits)                   |
@@ -60,7 +61,7 @@ The graph below shows the conceptual model that characterizes and standardizes t
 * Devices are identified by a unique 8 bits device id
 * Buses are identified with a 32 bits bus id
 * Many buses can coexist on the same medium
-* A synchronous acknowledgement can be requested (see [Acknowledge specification v2.0](/specification/PJON-protocol-acknowledge-specification-v2.0.md))
+* Synchronous and or asynchronous acknowledgement can be requested (see [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md))
 * Network services are identified with a 16 bits port id  
 
 
@@ -204,7 +205,7 @@ Depending on header's `MODE` bit, PJON packets can contain basic or extended sup
 
 ```
 
-In local mode packets can be broadcasted to all devices sending to device id `0`. Acknowledgement is not supported therefore any broadcasted packet that requests an acknowledgement is ignored by recipients.
+In local mode packets can be broadcasted to all devices sending to device id `0`. Acknowledgement is not supported therefore any broadcasted packet that requests synchronous and or asynchronous acknowledgement is ignored by recipients.
 
 ```cpp
  _________________________________
@@ -248,7 +249,7 @@ If header's `MODE` bit is high [bus](/specification/PJON-protocol-specification-
 
 ```
 
-In shared mode packets can be broadcasted to all devices sharing the same bus id sending to device id `0`. Acknowledgement is not supported, therefore any broadcasted packet that requests an acknowledgement is ignored by recipients.
+In shared mode packets can be broadcasted to all devices sharing the same bus id sending to device id `0`. Acknowledgement is not supported, therefore any broadcasted packet that requests synchronous and or asynchronous acknowledgement is ignored by recipients.
 
 ```cpp
  ________________________________________

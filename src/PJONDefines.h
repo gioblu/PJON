@@ -122,6 +122,11 @@ limitations under the License. */
 
 /* Constraints: */
 
+/* Maximum amount of routers a packet can pass before being discarded: */
+#ifndef PJON_MAX_HOPS
+  #define PJON_MAX_HOPS              15
+#endif
+
 /* Packet buffer length, if full PJON_PACKETS_BUFFER_FULL error is thrown.
    The packet buffer is preallocated, so its length strongly affects
    memory consumption */
@@ -190,6 +195,7 @@ struct PJON_Packet_Info {
   uint16_t port = PJON_BROADCAST;
   #ifndef PJON_LOCAL
     void *custom_pointer;
+    uint8_t hops = 0;
   #endif
 };
 
@@ -221,7 +227,7 @@ struct PJONTools {
     return (
       (
         (header & PJON_MODE_BIT) ?
-          (header & PJON_TX_INFO_BIT   ? 10 : 5) :
+          (header & PJON_TX_INFO_BIT   ? 11 : 6) :
           (header & PJON_TX_INFO_BIT   ?  2 : 1)
       ) + (header & PJON_EXT_LEN_BIT   ?  2 : 1)
         + (header & PJON_CRC_BIT       ?  4 : 1)
@@ -307,6 +313,7 @@ struct PJONTools {
           copy_id((uint8_t*) &destination[index], info.tx.bus_id, 4);
           index += 4;
         }
+        destination[index++] = info.hops;
       }
     #endif
     if(info.header & PJON_TX_INFO_BIT) destination[index++] = info.tx.id;
@@ -366,6 +373,7 @@ struct PJONTools {
           copy_id(info.tx.bus_id, packet + index, 4);
           index += 4;
         }
+        info.hops = packet[index++];
       }
     #endif
     if(info.header & PJON_TX_INFO_BIT)

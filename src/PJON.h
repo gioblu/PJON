@@ -464,6 +464,7 @@ class PJON {
     ) {
       PJON_End_Point original_end_point = tx;
       tx = info.tx;
+      if(++info.hops > PJON_MAX_HOPS) return PJON_FAIL;
       uint16_t result = PJON_FAIL;
       #if(PJON_MAX_PACKETS > 0)
         result = dispatch(info, payload, length);

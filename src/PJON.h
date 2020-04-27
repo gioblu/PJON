@@ -79,12 +79,12 @@ class PJON {
   public:
     Strategy strategy;
     uint8_t config = PJON_TX_INFO_BIT | PJON_ACK_REQ_BIT;
-    uint8_t bus_id[4] = {0, 0, 0, 0};
     uint8_t data[PJON_PACKET_MAX_LENGTH];
     PJON_Packet_Info last_packet_info;
     PJON_Packet packets[PJON_MAX_PACKETS];
     uint16_t port = PJON_BROADCAST;
     uint8_t random_seed = A0;
+    PJON_End_Point tx;
 
     #if(PJON_INCLUDE_PACKET_ID)
       PJON_Packet_Record recent_packet_ids[PJON_MAX_RECENT_PACKET_IDS];
@@ -100,15 +100,26 @@ class PJON {
        PJON<SoftwareBitBang> bus; */
 
     PJON() : strategy(Strategy()) {
-      _device_id = PJON_NOT_ASSIGNED;
       set_default();
     };
+
+    /* PJON initialization passing the mac address:
+       const uint8_t mac[6] = {1, 2, 3, 4, 5, 6};
+       PJON<SoftwareBitBang> bus(mac); */
+
+    #if(PJON_INCLUDE_MAC)
+      PJON(const uint8_t *mac_addr) : strategy(Strategy()) {
+        PJONTools::copy_id(tx.mac, mac_addr, 6);
+        config |= PJON_MAC_BIT;
+        set_default();
+      };
+    #endif
 
     /* PJON initialization passing device id:
        PJON<SoftwareBitBang> bus(1); */
 
     PJON(uint8_t device_id) : strategy(Strategy()) {
-      _device_id = device_id;
+      tx.id = device_id;
       set_default();
     };
 
@@ -117,45 +128,40 @@ class PJON {
        PJON<SoftwareBitBang> bus(my_bys, 1); */
 
     PJON(const uint8_t *b_id, uint8_t device_id) : strategy(Strategy()) {
-      PJONTools::copy_id(bus_id, b_id, 4);
-      _device_id = device_id;
+      tx.id = device_id;
+      PJONTools::copy_id(tx.bus_id, b_id, 4);
+      config |= PJON_MODE_BIT;
       set_default();
     };
 
     /* Begin function to be called after initialization: */
 
     void begin() {
-      PJON_RANDOM_SEED(PJON_ANALOG_READ(random_seed) + _device_id);
-      strategy.begin(_device_id);
+      PJON_RANDOM_SEED(PJON_ANALOG_READ(random_seed) + tx.id);
+      strategy.begin(tx.id);
       #if(PJON_INCLUDE_PACKET_ID)
-        _packet_id_seed = PJON_RANDOM(65535) + _device_id;
+        _packet_id_seed = PJON_RANDOM(65535) + tx.id;
       #endif
     };
 
     /* Compose packet in PJON format: */
 
     uint16_t compose_packet(
-      const uint8_t rx_id,
-      const uint8_t *rx_bus_id,
+      PJON_Packet_Info info,
       uint8_t *destination,
       const void *source,
-      uint16_t length,
-      uint8_t  header = PJON_NO_HEADER,
-      uint16_t packet_id = 0,
-      uint16_t rx_port = PJON_BROADCAST
+      uint16_t length
     ) {
+      info.header = (info.header == PJON_NO_HEADER) ? config : info.header;
+      info.tx = tx;
+      if(!info.id && (info.header & PJON_PACKET_ID_BIT))
+        info.id = PJONTools::new_packet_id(_packet_id_seed++);
+      if(
+        (port != PJON_BROADCAST) && (info.port == PJON_BROADCAST) &&
+        (info.header & PJON_PORT_BIT)
+      ) info.port = port;
       uint16_t l = PJONTools::compose_packet(
-        _device_id,
-        bus_id,
-        rx_id,
-        rx_bus_id,
-        destination,
-        source,
-        length,
-        (header == PJON_NO_HEADER) ? config : header,
-        (!packet_id) ? PJONTools::new_packet_id(_packet_id_seed++) : packet_id,
-        rx_port,
-        port
+        info, destination, source, length
       );
       if(l < PJON_PACKET_MAX_LENGTH) return l;
       _error(PJON_CONTENT_TOO_LONG, l, _custom_pointer);
@@ -164,35 +170,22 @@ class PJON {
 
     /* Get device id: */
 
-    uint8_t device_id() const {
-      return _device_id;
-    };
+    uint8_t device_id() const { return tx.id; };
 
     /* Add packet to buffer (delivery attempt by the next update() call): */
 
     uint16_t dispatch(
-      uint8_t rx_id,
-      const uint8_t *rx_bus_id,
+      const PJON_Packet_Info info,
       const void *packet,
       uint16_t length,
-      uint32_t timing,
-      uint8_t  header = PJON_NO_HEADER,
-      uint16_t packet_id = 0,
-      uint16_t rx_port = PJON_BROADCAST,
+      uint32_t timing = 0,
       uint16_t packet_index = PJON_FAIL
     ) {
       bool p = (packet_index != PJON_FAIL);
       for(uint16_t i = ((p) ? packet_index : 0); i < PJON_MAX_PACKETS; i++)
         if(packets[i].state == 0 || p) {
           if(!(length = compose_packet(
-            rx_id,
-            rx_bus_id,
-            packets[i].content,
-            packet,
-            length,
-            header,
-            packet_id,
-            rx_port
+            info, packets[i].content, packet, length
           ))) return PJON_FAIL;
           packets[i].length = length;
           packets[i].state = PJON_TO_BE_SENT;
@@ -251,7 +244,7 @@ class PJON {
         batch_length--;
 
         if(i == 0)
-          if(data[i] != _device_id && data[i] != PJON_BROADCAST && !_router)
+          if((data[i] != tx.id) && (data[i] != PJON_BROADCAST) && !_router)
             return PJON_BUSY;
 
         if(i == 1) {
@@ -265,6 +258,9 @@ class PJON {
               (data[1] & PJON_EXT_LEN_BIT) && !(data[1] & PJON_CRC_BIT)
             ) || (
               !PJON_INCLUDE_PACKET_ID && (data[1] & PJON_PACKET_ID_BIT)
+            ) || (
+              (!PJON_INCLUDE_MAC && (data[1] & PJON_MAC_BIT)) ||
+              ((data[1] & PJON_MAC_BIT) && !(data[1] & PJON_CRC_BIT))
             )
           ) return PJON_BUSY;
           extended_length = data[i] & PJON_EXT_LEN_BIT;
@@ -295,7 +291,8 @@ class PJON {
           (i < (uint8_t)(8 + extended_length))
         ) {
           if(config & PJON_MODE_BIT) {
-            if(bus_id[i - 4 - extended_length] != data[i]) return PJON_BUSY;
+            if(tx.bus_id[i - 4 - extended_length] != data[i])
+              return PJON_BUSY;
           } else if(data[i] != 0) return PJON_BUSY; // Do not reject localhost
         }
       }
@@ -313,6 +310,12 @@ class PJON {
         ) return PJON_NAK;
       } else if(PJON_crc8::compute(data, length - 1) != data[length - 1])
         return PJON_NAK;
+
+      #if(PJON_INCLUDE_MAC)
+        if((data[1] & PJON_MAC_BIT) && (length > 15) && !_router)
+          if(!PJONTools::id_equality(data + (overhead - 16), tx.mac, 6))
+            return PJON_BUSY;
+      #endif
 
       if(data[1] & PJON_ACK_REQ_BIT && data[0] != PJON_BROADCAST)
         if((_mode != PJON_SIMPLEX) && !_router)
@@ -391,29 +394,32 @@ class PJON {
       return false;
     };
 
+    /* Fill a PJON_Packet_Info using parameters: */
+
+    PJON_Packet_Info fill_info(
+      uint8_t rx_id,
+      uint8_t header,
+      uint16_t packet_id,
+      uint16_t rx_port
+    ) {
+      PJON_Packet_Info info;
+      info.rx.id = rx_id;
+      info.header = header;
+      info.id = packet_id;
+      info.port = rx_port;
+      return info;
+    };
+
     /* Schedule a packet sending to the sender of the last packet received.
        This function is typically called within the receive callback to
        deliver a response to a request. */
 
-    uint16_t reply(
-      const void *payload,
-      uint16_t length,
-      uint8_t  header = PJON_NO_HEADER,
-      uint16_t packet_id = 0,
-      uint16_t rx_port = PJON_BROADCAST
-    ) {
-      if(last_packet_info.sender_id != PJON_BROADCAST)
-        return dispatch(
-          last_packet_info.sender_id,
-          last_packet_info.sender_bus_id,
-          payload,
-          length,
-          0,
-          ((header == PJON_NO_HEADER) ? last_packet_info.header : header),
-          packet_id,
-          rx_port
-        );
-      return false;
+    uint16_t reply(const void *payload, uint16_t length) {
+      PJON_Packet_Info info;
+      info = last_packet_info;
+      info.rx = info.tx;
+      info.header = config;
+      return dispatch(info, payload, length);
     };
 
     /* Schedule a packet sending: */
@@ -426,9 +432,9 @@ class PJON {
       uint16_t packet_id = 0,
       uint16_t rx_port = PJON_BROADCAST
     ) {
-      return dispatch(
-        rx_id, bus_id, payload, length, 0, header, packet_id, rx_port
-      );
+      PJON_Packet_Info info = fill_info(rx_id, header, packet_id, rx_port);
+      PJONTools::copy_id(info.rx.bus_id, tx.bus_id, 4);
+      return dispatch(info, payload, length);
     };
 
     uint16_t send(
@@ -440,41 +446,31 @@ class PJON {
       uint16_t packet_id = 0,
       uint16_t rx_port = PJON_BROADCAST
     ) {
-      return dispatch(
-        rx_id, rx_bus_id, payload, length, 0, header, packet_id, rx_port
-      );
+      PJON_Packet_Info info = fill_info(rx_id, header, packet_id, rx_port);
+      PJONTools::copy_id(info.rx.bus_id, rx_bus_id, 4);
+      return dispatch(info, payload, length);
     };
 
-    /* Schedule a packet sending configuring its sender info:  */
+    uint16_t send(PJON_Packet_Info info, const void *payload, uint16_t length) {
+      return dispatch(info, payload, length);
+    };
 
-    uint16_t send_from_id(
-      uint8_t tx_id,
-      const uint8_t *tx_bus_id,
-      uint8_t rx_id,
-      const uint8_t *rx_bus_id,
+    /* Forward a packet:  */
+
+    uint16_t forward(
+      PJON_Packet_Info info,
       const void *payload,
-      uint16_t length,
-      uint8_t  header = PJON_NO_HEADER,
-      uint16_t packet_id = 0,
-      uint16_t rx_port = PJON_BROADCAST
+      uint16_t length
     ) {
-      uint8_t original_device_id = _device_id;
-      uint8_t original_bus_id[4];
-      PJONTools::copy_id(original_bus_id, bus_id, 4);
-      set_id(tx_id);
-      PJONTools::copy_id(bus_id, tx_bus_id, 4);
+      PJON_End_Point original_end_point = tx;
+      tx = info.tx;
       uint16_t result = PJON_FAIL;
       #if(PJON_MAX_PACKETS > 0)
-        result = dispatch(
-          rx_id, rx_bus_id, payload, length, 0, header, packet_id, rx_port
-        );
+        result = dispatch(info, payload, length);
       #endif
       if(result == PJON_FAIL)
-        result = send_packet_blocking(
-          rx_id, rx_bus_id, payload, length, header, packet_id, rx_port
-        );
-      PJONTools::copy_id(bus_id, original_bus_id, 4);
-      set_id(original_device_id);
+        result = send_packet_blocking(info, payload, length);
+      tx = original_end_point;
       return result;
     };
 
@@ -490,9 +486,9 @@ class PJON {
       uint16_t packet_id = 0,
       uint16_t rx_port = PJON_BROADCAST
     ) {
-      return dispatch(
-        rx_id, bus_id, payload, length, timing, header, packet_id, rx_port
-      );
+      PJON_Packet_Info info = fill_info(rx_id, header, packet_id, rx_port);
+      PJONTools::copy_id(info.rx.bus_id, tx.bus_id, 4);
+      return dispatch(info, payload, length, timing);
     };
 
     /* IMPORTANT: send_repeatedly timing maximum
@@ -508,9 +504,18 @@ class PJON {
       uint16_t packet_id = 0,
       uint16_t rx_port = PJON_BROADCAST
     ) {
-      return dispatch(
-        rx_id, rx_bus_id, payload, length, timing, header, packet_id, rx_port
-      );
+      PJON_Packet_Info info = fill_info(rx_id, header, packet_id, rx_port);
+      PJONTools::copy_id(info.rx.bus_id, rx_bus_id, 4);
+      return dispatch(info, payload, length, timing);
+    };
+
+    uint16_t send_repeatedly(
+      PJON_Packet_Info info,
+      const void *payload,
+      uint16_t length,
+      uint32_t timing
+    ) {
+      return dispatch(info, payload, length, timing);
     };
 
     /* Transmit an already composed packet:  */
@@ -542,9 +547,10 @@ class PJON {
       uint16_t packet_id = 0,
       uint16_t rx_port = PJON_BROADCAST
     ) {
-      if(!(length = compose_packet(
-        rx_id, bus_id, data, payload, length, header, packet_id, rx_port
-      ))) return PJON_FAIL;
+      PJON_Packet_Info info = fill_info(rx_id, header, packet_id, rx_port);
+      PJONTools::copy_id(info.rx.bus_id, tx.bus_id, 4);
+      if(!(length = compose_packet(info, data, payload, length)))
+        return PJON_FAIL;
       return send_packet(data, length);
     };
 
@@ -557,9 +563,20 @@ class PJON {
       uint16_t packet_id = 0,
       uint16_t rx_port = PJON_BROADCAST
     ) {
-      if(!(length = compose_packet(
-        rx_id, rx_bus_id, data, payload, length, header, packet_id, rx_port
-      ))) return PJON_FAIL;
+      PJON_Packet_Info info = fill_info(rx_id, header, packet_id, rx_port);
+      PJONTools::copy_id(info.rx.bus_id, rx_bus_id, 4);
+      if(!(length = compose_packet(info, data, payload, length)))
+        return PJON_FAIL;
+      return send_packet(data, length);
+    };
+
+    uint16_t send_packet(
+      PJON_Packet_Info info,
+      const void *payload,
+      uint16_t length
+    ) {
+      if(!(length = compose_packet(info, data, payload, length)))
+        return PJON_FAIL;
       return send_packet(data, length);
     };
 
@@ -587,16 +604,9 @@ class PJON {
         (state != PJON_ACK) && (attempts <= strategy.get_max_attempts()) &&
         (uint32_t)(PJON_MICROS() - start) <= timeout
       ) {
-        if(!(length = compose_packet(
-          rx_id,
-          rx_bus_id,
-          data,
-          payload,
-          old_length,
-          header,
-          packet_id,
-          rx_port
-        ))) {
+        PJON_Packet_Info info = fill_info(rx_id, header, packet_id, rx_port);
+        PJONTools::copy_id(info.rx.bus_id, rx_bus_id, 4);
+        if(!(length = compose_packet(info, data, payload, old_length))) {
           _recursion--;
           return PJON_FAIL;
         }
@@ -627,7 +637,8 @@ class PJON {
       uint32_t timeout = 3000000
     ) {
       return send_packet_blocking(
-        rx_id, bus_id, payload, length, header, packet_id, rx_port, timeout
+        rx_id, tx.bus_id, payload, length, header,
+        packet_id, rx_port, timeout
       );
     };
 
@@ -686,15 +697,8 @@ class PJON {
 
     void set_default() {
       _mode = PJON_HALF_DUPLEX;
-      if(!PJONTools::id_equality(bus_id, PJONTools::localhost(), 4))
-        set_shared_network(true);
       set_error(PJON_dummy_error_handler);
       set_receiver(PJON_dummy_receiver_handler);
-      for(uint16_t i = 0; i < PJON_MAX_PACKETS; i++) {
-        packets[i].state = 0;
-        packets[i].timing = 0;
-        packets[i].attempts = 0;
-      }
     };
 
     /* Pass as a parameter a function you previously defined in the code.
@@ -715,7 +719,7 @@ class PJON {
     /* Set the device id passing a single byte (watch out to id collision): */
 
     void set_id(uint8_t id) {
-      _device_id = id;
+      tx.id = id;
     };
 
     /* Include the port passing a boolean state and an unsigned integer: */
@@ -735,6 +739,14 @@ class PJON {
     void include_sender_info(bool state) {
       set_config_bit(state, PJON_TX_INFO_BIT);
     };
+
+    /* Configure network interface identification inclusion in the packet.
+       state = true -> +96 bits (sender's and recipient's MAC address)
+       state = false -> No overhead added */
+
+    void include_mac(bool state) {
+      set_config_bit(state, PJON_MAC_BIT);
+    }
 
     /* Configure the bus network behaviour.
        TRUE: Include 4 bytes bus id or group identification.
@@ -823,12 +835,12 @@ class PJON {
       for(uint8_t i = 0; i < PJON_MAX_RECENT_PACKET_IDS; i++)
         if(
           info.id == recent_packet_ids[i].id &&
-          info.sender_id == recent_packet_ids[i].sender_id && (
+          info.tx.id == recent_packet_ids[i].sender_id && (
             (
               (info.header & PJON_MODE_BIT) &&
               (recent_packet_ids[i].header & PJON_MODE_BIT) &&
               PJONTools::id_equality(
-                (uint8_t *)info.sender_bus_id,
+                (uint8_t *)info.tx.bus_id,
                 (uint8_t *)recent_packet_ids[i].sender_bus_id,
                 4
               )
@@ -849,10 +861,10 @@ class PJON {
         recent_packet_ids[i] = recent_packet_ids[i - 1];
       recent_packet_ids[0].id = info.id;
       recent_packet_ids[0].header = info.header;
-      recent_packet_ids[0].sender_id = info.sender_id;
+      recent_packet_ids[0].sender_id = info.tx.id;
       PJONTools::copy_id(
         recent_packet_ids[0].sender_bus_id,
-        info.sender_bus_id,
+        info.tx.bus_id,
         4
       );
     };
@@ -868,6 +880,4 @@ class PJON {
     PJON_Receiver _receiver;
     uint8_t       _recursion = 0;
     bool          _router = false;
-  protected:
-    uint8_t       _device_id;
 };

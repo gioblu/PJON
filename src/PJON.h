@@ -657,30 +657,32 @@ class PJON {
     };
 
     /* Configure synchronous acknowledge presence:
-       TRUE: Send 1 byte synchronous acknowledge when a packet is received
-       FALSE: Avoid acknowledge transmission */
+       state = true  -> Request 8 bits synchronous acknowledgement
+       state = false -> Do not request synchronous acknowledgement */
 
     void set_synchronous_acknowledge(bool state) {
       set_config_bit(state, PJON_ACK_REQ_BIT);
     };
 
     /* Configure CRC selected for packet checking:
-       TRUE: CRC32, FALSE: CRC8 */
+       state = true  -> CRC32
+       state = false -> CRC8 */
 
     void set_crc_32(bool state) {
       set_config_bit(state, PJON_CRC_BIT);
     };
 
     /* Set communication mode:
-       Passing PJON_SIMPLEX communication is mono-directional
-       Padding PJON_HALF_DUPLEX communication is bi-directional */
+       mode = PJON_SIMPLEX     -> communication is mono-directional
+       mode = PJON_HALF_DUPLEX -> communication is bi-directional */
 
     void set_communication_mode(uint8_t mode) {
       _mode = mode;
     };
 
     /* Configure packet id presence:
-       TRUE: include packet id, FALSE: Avoid packet id inclusion */
+       state = true  -> Include 16 bits packet id
+       state = false -> Avoid packet id inclusion */
 
     void set_packet_id(bool state) {
       set_config_bit(state, PJON_PACKET_ID_BIT);
@@ -730,8 +732,9 @@ class PJON {
     };
 
     /* Configure sender's information inclusion in the packet.
-       TRUE: +1 byte (device id) local, +5 bytes (bus id + device id) shared
-       FALSE: No inclusion -1 byte overhead in local, -5 in shared
+       state = true -> +8 bits (device id) in local mode
+                       +40 bits (bus id + device id) in shared mode
+       state = false -> No overhead added
 
        If you don't need the sender info disable the inclusion to reduce
        overhead and higher communication speed. */
@@ -749,16 +752,16 @@ class PJON {
     }
 
     /* Configure the bus network behaviour.
-       TRUE: Include 4 bytes bus id or group identification.
-       FALSE: Use only 1 byte local device identification. */
+       state = true  -> Include 32 bits bus id or group identification.
+       state = false -> Use only a 8 bits local device identification. */
 
     void set_shared_network(bool state) {
       set_config_bit(state, PJON_MODE_BIT);
     };
 
-    /* Set if delivered or undeliverable packets are auto deleted:
-       TRUE: Automatic deletion
-       FALSE: No packet deleted from buffer, (deletion from buffer by user) */
+    /* Set if packets are automatically deleted in case of success or failure:
+       state = true  -> Packets are deleted automatically
+       state = false -> Packets are not deleted */
 
     void set_packet_auto_deletion(bool state) {
       _auto_delete = state;
@@ -779,8 +782,8 @@ class PJON {
     };
 
     /* Configure if device acts as a router:
-       TRUE: device receives messages only for its bus and device id
-       FALSE: receiver function is always called if data is received */
+       state = true  -> All packets are received (acknowledgement not sent)
+       state = false -> Normal operation */
 
     void set_router(bool state) {
       _router = state;

@@ -130,9 +130,13 @@ class PJONLocal {
         if(!packet_id && (info.header & PJON_PACKET_ID_BIT))
           info.id = PJONTools::new_packet_id(_packet_id_seed++);
         else info.id = packet_id;
+      #else
+        (void)packet_id;
       #endif
       #if(PJON_INCLUDE_PORT)
         info.port = (rx_port == PJON_BROADCAST) ? port : rx_port;
+      #else
+        (void)rx_port;
       #endif
       uint16_t l =
         PJONTools::compose_packet(info, destination, source, length);

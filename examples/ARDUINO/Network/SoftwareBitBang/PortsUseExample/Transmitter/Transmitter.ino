@@ -19,7 +19,7 @@ void setup() {
   bus.begin();
   /* Include a custom port, only packet including port 8001
      are received others are filtered out. */
-  bus.include_port(true, 8001);
+  bus.include_port(8001);
   bus.strategy.set_pin(12);
   bus.set_error(error_handler);
 

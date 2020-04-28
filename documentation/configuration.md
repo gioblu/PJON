@@ -147,10 +147,10 @@ The instance can be configured to include a [network service identifier](/specif
 ```
 Use `include_port` to enable the network service identification:
 ```cpp
-  bus.include_port(false);      // Avoid port inclusion (default)  
-  bus.include_port(true, 8001); // Include custom port
+  bus.include_port(false); // Avoid port inclusion (default)
+  bus.include_port(8001);  // Include a port
 ```
-See the [PortsUseExample](/examples/ARDUINO/Network/SoftwareBitBang/PortsUseExample) example to see more in detail how the port feature can be used.
+When a port is configured, packets that contain a different port are discarded. See the [PortsUseExample](/examples/ARDUINO/Network/SoftwareBitBang/PortsUseExample) to see more in detail how the port feature can be used.
 
 ### Hardware identification
 The instance can be configured to include the [hardware identification](/specification/PJON-protocol-specification-v4.0.md#hardware-identification). If the feature is used both recipient's and sender's MAC addresses are included in the packet. Define `PJON_INCLUDE_MAC` as described below, if this constant is not present the feature is not included and around 200 bytes of program memory and 20 bytes of RAM are spared:

@@ -889,10 +889,12 @@ class PJON {
 
     #if(PJON_INCLUDE_PORT)
 
-      /* Include the port passing a boolean state and an unsigned integer: */
+      /* Include the port:
+         p = 1-65535 -> Include 16 bits port id
+         p = 0       -> Avoid port id inclusion */
 
-      void include_port(bool state, uint16_t p = PJON_BROADCAST) {
-        set_config_bit(state, PJON_PORT_BIT);
+      void include_port(uint16_t p) {
+        set_config_bit((p != 0) ? 1 : 0, PJON_PORT_BIT);
         port = p;
       };
 

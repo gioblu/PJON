@@ -81,8 +81,8 @@ limitations under the License. */
 #define PJON_TO_BE_SENT              74
 
 /* Communication modes: */
-#define PJON_SIMPLEX                150
-#define PJON_HALF_DUPLEX            151
+#define PJON_SIMPLEX              false
+#define PJON_HALF_DUPLEX           true
 
 /* Header bits definition: */
 

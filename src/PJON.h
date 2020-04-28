@@ -693,10 +693,10 @@ class PJON {
     };
 
     /* Set communication mode:
-       mode = PJON_SIMPLEX     -> communication is mono-directional
-       mode = PJON_HALF_DUPLEX -> communication is bi-directional */
+       mode = 0 or PJON_SIMPLEX     -> communication is mono-directional
+       mode = 1 or PJON_HALF_DUPLEX -> communication is bi-directional */
 
-    void set_communication_mode(uint8_t mode) {
+    void set_communication_mode(bool mode) {
       _mode = mode;
     };
 
@@ -902,7 +902,7 @@ class PJON {
     bool          _auto_delete = true;
     void         *_custom_pointer;
     PJON_Error    _error;
-    uint8_t       _mode;
+    bool          _mode;
     uint16_t      _packet_id_seed = 0;
     PJON_Receiver _receiver;
     uint8_t       _recursion = 0;

@@ -154,8 +154,10 @@ class PJON {
     ) {
       info.header = (info.header == PJON_NO_HEADER) ? config : info.header;
       info.tx = tx;
-      if(!info.id && (info.header & PJON_PACKET_ID_BIT))
-        info.id = PJONTools::new_packet_id(_packet_id_seed++);
+      #if(PJON_INCLUDE_PACKET_ID)
+        if(!info.id && (info.header & PJON_PACKET_ID_BIT))
+          info.id = PJONTools::new_packet_id(_packet_id_seed++);
+      #endif
       if(
         (port != PJON_BROADCAST) && (info.port == PJON_BROADCAST) &&
         (info.header & PJON_PORT_BIT)
@@ -405,7 +407,11 @@ class PJON {
       PJON_Packet_Info info;
       info.rx.id = rx_id;
       info.header = header;
-      info.id = packet_id;
+      #if(PJON_INCLUDE_PACKET_ID)
+        info.id = packet_id;
+      #else
+        (void)packet_id;
+      #endif
       info.port = rx_port;
       return info;
     };

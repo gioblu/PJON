@@ -169,11 +169,13 @@ struct PJON_Packet {
 };
 
 struct PJON_Packet_Record {
-  uint16_t id;
   uint8_t  header;
   uint8_t  sender_id;
   #ifndef PJON_LOCAL
     uint8_t  sender_bus_id[4];
+  #endif
+  #if(PJON_INCLUDE_PACKET_ID)
+    uint16_t id;
   #endif
 };
 
@@ -191,11 +193,13 @@ struct PJON_Packet_Info {
   PJON_End_Point tx;
   PJON_End_Point rx;
   uint8_t header = PJON_NO_HEADER;
-  uint16_t id = 0;
   uint16_t port = PJON_BROADCAST;
   #ifndef PJON_LOCAL
     void *custom_pointer;
     uint8_t hops = 0;
+  #endif
+  #if(PJON_INCLUDE_PACKET_ID)
+    uint16_t id = 0;
   #endif
 };
 
@@ -322,8 +326,6 @@ struct PJONTools {
         destination[index++] = (uint8_t)(info.id >> 8);
         destination[index++] = (uint8_t)info.id;
       }
-    #else
-      (void)info.id; // Avoid unused variable compiler warning
     #endif
     if(info.header & PJON_PORT_BIT) {
       if(info.port != PJON_BROADCAST) {
@@ -383,8 +385,6 @@ struct PJONTools {
         info.id = (packet[index] << 8) | (packet[index + 1] & 0xFF);
         index += 2;
       }
-    #else
-      info.id = 0;
     #endif
     if(info.header & PJON_PORT_BIT) {
       info.port = (packet[index] << 8) | (packet[index + 1] & 0xFF);

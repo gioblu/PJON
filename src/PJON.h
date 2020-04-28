@@ -700,16 +700,6 @@ class PJON {
       _mode = mode;
     };
 
-    /* Configure packet id presence:
-       state = true  -> Include 16 bits packet id
-       state = false -> Avoid packet id inclusion */
-
-    #if(PJON_INCLUDE_PACKET_ID)
-      void set_packet_id(bool state) {
-        set_config_bit(state, PJON_PACKET_ID_BIT);
-      };
-    #endif
-
     /* Set a custom receiver callback pointer:
        (Generally needed to call a custom member function) */
 
@@ -745,17 +735,6 @@ class PJON {
     void set_id(uint8_t id) {
       tx.id = id;
     };
-
-    /* Include the port passing a boolean state and an unsigned integer: */
-
-    #if(PJON_INCLUDE_PORT)
-
-      void include_port(bool state, uint16_t p = PJON_BROADCAST) {
-        set_config_bit(state, PJON_PORT_BIT);
-        port = p;
-      };
-
-    #endif
 
     /* Configure sender's information inclusion in the packet.
        state = true -> +8 bits (device id) in local mode
@@ -857,46 +836,65 @@ class PJON {
 
     #if(PJON_INCLUDE_PACKET_ID)
 
-    /* Check if the packet id and its transmitter info are already present in
-       buffer of recently received packets, if not add it to the buffer. */
+      /* Check if the packet id and its transmitter info are already present
+         in the known packets buffer, if not add it to the buffer */
 
-    bool known_packet_id(PJON_Packet_Info info) {
-      for(uint8_t i = 0; i < PJON_MAX_RECENT_PACKET_IDS; i++)
-        if(
-          info.id == recent_packet_ids[i].id &&
-          info.tx.id == recent_packet_ids[i].sender_id && (
-            (
-              (info.header & PJON_MODE_BIT) &&
-              (recent_packet_ids[i].header & PJON_MODE_BIT) &&
-              PJONTools::id_equality(
-                (uint8_t *)info.tx.bus_id,
-                (uint8_t *)recent_packet_ids[i].sender_bus_id,
-                4
+      bool known_packet_id(PJON_Packet_Info info) {
+        for(uint8_t i = 0; i < PJON_MAX_RECENT_PACKET_IDS; i++)
+          if(
+            info.id == recent_packet_ids[i].id &&
+            info.tx.id == recent_packet_ids[i].sender_id && (
+              (
+                (info.header & PJON_MODE_BIT) &&
+                (recent_packet_ids[i].header & PJON_MODE_BIT) &&
+                PJONTools::id_equality(
+                  (uint8_t *)info.tx.bus_id,
+                  (uint8_t *)recent_packet_ids[i].sender_bus_id,
+                  4
+                )
+              ) || (
+                !(info.header & PJON_MODE_BIT) &&
+                !(recent_packet_ids[i].header & PJON_MODE_BIT)
               )
-            ) || (
-              !(info.header & PJON_MODE_BIT) &&
-              !(recent_packet_ids[i].header & PJON_MODE_BIT)
             )
-          )
-        ) return true;
-      save_packet_id(info);
-      return false;
-    };
+          ) return true;
+        save_packet_id(info);
+        return false;
+      };
 
-    /* Save packet id in the buffer: */
+      /* Save packet id in the buffer: */
 
-    void save_packet_id(PJON_Packet_Info info) {
-      for(uint8_t i = PJON_MAX_RECENT_PACKET_IDS - 1; i > 0; i--)
-        recent_packet_ids[i] = recent_packet_ids[i - 1];
-      recent_packet_ids[0].id = info.id;
-      recent_packet_ids[0].header = info.header;
-      recent_packet_ids[0].sender_id = info.tx.id;
-      PJONTools::copy_id(
-        recent_packet_ids[0].sender_bus_id,
-        info.tx.bus_id,
-        4
-      );
-    };
+      void save_packet_id(PJON_Packet_Info info) {
+        for(uint8_t i = PJON_MAX_RECENT_PACKET_IDS - 1; i > 0; i--)
+          recent_packet_ids[i] = recent_packet_ids[i - 1];
+        recent_packet_ids[0].id = info.id;
+        recent_packet_ids[0].header = info.header;
+        recent_packet_ids[0].sender_id = info.tx.id;
+        PJONTools::copy_id(
+          recent_packet_ids[0].sender_bus_id,
+          info.tx.bus_id,
+          4
+        );
+      };
+
+      /* Configure packet id presence:
+         state = true  -> Include 16 bits packet id
+         state = false -> Avoid packet id inclusion */
+
+      void set_packet_id(bool state) {
+        set_config_bit(state, PJON_PACKET_ID_BIT);
+      };
+
+    #endif
+
+    #if(PJON_INCLUDE_PORT)
+
+      /* Include the port passing a boolean state and an unsigned integer: */
+
+      void include_port(bool state, uint16_t p = PJON_BROADCAST) {
+        set_config_bit(state, PJON_PORT_BIT);
+        port = p;
+      };
 
     #endif
 

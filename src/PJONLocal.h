@@ -327,29 +327,13 @@ class PJONLocal {
 
     void set_communication_mode(uint8_t mode) { _mode = mode; };
 
-    /* Configure packet id presence:
-       TRUE: include packet id, FALSE: Avoid packet id inclusion */
-
-    void set_packet_id(bool state) {
-      set_config_bit(state, PJON_PACKET_ID_BIT);
-    };
+    /* Set default configuration: */
 
     void set_default() { _mode = PJON_HALF_DUPLEX; };
 
     /* Set the device id passing a single byte (watch out to id collision): */
 
     void set_id(uint8_t id) { _device_id = id; };
-
-    /* Include the port passing a boolean state and an unsigned integer: */
-
-    #if(PJON_INCLUDE_PORT)
-
-      void include_port(bool state, uint16_t p = PJON_BROADCAST) {
-        set_config_bit(state, PJON_PORT_BIT);
-        port = p;
-      };
-
-    #endif
 
     /* Configure sender's information inclusion in the packet.
        TRUE: sender's device id (+8bits overhead)
@@ -393,7 +377,26 @@ class PJONLocal {
         recent_packet_ids[0].sender_id = info.sender_id;
       };
 
+      /* Configure packet id presence:
+         TRUE: include packet id, FALSE: Avoid packet id inclusion */
+
+      void set_packet_id(bool state) {
+        set_config_bit(state, PJON_PACKET_ID_BIT);
+      };
+
     #endif
+
+    #if(PJON_INCLUDE_PORT)
+
+      /* Include the port passing a boolean state and an unsigned integer: */
+
+      void include_port(bool state, uint16_t p = PJON_BROADCAST) {
+        set_config_bit(state, PJON_PORT_BIT);
+        port = p;
+      };
+
+    #endif
+
 
   private:
     uint32_t      _last_send = 0;

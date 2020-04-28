@@ -82,12 +82,15 @@ class PJON {
     uint8_t data[PJON_PACKET_MAX_LENGTH];
     PJON_Packet_Info last_packet_info;
     PJON_Packet packets[PJON_MAX_PACKETS];
-    uint16_t port = PJON_BROADCAST;
     uint8_t random_seed = A0;
     PJON_End_Point tx;
 
     #if(PJON_INCLUDE_PACKET_ID)
       PJON_Packet_Record recent_packet_ids[PJON_MAX_RECENT_PACKET_IDS];
+    #endif
+
+    #if(PJON_INCLUDE_PORT)
+      uint16_t port = PJON_BROADCAST;
     #endif
 
     /* PJON initialization with no parameters:
@@ -158,10 +161,12 @@ class PJON {
         if(!info.id && (info.header & PJON_PACKET_ID_BIT))
           info.id = PJONTools::new_packet_id(_packet_id_seed++);
       #endif
-      if(
-        (port != PJON_BROADCAST) && (info.port == PJON_BROADCAST) &&
-        (info.header & PJON_PORT_BIT)
-      ) info.port = port;
+      #if(PJON_INCLUDE_PORT)
+        if(
+          (port != PJON_BROADCAST) && (info.port == PJON_BROADCAST) &&
+          (info.header & PJON_PORT_BIT)
+        ) info.port = port;
+      #endif
       uint16_t l = PJONTools::compose_packet(
         info, destination, source, length
       );
@@ -261,6 +266,8 @@ class PJON {
             ) || (
               !PJON_INCLUDE_PACKET_ID && (data[1] & PJON_PACKET_ID_BIT)
             ) || (
+              !PJON_INCLUDE_PORT && (data[1] & PJON_PORT_BIT)
+            ) || (
               (!PJON_INCLUDE_MAC && (data[1] & PJON_MAC_BIT)) ||
               ((data[1] & PJON_MAC_BIT) && !(data[1] & PJON_CRC_BIT))
             )
@@ -333,8 +340,10 @@ class PJON {
         ) return PJON_ACK;
       #endif
 
-      if((port != PJON_BROADCAST) && (port != last_packet_info.port))
-        return PJON_BUSY;
+      #if(PJON_INCLUDE_PORT)
+        if((port != PJON_BROADCAST) && (port != last_packet_info.port))
+          return PJON_BUSY;
+      #endif
 
       _receiver(
         data + (overhead - PJONTools::crc_overhead(data[1])),
@@ -412,7 +421,11 @@ class PJON {
       #else
         (void)packet_id;
       #endif
-      info.port = rx_port;
+      #if(PJON_INCLUDE_PORT)
+        info.port = rx_port;
+      #else
+        (void)rx_port;
+      #endif
       return info;
     };
 
@@ -691,9 +704,11 @@ class PJON {
        state = true  -> Include 16 bits packet id
        state = false -> Avoid packet id inclusion */
 
-    void set_packet_id(bool state) {
-      set_config_bit(state, PJON_PACKET_ID_BIT);
-    };
+    #if(PJON_INCLUDE_PACKET_ID)
+      void set_packet_id(bool state) {
+        set_config_bit(state, PJON_PACKET_ID_BIT);
+      };
+    #endif
 
     /* Set a custom receiver callback pointer:
        (Generally needed to call a custom member function) */
@@ -733,10 +748,14 @@ class PJON {
 
     /* Include the port passing a boolean state and an unsigned integer: */
 
-    void include_port(bool state, uint16_t p = PJON_BROADCAST) {
-      set_config_bit(state, PJON_PORT_BIT);
-      port = p;
-    };
+    #if(PJON_INCLUDE_PORT)
+
+      void include_port(bool state, uint16_t p = PJON_BROADCAST) {
+        set_config_bit(state, PJON_PORT_BIT);
+        port = p;
+      };
+
+    #endif
 
     /* Configure sender's information inclusion in the packet.
        state = true -> +8 bits (device id) in local mode

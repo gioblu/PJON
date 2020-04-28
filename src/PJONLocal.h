@@ -77,10 +77,13 @@ class PJONLocal {
   public:
     Strategy strategy;
     uint8_t config = PJON_TX_INFO_BIT | PJON_ACK_REQ_BIT;
-    uint16_t port = PJON_BROADCAST;
 
     #if(PJON_INCLUDE_PACKET_ID)
       PJON_Packet_Record recent_packet_ids[PJON_MAX_RECENT_PACKET_IDS];
+    #endif
+
+    #if(PJON_INCLUDE_PORT)
+      uint16_t port = PJON_BROADCAST;
     #endif
 
     /* PJONLocal initialization with no parameters:
@@ -123,10 +126,14 @@ class PJONLocal {
       info.rx.id = id;
       info.tx.id = _device_id;
       info.header = (header == PJON_NO_HEADER) ? config : header;
-      if(!packet_id && (info.header & PJON_PACKET_ID_BIT))
-        info.id = PJONTools::new_packet_id(_packet_id_seed++);
-      else info.id = packet_id;
-      info.port = (rx_port == PJON_BROADCAST) ? port : rx_port;
+      #if(PJON_INCLUDE_PACKET_ID)
+        if(!packet_id && (info.header & PJON_PACKET_ID_BIT))
+          info.id = PJONTools::new_packet_id(_packet_id_seed++);
+        else info.id = packet_id;
+      #endif
+      #if(PJON_INCLUDE_PORT)
+        info.port = (rx_port == PJON_BROADCAST) ? port : rx_port;
+      #endif
       uint16_t l =
         PJONTools::compose_packet(info, destination, source, length);
       return l;
@@ -228,7 +235,9 @@ class PJONLocal {
           known_packet_id(info) && !_router
         ) return 0;
       #endif
-      if((port != PJON_BROADCAST) && (port != info.port)) return 0;
+      #if(PJON_INCLUDE_PORT)
+        if((port != PJON_BROADCAST) && (port != info.port)) return 0;
+      #endif
       return length - overhead;
     };
 
@@ -333,10 +342,14 @@ class PJONLocal {
 
     /* Include the port passing a boolean state and an unsigned integer: */
 
-    void include_port(bool state, uint16_t p = PJON_BROADCAST) {
-      set_config_bit(state, PJON_PORT_BIT);
-      port = p;
-    };
+    #if(PJON_INCLUDE_PORT)
+
+      void include_port(bool state, uint16_t p = PJON_BROADCAST) {
+        set_config_bit(state, PJON_PORT_BIT);
+        port = p;
+      };
+
+    #endif
 
     /* Configure sender's information inclusion in the packet.
        TRUE: sender's device id (+8bits overhead)

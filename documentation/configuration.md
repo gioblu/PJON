@@ -16,12 +16,11 @@ PJON uses predefined constants, setters and getters to support features and cons
 ### Buffers configuration
 Before instantiating PJON it is possible to define the length of its buffers. Predefining `PJON_MAX_PACKETS` and `PJON_PACKET_MAX_LENGTH` it is possible to configure this constraints to reach the project memory requirements. Obviously, the less memory is dedicated to buffers, the more memory can be used for something else:
 ```cpp  
-#define PJON_MAX_PACKETS 1
-#define PJON_PACKET_MAX_LENGTH 20
-#include <PJON.h>
-/* PJON can store up to 1 packet of up to
-   20 bytes - packet overhead
-   (from 5 to 22 bytes depending by configuration) */
+  #define PJON_MAX_PACKETS 1
+  #define PJON_PACKET_MAX_LENGTH 20
+  #include <PJON.h>
+  /* PJON can dispatch up to 1 packet with a payload of up to
+     20 bytes - packet overhead (5-35 bytes depending on configuration) */
 ```
 
 ### Data link configuration
@@ -124,14 +123,14 @@ The [synchronous acknowledgement](/specification/PJON-protocol-acknowledge-speci
 ### Packet identification
 The instance can be configured to include a 16 bits [packet identifier](/specification/PJON-protocol-specification-v4.0.md#packet-identification) to guarantee packet uniqueness. Define `PJON_INCLUDE_PACKET_ID` as described below, if this constant is not present it saves around 300 bytes of program memory and 80 bytes of RAM:
 ```cpp  
-// Include the packet id feature
-#define PJON_INCLUDE_PACKET_ID
+  // Include the packet id feature
+  #define PJON_INCLUDE_PACKET_ID
 
-// Max number of old packet ids stored to avoid duplication
-// If packet duplication occurs, higher PJON_MAX_RECENT_PACKET_IDS
-#define PJON_MAX_RECENT_PACKET_IDS 10  // By default 10
+  // Max number of old packet ids stored to avoid duplication
+  // If packet duplication occurs, higher PJON_MAX_RECENT_PACKET_IDS
+  #define PJON_MAX_RECENT_PACKET_IDS 10  // By default 10
 
-#include <PJON.h>
+  #include <PJON.h>
 ```
 Use `set_packet_id` to enable the packet identification:
 ```cpp  

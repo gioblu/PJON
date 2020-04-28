@@ -1,5 +1,5 @@
-#define PJON_INCLUDE_SWBB true
-#define PJON_INCLUDE_MAC true
+#define PJON_INCLUDE_SWBB
+#define PJON_INCLUDE_MAC
 #include <PJON.h>
 
 // <Strategy name> bus(mac address of the network interface)

@@ -1,4 +1,4 @@
-
+#define PJON_INCLUDE_PORT
 #include <PJON.h>
 
 // Bus id definition

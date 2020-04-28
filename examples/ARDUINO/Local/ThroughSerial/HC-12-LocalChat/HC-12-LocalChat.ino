@@ -32,7 +32,7 @@
    user 1: Ciao!
    user 1: Ciao!
    user 1: Ciao! */
-#define PJON_INCLUDE_PACKET_ID true
+#define PJON_INCLUDE_PACKET_ID
 
 /* Use 63 characters maximum packet length.
    HC-12 has two 64-byte Rx and Tx FIFO memories built into the chip,

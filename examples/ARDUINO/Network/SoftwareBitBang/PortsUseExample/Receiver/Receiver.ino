@@ -1,3 +1,4 @@
+#define PJON_INCLUDE_PORT
 #include <PJON.h>
 
 int busy;

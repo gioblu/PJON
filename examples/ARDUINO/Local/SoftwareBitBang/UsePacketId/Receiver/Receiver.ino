@@ -1,5 +1,5 @@
 // Include packet id feature
-#define PJON_INCLUDE_PACKET_ID true
+#define PJON_INCLUDE_PACKET_ID
 
 // Uncomment to run SoftwareBitBang in MODE 2
 // #define SWBB_MODE 2

@@ -121,7 +121,7 @@ The [synchronous acknowledgement](/specification/PJON-protocol-acknowledge-speci
 ```
 
 ### Packet identification
-The instance can be configured to include a 16 bits [packet identifier](/specification/PJON-protocol-specification-v4.0.md#packet-identification) to guarantee packet uniqueness. Define `PJON_INCLUDE_PACKET_ID` as described below, if this constant is not present it saves around 300 bytes of program memory and 80 bytes of RAM:
+The instance can be configured to include a 16 bits [packet identifier](/specification/PJON-protocol-specification-v4.0.md#packet-identification) to guarantee packet uniqueness. Define `PJON_INCLUDE_PACKET_ID` as described below, if this constant is not present the feature is not included and around 300 bytes of program memory and 80 bytes of RAM are spared:
 ```cpp  
   // Include the packet id feature
   #define PJON_INCLUDE_PACKET_ID
@@ -139,7 +139,7 @@ Use `set_packet_id` to enable the packet identification:
 See the [UsePacketId](/examples/ARDUINO/Local/SoftwareBitBang/UsePacketId) example to see more in detail how the packet id can be used.
 
 ### Network service identification
-The instance can be configured to include a [network service identifier](/specification/PJON-protocol-specification-v4.0.md#network-services) in the packet. Ports from 0 to 8000 are reserved to known network services which index is present in the [known network services list](/specification/PJON-network-services-list.md), ports from 8001 to 65535 are free for custom use cases. Define `PJON_INCLUDE_PORT` as described below, if this constant is not present it saves around 100 bytes of program memory and 2 bytes of RAM:
+The instance can be configured to include a [network service identifier](/specification/PJON-protocol-specification-v4.0.md#network-services) in the packet. Ports from 0 to 8000 are reserved to known network services which index is present in the [known network services list](/specification/PJON-network-services-list.md), ports from 8001 to 65535 are free for custom use cases. Define `PJON_INCLUDE_PORT` as described below, if this constant is not present the feature is not used and around 100 bytes of program memory and 2 bytes of RAM are spared:
 ```cpp  
   // Include the port id feature
   #define PJON_INCLUDE_PORT
@@ -153,7 +153,7 @@ Use `include_port` to enable the network service identification:
 See the [PortsUseExample](/examples/ARDUINO/Network/SoftwareBitBang/PortsUseExample) example to see more in detail how the port feature can be used.
 
 ### Hardware identification
-The instance can be configured to include the [hardware identification](/specification/PJON-protocol-specification-v4.0.md#hardware-identification). If the feature is used both recipient's and sender's MAC addresses are included in the packet. Define `PJON_INCLUDE_MAC` as described below, if this constant is not present it saves around 200 bytes of program memory and 20 bytes of RAM:
+The instance can be configured to include the [hardware identification](/specification/PJON-protocol-specification-v4.0.md#hardware-identification). If the feature is used both recipient's and sender's MAC addresses are included in the packet. Define `PJON_INCLUDE_MAC` as described below, if this constant is not present the feature is not included and around 200 bytes of program memory and 20 bytes of RAM are spared:
 ```cpp  
   // Include the port id feature
   #define PJON_INCLUDE_MAC

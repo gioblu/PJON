@@ -1,5 +1,8 @@
 ## ESPNOW
-**Medium:** 802.11 Peer-to-peer
+
+**Medium:** ESPNOW protocol |
+**Pins used:** NA |
+**Inclusion constant:** `PJON_INCLUDE_EN`
 
 With the `ESPNOW` PJON strategy, up to 10 ESP32 devices can use PJON to communicate with each other over
 the [Espressif ESPNOW protocol](https://www.espressif.com/en/products/software/esp-now/overview) (peer-to-peer 802.11).

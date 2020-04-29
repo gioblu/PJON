@@ -1,6 +1,8 @@
 ## ThroughLoRa
 
-**Medium:** Radio, Wire | **Pins used:** 6
+**Medium:** LoRa radio modules |
+**Pins used:** 6 |
+**Inclusion constant:** `PJON_INCLUDE_TL`
 
 With `ThroughLora` strategy, PJON can run through a software or hardware SPI in order to communicate with supported LoRa modules. See [Supported Shields/Modules](https://github.com/gioblu/PJON/tree/master/src/strategies/ThroughLoRa#supported-shieldsmodules).
 

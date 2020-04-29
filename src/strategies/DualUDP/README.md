@@ -1,6 +1,8 @@
 ## DualUDP
 
-**Medium:** Ethernet port, wired or WiFi
+**Medium:** Ethernet port, wired or WiFi |
+**Pins used:** NA |
+**Inclusion constant:** `PJON_INCLUDE_DUDP`
 
 With the `DualUDP` PJON strategy, multiple devices with Ethernet ports can use PJON to communicate with each other over an Ethernet network, wired or over WiFi or both. Like the `GlobalUDP` strategy, this strategy is not limited to the local network
 and can therefore reach devices farther away, to another LAN connected through VPN, or potentially across the Internet (beware of security issues). Like the `DualUDP` strategy it will reach devices on the LAN without configuration.

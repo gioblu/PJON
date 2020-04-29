@@ -1,7 +1,7 @@
 ## ESPNOW
 
-**Medium:** ESPNOW protocol |
-**Pins used:** NA |
+**Medium:** ESPNOW protocol -
+**Pins used:** NA -
 **Inclusion constant:** `PJON_INCLUDE_EN`
 
 With the `ESPNOW` PJON strategy, up to 10 ESP32 devices can use PJON to communicate with each other over

@@ -1,7 +1,7 @@
 ## GlobalUDP
 
-**Medium:** Ethernet port, wired or WiFi |
-**Pins used:** NA |
+**Medium:** Ethernet port, wired or WiFi -
+**Pins used:** NA -
 **Inclusion constant:** `PJON_INCLUDE_GUDP`
 
 With the `GlobalUDP` PJON strategy, multiple devices with Ethernet ports can use PJON to communicate with each other over an

@@ -1,7 +1,7 @@
 ## EthernetTCP
 
-**Medium:** Ethernet port, wired or WiFi |
-**Pins used:** NA |
+**Medium:** Ethernet port, wired or WiFi -
+**Pins used:** NA -
 **Inclusion constant:** `PJON_INCLUDE_ETCP`
 
 With the `EthernetTCP` PJON strategy, multiple devices with Ethernet ports can use PJON to communicate with each other on a LAN, WAN or across the Internet. Take a look at the [video introduction](https://www.youtube.com/watch?v=DQzcAv38yxM) for a brief showcase of its features.

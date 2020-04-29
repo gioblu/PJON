@@ -1,7 +1,7 @@
 ## LocalUDP
 
-**Medium:** Ethernet port, wired or WiFi |
-**Pins used:** NA |
+**Medium:** Ethernet port, wired or WiFi -
+**Pins used:** NA -
 **Inclusion constant:** `PJON_INCLUDE_LUDP`
 
 With the `LocalUDP` PJON strategy, multiple devices with Ethernet ports can use PJON to communicate with each other on a local subnet, wired or over WiFi or both. Take a look at the [video introduction](https://www.youtube.com/watch?v=cxEUqkK5BQg) for a brief showcase of its features.

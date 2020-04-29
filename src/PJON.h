@@ -106,18 +106,6 @@ class PJON {
       set_default();
     };
 
-    /* PJON initialization passing the mac address:
-       const uint8_t mac[6] = {1, 2, 3, 4, 5, 6};
-       PJON<SoftwareBitBang> bus(mac); */
-
-    #if(PJON_INCLUDE_MAC)
-      PJON(const uint8_t *mac_addr) : strategy(Strategy()) {
-        PJONTools::copy_id(tx.mac, mac_addr, 6);
-        config |= PJON_MAC_BIT;
-        set_default();
-      };
-    #endif
-
     /* PJON initialization passing device id:
        PJON<SoftwareBitBang> bus(1); */
 
@@ -136,6 +124,20 @@ class PJON {
       config |= PJON_MODE_BIT;
       set_default();
     };
+
+    #if(PJON_INCLUDE_MAC)
+
+      /* PJON initialization passing the mac address:
+      const uint8_t mac[6] = {1, 2, 3, 4, 5, 6};
+      PJON<SoftwareBitBang> bus(mac); */
+
+      PJON(const uint8_t *mac_addr) : strategy(Strategy()) {
+        PJONTools::copy_id(tx.mac, mac_addr, 6);
+        config |= PJON_MAC_BIT;
+        set_default();
+      };
+
+    #endif
 
     /* Begin function to be called after initialization: */
 

@@ -23,12 +23,12 @@ Before instantiating PJON it is possible to define the length of its buffers. Pr
      20 bytes - packet overhead (5-35 bytes depending on configuration) */
 ```
 
-### Data link configuration
+### Strategy configuration
 PJON is instantiated passing a [strategy](/src/strategies/README.md) template parameter:
 ```cpp  
   PJON<SoftwareBitBang> bus;
 ```
-In the example above the PJON object is instantiated passing [SoftwareBitBang](/src/strategies/SoftwareBitBang/README.md) strategy. Strategies are classes abstracting the data link layer, making PJON easy to be used on different media. It is possible to instantiate more than one PJON object using different strategies in the same program:
+In the example above the PJON object is instantiated passing the [SoftwareBitBang](/src/strategies/SoftwareBitBang/README.md) strategy. Strategies are classes that abstract the physical transmission of data. It is possible to instantiate more than one PJON object using different strategies in the same program:
 ```cpp  
   PJON<SoftwareBitBang> wiredBus;
   PJON<EthernetTCP>     tcpBus;

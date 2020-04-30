@@ -22,7 +22,7 @@ Related work: https://github.com/gioblu/PJON/
 Compliant implementations: PJON v13.0 and following
 Released into the public domain
 ```
-The PJON protocol v4.0 in local mode supports connectivity for up to 254 devices, in shared mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices. The packet format is dynamic therefore meta-data can be optionally included using the header as a bitmap of selected features. It supports interoperability between systems that use a different configuration and provides with high efficiency including only the protocol's features used and the overhead effectively required (5-35 bytes). PJON can be used for simple low-data-rate applications as an alternative to 1-Wire, i2c or CAN but can also be applied in place of IP to interconnect more complex networks.   
+The PJON protocol v4.0 in local mode supports connectivity for up to 254 devices, in shared mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices. The packet format is dynamic therefore meta-data can be optionally included using the header as a bitmap of selected features. It supports interoperability between systems that use a different configuration and provides with high efficiency including only the protocol's features used and the overhead effectively required (5-35 bytes). PJON can be used for low-data-rate applications as an alternative to 1-Wire, i2c or CAN but can also be applied in place of IP to interconnect more complex networks.   
 
 The graph below shows the conceptual model that characterizes and standardizes the communication. Its goal is the interoperability of diverse systems on a wide range of media with the use of a new set of Open Standards. The graph partitions represent abstraction layers.
 
@@ -56,14 +56,14 @@ The graph below shows the conceptual model that characterizes and standardizes t
 ```
 
 ### Basic concepts
-* Packet transmission is regulated by a 8 bits header
-* Devices communicate using packets with a maximum length of 255 or 65535 bytes
 * Devices are identified by a unique 8 bits device id
 * Buses are identified with a 32 bits bus id
+* Devices can be optionally identified a 48 bits MAC address
+* Devices communicate using packets with a maximum length of 255 or 65535 bytes
+* Packet transmission is regulated by a 8 bits header
 * An acknowledgement can be requested
 * Packets can be optionally identified with a 16 bits packet id
 * Network services are optionally identified with a 16 bits port id  
-* Hardware can be optionally identified using a MAC address
 
 ### Bus
 A PJON bus is a group of up to 254 devices. Devices use PJON packets to communicate with each other. Devices can send packets and optionally request an acknowledgement. Devices can also broadcast packets. When the device id is not known, devices must use id 255.
@@ -195,7 +195,7 @@ Medium access              Transmission                Response
 ```
 
 #### Local mode
-Depending on header's `MODE` bit, PJON packets can contain basic or extended support to identification. Local mode required by header's `MODE` bit low supports connectivity for up to 254 devices. In the graph below is represented the simplest local mode packet format sending `@` (decimal 64) to device `12`:
+Depending on header's `MODE` bit packets can contain basic or extended support to identification. Local mode required by header's `MODE` bit low supports connectivity for up to 254 devices. In the graph below is represented the simplest local mode packet format sending `@` (decimal 64) to device `12`:
 
 ```cpp
  _________________________________
@@ -208,7 +208,7 @@ Depending on header's `MODE` bit, PJON packets can contain basic or extended sup
 
 ```
 
-In local mode packets can be broadcasted to all devices sending to device id `0`. Acknowledgement is not supported therefore any broadcasted packet that requests an acknowledgement is ignored by recipients.
+In local mode a broadcast can be sent to all devices sending to device id `0`. Acknowledgement is not supported therefore any broadcast that requests an acknowledgement is ignored by recipients.
 
 ```cpp
  _________________________________
@@ -240,7 +240,7 @@ If header's `TX INFO` bit is high the sender's device id is included in the pack
 ```
 
 #### Shared mode
-If header's `MODE` bit is high [bus](/specification/PJON-protocol-specification-v4.0.md#bus) identification is added to the packet. The same local transmission used as an example above is formatted to be sent in shared mode to device id `12` of bus id `0.0.0.1`. The packet's payload is prepended with the bus id of the recipient and the hop count as requested by header's `MODE` bit:
+If header's `MODE` bit is high [bus](/specification/PJON-protocol-specification-v4.0.md#bus) identification is added to the packet. The same local transmission used as an example above is formatted to be sent in shared mode to device id `12` of bus id `0.0.0.1`. The packet's payload is prepended with the bus id of the recipient and the hop count:
 ```cpp
  _____________________________________________
 |ID| HEADER |LENGTH|CRC8|BUS ID|HOP|DATA|CRC8|
@@ -252,7 +252,7 @@ If header's `MODE` bit is high [bus](/specification/PJON-protocol-specification-
 
 ```
 
-In shared mode packets can be broadcasted to all devices sharing the same bus id sending to device id `0`. Acknowledgement is not supported, therefore any broadcasted packet that requests an acknowledgement is ignored by recipients.
+In shared mode broadcasts can be sent to all devices sharing the same bus id sending to device id `0`. Acknowledgement is not supported therefore any broadcast that requests an acknowledgement is ignored by recipients.
 
 ```cpp
  ____________________________________________
@@ -282,7 +282,7 @@ If header's `TX INFO` bit is high the sender's device and bus id are included in
 The hop count must be incremented each time the packet is forwarded and routers must ignore packets when a maximum amount of hops is reached.
 
 #### Extended length
-The graph below shows a packet transmission where the length is represented with 16 bits supporting up to 65535 bytes length as requested by the header's `EXT. LENGTH` bit. If the extended length feature is used, CRC32 must be applied setting the header's `CRC` bit high.
+if the header's `EXT. LENGTH` bit is high the length of the packet is represented with 16 bits supporting a maximum length of up to 65535 bytes. If the `EXT. LENGTH` bit is low the packet length is represented with 8 bits supporting a maximum length of up to 255 bytes. If the extended length feature is used, CRC32 must be applied setting the header's `CRC` bit high.
 ```cpp
  _______________________________________
 |ID| HEADER |LEN 1|LEN 2|CRC8|DATA|CRC32|
@@ -295,7 +295,7 @@ The graph below shows a packet transmission where the length is represented with
 ```
 
 #### Packet identification
-The graph below shows a packet in which a 16 bits packet identifier is added as requested by header's `PACKET ID` bit. This feature is provided to avoid duplications and guarantee packet uniqueness. The receiver filters packets containing a packet identifier and sender information that already appeared previously.
+if the header's `PACKET ID` bit is high a 16 bits packet identifier is added to the packet. The graph below shows a packet in which a 16 bits packet identifier is included. This feature is provided to avoid duplications and guarantee packet uniqueness. The receiver discards packets containing a packet identifier and sender information already appeared previously.
 ```cpp
  ____________________________________________
 |ID| HEADER |LENGTH|CRC8|PACKET ID|DATA|CRC32|
@@ -308,7 +308,7 @@ The graph below shows a packet in which a 16 bits packet identifier is added as 
 ```
 
 #### Network services
-PJON supports a network service identifier using a 16 bits port id. Thanks to this feature different services, protocols or formats can coexist and be identified safely. Ports from `0` to `8000` are reserved to known services which index is present in the [known network services list](/specification/PJON-network-services-list.md), ports from `8001` to `65535` are free for use. The graph below shows a packet transmission where port 8002 is inserted in the packet and header's `PORT` bit is high to signal its presence.
+if the header's `PORT` bit is high a 16 bits port id is added to the packet. Thanks to this feature different services, protocols or formats can coexist and be identified safely. Ports from `0` to `8000` are reserved for the [known network services](/specification/PJON-network-services-list.md), ports from `8001` to `65535` are free for use. The graph below shows a packet transmission where port 8002 is inserted in the packet and header's `PORT` bit is high to signal its presence.
 ```cpp
  _________________________________________
 |ID| HEADER |LENGTH|CRC8|PORT ID|DATA|CRC8|

@@ -39,11 +39,11 @@ The device identifier of an object can be read after instantiation using `device
 ```cpp  
   uint8_t id = bus.device_id(); // Get device id
 ```
-`device_id` returns 255 or `PJON_NOT_ASSIGNED` if the instance is initialised without configuring its device identifier.
+`device_id` returns `PJON_NOT_ASSIGNED` or 255 if the instance is initialised without configuring its device identifier.
 
 ### Shared mode
 
-if the medium used is private and not accessible from the outside world (wired network in home, business, industry) any  bus indexing scheme can be used without worrying about bus id collision; if instead the network uses a shared medium, such as commonly used radio frequencies like LoRa, it is strongly suggested to request a unique PJON bus id [here](http://www.pjon.org/get-bus-id.php) to avoid collisions.
+if the medium used is private and not accessible from the outside world (wired network in home, business, industry) bus ids can be used arbitrarily without any risk of collision; if instead the network uses a shared medium, for example on unlicensed radio frequencies with [ThroughLoRa](/src/strategies/ThroughLoRa), it is strongly suggested to request a unique PJON bus id [here](http://www.pjon.org/get-bus-id.php) to avoid collisions.
 
 Instantiation in shared mode:
 ```cpp
@@ -56,4 +56,23 @@ PJON<SoftwareBitBang> bus(bus_id, 44);
 The bus id can be read and set after initialisation using `bus_id`:
 ```cpp  
   bus.bus_id; // Get or set bus id
+```
+
+### Hardware identifier
+
+PJON can optionally operate using the MAC address of the device:
+```cpp
+// Include MAC address feature
+#define PJON_INCLUDE_MAC
+
+// MAC address of the device
+uint8_t mac[6] = {1, 2, 3, 4, 5, 6};
+
+PJON<SoftwareBitBang> bus(mac);
+// Local mode, device id PJON_NOT_ASSIGNED
+```
+This instantiation sets the MAC address, the device id set to `PJON_NOT_ASSIGNED` or 255 but can be changed afterwards as required. Packets containing a recipient's MAC address that is not equal to the one configured are discarded. PJON can operate in both local and shared mode while including MAC addresses. The feature can be disabled using `includ_mac`:
+
+```cpp
+bus.include_mac(false);
 ```

@@ -1,10 +1,18 @@
+
+// Uncomment to use the mode you prefer (default SWBB_MODE 1)
+// #define SWBB_MODE 1 // 1.95kB/s - 15625Bd
+// #define SWBB_MODE 2 // 2.21kB/s - 17696Bd
+// #define SWBB_MODE 3 // 2.94kB/s - 23529Bd
+// #define SWBB_MODE 4 // 3.40kB/s - 27210Bd
+
+/*  Response timeout (1500 microseconds default).
+    If the acknowledgement fails SWBB_RESPONSE_TIMEOUT may be too short
+    specially if long packets are sent or if devices are far from each other */
+
+//#define SWBB_RESPONSE_TIMEOUT 1500
+
 // Include packet id feature
 #define PJON_INCLUDE_PACKET_ID
-
-// Uncomment to run SoftwareBitBang in MODE 2
-// #define SWBB_MODE 2
-// Uncomment to run SoftwareBitBang in MODE 3
-// #define SWBB_MODE 3
 
 #include <PJON.h>
 

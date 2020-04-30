@@ -26,7 +26,6 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 
 ### Specifications
 - [PJON v4.0](specification/PJON-protocol-specification-v4.0.md)
-- [PJON Acknowledge v1.0](specification/PJON-protocol-acknowledge-specification-v1.0.md)
 - [PJDL v4.1](src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md) - [PJDLR v3.0](src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) - [PJDLS v2.0](src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) - [TSDL v2.1](src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md)
 
 ### Publications

@@ -115,7 +115,7 @@ If manual packet handling is required, packet automatic deletion can be avoided 
 ```
 
 ### Acknowledgement
-The [synchronous acknowledgement](/specification/PJON-protocol-acknowledge-specification-v1.0.md#synchronous-acknowledge) is by default enabled but can be disabled if required:
+With the acknowledgement enabled the transmitter has reception certainty. It is by default enabled but can be disabled if required:
 ```cpp  
   bus.set_synchronous_acknowledge(false);
 ```

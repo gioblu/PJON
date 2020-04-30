@@ -2,7 +2,6 @@
 
 #### Network layer
 - **[PJON (Padded Jittering Operative Network) v4.0](/specification/PJON-protocol-specification-v4.0.md)**
-- [Acknowledge specification v2.0](/specification/PJON-protocol-acknowledge-specification-v2.0.md)
 - [Network services list](/specification/PJON-network-services-list.md)
 #### Data link layer
 - [PJDL (Padded Jittering Data Link) v4.1](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md)
@@ -47,7 +46,7 @@ The graph below shows the conceptual model that characterizes and standardizes t
 | Broadcast                                      |
 |________________________________________________|
 | 2 Data link layer: PJDL, PJDLR, PJDLS, TSDL    |
-| Synchronous acknowledgement                    |
+| Acknowledgement                                |
 | Frame transmission                             |
 | Medium access control                          |
 |________________________________________________|
@@ -61,13 +60,13 @@ The graph below shows the conceptual model that characterizes and standardizes t
 * Devices communicate using packets with a maximum length of 255 or 65535 bytes
 * Devices are identified by a unique 8 bits device id
 * Buses are identified with a 32 bits bus id
-* A synchronous acknowledgement can be requested (see [Acknowledge specification v2.0](/specification/PJON-protocol-acknowledge-specification-v2.0.md))
+* An acknowledgement can be requested
 * Packets can be optionally identified with a 16 bits packet id
 * Network services are optionally identified with a 16 bits port id  
 * Hardware can be optionally identified using a MAC address
 
 ### Bus
-A PJON bus is a group of up to 254 devices. Devices use PJON packets to communicate with each other. Devices can send packets and optionally request a synchronous acknowledgement. Devices can also broadcast packets. When the device id is not known, devices must use id 255.
+A PJON bus is a group of up to 254 devices. Devices use PJON packets to communicate with each other. Devices can send packets and optionally request an acknowledgement. Devices can also broadcast packets. When the device id is not known, devices must use id 255.
 ```cpp
  _______     _______     _______     _______
 |       |   |       |   |       |   |       |
@@ -84,7 +83,7 @@ ID 255 = NOT ASSIGNED
 ```
 
 ### Bus network
-A PJON bus network is composed by buses present on the same collision domain or interconnected through switches or routers. On a shared medium an additional 32 bits bus id must be used to isolate groups of devices from foreign traffic, enabling many to coexist and network on the same medium.
+A PJON bus network is composed by buses present on the same collision domain or interconnected through switches or routers. On a shared medium an additional 32 bits bus id must be used to isolate groups of devices from foreign traffic.
 ```cpp  
 TWO BUSES SHARING THE SAME MEDIUM
 1 collision domain
@@ -102,7 +101,7 @@ ______|___________|__________|___________|___
 ```
 
 ### Switch
-A Switch is a device that forwards packets transparently between connected buses. The switch can operate also if different physical layers are in use. It can rely on a default gateway to operate as a leaf in a larger tree network.
+A Switch is a device that forwards packets transparently between connected buses. The switch can operate also if different physical layers are in use and can rely on a default gateway.
 ```cpp
  ______            ________             ______
 |      | PJDL bus |        | PJDLR bus |      |
@@ -113,7 +112,7 @@ ID 254 = DEFAULT GATEWAY
 ```
 
 ### Router
-A router is a device, connected to more than one PJON bus, able to route packets from a device, a bus or a medium to another. Thanks to the hop count, the bus and the device indexing, many routing techniques are supported. Packets can be routed between indirectly connected buses if a routing table or a default gateway is used.
+A router is a device connected to more than one PJON bus that routes packets from a device, a bus or a medium to another. Packets can be routed between indirectly connected buses if a routing table or a default gateway is used.
 ```cpp
 TWO BUSES CONNECTED THROUGH A ROUTER
 2 collision domains
@@ -142,7 +141,7 @@ HEADER BITMAP
 ```
 1. `MODE` bit informs if the packet is formatted in [shared](/specification/PJON-protocol-specification-v4.0.md#shared-mode) (value 1) or [local](/specification/PJON-protocol-specification-v4.0.md#local-mode) mode (value 0)  
 2. `TX INFO` bit informs if the sender info are included (value 1) or not (value 0)
-3. `ACK` bit informs if the [synchronous acknowledgement](/specification/PJON-protocol-acknowledge-specification-v1.0.md#synchronous-acknowledge) is requested (value 1) or not (value 0)
+3. `ACK` bit informs if the [acknowledgement](/specification/PJON-protocol-specification-v4.0.md#packet-transmission) is requested (value 1) or not (value 0)
 4. `MAC` bit informs if sender's and recipient's [hardware identification](/specification/PJON-protocol-specification-v4.0.md#hardware-identification), or MAC address, are included (value 1) or not (value 0)
 5. `PORT` bit informs if a 16 bits [network service identifier](/specification/PJON-protocol-specification-v4.0.md#network-services) is included (value 1) or not (value 0)
 6. `CRC` bit signals which CRC is used, [CRC8](/specification/PJON-protocol-specification-v4.0.md#crc8-polynomial) (value 0) or [CRC32](/specification/PJON-protocol-specification-v4.0.md#crc32-polynomial) (value 1)
@@ -183,12 +182,11 @@ CRC8 is calculated and appended to the initial meta-data (device id, header and 
 CRC8 is appended at the end of packets of up to 15 bytes length (overhead included). CRC32 is instead used if the packet's length exceeds 15 bytes but can be optionally applied in shorter packets setting the `CRC` bit high if more secure error detection is required.
 
 ### Packet transmission
-A local packet transmission is an optionally bidirectional communication between two devices that can be divided in 3 phases: **channel analysis**, **transmission** and optional **response**. In the channel analysis phase the medium's state is assessed before starting transmission to avoid collision. If the medium is free for use, the transmission phase starts in which the packet is entirely transmitted in network byte order. The receiving device computes the CRC and starts the response phase transmitting an acknowledge (decimal 6) in case of correct data reception. If no acknowledgement is received, after an exponential back-off delay, the transmitter retries until the acknowledgement is received or a maximum number of attempts is reached.
-
+A local packet transmission is an optionally bidirectional communication between two devices that can be divided in 3 phases: **medium access**, **transmission** and optional **acknowledgement**. In the medium access phase the medium's state is assessed before starting transmission to avoid collision. If the medium is free for use, the transmission phase starts in which the packet is entirely transmitted in network byte order. The receiving device computes the CRC and starts the acknowledgement phase transmitting `ACK` (decimal 6) in case of correct data reception. If no acknowledgement is received, after an exponential back-off delay, the transmitter retries until the acknowledgement is received or a maximum number of attempts is reached.
 ```cpp
-Channel analysis            Transmission               Response
+Medium access              Transmission                Response
  _____  _______________________________________________  _____
-| C-A || ID |  HEADER  | LENGTH | CRC8 |  DATA  | CRC8 || ACK |
+| M-A || ID |  HEADER  | LENGTH | CRC8 |  DATA  | CRC8 || ACK |
 |-----||----|----------|--------|------|--------|------||-----|
 |  0  || 12 | 00000100 |   6    |      |   64   |      ||  6  |
 |_____||____|__________|________|______|________|______||_____|

@@ -15,7 +15,7 @@
 ## PJON® v4.0
 ```
 Invented by Giovanni Blu Mitolo
-with the help Fred Larsen
+with the help of Fred Larsen
 Originally published: 10/04/2010
 Latest revision: 27/04/2020
 Related work: https://github.com/gioblu/PJON/

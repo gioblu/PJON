@@ -109,4 +109,4 @@ If it is required to dedicate a certain time to reception call the `receive` fun
 ```cpp
 uint16_t response = bus.receive(1000);
 ```
-Consider that SoftwareBitBang, OverSampling or AnalogSampling are strategies able receive data only while `bus.receive` is being executed, otherwise data is lost and transmitter will try again in future. In this particular case it is mandatory to dedicate a certain timeframe, depending on the duration of the other tasks, to efficiently receive data and avoid repetitions.
+Consider that SoftwareBitBang, OverSampling or AnalogSampling are strategies able to receive data only while `bus.receive` is being executed, otherwise data is lost and transmitter will try again in future. In this particular case it is mandatory to dedicate a certain timeframe, depending on the duration of the other tasks, to efficiently receive data and avoid repetitions.

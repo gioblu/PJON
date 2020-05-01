@@ -14,7 +14,7 @@
 PJON uses predefined constants, setters and getters to support features and constraints configuration.  
 
 ### Buffers configuration
-Before instantiating PJON it is possible to define the length of its buffers. Predefining `PJON_MAX_PACKETS` and `PJON_PACKET_MAX_LENGTH` it is possible to configure this constraints to reach the project memory requirements. Obviously, the less memory is dedicated to buffers, the more memory can be used for something else:
+Before instantiating PJON it is possible to define the length of its buffers. Predefining `PJON_MAX_PACKETS` and `PJON_PACKET_MAX_LENGTH` it is possible to configure these constraints to reach the project memory requirements. Obviously, the less memory is dedicated to buffers, the more memory can be used for something else:
 ```cpp  
   #define PJON_MAX_PACKETS 1
   #define PJON_PACKET_MAX_LENGTH 20
@@ -51,7 +51,7 @@ In the example above the PJON object is instantiated passing the [SoftwareBitBan
 | [LocalFile](/src/strategies/LocalFile)  | Shared file system in memory | None | None |
 | [Any](/src/strategies/Any)  | Virtual inheritance, any of the above | Any of the above | Any of the above |
 
-By default all strategies are included except `MQTTTranslate`, `LocalFile`, `ThroughLoRa` and `ESPNOW`. To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before including the library to select only the `SoftwareBitBang` strategy. More than one strategy related constants can defined in the same program if that is required.
+By default all strategies are included except `MQTTTranslate`, `LocalFile`, `ThroughLoRa` and `ESPNOW`. To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before including the library to select only the `SoftwareBitBang` strategy. More than one strategy related constants can be defined in the same program if that is required.
 
 Supported definitions:
 - `PJON_INCLUDE_SWBB` includes `SoftwareBitBang`
@@ -91,7 +91,7 @@ The communication mode can be configured using the `set_communication_mode` pass
 ```
 
 ### Router mode
-Use `set_router` to configure the device in router mode, simply receiving all the incoming packets:
+When an instance is configured in router mode it is able to receive all incoming packets without any bus or device id filtering. Use `set_router` to configure the router mode:
 ```cpp  
   bus.set_router(true);
 ```

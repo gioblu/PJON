@@ -15,7 +15,7 @@
 ## PJON® v4.0
 ```
 Invented by Giovanni Blu Mitolo
-Header feature proposed by Fred Larsen
+with the help Fred Larsen
 Originally published: 10/04/2010
 Latest revision: 27/04/2020
 Related work: https://github.com/gioblu/PJON/
@@ -58,7 +58,7 @@ The graph below shows the conceptual model that characterizes and standardizes t
 ### Basic concepts
 * Devices are identified by a unique 8 bits device id
 * Buses are identified with a 32 bits bus id
-* Devices can be optionally identified a 48 bits MAC address
+* Devices can be optionally identified with a 48 bits MAC address
 * Devices communicate using packets with a maximum length of 255 or 65535 bytes
 * Packet transmission is regulated by a 8 bits header
 * An acknowledgement can be requested
@@ -66,7 +66,7 @@ The graph below shows the conceptual model that characterizes and standardizes t
 * Network services are optionally identified with a 16 bits port id  
 
 ### Bus
-A PJON bus is a group of up to 254 devices. Devices use PJON packets to communicate with each other. Devices can send packets and optionally request an acknowledgement. Devices can also broadcast packets. When the device id is not known, devices must use id 255.
+A bus is a group of up to 254 devices. Devices use packets to communicate with each other. Devices can send packets and optionally request an acknowledgement. Devices can also broadcast packets. When the device id is not known, devices must use id 255.
 ```cpp
  _______     _______     _______     _______
 |       |   |       |   |       |   |       |
@@ -83,7 +83,7 @@ ID 255 = NOT ASSIGNED
 ```
 
 ### Bus network
-A PJON bus network is composed by buses present on the same collision domain or interconnected through switches or routers. On a shared medium an additional 32 bits bus id must be used to isolate groups of devices from foreign traffic.
+A bus network is composed by buses present on the same collision domain or interconnected through switches or routers. On a shared medium an additional 32 bits bus id must be used to isolate groups of devices from foreign traffic.
 ```cpp  
 TWO BUSES SHARING THE SAME MEDIUM
 1 collision domain
@@ -101,7 +101,7 @@ ______|___________|__________|___________|___
 ```
 
 ### Switch
-A Switch is a device that forwards packets transparently between connected buses. The switch can operate also if different physical layers are in use and can rely on a default gateway.
+A switch is a device that forwards packets transparently between connected buses. The switch can operate also if different physical layers are in use and can rely on a default gateway.
 ```cpp
  ______            ________             ______
 |      | PJDL bus |        | PJDLR bus |      |
@@ -252,7 +252,7 @@ If header's `MODE` bit is high [bus](/specification/PJON-protocol-specification-
 
 ```
 
-In shared mode broadcasts can be sent to all devices sharing the same bus id sending to device id `0`. Acknowledgement is not supported therefore any broadcast that requests an acknowledgement is ignored by recipients.
+In shared mode a broadcast can be sent to all devices sharing the same bus id sending to device id `0`. Acknowledgement is not supported therefore any broadcast that requests an acknowledgement is ignored by recipients.
 
 ```cpp
  ____________________________________________

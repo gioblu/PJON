@@ -194,7 +194,7 @@ struct PJON_Packet_Record {
   #endif
 };
 
-struct PJON_End_Point {
+struct PJON_Endpoint {
   uint8_t id = PJON_NOT_ASSIGNED;
   #ifndef PJON_LOCAL
     uint8_t bus_id[4] = {0, 0, 0, 0};
@@ -205,8 +205,8 @@ struct PJON_End_Point {
 };
 
 struct PJON_Packet_Info {
-  PJON_End_Point tx;
-  PJON_End_Point rx;
+  PJON_Endpoint tx;
+  PJON_Endpoint rx;
   uint8_t header = PJON_NO_HEADER;
   #ifndef PJON_LOCAL
     void *custom_pointer;

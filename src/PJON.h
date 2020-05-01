@@ -83,7 +83,7 @@ class PJON {
     PJON_Packet_Info last_packet_info;
     PJON_Packet packets[PJON_MAX_PACKETS];
     uint8_t random_seed = A0;
-    PJON_End_Point tx;
+    PJON_Endpoint tx;
 
     #if(PJON_INCLUDE_PACKET_ID)
       PJON_Packet_Record recent_packet_ids[PJON_MAX_RECENT_PACKET_IDS];
@@ -483,7 +483,7 @@ class PJON {
       const void *payload,
       uint16_t length
     ) {
-      PJON_End_Point original_end_point = tx;
+      PJON_Endpoint original_end_point = tx;
       tx = info.tx;
       if(++info.hops > PJON_MAX_HOPS) return PJON_FAIL;
       uint16_t result = PJON_FAIL;

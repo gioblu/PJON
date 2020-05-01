@@ -31,8 +31,8 @@ Within `receiver_function` it is possible to process data and meta-data when a p
 
 ```cpp
 struct PJON_Packet_Info {
-  PJON_End_Point tx;
-  PJON_End_Point rx;
+  PJON_Endpoint tx;
+  PJON_Endpoint rx;
   void *custom_pointer;
   uint8_t header = PJON_NO_HEADER;
   uint8_t hops = 0;
@@ -42,15 +42,15 @@ struct PJON_Packet_Info {
 ```
 `PJON_Packet_Info` contains `port` if [`PJON_INCLUDE_PORT`](/documentation/configuration.md#network-service-identification) is defined and `id` if [`PJON_INCLUDE_PACKET_ID`](/documentation/configuration.md#packet-identification) is defined. The conditional inclusion is present to reduce the footprint of programs where the port and the packet id are not used.
 
-`PJON_Packet_Info` contains `tx` and `rx` of type `PJON_End_point` where the packet's sender and recipient information is contained:
+`PJON_Packet_Info` contains `tx` and `rx` of type `PJON_Endpoint` where the packet's sender and recipient information is contained:
 ```cpp
-struct PJON_End_Point {
+struct PJON_Endpoint {
   uint8_t id = PJON_NOT_ASSIGNED;
   uint8_t bus_id[4] = {0, 0, 0, 0};
   uint8_t mac[6] = {0, 0, 0, 0, 0, 0};
 };
 ```
-`PJON_End_Point` contains `mac` if [`PJON_INCLUDE_MAC`](/documentation/configuration.md#hardware-identification) is defined. The conditional inclusion is present to reduce the footprint of programs where the MAC address is not used.
+`PJON_Endpoint` contains `mac` if [`PJON_INCLUDE_MAC`](/documentation/configuration.md#hardware-identification) is defined. The conditional inclusion is present to reduce the footprint of programs where the MAC address is not used.
 
 The code below is part of the Arduino compatible [PortsUseExample](/examples/ARDUINO/Network/SoftwareBitBang/PortsUseExample/Receiver/Receiver.ino). When the `receiver_function` is called meta-data present in the `info` parameter is transmitted over serial:
 ```cpp

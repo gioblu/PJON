@@ -41,7 +41,7 @@ void setup() {
      a different port group to avoid cross-talk. */
   bus.strategy.set_pins(7, 12);
 
-  bus.set_synchronous_acknowledge(false);
+  bus.set_acknowledge(false);
   bus.set_receiver(receiver_function);
   bus.begin();
 

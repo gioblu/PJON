@@ -20,7 +20,7 @@ void setup() {
   bus.strategy.set_serial(&HC12);
 
   // Avoid synchronous acknowledgement
-  bus.set_synchronous_acknowledge(false);
+  bus.set_acknowledge(false);
 
   bus.begin();
 

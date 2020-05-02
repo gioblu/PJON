@@ -56,7 +56,7 @@ int main() {
   bus.strategy.set_baud_rate(baud_rate);
 
   printf("Bus initialization \n");
-  bus.set_synchronous_acknowledge(false);
+  bus.set_acknowledge(false);
   bus.set_receiver(receiver_function);
   bus.begin();
 

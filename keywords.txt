@@ -57,7 +57,7 @@ send	KEYWORD2
 send_repeatedly	KEYWORD2
 send_packet	KEYWORD2
 send_packet_blocking	KEYWORD2
-set_synchronous_acknowledge	KEYWORD2
+set_acknowledge	KEYWORD2
 set_random_seed	KEYWORD2
 set_communication_mode	KEYWORD2
 set_error	KEYWORD2

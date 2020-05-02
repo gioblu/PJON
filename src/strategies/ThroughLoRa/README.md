@@ -75,7 +75,7 @@ void setup() {
   bus.strategy.setFrequency(868100000UL);
   bus.begin();
   // Synchronous acknowledgement is not supported
-  bus.set_synchronous_acknowledge(false);
+  bus.set_acknowledge(false);
   // Send B to device 44 every second
   bus.send_repeatedly(44, "B", 1, 1000000);
 };
@@ -103,7 +103,7 @@ void setup() {
   // Obligatory to initialize Radio with correct frequency
   bus.strategy.setFrequency(868100000UL);
   // Synchronous acknowledgement is not supported
-  bus.set_synchronous_acknowledge(false);
+  bus.set_acknowledge(false);
   // Optional
   bus.strategy.setSignalBandwidth(250E3);
   bus.begin();

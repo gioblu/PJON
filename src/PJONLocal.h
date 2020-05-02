@@ -315,7 +315,7 @@ class PJONLocal {
        TRUE: Send 8bits synchronous acknowledge when a packet is received
        FALSE: Avoid acknowledge transmission */
 
-    void set_synchronous_acknowledge(bool state) {
+    void set_acknowledge(bool state) {
       set_config_bit(state, PJON_ACK_REQ_BIT);
     };
 

@@ -682,7 +682,7 @@ class PJON {
        state = true  -> Request 8 bits synchronous acknowledgement
        state = false -> Do not request synchronous acknowledgement */
 
-    void set_synchronous_acknowledge(bool state) {
+    void set_acknowledge(bool state) {
       set_config_bit(state, PJON_ACK_REQ_BIT);
     };
 

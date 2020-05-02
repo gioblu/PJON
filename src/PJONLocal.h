@@ -302,7 +302,7 @@ class PJONLocal {
     /* In router mode, the receiver function can acknowledge
        for selected receiver device ids for which the route is known */
 
-    void send_synchronous_acknowledge() { strategy.send_response(PJON_ACK); };
+    void send_acknowledge() { strategy.send_response(PJON_ACK); };
 
     /* Set the config bit state: */
 

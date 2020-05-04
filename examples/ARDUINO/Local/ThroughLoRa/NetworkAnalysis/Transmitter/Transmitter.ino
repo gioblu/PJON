@@ -17,22 +17,6 @@ PJON<ThroughLora> bus(45);
 int packet;
 uint8_t content[] = "01234567890123456789";
 
-void setup() {
-	// Synchronous acknowledgement is not supported
-	bus.set_synchronous_acknowledge(false);
-	// Obligatory to initialize Radio with correct frequency
-	bus.strategy.setFrequency(868100000UL);
-	// Optional
-	bus.strategy.setSignalBandwidth(250E3);
-	bus.set_error(error_handler);
-	bus.begin();
-
-	Serial.begin(115200);
-	Serial.println("PJON - Network analysis");
-	Serial.println("Starting a 5 second communication test...");
-	Serial.println();
-}
-
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
 	if(code == PJON_PACKETS_BUFFER_FULL) {
 		Serial.print("Packet buffer is full, has now a length of ");
@@ -44,6 +28,22 @@ void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
 		Serial.print("Content is too long, length: ");
 		Serial.println(data);
 	}
+};
+
+void setup() {
+	// Synchronous acknowledgement is not supported
+	bus.set_acknowledge(false);
+	// Obligatory to initialize Radio with correct frequency
+	bus.strategy.setFrequency(868100000UL);
+	// Optional
+	bus.strategy.setSignalBandwidth(250E3);
+	bus.set_error(error_handler);
+	bus.begin();
+
+	Serial.begin(115200);
+	Serial.println("PJON - Network analysis");
+	Serial.println("Starting a 5 second communication test...");
+	Serial.println();
 };
 
 void loop() {

@@ -20,9 +20,9 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
   /* Make use of the payload before sending something, the buffer where payload points to is
      overwritten when a new message is dispatched */
   Serial.print("Receiver device id: ");
-  Serial.print(packet_info.receiver_id);
+  Serial.print(packet_info.rx.id);
   Serial.print(" | Transmitter device id: ");
-  Serial.println(packet_info.sender_id);
+  Serial.println(packet_info.tx.id);
 
   /* Copy received data in buffer */
   memcpy(&r, payload, sizeof(r));
@@ -32,6 +32,8 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
   Serial.print("mV | Record id: ");
   Serial.println(r.id);
   Serial.println();
+  // Avoid simultaneous transmission of Serial and SoftwareBitBang data
+  Serial.flush();
 };
 
 void setup() {

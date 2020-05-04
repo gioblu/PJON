@@ -32,7 +32,7 @@
    user 1: Ciao!
    user 1: Ciao!
    user 1: Ciao! */
-#define PJON_INCLUDE_PACKET_ID true
+#define PJON_INCLUDE_PACKET_ID
 
 /* Use 63 characters maximum packet length.
    HC-12 has two 64-byte Rx and Tx FIFO memories built into the chip,
@@ -53,6 +53,31 @@ int req_index = 0;
 bool parse_id = true;
 bool initialized = false;
 uint8_t recipient = 0;
+
+void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
+  // Received messages sender id and content are printed here
+  if(packet_info.tx.id == recipient || packet_info.tx.id == PJON_BROADCAST) {
+    Serial.print("user ");
+    Serial.print(packet_info.tx.id);
+    Serial.print((packet_info.rx.id == PJON_BROADCAST) ? " " : ": ");
+    for(uint16_t i = 0; i < length; i++)
+      Serial.print((char)payload[i]);
+    Serial.println();
+  }
+};
+
+void error_handler(uint8_t code, uint8_t data) {
+  if(code == PJON_CONNECTION_LOST) {
+    Serial.print("Message delivery fail to user id: ");
+    Serial.println((uint8_t)bus.packets[data].content[0]);
+  }
+  if(code == PJON_CONTENT_TOO_LONG) {
+    Serial.print("Message too long, length: ");
+    Serial.print(data);
+    Serial.print(", maximum length: ");
+    Serial.println(PJON_PACKET_MAX_LENGTH);
+  }
+};
 
 void setup() {
   // Initialize LED 13 to be off
@@ -94,31 +119,6 @@ void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
   if(code == PJON_CONTENT_TOO_LONG) {
     Serial.print("Content is too long, length: ");
     Serial.println(data);
-  }
-};
-
-void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
-  // Received messages sender id and content are printed here
-  if(packet_info.sender_id == recipient || packet_info.sender_id == PJON_BROADCAST) {
-    Serial.print("user ");
-    Serial.print(packet_info.sender_id);
-    Serial.print((packet_info.receiver_id == PJON_BROADCAST) ? " " : ": ");
-    for(uint16_t i = 0; i < length; i++)
-      Serial.print((char)payload[i]);
-    Serial.println();
-  }
-};
-
-void error_handler(uint8_t code, uint8_t data) {
-  if(code == PJON_CONNECTION_LOST) {
-    Serial.print("Message delivery fail to user id: ");
-    Serial.println((uint8_t)bus.packets[data].content[0]);
-  }
-  if(code == PJON_CONTENT_TOO_LONG) {
-    Serial.print("Message too long, length: ");
-    Serial.print(data);
-    Serial.print(", maximum length: ");
-    Serial.println(PJON_PACKET_MAX_LENGTH);
   }
 };
 

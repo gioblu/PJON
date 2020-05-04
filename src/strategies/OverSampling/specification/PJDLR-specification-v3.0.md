@@ -2,11 +2,10 @@
 ### Specifications index
 
 #### Network layer
-- [PJON (Padded Jittering Operative Network) v3.1](/specification/PJON-protocol-specification-v3.1.md)
-- [Acknowledge specification v1.0](/specification/PJON-protocol-acknowledge-specification-v1.0.md)
+- [PJON (Padded Jittering Operative Network) v4.0](/specification/PJON-protocol-specification-v4.0.md)
 - [Network services list](/specification/PJON-network-services-list.md)
 #### Data link layer
-- [PJDL (Padded Jittering Data Link) v4.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.0.md)
+- [PJDL (Padded Jittering Data Link) v4.1](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md)
 - **[PJDLR (Padded Jittering Data Link over Radio) v3.0](/src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md)**
 - [PJDLS (Padded Jittering Data Link byte Stuffed) v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
 - [TSDL (Tardy Serial Data Link) v2.1](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md)
@@ -27,7 +26,7 @@ Released into the public domain
 18/01/2017 v1.0 - Packet preamble
 31/03/2017 v1.1 - Response info
 31/10/2018 v2.0 - Frame initializer, mode 1
-07/07/2019 v3.0 - Response made safe, response initializer 
+07/07/2019 v3.0 - Response made safe, response initializer
 ```
 PJDLR (Padded Jittering Data Link over Radio) is an asynchronous serial data link for low-data-rate applications that supports both master-slave and multi-master communication and it is optimized to obtain long range and high reliability using ASK, FSK or OOK radio transceivers. PJDLR can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using one or two input-output pins.
 

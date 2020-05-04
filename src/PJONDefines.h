@@ -1,7 +1,7 @@
 
  /*-O//\         __     __
    |-gfo\       |__| | |  | |\ | ®
-   |!y°o:\      |  __| |__| | \| 12.0
+   |!y°o:\      |  __| |__| | \| 12.1
    |y"s§+`\     multi-master, multi-media bus network protocol
   /so+:-..`\    Copyright 2010-2020 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
@@ -81,8 +81,8 @@ limitations under the License. */
 #define PJON_TO_BE_SENT              74
 
 /* Communication modes: */
-#define PJON_SIMPLEX                150
-#define PJON_HALF_DUPLEX            151
+#define PJON_SIMPLEX              false
+#define PJON_HALF_DUPLEX           true
 
 /* Header bits definition: */
 
@@ -98,9 +98,9 @@ limitations under the License. */
 /* 0 - Synchronous acknowledgement disabled
    1 - Synchronous acknowledgement enabled */
 #define PJON_ACK_REQ_BIT     0B00000100
-/* 0 - Asynchronous acknowledgement disabled
-   1 - Asynchronous acknowledgement enabled */
-#define PJON_ACK_MODE_BIT    0B00001000
+/* 0 - MAC address inclusion disabled
+   1 - MAC address inclusion enabled (2x 48 bits) */
+#define PJON_MAC_BIT         0B00001000
 /* 0 - No port id contained
    1 - Port id contained (2 bytes integer) */
 #define PJON_PORT_BIT        0B00010000
@@ -122,6 +122,11 @@ limitations under the License. */
 
 /* Constraints: */
 
+/* Maximum amount of routers a packet can pass before being discarded: */
+#ifndef PJON_MAX_HOPS
+  #define PJON_MAX_HOPS              15
+#endif
+
 /* Packet buffer length, if full PJON_PACKETS_BUFFER_FULL error is thrown.
    The packet buffer is preallocated, so its length strongly affects
    memory consumption */
@@ -136,53 +141,82 @@ limitations under the License. */
   #define PJON_PACKET_MAX_LENGTH     50
 #endif
 
-/* If set to false async ack feature is not included saving memory
-   (it saves around 1kB of memory) */
-#ifndef PJON_INCLUDE_ASYNC_ACK
-  #define PJON_INCLUDE_ASYNC_ACK  false
-#endif
-
-/* If set to false packet id feature is not included saving memory
-   (it saves around 1kB of memory) */
-#ifndef PJON_INCLUDE_PACKET_ID
-  #define PJON_INCLUDE_PACKET_ID  false
-#endif
-
 /* Maximum packet ids record kept in memory (to avoid duplicated exchanges) */
 #ifndef PJON_MAX_RECENT_PACKET_IDS
   #define PJON_MAX_RECENT_PACKET_IDS 10
 #endif
 
+/* Optional features: */
+
+/* If defined includes the packet id feature */
+#ifdef PJON_INCLUDE_PACKET_ID
+  #undef PJON_INCLUDE_PACKET_ID
+  #define PJON_INCLUDE_PACKET_ID  true
+#else
+  #define PJON_INCLUDE_PACKET_ID  false
+#endif
+
+/* If defined includes the port id feature */
+#ifdef PJON_INCLUDE_PORT
+  #undef PJON_INCLUDE_PORT
+  #define PJON_INCLUDE_PORT  true
+#else
+  #define PJON_INCLUDE_PORT  false
+#endif
+
+/* If defined includes the mac address feature */
+#ifdef PJON_INCLUDE_MAC
+  #undef PJON_INCLUDE_MAC
+  #define PJON_INCLUDE_MAC  true
+#else
+  #define PJON_INCLUDE_MAC  false
+#endif
+
 /* Data structures: */
 
 struct PJON_Packet {
-  uint8_t  attempts;
+  uint8_t  attempts = 0;
   uint8_t  content[PJON_PACKET_MAX_LENGTH];
   uint16_t length;
   uint32_t registration;
-  uint16_t state;
-  uint32_t timing;
+  uint16_t state = 0;
+  uint32_t timing = 0;
 };
 
 struct PJON_Packet_Record {
-  uint16_t id;
   uint8_t  header;
   uint8_t  sender_id;
   #ifndef PJON_LOCAL
     uint8_t  sender_bus_id[4];
   #endif
+  #if(PJON_INCLUDE_PACKET_ID)
+    uint16_t id;
+  #endif
+};
+
+struct PJON_Endpoint {
+  uint8_t id = PJON_NOT_ASSIGNED;
+  #ifndef PJON_LOCAL
+    uint8_t bus_id[4] = {0, 0, 0, 0};
+  #endif
+  #if(PJON_INCLUDE_MAC)
+    uint8_t mac[6] = {0, 0, 0, 0, 0, 0};
+  #endif
 };
 
 struct PJON_Packet_Info {
-  uint8_t header;
-  uint16_t id;
-  uint8_t receiver_id;
-  uint8_t sender_id;
-  uint16_t port;
+  PJON_Endpoint tx;
+  PJON_Endpoint rx;
+  uint8_t header = PJON_NO_HEADER;
   #ifndef PJON_LOCAL
-    uint8_t receiver_bus_id[4];
-    uint8_t sender_bus_id[4];
     void *custom_pointer;
+    uint8_t hops = 0;
+  #endif
+  #if(PJON_INCLUDE_PACKET_ID)
+    uint16_t id = 0;
+  #endif
+  #if(PJON_INCLUDE_PORT)
+    uint16_t port = PJON_BROADCAST;
   #endif
 };
 
@@ -214,19 +248,13 @@ struct PJONTools {
     return (
       (
         (header & PJON_MODE_BIT) ?
-          (header & PJON_TX_INFO_BIT   ? 10 : 5) :
+          (header & PJON_TX_INFO_BIT   ? 11 : 6) :
           (header & PJON_TX_INFO_BIT   ?  2 : 1)
       ) + (header & PJON_EXT_LEN_BIT   ?  2 : 1)
         + (header & PJON_CRC_BIT       ?  4 : 1)
         + (header & PJON_PORT_BIT      ?  2 : 0)
-        + (
-            (
-              (
-                (header & PJON_ACK_MODE_BIT) &&
-                (header & PJON_TX_INFO_BIT)
-              ) || (header & PJON_PACKET_ID_BIT)
-            ) ? 2 : 0
-          )
+        + (header & PJON_PACKET_ID_BIT ?  2 : 0)
+        + (header & PJON_MAC_BIT       ? 12 : 0)
         + 2 // header + header's CRC
     );
   };
@@ -244,16 +272,20 @@ struct PJONTools {
     return seed;
   };
 
-  /* Copy a bus id: */
+  /* Copy an id: */
 
-  static void copy_bus_id(uint8_t dest[], const uint8_t src[]) {
-    memcpy(dest, src, 4);
+  static void copy_id(uint8_t dest[], const uint8_t src[], uint8_t length) {
+    memcpy(dest, src, length);
   };
 
-  /* Check equality between two bus ids */
+  /* Check equality between two ids: */
 
-  static bool bus_id_equality(const uint8_t *n_one, const uint8_t *n_two) {
-    for(uint8_t i = 0; i < 4; i++)
+  static bool id_equality(
+    const uint8_t *n_one,
+    const uint8_t *n_two,
+    uint8_t length
+  ) {
+    for(uint8_t i = 0; i < length; i++)
       if(n_one[i] != n_two[i])
         return false;
     return true;
@@ -262,47 +294,32 @@ struct PJONTools {
   /* Composes a packet in PJON format: */
 
   static uint16_t compose_packet(
-    const uint8_t sender_id,
-    const uint8_t *sender_bus_id,
-    const uint8_t receiver_id,
-    const uint8_t *receiver_bus_id,
+    PJON_Packet_Info info,
     uint8_t *destination,
     const void *source,
-    uint16_t length,
-    uint8_t header = 0,
-    uint16_t packet_id = 0,
-    uint16_t destination_port = PJON_BROADCAST,
-    uint16_t source_port = PJON_BROADCAST
+    uint16_t length
   ) {
     uint8_t index = 0;
-    if(length > 255) header |= PJON_EXT_LEN_BIT;
-    if(destination_port != PJON_BROADCAST) header |= PJON_PORT_BIT;
-    if(
-      (header & PJON_PORT_BIT) &&
-      (destination_port == PJON_BROADCAST) &&
-      (source_port == PJON_BROADCAST)
-    ) header &= ~PJON_PORT_BIT;
-    if(receiver_id == PJON_BROADCAST)
-      header &= ~(PJON_ACK_REQ_BIT | PJON_ACK_MODE_BIT);
-    uint16_t new_length = length + packet_overhead(header);
-    bool extended_length = header & PJON_EXT_LEN_BIT;
-    #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
-      if(header & PJON_ACK_MODE_BIT)
-        header |= (PJON_TX_INFO_BIT | PJON_PACKET_ID_BIT);
-    #else
-      (void)packet_id; // Avoid unused variable compiler warning
+    if(length > 255) info.header |= PJON_EXT_LEN_BIT;
+    #if(PJON_INCLUDE_PORT)
+      if(info.port != PJON_BROADCAST) info.header |= PJON_PORT_BIT;
+      if((info.header & PJON_PORT_BIT) && (info.port == PJON_BROADCAST))
+        info.header &= ~PJON_PORT_BIT;
     #endif
-    if(new_length > 15 && !(header & PJON_CRC_BIT)) {
-      header |= PJON_CRC_BIT;
-      new_length = (uint16_t)(length + packet_overhead(header));
+    if(info.rx.id == PJON_BROADCAST) info.header &= ~(PJON_ACK_REQ_BIT);
+    uint16_t new_length = length + packet_overhead(info.header);
+    bool extended_length = info.header & PJON_EXT_LEN_BIT;
+    if(new_length > 15 && !(info.header & PJON_CRC_BIT)) {
+      info.header |= PJON_CRC_BIT;
+      new_length = (uint16_t)(length + packet_overhead(info.header));
     }
     if(new_length > 255 && !extended_length) {
-      header |= PJON_EXT_LEN_BIT;
-      new_length = (uint16_t)(length + packet_overhead(header));
+      info.header |= PJON_EXT_LEN_BIT;
+      new_length = (uint16_t)(length + packet_overhead(info.header));
     }
     if(new_length >= PJON_PACKET_MAX_LENGTH) return new_length;
-    destination[index++] = receiver_id;
-    destination[index++] = (uint8_t)header;
+    destination[index++] = info.rx.id;
+    destination[index++] = (uint8_t)info.header;
     if(extended_length) {
       destination[index++] = (uint8_t)(new_length >> 8);
       destination[index++] = (uint8_t)new_length;
@@ -312,40 +329,41 @@ struct PJONTools {
       destination[index++] = PJON_crc8::compute((uint8_t *)destination, 3);
     }
     #ifndef PJON_LOCAL
-      if(header & PJON_MODE_BIT) {
-        PJONTools::copy_bus_id((uint8_t*) &destination[index], receiver_bus_id);
+      if(info.header & PJON_MODE_BIT) {
+        copy_id((uint8_t*) &destination[index], info.rx.bus_id, 4);
         index += 4;
-        if(header & PJON_TX_INFO_BIT) {
-          PJONTools::copy_bus_id((uint8_t*) &destination[index], sender_bus_id);
+        if(info.header & PJON_TX_INFO_BIT) {
+          copy_id((uint8_t*) &destination[index], info.tx.bus_id, 4);
           index += 4;
         }
-      }
-    #else
-      (void)sender_bus_id;
-      (void)receiver_bus_id;
-    #endif
-    if(header & PJON_TX_INFO_BIT) destination[index++] = sender_id;
-    #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
-      if(header & PJON_PACKET_ID_BIT) {
-        destination[index++] = (uint8_t)(packet_id >> 8);
-        destination[index++] = (uint8_t)packet_id;
+        destination[index++] = info.hops;
       }
     #endif
-    if(header & PJON_PORT_BIT) {
-      if(destination_port != PJON_BROADCAST) {
-        destination[index++] = (uint8_t)(destination_port >> 8);
-        destination[index++] = (uint8_t)destination_port;
-      } else if(source_port != PJON_BROADCAST) {
-        destination[index++] = (uint8_t)(source_port >> 8);
-        destination[index++] = (uint8_t)source_port;
+    if(info.header & PJON_TX_INFO_BIT) destination[index++] = info.tx.id;
+    #if(PJON_INCLUDE_PACKET_ID)
+      if(info.header & PJON_PACKET_ID_BIT) {
+        destination[index++] = (uint8_t)(info.id >> 8);
+        destination[index++] = (uint8_t)info.id;
       }
-    }
-    memcpy(
-      destination + (new_length - length - PJONTools::crc_overhead(header)),
-      source,
-      length
-    );
-    if(header & PJON_CRC_BIT) {
+    #endif
+    #if(PJON_INCLUDE_PORT)
+      if(info.header & PJON_PORT_BIT) {
+        if(info.port != PJON_BROADCAST) {
+          destination[index++] = (uint8_t)(info.port >> 8);
+          destination[index++] = (uint8_t)info.port;
+        }
+      }
+    #endif
+    #if(PJON_INCLUDE_MAC)
+      if(info.header & PJON_MAC_BIT) {
+        copy_id(&destination[index], info.rx.mac, 6);
+        index += 6;
+        copy_id(&destination[index], info.tx.mac, 6);
+        index += 6;
+      }
+    #endif
+    memcpy(destination + index, source, length);
+    if(info.header & PJON_CRC_BIT) {
       uint32_t computed_crc =
         PJON_crc32::compute((uint8_t *)destination, new_length - 4);
       destination[new_length - 4] =
@@ -366,33 +384,39 @@ struct PJONTools {
   static void parse_header(const uint8_t *packet, PJON_Packet_Info &info) {
     memset(&info, 0, sizeof info);
     uint8_t index = 0;
-    info.receiver_id = packet[index++];
+    info.rx.id = packet[index++];
     bool extended_length = packet[index] & PJON_EXT_LEN_BIT;
     info.header = packet[index++];
     index += extended_length + 2; // + LENGTH + HEADER CRC
     #ifndef PJON_LOCAL
       if(info.header & PJON_MODE_BIT) {
-        copy_bus_id(info.receiver_bus_id, packet + index);
+        copy_id(info.rx.bus_id, packet + index, 4);
         index += 4;
         if(info.header & PJON_TX_INFO_BIT) {
-          copy_bus_id(info.sender_bus_id, packet + index);
+          copy_id(info.tx.bus_id, packet + index, 4);
           index += 4;
-        } else copy_bus_id(info.sender_bus_id, localhost());
-      } else copy_bus_id(info.receiver_bus_id, localhost());
+        }
+        info.hops = packet[index++];
+      }
     #endif
     if(info.header & PJON_TX_INFO_BIT)
-      info.sender_id = packet[index++];
-    else info.sender_id = 0;
-    #if(PJON_INCLUDE_ASYNC_ACK || PJON_INCLUDE_PACKET_ID)
+      info.tx.id = packet[index++];
+    #if(PJON_INCLUDE_PACKET_ID)
       if(info.header & PJON_PACKET_ID_BIT) {
         info.id = (packet[index] << 8) | (packet[index + 1] & 0xFF);
         index += 2;
       }
-    #else
-      info.id = 0;
     #endif
-    if(info.header & PJON_PORT_BIT)
-      info.port = (packet[index] << 8) | (packet[index + 1] & 0xFF);
-    else info.port = PJON_BROADCAST;
+    #if(PJON_INCLUDE_PORT)
+      if(info.header & PJON_PORT_BIT) {
+        info.port = (packet[index] << 8) | (packet[index + 1] & 0xFF);
+        index += 2;
+      }
+    #endif
+    #if(PJON_INCLUDE_MAC)
+      copy_id(info.rx.mac, packet + index, 6);
+      index += 6;
+      copy_id(info.tx.mac, packet + index, 6);
+    #endif
   };
 };

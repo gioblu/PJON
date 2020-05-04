@@ -1,15 +1,15 @@
 
-// Uncomment to run SoftwareBitBang in MODE 2
-// #define SWBB_MODE 2
-// Uncomment to run SoftwareBitBang in MODE 3
-// #define SWBB_MODE 3
+// Uncomment to use the mode you prefer (default SWBB_MODE 1)
+// #define SWBB_MODE 1 // 1.95kB/s - 15625Bd
+// #define SWBB_MODE 2 // 2.21kB/s - 17696Bd
+// #define SWBB_MODE 3 // 2.94kB/s - 23529Bd
+// #define SWBB_MODE 4 // 3.40kB/s - 27210Bd
 
-/*  Acknowledge Latency maximum duration (1000 microseconds default).
-    Can be necessary to higher SWBB_RESPONSE_TIMEOUT to leave enough time to
-    receiver to compute the CRC and to respond with a synchronous acknowledgement
-    SWBB_RESPONSE_TIMEOUT can be reduced to higher communication speed if
-    devices are near and able to compute CRC fast enough. */
-//#define SWBB_RESPONSE_TIMEOUT 1000
+/*  Response timeout (1500 microseconds default).
+    If the acknowledgement fails SWBB_RESPONSE_TIMEOUT may be too short
+    specially if long packets are sent or if devices are far from each other */
+
+//#define SWBB_RESPONSE_TIMEOUT 1500
 
 #include <PJON.h>
 
@@ -19,6 +19,13 @@ PJON<SoftwareBitBang> bus(45);
 int packet;
 uint8_t content[] = "01234567890123456789";
 
+void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
+  if(code == PJON_CONNECTION_LOST) {
+    Serial.print("Connection lost with device id ");
+    Serial.println(bus.packets[data].content[0], DEC);
+  }
+};
+
 void setup() {
   bus.strategy.set_pin(12);
   bus.begin();
@@ -26,13 +33,6 @@ void setup() {
   Serial.begin(115200);
 
   packet = bus.send(44, content, 20);
-}
-
-void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
-  if(code == PJON_CONNECTION_LOST) {
-    Serial.print("Connection lost with device id ");
-    Serial.println(bus.packets[data].content[0], DEC);
-  }
 };
 
 void loop() {

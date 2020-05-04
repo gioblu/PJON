@@ -1,7 +1,7 @@
 
  /*-O//\         __     __
    |-gfo\       |__| | |  | |\ | ®
-   |!y°o:\      |  __| |__| | \| 12.0
+   |!y°o:\      |  __| |__| | \| 12.1
    |y"s§+`\     multi-master, multi-media bus network protocol
   /so+:-..`\    Copyright 2010-2020 by Giovanni Blu Mitolo gioscarab@gmail.com
   |+/:ngr-*.`\
@@ -14,13 +14,13 @@
  ______-| |-__________________________________________________________________
 
 PJONLocal implements a subset of the PJON protocol's features. It does support
-only local mode, does not support the asynchronous acknowledge and packet
-queueing, infact it can transmit only one packet at a time without any
-buffering, although it conserves interoperability with other classes.
+only local mode and does not support packet queueing, infact it can transmit
+only one packet at a time without any buffering, although it conserves
+interoperability with other classes.
 
 This class has been developed to enable PJON networking on very limited
 microcontrollers, like ATtiny45, ATtiny84 and ATtiny85, where even 1kB
-or program memory and 100B of ram make a difference.
+of program memory and 100B of ram make a difference.
 
   For examples see examples/ARDUINO/Local/SoftwareBitBang/PJONLocal/
 
@@ -77,10 +77,13 @@ class PJONLocal {
   public:
     Strategy strategy;
     uint8_t config = PJON_TX_INFO_BIT | PJON_ACK_REQ_BIT;
-    uint16_t port = PJON_BROADCAST;
 
     #if(PJON_INCLUDE_PACKET_ID)
       PJON_Packet_Record recent_packet_ids[PJON_MAX_RECENT_PACKET_IDS];
+    #endif
+
+    #if(PJON_INCLUDE_PORT)
+      uint16_t port = PJON_BROADCAST;
     #endif
 
     /* PJONLocal initialization with no parameters:
@@ -119,19 +122,24 @@ class PJONLocal {
       uint16_t packet_id = 0,
       uint16_t rx_port = PJON_BROADCAST
     ) {
-      uint16_t l = PJONTools::compose_packet(
-        _device_id,
-        PJONTools::localhost(),
-        id,
-        PJONTools::localhost(),
-        destination,
-        source,
-        length,
-        (header == PJON_NO_HEADER) ? config : header,
-        (!packet_id) ? PJONTools::new_packet_id(_packet_id_seed++) : packet_id,
-        rx_port,
-        port
-      );
+      PJON_Packet_Info info;
+      info.rx.id = id;
+      info.tx.id = _device_id;
+      info.header = (header == PJON_NO_HEADER) ? config : header;
+      #if(PJON_INCLUDE_PACKET_ID)
+        if(!packet_id && (info.header & PJON_PACKET_ID_BIT))
+          info.id = PJONTools::new_packet_id(_packet_id_seed++);
+        else info.id = packet_id;
+      #else
+        (void)packet_id;
+      #endif
+      #if(PJON_INCLUDE_PORT)
+        info.port = (rx_port == PJON_BROADCAST) ? port : rx_port;
+      #else
+        (void)rx_port;
+      #endif
+      uint16_t l =
+        PJONTools::compose_packet(info, destination, source, length);
       return l;
     };
 
@@ -181,15 +189,12 @@ class PJONLocal {
         if(i == 1) {
           if(
             (buffer[1] & PJON_MODE_BIT) ||
-            (buffer[1] & PJON_ACK_MODE_BIT) || (
-              (buffer[0] == PJON_BROADCAST) &&
-              (buffer[1] & PJON_ACK_REQ_BIT)
+            (buffer[1] & PJON_MAC_BIT)  || (
+              (buffer[0] == PJON_BROADCAST) && (buffer[1] & PJON_ACK_REQ_BIT)
             ) || (
-              (buffer[1] & PJON_EXT_LEN_BIT) &&
-              !(buffer[1] & PJON_CRC_BIT)
+              (buffer[1] & PJON_EXT_LEN_BIT) && !(buffer[1] & PJON_CRC_BIT)
             ) || (
-              !PJON_INCLUDE_PACKET_ID &&
-              (buffer[1] & PJON_PACKET_ID_BIT)
+              !PJON_INCLUDE_PACKET_ID && (buffer[1] & PJON_PACKET_ID_BIT)
             )
           ) return 0;
           extended_length = buffer[i] & PJON_EXT_LEN_BIT;
@@ -234,7 +239,9 @@ class PJONLocal {
           known_packet_id(info) && !_router
         ) return 0;
       #endif
-      if((port != PJON_BROADCAST) && (port != info.port)) return 0;
+      #if(PJON_INCLUDE_PORT)
+        if((port != PJON_BROADCAST) && (port != info.port)) return 0;
+      #endif
       return length - overhead;
     };
 
@@ -295,7 +302,7 @@ class PJONLocal {
     /* In router mode, the receiver function can acknowledge
        for selected receiver device ids for which the route is known */
 
-    void send_synchronous_acknowledge() { strategy.send_response(PJON_ACK); };
+    void send_acknowledge() { strategy.send_response(PJON_ACK); };
 
     /* Set the config bit state: */
 
@@ -308,7 +315,7 @@ class PJONLocal {
        TRUE: Send 8bits synchronous acknowledge when a packet is received
        FALSE: Avoid acknowledge transmission */
 
-    void set_synchronous_acknowledge(bool state) {
+    void set_acknowledge(bool state) {
       set_config_bit(state, PJON_ACK_REQ_BIT);
     };
 
@@ -324,25 +331,13 @@ class PJONLocal {
 
     void set_communication_mode(uint8_t mode) { _mode = mode; };
 
-    /* Configure packet id presence:
-       TRUE: include packet id, FALSE: Avoid packet id inclusion */
-
-    void set_packet_id(bool state) {
-      set_config_bit(state, PJON_PACKET_ID_BIT);
-    };
+    /* Set default configuration: */
 
     void set_default() { _mode = PJON_HALF_DUPLEX; };
 
     /* Set the device id passing a single byte (watch out to id collision): */
 
     void set_id(uint8_t id) { _device_id = id; };
-
-    /* Include the port passing a boolean state and an unsigned integer: */
-
-    void include_port(bool state, uint16_t p = PJON_BROADCAST) {
-      set_config_bit(state, PJON_PORT_BIT);
-      port = p;
-    };
 
     /* Configure sender's information inclusion in the packet.
        TRUE: sender's device id (+8bits overhead)
@@ -386,7 +381,28 @@ class PJONLocal {
         recent_packet_ids[0].sender_id = info.sender_id;
       };
 
+      /* Configure packet id presence:
+         TRUE: include packet id, FALSE: Avoid packet id inclusion */
+
+      void set_packet_id(bool state) {
+        set_config_bit(state, PJON_PACKET_ID_BIT);
+      };
+
     #endif
+
+    #if(PJON_INCLUDE_PORT)
+
+    /* Include the port:
+       p = 1-65535 -> Include 16 bits port id
+       p = 0       -> Avoid port id inclusion */
+
+      void include_port(uint16_t p) {
+        set_config_bit((p != 0) ? 1 : 0, PJON_PORT_BIT);
+        port = p;
+      };
+
+    #endif
+
 
   private:
     uint32_t      _last_send = 0;

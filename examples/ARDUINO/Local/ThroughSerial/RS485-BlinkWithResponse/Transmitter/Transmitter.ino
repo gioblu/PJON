@@ -26,7 +26,7 @@ void setup() {
 
   bus.strategy.set_serial(&Serial);
   bus.strategy.set_enable_RS485_pin(2);
-  bus.set_synchronous_acknowledge(false);
+  bus.set_acknowledge(false);
   bus.set_receiver(receiver_function);
   bus.begin();
 

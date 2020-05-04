@@ -1,7 +1,4 @@
 
-/* Include Async ACK code setting PJON_INCLUDE_ASYNC_ACK as true before including PJON.h */
-#define PJON_INCLUDE_ASYNC_ACK true
-
 #include <PJON.h>
 
 uint8_t bus_id[] = {0, 0, 0, 1};
@@ -27,9 +24,7 @@ void setup() {
   /* When using more than one pin always use pins connected to
      a different port group to avoid cross-talk. */
   bus.strategy.set_pins(7, 12);
-
   bus.set_receiver(receiver_function);
-  bus.set_synchronous_acknowledge(false);
   bus.begin();
 };
 

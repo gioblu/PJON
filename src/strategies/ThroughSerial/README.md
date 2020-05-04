@@ -1,7 +1,8 @@
 ## ThroughSerial
 
-**Medium:** Hardware/Software Serial port |
-**Pins used:** 1 or 2
+**Medium:** Hardware or software serial port -
+**Pins used:** 1 or 2 -
+**Inclusion constant:** `PJON_INCLUDE_TS`
 
 With `ThroughSerial` strategy, PJON can run through a software or hardware Serial port working out-of-the-box with many Arduino compatible serial transceivers, like RS485 or radio modules like HC-12 (HCMODU0054). Take a look at the [video introduction](https://www.youtube.com/watch?v=H4jUsgvM-lw) for a brief showcase of its features. It complies with [TSDL v2.1](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md).
 
@@ -53,9 +54,9 @@ In some cases it may be required to add a delay before disabling the RS485 pins 
 bus.strategy.set_RS485_delay(1);
 ```
 
-See [RS485-Blink](../../../examples/ARDUINO/Local/ThroughSerial/RS485-Blink) and [RS485-AsyncAck](../../../examples/ARDUINO/Local/ThroughSerial/RS485-AsyncAck) examples.
+If you need to interface devices using RS485 see the [RS485-Blink](../../../examples/ARDUINO/Local/ThroughSerial/RS485-Blink) example.
 
-HC-12 wireless module supports both synchronous and asynchronous acknowledgement, see [HC-12-Blink](../../../examples/ARDUINO/Local/ThroughSerial/HC-12-Blink), [HC-12-SendAndReceive](../../../examples/ARDUINO/Local/ThroughSerial/HC-12-SendAndReceive), [HC-12-LocalChat](../../../examples/ARDUINO/Local/ThroughSerial/HC-12-LocalChat) and [HC-12-AsyncAck](../../../examples/ARDUINO/Local/ThroughSerial/HC-12-AsyncAck) examples.
+HC-12 wireless module supports the synchronous acknowledgement, see [HC-12-Blink](../../../examples/ARDUINO/Local/ThroughSerial/HC-12-Blink), [HC-12-SendAndReceive](../../../examples/ARDUINO/Local/ThroughSerial/HC-12-SendAndReceive) and [HC-12-LocalChat](../../../examples/ARDUINO/Local/ThroughSerial/HC-12-LocalChat) examples.
 
 All the other necessary information is present in the general [Documentation](/documentation).
 

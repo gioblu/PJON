@@ -5,7 +5,6 @@
 
 // <Strategy name> bus(selected device id)
 PJON<SoftwareBitBang> bus(45);
-unsigned long time;
 int packet;
 int voltage;
 
@@ -28,11 +27,12 @@ void setup() {
   bus.strategy.set_pin(12);
   bus.begin();
   Serial.begin(115200);
-  time = millis();
   Serial.print("PJON - Sender's device id: ");
   Serial.print(bus.device_id());
   Serial.println(" A0 pin voltage cyclical record sending...");
   Serial.println("This example demonstrates how to send arbitrary data types");
+  // Avoid simultaneous transmission of Serial and SoftwareBitBang data
+  Serial.flush();
   r.id = 0;
 }
 

@@ -1,6 +1,6 @@
 
 /* PJON Linux Interface
-
+   13/04/2020 - callalilychen, Use termios2 for generic baudrate support
    ___________________________________________________________________________
 
     Copyright 2018 Fred Larsen
@@ -20,18 +20,22 @@
 #pragma once
 
 #if defined(LINUX) || defined(ANDROID)
+
   #include <stdio.h>
   #include <stdint.h>
   #include <inttypes.h>
   #include <stdlib.h>
   #include <stdarg.h>
   #include <string.h>
-  #include <termios.h>
   #include <unistd.h>
   #include <fcntl.h>
   #include <sys/ioctl.h>
   #include <sys/types.h>
   #include <sys/stat.h>
+
+extern "C" {
+  extern int tcflush (int __fd, int __queue_selector);
+}
 
   #include <chrono>
   #include <thread>
@@ -44,7 +48,6 @@
   #define INPUT_PULLUP 0x2
   #define LSBFIRST 1
   #define MSBFIRST 2
-
 
   uint32_t micros();
 
@@ -62,7 +65,7 @@
 
   int serialDataAvailable(const int fd);
 
-/* Reads a character from the serial buffer ------------------------------- */
+  /* Reads a character from the serial buffer ------------------------------- */
 
   int serialGetCharacter(const int fd);
 

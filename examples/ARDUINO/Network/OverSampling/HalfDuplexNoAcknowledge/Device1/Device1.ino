@@ -10,20 +10,20 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
   /* Make use of the payload before sending something, the buffer where payload points to is
      overwritten when a new message is dispatched */
   Serial.print("Receiver bus id: ");
-  Serial.print(packet_info.receiver_bus_id[0]);
-  Serial.print(packet_info.receiver_bus_id[1]);
-  Serial.print(packet_info.receiver_bus_id[2]);
-  Serial.print(packet_info.receiver_bus_id[3]);
+  Serial.print(packet_info.rx.bus_id[0]);
+  Serial.print(packet_info.rx.bus_id[1]);
+  Serial.print(packet_info.rx.bus_id[2]);
+  Serial.print(packet_info.rx.bus_id[3]);
   Serial.print(" - device id: ");
-  Serial.println(packet_info.receiver_id);
+  Serial.println(packet_info.rx.id);
 
   Serial.print("Sender bus id: ");
-  Serial.print(packet_info.sender_bus_id[0]);
-  Serial.print(packet_info.sender_bus_id[1]);
-  Serial.print(packet_info.sender_bus_id[2]);
-  Serial.print(packet_info.sender_bus_id[3]);
+  Serial.print(packet_info.tx.bus_id[0]);
+  Serial.print(packet_info.tx.bus_id[1]);
+  Serial.print(packet_info.tx.bus_id[2]);
+  Serial.print(packet_info.tx.bus_id[3]);
   Serial.print(" - device id: ");
-  Serial.println(packet_info.sender_id);
+  Serial.println(packet_info.tx.id);
 
   if((char)payload[0] == 'B') {
     digitalWrite(LED_BUILTIN, HIGH);
@@ -41,7 +41,7 @@ void setup() {
      a different port group to avoid cross-talk. */
   bus.strategy.set_pins(7, 12);
 
-  bus.set_synchronous_acknowledge(false);
+  bus.set_acknowledge(false);
   bus.set_receiver(receiver_function);
   bus.begin();
 

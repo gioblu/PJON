@@ -15,10 +15,10 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
      overwritten when a new message is dispatched */
   Serial.print("RX:");
   Serial.print(" Device id: ");
-  Serial.print(packet_info.receiver_id);
+  Serial.print(packet_info.rx.id);
   Serial.print(" | TX: ");
   Serial.print(" Device id: ");
-  Serial.print(packet_info.sender_id);
+  Serial.print(packet_info.tx.id);
 
   if((char)payload[0] == 'V') {
     Serial.print(" | Voltage: ");
@@ -27,6 +27,8 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
     // Get back the original integer from the 2 separate bytes
   }
   Serial.println();
+  // Avoid simultaneous transmission of Serial and SoftwareBitBang data
+  Serial.flush();
 };
 
 void setup() {

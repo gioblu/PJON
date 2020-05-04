@@ -17,23 +17,6 @@ SoftwareSerial HC12(2, 3);
 // <Strategy name> bus(selected device id)
 PJON<ThroughSerial> bus(44);
 
-void setup() {
-  // Initialize LED 13 to be off
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW);
-
-  Serial.begin(115200);
-
-  // Set HC12 baudrate (you must use the one configured in HC12, default 9600)
-  HC12.begin(9600);
-  // Pass the HC12 Serial instance you want to use for PJON communication
-  bus.strategy.set_serial(&HC12);
-  bus.set_error(error_handler);
-  bus.set_receiver(receiver_function);
-  bus.begin();
-};
-
-
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
   if(code == PJON_CONNECTION_LOST) {
     Serial.print("Connection with device ID ");
@@ -63,6 +46,22 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
     digitalWrite(LED_BUILTIN, LOW);
     delay(5);
   }
+};
+
+void setup() {
+  // Initialize LED 13 to be off
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
+
+  Serial.begin(115200);
+
+  // Set HC12 baudrate (you must use the one configured in HC12, default 9600)
+  HC12.begin(9600);
+  // Pass the HC12 Serial instance you want to use for PJON communication
+  bus.strategy.set_serial(&HC12);
+  bus.set_error(error_handler);
+  bus.set_receiver(receiver_function);
+  bus.begin();
 };
 
 void loop() {

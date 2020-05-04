@@ -1,6 +1,8 @@
 ## ThroughLoRa
 
-**Medium:** Radio, Wire | **Pins used:** 6
+**Medium:** LoRa radio modules -
+**Pins used:** 6 -
+**Inclusion constant:** `PJON_INCLUDE_TL`
 
 With `ThroughLora` strategy, PJON can run through a software or hardware SPI in order to communicate with supported LoRa modules. See [Supported Shields/Modules](https://github.com/gioblu/PJON/tree/master/src/strategies/ThroughLoRa#supported-shieldsmodules).
 
@@ -73,7 +75,7 @@ void setup() {
   bus.strategy.setFrequency(868100000UL);
   bus.begin();
   // Synchronous acknowledgement is not supported
-  bus.set_synchronous_acknowledge(false);
+  bus.set_acknowledge(false);
   // Send B to device 44 every second
   bus.send_repeatedly(44, "B", 1, 1000000);
 };
@@ -101,7 +103,7 @@ void setup() {
   // Obligatory to initialize Radio with correct frequency
   bus.strategy.setFrequency(868100000UL);
   // Synchronous acknowledgement is not supported
-  bus.set_synchronous_acknowledge(false);
+  bus.set_acknowledge(false);
   // Optional
   bus.strategy.setSignalBandwidth(250E3);
   bus.begin();

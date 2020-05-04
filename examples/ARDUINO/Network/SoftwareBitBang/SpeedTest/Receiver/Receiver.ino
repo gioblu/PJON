@@ -1,3 +1,17 @@
+
+// Uncomment to use the mode you prefer (default SWBB_MODE 1)
+// #define SWBB_MODE 1 // 1.95kB/s - 15625Bd
+// #define SWBB_MODE 2 // 2.21kB/s - 17696Bd
+// #define SWBB_MODE 3 // 2.94kB/s - 23529Bd
+// #define SWBB_MODE 4 // 3.40kB/s - 27210Bd
+
+/*  Response timeout (1500 microseconds default).
+    If the acknowledgement fails SWBB_RESPONSE_TIMEOUT may be too short
+    specially if long packets are sent or if devices are far from each other */
+
+//#define SWBB_RESPONSE_TIMEOUT 1500
+
+
 #include <PJON.h>
 
 float test;
@@ -21,25 +35,25 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
     // If packet formatted for a shared medium
     if(packet_info.header & PJON_MODE_BIT) {
       Serial.print(" Receiver bus id: ");
-      Serial.print(packet_info.receiver_bus_id[0]);
-      Serial.print(packet_info.receiver_bus_id[1]);
-      Serial.print(packet_info.receiver_bus_id[2]);
-      Serial.print(packet_info.receiver_bus_id[3]);
+      Serial.print(packet_info.rx.bus_id[0]);
+      Serial.print(packet_info.rx.bus_id[1]);
+      Serial.print(packet_info.rx.bus_id[2]);
+      Serial.print(packet_info.rx.bus_id[3]);
       Serial.print(" Device id: ");
-      Serial.print(packet_info.receiver_id);
+      Serial.print(packet_info.rx.id);
       // If sender info is included
       if((packet_info.header & PJON_TX_INFO_BIT) != 0) {
         Serial.print(" Sender bus id: ");
-        Serial.print(packet_info.sender_bus_id[0]);
-        Serial.print(packet_info.sender_bus_id[1]);
-        Serial.print(packet_info.sender_bus_id[2]);
-        Serial.print(packet_info.sender_bus_id[3]);
+        Serial.print(packet_info.tx.bus_id[0]);
+        Serial.print(packet_info.tx.bus_id[1]);
+        Serial.print(packet_info.tx.bus_id[2]);
+        Serial.print(packet_info.tx.bus_id[3]);
         Serial.print(" device id: ");
-        Serial.print(packet_info.sender_id);\
+        Serial.print(packet_info.tx.id);\
       // If local format and sender info included
       } else if(packet_info.header & PJON_TX_INFO_BIT) {
         Serial.print(" Sender id: ");
-        Serial.print(packet_info.sender_id);
+        Serial.print(packet_info.tx.id);
       }
       Serial.print(" Length: ");
       Serial.println(length);

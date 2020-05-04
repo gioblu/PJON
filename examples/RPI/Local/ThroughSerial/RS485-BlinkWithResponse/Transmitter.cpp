@@ -57,7 +57,7 @@ int main() {
   bus.strategy.set_enable_RS485_pin(1); // GPIO pin 18 = WiringPi pin 1
 
   printf("Bus initialization \n");
-  bus.set_synchronous_acknowledge(false);
+  bus.set_acknowledge(false);
   bus.set_receiver(receiver_function);
   bus.begin();
 

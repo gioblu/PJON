@@ -1,7 +1,8 @@
 ## OverSampling
 
-**Media:** Radio, Wire |
-**Pins used:** 1 / 2
+**Medium:** ASK/FSK radio modules -
+**Pins used:** 1 or 2 -
+**Inclusion constant:** `PJON_INCLUDE_OS`
 
 `OverSampling` is a software implementation of [PJDLR (Padded Jittering Data Link over Radio)](/src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md). It supports simplex and half-duplex asynchronous serial communication and implements a carrier-sense, non-persistent random multiple access method (non-persistent CSMA). This implementation can run on limited microcontrollers with low clock accuracy, supports communication for many devices connected to the same medium and stable operation in spite of interference. Its procedure is a more efficient alternative to the LoRa Open Standard (that specifies a variation of Slotted ALOHA) and it is designed to obtain long range and high reliability using FSK, ASK or OOK modulation radio transceivers. Take a look at the [video introduction](https://www.youtube.com/watch?v=G1ckfsMzPns) for a brief showcase of its features.
 
@@ -52,7 +53,7 @@ To build an open-source PJON packet radio able to communicate up to 5 km away yo
 The maximum detected range was experimented with a small packet radio transmitting its position every minute. The maximum range obtained was slightly more than 5 kilometers in line of sight in open area. Testing it instead in an urban environment the range is down to 250 meters. Two couples of STX882 and SRX882 were used as transceivers. If you choose these modules, remember to set `HIGH` the pin `CS` in the receiver module before starting reception.
 
 ### Antenna design
-Experiments in `PJON_HALF_DUPLEX` mode have shown that it seems better to keep isolated the two antennas, using two different, not connected elements to transmit and receive. The first suggested antenna design is a wide beam dipole antenna made by two 173mm (quarter wavelength) or 345mm (half wavelength) long conductive elements, one connected to ground and the other connected to the input or output pin:
+Experiments in `PJON_HALF_DUPLEX` mode have shown that it seems better to keep isolated the two antennas, using two different, not connected elements to transmit and receive. The first suggested antenna design is a wide beam dipole antenna made by two 173mm (quarter wavelength) or 345mm (half wavelength) long conductors, one connected to ground and the other connected to the input or output pin:
 ```cpp  
 173mm quarter wavelength / 345mm half wavelength
 

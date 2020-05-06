@@ -115,7 +115,7 @@ If manual packet handling is required, packet automatic deletion can be avoided 
 ```
 
 ### Acknowledgement
-With the acknowledgement enabled the transmitter has reception certainty. It is by default enabled but can be disabled if required:
+With the acknowledgement enabled the transmitter has reception certainty. It is by default enabled but can be disabled:
 ```cpp  
   bus.set_acknowledge(false);
 ```

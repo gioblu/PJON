@@ -14,9 +14,9 @@
 PJON is designed to inform the user if an error is detected. A function of type `void` can be defined and registered to be called by the PJON object in case of error; it receives 3 parameters, the first is the error code of type `uint8_t`, the second is additional data related to the error of type `uint16_t` and the third is a general purpose custom pointer of type `void *`.
 
 Error types:
-- `PJON_CONNECTION_LOST` (value 101), `data` parameter contains lost packet's index in the packets buffer.
-- `PJON_PACKETS_BUFFER_FULL` (value 102), `data` parameter contains buffer length.
-- `PJON_CONTENT_TOO_LONG` (value 104), `data` parameter contains content length.
+- `PJON_CONNECTION_LOST` or 101, `data` parameter contains lost packet's index in the buffer.
+- `PJON_PACKETS_BUFFER_FULL` or 102, `data` parameter contains buffer length.
+- `PJON_CONTENT_TOO_LONG` or 104, `data` parameter contains content length.
 
 ```cpp
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {

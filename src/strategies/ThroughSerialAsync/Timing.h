@@ -38,12 +38,12 @@
 /* Set 10 milliseconds as the maximum timeframe between transmission and
    synchronous acknowledgement response. Its  optimal configuration is
    strictly related to the maximum time needed by receiver to receive, compute
-   and transmit back an ACK (decimal 6) */
+   and transmit back a response. */
 #ifndef TSA_RESPONSE_TIME_OUT
   #define TSA_RESPONSE_TIME_OUT 10000
 #endif
 
-/* Minum timeframe with channel free for use before transmission.
+/* Minum duration of channel free for use before transmission.
    (Avoid disrupting synchronous acknowledgement exchange) */
 #ifndef TSA_TIME_IN
   #define TSA_TIME_IN  TSA_RESPONSE_TIME_OUT + TSA_COLLISION_DELAY
@@ -60,6 +60,16 @@
 /* Byte reception timeout */
 #ifndef TSA_BYTE_TIME_OUT
   #define TSA_BYTE_TIME_OUT   1000000
+#endif
+
+/* Response length (the response is composed by the last TSA_RESPONSE_LENGTH
+   bytes of the packet received). By default should be relatively safe.
+   (Few false positives per millennia)
+   If you are ready to trade safety for bandwidth reduce it, consider that
+   setting TSA_RESPONSE_LENGTH < 4 reduces reliability and leads to higher
+   chances of detecting a false positive. */
+#ifndef TSA_RESPONSE_LENGTH
+  #define TSA_RESPONSE_LENGTH       5
 #endif
 
 /* Maximum transmission attempts */

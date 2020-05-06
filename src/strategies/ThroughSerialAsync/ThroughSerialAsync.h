@@ -109,11 +109,15 @@ class ThroughSerialAsync {
 
     uint16_t receive_response() {
       uint32_t time = PJON_MICROS();
+      uint8_t i = 0;
       while((uint32_t)(PJON_MICROS() - time) < TSA_RESPONSE_TIME_OUT) {
         if(PJON_SERIAL_AVAILABLE(serial)) {
           int16_t read = PJON_SERIAL_READ(serial);
           _last_reception_time = PJON_MICROS();
-          if(read >= 0) return (uint8_t)read;
+          if(read >= 0) {
+            if(_response[i++] != read) return TSA_FAIL;
+            if(i == TSA_RESPONSE_LENGTH) return PJON_ACK;
+          }
         }
         #if defined(_WIN32)
           PJON_DELAY_MICROSECONDS(TSA_RESPONSE_TIME_OUT / 10);
@@ -242,6 +246,7 @@ class ThroughSerialAsync {
 
         case TSA_DONE: {
           memcpy(&data[0], &buffer[0], position);
+          prepare_response(buffer, position);
           state = TSA_WAITING;
           return position;
         }
@@ -262,15 +267,35 @@ class ThroughSerialAsync {
     };
 
 
+    /* The last 5 bytes of the frame are used as a unique identifier within
+       the response. PJON has CRC8 or CRC32 at the end of the packet, encoding
+       a CRC (that is a good hashing algorithm) and using 40 bits looks enough
+       to provide a relatively safe response that should be nearly flawless
+       (yield few false positives per millennia). */
+
+    void prepare_response(const uint8_t *buffer, uint16_t position) {
+      uint8_t raw = 0;
+      for(int8_t i = 0; i < TSA_RESPONSE_LENGTH; i++) {
+        raw = buffer[(position - ((TSA_RESPONSE_LENGTH - 1) - i)) - 1];
+        _response[i] = (
+          (raw == TSA_START) || (raw == TSA_ESC) || (raw == TSA_END)
+        ) ? (raw - 1) : raw; // Avoid encoding symbols
+      }
+    };
+
+
     /* Send byte response to the packet's transmitter */
 
     void send_response(uint8_t response) {
-      start_tx();
-      wait_RS485_pin_change();
-      send_byte(response);
-      PJON_SERIAL_FLUSH(serial);
-      wait_RS485_pin_change();
-      end_tx();
+      if(response == PJON_ACK) {
+        start_tx();
+        wait_RS485_pin_change();
+        for(uint8_t i = 0; i < TSA_RESPONSE_LENGTH; i++)
+          send_byte(_response[i]);
+        PJON_SERIAL_FLUSH(serial);
+        wait_RS485_pin_change();
+        end_tx();
+      }
     };
 
 
@@ -304,6 +329,8 @@ class ThroughSerialAsync {
       #endif
       PJON_SERIAL_FLUSH(serial);
       end_tx();
+      // Prepare expected response for the receive_response call
+      prepare_response(data, length);
     };
 
 
@@ -390,6 +417,7 @@ class ThroughSerialAsync {
     uint16_t _flush_offset = TSA_FLUSH_OFFSET;
     uint32_t _bd;
   #endif
+    uint8_t  _response[TSA_RESPONSE_LENGTH];
     uint32_t _last_reception_time = 0;
     uint32_t _last_call_time = 0;
     uint8_t  _enable_RS485_rxe_pin = TSA_NOT_ASSIGNED;

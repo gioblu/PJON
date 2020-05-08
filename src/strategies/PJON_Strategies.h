@@ -73,7 +73,7 @@
     !defined(PJON_INCLUDE_TS)   && !defined(PJON_INCLUDE_NONE) && \
     !defined(PJON_INCLUDE_TSA)  && !defined(PJON_INCLUDE_DUDP) && \
     !defined(PJON_INCLUDE_LF)   && !defined(PJON_INCLUDE_SM)   && \
-    !defined(PJON_INCLUDE_MQTT)
+    !defined(PJON_INCLUDE_MQTT) && !defined(PJON_INCLUDE_TL)
   #include "Any/Any.h"
   #include "AnalogSampling/AnalogSampling.h"
   #include "OverSampling/OverSampling.h"

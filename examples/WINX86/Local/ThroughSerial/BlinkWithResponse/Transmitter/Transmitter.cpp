@@ -10,9 +10,9 @@
   #define WINX86 true
 #endif
 
-#define PJON_INCLUDE_TSA true
+#define PJON_INCLUDE_TS true
 
-#define TSA_RESPONSE_TIME_OUT 35000
+#define TS_RESPONSE_TIME_OUT 35000
 /* Maximum accepted timeframe between transmission and synchronous
    acknowledgement. This timeframe is affected by latency and CRC computation.
    Could be necessary to higher this value if devices are separated by long
@@ -33,7 +33,7 @@ static void receiver_function(
 
 int main() {
   printf("PJON instantiation... \n");
-  PJON<ThroughSerialAsync> bus(45);
+  PJON<ThroughSerial> bus(45);
   bus.set_receiver(receiver_function);
 
   // Set here the COM port assigned to the device you want to communicate with

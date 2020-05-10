@@ -51,9 +51,6 @@
 #if defined(PJON_INCLUDE_TS)
   #include "ThroughSerial/ThroughSerial.h"
 #endif
-#if defined(PJON_INCLUDE_TSA)
-  #include "ThroughSerialAsync/ThroughSerialAsync.h"
-#endif
 #if defined(PJON_INCLUDE_TL)
   #include "ThroughLoRa/ThroughLora.h"
 #endif
@@ -71,15 +68,13 @@
     !defined(PJON_INCLUDE_GUDP) && !defined(PJON_INCLUDE_LUDP) && \
     !defined(PJON_INCLUDE_OS)   && !defined(PJON_INCLUDE_SWBB) && \
     !defined(PJON_INCLUDE_TS)   && !defined(PJON_INCLUDE_NONE) && \
-    !defined(PJON_INCLUDE_TSA)  && !defined(PJON_INCLUDE_DUDP) && \
-    !defined(PJON_INCLUDE_LF)   && !defined(PJON_INCLUDE_SM)   && \
+    !defined(PJON_INCLUDE_DUDP) && !defined(PJON_INCLUDE_LF)   && \
     !defined(PJON_INCLUDE_MQTT) && !defined(PJON_INCLUDE_TL)
   #include "Any/Any.h"
   #include "AnalogSampling/AnalogSampling.h"
   #include "OverSampling/OverSampling.h"
   #include "SoftwareBitBang/SoftwareBitBang.h"
   #include "ThroughSerial/ThroughSerial.h"
-  #include "ThroughSerialAsync/ThroughSerialAsync.h"
   /* Avoid ATtiny44/84/45/85 and STM32F1 missing inclusion error */
   #if !defined(__AVR_ATtiny45__) && !defined(__AVR_ATtiny85__) && \
       !defined(__AVR_ATtiny44__) && !defined(__AVR_ATtiny84__) && !defined(ARDUINO_ARCH_STM32)

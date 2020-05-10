@@ -1,5 +1,5 @@
 
-/* ThroughSerialAsync data link layer
+/* ThroughSerial data link layer
    used as a Strategy by the PJON framework (included in version v11.2)
    Compliant with TSDL (Tardy Serial Data Link) specification v2.0
 
@@ -12,7 +12,7 @@
     - Endre Karlson separate RS485 enable pins handling, flush timing hack
    ___________________________________________________________________________
 
-   ThroughSerialAsync, based on ThroughSerial, developed by sticilface
+   ThroughSerial, based on ThroughSerial, developed by sticilface
    copyright 2018 by Giovanni Blu Mitolo All rights reserved
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,39 +30,39 @@
 #pragma once
 
 // START  symbol 10010101 - 0x95 - 
-#define TSA_START        149
+#define TS_START        149
 // END    symbol 11101010 - 0xea - ê
-#define TSA_END          234
+#define TS_END          234
 // ESCAPE symbol 10111011 - 0xBB - »
-#define TSA_ESC          187
+#define TS_ESC          187
 
 // Used to signal communication failure
-#define TSA_FAIL       65535
+#define TS_FAIL       65535
 // Used for unused pin handling
-#define TSA_NOT_ASSIGNED 255
+#define TS_NOT_ASSIGNED 255
 
 #include "Timing.h"
 
-enum TSA_state_t : uint8_t {
-  TSA_WAITING,
-  TSA_RECEIVING,
-  TSA_WAITING_ESCAPE,
-  TSA_WAITING_END,
-  TSA_DONE
+enum TS_state_t : uint8_t {
+  TS_WAITING,
+  TS_RECEIVING,
+  TS_WAITING_ESCAPE,
+  TS_WAITING_END,
+  TS_DONE
 };
 
-class ThroughSerialAsync {
+class ThroughSerial {
   public:
     uint8_t buffer[PJON_PACKET_MAX_LENGTH] = {0};
     uint16_t position = 0;
-    TSA_state_t state = TSA_WAITING;
+    TS_state_t state = TS_WAITING;
     PJON_SERIAL_TYPE serial;
 
     /* Returns suggested delay related to the attempts passed as parameter: */
 
     uint32_t back_off(uint8_t attempts) {
       uint32_t result = attempts;
-      for (uint8_t d = 0; d < TSA_BACK_OFF_DEGREE; d++)
+      for (uint8_t d = 0; d < TS_BACK_OFF_DEGREE; d++)
         result *= (uint32_t)(attempts);
       return result;
     };
@@ -72,7 +72,7 @@ class ThroughSerialAsync {
        (returns always true) */
 
     bool begin(uint8_t did = 0) {
-      PJON_DELAY(PJON_RANDOM(TSA_INITIAL_DELAY) + did);
+      PJON_DELAY(PJON_RANDOM(TS_INITIAL_DELAY) + did);
       _last_reception_time = PJON_MICROS();
       return true;
     };
@@ -82,11 +82,11 @@ class ThroughSerialAsync {
 
     bool can_start() {
       if(
-        (state != TSA_WAITING) ||
+        (state != TS_WAITING) ||
         PJON_SERIAL_AVAILABLE(serial) ||
-        ((uint32_t)(PJON_MICROS() - _last_reception_time) < TSA_TIME_IN)
+        ((uint32_t)(PJON_MICROS() - _last_reception_time) < TS_TIME_IN)
       ) return false;
-      PJON_DELAY_MICROSECONDS(PJON_RANDOM(TSA_COLLISION_DELAY));
+      PJON_DELAY_MICROSECONDS(PJON_RANDOM(TS_COLLISION_DELAY));
       return true;
     };
 
@@ -94,14 +94,14 @@ class ThroughSerialAsync {
     /* Returns the maximum number of attempts for each transmission: */
 
     static uint8_t get_max_attempts() {
-      return TSA_MAX_ATTEMPTS;
+      return TS_MAX_ATTEMPTS;
     };
 
 
     /* Handle a collision: */
 
     void handle_collision() {
-      PJON_DELAY_MICROSECONDS(PJON_RANDOM(TSA_COLLISION_DELAY));
+      PJON_DELAY_MICROSECONDS(PJON_RANDOM(TS_COLLISION_DELAY));
     };
 
 
@@ -110,20 +110,20 @@ class ThroughSerialAsync {
     uint16_t receive_response() {
       uint32_t time = PJON_MICROS();
       uint8_t i = 0;
-      while((uint32_t)(PJON_MICROS() - time) < TSA_RESPONSE_TIME_OUT) {
+      while((uint32_t)(PJON_MICROS() - time) < TS_RESPONSE_TIME_OUT) {
         if(PJON_SERIAL_AVAILABLE(serial)) {
           int16_t read = PJON_SERIAL_READ(serial);
           _last_reception_time = PJON_MICROS();
           if(read >= 0) {
-            if(_response[i++] != read) return TSA_FAIL;
-            if(i == TSA_RESPONSE_LENGTH) return PJON_ACK;
+            if(_response[i++] != read) return TS_FAIL;
+            if(i == TS_RESPONSE_LENGTH) return PJON_ACK;
           }
         }
         #if defined(_WIN32)
-          PJON_DELAY_MICROSECONDS(TSA_RESPONSE_TIME_OUT / 10);
+          PJON_DELAY_MICROSECONDS(TS_RESPONSE_TIME_OUT / 10);
         #endif
       }
-      return TSA_FAIL;
+      return TS_FAIL;
     };
 
 
@@ -133,57 +133,57 @@ class ThroughSerialAsync {
       if( // Reception attempts are spaced by an interval
         _last_call_time &&
         (uint32_t)(PJON_MICROS() - _last_call_time) < _read_interval
-      ) return TSA_FAIL;
+      ) return TS_FAIL;
 
       _last_call_time = PJON_MICROS();
 
       if( // If reception timeout is reached discard data
         (
-          (state == TSA_RECEIVING) ||
-          (state == TSA_WAITING_END) ||
-          (state == TSA_WAITING_ESCAPE)
+          (state == TS_RECEIVING) ||
+          (state == TS_WAITING_END) ||
+          (state == TS_WAITING_ESCAPE)
         ) &&
-        ((uint32_t)(PJON_MICROS() - _last_reception_time) > TSA_BYTE_TIME_OUT)
+        ((uint32_t)(PJON_MICROS() - _last_reception_time) > TS_BYTE_TIME_OUT)
       ) {
-        state = TSA_WAITING;
-        return TSA_FAIL;
+        state = TS_WAITING;
+        return TS_FAIL;
       }
 
       switch(state) {
-        case TSA_WAITING: {
+        case TS_WAITING: {
           while(PJON_SERIAL_AVAILABLE(serial)) {
             uint8_t value = PJON_SERIAL_READ(serial);
             _last_reception_time = PJON_MICROS();
-            if(value == TSA_START) {
-              state = TSA_RECEIVING;
+            if(value == TS_START) {
+              state = TS_RECEIVING;
               position = 0;
-              return TSA_FAIL;
+              return TS_FAIL;
             }
           };
           break;
         }
-        case TSA_RECEIVING: {
+        case TS_RECEIVING: {
           while(PJON_SERIAL_AVAILABLE(serial)) {
             uint8_t value = PJON_SERIAL_READ(serial);
             _last_reception_time = PJON_MICROS();
-            if(value == TSA_START) {
-              state = TSA_WAITING;
-              return TSA_FAIL;
+            if(value == TS_START) {
+              state = TS_WAITING;
+              return TS_FAIL;
             }
-            if(value == TSA_ESC) {
+            if(value == TS_ESC) {
               if(!PJON_SERIAL_AVAILABLE(serial)) {
-                state = TSA_WAITING_ESCAPE;
-                return TSA_FAIL;
+                state = TS_WAITING_ESCAPE;
+                return TS_FAIL;
               } else {
-                value = PJON_SERIAL_READ(serial) ^ TSA_ESC;
+                value = PJON_SERIAL_READ(serial) ^ TS_ESC;
                 _last_reception_time = PJON_MICROS();
                 if(
-                  (value != TSA_START) &&
-                  (value != TSA_ESC) &&
-                  (value != TSA_END)
+                  (value != TS_START) &&
+                  (value != TS_ESC) &&
+                  (value != TS_END)
                 ) {
-                  state = TSA_WAITING;
-                  return TSA_FAIL;
+                  state = TS_WAITING;
+                  return TS_FAIL;
                 }
                 buffer[position++] = value;
                 continue;
@@ -191,68 +191,68 @@ class ThroughSerialAsync {
             }
 
             if(max_length == 1) {
-              state = TSA_WAITING_END;
-              return TSA_FAIL;
+              state = TS_WAITING_END;
+              return TS_FAIL;
             }
 
             if(position + 1 >= PJON_PACKET_MAX_LENGTH) {
-              state = TSA_WAITING;
-              return TSA_FAIL;
+              state = TS_WAITING;
+              return TS_FAIL;
             }
 
-            if(value == TSA_END) {
-              state = TSA_DONE;
-              return TSA_FAIL;
+            if(value == TS_END) {
+              state = TS_DONE;
+              return TS_FAIL;
             }
 
             buffer[position++] = value;
           }
-          return TSA_FAIL;
+          return TS_FAIL;
         }
 
-        case TSA_WAITING_ESCAPE: {
+        case TS_WAITING_ESCAPE: {
           if(PJON_SERIAL_AVAILABLE(serial)) {
-            uint8_t value = PJON_SERIAL_READ(serial) ^ TSA_ESC;
+            uint8_t value = PJON_SERIAL_READ(serial) ^ TS_ESC;
             _last_reception_time = PJON_MICROS();
             if(
-              (value != TSA_START) &&
-              (value != TSA_ESC) &&
-              (value != TSA_END)
+              (value != TS_START) &&
+              (value != TS_ESC) &&
+              (value != TS_END)
             ) {
-              state = TSA_WAITING;
-              return TSA_FAIL;
+              state = TS_WAITING;
+              return TS_FAIL;
             }
             buffer[position++] = value;
-            state = TSA_RECEIVING;
-            return TSA_FAIL;
+            state = TS_RECEIVING;
+            return TS_FAIL;
           }
           break;
         }
 
-        case TSA_WAITING_END: {
+        case TS_WAITING_END: {
           if(PJON_SERIAL_AVAILABLE(serial)) {
             uint8_t value = PJON_SERIAL_READ(serial);
             _last_reception_time = PJON_MICROS();
-            if(value == TSA_END) {
-              state = TSA_DONE;
-              return TSA_FAIL;
+            if(value == TS_END) {
+              state = TS_DONE;
+              return TS_FAIL;
             } else {
-              state = TSA_WAITING;
-              return TSA_FAIL;
+              state = TS_WAITING;
+              return TS_FAIL;
             }
           }
           break;
         }
 
-        case TSA_DONE: {
+        case TS_DONE: {
           memcpy(&data[0], &buffer[0], position);
           prepare_response(buffer, position);
-          state = TSA_WAITING;
+          state = TS_WAITING;
           return position;
         }
 
       };
-      return TSA_FAIL;
+      return TS_FAIL;
     };
 
 
@@ -262,7 +262,7 @@ class ThroughSerialAsync {
       uint32_t time = PJON_MICROS();
       while(
         (PJON_SERIAL_WRITE(serial, b) != 1) &&
-        ((uint32_t)(PJON_MICROS() - time) < TSA_BYTE_TIME_OUT)
+        ((uint32_t)(PJON_MICROS() - time) < TS_BYTE_TIME_OUT)
       );
     };
 
@@ -275,10 +275,10 @@ class ThroughSerialAsync {
 
     void prepare_response(const uint8_t *buffer, uint16_t position) {
       uint8_t raw = 0;
-      for(int8_t i = 0; i < TSA_RESPONSE_LENGTH; i++) {
-        raw = buffer[(position - ((TSA_RESPONSE_LENGTH - 1) - i)) - 1];
+      for(int8_t i = 0; i < TS_RESPONSE_LENGTH; i++) {
+        raw = buffer[(position - ((TS_RESPONSE_LENGTH - 1) - i)) - 1];
         _response[i] = (
-          (raw == TSA_START) || (raw == TSA_ESC) || (raw == TSA_END)
+          (raw == TS_START) || (raw == TS_ESC) || (raw == TS_END)
         ) ? (raw - 1) : raw; // Avoid encoding symbols
       }
     };
@@ -290,7 +290,7 @@ class ThroughSerialAsync {
       if(response == PJON_ACK) {
         start_tx();
         wait_RS485_pin_change();
-        for(uint8_t i = 0; i < TSA_RESPONSE_LENGTH; i++)
+        for(uint8_t i = 0; i < TS_RESPONSE_LENGTH; i++)
           send_byte(_response[i]);
         PJON_SERIAL_FLUSH(serial);
         wait_RS485_pin_change();
@@ -305,20 +305,20 @@ class ThroughSerialAsync {
       start_tx();
       uint16_t overhead = 2;
       // Add frame flag
-      send_byte(TSA_START);
+      send_byte(TS_START);
       for(uint16_t b = 0; b < length; b++) {
         // Byte-stuffing
         if(
-          (data[b] == TSA_START) ||
-          (data[b] == TSA_ESC) ||
-          (data[b] == TSA_END)
+          (data[b] == TS_START) ||
+          (data[b] == TS_ESC) ||
+          (data[b] == TS_END)
         ) {
-          send_byte(TSA_ESC);
-          send_byte(data[b] ^ TSA_ESC);
+          send_byte(TS_ESC);
+          send_byte(data[b] ^ TS_ESC);
           overhead++;
         } else send_byte(data[b]);
       }
-      send_byte(TSA_END);
+      send_byte(TS_END);
       /* On RPI flush fails to wait until all bytes are transmitted
          here RPI forced to wait blocking using delayMicroseconds */
       #if defined(RPI) || defined(LINUX)
@@ -344,19 +344,19 @@ class ThroughSerialAsync {
     /* RS485 enable pins handling: */
 
     void start_tx() {
-      if(_enable_RS485_txe_pin != TSA_NOT_ASSIGNED) {
+      if(_enable_RS485_txe_pin != TS_NOT_ASSIGNED) {
         PJON_IO_WRITE(_enable_RS485_txe_pin, HIGH);
-        if(_enable_RS485_rxe_pin != TSA_NOT_ASSIGNED)
+        if(_enable_RS485_rxe_pin != TS_NOT_ASSIGNED)
           PJON_IO_WRITE(_enable_RS485_rxe_pin, HIGH);
         wait_RS485_pin_change();
       }
     };
 
     void end_tx() {
-      if(_enable_RS485_txe_pin != TSA_NOT_ASSIGNED) {
+      if(_enable_RS485_txe_pin != TS_NOT_ASSIGNED) {
         wait_RS485_pin_change();
         PJON_IO_WRITE(_enable_RS485_txe_pin, LOW);
-        if(_enable_RS485_rxe_pin != TSA_NOT_ASSIGNED)
+        if(_enable_RS485_rxe_pin != TS_NOT_ASSIGNED)
           PJON_IO_WRITE(_enable_RS485_rxe_pin, LOW);
       }
     };
@@ -379,7 +379,7 @@ class ThroughSerialAsync {
   #endif
 
     /* Sets the interval between each read attempt from serial
-       (TSA_READ_INTERVAL or 100 microseconds by default) to allow the buffer
+       (TS_READ_INTERVAL or 100 microseconds by default) to allow the buffer
        to fill and to reduce the computation time consumed while polling for
        incoming data.  */
 
@@ -408,20 +408,20 @@ class ThroughSerialAsync {
     }
 
     void wait_RS485_pin_change() {
-      if(_enable_RS485_txe_pin != TSA_NOT_ASSIGNED)
+      if(_enable_RS485_txe_pin != TS_NOT_ASSIGNED)
         PJON_DELAY(_RS485_delay);
     };
 
   private:
   #if defined(RPI) || defined(LINUX)
-    uint16_t _flush_offset = TSA_FLUSH_OFFSET;
+    uint16_t _flush_offset = TS_FLUSH_OFFSET;
     uint32_t _bd;
   #endif
-    uint8_t  _response[TSA_RESPONSE_LENGTH];
+    uint8_t  _response[TS_RESPONSE_LENGTH];
     uint32_t _last_reception_time = 0;
     uint32_t _last_call_time = 0;
-    uint8_t  _enable_RS485_rxe_pin = TSA_NOT_ASSIGNED;
-    uint8_t  _enable_RS485_txe_pin = TSA_NOT_ASSIGNED;
-    uint32_t _RS485_delay = TSA_RS485_DELAY;
-    uint32_t _read_interval = TSA_READ_INTERVAL;
+    uint8_t  _enable_RS485_rxe_pin = TS_NOT_ASSIGNED;
+    uint8_t  _enable_RS485_txe_pin = TS_NOT_ASSIGNED;
+    uint32_t _RS485_delay = TS_RS485_DELAY;
+    uint32_t _read_interval = TS_READ_INTERVAL;
 };

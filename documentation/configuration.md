@@ -40,7 +40,6 @@ In the example above the PJON object is instantiated passing the [SoftwareBitBan
 | [OverSampling](/src/strategies/OverSampling)  | Electrical/radio impulses over wire/air | [PJDLR](../src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) | 1 or 2 |
 | [AnalogSampling](/src/strategies/AnalogSampling)  | Light pulses over air or optic fiber | [PJDLS](../src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) | 1 or 2 |
 | [ThroughSerial](/src/strategies/ThroughSerial)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md) | 1 or 2 |
-| [ThroughSerialAsync](/src/strategies/ThroughSerialAsync)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md) | 1 or 2 |
 | [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio impulses over air | [LoRa](https://lora-alliance.org/sites/default/files/2018-07/lorawan1.0.3.pdf) | 3 or 4 |
 | [EthernetTCP](/src/strategies/EthernetTCP)  | Electrical/radio impulses over wire/air | [TCP](https://tools.ietf.org/html/rfc793) | Ethernet or WiFi |
 | [LocalUDP](/src/strategies/LocalUDP)  | Electrical/radio impulses over wire/air | [UDP](https://tools.ietf.org/html/rfc768) | Ethernet or WiFi |
@@ -61,7 +60,6 @@ Supported definitions:
 - `PJON_INCLUDE_GUDP` includes `GlobalUDP`
 - `PJON_INCLUDE_OS` includes `OverSampling`
 - `PJON_INCLUDE_TS` includes `ThroughSerial`
-- `PJON_INCLUDE_TSA` includes `ThroughSerialAsync`
 - `PJON_INCLUDE_TL` includes `ThroughLoRa`
 - `PJON_INCLUDE_MQTT` includes `MQTTTranslate`
 - `PJON_INCLUDE_EN` includes `ESPNOW`

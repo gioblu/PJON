@@ -8,7 +8,7 @@
     - Franketto (Arduino forum user) RS485 TX enable pin compatibility
    ____________________________________________________________________________
 
-   ThroughSerialAsync timing, based on ThroughSerial, developed by sticilface
+   Based on ThroughSerial, developed by sticilface
    copyright 2018 by Giovanni Blu Mitolo All rights reserved
 
    Licensed under the Apache License, Version 2.0 (the "License");

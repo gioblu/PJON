@@ -2,7 +2,7 @@
 
 **Medium:** Hardware or software serial port -
 **Pins used:** 1 or 2 -
-**Inclusion constant:** `PJON_INCLUDE_TSA`
+**Inclusion constant:** `PJON_INCLUDE_TS`
 
 With `ThroughSerial` strategy, PJON can run through a software or hardware Serial port working out of the box with many Arduino compatible serial transceivers, like RS485 or radio modules like HC-12 (HCMODU0054). It complies with [TSDL v3.0](/src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md).  
 
@@ -30,14 +30,14 @@ Before including `PJON.h` it is possible to configure `ThroughSerial` using pred
 
 Pass the `ThroughSerial` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
 ```cpp  
-#include PJON_INCLUDE_TSA
+#include PJON_INCLUDE_TS
 PJON<ThroughAsyncSerial> bus;
 ```
 Call the `begin` method on the `Serial` or `SoftwareSerial`  object you want to use for PJON communication and pass it to the `set_serial` method:
 ```cpp  
 #include <PJON.h>
 
-PJON<ThroughAsyncSerial> bus;
+PJON<ThroughSerial> bus;
 
 void setup() {
   Serial.begin(9600);

@@ -7,8 +7,8 @@ A strategy is an abstraction layer used to physically transmit data. Thanks to t
 | [SoftwareBitBang](SoftwareBitBang) | Electrical impulses over wire | [PJDL](SoftwareBitBang/specification/PJDL-specification-v4.1.md) | 1 or 2 |
 | [OverSampling](OverSampling)  | Electrical/radio impulses over wire/air | [PJDLR](OverSampling/specification/PJDLR-specification-v3.0.md) | 1 or 2 |
 | [AnalogSampling](AnalogSampling)  | Light pulses over air or optic fiber | [PJDLS](AnalogSampling/specification/PJDLS-specification-v2.0.md) | 1 or 2 |
-| [ThroughSerial](ThroughSerial)  | Electrical/radio impulses over wire/air | [TSDL](ThroughSerial/specification/TSDL-specification-v2.1.md) | 1 or 2 |
-| [ThroughSerialAsync](ThroughSerialAsync)  | Electrical/radio impulses over wire/air | [TSDL](ThroughSerial/specification/TSDL-specification-v2.1.md) | 1 or 2 |
+| [ThroughSerial](ThroughSerial)  | Electrical/radio impulses over wire/air | [TSDL](ThroughSerial/specification/TSDL-specification-v3.0.md) | 1 or 2 |
+| [ThroughSerialAsync](ThroughSerialAsync)  | Electrical/radio impulses over wire/air | [TSDL](ThroughSerial/specification/TSDL-specification-v3.0.md) | 1 or 2 |
 | [ThroughLoRa](ThroughLoRa)  | Radio impulses over air | [LoRa](https://lora-alliance.org/sites/default/files/2018-07/lorawan1.0.3.pdf) | 3 or 4 |
 | [EthernetTCP](EthernetTCP)  | Electrical/radio impulses over wire/air | [TCP](https://tools.ietf.org/html/rfc793) | Ethernet of WiFi |
 | [LocalUDP](LocalUDP)  | Electrical/radio impulses over wire/air | [UDP](https://tools.ietf.org/html/rfc768) | Ethernet of WiFi |

@@ -39,8 +39,8 @@ In the example above the PJON object is instantiated passing the [SoftwareBitBan
 | [SoftwareBitBang](/src/strategies/SoftwareBitBang) | Electrical impulses over wire | [PJDL](../src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md) | 1 or 2 |
 | [OverSampling](/src/strategies/OverSampling)  | Electrical/radio impulses over wire/air | [PJDLR](../src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) | 1 or 2 |
 | [AnalogSampling](/src/strategies/AnalogSampling)  | Light pulses over air or optic fiber | [PJDLS](../src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) | 1 or 2 |
-| [ThroughSerial](/src/strategies/ThroughSerial)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md) | 1 or 2 |
-| [ThroughSerialAsync](/src/strategies/ThroughSerialAsync)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md) | 1 or 2 |
+| [ThroughSerial](/src/strategies/ThroughSerial)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md) | 1 or 2 |
+| [ThroughSerialAsync](/src/strategies/ThroughSerialAsync)  | Electrical/radio impulses over wire/air | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md) | 1 or 2 |
 | [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio impulses over air | [LoRa](https://lora-alliance.org/sites/default/files/2018-07/lorawan1.0.3.pdf) | 3 or 4 |
 | [EthernetTCP](/src/strategies/EthernetTCP)  | Electrical/radio impulses over wire/air | [TCP](https://tools.ietf.org/html/rfc793) | Ethernet or WiFi |
 | [LocalUDP](/src/strategies/LocalUDP)  | Electrical/radio impulses over wire/air | [UDP](https://tools.ietf.org/html/rfc768) | Ethernet or WiFi |

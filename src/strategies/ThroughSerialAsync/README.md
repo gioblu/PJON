@@ -4,7 +4,7 @@
 **Pins used:** 1 or 2 -
 **Inclusion constant:** `PJON_INCLUDE_TSA`
 
-With `ThroughSerialAsync` strategy, PJON can run through a software or hardware Serial port working out of the box with many Arduino compatible serial transceivers, like RS485 or radio modules like HC-12 (HCMODU0054). It complies with [TSDL v2.1](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md).  
+With `ThroughSerialAsync` strategy, PJON can run through a software or hardware Serial port working out of the box with many Arduino compatible serial transceivers, like RS485 or radio modules like HC-12 (HCMODU0054). It complies with [TSDL v3.0](/src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md).  
 
 This strategy is based upon the `ThroughSerial` but reception is asynchronous and completely non-blocking, making good use of hardware buffers and sparing time that `ThroughSerial` looses polling. It is not required to call `bus.receive()` with any delay, just call it frequently to see if there are any packets that have been received.
 

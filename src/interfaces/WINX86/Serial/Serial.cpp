@@ -10,6 +10,9 @@
  *  - modified flush method to use WIN API
  *  - added initial tests
  *  - changed timeouts to 1s
+ *
+ *
+ * 11/05/2020 - getByte function simplified, now returns -1 in case of failure
  */
 
 #if defined(_WIN32)
@@ -123,19 +126,17 @@ int Serial::writeByte(uint8_t *buffer) {
   return numWritten;
 };
 
-uint8_t Serial::getByte() {
+int16_t Serial::getByte() {
   uint8_t buff;
-  read(&buff, 1, false);
+  if(read(&buff, 1) == -1) return -1;
   return buff;
 };
 
 
-int Serial::read(uint8_t *buffer, int buffLen, bool nullTerminate) {
+int Serial::read(uint8_t *buffer, int buffLen) {
   DWORD numRead;
-  if(nullTerminate) --buffLen;
   BOOL ret = ReadFile(commHandle, buffer, buffLen, &numRead, NULL);
-  if(!ret) return 0;
-  if(nullTerminate) buffer[numRead] = '\0';
+  if(!ret) return -1;
   return numRead;
 };
 

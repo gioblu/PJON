@@ -105,7 +105,17 @@ class ThroughSerial {
     };
 
 
-    /* Receive byte response */
+    /* Receive Byte */
+
+    int16_t receive_byte() {
+      int16_t value = PJON_SERIAL_READ(serial);
+      if(value == -1) return -1;
+      _last_reception_time = PJON_MICROS();
+      return value;
+    };
+
+
+    /* It returns the state of the previous transmission: */
 
     uint16_t receive_response() {
       uint32_t time = PJON_MICROS();
@@ -152,8 +162,8 @@ class ThroughSerial {
       switch(state) {
         case TS_WAITING: {
           while(PJON_SERIAL_AVAILABLE(serial)) {
-            uint8_t value = PJON_SERIAL_READ(serial);
-            _last_reception_time = PJON_MICROS();
+            int16_t value = receive_byte();
+            if(value == -1) return TS_FAIL;
             if(value == TS_START) {
               state = TS_RECEIVING;
               position = 0;
@@ -164,8 +174,8 @@ class ThroughSerial {
         }
         case TS_RECEIVING: {
           while(PJON_SERIAL_AVAILABLE(serial)) {
-            uint8_t value = PJON_SERIAL_READ(serial);
-            _last_reception_time = PJON_MICROS();
+            int16_t value = receive_byte();
+            if(value == -1) return TS_FAIL;
             if(value == TS_START) {
               state = TS_WAITING;
               return TS_FAIL;
@@ -175,8 +185,9 @@ class ThroughSerial {
                 state = TS_WAITING_ESCAPE;
                 return TS_FAIL;
               } else {
-                value = PJON_SERIAL_READ(serial) ^ TS_ESC;
-                _last_reception_time = PJON_MICROS();
+                value = receive_byte();
+                if(value == -1) return TS_FAIL;
+                value = value ^ TS_ESC;
                 if(
                   (value != TS_START) &&
                   (value != TS_ESC) &&
@@ -185,7 +196,7 @@ class ThroughSerial {
                   state = TS_WAITING;
                   return TS_FAIL;
                 }
-                buffer[position++] = value;
+                buffer[position++] = (uint8_t)value;
                 continue;
               }
             }
@@ -205,15 +216,16 @@ class ThroughSerial {
               return TS_FAIL;
             }
 
-            buffer[position++] = value;
+            buffer[position++] = (uint8_t)value;
           }
           return TS_FAIL;
         }
 
         case TS_WAITING_ESCAPE: {
           if(PJON_SERIAL_AVAILABLE(serial)) {
-            uint8_t value = PJON_SERIAL_READ(serial) ^ TS_ESC;
-            _last_reception_time = PJON_MICROS();
+            int16_t value = receive_byte();
+            if(value == -1) return TS_FAIL;
+            value = value ^ TS_ESC;
             if(
               (value != TS_START) &&
               (value != TS_ESC) &&
@@ -222,7 +234,7 @@ class ThroughSerial {
               state = TS_WAITING;
               return TS_FAIL;
             }
-            buffer[position++] = value;
+            buffer[position++] = (uint8_t)value;
             state = TS_RECEIVING;
             return TS_FAIL;
           }
@@ -231,8 +243,8 @@ class ThroughSerial {
 
         case TS_WAITING_END: {
           if(PJON_SERIAL_AVAILABLE(serial)) {
-            uint8_t value = PJON_SERIAL_READ(serial);
-            _last_reception_time = PJON_MICROS();
+            int16_t value = receive_byte();
+            if(value == -1) return TS_FAIL;
             if(value == TS_END) {
               state = TS_DONE;
               return TS_FAIL;

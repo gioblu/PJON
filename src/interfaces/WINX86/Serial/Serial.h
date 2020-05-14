@@ -33,9 +33,7 @@
   public:
     Serial(
       std::string &commPortName,
-      int bitRate = 115200,
-      bool testOnStartup = false,
-      bool cycleDtrOnStartup = false
+      int bitRate = 115200
     );
 
     virtual ~Serial();

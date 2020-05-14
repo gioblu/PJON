@@ -7,7 +7,7 @@ Visual Studio 2017 Community is used to compile the program on the Windows x86 m
 - Click on `file` top menu option, `open` and then `folder...`
 - Select the `PJON\examples\WINX86\Local\ThroughSerial\BlinkWithResponse\Transmitter` directory
 - Double click on `Transmitter.cpp` in the solution explorer (panel on right)
-- Edit the COM port number (at line 40) inserting the one assigned to the receiver device and save the file
+- Edit the COM port number (at line 23) inserting the one assigned to the receiver device and save the file
 - Click on `Build` top menu option and then click `Build Solution`  
 - If the building process ended positively, you should find the executable in `PJON\examples\WINX86\Local\ThroughSerial\BlinkWithResponse\Transmitter\Debug`, execute `Transmitter.exe` double clicking on it
 

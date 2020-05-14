@@ -62,9 +62,9 @@ class ThroughSerial {
 
     uint32_t back_off(uint8_t attempts) {
       uint32_t result = attempts;
-      for (uint8_t d = 0; d < TS_BACK_OFF_DEGREE; d++)
+      for(uint8_t d = 0; d < TS_BACK_OFF_DEGREE; d++)
         result *= (uint32_t)(attempts);
-      return result;
+      return result + PJON_RANDOM(TS_COLLISION_DELAY);
     };
 
 
@@ -81,12 +81,12 @@ class ThroughSerial {
     /* Check if the channel is free for transmission: */
 
     bool can_start() {
+      PJON_DELAY_MICROSECONDS(PJON_RANDOM(TS_COLLISION_DELAY));
       if(
         (state != TS_WAITING) ||
         PJON_SERIAL_AVAILABLE(serial) ||
         ((uint32_t)(PJON_MICROS() - _last_reception_time) < TS_TIME_IN)
       ) return false;
-      PJON_DELAY_MICROSECONDS(PJON_RANDOM(TS_COLLISION_DELAY));
       return true;
     };
 
@@ -118,6 +118,7 @@ class ThroughSerial {
     /* It returns the state of the previous transmission: */
 
     uint16_t receive_response() {
+      if(_fail) return TS_FAIL;
       uint32_t time = PJON_MICROS();
       uint8_t i = 0;
       while((uint32_t)(PJON_MICROS() - time) < TS_RESPONSE_TIME_OUT) {
@@ -272,10 +273,12 @@ class ThroughSerial {
 
     void send_byte(uint8_t b) {
       uint32_t time = PJON_MICROS();
+      int16_t result = 0;
       while(
-        (PJON_SERIAL_WRITE(serial, b) != 1) &&
+        ((result = PJON_SERIAL_WRITE(serial, b)) != 1) &&
         ((uint32_t)(PJON_MICROS() - time) < TS_BYTE_TIME_OUT)
       );
+      if(result != 1) _fail = true;
     };
 
 
@@ -314,11 +317,13 @@ class ThroughSerial {
     /* Send a string: */
 
     void send_frame(uint8_t *data, uint16_t length) {
+      _fail = false;
       start_tx();
       uint16_t overhead = 2;
       // Add frame flag
       send_byte(TS_START);
       for(uint16_t b = 0; b < length; b++) {
+        if(_fail) return;
         // Byte-stuffing
         if(
           (data[b] == TS_START) ||
@@ -429,6 +434,7 @@ class ThroughSerial {
     uint16_t _flush_offset = TS_FLUSH_OFFSET;
     uint32_t _bd;
   #endif
+    bool     _fail = false;
     uint8_t  _response[TS_RESPONSE_LENGTH];
     uint32_t _last_reception_time = 0;
     uint32_t _last_call_time = 0;

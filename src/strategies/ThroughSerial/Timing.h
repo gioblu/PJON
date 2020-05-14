@@ -32,15 +32,15 @@
 
 /* Maximum 32 microseconds random delay in case of collision */
 #ifndef TS_COLLISION_DELAY
-  #define TS_COLLISION_DELAY      32
+  #define TS_COLLISION_DELAY      64
 #endif
 
-/* Set 10 milliseconds as the maximum timeframe between transmission and
+/* Set 40 milliseconds as the maximum timeframe between transmission and
    synchronous acknowledgement response. Its  optimal configuration is
    strictly related to the maximum time needed by receiver to receive, compute
    and transmit back a response. */
 #ifndef TS_RESPONSE_TIME_OUT
-  #define TS_RESPONSE_TIME_OUT 10000
+  #define TS_RESPONSE_TIME_OUT 40000
 #endif
 
 /* Minum duration of channel free for use before transmission.
@@ -69,7 +69,7 @@
    setting TS_RESPONSE_LENGTH < 4 reduces reliability and leads to higher
    chances of detecting a false positive. */
 #ifndef TS_RESPONSE_LENGTH
-  #define TS_RESPONSE_LENGTH       5
+  #define TS_RESPONSE_LENGTH       1
 #endif
 
 /* Maximum transmission attempts */

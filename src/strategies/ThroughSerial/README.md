@@ -42,8 +42,11 @@ PJON<ThroughSerial> bus;
 void setup() {
   Serial.begin(9600);
   bus.strategy.set_serial(&Serial);
-  bus.strategy.set_read_interval(100);
 }
+```
+There is a default reception interval of 100 microseconds used to allow data to accumulate in the hardware UART buffer. This value is configurable using `bus.strategy.set_read_interval(100)` passing an arbitrary interval in microseconds. The read interval may require adjustment depending on UART RX buffer size and baud rate.
+```cpp
+bus.strategy.set_read_interval(100);
 ```
 For a simple use with RS485 serial modules a transmission enable pin setter has been added:
 ```cpp  

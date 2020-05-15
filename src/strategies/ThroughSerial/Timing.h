@@ -63,10 +63,9 @@
 #endif
 
 /* Response length (the response is composed by the last TS_RESPONSE_LENGTH
-   bytes of the packet received). By default should be relatively safe.
-   (Few false positives per millennia)
-   If you are ready to trade safety for bandwidth reduce it, consider that
-   setting TS_RESPONSE_LENGTH < 4 reduces reliability and leads to higher
+   bytes of the packet received). By default should be relatively safe if
+   used in master-slave mode. Setting TS_RESPONSE_LENGTH < 4 when using
+   ThroughSerial in multi-master mode reduces reliability and leads to higher
    chances of detecting a false positive. */
 #ifndef TS_RESPONSE_LENGTH
   #define TS_RESPONSE_LENGTH       1

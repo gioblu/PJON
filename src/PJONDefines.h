@@ -151,7 +151,7 @@ limitations under the License. */
 /* If defined includes the packet id feature */
 #ifdef PJON_INCLUDE_PACKET_ID
   #undef PJON_INCLUDE_PACKET_ID
-  #define PJON_INCLUDE_PACKET_ID  true
+  #define PJON_INCLUDE_PACKET_ID   true
 #else
   #define PJON_INCLUDE_PACKET_ID  false
 #endif
@@ -159,17 +159,17 @@ limitations under the License. */
 /* If defined includes the port id feature */
 #ifdef PJON_INCLUDE_PORT
   #undef PJON_INCLUDE_PORT
-  #define PJON_INCLUDE_PORT  true
+  #define PJON_INCLUDE_PORT        true
 #else
-  #define PJON_INCLUDE_PORT  false
+  #define PJON_INCLUDE_PORT       false
 #endif
 
 /* If defined includes the mac address feature */
 #ifdef PJON_INCLUDE_MAC
   #undef PJON_INCLUDE_MAC
-  #define PJON_INCLUDE_MAC  true
+  #define PJON_INCLUDE_MAC         true
 #else
-  #define PJON_INCLUDE_MAC  false
+  #define PJON_INCLUDE_MAC        false
 #endif
 
 /* Data structures: */

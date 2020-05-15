@@ -9,7 +9,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
     digitalWrite(LED_BUILTIN, HIGH);
     delay(30);
     digitalWrite(LED_BUILTIN, LOW);
-    bus.reply("B", 1);
+    if(!bus.update()) bus.reply("B", 1);
   }
 };
 

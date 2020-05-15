@@ -95,10 +95,10 @@ class PJON {
 
     /* PJON initialization with no parameters:
         State: Local (bus_id: 0.0.0.0)
-        Synchronous acknowledge: true
+        Acknowledge: true
         device id: PJON_NOT_ASSIGNED (255)
         Mode: PJON_HALF_DUPLEX
-        Sender info: true (Sender info are included in the packet)
+        Sender info: true (Sender info is included in the packet)
 
        PJON<SoftwareBitBang> bus; */
 
@@ -220,6 +220,30 @@ class PJON {
         ) packets_count++;
       }
       return packets_count;
+    };
+
+    /* Fill a PJON_Packet_Info using parameters: */
+
+    PJON_Packet_Info fill_info(
+      uint8_t rx_id,
+      uint8_t header,
+      uint16_t packet_id,
+      uint16_t rx_port
+    ) {
+      PJON_Packet_Info info;
+      info.rx.id = rx_id;
+      info.header = header;
+      #if(PJON_INCLUDE_PACKET_ID)
+        info.id = packet_id;
+      #else
+        (void)packet_id;
+      #endif
+      #if(PJON_INCLUDE_PORT)
+        info.port = rx_port;
+      #else
+        (void)rx_port;
+      #endif
+      return info;
     };
 
     /* Calculate packet overhead: */
@@ -405,30 +429,6 @@ class PJON {
         packets[id].state = PJON_TO_BE_SENT;
       }
       return false;
-    };
-
-    /* Fill a PJON_Packet_Info using parameters: */
-
-    PJON_Packet_Info fill_info(
-      uint8_t rx_id,
-      uint8_t header,
-      uint16_t packet_id,
-      uint16_t rx_port
-    ) {
-      PJON_Packet_Info info;
-      info.rx.id = rx_id;
-      info.header = header;
-      #if(PJON_INCLUDE_PACKET_ID)
-        info.id = packet_id;
-      #else
-        (void)packet_id;
-      #endif
-      #if(PJON_INCLUDE_PORT)
-        info.port = rx_port;
-      #else
-        (void)rx_port;
-      #endif
-      return info;
     };
 
     /* Schedule a packet sending to the sender of the last packet received.
@@ -678,25 +678,25 @@ class PJON {
       else config &= ~bit;
     };
 
-    /* Configure synchronous acknowledge presence:
-       state = true  -> Request 8 bits synchronous acknowledgement
-       state = false -> Do not request synchronous acknowledgement */
+    /* Configure acknowledge:
+       state = true  -> Request acknowledgement
+       state = false -> Do not request acknowledgement */
 
     void set_acknowledge(bool state) {
       set_config_bit(state, PJON_ACK_REQ_BIT);
     };
 
     /* Configure CRC selected for packet checking:
-       state = true  -> CRC32
-       state = false -> CRC8 */
+       state = true  -> Use CRC32
+       state = false -> Use CRC8 */
 
     void set_crc_32(bool state) {
       set_config_bit(state, PJON_CRC_BIT);
     };
 
     /* Set communication mode:
-       mode = 0 or PJON_SIMPLEX     -> communication is mono-directional
-       mode = 1 or PJON_HALF_DUPLEX -> communication is bi-directional */
+       mode = 0 or PJON_SIMPLEX     -> Communication is mono-directional
+       mode = 1 or PJON_HALF_DUPLEX -> Communication is bi-directional */
 
     void set_communication_mode(bool mode) {
       _mode = mode;
@@ -797,7 +797,7 @@ class PJON {
     };
 
     /* Update the state of the send list:
-       Check if there are packets to be sent or to be erased if correctly
+       Checks if there are packets to be sent or to be erased if correctly
        delivered. Returns the actual number of packets to be sent. */
 
     uint16_t update() {
@@ -838,7 +838,7 @@ class PJON {
 
     #if(PJON_INCLUDE_PACKET_ID)
 
-      /* Check if the packet id and its transmitter info are already present
+      /* Checks if the packet id and its transmitter info are already present
          in the known packets buffer, if not add it to the buffer */
 
       bool known_packet_id(PJON_Packet_Info info) {

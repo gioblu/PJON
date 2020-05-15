@@ -24,7 +24,7 @@ Before including `PJON.h` it is possible to configure `ThroughSerial` using pred
 | ----------------------- |------------------------------------ | ------------------------------------------ |
 | `TS_READ_INTERVAL`      | minimum interval between receptions | Duration in microseconds (100 by default)  |
 | `TS_BYTE_TIME_OUT`      | Maximum byte reception time-out     | Duration in microseconds (1000000 by default) |
-| `TS_RESPONSE_TIME_OUT`  | Maximum response time-out           | Duration in microseconds (10000 by default) |
+| `TS_RESPONSE_TIME_OUT`  | Maximum response time-out           | Duration in microseconds (40000 by default) |
 | `TS_BACK_OFF_DEGREE`    | Maximum back-off exponential degree | Numeric value (4 by default)               |
 | `TS_MAX_ATTEMPTS`       | Maximum transmission attempts       | Numeric value (20 by default)              |
 

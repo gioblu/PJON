@@ -34,21 +34,21 @@ In the example above the PJON object is instantiated passing the [SoftwareBitBan
   PJON<EthernetTCP>     tcpBus;
 ```
 
-| Strategy      | Physical layer | Protocol | Pins needed   |
-| ------------- | -------------- | -------- | ------------- |
-| [SoftwareBitBang](/src/strategies/SoftwareBitBang) | Wire | [PJDL](../src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md) | 1 or 2 |
-| [OverSampling](/src/strategies/OverSampling)  | Radio | [PJDLR](../src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) | 1 or 2 |
-| [AnalogSampling](/src/strategies/AnalogSampling)  | Light | [PJDLS](../src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) | 1 or 2 |
-| [ThroughSerial](/src/strategies/ThroughSerial)  | Radio | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md) | 1 or 2 |
-| [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio | [LoRa](https://lora-alliance.org/sites/default/files/2018-07/lorawan1.0.3.pdf) | 3 or 4 |
-| [EthernetTCP](/src/strategies/EthernetTCP)  | Ethernet/WiFi | [TCP](https://tools.ietf.org/html/rfc793) | Ethernet or WiFi |
-| [LocalUDP](/src/strategies/LocalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | Ethernet or WiFi |
-| [GlobalUDP](/src/strategies/GlobalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | Ethernet or WiFi |
-| [DualUDP](/src/strategies/DualUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | Ethernet or WiFi |
-| [MQTTTranslate](/src/strategies/MQTTTranslate)  | Ethernet/WiFi | [MQTT](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.pdf) | Ethernet or WiFi |
-| [ESPNOW](/src/strategies/ESPNOW)  | WiFi | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) | WiFi link |
-| [LocalFile](/src/strategies/LocalFile)  | System memory | None | None |
-| [Any](/src/strategies/Any)  | Virtual inheritance, any of the above | Any | Any |
+| Strategy      | Physical layer | Protocol |
+| ------------- | -------------- | -------- |
+| [SoftwareBitBang](/src/strategies/SoftwareBitBang) | Wire | [PJDL](../src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md) |
+| [OverSampling](/src/strategies/OverSampling)  | Radio | [PJDLR](../src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) |
+| [AnalogSampling](/src/strategies/AnalogSampling)  | Light | [PJDLS](../src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) |
+| [ThroughSerial](/src/strategies/ThroughSerial)  | Radio | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md) |
+| [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio | [LoRa](https://lora-alliance.org/sites/default/files/2018-07/lorawan1.0.3.pdf) |
+| [EthernetTCP](/src/strategies/EthernetTCP)  | Ethernet/WiFi | [TCP](https://tools.ietf.org/html/rfc793) |
+| [LocalUDP](/src/strategies/LocalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) |
+| [GlobalUDP](/src/strategies/GlobalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) |
+| [DualUDP](/src/strategies/DualUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) |
+| [MQTTTranslate](/src/strategies/MQTTTranslate)  | Ethernet/WiFi | [MQTT](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.pdf) |
+| [ESPNOW](/src/strategies/ESPNOW)  | WiFi | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) |
+| [LocalFile](/src/strategies/LocalFile)  | System memory | None |
+| [Any](/src/strategies/Any)  | Virtual inheritance, any of the above | Any |
 
 By default all strategies are included except `MQTTTranslate`, `LocalFile`, `ThroughLoRa` and `ESPNOW`. To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before including the library to select only the `SoftwareBitBang` strategy. More than one strategy related constants can be defined in the same program if that is required.
 

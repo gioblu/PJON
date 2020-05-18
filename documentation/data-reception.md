@@ -52,7 +52,7 @@ struct PJON_Endpoint {
 ```
 `PJON_Endpoint` contains `mac` if [`PJON_INCLUDE_MAC`](/documentation/configuration.md#hardware-identification) is defined. The conditional inclusion is present to reduce the footprint of programs where the MAC address is not used.
 
-The code below is part of the Arduino compatible [PortsUseExample](/examples/ARDUINO/Network/SoftwareBitBang/PortsUseExample/Receiver/Receiver.ino). When the `receiver_function` is called meta-data present in the `info` parameter is transmitted over serial:
+The code below is part of the Arduino compatible [PortsUseExample](/examples/ARDUINO/Network/SoftwareBitBang/PortsUseExample/Receiver/Receiver.ino). When the `receiver_function` is called meta-data present in the `info` parameter is printed in the serial monitor:
 ```cpp
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &info) {
   Serial.print("Header: ");

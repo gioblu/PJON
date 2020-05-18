@@ -15,8 +15,6 @@ Serial communication is fast and reliable but it is often useless without all th
 
 `ThroughSerial` performs well if used with ESP8266 and ESP32 where blocking procedures can strongly degrade functionality. The reception phase is entirely non-blocking. Sending and acknowledgement however are still blocking.
 
-There is a default reception interval of 100 microseconds used to allow data to accumulate in the hardware UART buffer. This value is configurable using `bus.strategy.set_read_interval(100)` passing an arbitrary interval in microseconds. The read interval may require adjustment depending on UART RX buffer size and baud rate.  
-
 ### Configuration
 Before including `PJON.h` it is possible to configure `ThroughSerial` using predefined constants:
 

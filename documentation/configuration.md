@@ -34,6 +34,8 @@ In the example above the PJON object is instantiated passing the [SoftwareBitBan
   PJON<EthernetTCP>     tcpBus;
 ```
 
+The table below lists the strategies available:
+
 | Strategy      | Physical layer | Protocol | Inclusion constant | Included by default |
 | ------------- | -------------- | -------- | ------------------ | ------------------- |
 | [AnalogSampling](/src/strategies/AnalogSampling)  | Light | [PJDLS](../src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) | `PJON_INCLUDE_AS` | yes |

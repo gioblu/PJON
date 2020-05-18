@@ -2,7 +2,7 @@
 ### What is a Strategy
 A strategy is an abstraction layer used to physically transmit data. Thanks to the strategies PJON can operate transparently on a wide range of media and protocols. Take a look at the [strategies video introduction](https://www.youtube.com/watch?v=yPu45xoAHGg) for a brief showcase of their features.
 
-The table below lists the available strategies:
+The table below lists the strategies available:
 
 | Strategy      | Physical layer | Protocol | Inclusion constant | Included by default |
 | ------------- | -------------- | -------- | ------------------ | ------------------- |

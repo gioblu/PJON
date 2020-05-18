@@ -1,8 +1,8 @@
 ## LocalFile
 
-**Medium:** File on hard disk -
-**Pins used:** NA -
-**Inclusion constant:** `PJON_INCLUDE_LF`
+| Medium | Pins used | Inclusion Constant | Included by default |
+|--------|-----------|--------------------|---------------------|
+| System memory   | NA    | `PJON_INCLUDE_LF`|  no   |
 
 `LocalFile` uses a file present on the hard drive to let multiple processes communicate on the same machine. It can be used for inter-process communication and for developing, simulating and testing applications and networks on a real time operative system without having to deploy physical hardware.
 

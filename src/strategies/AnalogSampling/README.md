@@ -1,8 +1,8 @@
 ## AnalogSampling
 
-**Medium:** Light pulses over air or optic-fibre |
-**Pins used:** 1 or 2 |
-**Inclusion constant:** `PJON_INCLUDE_AS`
+| Medium | Pins used | Inclusion Constant | Included by default |
+|--------|-----------|--------------------|---------------------|
+| Light pulses over air or optic-fibre | 1 or 2 | `PJON_INCLUDE_AS`|  yes   |
 
 `AnalogSampling` strategy or data link complies with [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md), it is designed to communicate data wirelessly using light impulses and its sampling technique is based on analog readings. This strategy is able to use a single LED for both photo-emission and photo-reception phases providing with wireless half-duplex connectivity between devices with a range of up to 5 meters. Most appliances have at least a useless energy consuming LED on board, right?
 

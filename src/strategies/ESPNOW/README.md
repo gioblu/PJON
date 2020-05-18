@@ -1,8 +1,8 @@
 ## ESPNOW
 
-**Medium:** ESPNOW protocol -
-**Pins used:** NA -
-**Inclusion constant:** `PJON_INCLUDE_EN`
+| Medium | Pins used | Inclusion Constant | Included by default |
+|--------|-----------|--------------------|---------------------|
+| ESPNOW over WiFi   | NA    | `PJON_INCLUDE_EN`|  no   |
 
 With the `ESPNOW` PJON strategy, up to 10 ESP32 devices can use PJON to communicate with each other over
 the [Espressif ESPNOW protocol](https://www.espressif.com/en/products/software/esp-now/overview) (peer-to-peer 802.11).

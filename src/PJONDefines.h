@@ -242,6 +242,13 @@ struct PJONTools {
     return lh;
   };
 
+  /* Unused MAC address value */
+
+  static const uint8_t* no_mac() {
+    static const uint8_t lh[6] = {0, 0, 0, 0, 0, 0};
+    return lh;
+  };
+
   /* Calculates the packet's overhead using the header: */
 
   static uint8_t packet_overhead(uint8_t header) {

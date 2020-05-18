@@ -348,9 +348,14 @@ class PJON {
         return PJON_NAK;
 
       #if(PJON_INCLUDE_MAC)
-        if((data[1] & PJON_MAC_BIT) && (length > 15) && !_router)
+        if(mac && (length > 15) && !_router)
           if(!PJONTools::id_equality(data + (overhead - 16), tx.mac, 6))
-            return PJON_BUSY;
+            if(!
+              PJONTools::id_equality(
+                data + (overhead - 16),
+                PJONTools::no_mac(), 6
+              )
+            ) return PJON_BUSY;
       #endif
 
       if(data[1] & PJON_ACK_REQ_BIT && data[0] != PJON_BROADCAST)

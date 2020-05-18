@@ -320,7 +320,7 @@ if the header's `PORT` bit is high a 16 bits port id is added to the packet. Tha
 ```
 
 #### Hardware identification
-If the header's `MAC` bit is high both recipient's and sender's 48 bits MAC addresses are included in the packet. Device id and bus id filtering does not vary. When MAC addresses are included and device ids are not set all devices must use device id 255 and transmit packets to device id 255 (or use broadcast if the acknowledgement is not required). The graph below shows a broadcast packet transmission where MAC address `111111` sends to MAC address `222222` the payload 64.
+If the header's `MAC` bit is high both recipient's and sender's 48 bits MAC addresses are included in the packet. The recipient's MAC address must match the MAC address of the receiver otherwise the packet is discarded. When the hardware identification is present the packet is received even if the bus id and or the device id don't match. If a packet contains an empty recipient's MAC or `0.0.0.0.0.0` it is not discarded even if the MAC address do not match. The graph below shows a broadcast packet transmission where MAC address `1.1.1.1.1.1` sends to MAC address `2.2.2.2.2.2` the payload 64.
 ```cpp
  ________________________________________________
 |ID| HEADER |LENGTH|CRC8|RX MAC|TX MAC|DATA|CRC32|
@@ -329,4 +329,15 @@ If the header's `MAC` bit is high both recipient's and sender's 48 bits MAC addr
 |__|________|______|____|______|______|____|_____|
 |8 |   8    |  8   | 8  |  48  |  48  | 8  | 32  | 168 bits
 |__|________|______|____|______|______|____|_____|
+```
+When a device knows its own MAC address but doesn't know its own device id it must use device id 255. To reach another device in the same configuration, it can transmit packets to device id 255 and include the MAC addresses setting the `MAC` bit high. In this case even if many devices could be present using device id 255, only the one with the matching MAC address receives the packet. If the `ACK` bit is high the receiver can send an acknowledge, although also a broadcast can be used if the acknowledgement is not required.
+
+```cpp
+ _________________________________________________  ___
+|ID | HEADER |LENGTH|CRC8|RX MAC|TX MAC|DATA|CRC32||ACK|
+|---|--------|------|----|------|------|----|-----||---|
+|255|00001100|  12  |    |222222|111111| 64 |     || 6 |
+|___|________|______|____|______|______|____|_____||___|
+| 8 |   8    |  8   | 8  |  48  |  48  | 8  | 32  | 168 bits
+|___|________|______|____|______|______|____|_____|
 ```

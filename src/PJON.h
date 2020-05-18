@@ -267,7 +267,7 @@ class PJON {
       uint16_t length = PJON_PACKET_MAX_LENGTH;
       uint16_t batch_length = 0;
       uint8_t  overhead = 0;
-      bool extended_length = false;
+      bool extended_length = false, mac = false, drop = false;
       for(uint16_t i = 0; i < length; i++) {
         if(!batch_length) {
           batch_length = strategy.receive_frame(data + i, length - i);
@@ -278,9 +278,10 @@ class PJON {
 
         if(i == 0)
           if((data[i] != tx.id) && (data[i] != PJON_BROADCAST) && !_router)
-            return PJON_BUSY;
+            drop = true;
 
         if(i == 1) {
+          mac = (data[1] & PJON_MAC_BIT);
           if(
             (
               !_router &&
@@ -294,10 +295,10 @@ class PJON {
             ) || (
               !PJON_INCLUDE_PORT && (data[1] & PJON_PORT_BIT)
             ) || (
-              (!PJON_INCLUDE_MAC && (data[1] & PJON_MAC_BIT)) ||
-              ((data[1] & PJON_MAC_BIT) && !(data[1] & PJON_CRC_BIT))
+              (!PJON_INCLUDE_MAC && mac) || (mac && !(data[1] & PJON_CRC_BIT))
             )
           ) return PJON_BUSY;
+          if(drop && !mac) return PJON_BUSY;
           extended_length = data[i] & PJON_EXT_LEN_BIT;
           overhead = packet_overhead(data[i]);
         }
@@ -321,7 +322,7 @@ class PJON {
         }
 
         if(
-          ((data[1] & PJON_MODE_BIT) && !_router) &&
+          ((data[1] & PJON_MODE_BIT) && !_router && !mac) &&
           (i > (uint8_t)(3 + extended_length)) &&
           (i < (uint8_t)(8 + extended_length))
         ) {

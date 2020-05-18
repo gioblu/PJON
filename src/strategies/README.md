@@ -1,23 +1,26 @@
 
-### What is a Strategy?
+### What is a Strategy
 A strategy is an abstraction layer used to physically transmit data. Thanks to the strategies PJON can operate transparently on a wide range of media and protocols. Take a look at the [strategies video introduction](https://www.youtube.com/watch?v=yPu45xoAHGg) for a brief showcase of their features.
 
-| Strategy      | Physical layer | Protocol |
-| ------------- | -------------- | -------- |
-| [SoftwareBitBang](/src/strategies/SoftwareBitBang) | Wire | [PJDL](../src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md) |
-| [OverSampling](/src/strategies/OverSampling)  | Radio | [PJDLR](../src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) |
-| [AnalogSampling](/src/strategies/AnalogSampling)  | Light | [PJDLS](../src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) |
-| [ThroughSerial](/src/strategies/ThroughSerial)  | Radio | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md) |
-| [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio | [LoRa](https://lora-alliance.org/sites/default/files/2018-07/lorawan1.0.3.pdf) |
-| [EthernetTCP](/src/strategies/EthernetTCP)  | Ethernet/WiFi | [TCP](https://tools.ietf.org/html/rfc793) |
-| [LocalUDP](/src/strategies/LocalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) |
-| [GlobalUDP](/src/strategies/GlobalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) |
-| [DualUDP](/src/strategies/DualUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) |
-| [MQTTTranslate](/src/strategies/MQTTTranslate)  | Ethernet/WiFi | [MQTT](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.pdf) |
-| [ESPNOW](/src/strategies/ESPNOW)  | WiFi | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) |
-| [LocalFile](/src/strategies/LocalFile)  | System memory | None |
-| [Any](/src/strategies/Any)  | Virtual inheritance, any of the above | Any |
+The table below lists the available strategies:
 
+| Strategy      | Physical layer | Protocol | Inclusion constant | Included by default |
+| ------------- | -------------- | -------- | ------------------ | ------------------- |
+| [AnalogSampling](/src/strategies/AnalogSampling)  | Light | [PJDLS](../src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) | `PJON_INCLUDE_AS` | yes |
+| [Any](/src/strategies/Any)  | Virtual inheritance | Any | `PJON_INCLUDE_ANY` | yes |
+| [DualUDP](/src/strategies/DualUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | `PJON_INCLUDE_DUDP` | yes |
+| [ESPNOW](/src/strategies/ESPNOW)  | WiFi | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) | `PJON_INCLUDE_EN` | no |
+| [EthernetTCP](/src/strategies/EthernetTCP)  | Ethernet/WiFi | [TCP](https://tools.ietf.org/html/rfc793) | `PJON_INCLUDE_ETCP` | yes |
+| [GlobalUDP](/src/strategies/GlobalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | `PJON_INCLUDE_GUDP` | yes |
+| [LocalFile](/src/strategies/LocalFile)  | System memory | None | `PJON_INCLUDE_LF` | no |
+| [LocalUDP](/src/strategies/LocalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | `PJON_INCLUDE_LUDP` | yes |
+| [MQTTTranslate](/src/strategies/MQTTTranslate)  | Ethernet/WiFi | [MQTT](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.pdf) | `PJON_INCLUDE_MQTT` | no |
+| [OverSampling](/src/strategies/OverSampling)  | Radio | [PJDLR](../src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) | `PJON_INCLUDE_OS` | yes |
+| [SoftwareBitBang](/src/strategies/SoftwareBitBang) | Wire | [PJDL](../src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md) | `PJON_INCLUDE_SWBB` | yes |
+| [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio | [LoRa](https://lora-alliance.org/sites/default/files/2018-07/lorawan1.0.3.pdf) | `PJON_INCLUDE_TL` | no |
+| [ThroughSerial](/src/strategies/ThroughSerial)  | Radio | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md) | `PJON_INCLUDE_TS` | yes |
+
+### How the strategy is implemented
 A `Strategy` is a class containing a set of methods used to physically send and receive data along with the required getters to handle retransmission and collision:
 
 ```cpp
@@ -73,9 +76,9 @@ void send_response(uint8_t response) {
 ```
 Above it is demonstrated how simply other communication protocols can be used to define a new custom strategy.
 
-### How to define a new strategy
-To define the strategy it is required to create a new folder named for example `YourStrategyName` in the `strategies`
-directory and write the necessary file `YourStrategyName.h`:
+### How to implement a custom strategy
+To define a new custom strategy you need to create a new folder named for example `YourStrategyName` in the `src/strategies`
+directory and create the necessary file `YourStrategyName.h`:
 
 ```cpp
 class YourStrategyName {

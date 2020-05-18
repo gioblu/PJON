@@ -2,21 +2,21 @@
 ### What is a Strategy?
 A strategy is an abstraction layer used to physically transmit data. Thanks to the strategies PJON can operate transparently on a wide range of media and protocols. Take a look at the [strategies video introduction](https://www.youtube.com/watch?v=yPu45xoAHGg) for a brief showcase of their features.
 
-| Strategy      | Physical layer | Protocol | Pins needed   |
-| ------------- | -------------- | -------- | ------------- |
-| [SoftwareBitBang](SoftwareBitBang) | Electrical impulses over wire | [PJDL](SoftwareBitBang/specification/PJDL-specification-v4.1.md) | 1 or 2 |
-| [OverSampling](OverSampling)  | Electrical/radio impulses over wire/air | [PJDLR](OverSampling/specification/PJDLR-specification-v3.0.md) | 1 or 2 |
-| [AnalogSampling](AnalogSampling)  | Light pulses over air or optic fiber | [PJDLS](AnalogSampling/specification/PJDLS-specification-v2.0.md) | 1 or 2 |
-| [ThroughSerial](ThroughSerial)  | Electrical/radio impulses over wire/air | [TSDL](ThroughSerial/specification/TSDL-specification-v3.0.md) | 1 or 2 |
-| [ThroughLoRa](ThroughLoRa)  | Radio impulses over air | [LoRa](https://lora-alliance.org/sites/default/files/2018-07/lorawan1.0.3.pdf) | 3 or 4 |
-| [EthernetTCP](EthernetTCP)  | Electrical/radio impulses over wire/air | [TCP](https://tools.ietf.org/html/rfc793) | Ethernet or WiFi |
-| [LocalUDP](LocalUDP)  | Electrical/radio impulses over wire/air | [UDP](https://tools.ietf.org/html/rfc768) | Ethernet or WiFi |
-| [GlobalUDP](GlobalUDP)  | Electrical/radio impulses over wire/air | [UDP](https://tools.ietf.org/html/rfc768) | Ethernet or WiFi |
-| [DualUDP](DualUDP)  | Electrical/radio impulses over wire/air | [UDP](https://tools.ietf.org/html/rfc768) | Ethernet or WiFi |
-| [MQTTTranslate](MQTTTranslate)  | Electrical/radio impulses over wire/air | [MQTT](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.pdf) | Ethernet or WiFi |
-| [ESPNOW](ESPNOW)  | Radio impulses over air | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) | WiFi link |
-| [LocalFile](LocalFile)  | Shared file system in memory | None | None |
-| [Any](Any)  | Virtual inheritance, any of the above | Any of the above | Any of the above |
+| Strategy      | Physical layer | Protocol |
+| ------------- | -------------- | -------- |
+| [SoftwareBitBang](/src/strategies/SoftwareBitBang) | Wire | [PJDL](../src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md) |
+| [OverSampling](/src/strategies/OverSampling)  | Radio | [PJDLR](../src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) |
+| [AnalogSampling](/src/strategies/AnalogSampling)  | Light | [PJDLS](../src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) |
+| [ThroughSerial](/src/strategies/ThroughSerial)  | Radio | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md) |
+| [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio | [LoRa](https://lora-alliance.org/sites/default/files/2018-07/lorawan1.0.3.pdf) |
+| [EthernetTCP](/src/strategies/EthernetTCP)  | Ethernet/WiFi | [TCP](https://tools.ietf.org/html/rfc793) |
+| [LocalUDP](/src/strategies/LocalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) |
+| [GlobalUDP](/src/strategies/GlobalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) |
+| [DualUDP](/src/strategies/DualUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) |
+| [MQTTTranslate](/src/strategies/MQTTTranslate)  | Ethernet/WiFi | [MQTT](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.pdf) |
+| [ESPNOW](/src/strategies/ESPNOW)  | WiFi | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) |
+| [LocalFile](/src/strategies/LocalFile)  | System memory | None |
+| [Any](/src/strategies/Any)  | Virtual inheritance, any of the above | Any |
 
 A `Strategy` is a class containing a set of methods used to physically send and receive data along with the required getters to handle retransmission and collision:
 

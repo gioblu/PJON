@@ -193,6 +193,7 @@ Medium access              Transmission                Response
  BITS: | 8  |    8     |   8    |  8   |   8    |  8   |
        |____|__________|________|______|________|______|
 ```
+The acknowledgment gives reception certainty only when a packet transmission occurs directly without the intermediation of routers or switches. When a packet needs to traverse a network the acknowledgment is generally sent by the nearest router or switch, although does not necessarily mean that the packet is received by its recipient.     
 
 #### Local mode
 Depending on header's `MODE` bit packets can contain basic or extended support to identification. Local mode required by header's `MODE` bit low supports connectivity for up to 254 devices. In the graph below is represented the simplest local mode packet format sending `@` (decimal 64) to device `12`:

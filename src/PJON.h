@@ -169,6 +169,10 @@ class PJON {
           (info.header & PJON_PORT_BIT)
         ) info.port = port;
       #endif
+      #if(PJON_INCLUDE_MAC)
+        if(info.header & PJON_MAC_BIT)
+          PJONTools::copy_id(info.tx.mac, tx.mac, 6);
+      #endif
       uint16_t l = PJONTools::compose_packet(
         info, destination, source, length
       );

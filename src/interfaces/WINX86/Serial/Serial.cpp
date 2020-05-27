@@ -10,6 +10,9 @@
  *  - modified flush method to use WIN API
  *  - added initial tests
  *  - changed timeouts to 1s
+ *
+ *
+ * 11/05/2020 - getByte function simplified, now returns -1 in case of failure
  */
 
 #if defined(_WIN32)
@@ -32,12 +35,7 @@ std::wstring s2ws(const std::string& s){
 };
 
 
-Serial::Serial(
-  std::string &commPortName,
-  int bitRate,
-  bool testOnStartup,
-  bool cycleDtrOnStartup
-) {
+Serial::Serial(std::string &commPortName, int bd) {
   std::wstring com_name_ws = s2ws(commPortName);
 
   commHandle =
@@ -80,7 +78,7 @@ Serial::Serial(
     // set DCB; disabling harware flow control; setting 1N8 mode
     memset(&dcb, 0, sizeof(dcb));
     dcb.DCBlength = sizeof(dcb);
-    dcb.BaudRate = bitRate;
+    dcb.BaudRate = bd;
     dcb.fBinary = 1;
     dcb.fDtrControl = DTR_CONTROL_DISABLE;
     dcb.fRtsControl = RTS_CONTROL_DISABLE;
@@ -92,23 +90,6 @@ Serial::Serial(
       Serial::~Serial();
       throw("ERROR: Could not set com port parameters");
     }
-  }
-
-  if(cycleDtrOnStartup) {
-    if(!EscapeCommFunction(commHandle, CLRDTR))
-      throw("ERROR: clearing DTR");
-    Sleep(200);
-    if(!EscapeCommFunction(commHandle, SETDTR))
-      throw("ERROR: setting DTR");
-  }
-
-  if(testOnStartup) {
-    DWORD numWritten;
-    char init[] = "PJON-python init";
-    if(!WriteFile(commHandle, init, sizeof(init), &numWritten, NULL))
-      throw("writing initial data to port failed");
-    if(numWritten != sizeof(init))
-      throw("ERROR: not all test data written to port");
   }
 };
 
@@ -123,19 +104,17 @@ int Serial::writeByte(uint8_t *buffer) {
   return numWritten;
 };
 
-uint8_t Serial::getByte() {
+int16_t Serial::getByte() {
   uint8_t buff;
-  read(&buff, 1, false);
+  if(read(&buff, 1) == -1) return -1;
   return buff;
 };
 
 
-int Serial::read(uint8_t *buffer, int buffLen, bool nullTerminate) {
+int Serial::read(uint8_t *buffer, int buffLen) {
   DWORD numRead;
-  if(nullTerminate) --buffLen;
   BOOL ret = ReadFile(commHandle, buffer, buffLen, &numRead, NULL);
-  if(!ret) return 0;
-  if(nullTerminate) buffer[numRead] = '\0';
+  if(!ret) return -1;
   return numRead;
 };
 

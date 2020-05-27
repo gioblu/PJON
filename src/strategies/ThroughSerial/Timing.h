@@ -8,7 +8,8 @@
     - Franketto (Arduino forum user) RS485 TX enable pin compatibility
    ____________________________________________________________________________
 
-   ThroughSerial, Copyright (c) 2016 by Giovanni Blu Mitolo All rights reserved.
+   Based on ThroughSerial, developed by sticilface
+   copyright 2018 by Giovanni Blu Mitolo All rights reserved
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -31,28 +32,43 @@
 
 /* Maximum 32 microseconds random delay in case of collision */
 #ifndef TS_COLLISION_DELAY
-  #define TS_COLLISION_DELAY      32
+  #define TS_COLLISION_DELAY      64
 #endif
 
-/* Set 10 milliseconds as the maximum timeframe between transmission and
-   synchronous acknowledgement response. This value is strictly related to the
-   maximum time needed by receiver to receive, compute and transmit a response.
-   Higher if necessary. */
+/* Set 40 milliseconds as the maximum timeframe between transmission and
+   synchronous acknowledgement response. Its  optimal configuration is
+   strictly related to the maximum time needed by receiver to receive, compute
+   and transmit back a response. */
 #ifndef TS_RESPONSE_TIME_OUT
-  #define TS_RESPONSE_TIME_OUT 10000
+  #define TS_RESPONSE_TIME_OUT 40000
 #endif
 
-/* Minum timeframe with channel free for use before transmission.
+/* Minum duration of channel free for use before transmission.
    (Avoid disrupting synchronous acknowledgement exchange) */
 #ifndef TS_TIME_IN
   #define TS_TIME_IN  TS_RESPONSE_TIME_OUT + TS_COLLISION_DELAY
 #endif
 
-/* Set 50 milliseconds as the maximum timeframe for byte reception.
-   This value depends on the latency, baud rate and computation time.
-   Always set TS_BYTE_TIME_OUT > (byte transmission time + latency) */
+/* Set 100 microseconds as the interval between each byte read.
+   Depending on the latency, baud rate and computation time the
+   optimal TS_READ_INTERVAL value may variate.
+   Always set: TS_READ_INTERVAL > (byte transmission time + latency) */
+#ifndef TS_READ_INTERVAL
+  #define TS_READ_INTERVAL       100
+#endif
+
+/* Byte reception timeout */
 #ifndef TS_BYTE_TIME_OUT
-  #define TS_BYTE_TIME_OUT     50000
+  #define TS_BYTE_TIME_OUT   1000000
+#endif
+
+/* Response length (the response is composed by the last TS_RESPONSE_LENGTH
+   bytes of the packet received). By default should be relatively safe if
+   used in master-slave mode. Setting TS_RESPONSE_LENGTH < 4 when using
+   ThroughSerial in multi-master mode reduces reliability and leads to higher
+   chances of detecting a false positive. */
+#ifndef TS_RESPONSE_LENGTH
+  #define TS_RESPONSE_LENGTH       1
 #endif
 
 /* Maximum transmission attempts */
@@ -62,12 +78,12 @@
 
 /* Back-off exponential degree */
 #ifndef TS_BACK_OFF_DEGREE
-  #define TS_BACK_OFF_DEGREE      4
+  #define TS_BACK_OFF_DEGREE       4
 #endif
 
 /* Delay before enabling and disabling RS485 DE and or RE pin */
 #ifndef TS_RS485_DELAY
-  #define TS_RS485_DELAY          1
+  #define TS_RS485_DELAY           1
 #endif
 
 /* Force blocking sending hack (adds a delay for each character sent). */

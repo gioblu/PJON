@@ -1,8 +1,8 @@
 ## MQTTTranslate
 
-**Medium:** MQTT protocol |
-**Pins used:** NA |
-**Inclusion constant:** `PJON_INCLUDE_MQTT`
+| Medium | Pins used | Inclusion Constant | Included by default |
+|--------|-----------|--------------------|---------------------|
+| MQTT protocol   | NA    | `PJON_INCLUDE_MQTT`|  no                |
 
 MQTTTranslate uses the [ReconnectingMqttClient](https://github.com/fredilarsen/ReconnectingMqttClient) library (minimum version required v1.1.1) to deliver PJON packets over TCP on local network (LAN) as a MQTT protocol client. It may be useful to connect PJON networks and more standard applications to each other using the MQTT protocol. This strategy works in one of four modes. The first two modes enable to implement a PJON bus via MQTT, the first mode is "closed" and the second is "open" to use by non-PJON programs. The last two modes are for behaving like MQTT devices normally do.
 

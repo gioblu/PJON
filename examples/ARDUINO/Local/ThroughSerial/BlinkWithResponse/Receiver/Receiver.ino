@@ -1,11 +1,6 @@
-/* If you need non-blocking asynchronous operation include the
-   ThroughSerialAsync strategy using:
-   #define PJON_INCLUDE_TSA true */
 #include <PJON.h>
 
 PJON<ThroughSerial> bus(44);
-/* Use PJON<ThroughSerialAsync> bus(45);
-   instead if non-blocking asynchronous operation is required */
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
  /* Make use of the payload before sending something, the buffer where payload points to is
@@ -14,7 +9,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
     digitalWrite(LED_BUILTIN, HIGH);
     delay(30);
     digitalWrite(LED_BUILTIN, LOW);
-    bus.reply("B", 1);
+    if(!bus.update()) bus.reply("B", 1);
   }
 };
 

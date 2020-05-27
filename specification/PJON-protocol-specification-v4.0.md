@@ -7,7 +7,7 @@
 - [PJDL (Padded Jittering Data Link) v4.1](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md)
 - [PJDLR (Padded Jittering Data Link over Radio) v3.0](/src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md)
 - [PJDLS (Padded Jittering Data Link byte Stuffed) v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
-- [TSDL (Tardy Serial Data Link) v2.1](/src/strategies/ThroughSerial/specification/TSDL-specification-v2.1.md)
+- [TSDL (Tardy Serial Data Link) v3.0](/src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md)
 - [SFSP (Secure Frame Separation Protocol) v1.0](/specification/SFSP-frame-separation-specification-v1.0.md)
 
 ---
@@ -193,6 +193,7 @@ Medium access              Transmission                Response
  BITS: | 8  |    8     |   8    |  8   |   8    |  8   |
        |____|__________|________|______|________|______|
 ```
+The acknowledgment gives reception certainty only when a packet transmission occurs directly without the intermediation of routers or switches. When a packet needs to traverse a network the acknowledgment is generally sent by the nearest router or switch, although does not necessarily mean that the packet is received by its recipient.     
 
 #### Local mode
 Depending on header's `MODE` bit packets can contain basic or extended support to identification. Local mode required by header's `MODE` bit low supports connectivity for up to 254 devices. In the graph below is represented the simplest local mode packet format sending `@` (decimal 64) to device `12`:
@@ -320,7 +321,7 @@ if the header's `PORT` bit is high a 16 bits port id is added to the packet. Tha
 ```
 
 #### Hardware identification
-If the header's `MAC` bit is high both recipient's and sender's 48 bits MAC addresses are included in the packet. Device id and bus id filtering does not vary. When MAC addresses are included and device ids are not set all devices must use device id 255 and transmit packets to device id 255 (or use broadcast if the acknowledgement is not required). The graph below shows a broadcast packet transmission where MAC address `111111` sends to MAC address `222222` the payload 64.
+If the header's `MAC` bit is high both recipient's and sender's 48 bits MAC addresses are included in the packet. The recipient's MAC address must match the MAC address of the receiver otherwise the packet is discarded. When the hardware identification is present the packet is received even if the bus id and or the device id don't match. If a packet contains an empty recipient's MAC or `0.0.0.0.0.0` it is not discarded even if the MAC address do not match. The graph below shows a broadcast packet transmission where MAC address `1.1.1.1.1.1` sends to MAC address `2.2.2.2.2.2` the payload 64.
 ```cpp
  ________________________________________________
 |ID| HEADER |LENGTH|CRC8|RX MAC|TX MAC|DATA|CRC32|
@@ -329,4 +330,15 @@ If the header's `MAC` bit is high both recipient's and sender's 48 bits MAC addr
 |__|________|______|____|______|______|____|_____|
 |8 |   8    |  8   | 8  |  48  |  48  | 8  | 32  | 168 bits
 |__|________|______|____|______|______|____|_____|
+```
+When a device knows its own MAC address but doesn't know its own device id it must use device id 255. To reach another device in the same configuration, it can transmit packets to device id 255 and include the MAC addresses setting the `MAC` bit high. In this case even if many devices could be present using device id 255, only the one with the matching MAC address receives the packet. If the `ACK` bit is high the receiver can send an acknowledge, although also a broadcast can be used if the acknowledgement is not required.
+
+```cpp
+ _________________________________________________  ___
+|ID | HEADER |LENGTH|CRC8|RX MAC|TX MAC|DATA|CRC32||ACK|
+|---|--------|------|----|------|------|----|-----||---|
+|255|00001100|  12  |    |222222|111111| 64 |     || 6 |
+|___|________|______|____|______|______|____|_____||___|
+| 8 |   8    |  8   | 8  |  48  |  48  | 8  | 32  | 168 bits
+|___|________|______|____|______|______|____|_____|
 ```

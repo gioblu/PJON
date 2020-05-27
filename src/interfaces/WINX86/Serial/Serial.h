@@ -13,6 +13,8 @@
  * @version 0.1 -- 28 October 2008
  * @version 0.2 -- 20 April 2017 (Zbigniew Zasieczny)
  *  - added methods needed by PJON to handle WINX86 abstraction interface
+ *
+ * 11/05/2020 getByte function simplified, now returns -1 in case of failure
  */
 
 #pragma once
@@ -31,9 +33,7 @@
   public:
     Serial(
       std::string &commPortName,
-      int bitRate = 115200,
-      bool testOnStartup = false,
-      bool cycleDtrOnStartup = false
+      int bitRate = 115200
     );
 
     virtual ~Serial();
@@ -50,15 +50,16 @@
      *
      * @param buffer pointer to the buffer to be written to
      * @param buffLen the size of the buffer
-     * @param nullTerminate if set to true it will null terminate the string
      *
      * @return int the number of bytes read
      */
-    int read(uint8_t *buffer, int buffLen, bool nullTerminate = true);
+    int read(uint8_t *buffer, int buffLen);
 
-    /** Returns single byte (uint8_t) from the receive buffer
-    */
-    uint8_t getByte();
+    /** Returns an integer (uint16_t)
+      *
+      * @return a value < 256 or -1 in case of failure
+      */
+    int16_t getByte();
 
     /** Returns true if there is data available in receive buffer
     */

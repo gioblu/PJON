@@ -17,7 +17,7 @@
 #include <chrono>
 
 // Set the preferred baudrate
-#define BAUDRATE  9600
+#define BAUDRATE 9600
 
 // Set the USB COM port used
 #define COM_PORT "COM9"
@@ -29,6 +29,20 @@
 #include <PJON.h>
 
 PJON<ThroughSerial> bus(45);
+
+// The function called when data is received
+
+static void receiver_function(
+  uint8_t *payload,
+  uint16_t length,
+  const PJON_Packet_Info &packet_info
+) {
+  // Print data received
+  for (uint32_t i = 0; i != length; i++)
+    std::cout << payload[i];
+  std::cout << std::endl;
+  fflush(stdout);
+};
 
 // Error handler called when something goes wrong
 
@@ -52,6 +66,7 @@ void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
 
 int main() {
   printf("PJON instantiation... \n");
+  bus.set_receiver(receiver_function);
   bus.set_error(error_handler);
 
   // Set here the COM port assigned to the device you want to communicate with

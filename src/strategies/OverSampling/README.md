@@ -1,8 +1,7 @@
 ## OverSampling
-
-**Medium:** ASK/FSK radio modules -
-**Pins used:** 1 or 2 -
-**Inclusion constant:** `PJON_INCLUDE_OS`
+| Medium | Pins used | Inclusion Constant | Included by default |
+|--------|-----------|--------------------|---------------------|
+| ASK/FSK radio modules | 1 or 2    | `PJON_INCLUDE_OS`|  yes                |
 
 `OverSampling` is a software implementation of [PJDLR (Padded Jittering Data Link over Radio)](/src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md). It supports simplex and half-duplex asynchronous serial communication and implements a carrier-sense, non-persistent random multiple access method (non-persistent CSMA). This implementation can run on limited microcontrollers with low clock accuracy, supports communication for many devices connected to the same medium and stable operation in spite of interference. Its procedure is a more efficient alternative to the LoRa Open Standard (that specifies a variation of Slotted ALOHA) and it is designed to obtain long range and high reliability using FSK, ASK or OOK modulation radio transceivers. Take a look at the [video introduction](https://www.youtube.com/watch?v=G1ckfsMzPns) for a brief showcase of its features.
 

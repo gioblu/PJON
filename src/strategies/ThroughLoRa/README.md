@@ -1,14 +1,12 @@
 ## ThroughLoRa
 
-**Medium:** LoRa radio modules -
-**Pins used:** 6 -
-**Inclusion constant:** `PJON_INCLUDE_TL`
+| Medium | Pins used | Inclusion Constant | Included by default |
+|--------|-----------|--------------------|---------------------|
+| LoRa radio | 6         | `PJON_INCLUDE_TL`|  no               |
 
 With `ThroughLora` strategy, PJON can run through a software or hardware SPI in order to communicate with supported LoRa modules. See [Supported Shields/Modules](https://github.com/gioblu/PJON/tree/master/src/strategies/ThroughLoRa#supported-shieldsmodules).
 
 This strategy is a wrapper around  [Arduino LoRa library](https://github.com/sandeepmistry/arduino-LoRa) created by [Sandeep Mistry](https://github.com/sandeepmistry) so all the credit to the specific LoRa implementation goes to him.
-
-Consider that, because of the inherent limitations of LoRa, the synchronous acknowledgement is not supported.
 
 ### Compatibility
 - ATmega88/168/328 16MHz (Diecimila, Duemilanove, Uno, Nano, Mini, Lillypad)
@@ -56,7 +54,7 @@ bus.strategy.setFrequency(868100000UL); //initialize 868 MHZ module
 - `DIO0` pin is optional, it is only needed for receive callback mode. If `DIO0` pin is used, it **must** be interrupt capable via [`attachInterrupt(...)`](https://www.arduino.cc/en/Reference/AttachInterrupt).
 
 ### Usage Example
-Here are listed basic examples of a transmitter and receiver code. After tou include the necessary code to initialize the Lora module you can use the normal PJON functions to handle data communication.
+Here are listed basic examples of a transmitter and receiver code. After you include the necessary code to initialize the Lora module you can use the normal PJON functions to handle data communication.
 
 Keep in mind that to use the LoRa startegy you must download the [Arduino LoRa library](https://github.com/sandeepmistry/arduino-LoRa).
 
@@ -74,8 +72,6 @@ void setup() {
   // Obligatory to initialize Radio with correct frequency
   bus.strategy.setFrequency(868100000UL);
   bus.begin();
-  // Synchronous acknowledgement is not supported
-  bus.set_acknowledge(false);
   // Send B to device 44 every second
   bus.send_repeatedly(44, "B", 1, 1000000);
 };
@@ -102,8 +98,6 @@ void setup() {
 
   // Obligatory to initialize Radio with correct frequency
   bus.strategy.setFrequency(868100000UL);
-  // Synchronous acknowledgement is not supported
-  bus.set_acknowledge(false);
   // Optional
   bus.strategy.setSignalBandwidth(250E3);
   bus.begin();

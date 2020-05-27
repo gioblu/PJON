@@ -55,7 +55,7 @@ PJON<SoftwareBitBang> bus(bus_id, 44);
 
 The bus id can be read and set after initialisation using `bus_id`:
 ```cpp  
-  bus.bus_id; // Get or set bus id
+  bus.tx.bus_id; // Get or set bus id
 ```
 
 ### Hardware identifier
@@ -75,4 +75,10 @@ This instantiation sets the MAC address, the device id set to `PJON_NOT_ASSIGNED
 
 ```cpp
 bus.include_mac(false);
+```
+### Get or set hardware identifier
+
+The MAC address can be read and set after initialisation using `tx.mac`:
+```cpp  
+  bus.tx.mac; // Get or set MAC
 ```

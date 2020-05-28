@@ -52,25 +52,22 @@ The table below lists the strategies available:
 | [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio | [LoRa](https://lora-alliance.org/sites/default/files/2018-07/lorawan1.0.3.pdf) | `PJON_INCLUDE_TL` | no |
 | [ThroughSerial](/src/strategies/ThroughSerial)  | Radio | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md) | `PJON_INCLUDE_TS` | yes |
 
-By default all strategies are included except `MQTTTranslate`, `LocalFile`, `ThroughLoRa` and `ESPNOW`. To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before including the library to select only the `SoftwareBitBang` strategy. More than one strategy related constants can be defined in the same program if that is required.
+By default all strategies are included except `MQTTTranslate`, `LocalFile`, `ThroughLoRa` and `ESPNOW`. Before using `ThroughLoRa` be sure to have [arduino-LoRa](https://github.com/sandeepmistry/arduino-LoRa) library available and to have defined the `PJON_INCLUDE_TL` constant before including `PJON.h`. Before using `ESPNOW` be sure to have installed the required tools as described [here](/src/strategies/ESPNOW/README.md) and to have defined the `PJON_INCLUDE_EN` constant before including `PJON.h`. Before using `MQTTTranslate` be sure to have the [ReconnectingMqttClient](https://github.com/fredilarsen/ReconnectingMqttClient) library available and to have defined the `PJON_INCLUDE_MQTT` constant before including `PJON.h`.
 
-When a strategy is included by default the usage is really simple:
+To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before including the library to select only the `SoftwareBitBang` strategy.
 ```cpp
+#define PJON_INCLUDE_SWBB  // Include only SoftwareBitBang strategy
 #include<PJON.h>           // Include the library
 PJON<SoftwareBitBang> bus; // Instantiation
 ```
+More than one strategy related constants can be defined in the same program if that is required.
+
 If the strategy you want to use is not included by default, like ESPNOW, you can force its inclusion using its constant:
 ```cpp
-#define PJON_INCLUDE_EN    // Force the inclusion of ESPNOW strategy
-#include<PJON.h>           // Include the library
-PJON<SoftwareBitBang> bus; // Instantiation
+#define PJON_INCLUDE_EN // Force the inclusion of ESPNOW strategy
+#include<PJON.h>        // Include the library
+PJON<ESPNOW> bus;       // Instantiation
 ```
-
-Before using `ThroughLoRa` be sure to have [arduino-LoRa](https://github.com/sandeepmistry/arduino-LoRa) library available and to have defined the `PJON_INCLUDE_TL` constant before including `PJON.h`.
-
-Before using `ESPNOW` be sure to have installed the required tools as described [here](/src/strategies/ESPNOW/README.md) and to have defined the `PJON_INCLUDE_EN` constant before including `PJON.h`.
-
-Before using `MQTTTranslate` be sure to have the [ReconnectingMqttClient](https://github.com/fredilarsen/ReconnectingMqttClient) library available and to have defined the `PJON_INCLUDE_MQTT` constant before including `PJON.h`.
 
 ### Network mode
 The network mode can be changed with `set_shared_network` during runtime, for example moving from [local](/specification/PJON-protocol-specification-v4.0.md#local-mode) to [shared](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v4.0.md#shared-mode) mode:

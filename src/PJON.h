@@ -188,7 +188,7 @@ class PJON {
     /* Add packet to buffer (delivery attempt by the next update() call): */
 
     uint16_t dispatch(
-      const PJON_Packet_Info info,
+      const PJON_Packet_Info &info,
       const void *packet,
       uint16_t length,
       uint32_t timing = 0,
@@ -482,7 +482,7 @@ class PJON {
       return dispatch(info, payload, length);
     };
 
-    uint16_t send(PJON_Packet_Info info, const void *payload, uint16_t length) {
+    uint16_t send(const PJON_Packet_Info &info, const void *payload, uint16_t length) {
       return dispatch(info, payload, length);
     };
 
@@ -542,7 +542,7 @@ class PJON {
     };
 
     uint16_t send_repeatedly(
-      PJON_Packet_Info info,
+      const PJON_Packet_Info &info,
       const void *payload,
       uint16_t length,
       uint32_t timing
@@ -603,7 +603,7 @@ class PJON {
     };
 
     uint16_t send_packet(
-      PJON_Packet_Info info,
+      const PJON_Packet_Info &info,
       const void *payload,
       uint16_t length
     ) {
@@ -617,13 +617,9 @@ class PJON {
        delivered, or timing limit is reached. */
 
     uint16_t send_packet_blocking(
-      uint8_t rx_id,
-      const uint8_t *rx_bus_id,
+      const PJON_Packet_Info &packet_info,
       const void *payload,
       uint16_t length,
-      uint8_t  header = PJON_NO_HEADER,
-      uint16_t packet_id = 0,
-      uint16_t rx_port = PJON_BROADCAST,
       uint32_t timeout = 3500000
     ) {
       uint16_t state = PJON_FAIL;
@@ -636,9 +632,7 @@ class PJON {
         (state != PJON_ACK) && (attempts <= strategy.get_max_attempts()) &&
         (uint32_t)(PJON_MICROS() - start) <= timeout
       ) {
-        PJON_Packet_Info info = fill_info(rx_id, header, packet_id, rx_port);
-        PJONTools::copy_id(info.rx.bus_id, rx_bus_id, 4);
-        if(!(length = compose_packet(info, data, payload, old_length))) {
+        if(!(length = compose_packet(packet_info, data, payload, old_length))) {
           _recursion--;
           return PJON_FAIL;
         }
@@ -657,6 +651,20 @@ class PJON {
       }
       _recursion--;
       return state;
+    };
+
+    uint16_t send_packet_blocking(
+      uint8_t rx_id,
+      const uint8_t *rx_bus_id,
+      const void *payload,
+      uint16_t length,
+      uint8_t  header = PJON_NO_HEADER,
+      uint16_t packet_id = 0,
+      uint16_t rx_port = PJON_BROADCAST,
+      uint32_t timeout = 3500000
+    ) {
+      PJON_Packet_Info info = fill_info(rx_id, header, packet_id, rx_port);
+      return send_packet_blocking(info, payload, length, timeout);
     };
 
     uint16_t send_packet_blocking(
@@ -747,6 +755,13 @@ class PJON {
     void set_id(uint8_t id) {
       tx.id = id;
     };
+
+    /* Setting bus id */
+
+    void set_bus_id(const uint8_t *b_id) {
+      PJONTools::copy_id(tx.bus_id, b_id, 4);
+      config |= PJON_MODE_BIT;
+    }
 
     /* Configure sender's information inclusion in the packet.
        state = true -> +8 bits (device id) in local mode
@@ -851,7 +866,7 @@ class PJON {
       /* Checks if the packet id and its transmitter info are already present
          in the known packets buffer, if not add it to the buffer */
 
-      bool known_packet_id(PJON_Packet_Info info) {
+      bool known_packet_id(const PJON_Packet_Info &info) {
         for(uint8_t i = 0; i < PJON_MAX_RECENT_PACKET_IDS; i++)
           if(
             info.id == recent_packet_ids[i].id &&
@@ -876,7 +891,7 @@ class PJON {
 
       /* Save packet id in the buffer: */
 
-      void save_packet_id(PJON_Packet_Info info) {
+      void save_packet_id(const PJON_Packet_Info &info) {
         for(uint8_t i = PJON_MAX_RECENT_PACKET_IDS - 1; i > 0; i--)
           recent_packet_ids[i] = recent_packet_ids[i - 1];
         recent_packet_ids[0].id = info.id;

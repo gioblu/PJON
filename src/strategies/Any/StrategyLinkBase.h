@@ -42,6 +42,9 @@ public:
 
     virtual uint8_t get_max_attempts() = 0;
 
+    /* Returns the recommended receive time for this strategy: */
+
+    virtual uint16_t get_receive_time() = 0;
 
     /* Handle a collision: */
 

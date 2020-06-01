@@ -24,6 +24,11 @@
 #include "EthernetLink.h"
 #include <PJONDefines.h>
 
+// Recommended receive time for this strategy, in microseconds
+#ifndef ETCP_RECEIVE_TIME
+  #define ETCP_RECEIVE_TIME 0
+#endif
+
 class EthernetTCP {
   public:
     EthernetLink link;
@@ -97,6 +102,13 @@ class EthernetTCP {
 
     static uint8_t get_max_attempts() {
       return 5;
+    };
+
+
+    /* Returns the recommended receive time for this strategy: */
+
+    static uint16_t get_receive_time() {
+      return ETCP_RECEIVE_TIME;
     };
 
 

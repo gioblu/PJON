@@ -40,6 +40,11 @@
   #define OS_MODE 1
 #endif
 
+// Recommended receive time for this strategy, in microseconds
+#ifndef OS_RECEIVE_TIME
+  #define OS_RECEIVE_TIME 1000
+#endif
+
 // Used to signal communication failure
 #define OS_FAIL       65535
 
@@ -92,6 +97,13 @@ class OverSampling {
 
     static uint8_t get_max_attempts() {
       return OS_MAX_ATTEMPTS;
+    };
+
+
+    /* Returns the recommended receive time for this strategy: */
+
+    static uint16_t get_receive_time() {
+      return OS_RECEIVE_TIME;
     };
 
 

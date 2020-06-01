@@ -31,6 +31,11 @@
   #define EN_MAX_REMOTE_NODES               10
 #endif
 
+// Recommended receive time for this strategy, in microseconds
+#ifndef EN_RECEIVE_TIME
+  #define EN_RECEIVE_TIME 0
+#endif
+
 #define EN_MAGIC_HEADER (uint8_t*)"\xEE\xFE\x0E\xEF"
 
 class ESPNOW {
@@ -153,6 +158,11 @@ public:
     /* Returns the maximum number of attempts for each transmission: */
 
     static uint8_t get_max_attempts() { return 10; };
+
+
+    /* Returns the recommended receive time for this strategy: */
+
+    static uint16_t get_receive_time() { return EN_RECEIVE_TIME; };
 
 
     /* Handle a collision (empty because handled on Ethernet level): */

@@ -58,6 +58,11 @@ public:
     uint8_t get_max_attempts() { return s->get_max_attempts(); }
 
 
+    /* Returns the recommended receive time for this strategy: */
+
+    uint16_t get_receive_time() { return s->get_receive_time(); }
+
+
     /* Handle a collision: */
 
     void handle_collision() { s->handle_collision(); };

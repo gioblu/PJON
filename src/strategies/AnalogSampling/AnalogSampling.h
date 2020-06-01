@@ -87,6 +87,11 @@
 
 #include "Timing.h"
 
+// Recommended receive time for this strategy, in microseconds
+#ifndef AS_RECEIVE_TIME
+  #define AS_RECEIVE_TIME 1000
+#endif
+
 class AnalogSampling {
   public:
 
@@ -156,6 +161,13 @@ class AnalogSampling {
 
     static uint8_t get_max_attempts() {
       return AS_MAX_ATTEMPTS;
+    };
+
+
+    /* Returns the recommended receive time for this strategy: */
+
+    static uint16_t get_receive_time() {
+      return AS_RECEIVE_TIME;
     };
 
 

@@ -39,6 +39,11 @@
   MODE   4: 3.40kB/s - 27210Bd */
 #include "Timing.h"
 
+// Recommended receive time for this strategy, in microseconds
+#ifndef SWBB_RECEIVE_TIME
+  #define SWBB_RECEIVE_TIME 1000
+#endif
+
 class SoftwareBitBang {
   public:
     /* Returns the delay related to the attempts passed as parameter: */
@@ -86,6 +91,13 @@ class SoftwareBitBang {
 
     static uint8_t get_max_attempts() {
       return SWBB_MAX_ATTEMPTS;
+    };
+
+
+    /* Returns the recommended receive time for this strategy: */
+
+    static uint16_t get_receive_time() {
+      return SWBB_RECEIVE_TIME;
     };
 
 

@@ -113,6 +113,11 @@
   #define MQTTT_TRANSLATION_TABLE_SIZE 5
 #endif
 
+// Recommended receive time for this strategy, in microseconds
+#ifndef MQTTT_RECEIVE_TIME
+  #define MQTTT_RECEIVE_TIME 0
+#endif
+
 #if defined(MQTTT_USE_MAC) && ((MQTTT_MODE == MQTTT_MODE_MIRROR_TRANSLATE) || (MQTTT_MODE == MQTTT_MODE_MIRROR_DIRECT))
   #define MQTTT_MAC
 #endif
@@ -341,6 +346,11 @@ public:
     /* Returns the maximum number of attempts for each transmission: */
 
     static uint8_t get_max_attempts() { return 0; };
+
+
+    /* Returns the recommended receive time for this strategy: */
+
+    static uint16_t get_receive_time() { return MQTTT_RECEIVE_TIME; };
 
 
     /* Handle a collision (empty because handled on Ethernet level): */

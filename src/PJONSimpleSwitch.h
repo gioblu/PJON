@@ -15,16 +15,13 @@
 
 PJONSimpleSwitch has been contributed by Fred Larsen.
 
-It routes packets between buses with different bus ids, and between segmented
-buses as well, even for local buses with no bus ids. It is limited to one
-single strategy in contrast to its descendant PJONSwitch.
+It routes packets between buses with different bus ids, and also between
+local buses with no bus ids. It is limited to one single strategy in contrast 
+to its descendant PJONSwitch.
 
 A default gateway can be specified, identifying one of the attached buses to
 receive packets to other target buses than any of the attached buses. It is
 possible to use a PJONSimpleSwitch to handle leaf buses in a tree structure.
-
-A segmented bus is a "virtual" bus where ranges of its devices are  located
-in separate physical buses.
 
 NAT (network address translation) support is present, allowing a local bus
 to communicate with shared buses. To do this, the local bus must have the
@@ -58,36 +55,6 @@ limitations under the License. */
 #pragma once
 #include "PJON.h"
 
-template<class Strategy>
-class PJONBus : public PJON<Strategy> {
-public:
-  PJONBus(
-    const uint8_t id = PJON_NOT_ASSIGNED,
-    const uint32_t receive_time_in = 0,
-    const uint8_t num_device_id_segments = 1,
-    const uint8_t device_id_segment = 0
-  ) : PJON<Strategy>(id) {
-    receive_time = receive_time_in;
-    segment_count = num_device_id_segments;
-    segment = device_id_segment;
-  };
-
-  PJONBus(
-    const uint8_t bus_id[],
-    const uint8_t id = PJON_NOT_ASSIGNED,
-    const uint32_t receive_time_in = 0,
-    const uint8_t num_device_id_segments = 1,
-    const uint8_t device_id_segment = 0
-  ) : PJON<Strategy>(bus_id, id) {
-    receive_time = receive_time_in;
-    segment_count = num_device_id_segments;
-    segment = device_id_segment;
-  }
-
-  uint32_t receive_time;
-  uint8_t segment_count, segment;
-};
-
 #ifndef PJON_ROUTER_MAX_BUSES
   #define PJON_ROUTER_MAX_BUSES 5
 #endif
@@ -98,11 +65,11 @@ protected:
   uint8_t bus_count = 0;
   uint8_t default_gateway = PJON_NOT_ASSIGNED;
   uint8_t current_bus = PJON_NOT_ASSIGNED;
-  PJONBus<Strategy> *buses[PJON_ROUTER_MAX_BUSES];
+  PJON<Strategy> *buses[PJON_ROUTER_MAX_BUSES];
 
   void connect(
     uint8_t bus_count_in,
-    PJONBus<Strategy> *buses_in[],
+    PJON<Strategy> * const buses_in[],
     uint8_t default_gateway_in,
     void *custom_pointer,
     PJON_Receiver receiver,
@@ -126,16 +93,9 @@ protected:
     uint8_t &start_bus
   ) {
     for(uint8_t i=start_bus; i<bus_count; i++) {
-      if(PJONTools::bus_id_equality(bus_id, buses[i]->bus_id)) {
-        // Check if bus is segmented and if device belongs to bus's segment
-        if(
-          (buses[i]->segment_count <= 1) || // Not segmented
-          (device_id == PJON_BROADCAST) ||  // Broadcast to all segments
-          ((device_id / (256 / buses[i]->segment_count)) == buses[i]->segment)
-        ) { // Segment match
-          start_bus = i + 1; // Continue searching for more matches after this
-          return i; // Explicit bus id match
-        }
+      if(memcmp(bus_id, buses[i]->tx.bus_id, 4) == 0) {
+        start_bus = i + 1; // Continue searching for more matches after this
+        return i; // Explicit bus id match
       }
     }
     start_bus = PJON_NOT_ASSIGNED;
@@ -152,7 +112,7 @@ protected:
     if(
       !ack_sent &&
       (packet_info.header & PJON_ACK_REQ_BIT) &&
-      (packet_info.receiver_id != PJON_BROADCAST)
+      (packet_info.rx.id != PJON_BROADCAST)
     ) {
       buses[sender_bus]->strategy.send_response(PJON_ACK);
       ack_sent = true;
@@ -165,41 +125,31 @@ protected:
     // NAT support: If a shared packet comes from a local bus destined to a
     // non-local receiver, then put the NAT address of the bus as the sender
     //  bus id so that replies can find the route back via NAT.
-    uint8_t sender_bus_id[4];
-    memcpy(sender_bus_id, packet_info.sender_bus_id, 4);
+    PJON_Packet_Info p_info = packet_info;
     if ((packet_info.header & PJON_MODE_BIT) &&
         !(buses[sender_bus]->config & PJON_MODE_BIT) &&
-        memcmp(buses[sender_bus]->bus_id, PJONTools::localhost(), 4)!=0 &&
-        memcmp(packet_info.sender_bus_id, PJONTools::localhost(), 4)==0) {
+        memcmp(buses[sender_bus]->tx.bus_id, PJONTools::localhost(), 4)!=0 &&
+        memcmp(packet_info.tx.bus_id, PJONTools::localhost(), 4)==0) {
       // Replace sender bus id with public/NAT bus id in the packet
-      memcpy(&sender_bus_id, buses[sender_bus]->bus_id, 4);
+      memcpy(&p_info.tx.bus_id, buses[sender_bus]->tx.bus_id, 4);
     }
 
     // NAT support: If a shared packet comes with receiver bus id matching the
     // NAT address of a local bus, then change the receiver bus id to 0.0.0.0
     // before forwarding the shared packet to the local bus.
-    uint8_t receiver_bus_id[4];
-    memcpy(receiver_bus_id, packet_info.receiver_bus_id, 4);
     if ((packet_info.header & PJON_MODE_BIT) &&
         !(buses[receiver_bus]->config & PJON_MODE_BIT) &&
-        memcmp(buses[receiver_bus]->bus_id, PJONTools::localhost(), 4)!=0 &&
-        memcmp(packet_info.receiver_bus_id, buses[receiver_bus]->bus_id, 4)==0) {
+        memcmp(buses[receiver_bus]->tx.bus_id, PJONTools::localhost(), 4)!=0 &&
+        memcmp(packet_info.rx.bus_id, buses[receiver_bus]->tx.bus_id, 4)==0) {
       // Replace receiver bus id with 0.0.0.0 when sending to local bus
-      memcpy(receiver_bus_id, PJONTools::localhost(), 4);
+      memcpy(p_info.rx.bus_id, PJONTools::localhost(), 4);
     }
 
     // Forward the packet
-    uint16_t result = buses[receiver_bus]->send_from_id(
-      packet_info.sender_id,
-      sender_bus_id,
-      packet_info.receiver_id,
-      receiver_bus_id,
-      (const uint8_t*)payload,
-      length,
-      packet_info.header,
-      packet_info.id,
-      packet_info.port
-    );
+    uint16_t result = buses[receiver_bus]->forward(
+        p_info,
+        (const uint8_t *)payload,
+        length);
 
     #if PJON_MAX_PACKETS == 0
     // Call error function explicitly, because that will not be done while sending
@@ -242,8 +192,8 @@ protected:
     do {
       uint8_t receiver_bus = find_bus_with_id((const uint8_t*)
           ((packet_info.header & PJON_MODE_BIT) != 0 ?
-          packet_info.receiver_bus_id : PJONTools::localhost()),
-          packet_info.receiver_id, start_search
+          packet_info.rx.bus_id : PJONTools::localhost()),
+          packet_info.rx.id, start_search
       );
 
       /* The NAT case:
@@ -274,10 +224,29 @@ public:
 
   PJONSimpleSwitch(
     uint8_t bus_count,
-    PJONBus<Strategy> *buses[],
+    PJON<Strategy> * const buses[],
     uint8_t default_gateway = PJON_NOT_ASSIGNED
   ) {
     connect_buses(bus_count, buses, default_gateway);
+  };
+
+  // Specialized constructor to simplify syntax when using 2 buses
+  PJONSimpleSwitch(
+    PJON<Strategy> &bus0,
+    PJON<Strategy> &bus1,
+    uint8_t default_gateway = PJON_NOT_ASSIGNED
+  ) {
+    connect_buses(2, (PJON<Strategy>*[2]){&bus0, &bus1}, default_gateway);
+  };
+
+  // Specialized constructor to simplify syntax when using 3 buses
+  PJONSimpleSwitch(
+    PJON<Strategy> &bus0,
+    PJON<Strategy> &bus1,
+    PJON<Strategy> &bus2,
+    uint8_t default_gateway = PJON_NOT_ASSIGNED
+  ) {
+    connect_buses(3, (PJON<Strategy>*[3]){&bus0, &bus1, &bus2}, default_gateway);
   };
 
   void begin() {
@@ -287,7 +256,7 @@ public:
   void loop() {
     for(current_bus = 0; current_bus < bus_count; current_bus++) {
       uint16_t code =
-        buses[current_bus]->receive(buses[current_bus]->receive_time);
+        buses[current_bus]->receive(buses[current_bus]->strategy.get_receive_time());
       if(PJON_MAX_PACKETS < bus_count && code == PJON_ACK) break;
     }
     for(current_bus = 0; current_bus < bus_count; current_bus++)
@@ -297,7 +266,7 @@ public:
 
   void connect_buses(
     uint8_t bus_count_in,
-    PJONBus<Strategy> *buses_in[],
+    PJON<Strategy> * const buses_in[],
     uint8_t default_gateway_in = PJON_NOT_ASSIGNED
   ) {
     connect(
@@ -315,7 +284,7 @@ public:
   uint8_t get_callback_bus() const { return current_bus; }
 
   // Return one of the buses, in the same order as sent to the constructor
-  PJONBus<Strategy> &get_bus(const uint8_t ix) { return *(buses[ix]); }
+  PJON<Strategy> &get_bus(const uint8_t ix) { return *(buses[ix]); }
 
   static void receiver_function(
     uint8_t *payload,
@@ -335,3 +304,4 @@ public:
     ((PJONSimpleSwitch<Strategy>*)custom_pointer)->dynamic_error_function(code, data);
   }
 };
+

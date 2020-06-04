@@ -40,39 +40,31 @@ limitations under the License. */
 
 #include "PJONSimpleSwitch.h"
 
-class PJONAny : public PJONBus<Any> {
+class PJONAny : public PJON<Any> {
 public:
   PJONAny(
+    const uint8_t id = PJON_NOT_ASSIGNED
+  ) : PJON<Any>(id) {};
+
+  PJONAny(
     StrategyLinkBase *link,
-    const uint8_t id = PJON_NOT_ASSIGNED,
-    const uint32_t receive_time_in = 0,
-    const uint8_t num_device_id_segments = 1,
-    const uint8_t device_id_segment = 0
-  ) : PJONBus<Any>(
-    id,
-    receive_time_in,
-    num_device_id_segments,
-    device_id_segment
-  ) {
+    const uint8_t id = PJON_NOT_ASSIGNED
+  ) : PJON<Any>(id) {
     strategy.set_link(link);
   };
 
   PJONAny(
     StrategyLinkBase *link,
     const uint8_t bus_id[],
-    const uint8_t id = PJON_NOT_ASSIGNED,
-    const uint32_t receive_time_in = 0,
-    const uint8_t num_device_id_segments = 1,
-    const uint8_t device_id_segment = 0
-  ) : PJONBus<Any>(
+    const uint8_t id = PJON_NOT_ASSIGNED
+  ) : PJON<Any>(
     bus_id,
-    id,
-    receive_time_in,
-    num_device_id_segments,
-    device_id_segment
+    id
   ) {
     strategy.set_link(link);
   }
+
+  void set_link(StrategyLinkBase *link) { strategy.set_link(link); }
 };
 
 class PJONSwitch : public PJONSimpleSwitch<Any> {
@@ -81,7 +73,50 @@ public:
 
   PJONSwitch(
     uint8_t bus_count,
-    PJONAny *bus_list[],
+    PJONAny * const bus_list[],
     uint8_t default_gateway = PJON_NOT_ASSIGNED
-  ) : PJONSimpleSwitch<Any>(bus_count, (PJONBus<Any>**)bus_list, default_gateway) { };
+  ) : PJONSimpleSwitch<Any>(bus_count, (PJON<Any>* const *)bus_list, default_gateway) { };
+};
+
+// Specialized class to simplify declaration when using 2 buses
+template<class A, class B>
+class PJONSwitch2 : public PJONSwitch {
+  StrategyLink<A> linkA;
+  StrategyLink<B> linkB;
+  PJONAny busA, busB;
+public:
+  PJONSwitch2(uint8_t default_gateway = PJON_NOT_ASSIGNED) {
+    PJON<Any>* buses[2] = { &busA, &busB };
+    PJONSimpleSwitch<Any>::connect_buses(2, buses, default_gateway);    
+    busA.set_link(&linkA);
+    busB.set_link(&linkB);
+  };
+
+  PJONAny &get_bus(const uint8_t ix) { return ix == 0 ? busA : busB; }
+
+  A &get_strategy_0() { return linkA.strategy; }
+  B &get_strategy_1() { return linkB.strategy; }
+};
+
+// Specialized class to simplify declaration when using 3 buses
+template<class A, class B, class C>
+class PJONSwitch3 : public PJONSwitch {
+  StrategyLink<A> linkA;
+  StrategyLink<B> linkB;
+  StrategyLink<C> linkC;
+  PJONAny busA, busB, busC;
+public:
+  PJONSwitch3(uint8_t default_gateway = PJON_NOT_ASSIGNED) {
+    PJON<Any> *buses[3] = { &busA, &busB, &busC };
+    PJONSimpleSwitch<Any>::connect_buses(3, buses, default_gateway);
+    busA.set_link(&linkA);
+    busB.set_link(&linkB);
+    busC.set_link(&linkC);
+  };
+
+  PJONAny &get_bus(const uint8_t ix) { return ix == 0 ? busA : (ix == 1 ? busB : busC); }
+  
+  A &get_strategy_0() { return linkA.strategy; }
+  B &get_strategy_1() { return linkB.strategy; }
+  C &get_strategy_2() { return linkC.strategy; }
 };

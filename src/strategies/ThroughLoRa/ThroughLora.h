@@ -23,6 +23,11 @@
 #include <LoRa.h>
 #include "Timing.h"
 
+// Recommended receive time for this strategy, in microseconds
+#ifndef TL_RECEIVE_TIME
+  #define TL_RECEIVE_TIME 0
+#endif
+
 class ThroughLora {
   public:
     /* Returns the suggested delay related to the attempts
@@ -115,6 +120,12 @@ class ThroughLora {
 
     static uint8_t get_max_attempts() {
       return TL_MAX_ATTEMPTS;
+    };
+
+    /* Returns the recommended receive time for this strategy: */
+
+    static uint16_t get_receive_time() {
+      return TL_RECEIVE_TIME;
     };
 
     /* Handle a collision: */

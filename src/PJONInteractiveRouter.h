@@ -58,7 +58,7 @@ typedef void (* PJON_SendNotification)(
   const PJON_Packet_Info &packet_info
 );
 
-template<class RouterClass>
+template<class RouterClass = PJONSwitch>
 class PJONInteractiveRouter : public RouterClass {
 protected:
   void *custom_pointer = NULL;
@@ -72,16 +72,16 @@ protected:
     // (If this device has a device id on the source bus, and it is equal to
     // the packets receiver_id, the packet is for this device.)
     bool packet_is_for_me = (
-      RouterClass::buses[RouterClass::current_bus]->device_id() != PJON_NOT_ASSIGNED &&
-      memcmp(RouterClass::buses[RouterClass::current_bus]->bus_id, packet_info.receiver_bus_id, 4) == 0 &&
-      RouterClass::buses[RouterClass::current_bus]->device_id() == packet_info.receiver_id
+      RouterClass::buses[RouterClass::current_bus]->tx.id != PJON_NOT_ASSIGNED &&
+      memcmp(RouterClass::buses[RouterClass::current_bus]->tx.bus_id, packet_info.rx.bus_id, 4) == 0 &&
+      RouterClass::buses[RouterClass::current_bus]->tx.id == packet_info.rx.id
     );
 
     // Take care of other's packets
     if(!packet_is_for_me)
       RouterClass::dynamic_receiver_function(payload, length, packet_info);
     else if(packet_info.header & PJON_ACK_REQ_BIT)
-      RouterClass::buses[RouterClass::current_bus]->send_synchronous_acknowledge();
+      RouterClass::buses[RouterClass::current_bus]->send_acknowledge();
     // Call the receive callback _after_ the packet has been delivered
     if(router || packet_is_for_me) {
       // The packet is for ME :-)
@@ -112,7 +112,7 @@ public:
   PJONInteractiveRouter() : RouterClass() {}
   PJONInteractiveRouter(
     uint8_t bus_count,
-    PJONAny*buses[],
+    PJONAny* const buses[],
     uint8_t default_gateway = PJON_NOT_ASSIGNED)
     : RouterClass(bus_count, buses, default_gateway) {}
 
@@ -134,4 +134,47 @@ public:
 
   // Deliver every packet to receiver callback, or just for this device?
   void set_router(bool on) { router = on; };
+};
+
+// Specialized class to simplify declaration when using 2 buses
+template<class A, class B, class RouterClass = PJONSwitch>
+class PJONInteractiveRouter2 : public PJONInteractiveRouter<RouterClass> {
+  StrategyLink<A> linkA;
+  StrategyLink<B> linkB;
+  PJONAny busA, busB;
+public:
+  PJONInteractiveRouter2(uint8_t default_gateway = PJON_NOT_ASSIGNED) {
+    PJON<Any>* buses[2] = { &busA, &busB };
+    PJONSimpleSwitch<Any>::connect_buses(2, buses, default_gateway);
+    busA.set_link(&linkA);
+    busB.set_link(&linkB);
+  };
+
+  PJONAny &get_bus(const uint8_t ix) { return ix == 0 ? busA : busB; }
+
+  A &get_strategy_0() { return linkA.strategy; }
+  B &get_strategy_1() { return linkB.strategy; }
+};
+
+// Specialized class to simplify declaration when using 3 buses
+template<class A, class B, class C, class RouterClass = PJONSwitch>
+class PJONInteractiveRouter3 : public PJONInteractiveRouter<RouterClass> {
+  StrategyLink<A> linkA;
+  StrategyLink<B> linkB;
+  StrategyLink<C> linkC;
+  PJONAny busA, busB, busC;
+public:
+  PJONInteractiveRouter3(uint8_t default_gateway = PJON_NOT_ASSIGNED) {
+    PJON<Any>* buses[3] = { &busA, &busB, &busC };
+    PJONSimpleSwitch<Any>::connect_buses(3, buses, default_gateway);
+    busA.set_link(&linkA);
+    busB.set_link(&linkB);
+    busC.set_link(&linkC);
+  };
+
+  PJONAny &get_bus(const uint8_t ix) { return ix == 0 ? busA : (ix == 1 ? busB : busC); }
+
+  A &get_strategy_0() { return linkA.strategy; }
+  B &get_strategy_1() { return linkB.strategy; }
+  C &get_strategy_2() { return linkC.strategy; }
 };

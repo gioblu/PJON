@@ -20,6 +20,11 @@
   #define LF_POLLDELAY 10
 #endif
 
+// Recommended receive time for this strategy, in microseconds
+#ifndef LF_RECEIVE_TIME
+  #define LF_RECEIVE_TIME 0
+#endif
+
 #define PJON_LF_DEBUG
 
 class LocalFile {
@@ -231,6 +236,10 @@ class LocalFile {
 
     uint8_t get_max_attempts() {
       return 10;
+    };
+
+    static uint16_t get_receive_time() {
+      return LF_RECEIVE_TIME;
     };
 
     uint16_t receive_frame(uint8_t *data, uint16_t max_length) {

@@ -51,6 +51,11 @@ enum TS_state_t : uint8_t {
   TS_DONE
 };
 
+// Recommended receive time for this strategy, in microseconds
+#ifndef TS_RECEIVE_TIME
+  #define TS_RECEIVE_TIME 0
+#endif
+
 class ThroughSerial {
   public:
     uint8_t buffer[PJON_PACKET_MAX_LENGTH] = {0};
@@ -95,6 +100,13 @@ class ThroughSerial {
 
     static uint8_t get_max_attempts() {
       return TS_MAX_ATTEMPTS;
+    };
+
+
+    /* Returns the recommended receive time for this strategy: */
+
+    static uint16_t get_receive_time() {
+      return TS_RECEIVE_TIME;
     };
 
 

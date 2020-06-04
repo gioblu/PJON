@@ -79,6 +79,11 @@
 #define DUDP_DEFAULT_PORT                   7500
 #define DUDP_MAGIC_HEADER  (uint32_t) 0x0EFA23FF
 
+// Recommended receive time for this strategy, in microseconds
+#ifndef DUDP_RECEIVE_TIME
+  #define DUDP_RECEIVE_TIME 0
+#endif
+
 //#define DUDP_DEBUG_PRINT
 
 class DualUDP {
@@ -243,6 +248,10 @@ public:
     /* Returns the maximum number of attempts for each transmission: */
 
     static uint8_t get_max_attempts() { return DUDP_MAX_RETRIES; };
+
+    /* Returns the recommended receive time for this strategy: */
+
+    static uint16_t get_receive_time() { return DUDP_RECEIVE_TIME; };
 
     /* Handle a collision (empty because handled on Ethernet level): */
 

@@ -21,11 +21,14 @@ void setup() {
   bus.strategy.set_pin(7);
   bus.set_receiver(receiver_function);
   bus.begin();
-  bus.send_repeatedly(45, remote_bus_id, "B", 1, 250000);
+  bus.send(45, remote_bus_id, "B", 1);
 }
+
+uint32_t last_incoming = 0; // Time of last incoming packet
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   if((char)payload[0] == 'B') {
+    last_incoming = millis();
     static bool led_on = false;
     digitalWrite(LED_BUILTIN, led_on ? HIGH : LOW);
     led_on = !led_on;
@@ -35,4 +38,10 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 void loop() {
   bus.receive(1000);
   bus.update();
+
+  // Send a reply 1 second after receiving a packet
+  if (last_incoming != 0 && (uint32_t)(millis() - last_incoming) > 1000) {
+    bus.reply("B", 1);
+    last_incoming = 0;
+  }
 }

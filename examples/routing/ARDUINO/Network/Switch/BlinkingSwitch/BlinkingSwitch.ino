@@ -1,7 +1,13 @@
 
-/* This sketch is just the Router example with a user defined receive callback.
+/* This sketch is just the Switch example with a user defined receive callback.
    It demonstrates how to spy on the packets being routed by a switch or router object.
-   In this case it just makes the on-board LED blink for every packet that passes. */
+   In this case it just makes the on-board LED blink for every packet that passes. 
+   
+   Note that the default basis for the PJONInteractiveRouter is PJONSwitch,
+   but that you can specify to use PJONRouter, PJONDynamicRouter or
+   PJONVirtualBusRouter instead by adding the class as an additional
+   template parameter, to get additional functionality.
+   */
 
 #include <PJONInteractiveRouter.h>
 

@@ -664,6 +664,7 @@ class PJON {
       uint32_t timeout = 3500000
     ) {
       PJON_Packet_Info info = fill_info(rx_id, header, packet_id, rx_port);
+      PJONTools::copy_id(info.rx.bus_id, rx_bus_id, 4);
       return send_packet_blocking(info, payload, length, timeout);
     };
 

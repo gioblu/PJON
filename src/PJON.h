@@ -450,6 +450,9 @@ class PJON {
       info = last_packet_info;
       info.rx = info.tx;
       info.header = config;
+      #ifndef PJON_LOCAL
+        info.hops = 0;
+      #endif
       return dispatch(info, payload, length);
     };
 
@@ -495,7 +498,9 @@ class PJON {
     ) {
       PJON_Endpoint original_end_point = tx;
       tx = info.tx;
-      if(++info.hops > PJON_MAX_HOPS) return PJON_FAIL;
+      #ifndef PJON_LOCAL
+        if(++info.hops > PJON_MAX_HOPS) return PJON_FAIL;
+      #endif
       uint16_t result = PJON_FAIL;
       #if(PJON_MAX_PACKETS > 0)
         result = dispatch(info, payload, length);

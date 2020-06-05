@@ -89,7 +89,7 @@ protected:
 
   uint8_t find_attached_bus_with_id(
     const uint8_t *bus_id,
-    const uint8_t device_id,
+    const uint8_t /*device_id*/,
     uint8_t &start_bus
   ) {
     for(uint8_t i=start_bus; i<bus_count; i++) {
@@ -146,7 +146,10 @@ protected:
     }
 
     // Forward the packet
-    uint16_t result = buses[receiver_bus]->forward(
+    #if PJON_MAX_PACKETS == 0
+    uint16_t result = 
+    #endif
+    buses[receiver_bus]->forward(
         p_info,
         (const uint8_t *)payload,
         length);

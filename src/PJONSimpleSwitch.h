@@ -236,7 +236,8 @@ public:
     PJON<Strategy> &bus1,
     uint8_t default_gateway = PJON_NOT_ASSIGNED
   ) {
-    connect_buses(2, (PJON<Strategy>*[2]){&bus0, &bus1}, default_gateway);
+    PJON<Strategy> *buses[2] = { &bus0, &bus1 };
+    connect_buses(2, buses, default_gateway);
   };
 
   // Specialized constructor to simplify syntax when using 3 buses
@@ -246,7 +247,8 @@ public:
     PJON<Strategy> &bus2,
     uint8_t default_gateway = PJON_NOT_ASSIGNED
   ) {
-    connect_buses(3, (PJON<Strategy>*[3]){&bus0, &bus1, &bus2}, default_gateway);
+    PJON<Strategy> *buses[3] = { &bus0, &bus1, &bus2 };
+    connect_buses(3, buses, default_gateway);
   };
 
   void begin() {

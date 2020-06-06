@@ -11,76 +11,44 @@
 ---
 
 ## Routing
-Transparent routing based on a tree topology has been implemented by Fred Larsen with the [PJONSimpleSwitch](#simpleswitch), [PJONSwitch](#switch), [PJONRouter](#router), [PJONDynamicRouter](#dynamicrouter), [PJONInteractiveRouter](#interactiverouter) and [PJONVirtualBusRouter](#virtual-bus).
+Transparent routing based on a tree topology that may include loops has been implemented by Fred Larsen with the [PJONSimpleSwitch](#simpleswitch), [PJONSwitch](#switch), [PJONRouter](#router), [PJONDynamicRouter](#dynamicrouter), [PJONInteractiveRouter](#interactiverouter) and [PJONVirtualBusRouter](#virtual-bus).
 
 ### SimpleSwitch
-The [PJONSimpleSwitch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/SimpleSwitch) class connects two buses using the same strategy. In this example a `SoftwareBitBang` <=> `SoftwareBitBang` switch is created. It can be used to amplify signals and so extend the maximum range or in more complex setups selectively switch packets as requested by its configuration. It can be used instead of `PJONSwitch` to save memory when the same strategy is used in all buses. It avoids virtual inheritance so it is faster and has a smaller footprint.
+The [PJONSimpleSwitch](/examples/routing/Network/Switch/SimpleSwitch/SimpleSwitch.ino) class connects two or more buses using the same strategy. In this example a `SoftwareBitBang` <=> `SoftwareBitBang` switch is created. It can be used to amplify signals and so extend the maximum range or in more complex setups selectively switch packets as requested by its configuration. It can be used instead of `PJONSwitch` to save memory when the same strategy is used in all buses. It avoids virtual inheritance so it is faster and has a smaller footprint.
 ```cpp
- __________             ________              __________
-|          | SWBB bus  |        | SWBB bus   |          |
-| DEVICE 1 |___________| SWITCH |____________| DEVICE 2 |
-|__________|           |________|            |__________|
+/* __________                 ________                 __________
+  |          |         Pin 7 |        | Pin 12        |          |
+  | DEVICE 1 |_______________| SWITCH |_______________| DEVICE 2 |
+  |__________|  Bus 0.0.0.1  |________|  Bus 0.0.0.2  |__________| */
+
 ```
 The first thing to do is to include the `PJONSimpleSwitch` class:
 ```cpp
 #include <PJONSimpleSwitch.h>
 ```
-The `SimpleSwitch` class provides with configurable transparent packet switching between buses using the same strategy. `SimpleSwitch` requires a tree topology (it does not contain any loop detection procedure). The `SimpleSwitch` class receives as a parameter the length and the array of 2 or more `PJONBus` instances:
+The `SimpleSwitch` class provides with configurable transparent packet switching between buses using the same strategy:
 ```cpp
-/* In both cases the switch does not have an assigned id it is
-   transparently switching packets in both directions */
-PJONBus<SoftwareBitBang> bus1(PJON_NOT_ASSIGNED);
-PJONBus<SoftwareBitBang> bus2(PJON_NOT_ASSIGNED);
+PJON<SoftwareBitBang> bus1((const uint8_t[4]){0, 0, 0, 1}, PJON_NOT_ASSIGNED),
+                      bus2((const uint8_t[4]){0, 0, 0, 2}, PJON_NOT_ASSIGNED);
+
+PJONSimpleSwitch<SoftwareBitBang> router(bus1, bus2);
+
 ```
-Polling time can be optionally configured:
-```cpp
-PJONBus<SoftwareBitBang> bus2(
-  PJON_NOT_ASSIGNED, // Switch device id
-  1000 // Polling time in microseconds
-);
-```
-Device id ranges can be optionally configured:
-```cpp
-PJONBus<SoftwareBitBang> bus2(
-  PJON_NOT_ASSIGNED, // Switch device id
-  1000, // Polling time in microseconds
-  2, // 2 ranges present (1-127, 128-254)
-  0, // range 1 in use here (1-127)
-);
-```
-After the `PJONBus` definitions, a `PJONSimpleSwitch` instance can be created:
-```cpp
-// PJONSimpleSwitch definition:
-PJONSimpleSwitch<SoftwareBitBang> router(
-  2, // Length of the bus array
-  (PJONBus<SoftwareBitBang>*[2]){&bus1,&bus2} // Bus array
-);
-```
-A default gateway can be optionally configured:
-```cpp
-PJONSimpleSwitch<SoftwareBitBang> router(
-  2, // Length of the bus array
-  (PJONBus<SoftwareBitBang>*[2]){&bus1,&bus2}, // Bus array
-  122 // Statically defined default gateway device id
-);
-```
-Configure each strategy and the `router` instance as required:
+In the example above two PJON instances using SoftwareBitBang, operating in shared mode, with bus id `0.0.0.1` and `0.0.0.2` are merged with the `SimpleSwitch` instance. Packets are switched between the two buses. In the `setup` just include strategy related configuration, for example the pin used for communication:
+
 ```cpp
 
 void setup() {
-  // Set each SoftwareBitBang bus pin connection
   bus1.strategy.set_pin(7);
   bus2.strategy.set_pin(12);
   router.begin();
 }
-```
-Call the `loop` function as often as possible to achieve optimal performance:
-```cpp
 
 void loop() {
   router.loop();
-};
+}
 ```
+Then the `PJONSimpleSwitch` should work transparently. `PJONSimpleSwitch` can be used also in local mode although, because the hop count field is not included, the network topology cannot include loops.
 
 ### Switch
 The [PJONSwitch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/Switch) class transparently switches packets between locally attached buses also if different strategies or media are in use. It supports a default gateway to be able to act as a leaf in a larger network setup. Thanks to the `PJONSwitch` class, with few lines of code, a switch that operates multiple strategies can be created. In this example a `SoftwareBitBang` <=> `AnalogSampling` switch is created:

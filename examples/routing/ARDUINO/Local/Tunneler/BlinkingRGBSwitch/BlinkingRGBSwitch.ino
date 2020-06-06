@@ -22,14 +22,14 @@ uint32_t error_on_time = 0, swbb_on_time = 0, ludp_on_time = 0;
 
 void error_handler(uint8_t code, uint16_t data, void *custom_ptr) {
   digitalWrite(ERROR_LED_PIN, HIGH);
-  error_on_time = millis();  
+  error_on_time = millis();
 }
 
 void setup() {
   while (Ethernet.begin(mac) == 0) delay(5000); // Wait for DHCP response
   router.get_strategy_0().set_pin(7);
   router.get_strategy_1().set_port(7200); // Use a "private" UDP port
-  router.set_sendnotification(sendnotification_function);
+  router.set_send_notification(sendnotification_function);
   router.set_error(error_handler);
   router.set_virtual_bus(0); // Enable virtual bus
   router.begin();

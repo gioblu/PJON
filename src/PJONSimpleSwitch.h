@@ -16,7 +16,7 @@
 PJONSimpleSwitch has been contributed by Fred Larsen.
 
 It routes packets between buses with different bus ids, and also between
-local buses with no bus ids. It is limited to one single strategy in contrast 
+local buses with no bus ids. It is limited to one single strategy in contrast
 to its descendant PJONSwitch.
 
 A default gateway can be specified, identifying one of the attached buses to
@@ -118,13 +118,14 @@ protected:
       ack_sent = true;
     }
 
-    // Set current_bus to receiver bus before potentially calling error callback for that bus
+    /* Set current_bus to receiver bus before potentially calling error
+       callback for that bus */
     uint8_t send_bus = current_bus;
     current_bus = receiver_bus;
 
-    // NAT support: If a shared packet comes from a local bus destined to a
-    // non-local receiver, then put the NAT address of the bus as the sender
-    //  bus id so that replies can find the route back via NAT.
+    /* NAT support: If a shared packet comes from a local bus destined to a
+       non-local receiver, then put the NAT address of the bus as the sender
+       bus id so that replies can find the route back via NAT. */
     PJON_Packet_Info p_info = packet_info;
     if ((packet_info.header & PJON_MODE_BIT) &&
         !(buses[sender_bus]->config & PJON_MODE_BIT) &&
@@ -134,9 +135,9 @@ protected:
       memcpy(&p_info.tx.bus_id, buses[sender_bus]->tx.bus_id, 4);
     }
 
-    // NAT support: If a shared packet comes with receiver bus id matching the
-    // NAT address of a local bus, then change the receiver bus id to 0.0.0.0
-    // before forwarding the shared packet to the local bus.
+    /* NAT support: If a shared packet comes with receiver bus id matching the
+       NAT address of a local bus, then change the receiver bus id to 0.0.0.0
+       before forwarding the shared packet to the local bus. */
     if ((packet_info.header & PJON_MODE_BIT) &&
         !(buses[receiver_bus]->config & PJON_MODE_BIT) &&
         memcmp(buses[receiver_bus]->tx.bus_id, PJONTools::localhost(), 4)!=0 &&
@@ -145,30 +146,44 @@ protected:
       memcpy(p_info.rx.bus_id, PJONTools::localhost(), 4);
     }
 
-    // Forward the packet
+    uint16_t result =
     #if PJON_MAX_PACKETS == 0
-    uint16_t result = 
-    #endif
-    buses[receiver_bus]->forward(
-        p_info,
-        (const uint8_t *)payload,
-        length);
-
-    #if PJON_MAX_PACKETS == 0
-    // Call error function explicitly, because that will not be done while sending
-    // when PJON_MAX_PACKETS=0.
-    if (result == PJON_FAIL) dynamic_error_function(PJON_CONNECTION_LOST, 0);
+        buses[receiver_bus]->forward_blocking(
+          p_info,
+          (const uint8_t *)payload,
+          length
+        );
+        /* Call error function explicitly, because it is not called by
+           forward_blocking */
+      if(result == PJON_FAIL) dynamic_error_function(PJON_CONNECTION_LOST, 0);
+    #else
+        buses[receiver_bus]->forward(
+          p_info,
+          (const uint8_t *)payload,
+          length
+        );
     #endif
     current_bus = send_bus;
   }
 
-  void forward_packet(const uint8_t *payload, const uint16_t length,
-                      const uint8_t receiver_bus, const uint8_t sender_bus,
-                      bool &ack_sent, const PJON_Packet_Info &packet_info) {
+  void forward_packet(
+    const uint8_t *payload,
+    const uint16_t length,
+    const uint8_t receiver_bus,
+    const uint8_t sender_bus,
+    bool &ack_sent,
+    const PJON_Packet_Info &packet_info
+  ) {
     // If receiving bus matches and not equal to sending bus, then route packet
-    if(receiver_bus != PJON_NOT_ASSIGNED && receiver_bus != sender_bus) {
-      send_packet(payload, length, receiver_bus, sender_bus, ack_sent, packet_info);
-    }
+    if(receiver_bus != PJON_NOT_ASSIGNED && receiver_bus != sender_bus)
+      send_packet(
+        payload,
+        length,
+        receiver_bus,
+        sender_bus,
+        ack_sent,
+        packet_info
+      );
   }
 
   #ifdef PJON_ROUTER_NEED_INHERITANCE
@@ -191,7 +206,7 @@ protected:
     const PJON_Packet_Info &packet_info
   ) {
     uint8_t start_search = 0;
-    bool ack_sent = false; // Send ACK only once even if delivering copies to multiple buses
+    bool ack_sent = false; // Send ACK once even if delivering to multiple buses
     do {
       uint8_t receiver_bus = find_bus_with_id((const uint8_t*)
           ((packet_info.header & PJON_MODE_BIT) != 0 ?
@@ -211,7 +226,14 @@ protected:
 
       if(receiver_bus == PJON_NOT_ASSIGNED) receiver_bus = default_gateway;
 
-      forward_packet(payload, length, receiver_bus, current_bus, ack_sent, packet_info);
+      forward_packet(
+        payload,
+        length,
+        receiver_bus,
+        current_bus,
+        ack_sent,
+        packet_info
+      );
 
     } while(start_search != PJON_NOT_ASSIGNED);
   };
@@ -261,7 +283,9 @@ public:
   void loop() {
     for(current_bus = 0; current_bus < bus_count; current_bus++) {
       uint16_t code =
-        buses[current_bus]->receive(buses[current_bus]->strategy.get_receive_time());
+        buses[current_bus]->receive(
+          buses[current_bus]->strategy.get_receive_time()
+        );
       if(PJON_MAX_PACKETS < bus_count && code == PJON_ACK) break;
     }
     for(current_bus = 0; current_bus < bus_count; current_bus++)
@@ -306,7 +330,9 @@ public:
   }
 
   static void error_function(uint8_t code, uint16_t data, void *custom_pointer) {
-    ((PJONSimpleSwitch<Strategy>*)custom_pointer)->dynamic_error_function(code, data);
+    ((PJONSimpleSwitch<Strategy>*)custom_pointer)->dynamic_error_function(
+      code,
+      data
+    );
   }
 };
-

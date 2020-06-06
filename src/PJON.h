@@ -81,9 +81,12 @@ class PJON {
     uint8_t config = PJON_TX_INFO_BIT | PJON_ACK_REQ_BIT;
     uint8_t data[PJON_PACKET_MAX_LENGTH];
     PJON_Packet_Info last_packet_info;
-    PJON_Packet packets[PJON_MAX_PACKETS];
     uint8_t random_seed = A0;
     PJON_Endpoint tx;
+
+    #if(PJON_MAX_PACKETS > 0)
+      PJON_Packet packets[PJON_MAX_PACKETS];
+    #endif
 
     #if(PJON_INCLUDE_PACKET_ID)
       PJON_Packet_Record recent_packet_ids[PJON_MAX_RECENT_PACKET_IDS];
@@ -485,7 +488,11 @@ class PJON {
       return dispatch(info, payload, length);
     };
 
-    uint16_t send(const PJON_Packet_Info &info, const void *payload, uint16_t length) {
+    uint16_t send(
+      const PJON_Packet_Info &info,
+      const void *payload,
+      uint16_t length
+    ) {
       return dispatch(info, payload, length);
     };
 
@@ -501,12 +508,24 @@ class PJON {
       #ifndef PJON_LOCAL
         if(++info.hops > PJON_MAX_HOPS) return PJON_FAIL;
       #endif
-      uint16_t result = PJON_FAIL;
-      #if(PJON_MAX_PACKETS > 0)
-        result = dispatch(info, payload, length);
+      uint16_t result = dispatch(info, payload, length);
+      tx = original_end_point;
+      return result;
+    };
+
+    /* Forward a packet:  */
+
+    uint16_t forward_blocking(
+      PJON_Packet_Info info,
+      const void *payload,
+      uint16_t length
+    ) {
+      PJON_Endpoint original_end_point = tx;
+      tx = info.tx;
+      #ifndef PJON_LOCAL
+        if(++info.hops > PJON_MAX_HOPS) return PJON_FAIL;
       #endif
-      if(result == PJON_FAIL)
-        result = send_packet_blocking(info, payload, length);
+      uint16_t result = send_packet_blocking(info, payload, length);
       tx = original_end_point;
       return result;
     };

@@ -11,67 +11,69 @@
 ---
 
 ## Data transmission
-The begin function must be called before starting communication, the lack of this call can lead to collisions after boot, so be sure to call it before making use of the instance.
+### `begin`
+The begin method must be called before starting communication, the lack of this call can lead to collisions after boot, so be sure not to forget it.
 ```cpp  
   bus.begin();
 ```
-The simplest way to send data is to use `send_packet`, this method composes the packet and tries to send it once. The first parameter is the device id of the recipient of type `uint8_t`, optionally you can pass the bus id of type `uint8_t *`, then follows the payload of type `const void *` and its length of type `uint16_t`. This call implies a single attempt and has no guarantee of success, but logs the result of the attempted transmission:
+### `send_packet`
+The simplest way to send data is to use `send_packet`, this method composes the packet and tries to send it once. Consider that if the bus is busy or interference is present the transmission may not be attempted. The method returns the result of its operation. The first parameter is the device id of the recipient of type `uint8_t` then follows the payload of type `const void *` and its length of type `uint16_t`. This call implies a single attempt and has no guarantee of success, but logs the result of the attempted transmission:
 ```cpp
-// Local
-
 // Send to device id 10 the string "Hi!"
 bus.send_packet(10, "Hi!", 3);
-
+```
+The payload length is boring to be added in each call but is there to prevent buffer overflow. If sending arbitrary values `NULL` terminator strategy based on `strlen` is not safe to detect the end of a string. The `send` method can receive other 3 optional parameters, the header of type `uint8_t`, a packet id of type `uint16_t` (pass 0 if you want to avoid the packet id inclusion) and a port of type `uint16_t`. In the example below a packet containing the payload "Hello" is sent to device id 10 using the actual instance's header configuration, without including the packet id and including the port `8002`.
+```cpp
 // All optional parameters available
 bus.send_packet(
   10,         // Device id (uint8_t)
   "Hello",    // Payload   (const void *)
-  12,         // Length    (uint16_t)
+  5,          // Length    (uint16_t)
   bus.config, // Header    (uint8_t)  - Use default config
   0,          // Packet id (uint16_t) - Don't include packet id
   8002        // Port      (uint16_t)
 );
+```
 
-// Shared or using bus indexing
-
-// Send to bus id 0.0.0.1 - device id 10 the string "Hi!"
+If you need to transmit data in shared mode you can use the same `send_packet` method including also the bus id. In the example below a packet containing the payload "Hi!" is sent to device id 10:
+```cpp
+// Send to bus id 0.0.0.1
 uint8_t bus_id[] = {0, 0, 0, 1};
 bus.send_packet(10, bus_id, "Hi!", 3);
-
+```
+As its local version, `send_packet` can receive other 3 optional parameters, the header of type `uint8_t`, a packet id of type `uint16_t` (pass 0 if you want to avoid the packet id inclusion) and a port of type `uint16_t`. In the example below a packet containing the payload "Hello" is sent to device id 10 using the actual instance's header configuration, without including the packet id and including the port `8002`.
+```cpp
 // All optional parameters available
 bus.send_packet(
   10,         // Device id (uint8_t)
   bus_id,     // Bus id    (uint8_t *)
   "Hello",    // Payload   (const void *)
-  12,         // Length    (uint16_t)
+  5,          // Length    (uint16_t)
   bus.config, // Header    (uint8_t)  - Use default config
   0,          // Packet id (uint16_t) - Don't include packet id
   8002        // Port      (uint16_t)
 );
 ```
-The sending is executed as soon as the method is called and it returns the following values:
+
+When using `send_packet` the transmission may occur as soon as the method is called and it returns the following values:
 - `PJON_ACK` (6) if transmission occurred and acknowledgement is received if requested
 - `PJON_BUSY` (666) if bus is busy
 - `PJON_FAIL` (65535) if transmission failed
 
+The `send_packet` result, of type `uint16_t`, can be used to determine if the transmission occurred successfully or not:
 ```cpp
-// Use the value returned by send_packet to determine transmission result
+uint16_t result = bus.send_packet(10, "All is ok?!", 11);
 
-// Local
-if(bus.send_packet(10, "All is ok?!", 11) == PJON_ACK)
-  Serial.println("10 is ok!");
-
-// Shared or using bus indexing
-if(bus.send_packet(10, bus_id, "All is ok?!", 11) == PJON_ACK)
-  Serial.println("10 is ok!");
+if(result == PJON_ACK) Serial.println("10 is ok!");
 ```
 
 To broadcast a message to all connected devices, use the `PJON_BROADCAST` constant as recipient ID:
 ```cpp
 bus.send_packet(PJON_BROADCAST, "Message for all connected devices.", 34);
 ```
+### `send_packet_blocking`
+Use `send_packet_blocking` if it is necessary to try until the packet is effectively received by the recipient or a maximum amount of retries is reached. Consider that the method may block the operation of the program for up to 4 seconds in case of transmission failure.
 
-Use `send_packet_blocking` if it is necessary to try until the packet is effectively received by the recipient and so comply with the specified back-off.
 ```cpp
 // Send to device id 10 the string "Hi!"
 bus.send_packet_blocking(10, "Hi!", 3);
@@ -80,46 +82,61 @@ bus.send_packet_blocking(10, "Hi!", 3);
 if(bus.send_packet_blocking(10, "All is ok?!", 11) == PJON_ACK)
   Serial.println("10 is ok!");
 ```
-`send_packet_blocking` returns the result of transmission as `send_packet` does.
+`send_packet_blocking` optional parameters and return values are the same as `send_packet`.
 
-PJON can also optionally handle packets for you, although a little more memory is required. The first thing to do and never forget is to call the `update()` function once per loop cycle:
+### `send`
+
+When using the `send` method, PJON operates using its internal buffer, although a little more memory is required. The first thing to do and never forget is to call the `update()` method once per loop cycle:
 ```cpp  
   bus.update();
 ```
-To send data to another device connected to the bus simply call `send` passing the recipient's id (and its bus id if necessary), the payload you want to send and its length:
+Every time `update` is called the transmission is attempted for each packet present in the buffer.
+
+One way to insert packets in the buffer is to use the `send` method. To send data to another device connected to the bus simply call `send` passing the device id of the recipient of type `uint8_t` then the payload of type `const void *` and its length of type `uint16_t`. The return value of `send` is of type `uint16_t` and it is the id of the packet in the buffer or `PJON_FAIL` in case of error.
 ```cpp
-// Local
 bus.send(100, "Ciao, this is a test!", 21);
-
-// Shared or using bus indexing
-uint8_t bus_id[] = {0, 0, 0, 1};
-bus.send(100, bus_id, "Ciao, this is a test!", 21);
-
-// All optional parameters available
-
-// Local mode
-bus.send(
-  100,            // (uint8_t)      Recipient device id
-  "Test port id", // (const void *) Payload
-  23,             // (uint16_t)     Length
-  bus.config,     // (uint8_t)      Packet header
-  1,              // (uint16_t)     Packet id
-  8002            // (uint16_t)     Port identification
-);
-
+```
+`send` can receive 3 optional parameters, the header of type `uint8_t`, a packet id of type `uint16_t` (pass 0 if you want to avoid the packet id inclusion) and a port of type `uint16_t`. In the example below a packet containing the payload "Hello" is sent to device id 2 using the actual instance's header configuration, without including the packet id and including the port `8002`:
+```cpp
 // Shared mode or using bus indexing
 bus.send(
-  100,            // (uint8_t)      Recipient device id
-  bus_id,         // (uint8_t *)    Recipient bus id
-  "Test port id", // (const void *) Payload
-  23,             // (uint16_t)     Length
-  bus.config,     // (uint8_t)      Packet header
-  1,              // (uint16_t)     Packet id
-  8002            // (uint16_t)     Port identification
+  2,          // (uint8_t)      Recipient device id
+  "Hello",    // (const void *) Payload
+  5,          // (uint16_t)     Length
+  bus.config, // (uint8_t)      Packet header
+  0,          // (uint16_t)     Packet id
+  8002        // (uint16_t)     Port identification
+);
+```
+
+`send` can be used in shared mode passing the bus id after the device id:
+```cpp
+uint8_t bus_id[] = {0, 0, 0, 1};
+bus.send(100, bus_id, "Ciao, this is a test!", 21);
+```
+`send` can receive 3 optional parameters also when used in shared mode, the header of type `uint8_t`, a packet id of type `uint16_t` (pass 0 if you want to avoid the packet id inclusion) and a port of type `uint16_t`. In the example below a packet containing the payload "Hello" is sent to device id 2 using the actual instance's header configuration, without including the packet id and including the port `8002`:
+```cpp
+// Shared mode or using bus indexing
+bus.send(
+  2,          // (uint8_t)      Recipient device id
+  bus_id,     // (uint8_t *)    Recipient bus id
+  "Hello",    // (const void *) Payload
+  5,          // (uint16_t)     Length
+  bus.config, // (uint8_t)      Packet header
+  0,          // (uint16_t)     Packet id
+  8002        // (uint16_t)     Port identification
 );
 
 ```
-Payload length is boring to be added but is there to prevent buffer overflow. If sending arbitrary values `NULL` terminator strategy based on `strlen` is not safe to detect the end of a string. The `send` call returns an id, that is the reference to the packet you have dispatched. To send a value repeatedly simply call `send_repeatedly` and pass as last parameter the interval in microseconds you want between every sending:
+To use the return value of `send` just save it in a variable of type `uint16_t`:
+```cpp
+uint16_t packet = bus.send(100, "Ciao, this is a test!", 21);
+
+if(packet == PJON_FAIL) Serial.print("Something went wrong");
+```
+
+### `send_repeatedly`
+The `send_repeatedly` method can be used when it is required to schedule a repeated sending with a given interval. The first parameter is the device id of the recipient of type `uint8_t` then follows the payload of type `const void *`, its length of type `uint16_t` and the interval of type `uint32_t`:
 ```cpp
 // Local sending example
 uint16_t one_second_test =
@@ -127,20 +144,21 @@ uint16_t one_second_test =
 /* IMPORTANT: maximum interval supported is
    4293014170 microseconds or 71.55 minutes */
 
-// Shared sending example including all optional parameters
-uint16_t one_second_test_shared =
-  bus.send_repeatedly(
-    100,            // (uint8_t)      Recipient device id
-    bus_id,         // (uint8_t *)    Recipient bus id
-    "Test port id", // (const void *) Payload
-    23,             // (uint16_t)     Length
-    1000000,        // (uint32_t)     Interval in microseconds
-    bus.config,     // (uint8_t)      Packet header
-    1,              // (uint16_t)     Packet id
-    8002            // (uint16_t)     Port identification
-  );
 ```
-`send_repeatedly` returns the id of the packet in the packet's buffer as `send` does, to remove this repeated transmission simply:
+`send_repeatedly` returns the id of the packet in the buffer as `send` does, to remove the repeated transmission simply call:
 ```cpp
 bus.remove(one_second_test);
 ```
+`send_repeatedly` can receive 3 optional parameters both in local and shared mode: the header of type `uint8_t`, a packet id of type `uint16_t` (pass 0 if you want to avoid the packet id inclusion) and a port of type `uint16_t`. In the example below a packet containing the payload "Hello" is sent to device id 2 using the actual instance's header configuration, without including the packet id and including the port `8002`:
+```cpp
+// Shared mode or using bus indexing
+bus.send_repeatedly(
+  2,          // (uint8_t)      Recipient device id
+  bus_id,     // (uint8_t *)    Recipient bus id
+  "Hello",    // (const void *) Payload
+  5,          // (uint16_t)     Length
+  1000000     // (uint32_t)     Interval
+  bus.config, // (uint8_t)      Packet header
+  0,          // (uint16_t)     Packet id
+  8002        // (uint16_t)     Port identification
+);

@@ -81,12 +81,9 @@ class PJON {
     uint8_t config = PJON_TX_INFO_BIT | PJON_ACK_REQ_BIT;
     uint8_t data[PJON_PACKET_MAX_LENGTH];
     PJON_Packet_Info last_packet_info;
+    PJON_Packet packets[PJON_MAX_PACKETS];
     uint8_t random_seed = A0;
     PJON_Endpoint tx;
-
-    #if(PJON_MAX_PACKETS > 0)
-      PJON_Packet packets[PJON_MAX_PACKETS];
-    #endif
 
     #if(PJON_INCLUDE_PACKET_ID)
       PJON_Packet_Record recent_packet_ids[PJON_MAX_RECENT_PACKET_IDS];

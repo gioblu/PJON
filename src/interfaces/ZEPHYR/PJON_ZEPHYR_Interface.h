@@ -38,6 +38,10 @@ static int serial_get_char(struct tty_serial* tty)
 #define PJON_DELAY_MICROSECONDS k_usleep
 #endif
 
+#ifndef PJON_MILLIS
+#define PJON_MILLIS k_uptime_get
+#endif
+
 #ifndef PJON_MICROS
 #define PJON_MICROS 1000*k_uptime_get
 #endif

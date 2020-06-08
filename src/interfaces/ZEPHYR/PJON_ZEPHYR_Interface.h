@@ -10,13 +10,6 @@ static int serial_get_char(struct tty_serial* tty)
     return tmp;
 }
 
-static void serial_flush(struct tty_serial* tty)
-{
-    while (not uart_irq_tx_complete(tty->uart_dev)) {
-        k_usleep(100);
-    }
-}
-
 // deal with randomness
 
 #ifndef PJON_RANDOM
@@ -68,7 +61,7 @@ static void serial_flush(struct tty_serial* tty)
 #endif
 
 #ifndef PJON_SERIAL_FLUSH
-#define PJON_SERIAL_FLUSH(S) serial_flush(S)
+#define PJON_SERIAL_FLUSH(S)
 #endif
 
 // io pin handling (for setting the rs485 txe pin) is not needed since we use the auto-direction

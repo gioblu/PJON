@@ -95,12 +95,12 @@ If you need to transmit data in shared mode you can use the same `send_packet_bl
 ```cpp
 // Send to bus id 0.0.0.1
 uint8_t bus_id[] = {0, 0, 0, 1};
-bus.send_packet(10, bus_id, "Hi!", 3);
+bus.send_packet_blocking(10, bus_id, "Hi!", 3);
 ```
 As its local version, `send_packet_blocking` can receive other 4 optional parameters, the header of type `uint8_t`, a packet id of type `uint16_t` (pass 0 if you want to avoid the packet id inclusion), a port of type `uint16_t` and a timeout of type `uint32_t`. In the example below a packet containing the payload "Hello" is sent to device id 10 using the actual instance's header configuration, without including the packet id, including the port `8002` and passing a maximum timeout of 1 second:
 ```cpp
 // All optional parameters available
-bus.send_packet(
+bus.send_packet_blocking(
   10,         // Device id (uint8_t)
   bus_id,     // Bus id    (uint8_t *)
   "Hello",    // Payload   (const void *)

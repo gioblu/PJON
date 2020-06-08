@@ -55,7 +55,7 @@ bus.send_packet(
 );
 ```
 
-When using `send_packet` the transmission may occur as soon as the method is called and it returns the following values:
+`send_packet` returns the following values:
 - `PJON_ACK` (6) if transmission occurred and acknowledgement is received if requested
 - `PJON_BUSY` (666) if bus is busy
 - `PJON_FAIL` (65535) if transmission failed
@@ -77,22 +77,28 @@ Use `send_packet_blocking` if it is necessary to try until the packet is effecti
 ```cpp
 // Send to device id 10 the string "Hi!"
 bus.send_packet_blocking(10, "Hi!", 3);
-
-// Use the value returned by send_packet to determine transmission result
-if(bus.send_packet_blocking(10, "All is ok?!", 11) == PJON_ACK)
-  Serial.println("10 is ok!");
 ```
-`send_packet_blocking` optional parameters and return values are the same as `send_packet`.
+`send_packet_blocking` returns the following values:
+- `PJON_ACK` (6) if transmission occurred and acknowledgement is received if requested
+- `PJON_BUSY` (666) if bus is busy
+- `PJON_FAIL` (65535) if transmission failed
+
+The `send_packet_blocking` result, of type `uint16_t`, can be used to determine if the transmission occurred successfully or not:
+```cpp
+uint16_t result = bus.send_packet_blocking(10, "All is ok?!", 11);
+
+if(result == PJON_ACK) Serial.println("10 is ok!");
+```
 
 ### `send`
 
-When using the `send` method, PJON operates using its internal buffer, although a little more memory is required. The first thing to do and never forget is to call the `update()` method once per loop cycle:
+When using the `send` method, PJON operates using its internal buffer, although a little more memory is required. The first thing to do and never forget is to call the `update` method once per loop cycle:
 ```cpp  
   bus.update();
 ```
 Every time `update` is called the transmission is attempted for each packet present in the buffer.
 
-One way to insert packets in the buffer is to use the `send` method. To send data to another device connected to the bus simply call `send` passing the device id of the recipient of type `uint8_t` then the payload of type `const void *` and its length of type `uint16_t`. The return value of `send` is of type `uint16_t` and it is the id of the packet in the buffer or `PJON_FAIL` in case of error.
+To send data to another device connected to the bus simply call `send` passing the device id of the recipient of type `uint8_t` then the payload of type `const void *` and its length of type `uint16_t`. The return value of `send` is of type `uint16_t` and it is the id of the packet in the buffer or `PJON_FAIL` in case of error.
 ```cpp
 bus.send(100, "Ciao, this is a test!", 21);
 ```

@@ -237,6 +237,7 @@ class PJON {
       PJON_Packet_Info info;
       info.rx.id = rx_id;
       info.header = header;
+      PJONTools::copy_id(info.rx.bus_id, tx.bus_id, 4);
       #if(PJON_INCLUDE_PACKET_ID)
         info.id = packet_id;
       #else
@@ -456,6 +457,17 @@ class PJON {
       return dispatch(info, payload, length);
     };
 
+    uint16_t reply_blocking(const void *payload, uint16_t length) {
+      PJON_Packet_Info info;
+      info = last_packet_info;
+      info.rx = info.tx;
+      info.header = config;
+      #ifndef PJON_LOCAL
+        info.hops = 0;
+      #endif
+      return send_packet_blocking(info, payload, length);
+    };
+
     /* Schedule a packet sending: */
 
     uint16_t send(
@@ -467,21 +479,6 @@ class PJON {
       uint16_t rx_port = PJON_BROADCAST
     ) {
       PJON_Packet_Info info = fill_info(rx_id, header, packet_id, rx_port);
-      PJONTools::copy_id(info.rx.bus_id, tx.bus_id, 4);
-      return dispatch(info, payload, length);
-    };
-
-    uint16_t send(
-      uint8_t rx_id,
-      const uint8_t *rx_bus_id,
-      const void *payload,
-      uint16_t length,
-      uint8_t  header = PJON_NO_HEADER,
-      uint16_t packet_id = 0,
-      uint16_t rx_port = PJON_BROADCAST
-    ) {
-      PJON_Packet_Info info = fill_info(rx_id, header, packet_id, rx_port);
-      PJONTools::copy_id(info.rx.bus_id, rx_bus_id, 4);
       return dispatch(info, payload, length);
     };
 
@@ -540,25 +537,6 @@ class PJON {
       uint16_t rx_port = PJON_BROADCAST
     ) {
       PJON_Packet_Info info = fill_info(rx_id, header, packet_id, rx_port);
-      PJONTools::copy_id(info.rx.bus_id, tx.bus_id, 4);
-      return dispatch(info, payload, length, timing);
-    };
-
-    /* IMPORTANT: send_repeatedly timing maximum
-       is 4293014170 microseconds or 71.55 minutes */
-
-    uint16_t send_repeatedly(
-      uint8_t rx_id,
-      const uint8_t *rx_bus_id,
-      const void *payload,
-      uint16_t length,
-      uint32_t timing,
-      uint8_t  header = PJON_NO_HEADER,
-      uint16_t packet_id = 0,
-      uint16_t rx_port = PJON_BROADCAST
-    ) {
-      PJON_Packet_Info info = fill_info(rx_id, header, packet_id, rx_port);
-      PJONTools::copy_id(info.rx.bus_id, rx_bus_id, 4);
       return dispatch(info, payload, length, timing);
     };
 
@@ -601,23 +579,6 @@ class PJON {
       uint16_t rx_port = PJON_BROADCAST
     ) {
       PJON_Packet_Info info = fill_info(rx_id, header, packet_id, rx_port);
-      PJONTools::copy_id(info.rx.bus_id, tx.bus_id, 4);
-      if(!(length = compose_packet(info, data, payload, length)))
-        return PJON_FAIL;
-      return send_packet(data, length);
-    };
-
-    uint16_t send_packet(
-      uint8_t rx_id,
-      const uint8_t *rx_bus_id,
-      const void *payload,
-      uint16_t length,
-      uint8_t  header = PJON_NO_HEADER,
-      uint16_t packet_id = 0,
-      uint16_t rx_port = PJON_BROADCAST
-    ) {
-      PJON_Packet_Info info = fill_info(rx_id, header, packet_id, rx_port);
-      PJONTools::copy_id(info.rx.bus_id, rx_bus_id, 4);
       if(!(length = compose_packet(info, data, payload, length)))
         return PJON_FAIL;
       return send_packet(data, length);
@@ -676,7 +637,6 @@ class PJON {
 
     uint16_t send_packet_blocking(
       uint8_t rx_id,
-      const uint8_t *rx_bus_id,
       const void *payload,
       uint16_t length,
       uint8_t  header = PJON_NO_HEADER,
@@ -685,23 +645,7 @@ class PJON {
       uint32_t timeout = 3500000
     ) {
       PJON_Packet_Info info = fill_info(rx_id, header, packet_id, rx_port);
-      PJONTools::copy_id(info.rx.bus_id, rx_bus_id, 4);
       return send_packet_blocking(info, payload, length, timeout);
-    };
-
-    uint16_t send_packet_blocking(
-      uint8_t rx_id,
-      const void *payload,
-      uint16_t length,
-      uint8_t  header = PJON_NO_HEADER,
-      uint16_t packet_id = 0,
-      uint16_t rx_port = PJON_BROADCAST,
-      uint32_t timeout = 3000000
-    ) {
-      return send_packet_blocking(
-        rx_id, tx.bus_id, payload, length, header,
-        packet_id, rx_port, timeout
-      );
     };
 
     /* In router mode, the receiver function can acknowledge

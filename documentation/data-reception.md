@@ -11,7 +11,7 @@
 ---
 
 ## Data reception
-A function of type `void` is called by the PJON object when a packet is received. This function receives 3 parameters: the received payload of type `uint8_t *`, its length of type `uint16_t` and a pointer to a data structure of type `const PJON_Packet_Info` that contains all packet's metadata:
+A function of type `void` is called by the PJON object when a packet is received. This function receives 3 parameters: the received payload of type `uint8_t *`, its length of type `uint16_t` and a pointer to a data structure of type [`const PJON_Packet_Info`](/documentation/data-structures.md#pjon_packet_info) that contains all packet's metadata:
 
 ```cpp
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &info) {
@@ -27,7 +27,7 @@ PJON<SoftwareBitBang> bus;
 bus.set_receiver(receiver_function);
 ```
 
-Within `receiver_function` it is possible to process data and meta-data when a packet is received. The `PJON_Packet_Info` struct contains all the protocol fields present in the packet:
+Within `receiver_function` it is possible to process data and meta-data when a packet is received. The [`PJON_Packet_Info`](/documentation/data-structures.md#pjon_packet_info) struct contains all the protocol fields present in the packet:
 
 The code below is part of the Arduino compatible [PortsUseExample](/examples/ARDUINO/Network/SoftwareBitBang/PortsUseExample/Receiver/Receiver.ino). When the `receiver_function` is called meta-data present in the `info` parameter is printed in the serial monitor:
 ```cpp

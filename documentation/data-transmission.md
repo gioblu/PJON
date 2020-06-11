@@ -55,7 +55,7 @@ To broadcast a message to all connected devices, use the `PJON_BROADCAST` consta
 bus.send_packet(PJON_BROADCAST, "Message for all connected devices.", 34);
 ```
 
-If you need to transmit in shared mode or configure other protocol fields you can use `send_packet` passing a struct of type `PJON_Packet_Info`, the payload of type `const void *` and the length of type `uint16_t`:
+If you need to transmit in shared mode or configure other protocol fields you can use `send_packet` passing a struct of type [`PJON_Packet_Info`](/documentation/data-structures.md#pjon_packet_info), the payload of type `const void *` and the length of type `uint16_t`:
 ```cpp
 uint8_t bus_id[4] = {0, 0, 0, 1};
 PJON_Packet_Info info;
@@ -85,26 +85,7 @@ bus.send_packet_blocking(
   1000000     // Timeout   (uint32_t) - 1 second
 );
 ```
-If you need to transmit data in shared mode you can use the same `send_packet_blocking` method including also the bus id. In the example below a packet containing the payload "Hi!" is sent to device id 10:
-```cpp
-// Send to bus id 0.0.0.1
-uint8_t bus_id[] = {0, 0, 0, 1};
-bus.send_packet_blocking(10, bus_id, "Hi!", 3);
-```
-As its local version, `send_packet_blocking` can receive other 4 optional parameters, the header of type `uint8_t`, a packet id of type `uint16_t` (pass 0 if you want to avoid the packet id inclusion), a port of type `uint16_t` and a timeout of type `uint32_t`. In the example below a packet containing the payload "Hello" is sent to device id 10 using the actual instance's header configuration, without including the packet id, including the port `8002` and passing a maximum timeout of 1 second:
-```cpp
-// All optional parameters available
-bus.send_packet_blocking(
-  10,         // Device id (uint8_t)
-  bus_id,     // Bus id    (uint8_t *)
-  "Hello",    // Payload   (const void *)
-  5,          // Length    (uint16_t)
-  bus.config, // Header    (uint8_t)  - Use default config
-  0,          // Packet id (uint16_t) - Don't include packet id
-  8002,       // Port      (uint16_t)
-  1000000     // Timeout   (uint32_t) - 1 second
-);
-```
+
 `send_packet_blocking` returns the following values:
 - `PJON_ACK` (6) if transmission occurred and acknowledgement is received if requested
 - `PJON_BUSY` (666) if bus is busy
@@ -117,7 +98,7 @@ uint16_t result = bus.send_packet_blocking(10, "All is ok?!", 11);
 if(result == PJON_ACK) Serial.println("10 is ok!");
 ```
 
-If you need to transmit in shared mode or configure other protocol fields you can use `send_packet_blocking` passing a struct of type `PJON_Packet_Info`, the payload of type `const void *` and the length of type `uint16_t`:
+If you need to transmit in shared mode or configure other protocol fields you can use `send_packet_blocking` passing a struct of type [`PJON_Packet_Info`](/documentation/data-structures.md#pjon_packet_info), the payload of type `const void *` and the length of type `uint16_t`:
 ```cpp
 uint8_t bus_id[4] = {0, 0, 0, 1};
 PJON_Packet_Info info;
@@ -158,7 +139,7 @@ uint16_t packet = bus.send(100, "Ciao, this is a test!", 21);
 if(packet == PJON_FAIL) Serial.print("Something went wrong");
 ```
 
-If you need to transmit in shared mode or configure other protocol fields you can use `send` passing a struct of type `PJON_Packet_Info`, the payload of type `const void *` and the length of type `uint16_t`:
+If you need to transmit in shared mode or configure other protocol fields you can use `send` passing a struct of type [`PJON_Packet_Info`](/documentation/data-structures.md#pjon_packet_info), the payload of type `const void *` and the length of type `uint16_t`:
 ```cpp
 uint8_t bus_id[4] = {0, 0, 0, 1};
 PJON_Packet_Info info;
@@ -194,8 +175,9 @@ bus.send_repeatedly(
   0,          // (uint16_t)     Packet id
   8002        // (uint16_t)     Port identification
 );
+```
 
-If you need to transmit in shared mode or configure other protocol fields you can use `send_repeatedly` passing a struct of type `PJON_Packet_Info`, the payload of type `const void *`, the length of type `uint16_t` and the interval of type `uint32_t`:
+If you need to transmit in shared mode or configure other protocol fields you can use `send_repeatedly` passing a struct of type [`PJON_Packet_Info`](/documentation/data-structures.md#pjon_packet_info), the payload of type `const void *`, the length of type `uint16_t` and the interval of type `uint32_t`:
 ```cpp
 uint8_t bus_id[4] = {0, 0, 0, 1};
 PJON_Packet_Info info;

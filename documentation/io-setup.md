@@ -3,6 +3,7 @@
 - [Addressing](/documentation/addressing.md)
 - [Configuration](/documentation/configuration.md)
 - [Data reception](/documentation/data-reception.md)
+- [Data structures](/documentation/data-structures.md)
 - [Data transmission](/documentation/data-transmission.md)
 - [Error handling](/documentation/error-handling.md)
 - **[IO setup](/documentation/io-setup.md)**

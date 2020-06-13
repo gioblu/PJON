@@ -3,7 +3,7 @@
 // Ethernet configuration for this device
 byte mac[] = {0xDA, 0x5A, 0x4E, 0xEF, 0xAE, 0xED};
 
-// <Strategy name> bus(selected device id)
+
 PJONDualUDP bus(44);
 
 uint32_t cnt = 0;

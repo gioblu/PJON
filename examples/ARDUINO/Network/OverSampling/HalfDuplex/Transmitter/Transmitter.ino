@@ -3,7 +3,7 @@
 uint16_t packet;
 uint8_t bus_id[] = {0, 0, 0, 1};
 
-// <Strategy name> bus(selected device id)
+
 PJONOverSampling bus(bus_id, 45);
 
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {

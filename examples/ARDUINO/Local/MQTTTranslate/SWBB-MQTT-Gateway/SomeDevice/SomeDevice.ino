@@ -17,7 +17,7 @@
 
 #define PJON_GATEWAY_ID 254
 
-// <Strategy name> bus(selected device id)
+
 PJON<SoftwareBitBang> bus(42);
 
 float temperature = 20.0;        // "Measurement"

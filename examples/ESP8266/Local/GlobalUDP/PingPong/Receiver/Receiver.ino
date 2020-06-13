@@ -5,7 +5,7 @@ IPAddress gateway = { 192, 1, 1, 1 };
 IPAddress subnet = { 255, 255, 255, 0 };
 IPAddress local_ip = { 192, 1, 1, 163 };
 
-// <Strategy name> bus(selected device id)
+
 PJONGlobalUDP bus(44);
 
 const char* ssid     = "MyNetworkSSID";

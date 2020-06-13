@@ -1,6 +1,6 @@
 #include <PJONOverSampling.h>
 
-// <Strategy name> bus(selected device id)
+
 PJONOverSampling bus(44);
 
 void setup() {

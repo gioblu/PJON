@@ -6,7 +6,7 @@
 /* To use this example, please download the LoRa third party Library from
    https://github.com/sandeepmistry/arduino-LoRa/ */
 
-// <Strategy name> bus(selected device id)
+
 PJONThroughLora bus(45);
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {

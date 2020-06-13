@@ -18,7 +18,7 @@ float mistakes;
 int busy;
 int fail;
 
-// <Strategy name> bus(selected device id)
+
 PJONSoftwareBitBang bus(45);
 
 int packet;

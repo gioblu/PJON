@@ -1,7 +1,7 @@
 
 #include <PJONGlobalUP.h>
 
-// <Strategy name> bus(selected device id)
+
 PJONGlobalUDP bus(44);
 
 //uint32_t millis() { return PJON_MICROS()/1000; } // TODO: Move to interface

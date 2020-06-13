@@ -9,7 +9,7 @@
 
 SoftwareSerial HC12(2, 3);
 
-// <Strategy name> bus(selected device id)
+
 PJONThroughSerial bus(44);
 
 void setup() {

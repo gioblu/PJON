@@ -15,7 +15,7 @@
 
 #include <PJONAny.h>
 
-// <Strategy name> bus(selected device id)
+
 PJON<SoftwareBitBang> bus(1);
 
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {

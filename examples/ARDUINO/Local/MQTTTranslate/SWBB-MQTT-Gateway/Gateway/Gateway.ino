@@ -8,7 +8,7 @@
 byte mac[] = {0xDA, 0xCA, 0x7E, 0xEF, 0xFE, 0x5D};
 uint8_t broker_ip[] = { 192, 168, 1, 71 };
 
-// <Strategy name> bus(selected device id)
+
 #define PJON_GATEWAY_ID 254
 PJON<SoftwareBitBang> bus(PJON_GATEWAY_ID);
 PJONMQTTTranslate mqtt;

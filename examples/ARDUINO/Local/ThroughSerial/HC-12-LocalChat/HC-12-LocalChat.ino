@@ -22,7 +22,7 @@
 
  Giovanni Blu Mitolo 2018 */
 
-/* Set synchronous response timeout to 100 milliseconds.
+/* Set synchronous response timeout to 200 milliseconds.
    If operating at less than 9600Bd TS_RESPONSE_TIME_OUT should be longer */
 #define TS_RESPONSE_TIME_OUT 200000
 
@@ -44,7 +44,7 @@
 
 SoftwareSerial HC12(2, 3);
 
-// <Strategy name> bus(selected device id)
+
 PJONThroughSerial bus;
 
 uint8_t packet[100];

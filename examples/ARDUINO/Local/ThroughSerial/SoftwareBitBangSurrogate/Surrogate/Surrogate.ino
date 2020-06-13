@@ -19,7 +19,7 @@
 const uint8_t DEVICE_ID = 45;
 // SWBB Device ID for this device and the RemoteWorker
 
-// <Strategy name> bus(selected device id)
+
 PJON<SoftwareBitBang> busA(DEVICE_ID);
 //PJON<EthernetTCP> busB(1);
 PJONThroughSerial busB(1);

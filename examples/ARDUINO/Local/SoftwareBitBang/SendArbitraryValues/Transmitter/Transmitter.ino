@@ -9,7 +9,7 @@
    is printed transmitted data, exchange duration and transmission speed
    for easy benchmarking and nominal functionality assessment. */
 
-// <Strategy name> bus(selected device id)
+
 PJONSoftwareBitBang bus(45);
 uint32_t myTime;
 int packet;

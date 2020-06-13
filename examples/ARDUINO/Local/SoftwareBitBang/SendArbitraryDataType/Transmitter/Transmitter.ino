@@ -3,7 +3,7 @@
 /* ARBITRARY DATA TYPE TRANSMISSION EXAMPLE
    This sketch contains the transmitter side. */
 
-// <Strategy name> bus(selected device id)
+
 PJONSoftwareBitBang bus(45);
 int packet;
 int voltage;

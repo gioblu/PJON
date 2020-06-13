@@ -1,7 +1,7 @@
 
 #include <PJONLocalFile.h>
 
-// <Strategy name> bus(selected device id)
+
 PJONLocalFile bus(45);
 
 uint32_t cnt = 0;

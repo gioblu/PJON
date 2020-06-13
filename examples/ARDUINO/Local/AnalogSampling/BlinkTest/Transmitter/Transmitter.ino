@@ -1,6 +1,6 @@
 #include <PJONAnalogSampling.h>
 
-// <Strategy name> bus(selected device id)
+
 PJONAnalogSampling bus(45);
 
 void setup() {

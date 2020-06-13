@@ -16,7 +16,7 @@
 
 #include <PJONSoftwareBitBang.h>
 
-// <Strategy name> bus(selected device id)
+
 PJONSoftwareBitBang bus(45);
 
 int packet;

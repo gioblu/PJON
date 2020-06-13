@@ -3,7 +3,7 @@
 
 #include <PJONThroughSerial.h>
 
-// <Strategy name> bus(selected device id)
+
 PJONThroughSerial bus(44);
 
 void setup() {

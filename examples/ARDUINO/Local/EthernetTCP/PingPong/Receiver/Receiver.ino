@@ -7,7 +7,7 @@ byte mac[] = {0xDE, 0x5D, 0x4E, 0xEF, 0xAE, 0xED};
 uint8_t local_ip[] = { 192, 1, 1, 144 },
         remote_ip[] = { 192, 1, 1, 145 };
 
-// <Strategy name> bus(selected device id)
+
 PJONEthernetTCP bus(44);
 
 uint32_t cnt = 0;

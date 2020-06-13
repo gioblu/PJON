@@ -13,7 +13,7 @@
 
 #include <PJONSoftwareBitBang.h>
 
-// <Strategy name> bus(selected device id)
+
 PJONSoftwareBitBang bus(44);
 
 void setup() {

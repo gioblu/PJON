@@ -4,7 +4,7 @@
    To know how to wire up the circuit see the AnalogSampling README:
    https://github.com/gioblu/PJON/tree/master/src/strategies/AnalogSampling */
 
-// <Strategy name> bus(selected device id)
+
 PJONAnalogSampling bus(44);
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {

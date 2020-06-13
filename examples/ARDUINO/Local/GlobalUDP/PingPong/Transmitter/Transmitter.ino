@@ -9,7 +9,7 @@ uint8_t local_ip[] = { 192, 1, 1, 150 };
 // Address of remote device
 uint8_t remote_ip[] = { 192, 1, 1, 151 };
 
-// <Strategy name> bus(selected device id)
+
 PJONGlobalUDP bus(45);
 
 uint32_t cnt = 0;

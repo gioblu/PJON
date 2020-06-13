@@ -1,6 +1,6 @@
 #include <PJONSoftwareBitBang.h>
 
-// <Strategy name> bus(selected device id)
+
 PJONSoftwareBitBang bus(44);
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {

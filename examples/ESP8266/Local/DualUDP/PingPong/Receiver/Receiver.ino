@@ -1,6 +1,6 @@
 #include <PJONDualUDP.h>
 
-// <Strategy name> bus(selected device id)
+
 PJONDualUDP bus(44);
 
 const char* ssid     = "MyNetworkSSID";

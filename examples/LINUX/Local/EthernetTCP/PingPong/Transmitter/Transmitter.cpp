@@ -4,7 +4,7 @@
 // Address of remote device
 uint8_t remote_ip[] = { 192, 1, 1, 161 };
 
-// <Strategy name> bus(selected device id)
+
 PJONEthernetTCP bus(45);
 
 uint32_t cnt = 0;

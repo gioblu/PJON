@@ -9,7 +9,7 @@
 
 SoftwareSerial HC12(2, 3);
 
-// <Strategy name> bus(selected device id)
+
 PJONThroughSerial bus(45);
 
 void setup() {
@@ -19,7 +19,7 @@ void setup() {
   // Pass the HC12 Serial instance you want to use for PJON communication
   bus.strategy.set_serial(&HC12);
 
-  // Avoid synchronous acknowledgement
+  // Avoid acknowledgement
   bus.set_acknowledge(false);
 
   bus.begin();

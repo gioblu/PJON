@@ -5,7 +5,7 @@
 #define PJON_PACKET_MAX_LENGTH 10
 // Include PJONLocal
 #include <PJONLocal.h>
-// <Strategy name> bus(selected device id)
+
 PJONLocal<SoftwareBitBang> bus(44);
 
 uint8_t data[PJON_PACKET_MAX_LENGTH];

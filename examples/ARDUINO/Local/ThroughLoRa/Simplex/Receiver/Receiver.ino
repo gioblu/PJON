@@ -10,7 +10,7 @@ float mistakes;
 int busy;
 int fail;
 
-// <Strategy name> bus(selected device id)
+
 PJONThroughLora bus(44);
 
 void setup() {

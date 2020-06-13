@@ -5,7 +5,7 @@ float mistakes;
 int busy;
 int fail;
 
-// <Strategy name> bus(selected device id)
+
 PJONOverSampling bus(45);
 
 int packet;

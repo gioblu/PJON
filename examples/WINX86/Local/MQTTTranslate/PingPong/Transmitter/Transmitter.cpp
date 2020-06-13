@@ -8,7 +8,7 @@
 // Ethernet address of the broker
 uint8_t broker_ip[] = { 127, 0, 0, 1 };
 
-// <Strategy name> bus(selected device id)
+
 PJONMQTTTranslate bus(45);
 
 uint32_t cnt = 0;

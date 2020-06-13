@@ -1,7 +1,7 @@
 
 #include <PJONGlobalUP.h>
 
-// <Strategy name> bus(selected device id)
+
 PJONGlobalUDP bus(45);
 
 uint32_t cnt = 0;

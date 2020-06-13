@@ -13,7 +13,7 @@ float mistakes;
 int busy;
 int fail;
 
-// <Strategy name> bus(selected device id)
+
 PJONAnalogSampling bus(45);
 
 int packet;

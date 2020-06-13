@@ -3,7 +3,7 @@
 // Address of remote device
 uint8_t remote_ip[] = { 192, 1, 1, 163 };
 
-// <Strategy name> bus(selected device id)
+
 PJONGlobalUDP bus(45);
 
 const char* ssid     = "MyNetworkSSID";

@@ -14,7 +14,7 @@
 
 SoftwareSerial HC12(2, 3);
 
-// <Strategy name> bus(selected device id)
+
 PJONThroughSerial bus(45);
 
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {

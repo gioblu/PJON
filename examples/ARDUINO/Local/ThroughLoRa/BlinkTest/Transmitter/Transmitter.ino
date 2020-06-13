@@ -5,7 +5,7 @@
 /*
 To use this example, please download the LoRa third party Library from https://github.com/sandeepmistry/arduino-LoRa/
 */
-// <Strategy name> bus(selected device id)
+
 PJONThroughLora bus(45);
 
 void setup() {

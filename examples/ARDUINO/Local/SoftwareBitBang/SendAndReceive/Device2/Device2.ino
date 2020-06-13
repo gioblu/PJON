@@ -13,7 +13,7 @@
 
 #include <PJONSoftwareBitBang.h>
 
-// <Strategy name> bus(selected device id)
+
 PJONSoftwareBitBang bus(45);
 
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {

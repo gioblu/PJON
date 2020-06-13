@@ -27,7 +27,7 @@
 
 #include <PJONEthernetTCP.h>
 
-// <Strategy name> bus(selected device id)
+
 PJONEthernetTCP bus(45);
 
 // Ethernet configuration for this device

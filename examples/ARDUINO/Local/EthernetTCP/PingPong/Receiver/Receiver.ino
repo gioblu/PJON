@@ -1,4 +1,4 @@
-#include <PJON.h>
+#include <PJONEthernetTCP.h>
 
 // Ethernet configuration for this device
 byte gateway[] = { 192, 1, 1, 1 };
@@ -8,7 +8,7 @@ uint8_t local_ip[] = { 192, 1, 1, 144 },
         remote_ip[] = { 192, 1, 1, 145 };
 
 // <Strategy name> bus(selected device id)
-PJON<EthernetTCP> bus(44);
+PJONEthernetTCP bus(44);
 
 uint32_t cnt = 0;
 uint32_t start = millis();

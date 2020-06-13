@@ -1,11 +1,11 @@
-#define PJON_INCLUDE_ETCP
-#include <PJON.h>
+
+#include <PJONEthernetTCP.h>
 
 // Address of remote device
 uint8_t remote_ip[] = { 192, 1, 1, 161 };
 
 // <Strategy name> bus(selected device id)
-PJON<EthernetTCP> bus(45);
+PJONEthernetTCP bus(45);
 
 uint32_t cnt = 0;
 uint32_t start = millis();

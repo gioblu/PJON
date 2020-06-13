@@ -1,4 +1,4 @@
-#include <PJON.h>
+#include <PJONGlobalUDP.h>
 
 // Ethernet configuration for this device
 IPAddress gateway = { 192, 1, 1, 1 };
@@ -6,7 +6,7 @@ IPAddress subnet = { 255, 255, 255, 0 };
 IPAddress local_ip = { 192, 1, 1, 163 };
 
 // <Strategy name> bus(selected device id)
-PJON<GlobalUDP> bus(44);
+PJONGlobalUDP bus(44);
 
 const char* ssid     = "MyNetworkSSID";
 const char* password = "MyNetworkPassword";

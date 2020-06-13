@@ -12,7 +12,7 @@
     devices are near and able to compute CRC fast enough. */
 //#define SWBB_RESPONSE_TIMEOUT 1000
 
-#include <PJON.h>
+#include <PJONAny.h>
 
 float test;
 float mistakes;
@@ -21,7 +21,7 @@ int fail;
 
 
 StrategyLink<SoftwareBitBang> link;
-PJON<Any> bus(44);
+PJONAny bus(44);
 
 int packet;
 uint8_t content[] = "01234567890123456789";

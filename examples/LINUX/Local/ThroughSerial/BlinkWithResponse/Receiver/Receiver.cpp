@@ -6,9 +6,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define PJON_INCLUDE_TS // Include only ThroughSerial
-#include <PJON.h>
-PJON<ThroughSerial> bus(44);
+ // Include only ThroughSerial
+#include <PJONThroughSerial.h>
+PJONThroughSerial bus(44);
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   /* Make use of the payload before sending something, the buffer where payload points to is

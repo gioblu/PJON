@@ -1,7 +1,7 @@
 ## OverSampling
-| Medium | Pins used | Inclusion Constant | Included by default |
-|--------|-----------|--------------------|---------------------|
-| ASK/FSK radio modules | 1 or 2    | `PJON_INCLUDE_OS`|  yes                |
+| Medium | Pins used | Inclusion |
+|--------|-----------|--------------------|
+| ASK/FSK radio modules | 1 or 2    | `#include <PJONOverSampling.h>`|
 
 `OverSampling` is a software implementation of [PJDLR (Padded Jittering Data Link over Radio)](/src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md). It supports simplex and half-duplex asynchronous serial communication and implements a carrier-sense, non-persistent random multiple access method (non-persistent CSMA). This implementation can run on limited microcontrollers with low clock accuracy, supports communication for many devices connected to the same medium and stable operation in spite of interference. Its procedure is a more efficient alternative to the LoRa Open Standard (that specifies a variation of Slotted ALOHA) and it is designed to obtain long range and high reliability using FSK, ASK or OOK modulation radio transceivers. Take a look at the [video introduction](https://www.youtube.com/watch?v=G1ckfsMzPns) for a brief showcase of its features.
 
@@ -19,7 +19,7 @@
 - Range: 250 meters with no line of sight, 5 km with line of sight and ideal atmospheric conditions
 
 ### Configuration
-Before including `PJON.h` it is possible to configure `OverSampling` using predefined constants:
+Before including the library it is possible to configure `OverSampling` using predefined constants:
 
 | Constant                  | Purpose                             | Supported value                             |
 | ------------------------- |------------------------------------ | ------------------------------------------- |
@@ -27,12 +27,12 @@ Before including `PJON.h` it is possible to configure `OverSampling` using prede
 | `OS_BACK_OFF_DEGREE`      | Maximum back-off exponential degree | Numeric value (5 by default)                |
 | `OS_MAX_ATTEMPTS`         | Maximum transmission attempts       | Numeric value (10 by default)               |
 
-Pass the `OverSampling` type as PJON template parameter to instantiate a new PJON object. All the other necessary information is present in the general [Documentation](/documentation).
+Use `PJONOverSampling` to instantiate a new PJON object ready to communicate using the `OverSampling` strategy. All the other necessary information is present in the general [Documentation](/documentation).
 ```cpp  
 
-#include <PJON.h>
+#include <PJONOverSampling.h>
 
-PJON<OverSampling> bus;
+PJONOverSampling bus;
 
 void setup() {
   // Set the pin 12 as the communication pin

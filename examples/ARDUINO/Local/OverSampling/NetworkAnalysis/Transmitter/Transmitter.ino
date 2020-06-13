@@ -1,4 +1,4 @@
-#include <PJON.h>
+#include <PJONOverSampling.h>
 
 float test;
 float mistakes;
@@ -6,7 +6,7 @@ int busy;
 int fail;
 
 // <Strategy name> bus(selected device id)
-PJON<OverSampling> bus(45);
+PJONOverSampling bus(45);
 
 int packet;
 uint8_t content[] = "01234567890123456789";

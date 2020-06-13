@@ -1,4 +1,4 @@
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 /* VOLTAGE TESTER DEVICE
    This is a basic example to show how PJON can be used practically.
    Lets print in the Serial monitor the voltage detected by the analog
@@ -8,7 +8,7 @@
    is printed the voltage detected and transmitted by the other device. */
 
 // PJON object
-PJON<SoftwareBitBang> bus(44);
+PJONSoftwareBitBang bus(44);
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   /* Make use of the payload before sending something, the buffer where payload points to is

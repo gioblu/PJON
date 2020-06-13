@@ -2,13 +2,10 @@
 /* ESP8266 - Node MCU side
    Devices can be wired directly being ESP8266 5v tolerant */
 
- // Include only SoftwareBitBang strategy
- #define PJON_INCLUDE_SWBB
+// Include only SoftwareBitBang strategy
+#include <PJONSoftwareBitBang.h>
 
-#include <PJON.h>
-
-// <Strategy name> bus(selected device id)
-PJON<SoftwareBitBang> bus(45);
+PJONSoftwareBitBang bus(45); // Use device id 45
 
 uint8_t content[] = "01234567890123456789";
 

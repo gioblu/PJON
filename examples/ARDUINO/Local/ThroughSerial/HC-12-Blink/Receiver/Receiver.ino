@@ -4,13 +4,13 @@
    emulated Serial port is used on pin 2 and 3 to communicate with HC12. The
    receiver device should blink every second.*/
 
-#include <PJON.h>
+#include <PJONThroughSerial.h>
 #include <SoftwareSerial.h>
 
 SoftwareSerial HC12(2, 3);
 
 // <Strategy name> bus(selected device id)
-PJON<ThroughSerial> bus(44);
+PJONThroughSerial bus(44);
 
 void setup() {
   // Initialize LED 13 to be off

@@ -1,8 +1,8 @@
 ## GlobalUDP
 
-| Medium | Pins used | Inclusion Constant | Included by default |
-|--------|-----------|--------------------|---------------------|
-| Ethernet port, wired or WiFi   | NA    | `PJON_INCLUDE_GUDP`|  yes   |
+| Medium | Pins used | Inclusion |
+|--------|-----------|--------------------|
+| Ethernet port, wired or WiFi   | NA    | `#include <PJONGlobalUDP.h>`|
 
 With the `GlobalUDP` PJON strategy, multiple devices with Ethernet ports can use PJON to communicate with each other over an
 Ethernet network, wired or over WiFi or both. This strategy demands a little more configuration than the `LocalUDP` strategy
@@ -15,10 +15,11 @@ If a cabled or wireless Ethernet network exists, using this to let devices commu
 It can also be useful for connecting physically separate clusters of devices that are connected wired with the `SoftwareBitBang` strategy, or wirelessly with the `Oversampling` strategy, when a LAN or WAN is connecting the locations.
 
 ### How to use GlobalUDP
-Pass the `GlobalUDP` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
+Use `PJONGlobalUDP` to instantiate a PJON object ready to communicate using `PJONGlobalUDP` strategy:
 ```cpp  
-  // Use LocalUDP strategy with PJON device id 44
-  PJON<LocalUDP> bus(44);
+  #include <PJONGlobalUDP.h>
+
+  PJONGlobalUDP bus(44); // Use device id 44
 ```
 Set up the Ethernet card in the usual manner by calling `Ethernet.begin`, register the other devices to send to,
 then call the `begin` method on the PJON object:

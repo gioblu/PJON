@@ -15,60 +15,48 @@
 PJON uses predefined constants, setters and getters to support features and constraints configuration.  
 
 ### Buffers configuration
-Before instantiating PJON it is possible to define the length of its buffers. Predefining `PJON_MAX_PACKETS` and `PJON_PACKET_MAX_LENGTH` it is possible to configure these constraints to reach the project memory requirements. Obviously, the less memory is dedicated to buffers, the more memory can be used for something else:
+Before including the library it is possible to define the length of its buffers defining the `PJON_MAX_PACKETS` and `PJON_PACKET_MAX_LENGTH` constants:
 ```cpp  
   #define PJON_MAX_PACKETS 1
   #define PJON_PACKET_MAX_LENGTH 20
-  #include <PJON.h>
   /* PJON can dispatch up to 1 packet with a payload of up to
      20 bytes - packet overhead (5-35 bytes depending on configuration) */
 ```
 
 ### Strategy configuration
-PJON is instantiated passing a [strategy](/src/strategies/README.md) template parameter:
-```cpp  
-  PJON<SoftwareBitBang> bus;
+The `PJON` class abstracts the [strategy](/src/strategies/README.md) using templates although since version 13.0 that complexity is hidden behind a [macro](../src/PJONSoftwareBitBang.h):
+```cpp
+  #include <PJONSoftwareBitBang.h>
+  PJONSoftwareBitBang bus;
 ```
-In the example above the PJON object is instantiated passing the [SoftwareBitBang](/src/strategies/SoftwareBitBang/README.md) strategy. Strategies are classes that abstract the physical transmission of data. It is possible to instantiate more than one PJON object using different strategies in the same program:
-```cpp  
-  PJON<SoftwareBitBang> wiredBus;
-  PJON<EthernetTCP>     tcpBus;
+In the example above the PJON object is instantiated using the [SoftwareBitBang](/src/strategies/SoftwareBitBang/README.md) strategy. Strategies are classes that abstract the physical transmission of data. It is possible to instantiate more than one PJON object using different strategies in the same program:
+```cpp
+#include <PJONSoftwareBitBang.h>
+#include <PJONEthernetTCP.h>
+
+PJONSoftwareBitBang wiredBus;
+PJONEthernetTCP     tcpBus;
 ```
 
 The table below lists the strategies available:
 
-| Strategy      | Physical layer | Protocol | Inclusion constant | Included by default |
-| ------------- | -------------- | -------- | ------------------ | ------------------- |
-| [AnalogSampling](/src/strategies/AnalogSampling)  | Light | [PJDLS](../src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) | `PJON_INCLUDE_AS` | yes |
-| [Any](/src/strategies/Any)  | Virtual inheritance | Any | `PJON_INCLUDE_ANY` | yes |
-| [DualUDP](/src/strategies/DualUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | `PJON_INCLUDE_DUDP` | yes |
-| [ESPNOW](/src/strategies/ESPNOW)  | WiFi | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) | `PJON_INCLUDE_EN` | no |
-| [EthernetTCP](/src/strategies/EthernetTCP)  | Ethernet/WiFi | [TCP](https://tools.ietf.org/html/rfc793) | `PJON_INCLUDE_ETCP` | yes |
-| [GlobalUDP](/src/strategies/GlobalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | `PJON_INCLUDE_GUDP` | yes |
-| [LocalFile](/src/strategies/LocalFile)  | System memory | None | `PJON_INCLUDE_LF` | no |
-| [LocalUDP](/src/strategies/LocalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | `PJON_INCLUDE_LUDP` | yes |
-| [MQTTTranslate](/src/strategies/MQTTTranslate)  | Ethernet/WiFi | [MQTT](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.pdf) | `PJON_INCLUDE_MQTT` | no |
-| [OverSampling](/src/strategies/OverSampling)  | Radio | [PJDLR](../src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) | `PJON_INCLUDE_OS` | yes |
-| [SoftwareBitBang](/src/strategies/SoftwareBitBang) | Wire | [PJDL](../src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md) | `PJON_INCLUDE_SWBB` | yes |
-| [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio | [LoRa](https://lora-alliance.org/sites/default/files/2018-07/lorawan1.0.3.pdf) | `PJON_INCLUDE_TL` | no |
-| [ThroughSerial](/src/strategies/ThroughSerial)  | Radio | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md) | `PJON_INCLUDE_TS` | yes |
+| Strategy      | Physical layer | Protocol | Inclusion |
+| ------------- | -------------- | -------- | --------- |
+| [AnalogSampling](/src/strategies/AnalogSampling)  | Light | [PJDLS](../src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) | `#include <PJONAnalogSampling.h>` |
+| [Any](/src/strategies/Any)  | Virtual inheritance | Any | `#include <PJONAny.h>` |
+| [DualUDP](/src/strategies/DualUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | `#include <PJONDualUDP.h>` |
+| [ESPNOW](/src/strategies/ESPNOW)  | WiFi | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) | `#include <PJONESPNOW.h>` |
+| [EthernetTCP](/src/strategies/EthernetTCP)  | Ethernet/WiFi | [TCP](https://tools.ietf.org/html/rfc793) | `#include <PJONEthernetTCP.h>` |
+| [GlobalUDP](/src/strategies/GlobalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | `#include <PJONGlobalUDP.h>` |
+| [LocalFile](/src/strategies/LocalFile)  | System memory | None | `#include <PJONLocalFile.h>` |
+| [LocalUDP](/src/strategies/LocalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | `#include <PJONLocalUDP.h>` |
+| [MQTTTranslate](/src/strategies/MQTTTranslate)  | Ethernet/WiFi | [MQTT](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.pdf) | `#include <PJONMQTTTranslate.h>` |
+| [OverSampling](/src/strategies/OverSampling)  | Radio | [PJDLR](../src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) | `#include <PJONOverSampling.h>` |
+| [SoftwareBitBang](/src/strategies/SoftwareBitBang) | Wire | [PJDL](../src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md) | `#include <PJONSoftwareBitBang.h>` |
+| [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio | [LoRa](https://lora-alliance.org/sites/default/files/2018-07/lorawan1.0.3.pdf) | `#include <PJONThroughLora.h>` |
+| [ThroughSerial](/src/strategies/ThroughSerial)  | Wire | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md) | `#include <PJONThroughSerial.h>` |
 
-By default all strategies are included except `MQTTTranslate`, `LocalFile`, `ThroughLoRa` and `ESPNOW`. Before using `ThroughLoRa` be sure to have [arduino-LoRa](https://github.com/sandeepmistry/arduino-LoRa) library available and to have defined the `PJON_INCLUDE_TL` constant before including `PJON.h`. Before using `ESPNOW` be sure to have installed the required tools as described [here](/src/strategies/ESPNOW/README.md) and to have defined the `PJON_INCLUDE_EN` constant before including `PJON.h`. Before using `MQTTTranslate` be sure to have the [ReconnectingMqttClient](https://github.com/fredilarsen/ReconnectingMqttClient) library available and to have defined the `PJON_INCLUDE_MQTT` constant before including `PJON.h`.
-
-To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before including the library to select only the `SoftwareBitBang` strategy.
-```cpp
-#define PJON_INCLUDE_SWBB  // Include only SoftwareBitBang strategy
-#include<PJON.h>           // Include the library
-PJON<SoftwareBitBang> bus; // Instantiation
-```
-More than one strategy related constants can be defined in the same program if that is required.
-
-If the strategy you want to use is not included by default, like ESPNOW, you can force its inclusion using its constant:
-```cpp
-#define PJON_INCLUDE_EN // Force the inclusion of ESPNOW strategy
-#include<PJON.h>        // Include the library
-PJON<ESPNOW> bus;       // Instantiation
-```
+Before using `ThroughLoRa` be sure to have [arduino-LoRa](https://github.com/sandeepmistry/arduino-LoRa) library available. Before using `ESPNOW` be sure to have installed the required tools as described [here](/src/strategies/ESPNOW/README.md). Before using `MQTTTranslate` be sure to have the [ReconnectingMqttClient](https://github.com/fredilarsen/ReconnectingMqttClient) library available.
 
 ### Network mode
 The network mode can be changed with `set_shared_network` during runtime, for example moving from [local](/specification/PJON-protocol-specification-v4.0.md#local-mode) to [shared](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v4.0.md#shared-mode) mode:

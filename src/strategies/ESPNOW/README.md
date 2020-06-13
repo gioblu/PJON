@@ -1,8 +1,8 @@
 ## ESPNOW
 
-| Medium | Pins used | Inclusion Constant | Included by default |
-|--------|-----------|--------------------|---------------------|
-| ESPNOW over WiFi   | NA    | `PJON_INCLUDE_EN`|  no   |
+| Medium | Pins used | Constant |
+|--------|-----------|--------------------|
+| ESPNOW over WiFi   | NA    | `#include <PJONESPNOW.h>` |
 
 With the `ESPNOW` PJON strategy, up to 10 ESP32 devices can use PJON to communicate with each other over
 the [Espressif ESPNOW protocol](https://www.espressif.com/en/products/software/esp-now/overview) (peer-to-peer 802.11).
@@ -18,12 +18,12 @@ PJON over WiFi has the following benefit:
 ### How to use ESPNOW
 ESPNOW strategy can be used within the Arduino IDE or as an esp-idf component with [arduino-esp32](https://github.com/espressif/arduino-esp32).
 
-Pass the `ESPNOW` type as PJON template parameter to instantiate a
-PJON object ready to communicate through this Strategy.
+Use `PJONESPNOW` to instantiate a PJON object ready to communicate using `ESPNOW` strategy:
 
-```cpp  
-  // Use ESPNOW strategy with PJON device id 44
-  PJON<ESPNOW> bus(44);
+```cpp
+  #include <PJONESPNOW.h>
+
+  PJONESPNOW bus(44); // Use device id 44
 ```
 
 You can customise the channel (default is channel 1) and PMK (encryption) as follows (all devices must be the same):

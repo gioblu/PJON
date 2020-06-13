@@ -25,10 +25,10 @@
 #define ETCP_SINGLE_DIRECTION
 //#define ETCP_SINGLE_SOCKET_WITH_ACK
 
-#include <PJON.h>
+#include <PJONEthernetTCP.h>
 
 // <Strategy name> bus(selected device id)
-PJON<EthernetTCP> bus(45);
+PJONEthernetTCP bus(45);
 
 // Ethernet configuration for this device
 uint8_t gateway[] = { 192, 1, 1, 1 };

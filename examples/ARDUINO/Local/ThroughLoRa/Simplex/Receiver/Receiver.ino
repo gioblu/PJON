@@ -1,7 +1,7 @@
 
-#define PJON_INCLUDE_TL
 
-#include <PJON.h>
+
+#include <PJONThroughLora.h>
 
 /* To use this example, please download the LoRa third party Library
    from https://github.com/sandeepmistry/arduino-LoRa/ */
@@ -11,7 +11,7 @@ int busy;
 int fail;
 
 // <Strategy name> bus(selected device id)
-PJON<ThroughLora> bus(44);
+PJONThroughLora bus(44);
 
 void setup() {
 	// Obligatory to initialize Radio with correct frequency

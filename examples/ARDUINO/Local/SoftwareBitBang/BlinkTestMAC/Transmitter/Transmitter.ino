@@ -1,10 +1,10 @@
 #define PJON_INCLUDE_MAC
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 
 // <Strategy name> bus(mac address of the network interface)
 const uint8_t mac[6] = {2, 3, 4, 5, 6, 7};
 const uint8_t rx_mac[6] = {1, 2, 3, 4, 5, 6};
-PJON<SoftwareBitBang> bus(mac);
+PJONSoftwareBitBang bus(mac);
 
 void setup() {
   bus.strategy.set_pin(12);

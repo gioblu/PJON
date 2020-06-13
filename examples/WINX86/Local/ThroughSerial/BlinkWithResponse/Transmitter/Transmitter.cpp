@@ -23,12 +23,12 @@
 #define COM_PORT "COM9"
 
 // Include only ThroughSerial
-#define PJON_INCLUDE_TS
+
 
 // Include PJON library
-#include <PJON.h>
+#include <PJONThroughSerial.h>
 
-PJON<ThroughSerial> bus(45);
+PJONThroughSerial bus(45);
 
 // The function called when data is received
 

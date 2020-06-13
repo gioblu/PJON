@@ -1,5 +1,5 @@
 
-#include <PJON.h>
+#include <PJONOverSampling.h>
 
 float test;
 float mistakes;
@@ -10,7 +10,7 @@ int fail;
 uint8_t bus_id[] = {0, 0, 0, 1};
 
 // PJON object
-PJON<OverSampling> bus(bus_id, 44);
+PJONOverSampling bus(bus_id, 44);
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
  // Do nothing to avoid affecting speed analysis

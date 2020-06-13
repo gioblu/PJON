@@ -1,10 +1,10 @@
 
 /* PJON MAX485 serial modules RS485 communication example */
 
-#include <PJON.h>
+#include <PJONThroughSerial.h>
 
 // <Strategy name> bus(selected device id)
-PJON<ThroughSerial> bus(45);
+PJONThroughSerial bus(45);
 
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
   if(code == PJON_CONNECTION_LOST)

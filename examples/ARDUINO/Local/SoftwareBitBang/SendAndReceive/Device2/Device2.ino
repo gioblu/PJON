@@ -11,10 +11,10 @@
 
 //#define SWBB_RESPONSE_TIMEOUT 1500
 
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 
 // <Strategy name> bus(selected device id)
-PJON<SoftwareBitBang> bus(45);
+PJONSoftwareBitBang bus(45);
 
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
   if(code == PJON_CONNECTION_LOST) {

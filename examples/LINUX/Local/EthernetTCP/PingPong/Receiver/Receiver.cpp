@@ -1,10 +1,10 @@
-#define PJON_INCLUDE_ETCP
-#include <PJON.h>
+
+#include <PJONEthernetTCP.h>
 
 uint8_t remote_ip[] = { 192, 1, 1, 161 };
 
 // <Strategy name> bus(selected device id)
-PJON<EthernetTCP> bus(44);
+PJONEthernetTCP bus(44);
 
 
 uint32_t cnt = 0;

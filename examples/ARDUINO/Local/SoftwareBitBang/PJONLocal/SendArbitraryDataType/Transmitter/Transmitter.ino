@@ -2,7 +2,7 @@
    This sketch contains the transmitter side. */
 
 // Include only SoftwareBitBang
-#define PJON_INCLUDE_SWBB
+
 // Include PJONLocal
 #include <PJONLocal.h>
 

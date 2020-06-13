@@ -12,7 +12,7 @@
 //#define SWBB_RESPONSE_TIMEOUT 1500
 
 // Include only SoftwareBitBang
-#define PJON_INCLUDE_SWBB
+
 
 // Include PJONLocal
 #include <PJONLocal.h>

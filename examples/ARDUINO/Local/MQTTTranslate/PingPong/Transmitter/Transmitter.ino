@@ -1,12 +1,12 @@
-#define PJON_INCLUDE_MQTT
-#include <PJON.h>
+
+#include <PJONMQTTTranslate.h>
 
 // Ethernet configuration for this device
 byte mac[] = {0xDA, 0xCA, 0x7E, 0xEF, 0xFE, 0x5D};
 uint8_t broker_ip[] = { 192, 1, 1, 71 };
 
 // <Strategy name> bus(selected device id)
-PJON<MQTTTranslate> bus(45);
+PJONMQTTTranslate bus(45);
 
 uint32_t cnt = 0;
 uint32_t start = millis();

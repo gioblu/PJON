@@ -12,7 +12,7 @@
 // #define SWBB_MODE 3 // 2.94kB/s - 23529Bd
 // #define SWBB_MODE 4 // 3.40kB/s - 27210Bd
 
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 
 SoftwareBitBang swbb;
 

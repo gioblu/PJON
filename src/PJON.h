@@ -60,7 +60,6 @@ limitations under the License. */
 #pragma once
 #include "interfaces/PJON_Interfaces.h"
 #include "PJONDefines.h"
-#include "strategies/PJON_Strategies.h"
 
 static void PJON_dummy_receiver_handler(
   uint8_t *,               // payload

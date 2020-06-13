@@ -1,10 +1,10 @@
-#define PJON_INCLUDE_SWBB
+
 #define PJON_INCLUDE_MAC
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 
 // <Strategy name> bus(mac address of the network interface)
 const uint8_t mac[6] = {1, 2, 3, 4, 5, 6};
-PJON<SoftwareBitBang> bus(mac);
+PJONSoftwareBitBang bus(mac);
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   /* Make use of the payload before sending something, the buffer where payload points to is

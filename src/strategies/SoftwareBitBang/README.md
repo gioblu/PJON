@@ -1,8 +1,8 @@
 ## SoftwareBitBang
 
-| Medium | Pins used | Inclusion Constant | Included by default |
-|--------|-----------|--------------------|---------------------|
-| Wire   | 1 or 2    | `PJON_INCLUDE_SWBB`|  yes                |
+| Medium | Pins used | Inclusion  |
+|--------|-----------|--------------------|
+| Wire   | 1 or 2    | `#include <PJONSoftwareBitBang.h>`|
 
 `SoftwareBitBang` is a software implementation of [PJDL (Padded Jittering Data Link)](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md). It supports simplex and half-duplex asynchronous serial communication for up to 254 devices over a single wire. The maximum length of the bus can reach between 800 and 2000 meters depending on the mode used. It is a valid alternative to 1-Wire because of its flexibility and reliability. Fault tolerance schemes can be easily implemented because communication pins can be configured at runtime. Take a look at the [video introduction](https://www.youtube.com/watch?v=GWlhKD5lz5w) for a brief showcase of its features.
 ```cpp
@@ -54,7 +54,7 @@ Communication over a single wire enables quick and creative experimentation. The
 The picture above shows a [PJDL](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md) frame transmitted over a 800m twisted pair using mode `4` (test done by [Jack Anderson](https://github.com/jdaandersj)). Although bits are substantially deformed the exchange occurs nominally and performance is not affected.
 
 ### Configuration
-Before including `PJON.h` it is possible to configure `SoftwareBitBang` using predefined constants:
+Before including the library it is possible to configure `SoftwareBitBang` using predefined constants:
 
 | Constant                | Purpose                             | Supported value                            |
 | ----------------------- |------------------------------------ | ------------------------------------------ |
@@ -66,9 +66,9 @@ Before including `PJON.h` it is possible to configure `SoftwareBitBang` using pr
 `SoftwareBitBang` supports the use of input and output pins because separated signals may be required if additional circuitry is used for amplification or noise filtering. It also works if pins are directly connected as a simple point-to-point null-modem or cross-over serial link.
 
 ```cpp  
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 
-PJON<SoftwareBitBang> bus;
+PJONSoftwareBitBang bus;
 
 void setup() {
   // Set the pin 12 as the communication pin

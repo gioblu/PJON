@@ -6,12 +6,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define PJON_INCLUDE_TS // Include only ThroughSerial
-#include <PJON.h>
+ // Include only ThroughSerial
+#include <PJONThroughSerial.h>
 
 int main() {
   printf("PJON instantiation... \n");
-  PJON<ThroughSerial> bus(45);
+  PJONThroughSerial bus(45);
   uint32_t baud_rate = 9600;
   printf("Opening serial... \n");
 

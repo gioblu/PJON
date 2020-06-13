@@ -1,9 +1,9 @@
 //#define PJON_MAX_PACKETS 1
-#define PJON_INCLUDE_LF
-#include <PJON.h>
+
+#include <PJONLocalFile.h>
 
 // <Strategy name> bus(selected device id)
-PJON<LocalFile> bus(44);
+PJONLocalFile bus(44);
 
 uint32_t cnt = 0, cnt2 = 1;
 uint32_t start = millis();

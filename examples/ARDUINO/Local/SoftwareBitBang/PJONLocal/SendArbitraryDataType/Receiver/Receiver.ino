@@ -3,7 +3,7 @@
    is printed the record transmitted by the other device. */
 
 // Include only SoftwareBitBang
-#define PJON_INCLUDE_SWBB
+
 // Include PJONLocal
 #include <PJONLocal.h>
 // <Strategy name> bus(selected device id)

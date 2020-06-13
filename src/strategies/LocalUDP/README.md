@@ -1,8 +1,8 @@
 ## LocalUDP
 
-| Medium | Pins used | Inclusion Constant | Included by default |
-|--------|-----------|--------------------|---------------------|
-| Ethernet port, wired or WiFi   | NA    | `PJON_INCLUDE_LUDP`|  yes   |
+| Medium | Pins used | Inclusion |
+|--------|-----------|--------------------|
+| Ethernet port, wired or WiFi   | NA    | `#include <PJONLocalUDP.h>`|
 
 With the `LocalUDP` PJON strategy, multiple devices with Ethernet ports can use PJON to communicate with each other on a local subnet, wired or over WiFi or both. Take a look at the [video introduction](https://www.youtube.com/watch?v=cxEUqkK5BQg) for a brief showcase of its features.
 
@@ -12,10 +12,11 @@ If a cabled or wireless Ethernet network exists, using this to let devices commu
 It can also be useful for connecting physically separate clusters of devices that are connected wired with the SoftwareBitBang strategy, or wirelessly with the Oversampling strategy, when a LAN is connecting the locations.
 
 ### How to use LocalUDP
-Pass the `LocalUDP` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
+Use `PJONLocalUDP` to instantiate a PJON object ready to communicate using `LocalUDP` strategy:
 ```cpp  
-  // Use LocalUDP strategy with PJON device id 44
-  PJON<LocalUDP> bus(44);
+  #include <PJONLocalUDP.h>
+
+  PJONLocalUDP bus(44); // Device id 44
 ```
 Set up the Ethernet card in the usual manner by calling `Ethernet.begin`, then call the `begin` method on the PJON object:
 ```cpp  

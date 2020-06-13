@@ -70,7 +70,6 @@ limitations under the License. */
 #define PJON_INCLUDE_NONE
 #include "interfaces/PJON_Interfaces.h"
 #include "PJONDefines.h"
-#include "strategies/PJON_Strategies.h"
 
 template<typename Strategy>
 class PJONLocal {

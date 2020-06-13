@@ -1,7 +1,7 @@
-#include <PJON.h>
+#include <PJONOverSampling.h>
 
 // <Strategy name> bus(selected device id)
-PJON<OverSampling> bus(44);
+PJONOverSampling bus(44);
 
 void setup() {
   /* When using more than one pin always use pins connected to

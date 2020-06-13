@@ -1,8 +1,8 @@
 ## ThroughSerial
 
-**Medium:** Hardware or software serial port -
-**Pins used:** 1 or 2 -
-**Inclusion constant:** `PJON_INCLUDE_TS`
+| Medium | Pins used | Inclusion |
+|--------|-----------|--------------------|
+| Wires | 2     | `#include <PJONThroughSerial.h>`|
 
 With `ThroughSerial` strategy, PJON can run through a software or hardware Serial port working out of the box with many Arduino compatible serial transceivers, like RS485 or radio modules like HC-12 (HCMODU0054). It complies with [TSDL v3.0](/src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md).  
 
@@ -16,7 +16,7 @@ Serial communication is fast and reliable but it is often useless without all th
 `ThroughSerial` performs well if used with ESP8266 and ESP32 where blocking procedures can strongly degrade functionality. The reception phase is entirely non-blocking. Sending and acknowledgement however are still blocking.
 
 ### Configuration
-Before including `PJON.h` it is possible to configure `ThroughSerial` using predefined constants:
+Before including the library it is possible to configure `ThroughSerial` using predefined constants:
 
 | Constant                | Purpose                             | Supported value                            |
 | ----------------------- |------------------------------------ | ------------------------------------------ |
@@ -26,16 +26,15 @@ Before including `PJON.h` it is possible to configure `ThroughSerial` using pred
 | `TS_BACK_OFF_DEGREE`    | Maximum back-off exponential degree | Numeric value (4 by default)               |
 | `TS_MAX_ATTEMPTS`       | Maximum transmission attempts       | Numeric value (20 by default)              |
 
-Pass the `ThroughSerial` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
+Use `PJONThroughSerial` to instantiate a PJON object ready to communicate using `ThroughSerial` strategy:
 ```cpp  
-#include PJON_INCLUDE_TS
-PJON<ThroughAsyncSerial> bus;
+#include <PJONThroughSerial.h>
+PJONThroughSerial bus;
 ```
 Call the `begin` method on the `Serial` or `SoftwareSerial`  object you want to use for PJON communication and pass it to the `set_serial` method:
 ```cpp  
-#include <PJON.h>
-
-PJON<ThroughSerial> bus;
+#include <PJONThroughSerial.h>
+PJONThroughSerial bus;
 
 void setup() {
   Serial.begin(9600);

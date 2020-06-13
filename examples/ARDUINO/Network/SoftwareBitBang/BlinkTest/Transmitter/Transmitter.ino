@@ -1,10 +1,10 @@
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 
 // Bus id definition
 uint8_t bus_id[] = {0, 0, 0, 1};
 
 // PJON object
-PJON<SoftwareBitBang> bus(bus_id, 45);
+PJONSoftwareBitBang bus(bus_id, 45);
 
 void setup() {
   bus.strategy.set_pin(12);

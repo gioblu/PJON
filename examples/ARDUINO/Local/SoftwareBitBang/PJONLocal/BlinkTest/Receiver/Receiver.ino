@@ -1,6 +1,6 @@
 
 // Include only SoftwareBitBang
-#define PJON_INCLUDE_SWBB
+
 // Set maximum packet length
 #define PJON_PACKET_MAX_LENGTH 10
 // Include PJONLocal

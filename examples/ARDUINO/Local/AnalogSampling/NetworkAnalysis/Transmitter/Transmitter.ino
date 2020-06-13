@@ -6,7 +6,7 @@
    Try different resistor values to find the optimal to maximize range
    Higher resistance can higher the range but can also higher background noise.  */
 
-#include <PJON.h>
+#include <PJONAnalogSampling.h>
 
 float test;
 float mistakes;
@@ -14,7 +14,7 @@ int busy;
 int fail;
 
 // <Strategy name> bus(selected device id)
-PJON<AnalogSampling> bus(45);
+PJONAnalogSampling bus(45);
 
 int packet;
 uint8_t content[] = "01234567890123456789";

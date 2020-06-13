@@ -9,13 +9,13 @@
    If operating at less than 9600Bd TS_RESPONSE_TIME_OUT should be longer */
 #define TS_RESPONSE_TIME_OUT 100000
 
-#include <PJON.h>
+#include <PJONThroughSerial.h>
 #include <SoftwareSerial.h>
 
 SoftwareSerial HC12(2, 3);
 
 // <Strategy name> bus(selected device id)
-PJON<ThroughSerial> bus(45);
+PJONThroughSerial bus(45);
 
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
   if(code == PJON_CONNECTION_LOST) {

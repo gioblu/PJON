@@ -1,6 +1,7 @@
-#include <PJON.h>
 
-PJON<ThroughSerial> bus(44);
+#include <PJONThroughSerial.h>
+
+PJONThroughSerial bus(44);
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
  /* Make use of the payload before sending something, the buffer where payload points to is

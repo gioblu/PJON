@@ -1,7 +1,7 @@
-#include <PJON.h>
+#include <PJONDualUDP.h>
 
 // <Strategy name> bus(selected device id)
-PJON<DualUDP> bus(44);
+PJONDualUDP bus(44);
 
 const char* ssid     = "MyNetworkSSID";
 const char* password = "MyNetworkPassword";

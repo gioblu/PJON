@@ -1,4 +1,4 @@
-#include <PJON.h>
+#include <PJONOverSampling.h>
 
 float test;
 float mistakes;
@@ -9,7 +9,7 @@ int fail;
 uint8_t bus_id[] = {0, 0, 0, 1};
 
 // PJON object
-PJON<OverSampling> bus(bus_id, 44);
+PJONOverSampling bus(bus_id, 44);
 
 int packet;
 uint8_t content[] = "01234567890123456789"; // First 4 bytes left empty for bus id

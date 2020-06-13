@@ -1,8 +1,8 @@
-#define PJON_INCLUDE_LUDP
-#include <PJON.h>
+
+#include <PJONLocalUDP.h>
 
 // <Strategy name> bus(selected device id)
-PJON<LocalUDP> bus(44);
+PJONLocalUDP bus(44);
 
 uint32_t cnt = 0;
 uint32_t start = millis();

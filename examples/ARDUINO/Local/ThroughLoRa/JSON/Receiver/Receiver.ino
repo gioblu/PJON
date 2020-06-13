@@ -1,14 +1,14 @@
 
-#define PJON_INCLUDE_TL
 
-#include <PJON.h>
+
+#include <PJONThroughLora.h>
 #include <ArduinoJson.h>
 
 /* To use this example, please download the LoRa third party Library
    from https://github.com/sandeepmistry/arduino-LoRa/
    and JSON library from https://github.com/bblanchon/ArduinoJson */
 
-PJON<ThroughLora> LoraPJON(44);
+PJONThroughLora LoraPJON(44);
 
 void setup() {
 	Serial.begin(115200);

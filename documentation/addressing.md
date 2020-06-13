@@ -18,11 +18,11 @@ PJON objects can operate in local or shared mode. The PJON protocol v4.0 in [loc
 
 The simples way to instantiate PJON in local mode is the following:
 ```cpp  
-  PJON<SoftwareBitBang> bus;
+  PJONSoftwareBitBang bus;
 ```
 When the object is instantiated without passing parameters it operates in local mode and the device identifier is set to 255 or `PJON_NOT_ASSIGNED`. PJON objects can be instantiated passing the device identifier:
 ```cpp
-  PJON<SoftwareBitBang> bus(44);
+  PJONSoftwareBitBang bus(44);
 ```
 `bus` receives packets for device identifier 44 and ignores all others.
 
@@ -49,7 +49,7 @@ if the medium used is private and not accessible from the outside world (wired n
 Instantiation in shared mode:
 ```cpp
 uint8_t bus_id[4] = {1, 2, 3, 4};
-PJON<SoftwareBitBang> bus(bus_id, 44);
+PJONSoftwareBitBang bus(bus_id, 44);
 // Device id 44, bus id 1.2.3.4 in shared mode
 ```
 ### Get or set bus identifier
@@ -69,7 +69,7 @@ PJON can optionally operate using the MAC address of the device:
 // MAC address of the device
 uint8_t mac[6] = {1, 2, 3, 4, 5, 6};
 
-PJON<SoftwareBitBang> bus(mac);
+PJONSoftwareBitBang bus(mac);
 // Local mode, device id PJON_NOT_ASSIGNED
 ```
 This instantiation sets the MAC address, the device id set to `PJON_NOT_ASSIGNED` or 255 but can be changed afterwards as required. Packets containing a recipient's MAC address that is not equal to the one configured are discarded. PJON can operate in both local and shared mode while including MAC addresses. The feature can be disabled using `includ_mac`:

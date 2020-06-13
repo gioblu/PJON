@@ -39,13 +39,13 @@
    supporting up to 64 bytes maximum packet length */
 #define PJON_PACKET_MAX_LENGTH 63
 
-#include <PJON.h>
+#include <PJONThroughSerial.h>
 #include <SoftwareSerial.h>
 
 SoftwareSerial HC12(2, 3);
 
 // <Strategy name> bus(selected device id)
-PJON<ThroughSerial> bus;
+PJONThroughSerial bus;
 
 uint8_t packet[100];
 String string_number;

@@ -13,7 +13,7 @@
 
 //#define SWBB_RESPONSE_TIMEOUT 1000
 
-#include <PJON.h>
+#include <PJONAny.h>
 
 // <Strategy name> bus(selected device id)
 PJON<SoftwareBitBang> bus(1);

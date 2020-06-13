@@ -13,11 +13,11 @@ static wifi_country_t wifi_country = {
 
 #include "Arduino.h"
 
-#define PJON_INCLUDE_EN
-#include <PJON.h>
 
-// <Strategy name> bus(selected device id)
-PJON<ESPNOW> bus(44);
+#include <PJONESPNOW.h>
+
+
+PJONESPNOW bus(44);
 
 uint32_t cnt = 0;
 uint32_t start = millis();

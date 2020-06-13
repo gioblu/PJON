@@ -1,12 +1,12 @@
 
-#define PJON_INCLUDE_TL
 
-#include <PJON.h>
+
+#include <PJONThroughLora.h>
 /*
 To use this example, please download the LoRa third party Library from https://github.com/sandeepmistry/arduino-LoRa/
 */
 // <Strategy name> bus(selected device id)
-PJON<ThroughLora> bus(45);
+PJONThroughLora bus(45);
 
 void setup() {
 	// Synchronous acknowledgement is not supported

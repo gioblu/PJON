@@ -1,10 +1,10 @@
 
 /* PJON MAX485 serial modules RS485 communication example */
 
-#include <PJON.h>
+#include <PJONThroughSerial.h>
 
 // <Strategy name> bus(selected device id)
-PJON<ThroughSerial> bus(44);
+PJONThroughSerial bus(44);
 
 void setup() {
   // Initialize LED 13 to be off

@@ -11,10 +11,10 @@
 
 //#define SWBB_RESPONSE_TIMEOUT 1500
 
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 
 // <Strategy name> bus(selected device id)
-PJON<SoftwareBitBang> bus(44);
+PJONSoftwareBitBang bus(44);
 
 void setup() {
   bus.strategy.set_pin(12);

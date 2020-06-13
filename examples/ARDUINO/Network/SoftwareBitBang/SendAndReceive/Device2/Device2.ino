@@ -1,10 +1,10 @@
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 
 // Bus id definition
 uint8_t bus_id[] = {0, 0, 0, 1};
 
 // PJON object
-PJON<SoftwareBitBang> bus(bus_id, 45);
+PJONSoftwareBitBang bus(bus_id, 45);
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   /* Make use of the payload before sending something, the buffer where payload points to is

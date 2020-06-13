@@ -11,10 +11,8 @@
 
 //#define SWBB_RESPONSE_TIMEOUT 1500
 
-// Include only SoftwareBitBang
-
-// Include PJONLocal
-#include <PJONLocal.h>
+#include <PJONLocal.h> // Include PJONLocal
+#include <SoftwareBitBang.h> // Include only SoftwareBitBang
 
 /* Create PJONLocal object:
    Class name <Strategy name> instance name ( device id ) */

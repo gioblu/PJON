@@ -67,7 +67,6 @@ limitations under the License. */
 
 #pragma once
 #define PJON_LOCAL
-#define PJON_INCLUDE_NONE
 #include "interfaces/PJON_Interfaces.h"
 #include "PJONDefines.h"
 

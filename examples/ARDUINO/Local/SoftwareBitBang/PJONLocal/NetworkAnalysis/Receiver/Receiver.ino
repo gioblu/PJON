@@ -13,10 +13,8 @@
 
 // Include only SoftwareBitBang
 
-
-// Include PJONLocal
-#include <PJONLocal.h>
-
+#include <PJONLocal.h> // Include PJONLocal
+#include <SoftwareBitBang.h> // Include SoftwareBitBang
 
 PJONLocal<SoftwareBitBang> bus(44);
 

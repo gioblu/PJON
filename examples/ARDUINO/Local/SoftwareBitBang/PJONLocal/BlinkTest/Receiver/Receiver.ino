@@ -1,10 +1,9 @@
 
-// Include only SoftwareBitBang
-
 // Set maximum packet length
 #define PJON_PACKET_MAX_LENGTH 10
-// Include PJONLocal
-#include <PJONLocal.h>
+
+#include <PJONLocal.h> // Include PJONLocal
+#include <SoftwareBitBang.h> // Include only SoftwareBitBang
 
 PJONLocal<SoftwareBitBang> bus(44);
 

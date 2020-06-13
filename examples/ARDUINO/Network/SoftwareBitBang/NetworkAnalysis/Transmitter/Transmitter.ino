@@ -46,7 +46,11 @@ void loop() {
     /* Here send_packet low level function is used to
     be able to catch every single sending result. */
 
-    unsigned int response = bus.send_packet(44, bus_id, content, 20, header);
+    PJON_Packet_Info info;
+    info.rx.id = 44;
+    memcpy(info.rx.bus_id, bus_id);
+    unsigned int response = bus.send_packet(info, content, 20);
+
     if(response == PJON_ACK)
       test++;
     if(response == PJON_NAK)

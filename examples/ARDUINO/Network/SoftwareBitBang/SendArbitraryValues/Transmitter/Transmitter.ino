@@ -43,7 +43,10 @@ void loop() {
 
     unsigned long send_time = micros();
     /* Use a blocking version of send. */
-    packet = bus.send_packet_blocking(44, bus_id, content, 3);
+    PJON_Packet_Info info;
+    info.rx.id = 44;
+    memcpy(info.rx.bus_id, bus_id);
+    packet = bus.send_packet_blocking(info, content, 3);
 
     /* Determine communication result and duration */
     send_time = micros() - send_time;

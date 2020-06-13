@@ -24,12 +24,12 @@ Before including the library it is possible to define the length of its buffers 
 ```
 
 ### Strategy configuration
-The `PJON` class abstracts the [strategy](/src/strategies/README.md) using templates although since version 13.0 that complexity is hidden behind a [macro](../src/PJONSoftwareBitBang.h):
+Strategies are classes that abstract the physical transmission of data. `PJON` uses [strategies](/src/strategies/README.md) as template parameters although since version 13.0 that complexity is hidden behind a [macro](../src/PJONSoftwareBitBang.h):
 ```cpp
   #include <PJONSoftwareBitBang.h>
   PJONSoftwareBitBang bus;
 ```
-In the example above the PJON object is instantiated using the [SoftwareBitBang](/src/strategies/SoftwareBitBang/README.md) strategy. Strategies are classes that abstract the physical transmission of data. It is possible to instantiate more than one PJON object using different strategies in the same program:
+In the example above the PJON object is instantiated using the [SoftwareBitBang](/src/strategies/SoftwareBitBang/README.md) strategy. It is possible to instantiate more than one PJON object using different strategies in the same program:
 ```cpp
 #include <PJONSoftwareBitBang.h>
 #include <PJONEthernetTCP.h>
@@ -48,7 +48,7 @@ The table below lists the strategies available:
 | [ESPNOW](/src/strategies/ESPNOW)  | WiFi | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) | `#include <PJONESPNOW.h>` |
 | [EthernetTCP](/src/strategies/EthernetTCP)  | Ethernet/WiFi | [TCP](https://tools.ietf.org/html/rfc793) | `#include <PJONEthernetTCP.h>` |
 | [GlobalUDP](/src/strategies/GlobalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | `#include <PJONGlobalUDP.h>` |
-| [LocalFile](/src/strategies/LocalFile)  | System memory | None | `#include <PJONLocalFile.h>` |
+| [LocalFile](/src/strategies/LocalFile)  | File system | None | `#include <PJONLocalFile.h>` |
 | [LocalUDP](/src/strategies/LocalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | `#include <PJONLocalUDP.h>` |
 | [MQTTTranslate](/src/strategies/MQTTTranslate)  | Ethernet/WiFi | [MQTT](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.pdf) | `#include <PJONMQTTTranslate.h>` |
 | [OverSampling](/src/strategies/OverSampling)  | Radio | [PJDLR](../src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) | `#include <PJONOverSampling.h>` |

@@ -15,7 +15,7 @@
 Transparent routing based on a tree topology that may include loops has been implemented by Fred Larsen with the [PJONSimpleSwitch](#simpleswitch), [PJONSwitch](#switch), [PJONRouter](#router), [PJONDynamicRouter](#dynamicrouter), [PJONInteractiveRouter](#interactiverouter) and [PJONVirtualBusRouter](#virtual-bus).
 
 ### SimpleSwitch
-The [PJONSimpleSwitch](/examples/routing/Network/Switch/SimpleSwitch/SimpleSwitch.ino) class connects two or more buses using the same strategy. In this example a `SoftwareBitBang` <=> `SoftwareBitBang` switch is created. It can be used to amplify signals and so extend the maximum range or in more complex setups selectively switch packets as requested by its configuration. It can be used instead of `PJONSwitch` to save memory when the same strategy is used in all buses. It avoids virtual inheritance so it is faster and has a smaller footprint.
+The [PJONSimpleSwitch](/examples/routing/ARDUINO/Network/Switch/SimpleSwitch/SimpleSwitch.ino) class connects two or more buses using the same strategy. In this example a `SoftwareBitBang` <=> `SoftwareBitBang` switch is created. It can be used to amplify signals and so extend the maximum range or in more complex setups selectively switch packets as requested by its configuration. It can be used instead of `PJONSwitch` to save memory when the same strategy is used in all buses. It avoids virtual inheritance so it is faster and has a smaller footprint.
 ```cpp
 /* __________                 ________                 __________
   |          |         Pin 7 |        | Pin 12        |          |

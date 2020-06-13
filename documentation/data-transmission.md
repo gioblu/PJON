@@ -116,7 +116,7 @@ When using the `send` method, PJON operates using its internal buffer, although 
 ```
 Every time `update` is called the transmission is attempted for each packet present in the buffer.
 
-To send data to another device connected to the bus simply call `send` passing the device id of the recipient of type `uint8_t` then the payload of type `const void *` and its length of type `uint16_t`. The return value of `send` is of type `uint16_t` and it is the id of the packet in the buffer or `PJON_FAIL` in case of error.
+To send data to another device connected to the bus simply call `send` passing the device id of the recipient of type `uint8_t` then the payload of type `const void *` and its length of type `uint16_t`. The return value of `send` of type `uint16_t` is the index of the packet in the `packets` buffer or `PJON_FAIL` in case of error.
 ```cpp
 bus.send(100, "Ciao, this is a test!", 21);
 ```
@@ -159,7 +159,7 @@ uint16_t one_second_test =
    4293014170 microseconds or 71.55 minutes */
 
 ```
-`send_repeatedly` returns the id of the packet in the buffer as `send` does, to remove the repeated transmission simply call:
+`send_repeatedly` returns the index of the packet in the `packets` buffer as `send` does, to remove the repeated transmission simply call:
 ```cpp
 bus.remove(one_second_test);
 ```

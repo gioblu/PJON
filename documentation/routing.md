@@ -89,10 +89,10 @@ void loop() {
 }
 ```
 
-Consider that exists also `PJONSwitch3` able to handle up to 3 buses, and `PJONSwitch` able to handle an array of buses. `PJONSwitch` can be used also in local mode, although, because the hop count field is not included, the network topology cannot include loops.
+Consider that there is also `PJONSwitch3` able to handle up to 3 buses, and `PJONSwitch` able to handle an array of buses. `PJONSwitch` can be used also in local mode, although, because the hop count field is not included, the network topology cannot include loops.
 
 ### Router
-The [PJONRouter](/examples/routing/ARDUINO/Network/Router/Router) class routes between both locally attached buses also if different strategies or media are in use, and remote buses reachable through the locally attached buses. In this example simple a router is created:
+The [PJONRouter](/examples/routing/ARDUINO/Network/Router/Router) class routes between both locally attached buses also if different strategies or media are in use, and remote buses reachable through the locally attached buses using a static routing table. In this example simple a router is created:
 ```cpp
                  ________
     Bus 0.0.0.3 |        | Bus 0.0.0.4
@@ -132,7 +132,7 @@ void loop() {
   router.loop();
 }
 ```
-Consider that exists also `PJONRouter3` able to handle up to 3 buses, and `PJONRouter` able to handle an array of buses. `PJONRouter` can be used also in local mode, although, because the hop count field is not included, the network topology cannot include loops.
+Consider that there is also `PJONRouter3` able to handle up to 3 buses, and `PJONRouter` able to handle an array of buses. `PJONRouter` can be used also in local mode, although, because the hop count field is not included, the network topology cannot include loops.
 
 ### DynamicRouter
 The [PJONDynamicRouter](/examples/routing/ARDUINO/Network/DynamicRouter/DynamicRouter.ino) is a router that also populates a routing table of remote (not directly attached) buses observing traffic. It can offer the same features provided by the `PJONRouter` class with no need of manual configuration. To do so, the `PJONDynamicRouter` class uses a routing table that is dynamically updated, for this reason uses more memory if compared with `PJONRouter`. Use the `PJON_ROUTER_TABLE_SIZE` constant to configure the number of entries that are `100` by default.
@@ -173,10 +173,17 @@ void loop() {
 }
 ```
 
-Consider that exists also `PJONDynamicRouter3` able to handle up to 3 buses, and `PJONDynamicRouter` able to handle an array of buses. `PJONDynamicRouter` can be used also in local mode, although, because the hop count field is not included, the network topology cannot include loops.
+Consider that there is also `PJONDynamicRouter3` able to handle up to 3 buses, and `PJONDynamicRouter` able to handle an array of buses. `PJONDynamicRouter` can be used also in local mode, although, because the hop count field is not included, the network topology cannot include loops.
 
 ### InteractiveRouter
 [Interactive router](/examples/routing/ARDUINO/Network/Switch/BlinkingSwitch) routes packets as a switch or router but it is also able to act as a device and have user-defined receive and error call-back.
 
+This class implements functionality that can be added to any of the routing classes except PJONSimpleSwitch. Adding the functionality to PJONDynamicRouter can be done as:
+```cpp
+PJONInteractiveRouter<PJONDynamicRouter2<SoftwareBitBang, AnalogSampling>> router;
+```
+
 ### Virtual bus
 [Virtual bus](/examples/routing/ARDUINO/Local/Tunneler) is a bus where multiple buses using potentially different media or strategies, connected through a router, have the same bus id (including the local bus case), and where the location of each device is automatically registered observing traffic.
+
+This class makes it easy to create a bus that consists of multiple physical buses using one or more strategies. It can for example connect several clusters of SWBB local buses together through another strategy like DualUDP, to form one larger local bus. also including DualUDP devices.

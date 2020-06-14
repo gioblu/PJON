@@ -90,6 +90,7 @@ class YourStrategyName {
     bool     begin(uint8_t did) { };
     bool     can_start() { };
     uint8_t  get_max_attempts() { };
+    uint16_t get_receive_time() { };
     uint16_t receive_frame(uint8_t *data, uint16_t max_length) { };
     uint16_t receive_response() { };
     void     send_response(uint8_t response) { };

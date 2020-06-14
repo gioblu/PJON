@@ -26,7 +26,7 @@ The [PJONSimpleSwitch](/examples/routing/ARDUINO/Network/Switch/SimpleSwitch/Sim
 The first thing to do is to include `PJONSimpleSwitch` and the required strategy:
 ```cpp
 #include <PJONSimpleSwitch.h>
-#include <SoftwareBitBang.h>
+#include <PJONSoftwareBitBang.h>
 ```
 The `SimpleSwitch` class provides with configurable transparent packet switching between buses using the same strategy:
 ```cpp
@@ -65,8 +65,8 @@ Then the `PJONSimpleSwitch` should work transparently. `PJONSimpleSwitch` can be
 First include the `PJONSwitch` class and the strategies used:
 ```cpp
 #include <PJONSwitch.h>
-#include <SoftwareBitBang.h>
-#include <AnalogSampling.h>
+#include <PJONSoftwareBitBang.h>
+#include <PJONAnalogSampling.h>
 ```
 The simplest way to use the `PJONSwitch` class is to use `PJONSwitch2` that is able to handle up to 2 buses:
 ```cpp
@@ -151,8 +151,8 @@ ________________| ROUTER |________________
 The first thing to do is to include the `PJONDynamicRouter` class and the required strategies:
 ```cpp
 #include <PJONDynamicRouter.h>
-#include <SoftwareBitBang.h>
-#include <OverSampling.h>
+#include <PJONSoftwareBitBang.h>
+#include <PJONOverSampling.h>
 ```
 The simplest way to use the `PJONDynamicRouter` class is to use `PJONDynamicRouter2` that is able to handle up to 2 buses:
 ```cpp

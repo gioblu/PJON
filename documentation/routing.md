@@ -23,9 +23,10 @@ The [PJONSimpleSwitch](/examples/routing/ARDUINO/Network/Switch/SimpleSwitch/Sim
   |__________|  Bus 0.0.0.1  |________|  Bus 0.0.0.2  |__________| */
 
 ```
-The first thing to do is to include the `PJONSimpleSwitch` class:
+The first thing to do is to include `PJONSimpleSwitch` and the required strategy:
 ```cpp
 #include <PJONSimpleSwitch.h>
+#include <SoftwareBitBang.h>
 ```
 The `SimpleSwitch` class provides with configurable transparent packet switching between buses using the same strategy:
 ```cpp
@@ -49,10 +50,10 @@ void loop() {
   router.loop();
 }
 ```
-Then the `PJONSimpleSwitch` should work transparently. `PJONSimpleSwitch` can be used also in local mode although, because the hop count field is not included, the network topology cannot include loops.
+Then the `PJONSimpleSwitch` should work transparently. `PJONSimpleSwitch` can be used also in local mode, although, because the hop count field is not included, the network topology cannot include loops.
 
 ### Switch
-The [PJONSwitch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/Switch) class transparently switches packets between locally attached buses also if different strategies or media are in use. It supports a default gateway to be able to act as a leaf in a larger network setup. Thanks to the `PJONSwitch` class, with few lines of code, a switch that operates multiple strategies can be created. In this example a `SoftwareBitBang` <=> `AnalogSampling` switch is created:
+[PJONSwitch](/examples/routing/ARDUINO/Network/Switch/Switch) transparently switches packets between locally attached buses also if different strategies or media are in use. It supports a default gateway to be able to act as a leaf in a larger network setup. Thanks to the `PJONSwitch` class, with few lines of code, a switch that operates multiple strategies can be created. In this example a `SoftwareBitBang` <=> `AnalogSampling` switch is created:
 ```cpp
 /* Connect SoftwareBitBang bus with an AnalogSampling bus:
 
@@ -61,51 +62,25 @@ The [PJONSwitch](/examples/ARDUINO/Local/SoftwareBitBang/Switch/Switch) class tr
 |DEVICE1|_______________|SWITCH| _ _ _ _ _ _ _|DEVICE2|
 |_______|BUS ID 0.0.0.1 |______|BUS ID 0.0.0.2|_______| */
 ```
-The first thing to do is to include the `PJONSwitch` class:
+First include the `PJONSwitch` class and the strategies used:
 ```cpp
 #include <PJONSwitch.h>
+#include <SoftwareBitBang.h>
+#include <AnalogSampling.h>
 ```
-Create `StrategyLink` instances with the selected strategies:
+The simplest way to use the `PJONSwitch` class is to use `PJONSwitch2` that is able to handle up to 2 buses:
 ```cpp
-StrategyLink<SoftwareBitBang> link1;
-StrategyLink<AnalogSampling> link2;
+PJONSwitch2<SoftwareBitBang, AnalogSampling> router;
 ```
-Create `PJONAny` instances configuring the bus id:
+Use `get_strategy_0` and `get_strategy_1` to access one of the two strategies:
 ```cpp
-PJONAny bus1(&link1, (uint8_t[4]){0, 0, 0, 1});
-PJONAny bus2(&link2, (uint8_t[4]){0, 0, 0, 2});
+router.get_strategy_0().set_pin(12); // SoftwareBitBang pin used is 12
+router.get_strategy_1().set_pin(A0); // AnalogSampling pin used is A0
 ```
-Polling time can be optionally configured:
+Use `get_bus` to access one of the two instances:
 ```cpp
-PJONAny bus1(
-  &link1,
-  (uint8_t[4]){0,0,0,1},
-  PJON_NOT_ASSIGNED, // Switch device id
-  1000 // Polling in microseconds
-);
-```
-Device id ranges can be optionally configured:
-```cpp
-PJONAny bus1(
-  &link1,
-  (uint8_t[4]){0,0,0,1},
-  PJON_NOT_ASSIGNED, // Switch device id
-  1000, // Polling in microseconds
-  2, // 2 ranges present (1-127, 128-254)
-  0 // Range 1 in use (1-127)
-);
-```
-Create the `PJONSwitch` instance passing the `PJONAny` instances:
-```cpp
-PJONSwitch router(2, (PJONAny*[2]){&bus1, &bus2});
-```
-Configure each strategy and the `router` instance as required:
-```cpp
-void setup() {
-  link1.strategy.set_pin(12);
-  link2.strategy.set_pin(A0);
-  router.begin();
-}
+router.get_bus(0).set_bus_id((const uint8_t[4]){0, 0, 0, 1});
+router.get_bus(1).set_bus_id((const uint8_t[4]){0, 0, 0, 2});
 ```
 Call the `loop` function as often as possible to achieve optimal performance:
 ```cpp
@@ -113,8 +88,11 @@ void loop() {
   router.loop();
 }
 ```
+
+Consider that exists also `PJONSwitch3` able to handle up to 3 buses, and `PJONSwitch` able to handle an array of buses. `PJONSwitch` can be used also in local mode, although, because the hop count field is not included, the network topology cannot include loops.
+
 ### Router
-The [PJONRouter](/examples/ARDUINO/Network/SoftwareBitBang/Router) class routes between both locally attached buses also if different strategies or media are in use, and remote buses reachable through the locally attached buses. In this example simple a router is created:
+The [PJONRouter](/examples/routing/ARDUINO/Network/Router/Router) class routes between both locally attached buses also if different strategies or media are in use, and remote buses reachable through the locally attached buses. In this example simple a router is created:
 ```cpp
                  ________
     Bus 0.0.0.3 |        | Bus 0.0.0.4
@@ -127,33 +105,20 @@ ________________| ROUTER |________________
 | DEVICE 1 |                 | DEVICE 2 |
 |__________|                 |__________|
 ```
-The first thing to do is to include the `PJONRouter` class:
+The first thing to do is to include the `PJONRouter` class and include the required strategy:
 ```cpp
 #include <PJONRouter.h>
+#include <PJONSoftwareBitBang.h>
 ```
-Create `StrategyLink` instances with the selected strategies:
+The simplest way to use the `PJONRouter` class is to use `PJONRouter2` that is able to handle up to 2 buses:
 ```cpp
-StrategyLink<SoftwareBitBang> link1;
-StrategyLink<OverSampling> link2;
-```
-Create `PJONAny` instances configuring the bus id:
-```cpp
-PJONAny bus1(&link1, (uint8_t[4]){0, 0, 0, 3});
-PJONAny bus2(&link2, (uint8_t[4]){0, 0, 0, 4});
-```
-Create the `PJONRouter` instance passing the `PJONAny` instances:
-```cpp
-PJONRouter router(2, (PJONAny*[2]){&bus1, &bus2});
+PJONRouter2<SoftwareBitBang, SoftwareBitBang> router;
 ```
 Configure each strategy and the `router` instance as required:
 ```cpp
 void setup() {
-  link1.strategy.set_pin(7);
-  link2.strategy.set_pin(12);
-
-  router.add((const uint8_t[4]){0,0,0,1}, 0);
-  router.add((const uint8_t[4]){0,0,0,2}, 1);
-
+  router.get_strategy_0().set_pin(7);
+  router.get_strategy_1().set_pin(12);
   router.begin();
 }
 ```
@@ -167,8 +132,10 @@ void loop() {
   router.loop();
 }
 ```
+Consider that exists also `PJONRouter3` able to handle up to 3 buses, and `PJONRouter` able to handle an array of buses. `PJONRouter` can be used also in local mode, although, because the hop count field is not included, the network topology cannot include loops.
+
 ### DynamicRouter
-The [PJONDynamicRouter](/examples/ARDUINO/Network/SoftwareBitBang/Router/DynamicRouter) is a router that also populates a routing table of remote (not directly attached) buses observing traffic. It can offer the same features provided by the `PJONRouter` class with no need of manual configuration. To do so, the `PJONDynamicRouter` class uses a routing table that is dynamically updated, for this reason uses more memory if compared with `PJONRouter`. Use the `PJON_ROUTER_TABLE_SIZE` constant to configure the number of entries that are `100` by default.
+The [PJONDynamicRouter](/examples/routing/ARDUINO/Network/DynamicRouter/DynamicRouter.ino) is a router that also populates a routing table of remote (not directly attached) buses observing traffic. It can offer the same features provided by the `PJONRouter` class with no need of manual configuration. To do so, the `PJONDynamicRouter` class uses a routing table that is dynamically updated, for this reason uses more memory if compared with `PJONRouter`. Use the `PJON_ROUTER_TABLE_SIZE` constant to configure the number of entries that are `100` by default.
 ```cpp
                  ________
     Bus 0.0.0.3 |        | Bus 0.0.0.4
@@ -181,29 +148,21 @@ ________________| ROUTER |________________
 | DEVICE 1 |                 | DEVICE 2 |
 |__________|                 |__________|
 ```
-The first thing to do is to include the `PJONDynamicRouter` class:
+The first thing to do is to include the `PJONDynamicRouter` class and the required strategies:
 ```cpp
 #include <PJONDynamicRouter.h>
+#include <SoftwareBitBang.h>
+#include <OverSampling.h>
 ```
-Create `StrategyLink` instances with the selected strategies:
+The simplest way to use the `PJONDynamicRouter` class is to use `PJONDynamicRouter2` that is able to handle up to 2 buses:
 ```cpp
-StrategyLink<SoftwareBitBang> link1;
-StrategyLink<OverSampling> link2;
-```
-Create `PJONAny` instances configuring the bus id:
-```cpp
-PJONAny bus1(&link1, (uint8_t[4]){0, 0, 0, 3});
-PJONAny bus2(&link2, (uint8_t[4]){0, 0, 0, 4});
-```
-Create the `PJONRouter` instance passing the `PJONAny` instances:
-```cpp
-PJONDynamicRouter router(2, (PJONAny*[2]){&bus1, &bus2});
+PJONDynamicRouter2<SoftwareBitBang, SoftwareBitBang> router;
 ```
 Configure each strategy and the `router` instance as required:
 ```cpp
 void setup() {
-  link1.strategy.set_pin(7);
-  link2.strategy.set_pin(12);
+  router.get_strategy_0().set_pin(7);
+  router.get_strategy_1().set_pin(12);
   router.begin();
 }
 ```
@@ -214,8 +173,10 @@ void loop() {
 }
 ```
 
+Consider that exists also `PJONDynamicRouter3` able to handle up to 3 buses, and `PJONDynamicRouter` able to handle an array of buses. `PJONDynamicRouter` can be used also in local mode, although, because the hop count field is not included, the network topology cannot include loops.
+
 ### InteractiveRouter
-[Interactive router](/examples/ARDUINO/Network/SoftwareBitBang/Switch/BlinkingSwitch) routes packets as a switch or router but it is also able to act as a device and have user-defined receive and error call-back.
+[Interactive router](/examples/routing/ARDUINO/Network/Switch/BlinkingSwitch) routes packets as a switch or router but it is also able to act as a device and have user-defined receive and error call-back.
 
 ### Virtual bus
-[Virtual bus](/examples/ARDUINO/Local/SoftwareBitBang/Tunneler) is a bus where multiple buses using potentially different media or strategies, connected through a router, have the same bus id (including the local bus case), and where the location of each device is automatically registered observing traffic.
+[Virtual bus](/examples/routing/ARDUINO/Local/Tunneler) is a bus where multiple buses using potentially different media or strategies, connected through a router, have the same bus id (including the local bus case), and where the location of each device is automatically registered observing traffic.

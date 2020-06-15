@@ -184,6 +184,6 @@ PJONInteractiveRouter<PJONDynamicRouter2<SoftwareBitBang, AnalogSampling>> route
 ```
 
 ### Virtual bus
-[Virtual bus](/examples/routing/ARDUINO/Local/Tunneler) is a bus where multiple buses using potentially different media or strategies, connected through a router, have the same bus id (including the local bus case), and where the location of each device is automatically registered observing traffic.
+[Virtual bus](/examples/routing/ARDUINO/Local/Tunneler) is a bus where multiple buses using potentially different media or strategies, connected through a router, have the same bus id (including the local bus case), and where the location of each device is automatically registered observing traffic. Just like `PJONInteractiveRouter`, this class implements functionality that can be added to any of the routing classes except `PJONSimpleSwitch`. It can also be combined with the functionality added by `PJONInteractiveRouter`.
 
 This class makes it easy to create a bus that consists of multiple physical buses using one or more strategies. It can for example connect several clusters of SWBB local buses together through another strategy like DualUDP, to form one larger local bus. also including DualUDP devices.

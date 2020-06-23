@@ -31,7 +31,7 @@ static int serial_get_char(struct tty_serial* tty)
 // delay and timing functions
 
 #ifndef PJON_DELAY
-#define PJON_DELAY k_sleep
+#define PJON_DELAY k_msleep
 #endif
 
 #ifndef PJON_DELAY_MICROSECONDS

@@ -14,7 +14,7 @@
 ## Data transmission
 
 ### `begin`
-The begin method must be called before starting communication, the lack of this call can lead to collisions after boot, so be sure not to forget it.
+The `begin` method must be called before starting communication, the lack of this call can lead to collisions so be sure not to forget it:
 ```cpp  
   bus.begin();
 ```
@@ -25,6 +25,18 @@ The simplest way to send data is to use `send_packet`, this method composes the 
 // Send to device id 10 the string "Hi!"
 bus.send_packet(10, "Hi!", 3);
 ```
+The `send_packet` method accepts any kind of data, in the example below a custom `struct` is sent to device id 1:
+```cpp
+// Define a custom data type
+struct voltage_record { uint16_t v1; uint16_t v2; };
+// Fill it with information
+voltage_record record;
+record.v1 = analogRead(A1);
+record.v2 = analogRead(A2);
+// Send to device id 1 the record struct
+bus.send_packet(1, record, sizeof(record));
+```
+
 The payload length is boring to be added in each call but is there to prevent buffer overflow. If sending arbitrary values `NULL` terminator strategy based on `strlen` is not safe to detect the end of a string. The `send` method can receive other 3 optional parameters, the header of type `uint8_t`, a packet id of type `uint16_t` (pass 0 if you want to avoid the packet id inclusion) and a port of type `uint16_t`. In the example below a packet containing the payload "Hello" is sent to device id 10 using the actual instance's header configuration, without including the packet id and including the port `8002`.
 ```cpp
 // All optional parameters available
@@ -85,6 +97,17 @@ bus.send_packet_blocking(
   1000000     // Timeout   (uint32_t) - 1 second
 );
 ```
+The `send_packet_blocking` method accepts any type of data, in the example below a custom `struct` is sent to device id 1:
+```cpp
+// Define a custom data type
+struct voltage_record { uint16_t v1; uint16_t v2; };
+// Fill it with information
+voltage_record record;
+record.v1 = analogRead(A1);
+record.v2 = analogRead(A2);
+// Send to device id 1 the record struct
+bus.send_packet_blocking(1, record, sizeof(record));
+```
 
 `send_packet_blocking` returns the following values:
 - `PJON_ACK` (6) if transmission occurred and acknowledgement is received if requested
@@ -132,6 +155,19 @@ bus.send(
   8002        // (uint16_t)     Port identification
 );
 ```
+
+The `send` method accepts any type of data, in the example below a custom `struct` is sent to device id 1:
+```cpp
+// Define a custom data type
+struct voltage_record { uint16_t v1; uint16_t v2; };
+// Fill it with information
+voltage_record record;
+record.v1 = analogRead(A1);
+record.v2 = analogRead(A2);
+// Send to device id 1 the record struct
+bus.send(1, record, sizeof(record));
+```
+
 To use the return value of `send` just save it in a variable of type `uint16_t`:
 ```cpp
 uint16_t packet = bus.send(100, "Ciao, this is a test!", 21);
@@ -176,6 +212,17 @@ bus.send_repeatedly(
   8002        // (uint16_t)     Port identification
 );
 ```
+The `send_repeatedly` method accepts any type of data, in the example below a custom `struct` is sent to device id 1:
+```cpp
+// Define a custom data type
+struct voltage_record { uint16_t v1; uint16_t v2; };
+// Fill it with information
+voltage_record record;
+record.v1 = analogRead(A1);
+record.v2 = analogRead(A2);
+// Send to device id 1 the record struct
+bus.send_repeatedly(1, record, sizeof(record));
+```
 
 If you need to transmit in shared mode or configure other protocol fields you can use `send_repeatedly` passing a struct of type [`PJON_Packet_Info`](/documentation/data-structures.md#pjon_packet_info), the payload of type `const void *`, the length of type `uint16_t` and the interval of type `uint32_t`:
 ```cpp
@@ -188,7 +235,7 @@ bus.send_repeatedly(info, "Ciao!", 5, 1000000); // Send "Ciao!" every second
 ```
 
 ### `reply`
-The `reply` method can be called within the [receiver function](/data-reception.md#data-reception) to reply to a packet received previously:
+The `reply` method can be called within the [receiver function](/documentation/data-reception.md#data-reception) to reply to a packet received previously:
 ```cpp
 bus.reply("All fine!", 9);
 ```
@@ -197,9 +244,20 @@ Consider that `reply` dispatches a packet in the buffer like `send` or `send_rep
 uint16_t packet = bus.reply("Ciao, this is a test!", 21);
 if(packet == PJON_FAIL) Serial.print("Something went wrong");
 ```
+The `reply` method accepts any type of data, in the example below a custom struct is sent to device id 1:
+```cpp
+// Define a custom data type
+struct voltage_record { uint16_t v1; uint16_t v2; };
+// Fill it with information
+voltage_record record;
+record.v1 = analogRead(A1);
+record.v2 = analogRead(A2);
+// Reply with the record struct
+bus.reply(record, sizeof(record));
+```
 
 ### `reply_blocking`
-The `reply_blocking` method can be called within the [receiver function](/data-reception.md#data-reception) to reply to a packet received previously:
+The `reply_blocking` method can be called within the [receiver function](/documentation/data-reception.md#data-reception) to reply to a packet received previously:
 ```cpp
 bus.reply_blocking("All fine!", 9);
 ```
@@ -207,4 +265,15 @@ Consider that `reply_blocking` is a blocking procedure that in case of failure c
 ```cpp
 uint16_t result = bus.reply_blocking("All is ok!", 11);
 if(result == PJON_ACK) Serial.println("Responded successfully!");
+```
+The `reply_blocking` method accepts any type of data, in the example below a custom `struct` is sent to device id 1:
+```cpp
+// Define a custom data type
+struct voltage_record { uint16_t v1; uint16_t v2; };
+// Fill it with information
+voltage_record record;
+record.v1 = analogRead(A1);
+record.v2 = analogRead(A2);
+// Reply with the record struct
+bus.reply_blocking(record, sizeof(record));
 ```

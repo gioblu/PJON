@@ -25,18 +25,6 @@ The simplest way to send data is to use `send_packet`, this method composes the 
 // Send to device id 10 the string "Hi!"
 bus.send_packet(10, "Hi!", 3);
 ```
-The `send_packet` method accepts any kind of data, in the example below a custom `struct` is sent to device id 1:
-```cpp
-// Define a custom data type
-struct voltage_record { uint16_t v1; uint16_t v2; };
-// Fill it with information
-voltage_record record;
-record.v1 = analogRead(A1);
-record.v2 = analogRead(A2);
-// Send to device id 1 the record struct
-bus.send_packet(1, record, sizeof(record));
-```
-
 The payload length is boring to be added in each call but is there to prevent buffer overflow. If sending arbitrary values `NULL` terminator strategy based on `strlen` is not safe to detect the end of a string. The `send` method can receive other 3 optional parameters, the header of type `uint8_t`, a packet id of type `uint16_t` (pass 0 if you want to avoid the packet id inclusion) and a port of type `uint16_t`. In the example below a packet containing the payload "Hello" is sent to device id 10 using the actual instance's header configuration, without including the packet id and including the port `8002`.
 ```cpp
 // All optional parameters available
@@ -48,6 +36,18 @@ bus.send_packet(
   0,          // Packet id (uint16_t) - Don't include packet id
   8002        // Port      (uint16_t)
 );
+```
+
+The `send_packet` method accepts any kind of data, in the example below a custom `struct` is sent to device id 1:
+```cpp
+// Define a custom data type
+struct voltage_record { uint16_t v1; uint16_t v2; };
+// Fill it with information
+voltage_record record;
+record.v1 = analogRead(A1);
+record.v2 = analogRead(A2);
+// Send to device id 1 the record struct
+bus.send_packet(1, &record, sizeof(record));
 ```
 
 `send_packet` returns the following values:
@@ -106,7 +106,7 @@ voltage_record record;
 record.v1 = analogRead(A1);
 record.v2 = analogRead(A2);
 // Send to device id 1 the record struct
-bus.send_packet_blocking(1, record, sizeof(record));
+bus.send_packet_blocking(1, &record, sizeof(record));
 ```
 
 `send_packet_blocking` returns the following values:
@@ -165,7 +165,7 @@ voltage_record record;
 record.v1 = analogRead(A1);
 record.v2 = analogRead(A2);
 // Send to device id 1 the record struct
-bus.send(1, record, sizeof(record));
+bus.send(1, &record, sizeof(record));
 ```
 
 To use the return value of `send` just save it in a variable of type `uint16_t`:
@@ -221,7 +221,7 @@ voltage_record record;
 record.v1 = analogRead(A1);
 record.v2 = analogRead(A2);
 // Send to device id 1 the record struct
-bus.send_repeatedly(1, record, sizeof(record));
+bus.send_repeatedly(1, &record, sizeof(record));
 ```
 
 If you need to transmit in shared mode or configure other protocol fields you can use `send_repeatedly` passing a struct of type [`PJON_Packet_Info`](/documentation/data-structures.md#pjon_packet_info), the payload of type `const void *`, the length of type `uint16_t` and the interval of type `uint32_t`:
@@ -253,7 +253,7 @@ voltage_record record;
 record.v1 = analogRead(A1);
 record.v2 = analogRead(A2);
 // Reply with the record struct
-bus.reply(record, sizeof(record));
+bus.reply(&record, sizeof(record));
 ```
 
 ### `reply_blocking`
@@ -275,5 +275,5 @@ voltage_record record;
 record.v1 = analogRead(A1);
 record.v2 = analogRead(A2);
 // Reply with the record struct
-bus.reply_blocking(record, sizeof(record));
+bus.reply_blocking(&record, sizeof(record));
 ```

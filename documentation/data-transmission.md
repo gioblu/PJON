@@ -186,3 +186,25 @@ info.rx.port = 8000; // The packet includes the port 8000
 memcpy(info.rx.bus_id, bus_id, 4); // Copy recipient's bus id in info
 bus.send_repeatedly(info, "Ciao!", 5, 1000000); // Send "Ciao!" every second
 ```
+
+### `reply`
+The `reply` method can be called within the [receiver function](/data-reception.md#data-reception) to reply to a packet received previously:
+```cpp
+bus.reply("All fine!", 9);
+```
+Consider that `reply` dispatches a packet in the buffer like `send` or `send_repeatedly`. To use the return value of `send` just save it in a variable of type `uint16_t`:
+```cpp
+uint16_t packet = bus.reply("Ciao, this is a test!", 21);
+if(packet == PJON_FAIL) Serial.print("Something went wrong");
+```
+
+### `reply_blocking`
+The `reply_blocking` method can be called within the [receiver function](/data-reception.md#data-reception) to reply to a packet received previously:
+```cpp
+bus.reply_blocking("All fine!", 9);
+```
+Consider that `reply_blocking` is a blocking procedure that in case of failure can last a considerable amount of time. The `reply_blocking` result, of type `uint16_t`, can be used to determine if the transmission occurred successfully or not:
+```cpp
+uint16_t result = bus.reply_blocking("All is ok!", 11);
+if(result == PJON_ACK) Serial.println("Responded successfully!");
+```

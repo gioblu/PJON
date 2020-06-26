@@ -62,9 +62,16 @@ PJONSoftwareBitBang bus(bus_id, 44);
 ```
 ### Get or set bus identifier
 
-The bus id can be read and set after initialisation using `bus_id`:
+Use `get_bus_id` to get a pointer to the bus id used by the instance:
 ```cpp  
-  bus.tx.bus_id; // Get or set bus id
+  uint8_t bus_id[4];
+  memcpy(bus_id, bus.get_bus_id(bus_id), 4); // Copy bus id in bus_id
+```
+
+The bus id can set after initialisation using `set_bus_id`:
+```cpp  
+  uint8_t bus_id[4] = {0, 0, 0, 1};
+  bus.set_bus_id(bus_id); // Set bus id
 ```
 
 ### Hardware identifier
@@ -87,7 +94,14 @@ bus.include_mac(false);
 ```
 ### Get or set hardware identifier
 
-The MAC address can be read and set after initialisation using `tx.mac`:
+Use `get_mac` to get a pointer to the mac address used by the instance:
 ```cpp  
-  bus.tx.mac; // Get or set MAC
+  uint8_t mac[4];
+  memcpy(mac, bus.get_mac(mac), 6); // Copy mac in variable
+```
+
+The mac address can set after initialisation using `set_mac`:
+```cpp  
+  uint8_t mac[6] = {0, 0, 0, 0, 0, 1};
+  bus.set_mac(mac); // Set mac
 ```

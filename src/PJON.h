@@ -209,6 +209,12 @@ class PJON {
       return PJON_FAIL;
     };
 
+    /* Returns a pointer to the bus id used by the instance: */
+
+    const uint8_t *get_bus_id() const {
+      return tx.bus_id;
+    };
+
     /* Get count of packets:
        Don't pass any parameter to count all dispatched packets
        Pass a device id to count all it's related packets */
@@ -746,7 +752,24 @@ class PJON {
 
     void include_mac(bool state) {
       set_config_bit(state, PJON_MAC_BIT);
-    }
+    };
+
+    #if(PJON_INCLUDE_MAC)
+
+      /* Returns a pointer to the mac address used by the instance: */
+
+      const uint8_t *get_mac() const {
+        return tx.mac;
+      };
+
+      /* Set the mac address used by the instance:
+         It receives a pointer to the mac address */
+
+      void set_mac(const uint8_t *mac) {
+        PJONTools::copy_id(tx.mac, mac, 6);
+      };
+
+    #endif
 
     /* Configure the bus network behaviour.
        state = true  -> Include 32 bits bus id or group identification.

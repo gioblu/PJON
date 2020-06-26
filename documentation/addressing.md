@@ -96,7 +96,7 @@ bus.include_mac(false);
 
 Use `get_mac` to get a pointer to the mac address used by the instance:
 ```cpp  
-  uint8_t mac[4];
+  uint8_t mac[6];
   memcpy(mac, bus.get_mac(mac), 6); // Copy mac in variable
 ```
 

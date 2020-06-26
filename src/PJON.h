@@ -731,8 +731,7 @@ class PJON {
 
     void set_bus_id(const uint8_t *b_id) {
       PJONTools::copy_id(tx.bus_id, b_id, 4);
-      config |= PJON_MODE_BIT;
-    }
+    };
 
     /* Configure sender's information inclusion in the packet.
        state = true -> +8 bits (device id) in local mode

@@ -1,32 +1,50 @@
 
 ![PJON](http://www.gioblu.com/PJON/PJON-github-header-tiny.png)
 ## PJON 12.1
-PJON® (Padded Jittering Operative Network) is an arduino-compatible, multi-master, multi-media network protocol. It proposes a new Open Standard, it is designed as a framework and implements a totally software-defined network protocol stack that can be easily cross-compiled on many MCUs and architectures like ATtiny, ATmega, SAMD, ESP8266, ESP32, STM32, Teensy, Raspberry Pi, Linux, Windows x86, Apple and Android. PJON operates on a wide range of media and protocols like TCP, UDP, MQTT, ESPNOW, USB, Serial, RS485, LoRa, PJDL, PJDLR and PJDLS.
+PJON® (Padded Jittering Operative Network) is an arduino-compatible, multi-master, multi-media network protocol. It proposes a new Open Standard, it is designed as a framework and implements a totally software-defined network protocol stack that can be easily cross-compiled on many MCUs and architectures like ATtiny, ATmega, SAMD, ESP8266, ESP32, STM32, Teensy, Raspberry Pi, Linux, Windows x86, Apple and Android. PJON operates on a wide range of media and protocols like PJDL, PJDLR, PJDLS, Serial, RS485, USB, ASK/FSK, LoRa, UDP, TCP, MQTT and ESPNOW.
 
 [![Get PJON bus id](https://img.shields.io/badge/get-PJON%20bus%20id-lightgrey.svg)](http://www.pjon.org/get-bus-id.php)
 [![Join the chat at https://gitter.im/gioblu/PJON](https://badges.gitter.im/gioblu/PJON.svg)](https://gitter.im/gioblu/PJON?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 PJON is used in thousands of devices and its community has spread worldwide because of the following 5 key factors:
 - **New technology**: [PJON](specification/PJON-protocol-specification-v4.0.md) is an experimental network protocol stack crafted in 10 years of research and experimentation. It was originally developed as an open-source alternative to i2c and 1-Wire but during development its scope and features have been extended to cover use cases where IP is generally applied. PJON has been engineered to have a variable footprint (4.2-8.2 kB program memory) and overhead (5-35 bytes per packet) depending on its configuration.
-- **Multi-media support**: PJON operates on a wide range of media and protocols like TCP, UDP, MQTT, ESPNOW, USB, Serial, RS485 and LoRa. The PJON network protocol stack specifies and implements also [PJDL](src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md) able to communicate data over a single wire shared by up to 255 devices, [PJDLR](src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) able to operate with many ASK/FSK/OOK radio modules and also [PJDLS](src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md), able to communicate wirelessly with light pulses using off the shelf LEDs and laser diodes.
-- **Increased reliability**: Many protocols massively applied worldwide expose dangerous vulnerabilities, have weak error detection algorithms and are not resilient to interference. PJON is based on years of analysis and study not to make the same mistakes present in most alternatives and provide with a set of simpler and more efficient solutions.
+- **Multi-media support**: PJON operates upon a wide range of protocols like TCP, UDP, MQTT, ESPNOW, USB, Serial, RS485 and LoRa. The PJON network protocol stack specifies and implements also [PJDL](src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md) that operates over a single wire of up to 2000m shared by up to 255 devices, [PJDLR](src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) that operates with many ASK/FSK/OOK radio modules, and also [PJDLS](src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) that operates wirelessly with light pulses using off-the-shelf LEDs and laser diodes.
+- **Increased reliability**: Many protocols massively applied worldwide expose dangerous vulnerabilities, have weak error detection algorithms and are not resilient to interference. PJON is based on years of analysis and study not to make the same mistakes present in most alternatives and provide with a simpler and more efficient solution.
 - **High flexibility**: PJON is totally software-defined and its implementation is designed to be easily extensible. it builds out-of-the-box in all supported devices and operates transparently on top of any supported protocol or medium.
 - **Low cost**: Without any additional hardware needed to operate, minimal network wiring requirements and direct pin-to-pin or LED-to-LED communication, PJON is extremely energy efficient, cheap to be implemented and maintained. This implementation is kept updated and meticulously tested thanks to the strong commitment of its growing community of end users, testers and developers.
 
 ### Features
-- Cross-compilation support with the [interfaces](src/interfaces) system calls abstraction   
+- Cross-compilation support with the [interfaces](src/interfaces) system calls abstraction
 - Multi-media support with the [strategies](src/strategies) data link layer abstraction
+- Modular packet format that includes only the field used (overhead 5-35 bytes)
 - Hot-swap support, no need of system reset or shut down when replacing or adding devices
-- Configurable synchronous and/or asynchronous [acknowledgement](specification/PJON-protocol-acknowledge-specification-v1.0.md)
-- Configurable 2 level addressing (device and bus id) for scalable applications
-- Configurable 1 or 2 bytes packet length (max 255 or 65535 bytes)
-- Configurable CRC8 or CRC32 table-less cyclic redundancy check
-- Packet manager to handle, track and if necessary retransmit a packet sending in background
+- Flexible local (device id) and shared (bus id) network identification
+- Safe error detection done with modern CRC8 and CRC32 polynomials
+- Optional inclusion of MAC addresses
+- Optional acknowledgement
 - Error handling
 
 ### Specifications
 - [PJON v4.0](specification/PJON-protocol-specification-v4.0.md)
 - [PJDL v4.1](src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md) - [PJDLR v3.0](src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) - [PJDLS v2.0](src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) - [TSDL v3.0](src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md)
+
+### Documentation
+- [Addressing](/documentation/addressing.md)
+  - [`set_id`](/documentation/addressing.md#local-mode) [`device_id`](/documentation/addressing.md#local-mode) [`get_bus_id`](/documentation/addressing.md#shared-mode) [`set_bus_id`](/documentation/addressing.md#shared-mode) [`get_mac`](/documentation/addressing.md#get-or-set-hardware-identifier) [`set_mac`](/documentation/addressing.md#get-or-set-hardware-identifier)
+- [Configuration](/documentation/configuration.md)
+  - [`set_communication_mode`](/documentation/configuration.md#communication-mode) [`set_shared_network`](/documentation/configuration.md#network-mode) [`set_router`](/documentation/configuration.md#router-mode) [`include_sender_info`](/documentation/configuration.md#sender-information) [`set_crc_32`](/documentation/configuration.md#crc-configuration) [`set_packet_auto_deletion`](/documentation/configuration.md#packet-handling) [`set_acknowledge`](/documentation/configuration.md#acknowledgement) [`set_packet_id`](/documentation/configuration.md#packet-identification) [`include_port`](/documentation/configuration.md#network-service-identification) [`include_mac`](/documentation/configuration.md#hardware-identification)
+- [Data reception](/documentation/data-reception.md)
+  - [`set_receiver`](/documentation/data-reception.md#data-reception) [`receive`](/documentation/data-reception.md#data-reception)
+- [Data structures](/documentation/data-structures.md)
+  - [`PJON_Endpoint`](/documentation/data-structures.md#pjon_endpoint) [`PJON_Packet_Info`](/documentation/data-structures.md#pjon_packet_info)
+- [Data transmission](/documentation/data-transmission.md)
+  - [`begin`](/documentation/data-transmission.md#begin) [`reply`](/documentation/data-transmission.md#reply) [`reply_blocking`](/documentation/data-transmission.md#reply_blocking) [`send`](/documentation/data-transmission.md#send) [`send_packet`](/documentation/data-transmission.md#send_packet) [`send_packet_blocking`](/documentation/data-transmission.md#send_packet_blocking) [`send_repeatedly`](/documentation/data-transmission.md#send_repeatedly)
+- [Error handling](/documentation/error-handling.md)
+  - [`set_error`](/documentation/error-handling.md#error-handling)
+- [Routing](/documentation/routing.md)
+  - [`PJONSimpleSwitch`](/documentation/routing.md#simpleswitch) [`PJONSwitch`](/documentation/routing.md#switch) [`PJONRouter`](/documentation/routing.md#router) [`PJONDynamicRouter`](/documentation/routing.md#dynamicrouter) [`PJONInteractiveRouter`](/documentation/routing.md#interactiverouter)
+- [IO setup](/documentation/io-setup.md)
+   - [`strategy`](/documentation/io-setup.md#io-setup)
 
 ### Publications
 - [PJON protocol handbook](https://www.pjon-technologies.com/collections/frontpage/products/pjon-protocol-hand-book) by Giovanni Blu Mitolo - Distributed by [PJON Technologies srl](https://www.pjon-technologies.com)

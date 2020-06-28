@@ -44,6 +44,8 @@ begin	KEYWORD2
 can_start	KEYWORD2
 device_id	KEYWORD2
 get_packets_count	KEYWORD2
+get_bus_id	KEYWORD2
+get_mac	KEYWORD2
 include_mac	KEYWORD2
 include_port	KEYWORD2
 include_sender_info	KEYWORD2
@@ -57,6 +59,8 @@ send_repeatedly	KEYWORD2
 send_packet	KEYWORD2
 send_packet_blocking	KEYWORD2
 set_acknowledge	KEYWORD2
+set_bus_id	KEYWORD2
+set_mac	KEYWORD2
 set_random_seed	KEYWORD2
 set_communication_mode	KEYWORD2
 set_error	KEYWORD2

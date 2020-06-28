@@ -21,7 +21,19 @@ Latest revision: 27/04/2020
 Related work: https://github.com/gioblu/PJON/
 Compliant implementations: PJON v13.0 and following
 Released into the public domain
+
+10/04/2010 0.1 - First local mode draft
+19/08/2015 0.2 - First local and shared mode draft
+04/09/2016 0.3 - Added header proposed by Fred Larsen
+03/10/2016 1.0 - 16 bits length support, CRC8 or CRC32 support
+28/03/2017 1.1 - NAK removed, unacceptable headers added
+15/10/2017 2.0 - CRC8 added to meta-data, CRC32 when length > 15
+14/12/2017 3.0 - Added port and packet id
+31/10/2018 3.1 - Model simplified
+10/03/2020 3.2 - Encoding specification completed
+28/08/2020 4.0 - Added MAC and hops, removed async-ack
 ```
+
 The PJON protocol v4.0 in local mode supports connectivity for up to 254 devices, in shared mode supports connectivity for up to 4.294.967.295 buses (groups of devices) and up to 1.090.921.692.930 devices. The packet format is dynamic therefore meta-data can be optionally included using the header as a bitmap of selected features. It supports interoperability between systems that use a different configuration and provides with high efficiency including only the protocol's features used and the overhead effectively required (5-35 bytes). PJON can be used for low-data-rate applications as an alternative to 1-Wire, i2c or CAN but can also be applied in place of IP to interconnect more complex networks.   
 
 The graph below shows the conceptual model that characterizes and standardizes the communication. Its goal is the interoperability of diverse systems on a wide range of media with the use of a new set of Open Standards. The graph partitions represent abstraction layers.

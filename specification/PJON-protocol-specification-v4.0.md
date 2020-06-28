@@ -17,7 +17,7 @@
 Invented by Giovanni Blu Mitolo
 with the help of Fred Larsen
 Originally published: 10/04/2010
-Latest revision: 27/04/2020
+Latest revision: 28/08/2020
 Related work: https://github.com/gioblu/PJON/
 Compliant implementations: PJON v13.0 and following
 Released into the public domain
@@ -25,9 +25,9 @@ Released into the public domain
 10/04/2010 0.1 - First local mode draft
 19/08/2015 0.2 - First local and shared mode draft
 04/09/2016 0.3 - Added header proposed by Fred Larsen
-03/10/2016 1.0 - 16 bits length support, CRC8 or CRC32 support
-28/03/2017 1.1 - NAK removed, unacceptable headers added
-15/10/2017 2.0 - CRC8 added to meta-data, CRC32 when length > 15
+03/10/2016 1.0 - 16 bits length, CRC8 and CRC32 added
+28/03/2017 1.1 - Removed NAK, added unacceptable headers
+15/10/2017 2.0 - Length corruption vulnerability avoided
 14/12/2017 3.0 - Added port and packet id
 31/10/2018 3.1 - Model simplified
 10/03/2020 3.2 - Encoding specification completed

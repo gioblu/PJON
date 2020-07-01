@@ -1,13 +1,49 @@
 #if defined(ZEPHYR)
 
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 
-static int serial_get_char(struct tty_serial* tty)
+#include <drivers/uart.h>
+#include <sys/ring_buffer.h>
+#include <logging/log.h>
+
+RING_BUF_DECLARE(ringbuffer_pjon, CONFIG_PJON_MTU);
+static uint8_t tmp_buffer[40];
+static int serial_get_char(struct device* dev)
 {
-    u8_t tmp;
-    tty_read(tty, &tmp, 1);
-    return tmp;
+    size_t  ret;
+    uint8_t b;
+    ret = ring_buf_get(&ringbuffer_pjon, &b, sizeof(b));
+    return b;
+}
+
+static bool serial_char_available(struct device* dev)
+{
+    bool b = ring_buf_is_empty(&ringbuffer_pjon);
+    return !b;
+}
+
+static void uart_irq_callback(struct device *dev)
+{
+	uart_irq_update(dev);
+
+	if (uart_irq_rx_ready(dev)) {
+        uint8_t tmp;
+		while (1) {
+			if (uart_fifo_read(dev, &tmp, 1) == 0) {
+				break;
+			}
+            ring_buf_put(&ringbuffer_pjon, &tmp, sizeof(tmp));
+		}
+    }
+}
+
+
+static int serial_put_char(struct device* dev, uint8_t byte)
+{
+    uart_poll_out(dev,byte);
+    return 1;
 }
 
 // deal with randomness
@@ -31,11 +67,11 @@ static int serial_get_char(struct tty_serial* tty)
 // delay and timing functions
 
 #ifndef PJON_DELAY
-#define PJON_DELAY k_msleep
+#define PJON_DELAY(x) (k_sleep(K_MSEC(x)))
 #endif
 
 #ifndef PJON_DELAY_MICROSECONDS
-#define PJON_DELAY_MICROSECONDS k_usleep
+#define PJON_DELAY_MICROSECONDS(x) (k_sleep(K_USEC(x)))
 #endif
 
 #ifndef PJON_MILLIS
@@ -49,11 +85,11 @@ static int serial_get_char(struct tty_serial* tty)
 // serial port handling
 
 #ifndef PJON_SERIAL_TYPE
-#define PJON_SERIAL_TYPE struct tty_serial*
+#define PJON_SERIAL_TYPE struct device*
 #endif
 
 #ifndef PJON_SERIAL_AVAILABLE
-#define PJON_SERIAL_AVAILABLE(S) S != NULL and S->rx_get != S->rx_put
+#define PJON_SERIAL_AVAILABLE(S) serial_char_available(S)
 #endif
 
 #ifndef PJON_SERIAL_READ
@@ -61,7 +97,7 @@ static int serial_get_char(struct tty_serial* tty)
 #endif
 
 #ifndef PJON_SERIAL_WRITE
-#define PJON_SERIAL_WRITE(S, C) tty_write(S, &C, 1)
+#define PJON_SERIAL_WRITE(S, C) serial_put_char(S, C)
 #endif
 
 #ifndef PJON_SERIAL_FLUSH

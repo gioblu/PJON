@@ -1,0 +1,33 @@
+menuconfig PJON
+	bool "PJON communication protocol"
+	help
+	  Enable the PJON protocol
+
+if PJON
+choice
+	prompt "PJON strategy"
+
+config PJON_STRATEGY_DUALUDP
+    select NETWORKING
+	select NET_IPV4
+	select NET_UDP
+	select NET_SOCKETS
+	bool "PJON strategy	DualUDP"
+
+
+config PJON_STRATEGY_THROUGHSERIAL
+	bool "PJON strategy	Through	Serial"
+endchoice
+
+config PJON_DEVICE_ID
+	int	"PJON Device ID"
+	default	255
+	help
+	  PJON Device ID
+
+config PJON_MTU
+	int	"PJON MTU"
+	default	1400
+	help
+	  Maximum size of SMP frames send and receive over PJON	DualUDP, in	bytes.
+endif

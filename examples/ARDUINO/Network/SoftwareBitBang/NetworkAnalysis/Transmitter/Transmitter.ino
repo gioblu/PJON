@@ -11,20 +11,18 @@
 
 //#define SWBB_RESPONSE_TIMEOUT 1500
 
-
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 
 float test;
 float mistakes;
 int busy;
 int fail;
-uint8_t header;
 
 // Bus id definition
 uint8_t bus_id[] = {0, 0, 0, 1};
 
 // PJON object
-PJON<SoftwareBitBang> bus(bus_id, 45);
+PJONSoftwareBitBang bus(bus_id, 45);
 
 int packet;
 uint8_t content[] = "01234567890123456789"; // First 10 bytes left empty for bus id
@@ -46,7 +44,11 @@ void loop() {
     /* Here send_packet low level function is used to
     be able to catch every single sending result. */
 
-    unsigned int response = bus.send_packet(44, bus_id, content, 20, header);
+    PJON_Packet_Info info;
+    info.rx.id = 44;
+    memcpy(info.rx.bus_id, bus_id);
+    unsigned int response = bus.send_packet(info, content, 20);
+
     if(response == PJON_ACK)
       test++;
     if(response == PJON_NAK)

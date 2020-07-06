@@ -1,8 +1,8 @@
-#define PJON_INCLUDE_GUDP
-#include <PJON.h>
 
-// <Strategy name> bus(selected device id)
-PJON<GlobalUDP> bus(45);
+#include <PJONGlobalUP.h>
+
+
+PJONGlobalUDP bus(45);
 
 uint32_t cnt = 0;
 uint32_t start = millis();

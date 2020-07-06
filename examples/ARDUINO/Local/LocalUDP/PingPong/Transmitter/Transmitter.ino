@@ -1,4 +1,4 @@
-#include <PJON.h>
+#include <PJONLocalUDP.h>
 
 // Ethernet configuration for this device
 byte gateway[] = { 192, 1, 1, 1 };
@@ -6,8 +6,8 @@ byte subnet[] = { 255, 255, 255, 0 };
 byte mac[] = {0xDA, 0xCA, 0x7E, 0xEF, 0xFE, 0x5D};
 uint8_t local_ip[] = { 192, 1, 1, 150 };
 
-// <Strategy name> bus(selected device id)
-PJON<LocalUDP> bus(45);
+
+PJONLocalUDP bus(45);
 
 uint32_t cnt = 0;
 uint32_t start = millis();

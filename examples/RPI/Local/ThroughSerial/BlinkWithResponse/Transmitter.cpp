@@ -13,11 +13,11 @@
   #define RPI true
 #endif
 
-#define PJON_INCLUDE_TS true // Include only ThroughSerial
+ // Include only ThroughSerial
 
-#include <PJON.h>
+#include <PJONThroughSerial.h>
 
-PJON<ThroughSerial> bus(45);
+PJONThroughSerial bus(45);
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   /* Make use of the payload before sending something, the buffer where payload points to is

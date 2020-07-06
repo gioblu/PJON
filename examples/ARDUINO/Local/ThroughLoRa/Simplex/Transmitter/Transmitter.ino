@@ -1,7 +1,7 @@
 
-#define PJON_INCLUDE_TL
 
-#include <PJON.h>
+
+#include <PJONThroughLora.h>
 
 /* To use this example, please download the LoRa third party Library
    from https://github.com/sandeepmistry/arduino-LoRa/ */
@@ -11,8 +11,8 @@ float mistakes;
 int busy;
 int fail;
 
-// <Strategy name> bus(selected device id)
-PJON<ThroughLora> bus(45);
+
+PJONThroughLora bus(45);
 
 int packet;
 uint8_t content[] = "01234567890123456789";

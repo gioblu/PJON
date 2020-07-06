@@ -1,8 +1,8 @@
 ## ThroughLoRa
 
-| Medium | Pins used | Inclusion Constant | Included by default |
-|--------|-----------|--------------------|---------------------|
-| LoRa radio | 6         | `PJON_INCLUDE_TL`|  no               |
+| Medium | Pins used | Inclusion |
+|--------|-----------|--------------------|
+| LoRa radio | 6     | `#include <PJONThroughLora.h>`|
 
 With `ThroughLora` strategy, PJON can run through a software or hardware SPI in order to communicate with supported LoRa modules. See [Supported Shields/Modules](https://github.com/gioblu/PJON/tree/master/src/strategies/ThroughLoRa#supported-shieldsmodules).
 
@@ -15,17 +15,16 @@ This strategy is a wrapper around  [Arduino LoRa library](https://github.com/san
 - STM32F103 ([Blue Pill](http://wiki.stm32duino.com/index.php?title=Blue_Pill))
 
 ### Getting started
-1. Define `PJON_INCLUDE_TL` before including PJON header `<PJON.h>`
-2. Pass the `ThroughLora` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
-3. Configure the shield/module pins according to the correct connection. See [Hardware connection](#hardware-connection).
-4. Initialize the module with its specified frequency.
+1. Pass the `ThroughLora` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
+2. Configure the shield/module pins according to the correct connection. See [Hardware connection](#hardware-connection).
+3. Initialize the module with its specified frequency.
 
 ```cpp
-#define PJON_INCLUDE_TL //Definition to enable ThroughLora strategy
 
-#include <PJON.h> //PJON header
+#include <PJONThroughLora.h>
 
-PJON<ThroughLora> bus; //PJON Lora bus instance
+PJONThroughLora bus; //PJON Lora bus instance
+
 bus.strategy.setPins(10,9,2); //CS pin, Reset pin, Interrupt pin
 bus.strategy.setFrequency(868100000UL); //initialize 868 MHZ module
 ```
@@ -62,11 +61,10 @@ More examples can be found in https://github.com/gioblu/PJON/tree/master/example
 
 ### Transmitter
 ```cpp
-#define PJON_INCLUDE_TL
 
-#include <PJON.h>
+#include <PJONThroughLora.h>
 
-PJON<ThroughLora> bus(45);
+PJONThroughLora bus(45);
 
 void setup() {
   // Obligatory to initialize Radio with correct frequency
@@ -84,12 +82,10 @@ void loop() {
 ### Receiver
 
 ```cpp
-#define PJON_INCLUDE_TL
-
-#include <PJON.h>
+#include <PJONThroughLora.h>
 
 // <Strategy name> bus(selected device id)
-PJON<ThroughLora> bus(44);
+PJONThroughLora bus(44);
 
 void setup() {
   pinMode(13, OUTPUT);

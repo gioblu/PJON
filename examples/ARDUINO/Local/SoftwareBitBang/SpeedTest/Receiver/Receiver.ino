@@ -11,15 +11,15 @@
 
 //#define SWBB_RESPONSE_TIMEOUT 1500
 
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 
 float test;
 float mistakes;
 int busy;
 int fail;
 
-// <Strategy name> bus(selected device id)
-PJON<SoftwareBitBang> bus(44);
+
+PJONSoftwareBitBang bus(44);
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
  // Do nothing to avoid affecting speed analysis

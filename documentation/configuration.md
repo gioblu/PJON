@@ -1,76 +1,69 @@
 
 ### Documentation index
 - [Addressing](/documentation/addressing.md)
+   - [`set_id`](/documentation/addressing.md#local-mode) [`device_id`](/documentation/addressing.md#local-mode) [`get_bus_id`](/documentation/addressing.md#shared-mode) [`set_bus_id`](/documentation/addressing.md#shared-mode) [`get_mac`](/documentation/addressing.md#get-or-set-hardware-identifier) [`set_mac`](/documentation/addressing.md#get-or-set-hardware-identifier)
 - **[Configuration](/documentation/configuration.md)**
+  - [`set_communication_mode`](/documentation/configuration.md#communication-mode) [`set_shared_network`](/documentation/configuration.md#network-mode) [`set_router`](/documentation/configuration.md#router-mode) [`include_sender_info`](/documentation/configuration.md#sender-information) [`set_crc_32`](/documentation/configuration.md#crc-configuration) [`set_packet_auto_deletion`](/documentation/configuration.md#packet-handling) [`set_acknowledge`](/documentation/configuration.md#acknowledgement) [`set_packet_id`](/documentation/configuration.md#packet-identification) [`include_port`](/documentation/configuration.md#network-service-identification) [`include_mac`](/documentation/configuration.md#hardware-identification)
 - [Data reception](/documentation/data-reception.md)
+  - [`set_receiver`](/documentation/data-reception.md#data-reception) [`receive`](/documentation/data-reception.md#data-reception)
+- [Data structures](/documentation/data-structures.md)
+  - [`PJON_Endpoint`](/documentation/data-structures.md#pjon_endpoint) [`PJON_Packet_Info`](/documentation/data-structures.md#pjon_packet_info)
 - [Data transmission](/documentation/data-transmission.md)
+  - [`begin`](/documentation/data-transmission.md#begin) [`reply`](/documentation/data-transmission.md#reply) [`reply_blocking`](/documentation/data-transmission.md#reply_blocking) [`send`](/documentation/data-transmission.md#send) [`send_packet`](/documentation/data-transmission.md#send_packet) [`send_packet_blocking`](/documentation/data-transmission.md#send_packet_blocking) [`send_repeatedly`](/documentation/data-transmission.md#send_repeatedly)
 - [Error handling](/documentation/error-handling.md)
-- [IO setup](/documentation/io-setup.md)
+  - [`set_error`](/documentation/error-handling.md#error-handling)
 - [Routing](/documentation/routing.md)
-
+  - [`PJONSimpleSwitch`](/documentation/routing.md#simpleswitch) [`PJONSwitch`](/documentation/routing.md#switch) [`PJONRouter`](/documentation/routing.md#router) [`PJONDynamicRouter`](/documentation/routing.md#dynamicrouter) [`PJONInteractiveRouter`](/documentation/routing.md#interactiverouter)
+- [IO setup](/documentation/io-setup.md)
+   - [`strategy`](/documentation/io-setup.md#io-setup)
 ---
 
 ## Configuration
 PJON uses predefined constants, setters and getters to support features and constraints configuration.  
 
 ### Buffers configuration
-Before instantiating PJON it is possible to define the length of its buffers. Predefining `PJON_MAX_PACKETS` and `PJON_PACKET_MAX_LENGTH` it is possible to configure these constraints to reach the project memory requirements. Obviously, the less memory is dedicated to buffers, the more memory can be used for something else:
+Before including the library it is possible to define the length of its buffers defining the `PJON_MAX_PACKETS` and `PJON_PACKET_MAX_LENGTH` constants:
 ```cpp  
   #define PJON_MAX_PACKETS 1
   #define PJON_PACKET_MAX_LENGTH 20
-  #include <PJON.h>
   /* PJON can dispatch up to 1 packet with a payload of up to
      20 bytes - packet overhead (5-35 bytes depending on configuration) */
 ```
 
 ### Strategy configuration
-PJON is instantiated passing a [strategy](/src/strategies/README.md) template parameter:
-```cpp  
-  PJON<SoftwareBitBang> bus;
+Strategies are classes that abstract the physical transmission of data. `PJON` uses [strategies](/src/strategies/README.md) as template parameters although since version 13.0 that complexity is hidden behind a [macro](../src/PJONSoftwareBitBang.h):
+```cpp
+  #include <PJONSoftwareBitBang.h>
+  PJONSoftwareBitBang bus;
 ```
-In the example above the PJON object is instantiated passing the [SoftwareBitBang](/src/strategies/SoftwareBitBang/README.md) strategy. Strategies are classes that abstract the physical transmission of data. It is possible to instantiate more than one PJON object using different strategies in the same program:
-```cpp  
-  PJON<SoftwareBitBang> wiredBus;
-  PJON<EthernetTCP>     tcpBus;
+In the example above the PJON object is instantiated using the [SoftwareBitBang](/src/strategies/SoftwareBitBang/README.md) strategy. It is possible to instantiate more than one PJON object using different strategies in the same program:
+```cpp
+#include <PJONSoftwareBitBang.h>
+#include <PJONEthernetTCP.h>
+
+PJONSoftwareBitBang wiredBus;
+PJONEthernetTCP     tcpBus;
 ```
 
 The table below lists the strategies available:
 
-| Strategy      | Physical layer | Protocol | Inclusion constant | Included by default |
-| ------------- | -------------- | -------- | ------------------ | ------------------- |
-| [AnalogSampling](/src/strategies/AnalogSampling)  | Light | [PJDLS](../src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) | `PJON_INCLUDE_AS` | yes |
-| [Any](/src/strategies/Any)  | Virtual inheritance | Any | `PJON_INCLUDE_ANY` | yes |
-| [DualUDP](/src/strategies/DualUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | `PJON_INCLUDE_DUDP` | yes |
-| [ESPNOW](/src/strategies/ESPNOW)  | WiFi | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) | `PJON_INCLUDE_EN` | no |
-| [EthernetTCP](/src/strategies/EthernetTCP)  | Ethernet/WiFi | [TCP](https://tools.ietf.org/html/rfc793) | `PJON_INCLUDE_ETCP` | yes |
-| [GlobalUDP](/src/strategies/GlobalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | `PJON_INCLUDE_GUDP` | yes |
-| [LocalFile](/src/strategies/LocalFile)  | System memory | None | `PJON_INCLUDE_LF` | no |
-| [LocalUDP](/src/strategies/LocalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | `PJON_INCLUDE_LUDP` | yes |
-| [MQTTTranslate](/src/strategies/MQTTTranslate)  | Ethernet/WiFi | [MQTT](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.pdf) | `PJON_INCLUDE_MQTT` | no |
-| [OverSampling](/src/strategies/OverSampling)  | Radio | [PJDLR](../src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) | `PJON_INCLUDE_OS` | yes |
-| [SoftwareBitBang](/src/strategies/SoftwareBitBang) | Wire | [PJDL](../src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md) | `PJON_INCLUDE_SWBB` | yes |
-| [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio | [LoRa](https://lora-alliance.org/sites/default/files/2018-07/lorawan1.0.3.pdf) | `PJON_INCLUDE_TL` | no |
-| [ThroughSerial](/src/strategies/ThroughSerial)  | Radio | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md) | `PJON_INCLUDE_TS` | yes |
+| Strategy      | Physical layer | Protocol | Inclusion |
+| ------------- | -------------- | -------- | --------- |
+| [AnalogSampling](/src/strategies/AnalogSampling)  | Light | [PJDLS](../src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) | `#include <PJONAnalogSampling.h>` |
+| [Any](/src/strategies/Any)  | Virtual inheritance | Any | `#include <PJONAny.h>` |
+| [DualUDP](/src/strategies/DualUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | `#include <PJONDualUDP.h>` |
+| [ESPNOW](/src/strategies/ESPNOW)  | WiFi | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) | `#include <PJONESPNOW.h>` |
+| [EthernetTCP](/src/strategies/EthernetTCP)  | Ethernet/WiFi | [TCP](https://tools.ietf.org/html/rfc793) | `#include <PJONEthernetTCP.h>` |
+| [GlobalUDP](/src/strategies/GlobalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | `#include <PJONGlobalUDP.h>` |
+| [LocalFile](/src/strategies/LocalFile)  | File system | None | `#include <PJONLocalFile.h>` |
+| [LocalUDP](/src/strategies/LocalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | `#include <PJONLocalUDP.h>` |
+| [MQTTTranslate](/src/strategies/MQTTTranslate)  | Ethernet/WiFi | [MQTT](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.pdf) | `#include <PJONMQTTTranslate.h>` |
+| [OverSampling](/src/strategies/OverSampling)  | Radio | [PJDLR](../src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) | `#include <PJONOverSampling.h>` |
+| [SoftwareBitBang](/src/strategies/SoftwareBitBang) | Wire | [PJDL](../src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md) | `#include <PJONSoftwareBitBang.h>` |
+| [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio | [LoRa](https://lora-alliance.org/sites/default/files/2018-07/lorawan1.0.3.pdf) | `#include <PJONThroughLora.h>` |
+| [ThroughSerial](/src/strategies/ThroughSerial)  | Wire | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md) | `#include <PJONThroughSerial.h>` |
 
-By default all strategies are included except `MQTTTranslate`, `LocalFile`, `ThroughLoRa` and `ESPNOW`. To reduce memory footprint add for example `#define PJON_INCLUDE_SWBB` before including the library to select only the `SoftwareBitBang` strategy. More than one strategy related constants can be defined in the same program if that is required.
-
-When a strategy is included by default the usage is really simple:
-```cpp
-#include<PJON.h>           // Include the library
-PJON<SoftwareBitBang> bus; // Instantiation
-```
-If the strategy you want to use is not included by default, like ESPNOW, you can force its inclusion using its constant:
-```cpp
-#define PJON_INCLUDE_EN    // Force the inclusion of ESPNOW strategy
-#include<PJON.h>           // Include the library
-PJON<SoftwareBitBang> bus; // Instantiation
-```
-
-Before using `ThroughLoRa` be sure to have [arduino-LoRa](https://github.com/sandeepmistry/arduino-LoRa) library available and to have defined the `PJON_INCLUDE_TL` constant before including `PJON.h`.
-
-Before using `ESPNOW` be sure to have installed the required tools as described [here](/src/strategies/ESPNOW/README.md) and to have defined the `PJON_INCLUDE_EN` constant before including `PJON.h`.
-
-Before using `MQTTTranslate` be sure to have the [ReconnectingMqttClient](https://github.com/fredilarsen/ReconnectingMqttClient) library available and to have defined the `PJON_INCLUDE_MQTT` constant before including `PJON.h`.
+Before using `ThroughLoRa` be sure to have [arduino-LoRa](https://github.com/sandeepmistry/arduino-LoRa) library available. Before using `ESPNOW` be sure to have installed the required tools as described [here](/src/strategies/ESPNOW/README.md). Before using `MQTTTranslate` be sure to have the [ReconnectingMqttClient](https://github.com/fredilarsen/ReconnectingMqttClient) library available.
 
 ### Network mode
 The network mode can be changed with `set_shared_network` during runtime, for example moving from [local](/specification/PJON-protocol-specification-v4.0.md#local-mode) to [shared](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v4.0.md#shared-mode) mode:

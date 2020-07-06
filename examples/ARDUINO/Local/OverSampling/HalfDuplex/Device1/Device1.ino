@@ -1,7 +1,7 @@
-#include <PJON.h>
+#include <PJONOverSampling.h>
 
-// <Strategy name> bus(selected device id)
-PJON<OverSampling> bus(44);
+
+PJONOverSampling bus(44);
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   /* Make use of the payload before sending something, the buffer where payload points to is

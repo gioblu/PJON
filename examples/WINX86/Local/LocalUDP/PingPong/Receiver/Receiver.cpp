@@ -1,4 +1,4 @@
-#define PJON_INCLUDE_LUDP
+
 #include <PJON.h>
 
 PJON<LocalUDP> bus(44);

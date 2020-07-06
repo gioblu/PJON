@@ -1,4 +1,4 @@
-#include <PJON.h>
+#include <PJONGlobalUDP.h>
 
 // Ethernet configuration for this device
 byte gateway[] = { 192, 1, 1, 1 };
@@ -9,8 +9,8 @@ uint8_t local_ip[] = { 192, 1, 1, 151 };
 // Address of remote device
 uint8_t remote_ip[] = { 192, 1, 1, 150 };
 
-// <Strategy name> bus(selected device id)
-PJON<GlobalUDP> bus(44);
+
+PJONGlobalUDP bus(44);
 
 uint32_t cnt = 0;
 uint32_t start = millis();

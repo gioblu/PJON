@@ -3,10 +3,10 @@
    To know how to wire up the circuit see the AnalogSampling README:
    https://github.com/gioblu/PJON/tree/master/src/strategies/AnalogSampling */
 
-#include <PJON.h>
+#include <PJONAnalogSampling.h>
 
-// <Strategy name> bus(selected device id)
-PJON<AnalogSampling> bus(44);
+
+PJONAnalogSampling bus(44);
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);

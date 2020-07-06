@@ -1,8 +1,8 @@
 ## EthernetTCP
 
-| Medium | Pins used | Inclusion Constant | Included by default |
-|--------|-----------|--------------------|---------------------|
-| Ethernet port, wired or WiFi   | NA    | `PJON_INCLUDE_ETCP`|  yes   |
+| Medium | Pins used | Inclusion |
+|--------|-----------|--------------------|
+| Ethernet port, wired or WiFi   | NA    | `#include <PJONEthernetTCP.h>`|
 
 With the `EthernetTCP` PJON strategy, multiple devices with Ethernet ports can use PJON to communicate with each other on a LAN, WAN or across the Internet. Take a look at the [video introduction](https://www.youtube.com/watch?v=DQzcAv38yxM) for a brief showcase of its features.
 
@@ -14,10 +14,11 @@ It can also be useful for connecting physically separate clusters of devices tha
 It also enables devices to be connected through the Internet if firewalls are configured to allow this.
 
 ### How to use EthernetTCP
-Pass the `EthernetTCP` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
+Use `PJONEthernetTCP` to instantiate a PJON object ready to communicate using `EthernetTCP` strategy:
 ```cpp  
-  // Use EthernetTCP strategy with PJON device id 44
-  PJON<EthernetTCP> bus(44);
+  #include <PJONEthernetTCP.h>
+
+  PJONEthernetTCP bus(44); // Use device id 44
 ```
 Set up the Ethernet card in the usual manner by calling `Ethernet.begin`, then call setter functions for the link object in the EthernetTCP strategy, and then call the `begin` method on the PJON object:
 ```cpp

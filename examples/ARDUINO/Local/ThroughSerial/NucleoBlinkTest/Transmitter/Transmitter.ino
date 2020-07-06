@@ -1,12 +1,12 @@
 
 /* Include only ThroughSerial
    (not all data-link are still compatible with STM32 microcontrollers) */
-#define PJON_INCLUDE_TS true
 
-#include <PJON.h>
 
-// <Strategy name> bus(selected device id)
-PJON<ThroughSerial> bus(45);
+#include <PJONThroughSerial.h>
+
+
+PJONThroughSerial bus(45);
 
 void setup() {
   // Serial1 or pin 2 and 8 on F401RE and L053R8

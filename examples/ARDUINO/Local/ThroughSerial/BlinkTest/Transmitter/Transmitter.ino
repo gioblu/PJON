@@ -1,7 +1,7 @@
 
-#include <PJON.h>
+#include <PJONThroughSerial.h>
 
-PJON<ThroughSerial> bus(45);
+PJONThroughSerial bus(45);
 
 void setup() {
   Serial.begin(9600);

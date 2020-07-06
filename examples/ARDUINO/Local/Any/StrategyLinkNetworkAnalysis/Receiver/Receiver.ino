@@ -1,4 +1,4 @@
-#include <PJON.h>
+#include <PJONAny.h>
 
 /* Defining strategies using StrategyLink template class it is possible to
    leverage of virtual inheritance to handle PJON instances dynamically, for
@@ -6,7 +6,7 @@
 
 StrategyLink<SoftwareBitBang> link;
 
-PJON<Any> bus(44);
+PJONAny bus(44);
 
 void setup() {
   link.strategy.set_pin(12);

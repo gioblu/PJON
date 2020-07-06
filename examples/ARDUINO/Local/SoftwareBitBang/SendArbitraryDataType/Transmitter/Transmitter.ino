@@ -1,10 +1,10 @@
 
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 /* ARBITRARY DATA TYPE TRANSMISSION EXAMPLE
    This sketch contains the transmitter side. */
 
-// <Strategy name> bus(selected device id)
-PJON<SoftwareBitBang> bus(45);
+
+PJONSoftwareBitBang bus(45);
 int packet;
 int voltage;
 

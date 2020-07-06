@@ -11,10 +11,10 @@
 
 //#define SWBB_RESPONSE_TIMEOUT 1500
 
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 
-// <Strategy name> bus(selected device id)
-PJON<SoftwareBitBang> bus(45);
+
+PJONSoftwareBitBang bus(45);
 
 int packet;
 uint8_t content[] = "01234567890123456789";

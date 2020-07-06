@@ -1,10 +1,10 @@
-#define PJON_INCLUDE_GUDP
-#include <PJON.h>
+
+#include <PJONGlobalUDP.h>
 
 // Address of remote device
 uint8_t remote_ip[] = {127, 0, 0, 1};
 
-PJON<GlobalUDP> bus(45);
+PJONGlobalUDP bus(45);
 
 uint32_t count = 0;
 

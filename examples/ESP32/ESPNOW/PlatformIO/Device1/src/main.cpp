@@ -15,13 +15,9 @@ static wifi_country_t wifi_country = {
   policy : WIFI_COUNTRY_POLICY_MANUAL
 };
 
-// Use the PJON_INCLUDE_EN to include the ESPNOW strategy
-#define PJON_INCLUDE_EN
+#include <PJONESPNOW.h>
 
-#include <PJON.h>
-
-// <Strategy name> bus(selected device id)
-PJON<ESPNOW> bus(44);
+PJONESPNOW bus(44);
 
 uint32_t cnt = 0;
 uint32_t start = millis();

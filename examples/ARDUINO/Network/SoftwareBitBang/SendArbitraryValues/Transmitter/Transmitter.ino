@@ -1,4 +1,4 @@
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 /* VOLTAGE TESTER DEVICE
    This is a basic example to show how PJON can be used practically.
    Lets print in the Serial monitor the voltage detected by the analog
@@ -15,7 +15,7 @@ int packet;
 int voltage;
 
 // PJON object
-PJON<SoftwareBitBang> bus(bus_id, 45);
+PJONSoftwareBitBang bus(bus_id, 45);
 
 void setup() {
   bus.strategy.set_pin(12);
@@ -43,7 +43,10 @@ void loop() {
 
     unsigned long send_time = micros();
     /* Use a blocking version of send. */
-    packet = bus.send_packet_blocking(44, bus_id, content, 3);
+    PJON_Packet_Info info;
+    info.rx.id = 44;
+    memcpy(info.rx.bus_id, bus_id);
+    packet = bus.send_packet_blocking(info, content, 3);
 
     /* Determine communication result and duration */
     send_time = micros() - send_time;

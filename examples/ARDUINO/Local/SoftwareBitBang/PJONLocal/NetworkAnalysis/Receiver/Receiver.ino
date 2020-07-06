@@ -12,12 +12,10 @@
 //#define SWBB_RESPONSE_TIMEOUT 1500
 
 // Include only SoftwareBitBang
-#define PJON_INCLUDE_SWBB
 
-// Include PJONLocal
-#include <PJONLocal.h>
+#include <PJONLocal.h> // Include PJONLocal
+#include <SoftwareBitBang.h> // Include SoftwareBitBang
 
-// <Strategy name> bus(selected device id)
 PJONLocal<SoftwareBitBang> bus(44);
 
 uint8_t data[PJON_PACKET_MAX_LENGTH];

@@ -1,8 +1,8 @@
 ## MQTTTranslate
 
-| Medium | Pins used | Inclusion Constant | Included by default |
-|--------|-----------|--------------------|---------------------|
-| MQTT protocol   | NA    | `PJON_INCLUDE_MQTT`|  no                |
+| Medium | Pins used | Inclusion Constant |
+|--------|-----------|--------------------|
+| MQTT protocol   | NA    | `#include <PJONMQTTTranslate.h>`|
 
 MQTTTranslate uses the [ReconnectingMqttClient](https://github.com/fredilarsen/ReconnectingMqttClient) library (minimum version required v1.1.1) to deliver PJON packets over TCP on local network (LAN) as a MQTT protocol client. It may be useful to connect PJON networks and more standard applications to each other using the MQTT protocol. This strategy works in one of four modes. The first two modes enable to implement a PJON bus via MQTT, the first mode is "closed" and the second is "open" to use by non-PJON programs. The last two modes are for behaving like MQTT devices normally do.
 
@@ -26,19 +26,18 @@ Note that this functionality does not cover Windows/Linux/OsX in this release.
 
 ### Configuration
 
-Before including `PJON.h` it is possible to configure `MQTTTranslate` using predefined constants:
+Before including the library it is possible to configure `MQTTTranslate` using predefined constants:
 
 | Constant           | Purpose                                      | Supported value                                                                                        |
 | ------------------ |--------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | `MQTTT_MODE`       | Select mode                                  | `MQTTT_MODE_BUS_RAW`, `MQTTT_MODE_BUS_JSON`, `MQTTT_MODE_MIRROR_TRANSLATE`, `MQTTT_MODE_MIRROR_DIRECT` |
 
-Define the `PJON_INCLUDE_MQTT` constant before including the library and pass the `MQTTTranslate` type as PJON template parameter to instantiate an object ready to communicate using this strategy:
+Use `PJONMQTTTranslate` to instantiate an object ready to communicate using `MQTTTranslate` strategy:
 
 ```cpp  
-  #define PJON_INCLUDE_MQTT // Include MQTTTranslate strategy
-  #include <PJON.h> // Include the PJON library
+  #include <PJONMQTTTranslate.h> // Include the PJON library
   // Use MQTTTranslate strategy with PJON device id 44
-  PJON<MQTTTranslate> bus(44);
+  PJONMQTTTranslate bus(44);
   uint8_t broker_ip[] = { 127, 0, 0, 1 };
 
   void setup() {  

@@ -6,8 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define PJON_INCLUDE_TS // Include only ThroughSerial
-#include <PJON.h>
+ // Include only ThroughSerial
+#include <PJONThroughSerial.h>
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   /* Make use of the payload before sending something, the buffer where payload points to is
@@ -19,7 +19,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 
 int main() {
   printf("PJON instantiation... \n");
-  PJON<ThroughSerial> bus(45);
+  PJONThroughSerial bus(45);
   uint32_t baud_rate = 9600;
   printf("Opening serial... \n");
 

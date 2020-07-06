@@ -1,10 +1,10 @@
-#include <PJON.h>
+#include <PJONGlobalUDP.h>
 
 // Address of remote device
 uint8_t remote_ip[] = { 192, 1, 1, 163 };
 
-// <Strategy name> bus(selected device id)
-PJON<GlobalUDP> bus(45);
+
+PJONGlobalUDP bus(45);
 
 const char* ssid     = "MyNetworkSSID";
 const char* password = "MyNetworkPassword";

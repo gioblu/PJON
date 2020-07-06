@@ -50,7 +50,7 @@ limitations under the License. */
 #include <PJONDynamicRouter.h>
 #include <PJONVirtualBusRouter.h>
 
-typedef void (* PJON_SendNotification)(
+typedef void (* PJON_Send_Notification)(
   const uint8_t * const payload,
   const uint16_t length,
   const uint8_t receiver_bus,
@@ -64,7 +64,7 @@ protected:
   void *custom_pointer = NULL;
   PJON_Receiver receiver = NULL;
   PJON_Error error = NULL;
-  PJON_SendNotification sendnotification = NULL;
+  PJON_Send_Notification send_notification = NULL;
   bool router = false;
 
   virtual void dynamic_receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
@@ -105,7 +105,7 @@ protected:
     RouterClass::send_packet(payload, length, receiver_bus, sender_bus, ack_sent, packet_info);
 
     // Call any user registered send notification function
-    if (sendnotification) sendnotification(payload, length, receiver_bus, sender_bus, packet_info);
+    if (send_notification) send_notification(payload, length, receiver_bus, sender_bus, packet_info);
   }
 
 public:
@@ -120,7 +120,7 @@ public:
 
   void set_error(PJON_Error e) { error = e; };
 
-  void set_sendnotification(PJON_SendNotification s) { sendnotification = s; };
+  void set_send_notification(PJON_Send_Notification s) { send_notification = s; };
 
   void set_custom_ptr(void *custom_ptr) { custom_pointer = custom_ptr; };
 

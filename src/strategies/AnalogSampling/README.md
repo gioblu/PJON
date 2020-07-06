@@ -1,8 +1,8 @@
 ## AnalogSampling
 
-| Medium | Pins used | Inclusion Constant | Included by default |
-|--------|-----------|--------------------|---------------------|
-| Light pulses over air or optic-fibre | 1 or 2 | `PJON_INCLUDE_AS`|  yes   |
+| Medium | Pins used | Inclusion |
+|--------|-----------|--------------------|
+| Light pulses over air or optic-fibre | 1 or 2 | `#include <PJONAnalogSampling.h>`|
 
 `AnalogSampling` strategy or data link complies with [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md), it is designed to communicate data wirelessly using light impulses and its sampling technique is based on analog readings. This strategy is able to use a single LED for both photo-emission and photo-reception phases providing with wireless half-duplex connectivity between devices with a range of up to 5 meters. Most appliances have at least a useless energy consuming LED on board, right?
 
@@ -38,7 +38,7 @@ It is possible to use LEDs as wireless (bidirectional) transceivers. This means 
 `AnalogSampling` can be used to experiment with short range infrared or visible light communication (remote control, robot swarms, data streaming using lighting), medium range using light sources (cars transmitting data through front and backlights) or long range laser communication (data between ground and LEO).  
 
 ### Configuration
-Before including `PJON.h` it is possible to configure `AnalogSampling` using predefined constants:
+Before including the library it is possible to configure `AnalogSampling` using predefined constants:
 
 | Constant                  | Purpose                             | Supported value                            |
 | ------------------------- |------------------------------------ | ------------------------------------------ |
@@ -48,11 +48,11 @@ Before including `PJON.h` it is possible to configure `AnalogSampling` using pre
 | `AS_MAX_ATTEMPTS`         | Maximum transmission attempts       | Numeric value (10 by default)              |
 | `AS_PRESCALE`             | Set ADC pre-scaler                  | 8, 16, 32                                  |
 
-Pass the `AnalogSampling` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy. All the other necessary information is present in the general [Documentation](/documentation).
+Use `PJONAnalogSampling` to instantiate a PJON object ready to communicate using `AnalogSampling` strategy. All the other necessary information is present in the general [Documentation](/documentation).
 ```cpp  
-#include <PJON.h>
+#include <PJONAnalogSampling.h>
 
-PJON<AnalogSampling> bus;
+PJONAnalogSampling bus;
 
 void setup() {
   // Set the pin A0 as the communication pin

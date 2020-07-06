@@ -1,12 +1,12 @@
 
 /* Include only ThroughSerial
    (not all data-link are still compatible with STM32 microcontrollers) */
-#define PJON_INCLUDE_TS true
 
-#include <PJON.h>
 
-// <Strategy name> bus(selected device id)
-PJON<ThroughSerial> bus(44);
+#include <PJONThroughSerial.h>
+
+
+PJONThroughSerial bus(44);
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);

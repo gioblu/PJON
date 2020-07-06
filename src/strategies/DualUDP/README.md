@@ -1,8 +1,8 @@
 ## DualUDP
 
-| Medium | Pins used | Inclusion Constant | Included by default |
-|--------|-----------|--------------------|---------------------|
-| Ethernet port, wired or WiFi   | NA    | `PJON_INCLUDE_DUDP`|  yes   |
+| Medium | Pins used | Inclusion |
+|--------|-----------|--------------------|
+| Ethernet port, wired or WiFi   | NA    |`#include <PJONDualUDP.h>`|
 
 With the `DualUDP` PJON strategy, multiple devices with Ethernet ports can use PJON to communicate with each other over an Ethernet network, wired or over WiFi or both. Like the `GlobalUDP` strategy, this strategy is not limited to the local network
 and can therefore reach devices farther away, to another LAN connected through VPN, or potentially across the Internet (beware of security issues). Like the `DualUDP` strategy it will reach devices on the LAN without configuration.
@@ -18,10 +18,11 @@ If a cabled or wireless Ethernet network exists, using this to let devices commu
 It can also be useful for connecting physically separate clusters of devices that are connected wired with the `SoftwareBitBang` strategy, or wirelessly with the `Oversampling` strategy, when a LAN or WAN is connecting the locations.
 
 ### How to use DualUDP
-Pass the `DualUDP` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
-```cpp  
-  // Use DualUDP strategy with PJON device id 44
-  PJON<DualUDP> bus(44);
+Use `PJONDualUDP` to instantiate a PJON object ready to communicate using the `DualUDP` strategy:
+```cpp
+  #include <PJONDualUDP.h>
+
+  PJONDualUDP bus(44); // Use device id 44
 ```
 
 Now the Ethernet card must be set up. This can be done by using a static IP address or by getting an address assigned by DHCP.

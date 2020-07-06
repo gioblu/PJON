@@ -1,14 +1,14 @@
 ## LocalFile
 
-| Medium | Pins used | Inclusion Constant | Included by default |
-|--------|-----------|--------------------|---------------------|
-| System memory   | NA    | `PJON_INCLUDE_LF`|  no   |
+| Medium | Pins used | Inclusion |
+|--------|-----------|--------------------|
+| System memory   | NA    | `#include <PJONLocalFile.h>`|
 
 `LocalFile` uses a file present on the hard drive to let multiple processes communicate on the same machine. It can be used for inter-process communication and for developing, simulating and testing applications and networks on a real time operative system without having to deploy physical hardware.
 
 ### Configuration
 
-Before including `PJON.h` it is possible to configure `LocalFile` using predefined constants:
+Before including the library it is possible to configure `LocalFile` using predefined constants:
 
 | Constant           | Purpose                                      | Supported value                            |
 | ------------------ |--------------------------------------------- | ------------------------------------------ |
@@ -16,10 +16,11 @@ Before including `PJON.h` it is possible to configure `LocalFile` using predefin
 | `LF_FILENAME`      | Name and location of the file used as medium | Duration in microseconds (1500 by default) |
 | `LF_QUEUESIZE`     | Size of the packets queue                    | > 0 (20 by default)                        |
 
-Pass the `LocalFile` type as PJON template parameter to instantiate a PJON object ready to communicate through this strategy.
+Use `PJONLocalFile` to instantiate a PJON object ready to communicate using `LocalFile` strategy:
 ```cpp  
-  // Use LocalFile strategy with PJON device id 44
-  PJON<LocalFile> bus(44);
+  #include <PJONLocalFile.h>
+
+  PJONLocalFile bus(44); // Use device id 44
 ```
 After testing or simulation you may want to use conditional compiling and exchange this strategy with the actual one on your target hardware.
 

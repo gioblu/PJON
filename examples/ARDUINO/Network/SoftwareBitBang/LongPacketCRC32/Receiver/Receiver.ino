@@ -9,7 +9,7 @@
    the receiver to compute CRC32 of a 300 bytes string. */
 #define SWBB_RESPONSE_TIMEOUT 4000
 
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 
 float test;
 float mistakes;
@@ -25,7 +25,7 @@ uint8_t bus_id[] = {0, 0, 0, 1};
 bool debug = true;
 
 // PJON object
-PJON<SoftwareBitBang> bus(bus_id, 44);
+PJONSoftwareBitBang bus(bus_id, 44);
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   /* Make use of the payload before sending something, the buffer where payload points to is

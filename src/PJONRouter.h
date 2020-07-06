@@ -56,7 +56,7 @@ protected:
 
   uint8_t find_bus_in_table(
     const uint8_t *bus_id,
-    const uint8_t device_id,
+    const uint8_t /* device_id */,
     uint8_t &start_bus
   ) {
     uint8_t start = start_bus - bus_count;

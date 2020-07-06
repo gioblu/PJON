@@ -1,8 +1,8 @@
 
-#define PJON_INCLUDE_TL
+
 
 #include <LoRa.h>
-#include <PJON.h>
+#include <PJONThroughLora.h>
 #include <ArduinoJson.h>
 
 /* To use this example, please download the LoRa third party Library
@@ -11,7 +11,7 @@
 
 #define EVENT_TIME	1000 //1 message every 1 second
 
-PJON<ThroughLora> LoraPJON(45);
+PJONThroughLora LoraPJON(45);
 
 void setup() {
 	Serial.begin(115200);

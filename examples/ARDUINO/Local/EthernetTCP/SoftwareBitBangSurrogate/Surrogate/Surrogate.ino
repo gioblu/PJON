@@ -14,14 +14,14 @@
 #define ETCP_SINGLE_DIRECTION
 //#define ETCP_SINGLE_SOCKET_WITH_ACK
 
-#include <PJON.h>
+#include <PJONEthernetTCP.h>
 
 const uint8_t DEVICE_ID = 45;
 // SWBB Device ID for this device and the RemoteWorker
 
-// <Strategy name> bus(selected device id)
+
 PJON<SoftwareBitBang> busA(DEVICE_ID);
-PJON<EthernetTCP> busB(1);
+PJONEthernetTCP busB(1);
 
 // Ethernet configuration for this device
 uint8_t gateway[] = { 192, 1, 1, 1 };

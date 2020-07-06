@@ -1,15 +1,15 @@
 
 // Use the following define to activate debug
 // #define MQTT_DEBUGPRINT
-#define PJON_INCLUDE_ETCP
-#define PJON_INCLUDE_MQTT
-#include <PJON.h>
+
+
+#include <PJONMQTTTranslate.h>
 
 // Ethernet address of the broker
 uint8_t broker_ip[] = { 127, 0, 0, 1 };
 
-// <Strategy name> bus(selected device id)
-PJON<MQTTTranslate> bus(44);
+
+PJONMQTTTranslate bus(44);
 
 uint32_t cnt = 0;
 uint32_t start = millis();

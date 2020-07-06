@@ -1,4 +1,4 @@
-#include <PJON.h>
+#include <PJONAny.h>
 
 /* Defining strategies using StrategyLink template class it is possible to
    leverage of virtual inheritance to handle PJON instances dynamically, for
@@ -7,10 +7,10 @@
 StrategyLink<SoftwareBitBang> link1;
 StrategyLink<SoftwareBitBang> link2;
 
-PJON<Any> bus1(44), bus2(45);
+PJONAny bus1(44), bus2(45);
 
 const uint8_t bus_count = 2;
-PJON<Any> *buses[] = { &bus1, &bus2 };
+PJONAny *buses[] = { &bus1, &bus2 };
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);

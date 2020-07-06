@@ -2,11 +2,9 @@
    This sketch contains the receiver side. In the Serial monitor
    is printed the record transmitted by the other device. */
 
-// Include only SoftwareBitBang
-#define PJON_INCLUDE_SWBB
-// Include PJONLocal
-#include <PJONLocal.h>
-// <Strategy name> bus(selected device id)
+#include <PJONLocal.h> // Include PJONLocal
+#include <SoftwareBitBang.h> // Include only SoftwareBitBang
+
 PJONLocal<SoftwareBitBang> bus(44);
 
 uint8_t data[PJON_PACKET_MAX_LENGTH];

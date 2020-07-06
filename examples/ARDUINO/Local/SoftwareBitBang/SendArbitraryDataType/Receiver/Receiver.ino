@@ -1,10 +1,10 @@
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 /* ARBITRARY DATA TYPE RECEPTION EXAMPLE
    This sketch contains the receiver side. In the Serial monitor
    is printed the record transmitted by the other device. */
 
 // PJON object
-PJON<SoftwareBitBang> bus(44);
+PJONSoftwareBitBang bus(44);
 
 /* A custom struct is defined just to clarify that any kind of custom
    data type can be easily transmitted using the PJON send functions. */

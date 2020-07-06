@@ -1,5 +1,5 @@
 // This PJON device is a simulated environmental controller, trying to change
-// temperature and pressure so that measurements are equal to targets that 
+// temperature and pressure so that measurements are equal to targets that
 // can be set from external systems through an MQTT broker.
 
 // Using the free MQTT Explorer or similar, publish the value "24" to the
@@ -11,13 +11,12 @@
 // a device id does not need to be set. This can be useful to produce a
 // series of identical devices without flashing with individual ids.
 
-#define PJON_INCLUDE_MQTT
+
 #define MQTTT_MODE MQTTT_MODE_MIRROR_TRANSLATE
 //#define MQTTT_USE_MAC
-#include <PJON.h>
+#include <PJONMQTTTranslate.h>
 
-// <Strategy name> bus(selected device id)
-PJON<MQTTTranslate> bus(45);
+PJONMQTTTranslate bus(45); // Use device id 45
 
 // WiFi network to connect to
 const char* ssid     = "MyNetworkSSID";

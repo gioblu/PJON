@@ -1,8 +1,8 @@
 ## Any
 
-| Medium | Pins used | Inclusion Constant | Included by default |
-|--------|-----------|--------------------|---------------------|
-| Any    | NA        | `PJON_INCLUDE_ANY` |  yes                |
+| Medium | Pins used | Inclusion |
+|--------|-----------|--------------------|
+| Any    | NA        | `#include <PJONAny.h>` |
 
 
 The `Any` strategy includes virtual inheritance and let PJON objects change from a strategy to another after instantiation or a collection of PJON objects with different strategies to be treated agnostically.
@@ -15,10 +15,10 @@ PJON<Any> bus;
 ```
 Call the `set_link` method passing the `StrategyLink` instance:
 ```cpp  
-#include <PJON.h>
+#include <PJONAny.h>
 
 StrategyLink<SoftwareBitBang> link;
-PJON<Any> bus;
+PJONAny bus;
 
 void setup() {
   Serial.begin(9600);

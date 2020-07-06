@@ -1,7 +1,7 @@
-#include <PJON.h>
+#include <PJONAnalogSampling.h>
 
-// <Strategy name> bus(selected device id)
-PJON<AnalogSampling> bus(45);
+
+PJONAnalogSampling bus(45);
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);

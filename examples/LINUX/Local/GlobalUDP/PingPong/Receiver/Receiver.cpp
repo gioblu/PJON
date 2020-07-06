@@ -1,8 +1,8 @@
-#define PJON_INCLUDE_GUDP
-#include <PJON.h>
 
-// <Strategy name> bus(selected device id)
-PJON<GlobalUDP> bus(44);
+#include <PJONGlobalUP.h>
+
+
+PJONGlobalUDP bus(44);
 
 //uint32_t millis() { return PJON_MICROS()/1000; } // TODO: Move to interface
 

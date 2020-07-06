@@ -29,7 +29,7 @@ contributors, the protocol's documentation, specification and implementation
 have been strongly tested, enhanced and verified:
 
   Fred Larsen, Zbigniew Zasieczny, Matheus Garbelini, sticilface,
-  Felix Barbalet, Oleh Halitskiy, fabpolli, Adrian Sławiński,
+  Felix Barbalet, Oleh Halitskiy, fotosettore, fabpolli, Adrian Sławiński,
   Osman Selçuk Aktepe, Jorgen-VikingGod, drtrigon, Endre Karlson,
   Wilfried Klaas, budaics, ibantxo, gonnavis, maxidroms83, Evgeny Dontsov,
   zcattacz, Valerii Koval, Ivan Kravets, Esben Soeltoft, Alex Grishin,
@@ -67,10 +67,8 @@ limitations under the License. */
 
 #pragma once
 #define PJON_LOCAL
-#define PJON_INCLUDE_NONE
 #include "interfaces/PJON_Interfaces.h"
 #include "PJONDefines.h"
-#include "strategies/PJON_Strategies.h"
 
 template<typename Strategy>
 class PJONLocal {

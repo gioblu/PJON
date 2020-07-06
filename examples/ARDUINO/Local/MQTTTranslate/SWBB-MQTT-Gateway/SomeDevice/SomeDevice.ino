@@ -1,23 +1,23 @@
 // This PJON device is a simulated environmental controller, trying to change
-// temperature so that measurement is equal to the target that can be set 
+// temperature so that measurement is equal to the target that can be set
 // from other devices. In this case we will let it send messages to and receive
 // messages from another device which is this setup is an MQTT gateway.
 
-// Using the free MQTT Explorer or similar, publish the value "temperature=24" 
+// Using the free MQTT Explorer or similar, publish the value "temperature=24"
 // to the topic pjon/device42/input. Observe the value of the topic
 // pjon/device42/output change gradually from "temperature=20" to "temperature=24".
 
 // NOTE: The gateway used in this setup is using MIRROR_DIRECT mode, just forwarding
 // packets both ways without trying to locate or translate variable names,
-// therefore packets are sent to pjon/device42/output instead of 
-// pjon/device42/output/temperature as would have been the case with 
+// therefore packets are sent to pjon/device42/output instead of
+// pjon/device42/output/temperature as would have been the case with
 // the MIRROR_TRANSLATE mode.
 
-#include <PJON.h>
+#include <PJONMQTTTranslate.h>
 
 #define PJON_GATEWAY_ID 254
 
-// <Strategy name> bus(selected device id)
+
 PJON<SoftwareBitBang> bus(42);
 
 float temperature = 20.0;        // "Measurement"

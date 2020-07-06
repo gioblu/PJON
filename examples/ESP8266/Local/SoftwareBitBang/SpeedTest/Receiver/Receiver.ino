@@ -2,15 +2,14 @@
 /* Arduino compatible device
    Devices can be wired directly being ESP8266 5v tolerant */
 
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 
 float test;
 float mistakes;
 int busy;
 int fail;
 
-// <Strategy name> bus(selected device id)
-PJON<SoftwareBitBang> bus(44);
+PJONSoftwareBitBang bus(44); // Use device id 44
 
 void setup() {
   bus.strategy.set_pin(12);

@@ -17,6 +17,7 @@ config PJON_STRATEGY_DUALUDP
 
 config PJON_STRATEGY_THROUGHSERIAL
 	bool "PJON strategy	Through	Serial"
+	select RING_BUFFER
 endchoice
 
 config PJON_DEVICE_ID

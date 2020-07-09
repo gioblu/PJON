@@ -218,7 +218,6 @@
 #if defined(__STM32F1__)
   #if SWBB_MODE == 1
     #if F_CPU == 72000000L
-    
       #define SWBB_BIT_WIDTH   43
       #define SWBB_BIT_SPACER 115
       #define SWBB_ACCEPTANCE  60
@@ -227,7 +226,6 @@
   #endif
   #if SWBB_MODE == 2
     #if F_CPU == 72000000L
-    /* Added by github user osman-aktepe - 22/06/2018 */
       #define SWBB_BIT_WIDTH   39
       #define SWBB_BIT_SPACER  91
       #define SWBB_ACCEPTANCE  47
@@ -236,7 +234,6 @@
   #endif
   #if SWBB_MODE == 3
     #if F_CPU == 72000000L
-    /* Added by github user osman-aktepe - 22/06/2018 */
       #define SWBB_BIT_WIDTH   27
       #define SWBB_BIT_SPACER  87
       #define SWBB_ACCEPTANCE  45
@@ -245,7 +242,6 @@
   #endif
   #if SWBB_MODE == 4
     #if F_CPU == 72000000L
-    /* Added by github user osman-aktepe - 22/06/2018 */
       #define SWBB_BIT_WIDTH   25
       #define SWBB_BIT_SPACER  59
       #define SWBB_ACCEPTANCE  30 //

@@ -47,9 +47,9 @@
     #if F_CPU == 16000000L
       /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
       #define SWBB_BIT_WIDTH   24
-      #define SWBB_BIT_SPACER  80
-      #define SWBB_ACCEPTANCE  40
-      #define SWBB_READ_DELAY   8
+      #define SWBB_BIT_SPACER  84 //changed to comm with bluepill
+      #define SWBB_ACCEPTANCE  30 //changed to comm with bluepill
+      #define SWBB_READ_DELAY   4 //changed to comm with bluepill
     #endif
   #endif
   #if SWBB_MODE == 4
@@ -213,14 +213,43 @@
 #endif
 
 /* STM32F1 ---------------------------------------------------------------- */
+/* Mod by @jcallano on 09-jul-2020 see dumps and pics folder for info*/
+//only tested on PB9 pin.
 #if defined(__STM32F1__)
   #if SWBB_MODE == 1
     #if F_CPU == 72000000L
+    
+      #define SWBB_BIT_WIDTH   43
+      #define SWBB_BIT_SPACER 115
+      #define SWBB_ACCEPTANCE  60
+      #define SWBB_READ_DELAY 3
+    #endif
+  #endif
+  #if SWBB_MODE == 2
+    #if F_CPU == 72000000L
     /* Added by github user osman-aktepe - 22/06/2018 */
-      #define SWBB_BIT_WIDTH   44
-      #define SWBB_BIT_SPACER 112
-      #define SWBB_ACCEPTANCE  40
-      #define SWBB_READ_DELAY -10
+      #define SWBB_BIT_WIDTH   39
+      #define SWBB_BIT_SPACER  91
+      #define SWBB_ACCEPTANCE  47
+      #define SWBB_READ_DELAY  3
+    #endif
+  #endif
+  #if SWBB_MODE == 3
+    #if F_CPU == 72000000L
+    /* Added by github user osman-aktepe - 22/06/2018 */
+      #define SWBB_BIT_WIDTH   27
+      #define SWBB_BIT_SPACER  87
+      #define SWBB_ACCEPTANCE  45
+      #define SWBB_READ_DELAY  2
+    #endif
+  #endif
+  #if SWBB_MODE == 4
+    #if F_CPU == 72000000L
+    /* Added by github user osman-aktepe - 22/06/2018 */
+      #define SWBB_BIT_WIDTH   25
+      #define SWBB_BIT_SPACER  59
+      #define SWBB_ACCEPTANCE  30 //
+      #define SWBB_READ_DELAY  4
     #endif
   #endif
 #endif

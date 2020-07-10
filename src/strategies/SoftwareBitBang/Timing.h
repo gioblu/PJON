@@ -47,9 +47,9 @@
     #if F_CPU == 16000000L
       /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
       #define SWBB_BIT_WIDTH   24
-      #define SWBB_BIT_SPACER  84 //changed to comm with bluepill
-      #define SWBB_ACCEPTANCE  30 //changed to comm with bluepill
-      #define SWBB_READ_DELAY   4 //changed to comm with bluepill
+      #define SWBB_BIT_SPACER  84 
+      #define SWBB_ACCEPTANCE  30 
+      #define SWBB_READ_DELAY   8 
     #endif
   #endif
   #if SWBB_MODE == 4
@@ -214,7 +214,7 @@
 
 /* STM32F1 ---------------------------------------------------------------- */
 /* Mod by @jcallano on 09-jul-2020 see dumps and pics folder for info*/
-//only tested on PB9 pin.
+// tested on PB15, PB14, PB13, PB12, PB11, PB10, PB9, PB8, PB7, PB6, PB4, PB3, PA15, PA10. 5v tolerant pins on bluepill.
 #if defined(__STM32F1__)
   #if SWBB_MODE == 1
     #if F_CPU == 72000000L

@@ -32,7 +32,7 @@ It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above 
 | SAMD (Arduino Zero) | 48MHz | D0, D1, D3, A0, A1 |
 | STM32F1 | 72MHz | PB15, PB14, PB13, PB12, PB11, PB10, PB9, PB8, PB7, PB6, PB4, PB3, PA15, PA10 |
 | MK20DX256 (Teensy 3.1) | 96MHz | All pins |
-| ESP8266 (NodeMCU, AI-THINKER modules) | 80/160MHz | D1 or GPIO 5 |
+| ESP8266 (NodeMCU, AI-THINKER) | 80/160MHz | D1 or GPIO 5 |
 | ESP32 (Heltech WiFi LoRa) | 160MHz | 12, 25 |
 
 ### Performance

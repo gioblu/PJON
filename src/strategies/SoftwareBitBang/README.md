@@ -23,7 +23,7 @@ It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above 
 | MCU              | Clock | Supported pins   |
 | ---------------- |------ | ---------------- |
 | ATtiny84/84A | 16MHz | 0, 1, 2, 3, 4 |
-| ATtiny85 (Digispark development board) | 16MHz | 1, 2 |
+| ATtiny85 | 16MHz | 1, 2 |
 | ATmega88/168/328 (Uno, Nano, Pro) | 16MHz | 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 |
 | ATmega328PB | 16MHz | 10 |
 | ATmega16u4/32u4 (Leonardo, Micro) | 16MHz | 2, 4, 8, 12 |

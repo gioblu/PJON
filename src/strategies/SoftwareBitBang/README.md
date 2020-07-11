@@ -40,10 +40,10 @@ It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above 
 
 | Mode | Speed | Range | Supported MCUs   |
 | ---- | ----- |------ | ---------------- |
-| `1`  | 1.95kB/s 15625Bd | 2000m | ATtiny84/84A, ATtiny85, ATmega88/168/328, ATmega328PB, ATmega16u4/32u4, ATmega2560, ATmega1284P, SAMD, STM32F1, MK20DX256, ESP8266, ESP32 |  
-| `2`  | 2.21kB/s 17696Bd | 1600m | ATtiny84/84A, ATtiny85, ATmega88/168/328, ATmega328PB, ATmega16u4/32u4, ATmega2560, STM32F1 |
-| `3`  | 2.94kB/s 23529Bd | 1200m | ATtiny84/84A, ATtiny85, ATmega88/168/328, STM32F1 |
-| `4`  | 3.40kB/s 27210Bd |  800m | ATtiny84/84A, ATtiny85, ATmega88/168/328, STM32F1 |
+| `1`  | 1.95kB/s | 2000m | ATtiny84/84A/85, ATmega88/168/328/328PB/16u4/32u4/2560/1284P, SAMD, STM32F1, MK20DX256, ESP8266, ESP32 |  
+| `2`  | 2.21kB/s | 1600m | ATtiny84/84A/85, ATmega88/168/328/328PB/16u4/32u4/2560, STM32F1 |
+| `3`  | 2.94kB/s | 1200m | ATtiny84/84A/85, ATmega88/168/328, STM32F1 |
+| `4`  | 3.40kB/s |  800m | ATtiny84/84A/85, ATmega88/168/328, STM32F1 |
 
 When including and using the `SoftwareBitBang` strategy you have the complete access to the microcontroller. This happens because `SoftwareBitBang` runs a completely software-defined implementation, transforming a painful walk in a nice flight.
 

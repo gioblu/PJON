@@ -24,7 +24,7 @@ It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above 
 | ---------------- |------ | ---------------- |
 | ATtiny84/84A | 16MHz | 0, 1, 2, 3, 4 |
 | ATtiny85 (Digispark development board) | 16MHz | 1, 2 |
-| ATmega88/168/328 (Duemilanove, Uno, Nano, Pro) | 16MHz | 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 |
+| ATmega88/168/328 (Uno, Nano, Pro) | 16MHz | 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 |
 | ATmega328PB | 16MHz | 10 |
 | ATmega16u4/32u4 (Leonardo, Micro) | 16MHz | 2, 4, 8, 12 |
 | ATmega2560 (Mega, Mega nano) | 16MHz | 3, 4, 7, 8, 9, 10, 12 |
@@ -41,9 +41,9 @@ It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above 
 | Mode | Speed | Range | Supported MCUs   |
 | ---- | ----- |------ | ---------------- |
 | `1`  | 1.95kB/s 15625Bd | 2000m | ATtiny84/84A, ATtiny85, ATmega88/168/328, ATmega328PB, ATmega16u4/32u4, ATmega2560, ATmega1284P, SAMD, STM32F1, MK20DX256, ESP8266, ESP32 |  
-| `2`  | 2.21kB/s 17696Bd | 1600m | ATtiny84/84A, ATtiny85, ATmega88/168/328, ATmega328PB, ATmega16u4/32u4, ATmega2560 |
-| `3`  | 2.94kB/s 23529Bd | 1200m | ATtiny84/84A, ATtiny85, ATmega88/168/328 |
-| `4`  | 3.40kB/s 27210Bd |  800m | ATtiny84/84A, ATtiny85, ATmega88/168/328 |
+| `2`  | 2.21kB/s 17696Bd | 1600m | ATtiny84/84A, ATtiny85, ATmega88/168/328, ATmega328PB, ATmega16u4/32u4, ATmega2560, STM32F1 |
+| `3`  | 2.94kB/s 23529Bd | 1200m | ATtiny84/84A, ATtiny85, ATmega88/168/328, STM32F1 |
+| `4`  | 3.40kB/s 27210Bd |  800m | ATtiny84/84A, ATtiny85, ATmega88/168/328, STM32F1 |
 
 When including and using the `SoftwareBitBang` strategy you have the complete access to the microcontroller. This happens because `SoftwareBitBang` runs a completely software-defined implementation, transforming a painful walk in a nice flight.
 

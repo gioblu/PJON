@@ -30,7 +30,7 @@ It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above 
 | ATmega2560 (Mega, Mega nano) | 16MHz | 3, 4, 7, 8, 9, 10, 12 |
 | ATmega1284P | 16MHz | 18, 19, 20, 21, 22, 23, A0, A1, A2, A3, A4, A5, A6, A7 |
 | SAMD (Arduino Zero) | 48MHz | D0, D1, D3, A0, A1 |
-| STM32F1 | 72MHz | ? |
+| STM32F1 | 72MHz | PB15, PB14, PB13, PB12, PB11, PB10, PB9, PB8, PB7, PB6, PB4, PB3, PA15, PA10 |
 | MK20DX256 (Teensy 3.1) | 96MHz | All pins |
 | ESP8266 (NodeMCU, AI-THINKER modules) | 80/160MHz | D1 or GPIO 5 |
 | ESP32 (Heltech WiFi LoRa) | 160MHz | 12, 25 |

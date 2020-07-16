@@ -23,16 +23,16 @@ It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above 
 | MCU              | Clock | Supported pins   |
 | ---------------- |------ | ---------------- |
 | ATtiny84/84A | 16MHz | 0, 1, 2, 3, 4 |
-| ATtiny85 (Digispark development board) | 16MHz | 1, 2 |
-| ATmega88/168/328 (Duemilanove, Uno, Nano, Pro) | 16MHz | 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 |
+| ATtiny85 | 16MHz | 1, 2 |
+| ATmega88/168/328 (Uno, Nano, Pro) | 16MHz | 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 |
 | ATmega328PB | 16MHz | 10 |
 | ATmega16u4/32u4 (Leonardo, Micro) | 16MHz | 2, 4, 8, 12 |
 | ATmega2560 (Mega, Mega nano) | 16MHz | 3, 4, 7, 8, 9, 10, 12 |
 | ATmega1284P | 16MHz | 18, 19, 20, 21, 22, 23, A0, A1, A2, A3, A4, A5, A6, A7 |
 | SAMD (Arduino Zero) | 48MHz | D0, D1, D3, A0, A1 |
-| STM32F1 | 72MHz | ? |
+| STM32F1 | 72MHz | PB15, PB14, PB13, PB12, PB11, PB10, PB9, PB8, PB7, PB6, PB4, PB3, PA15, PA10 |
 | MK20DX256 (Teensy 3.1) | 96MHz | All pins |
-| ESP8266 (NodeMCU, AI-THINKER modules) | 80/160MHz | D1 or GPIO 5 |
+| ESP8266 (NodeMCU, AI-THINKER) | 80/160MHz | D1 or GPIO 5 |
 | ESP32 (Heltech WiFi LoRa) | 160MHz | 12, 25 |
 
 ### Performance
@@ -40,10 +40,10 @@ It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above 
 
 | Mode | Speed | Range | Supported MCUs   |
 | ---- | ----- |------ | ---------------- |
-| `1`  | 1.95kB/s 15625Bd | 2000m | ATtiny84/84A, ATtiny85, ATmega88/168/328, ATmega328PB, ATmega16u4/32u4, ATmega2560, ATmega1284P, SAMD, STM32F1, MK20DX256, ESP8266, ESP32 |  
-| `2`  | 2.21kB/s 17696Bd | 1600m | ATtiny84/84A, ATtiny85, ATmega88/168/328, ATmega328PB, ATmega16u4/32u4, ATmega2560 |
-| `3`  | 2.94kB/s 23529Bd | 1200m | ATtiny84/84A, ATtiny85, ATmega88/168/328 |
-| `4`  | 3.40kB/s 27210Bd |  800m | ATtiny84/84A, ATtiny85, ATmega88/168/328 |
+| `1`  | 1.95kB/s | 2000m | ATtiny84/84A/85, ATmega88/168/328/328PB/16u4/32u4/2560/1284P, SAMD, STM32F1, MK20DX256, ESP8266, ESP32 |  
+| `2`  | 2.21kB/s | 1600m | ATtiny84/84A/85, ATmega88/168/328/328PB/16u4/32u4/2560, STM32F1 |
+| `3`  | 2.94kB/s | 1200m | ATtiny84/84A/85, ATmega88/168/328, STM32F1 |
+| `4`  | 3.40kB/s |  800m | ATtiny84/84A/85, ATmega88/168/328, STM32F1 |
 
 When including and using the `SoftwareBitBang` strategy you have the complete access to the microcontroller. This happens because `SoftwareBitBang` runs a completely software-defined implementation, transforming a painful walk in a nice flight.
 

@@ -51,14 +51,12 @@ It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above 
 ### Communication modes
 The proposed communication modes are the result of years of testing and optimization and have been selected to be easily supported by limited microcontrollers.  
 
-| MODE | Data bit duration | Padding bit duration | Pad-data ratio  | Bandwidth          | Range |
-| ---- | ----------------- | -------------------- | --------------- | ------------------ | ----- |
-| 1    | 44                | 116                  | 2.636           | 1.95kB/s - 15625Bd | 2000m |
-| 2    | 40                | 92                   | 2.300           | 2.21kB/s - 17696Bd | 1600m |
-| 3    | 28                | 88                   | 3.142           | 2.94kB/s - 23529Bd | 1200m |
-| 4    | 26                | 60                   | 2.307           | 3.40kB/s - 27210Bd |  800m |
-
-Durations are expressed in microseconds.
+| Mode | Data bit | Padding bit | Acceptable padding bit | Acceptable deviation | Bandwidth          | Range |
+| ---- |--------- | ----------- | ---------------------- | -------------------- | ------------------ | ----- |
+| 1    | 44µs     | 116µs       | > 56µs                 | +- 1µs               | 1.95kB/s - 15625Bd | 2000m |
+| 2    | 40µs     | 92µs        | > 56µs                 | +- 1µs               | 2.21kB/s - 17696Bd | 1600m |
+| 3    | 28µs     | 88µs        | > 30µs                 | +- 0.75µs            | 2.94kB/s - 23529Bd | 1200m |
+| 4    | 26µs     | 60µs        | > 30µs                 | +- 0.35µs            | 3.40kB/s - 27210Bd |  800m |
 
 ### Medium access control
 PJDL specifies a variation of the carrier-sense, non-persistent random multiple access method (non-persistent CSMA). Devices can detect an ongoing transmission for this reason collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss or by the transmitter if an active collision avoidance procedure is implemented.
@@ -113,7 +111,7 @@ Transmission end                                   Response
 |      ||      ||      |                           |  6  |
 |______||______||______|                           |_____|
 ```  
-In order to avoid other devices to detect the medium free for use and disrupt an ongoing exchange, the sender cyclically transmits a short high bit (1/4 data bit duration) and consequently attempts to receive a response. The receiver must synchronize its response to the falling edge of the last short high bit, and, in order to avoid false positives in case of collision, must transmit its response prepended with an additional synchronization pulse. If the response is not transmitted or not received the transmitter continues to keep busy the medium up to the maximum acceptable time between transmission and response.
+In order to avoid other devices to detect the medium free for use and disrupt an ongoing exchange, the sender cyclically transmits a short high bit (1/4 data bit duration) and consequently attempts to receive a response. The receiver must synchronize its response to the falling edge of the last short high bit, and, in order to avoid false positives in case of collision, must transmit its response prepended with an additional synchronization pad. If the response is not transmitted or not received the transmitter continues to keep busy the medium up to the maximum acceptable time between transmission and response.
 ```cpp  
 Transmission end                                    Response
  ______  ______  ______   _   _   _   _   _   _ ____ _____  

@@ -51,12 +51,12 @@ It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above 
 ### Communication modes
 The proposed communication modes are the result of years of testing and optimization and have been selected to be easily supported by limited microcontrollers.  
 
-| Mode | Data bit | Padding bit | Acceptable padding bit | Acceptable deviation | Bandwidth          | Range |
-| ---- |--------- | ----------- | ---------------------- | -------------------- | ------------------ | ----- |
-| 1    | 44µs     | 116µs       | > 56µs                 | +- 1µs               | 1.95kB/s - 15625Bd | 2000m |
-| 2    | 40µs     | 92µs        | > 56µs                 | +- 1µs               | 2.21kB/s - 17696Bd | 1600m |
-| 3    | 28µs     | 88µs        | > 30µs                 | +- 0.75µs            | 2.94kB/s - 23529Bd | 1200m |
-| 4    | 26µs     | 60µs        | > 30µs                 | +- 0.35µs            | 3.40kB/s - 27210Bd |  800m |
+| Mode | Data bit | Padding bit | Acceptable padding bit | Deviation | Bandwidth          | Range |
+| ---- | -------- | ----------- | ---------------------- | --------- | ------------------ | ----- |
+| 1    | 44µs     | 116µs       | 56µs - 116µs           | +- 1.00µs | 1.95kB/s - 15625Bd | 2000m |
+| 2    | 40µs     | 92µs        | 56µs - 92µs            | +- 1.00µs | 2.21kB/s - 17696Bd | 1600m |
+| 3    | 28µs     | 88µs        | 30µs - 88µs            | +- 0.75µs | 2.94kB/s - 23529Bd | 1200m |
+| 4    | 26µs     | 60µs        | 30µs - 60µs            | +- 0.35µs | 3.40kB/s - 27210Bd |  800m |
 
 ### Medium access control
 PJDL specifies a variation of the carrier-sense, non-persistent random multiple access method (non-persistent CSMA). Devices can detect an ongoing transmission for this reason collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss or by the transmitter if an active collision avoidance procedure is implemented.

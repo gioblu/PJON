@@ -29,6 +29,7 @@ Released into the public domain
 29/12/2018 3.0 - Medium access control info, mode 4
 03/07/2019 4.0 - Response initializer
 10/03/2020 4.1 - Maximum range experimentally determined
+17/07/2020 4.2 - Deviation added thanks to J. Aguirre and G. Sittig
 ```
 PJDL (Padded Jittering Data Link) is an asynchronous serial data link for low-data-rate applications that supports both master-slave and multi-master communication over a common conductive medium. PJDL can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin.
 
@@ -51,12 +52,12 @@ It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above 
 ### Communication modes
 The proposed communication modes are the result of years of testing and optimization and have been selected to be easily supported by limited microcontrollers.  
 
-| Mode | Data bit | Padding bit | Acceptable padding bit | Deviation | Bandwidth          | Range |
-| ---- | -------- | ----------- | ---------------------- | --------- | ------------------ | ----- |
-| 1    | 44µs     | 116µs       | from 56 to 116µs       | +- 1.00µs | 1.95kB/s - 15625Bd | 2000m |
-| 2    | 40µs     | 92µs        | from 56 to 92µs        | +- 1.00µs | 2.21kB/s - 17696Bd | 1600m |
-| 3    | 28µs     | 88µs        | from 30 to 88µs        | +- 0.75µs | 2.94kB/s - 23529Bd | 1200m |
-| 4    | 26µs     | 60µs        | from 30 to 60µs        | +- 0.35µs | 3.40kB/s - 27210Bd |  800m |
+| Mode | Data bit | Padding bit | Bit deviation | Bandwidth          | Range |
+| ---- | -------- | ----------- | ------------- | ------------------ | ----- |
+| 1    | 44µs     | 116µs       | +- 1.22µs     | 1.95kB/s - 15625Bd | 2000m |
+| 2    | 40µs     | 92µs        | +- 1.11µs     | 2.21kB/s - 17696Bd | 1600m |
+| 3    | 28µs     | 88µs        | +- 0.77µs     | 2.94kB/s - 23529Bd | 1200m |
+| 4    | 26µs     | 60µs        | +- 0.72µs     | 3.40kB/s - 27210Bd |  800m |
 
 ### Medium access control
 PJDL specifies a variation of the carrier-sense, non-persistent random multiple access method (non-persistent CSMA). Devices can detect an ongoing transmission for this reason collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss or by the transmitter if an active collision avoidance procedure is implemented.
@@ -65,7 +66,7 @@ PJDL specifies a variation of the carrier-sense, non-persistent random multiple 
 Byte transmission is composed by 10 bits, the first two are called synchronization pad and are used to obtain sampling synchronization. The synchronization pad is composed by a high padding bit longer than data bits and a low data bit. The following 8 data bits contain information in LSB-first (least significant bit first) order.
 
 The reception technique is based on 3 steps:
-1. Find a high bit which duration is equal to or acceptably shorter than a high padding bit
+1. Find a high bit which matches a padding bit
 2. Synchronize to its falling edge
 3. Ensure it is followed by a low data bit
 
@@ -75,13 +76,11 @@ If so reception starts, if not, interference, synchronization loss or simply abs
  ___________ ___________________________
 | SYNC-PAD  | DATA                      |
 |_______    |___       ___     _____    |
-|  |    |   |   |     |   |   |     |   |
-|  | 1  | 0 | 1 | 0 0 | 1 | 0 | 1 1 | 0 |
-|__|____|___|___|_____|___|___|_____|___|
-   |
-Minimum acceptable padding bit duration
+|       |   |   |     |   |   |     |   |
+|   1   | 0 | 1 | 0 0 | 1 | 0 | 1 1 | 0 |
+|_______|___|___|_____|___|___|_____|___|
 ```
-The synchronization pad adds overhead although it includes synchronization along with the data and eliminates the need of a dedicated clock line. The minimum acceptable padding bit duration is the time in which a receiver initiating polling can correctly receive a byte. If the duration of the padding bit is shorter than the minimum acceptable duration the received signal is discarded. The minimum acceptable duration of the padding bit must be shorter than a padding bit duration; a large minimum acceptable duration reduces the chances of false positive's occurrences, a small minimum acceptable duration instead mitigates timing inaccuracies. The presence of the synchronization pad between each byte also ensures that a frame composed of a series of bytes with decimal value 0 can be transmitted safely without risk of collision.
+The synchronization pad adds overhead although it includes synchronization along with the data and eliminates the need of a dedicated clock line. The presence of the synchronization pad between each byte also ensures that a frame composed of a series of bytes with decimal value 0 can be transmitted safely without risk of collision.   
 
 ### Frame transmission
 Before a frame transmission the communication medium's state is analysed, if high communication is detected and collision is avoided, if low for a duration of one byte plus a small random time, frame transmission starts with an initializer composed by 3 consecutive synchronization pads followed by data bytes. The synchronization pad is used for both byte and frame initialization to reduce the implementation complexity.  
@@ -95,11 +94,7 @@ Before a frame transmission the communication medium's state is analysed, if hig
 |00000000| 1 |0| 1 |0| 1 |0| 1 |0|0000|11|00| 1 |0|00000|1|0|1|
 |________|___|_|___|_|___|_|___|_|____|__|__|___|_|_____|_|_|_|
 ```
-When a frame is received a low performance microcontroller with an inaccurate clock can correctly synchronize with transmitter during the frame initializer and consequently each byte is received. On receiver's side a frame reception starts if 3 synchronization pads are detected and if their duration is equal or higher than:
-
-`frame initializer duration - (padding bit duration - padding bit minimum acceptable duration)`
-
-To ensure 100% reliability the padding bit must be longer than data bits. Frame initialization is 100% reliable, false positives can only occur because of externally induced interference. The padding bit duration must not be an exact multiple of the duration of one data bit, for this reason a `padding bit / data bit` ratio or pad-data ratio of 1, 2, 3 or 4 must be avoided because one or multiple consecutive data bits may be erroneously interpreted as a padding bit.
+When a frame is received a low performance microcontroller with an inaccurate clock can correctly synchronize with transmitter during the frame initializer and consequently each byte is received. On receiver's side a frame reception starts if 3 synchronization pads are detected. Frame initialization is 100% reliable, false positives can only occur because of externally induced interference. The padding bit duration of all modes was selected not be an exact multiple of the duration of one data bit because in this particular case one or multiple consecutive data bits may be erroneously interpreted as a padding bit.
 
 ### Synchronous response
 A frame transmission can be optionally followed by a synchronous response sent by its recipient. Between frame transmission and a synchronous response there is a variable time which duration is influenced by latency.

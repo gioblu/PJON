@@ -53,10 +53,10 @@ The proposed communication modes are the result of years of testing and optimiza
 
 | Mode | Data bit | Padding bit | Acceptable padding bit | Deviation | Bandwidth          | Range |
 | ---- | -------- | ----------- | ---------------------- | --------- | ------------------ | ----- |
-| 1    | 44µs     | 116µs       | 56µs - 116µs           | +- 1.00µs | 1.95kB/s - 15625Bd | 2000m |
-| 2    | 40µs     | 92µs        | 56µs - 92µs            | +- 1.00µs | 2.21kB/s - 17696Bd | 1600m |
-| 3    | 28µs     | 88µs        | 30µs - 88µs            | +- 0.75µs | 2.94kB/s - 23529Bd | 1200m |
-| 4    | 26µs     | 60µs        | 30µs - 60µs            | +- 0.35µs | 3.40kB/s - 27210Bd |  800m |
+| 1    | 44µs     | 116µs       | from 56 to 116µs       | +- 1.00µs | 1.95kB/s - 15625Bd | 2000m |
+| 2    | 40µs     | 92µs        | from 56 to 92µs        | +- 1.00µs | 2.21kB/s - 17696Bd | 1600m |
+| 3    | 28µs     | 88µs        | from 30 to 88µs        | +- 0.75µs | 2.94kB/s - 23529Bd | 1200m |
+| 4    | 26µs     | 60µs        | from 30 to 60µs        | +- 0.35µs | 3.40kB/s - 27210Bd |  800m |
 
 ### Medium access control
 PJDL specifies a variation of the carrier-sense, non-persistent random multiple access method (non-persistent CSMA). Devices can detect an ongoing transmission for this reason collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss or by the transmitter if an active collision avoidance procedure is implemented.

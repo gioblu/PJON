@@ -2,12 +2,14 @@
 /* PJON SoftwareBitBang strategy Transmission Timing table
    Copyright 2010-2020, Giovanni Blu Mitolo All rights reserved.
 
-   Often timing in two different architectures do not match. Code execution
+   Often timing in two different machines do not match, code execution
    time can variate and time measurements can be not perfectly equal.
-   Arduino Duemilanove/UNO/Nano durations are used as master.
-   Consider that master durations defined below are shorter than specified
-   in the PJDL-specification-v2.1 to accomodate the input-output pin change
-   duration (4 microseconds) and effectively produce the specified durations.
+   Consider that durations defined below may differ from what is specified in
+   PJDL v4.1. This is done to accomodate machine's inner workings and
+   effectively produce the specified timing.
+
+   Arduino Duemilanove/UNO/Nano is used as timing master, or the machine used
+   to test all new supported MCUs.
 
    Benchmarks can be executed using NetworkAnalysis and SpeedTest examples.
 
@@ -47,9 +49,9 @@
     #if F_CPU == 16000000L
       /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
       #define SWBB_BIT_WIDTH   24
-      #define SWBB_BIT_SPACER  84 
-      #define SWBB_ACCEPTANCE  30 
-      #define SWBB_READ_DELAY   8 
+      #define SWBB_BIT_SPACER  84
+      #define SWBB_ACCEPTANCE  30
+      #define SWBB_READ_DELAY   8
     #endif
   #endif
   #if SWBB_MODE == 4
@@ -58,7 +60,7 @@
       #define SWBB_BIT_WIDTH   22
       #define SWBB_BIT_SPACER  56
       #define SWBB_ACCEPTANCE  30
-      #define SWBB_READ_DELAY   9
+      #define SWBB_READ_DELAY   7
     #endif
   #endif
 #endif
@@ -213,8 +215,9 @@
 #endif
 
 /* STM32F1 ---------------------------------------------------------------- */
-/* Mod by @jcallano on 09-jul-2020 see dumps and pics folder for info*/
-// tested on PB15, PB14, PB13, PB12, PB11, PB10, PB9, PB8, PB7, PB6, PB4, PB3, PA15, PA10. 5v tolerant pins on bluepill.
+/* Added by jcallano - 09-07-2020
+   Working on pin: PB15, PB14, PB13, PB12, PB11, PB10, PB9, PB8, PB7, PB6, PB4,
+   PB3, PA15, PA10. 5v tolerant pins on bluepill */
 #if defined(__STM32F1__)
   #if SWBB_MODE == 1
     #if F_CPU == 72000000L
@@ -264,6 +267,9 @@
   #ifndef SWBB_READ_DELAY
     #define SWBB_READ_DELAY   4
   #endif
+  #ifndef SWBB_LATENCY
+    #define SWBB_LATENCY     13
+  #endif
 #endif
 #if SWBB_MODE == 2
   #ifndef SWBB_BIT_WIDTH
@@ -277,6 +283,9 @@
   #endif
   #ifndef SWBB_READ_DELAY
     #define SWBB_READ_DELAY   4
+  #endif
+  #ifndef SWBB_LATENCY
+    #define SWBB_LATENCY     10
   #endif
 #endif
 #if SWBB_MODE == 3
@@ -292,6 +301,9 @@
   #ifndef SWBB_READ_DELAY
     #define SWBB_READ_DELAY   8
   #endif
+  #ifndef SWBB_LATENCY
+    #define SWBB_LATENCY      8
+  #endif
 #endif
 #if SWBB_MODE == 4
   #ifndef SWBB_BIT_WIDTH
@@ -306,15 +318,18 @@
   #ifndef SWBB_READ_DELAY
     #define SWBB_READ_DELAY   9
   #endif
+  #ifndef SWBB_LATENCY
+    #define SWBB_LATENCY      5
+  #endif
 #endif
 
-/* Synchronous acknowledgement response timeout. (1.5 milliseconds default).
-   If (latency + CRC computation) > SWBB_RESPONSE_TIMEOUT synchronous
-   acknowledgement reliability could be affected or disrupted higher
-   SWBB_RESPONSE_TIMEOUT if necessary. */
+/* Synchronous acknowledgement response offset.
+   If (latency + CRC computation) > (SWBB_RESPONSE_OFFSET * length)
+   synchronous acknowledgement reliability could be affected or disrupted
+   set a higher SWBB_RESPONSE_OFFSET if necessary. */
 
-#ifndef SWBB_RESPONSE_TIMEOUT
-  #define SWBB_RESPONSE_TIMEOUT 1500
+#ifndef SWBB_RESPONSE_OFFSET
+  #define SWBB_RESPONSE_OFFSET 20
 #endif
 
 /* Maximum initial delay in milliseconds: */

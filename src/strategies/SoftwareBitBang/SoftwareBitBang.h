@@ -145,12 +145,9 @@ class SoftwareBitBang {
     uint16_t receive_response() {
       if(_output_pin != _input_pin && _output_pin != SWBB_NOT_ASSIGNED)
         PJON_IO_WRITE(_output_pin, LOW);
-      uint16_t response = SWBB_FAIL;
+      uint16_t response;
       uint32_t time = PJON_MICROS();
-      while(
-        response == SWBB_FAIL &&
-        (uint32_t)(PJON_MICROS() - SWBB_RESPONSE_TIMEOUT) <= time
-      ) {
+      while((uint32_t)(PJON_MICROS() - time) < _timeout) {
         PJON_IO_WRITE(_input_pin, LOW);
         if(sync()) response = receive_byte();
         if(response == SWBB_FAIL) {
@@ -158,7 +155,7 @@ class SoftwareBitBang {
           PJON_IO_WRITE(_output_pin, HIGH);
           PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH / 4);
           PJON_IO_PULL_DOWN(_output_pin);
-        }
+        } else return response;
       }
       return response;
     };
@@ -253,6 +250,7 @@ class SoftwareBitBang {
     Send a frame: */
 
     void send_frame(uint8_t *data, uint16_t length) {
+      _timeout = (length * SWBB_RESPONSE_OFFSET) + SWBB_LATENCY;
       PJON_IO_MODE(_output_pin, OUTPUT);
       pulse(3); // Send frame initializer
       for(uint16_t b = 0; b < length; b++)
@@ -333,6 +331,7 @@ class SoftwareBitBang {
     };
 
   private:
-    uint8_t _input_pin;
-    uint8_t _output_pin;
+    uint16_t _timeout;
+    uint8_t  _input_pin;
+    uint8_t  _output_pin;
 };

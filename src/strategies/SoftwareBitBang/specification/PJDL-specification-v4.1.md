@@ -17,7 +17,7 @@
 ```
 Invented by Giovanni Blu Mitolo
 Originally published: 10/04/2010
-Latest revision: 10/03/2020
+Latest revision: 19/07/2020
 Related implementation: /src/strategies/SoftwareBitBang/
 Compliant versions: PJON v13.0 and following
 Released into the public domain
@@ -28,8 +28,8 @@ Released into the public domain
 24/09/2017 2.0 - Modes 1, 2, 3
 29/12/2018 3.0 - Medium access control info, mode 4
 03/07/2019 4.0 - Response initializer
-10/03/2020 4.1 - Maximum range determined by Jack Anderson
-17/07/2020 5.0 - Timeout by Julio Aguirre deviation by Gerhard Sittig
+10/03/2020 4.1 - Maximum range experimentally determined
+17/07/2020 5.0 - Timeout and keep-busy signal fixed, deviation added
 ```
 PJDL (Padded Jittering Data Link) is an asynchronous serial data link for low-data-rate applications that supports both master-slave and multi-master communication over a common conductive medium. PJDL can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin.
 
@@ -52,12 +52,12 @@ It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above 
 ### Communication modes
 The proposed communication modes are the result of years of testing and optimization and have been selected to be easily supported by limited microcontrollers.  
 
-| Mode | Data bit | Padding bit | Bit deviation | Timeout   | Latency | Bandwidth          | Range |
-| ---- | -------- | ----------- | ------------- | --------- | ------- | ------------------ | ----- |
-| 1    | 44µs     | 116µs       | +- 1.22µs     | 20µs/byte | 13µs    | 1.95kB/s - 15625Bd | 2000m |
-| 2    | 40µs     | 92µs        | +- 1.11µs     | 20µs/byte | 10µs    | 2.21kB/s - 17696Bd | 1600m |
-| 3    | 28µs     | 88µs        | +- 0.77µs     | 20µs/byte | 8µs     | 2.94kB/s - 23529Bd | 1200m |
-| 4    | 26µs     | 60µs        | +- 0.72µs     | 20µs/byte | 5µs     | 3.40kB/s - 27210Bd |  800m |
+| Mode | Data bit | Padding bit | Max bit deviation | Timeout   | Max latency | Bandwidth          | Range |
+| ---- | -------- | ----------- | ----------------- | --------- | ----------- | ------------------ | ----- |
+| 1    | 44µs     | 116µs       | +- 1.22µs         | 20µs/byte | 13µs        | 1.95kB/s - 15625Bd | 2000m |
+| 2    | 40µs     | 92µs        | +- 1.11µs         | 20µs/byte | 10µs        | 2.21kB/s - 17696Bd | 1600m |
+| 3    | 28µs     | 88µs        | +- 0.77µs         | 20µs/byte | 8µs         | 2.94kB/s - 23529Bd | 1200m |
+| 4    | 26µs     | 60µs        | +- 0.72µs         | 20µs/byte | 5µs         | 3.40kB/s - 27210Bd |  800m |
 
 ### Medium access control
 PJDL specifies a variation of the carrier-sense, non-persistent random multiple access method (non-persistent CSMA). Devices can detect an ongoing transmission for this reason collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss or by the transmitter if an active collision avoidance procedure is implemented.
@@ -106,13 +106,13 @@ Transmission end                                   Response
 |      ||      ||      |                           |  6  |
 |______||______||______|                           |_____|
 ```  
-In order to avoid other devices to detect the medium free for use and disrupt an ongoing exchange, the sender cyclically transmits a short high bit (1/4 data bit duration) and consequently attempts to receive a response. The receiver must synchronize its response to the falling edge of the last short high bit, and, in order to avoid false positives in case of collision, must transmit its response prepended with an additional synchronization pad. If the response is not transmitted or not received the transmitter continues to keep busy the medium up to the maximum acceptable time between transmission and response.
+In order to avoid other devices to detect the medium free for use and disrupt an ongoing exchange, the sender cyclically transmits a high 1/2 data bit and consequently attempts to receive a response. The receiver must synchronize to the falling edge of the last high bit and, in order to avoid false positives in case of collision, must transmit its response prepended with an additional synchronization pad. If the response is not transmitted or not received the transmitter continues to keep busy the medium up to the response timeout.
 ```cpp  
-Transmission end                                    Response
+Transmission end              Keep busy             Response
  ______  ______  ______   _   _   _   _   _   _ ____ _____  
 | BYTE || BYTE || BYTE | | | | | | | | | | | | |SYNC| ACK |
 |------||------||------| | | | | | | | | | | | |----|-----|
 |      ||      ||      | | | | | | | | | | | | |    |  6  |
 |______||______||______|_| |_| |_| |_| |_| |_| |____|_____|
 ```
-The maximum time dedicated to potential response reception is determined by the transmitter computing the timeout using the frame length and then adding the maximum expected latency.
+The response timeout is determined multiplying 20µs by the length of the frame and then adding the maximum expected latency.

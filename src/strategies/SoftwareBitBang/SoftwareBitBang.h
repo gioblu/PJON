@@ -153,7 +153,7 @@ class SoftwareBitBang {
         if(response == SWBB_FAIL) {
           PJON_IO_MODE(_output_pin, OUTPUT);
           PJON_IO_WRITE(_output_pin, HIGH);
-          PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH / 4);
+          PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH / 2);
           PJON_IO_PULL_DOWN(_output_pin);
         } else return response;
       }
@@ -226,7 +226,7 @@ class SoftwareBitBang {
       );
       time = PJON_MICROS();
       while( // If high Wait for low
-        ((uint32_t)(PJON_MICROS() - time) < (SWBB_BIT_WIDTH / 4)) &&
+        ((uint32_t)(PJON_MICROS() - time) < (SWBB_BIT_WIDTH / 2)) &&
         PJON_IO_READ(_input_pin)
       );
       PJON_IO_MODE(_output_pin, OUTPUT);

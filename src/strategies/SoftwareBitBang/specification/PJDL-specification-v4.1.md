@@ -15,9 +15,9 @@
 
 ## PJDL v5.0
 ```
-Invented by Giovanni Blu Mitolo
-Originally published: 10/04/2010
-Latest revision: 19/07/2020
+Invented by Giovanni Blu Mitolo with the support
+of Fred Larsen, Julio Aguirre and Gerhard Sittig
+Publication date: 10/04/2010 Latest revision: 19/07/2020
 Related implementation: /src/strategies/SoftwareBitBang/
 Compliant versions: PJON v13.0 and following
 Released into the public domain
@@ -108,7 +108,7 @@ Transmission end                                   Response
 ```  
 In order to avoid other devices to detect the medium free for use and disrupt an ongoing exchange, the sender cyclically transmits a high 1/2 data bit and consequently attempts to receive a response. The receiver must synchronize to the falling edge of the last high bit and, in order to avoid false positives in case of collision, must transmit its response prepended with an additional synchronization pad. If the response is not transmitted or not received the transmitter continues to keep busy the medium up to the response timeout.
 ```cpp  
-Transmission end              Keep busy             Response
+Transmission end               Keep busy            Response
  ______  ______  ______   _   _   _   _   _   _ ____ _____  
 | BYTE || BYTE || BYTE | | | | | | | | | | | | |SYNC| ACK |
 |------||------||------| | | | | | | | | | | | |----|-----|

@@ -19,7 +19,7 @@ Invented by Giovanni Blu Mitolo with the support
 of Fred Larsen, Julio Aguirre and Gerhard Sittig
 Publication date: 10/04/2010 Latest revision: 19/07/2020
 Related implementation: /src/strategies/SoftwareBitBang/
-Compliant versions: PJON v13.0 and following
+Compatible versions: PJON v13.0 and following
 Released into the public domain
 
 10/04/2010 0.1 - First experimental release
@@ -50,14 +50,22 @@ ___|__________|________|___________|______/\/\/\__| IO PIN
 It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above to reduce externally induced interference. The longer is the length of the cable and the higher is the amount of induced interference, the lower should be the resistance of the pull-down resistor. Pins can be optionally protected against overload adding a current limiting resistor to each connected pin. The resistor value can be obtained solving the following equation `R = (operating voltage / pin max current drain)`, for example to obtain the current limiting resistor value for an Arduino Uno simply substitute its characteristics: `R = (5v / 0.030A) = 166.66Ω`.
 
 ### Communication modes
-The proposed communication modes are the result of years of testing and optimization and have been selected to be easily supported by limited microcontrollers.  
+The proposed communication modes are the result of years of testing and optimization and have been selected to be easily supported by limited microcontrollers:
 
-| Mode | Data bit | Padding bit | Max bit deviation | Timeout   | Max latency | Bandwidth          | Range |
-| ---- | -------- | ----------- | ----------------- | --------- | ----------- | ------------------ | ----- |
-| 1    | 44µs     | 116µs       | +- 1.22µs         | 20µs/byte | 13µs        | 1.95kB/s - 15625Bd | 2000m |
-| 2    | 40µs     | 92µs        | +- 1.11µs         | 20µs/byte | 10µs        | 2.21kB/s - 17696Bd | 1600m |
-| 3    | 28µs     | 88µs        | +- 0.77µs         | 20µs/byte | 8µs         | 2.94kB/s - 23529Bd | 1200m |
-| 4    | 26µs     | 60µs        | +- 0.72µs         | 20µs/byte | 5µs         | 3.40kB/s - 27210Bd |  800m |
+| Mode | Bandwidth          | Range | Pad bit | Data bit | Keep busy bit | Latency | Timeout |
+| ---- | ------------------ | ----- | ------- | -------- | ------------- | ------- | ------- |
+| 1    | 1.97kB/s - 15808Bd | 2000m | 110µs   | 44µs     | 22µs          | 13µs    | 20µs/B  |
+| 2    | 2.21kB/s - 17696Bd | 1600m | 92µs    | 40µs     | 20µs          | 10µs    | 20µs/B  |
+| 3    | 3.10kB/s - 24844Bd | 1200m | 70µs    | 28µs     | 14µs          | 8µs     | 20µs/B  |
+| 4    | 3.34kB/s - 26755Bd |  800m | 65µs    | 26µs     | 13µs          | 5µs     | 20µs/B  |
+
+The following table specifies the maximum acceptable deviation of each bit type:
+
+| Max data bit octet deviation | Max padding bit deviation | Keep busy bit deviation |
+| ---------------------------- | ------------------------- | ----------------------- |
+| +- (data bit / 4) - 1        | +- (data bit / 4) - 1     | +- (data bit / 8) - 1   |
+
+When the ratio between padding bit and data bit is 2.5 there is no ambiguity even with an overall deviation of up to half a bit.
 
 ### Medium access control
 PJDL specifies a variation of the carrier-sense, non-persistent random multiple access method (non-persistent CSMA). Devices can detect an ongoing transmission for this reason collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss or by the transmitter if an active collision avoidance procedure is implemented.

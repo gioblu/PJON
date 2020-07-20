@@ -61,24 +61,22 @@ The proposed communication modes are the result of years of testing and optimiza
 
 The following table specifies the maximum acceptable deviation of each bit type:
 
-| Max data bit octet deviation | Max padding bit deviation | Keep busy bit deviation |
-| ---------------------------- | ------------------------- | ----------------------- |
-| +- (data bit / 4) - 1        | +- (data bit / 4) - 1     | +- (data bit / 8) - 1   |
-
-When the ratio between padding bit and data bit is 2.5 there is no ambiguity even with an overall deviation of up to half a bit.
+| Max data bit octet deviation | Max padding bit deviation | Max keep busy bit deviation |
+| ---------------------------- | ------------------------- | --------------------------- |
+| +- (data bit / 4) - 1        | +- (data bit / 4) - 1     | +- 12.5%                    |
 
 ### Medium access control
 PJDL specifies a variation of the carrier-sense, non-persistent random multiple access method (non-persistent CSMA). Devices can detect an ongoing transmission for this reason collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss or by the transmitter if an active collision avoidance procedure is implemented.
 
 ### Byte transmission
-Byte transmission is composed by 10 bits, the first two are called synchronization pad and are used to obtain sampling synchronization. The synchronization pad is composed by a high padding bit longer than data bits and a low data bit. The following 8 data bits contain information in LSB-first (least significant bit first) order.
+Byte transmission is composed by 10 bits, the first two are called synchronization pad and are used to obtain sampling synchronization. The synchronization pad is composed by a high padding bit 2.5 times longer than data bits and a low data bit. The following 8 data bits contain information in LSB-first (least significant bit first) order.
 
 The reception technique is based on 3 steps:
 1. Find a high bit which matches a padding bit
 2. Synchronize to its falling edge
 3. Ensure it is followed by a low data bit
 
-If so reception starts, if not, interference, synchronization loss or simply absence of communication is detected.
+If so reception starts, if not, interference, synchronization loss or simply absence of communication is detected. The high padding bit is 2.5 times longer than data bits because with this ratio ambiguity between padding bits and 2 or 3 consecutive data bits is avoided even with an overall deviation of up to +- (data bit / 4) - 1.
 
 ```cpp  
  ___________ ___________________________

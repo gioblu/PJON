@@ -63,7 +63,7 @@ The following table specifies the maximum acceptable deviation of each bit type:
 
 | Max data bit octet deviation | Max padding bit deviation | Max keep busy bit deviation |
 | ---------------------------- | ------------------------- | --------------------------- |
-| +- (data bit / 4) - 1        | +- (data bit / 4) - 1     | +- 12.5%                    |
+| +- (data bit / 4) - 1        | +- (data bit / 4) - 1     | +- 10µs                     |
 
 ### Medium access control
 PJDL specifies a variation of the carrier-sense, non-persistent random multiple access method (non-persistent CSMA). Devices can detect an ongoing transmission for this reason collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss or by the transmitter if an active collision avoidance procedure is implemented.
@@ -112,7 +112,7 @@ Transmission end                                   Response
 |      ||      ||      |                           |  6  |
 |______||______||______|                           |_____|
 ```  
-In order to avoid other devices to detect the medium free for use and disrupt an ongoing exchange, the sender cyclically transmits a high 1/2 data bit and consequently attempts to receive a response. The receiver must synchronize to the falling edge of the last high bit and, in order to avoid false positives in case of collision, must transmit its response prepended with an additional synchronization pad. If the response is not transmitted or not received the transmitter continues to keep busy the medium up to the response timeout.
+In order to avoid other devices to detect the medium free for use and disrupt an ongoing exchange, the sender cyclically transmits a high 1/2 data bit and consequently attempts to receive a response for up to twice the maximum expected latency. The receiver must synchronize to the falling edge of the last high bit and, in order to avoid false positives in case of collision, must transmit its response prepended with an additional synchronization pad. If the response is not transmitted or not received the transmitter continues to keep busy the medium up to the response timeout.
 ```cpp  
 Transmission end               Keep busy            Response
  ______  ______  ______   _   _   _   _   _   _ ____ _____  

@@ -39,6 +39,7 @@ limitations under the License. */
 #pragma once
 
 #include "PJONSimpleSwitch.h"
+#include "strategies/Any/Any.h"
 
 class PJONAny : public PJON<Any> {
 public:

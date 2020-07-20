@@ -17,7 +17,7 @@
 ```
 Invented by Giovanni Blu Mitolo with the support
 of Fred Larsen, Julio Aguirre and Gerhard Sittig
-Publication date: 10/04/2010 Latest revision: 19/07/2020
+Publication date: 10/04/2010 Latest revision: 21/07/2020
 Related implementation: /src/strategies/SoftwareBitBang/
 Compatible versions: PJON v13.0 and following
 Released into the public domain

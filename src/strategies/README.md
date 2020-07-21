@@ -6,7 +6,7 @@ The table below lists the strategies available:
 
 | Strategy      | Physical layer | Protocol | Inclusion |
 | ------------- | -------------- | -------- | --------- |
-| [AnalogSampling](/src/strategies/AnalogSampling)  | Light | [PJDLS](../src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) | `#include <PJONAnalogSampling.h>` |
+| [AnalogSampling](/src/strategies/AnalogSampling)  | Light | [PJDLS](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) | `#include <PJONAnalogSampling.h>` |
 | [Any](/src/strategies/Any)  | Virtual inheritance | Any | `#include <PJONAny.h>` |
 | [DualUDP](/src/strategies/DualUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | `#include <PJONDualUDP.h>` |
 | [ESPNOW](/src/strategies/ESPNOW)  | WiFi | [ESPNOW](https://www.espressif.com/en/products/software/esp-now/overview) | `#include <PJONESPNOW.h>` |
@@ -15,10 +15,10 @@ The table below lists the strategies available:
 | [LocalFile](/src/strategies/LocalFile)  | File system | None | `#include <PJONLocalFile.h>` |
 | [LocalUDP](/src/strategies/LocalUDP)  | Ethernet/WiFi | [UDP](https://tools.ietf.org/html/rfc768) | `#include <PJONLocalUDP.h>` |
 | [MQTTTranslate](/src/strategies/MQTTTranslate)  | Ethernet/WiFi | [MQTT](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.pdf) | `#include <PJONMQTTTranslate.h>` |
-| [OverSampling](/src/strategies/OverSampling)  | Radio | [PJDLR](../src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) | `#include <PJONOverSampling.h>` |
-| [SoftwareBitBang](/src/strategies/SoftwareBitBang) | Wire | [PJDL](../src/strategies/SoftwareBitBang/specification/PJDL-specification-v5.0.md) | `#include <PJONSoftwareBitBang.h>` |
+| [OverSampling](/src/strategies/OverSampling)  | Radio | [PJDLR](/src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) | `#include <PJONOverSampling.h>` |
+| [SoftwareBitBang](/src/strategies/SoftwareBitBang) | Wire | [PJDL](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v5.0.md) | `#include <PJONSoftwareBitBang.h>` |
 | [ThroughLoRa](/src/strategies/ThroughLoRa)  | Radio | [LoRa](https://lora-alliance.org/sites/default/files/2018-07/lorawan1.0.3.pdf) | `#include <PJONThroughLora.h>` |
-| [ThroughSerial](/src/strategies/ThroughSerial)  | Wire | [TSDL](../src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md) | `#include <PJONThroughSerial.h>` |
+| [ThroughSerial](/src/strategies/ThroughSerial)  | Wire | [TSDL](/src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md) | `#include <PJONThroughSerial.h>` |
 
 ### How the strategy is implemented
 A `Strategy` is a class containing a set of methods used to physically send and receive data along with the required getters to handle retransmission and collision:

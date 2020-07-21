@@ -100,7 +100,7 @@ Before a frame transmission the communication medium's state is analysed, if hig
 |00000000| 1 |0| 1 |0| 1 |0| 1 |0|0000|11|00| 1 |0|00000|1|0|1|
 |________|___|_|___|_|___|_|___|_|____|__|__|___|_|_____|_|_|_|
 ```
-When a frame is received a low performance microcontroller with an inaccurate clock can correctly synchronize with transmitter during the frame initializer and consequently each byte is received. On receiver's side a frame reception starts if 3 synchronization pads are detected. Frame initialization is 100% reliable, false positives can only occur because of externally induced interference. The padding bit duration of all modes was selected not be an exact multiple of the duration of one data bit because in this particular case one or multiple consecutive data bits may be erroneously interpreted as a padding bit.
+When a frame is received a low performance microcontroller with an inaccurate clock can correctly synchronize with transmitter during the frame initializer and consequently each byte is received. On receiver's side a frame reception starts if 3 synchronization pads are detected. Frame initialization is 100% reliable, false positives can only occur because of externally induced interference.
 
 ### Synchronous response
 A frame transmission can be optionally followed by a synchronous response sent by its recipient. Between frame transmission and a synchronous response there is a variable time which duration is influenced by latency.

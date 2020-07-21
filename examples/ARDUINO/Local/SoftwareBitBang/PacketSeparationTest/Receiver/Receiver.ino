@@ -56,6 +56,7 @@ void loop() {
   Serial.println(" __________________________________________________ ");
   Serial.println("[0%                     50%                    100%]");
   Serial.print(" ");
+  Serial.flush();
   test = 0, fail = 0, percent = 0;
   time = millis();
   while(test < attempts) {
@@ -64,6 +65,7 @@ void loop() {
     test++;
     if(!(test % (attempts / 50))) {
       Serial.print("-");
+      Serial.flush();
       percent++;
     }
   }

@@ -5,7 +5,7 @@
    Often timing in two different machines do not match, code execution
    time can variate and time measurements can be not perfectly equal.
    Consider that durations defined below may differ from what is specified in
-   PJDL v4.1. This is done to accomodate machine's inner workings and
+   PJDL v5.0. This is done to accomodate machine's inner workings and
    effectively produce the specified timing.
 
    Arduino Duemilanove/UNO/Nano is used as timing master, or the machine used

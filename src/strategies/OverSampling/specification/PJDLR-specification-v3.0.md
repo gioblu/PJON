@@ -5,7 +5,7 @@
 - [PJON (Padded Jittering Operative Network) v4.0](/specification/PJON-protocol-specification-v4.0.md)
 - [Network services list](/specification/PJON-network-services-list.md)
 #### Data link layer
-- [PJDL (Padded Jittering Data Link) v4.1](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v4.1.md)
+- [PJDL (Padded Jittering Data Link) v5.0](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v5.0.md)
 - **[PJDLR (Padded Jittering Data Link over Radio) v3.0](/src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md)**
 - [PJDLS (Padded Jittering Data Link byte Stuffed) v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
 - [TSDL (Tardy Serial Data Link) v3.0](/src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md)

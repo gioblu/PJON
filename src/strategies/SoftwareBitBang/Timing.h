@@ -31,8 +31,8 @@
     #if F_CPU == 16000000L
       /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
       #define SWBB_BIT_WIDTH   40
-      #define SWBB_BIT_SPACER 112
-      #define SWBB_ACCEPTANCE  56
+      #define SWBB_BIT_SPACER 106
+      #define SWBB_ACCEPTANCE  53
       #define SWBB_READ_DELAY   4
     #endif
   #endif
@@ -91,8 +91,10 @@
 /* ATmega16/32U4 - Arduino Leonardo/Micro --------------------------------- */
 #if defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__)
   #if SWBB_MODE == 1
-    /* Working on pin: 2, 4, 8, 12
-       Fallback to default timing */
+    /* Working on pin: 2, 4, 8, 12 */
+    #define SWBB_BIT_WIDTH   40
+    #define SWBB_BIT_SPACER 106
+    #define SWBB_ACCEPTANCE  53
     #define SWBB_READ_DELAY   8
   #endif
   #if SWBB_MODE == 2
@@ -107,8 +109,8 @@
   #if SWBB_MODE == 1
     /* Working on pin: 3, 4, 7, 8, 9, 10, 12 */
     #define SWBB_BIT_WIDTH   38
-    #define SWBB_BIT_SPACER 110
-    #define SWBB_ACCEPTANCE  62
+    #define SWBB_BIT_SPACER 104
+    #define SWBB_ACCEPTANCE  53
     #define SWBB_READ_DELAY  11
   #endif
   #if SWBB_MODE == 2
@@ -157,20 +159,12 @@
 #if defined(ARDUINO_SAMD_ZERO)
   #if SWBB_MODE == 1
   /* Added by Esben Soeltoft - 03/09/2016
-     Updated by Giovanni Blu Mitolo - 31/05/2019
+     Updated by Giovanni Blu Mitolo - 21/07/2020
      Working on pin: D0, D1, D3, A0, A1 */
-    #define SWBB_BIT_WIDTH   43
-    #define SWBB_BIT_SPACER 115
-    #define SWBB_ACCEPTANCE  40
+    #define SWBB_BIT_WIDTH   43.5
+    #define SWBB_BIT_SPACER 109.5
+    #define SWBB_ACCEPTANCE  45
     #define SWBB_READ_DELAY  -4
-  #endif
-  #if SWBB_MODE == 3
-  /* Added by Esben Soeltoft - 09/03/2016
-     Speed: 48000Bd or 6.00kB/s */
-    #define SWBB_BIT_WIDTH   12
-    #define SWBB_BIT_SPACER  36
-    #define SWBB_ACCEPTANCE  12
-    #define SWBB_READ_DELAY   1
   #endif
 #endif
 
@@ -181,9 +175,9 @@
      Added full support to MODE 1 (80 and 160MHz) - 12/06/2018 */
     #if (F_CPU == 80000000L) || (F_CPU == 160000000L)
       /* Working on pin: D1 or GPIO 5 */
-      #define SWBB_BIT_WIDTH   44
-      #define SWBB_BIT_SPACER 112
-      #define SWBB_ACCEPTANCE  56
+      #define SWBB_BIT_WIDTH  43.5
+      #define SWBB_BIT_SPACER 109.5
+      #define SWBB_ACCEPTANCE  52
       #define SWBB_READ_DELAY  -6
     #endif
   #endif

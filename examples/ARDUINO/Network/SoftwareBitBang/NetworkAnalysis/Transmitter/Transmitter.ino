@@ -30,7 +30,6 @@ uint8_t content[] = "01234567890123456789"; // First 10 bytes left empty for bus
 void setup() {
   bus.strategy.set_pin(12);
   bus.begin();
-  header = bus.config | PJON_CRC_BIT; // Force CRC32
   Serial.begin(115200);
   Serial.println("PJON - Network analysis");
   Serial.println("Starting a 1 second communication test..");

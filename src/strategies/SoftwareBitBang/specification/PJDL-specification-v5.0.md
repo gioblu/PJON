@@ -73,7 +73,7 @@ Byte transmission is composed by 10 bits, the first two are called synchronizati
 
 The reception technique is based on 3 steps:
 1. Find a high bit which matches a padding bit
-2. Synchronize to its falling edge
+2. Synchronize with its falling edge
 3. Ensure it is followed by a low data bit
 
 If so reception starts, if not, interference, synchronization loss or simply absence of communication is detected. The high padding bit is 2.5 times longer than data bits because with this ratio ambiguity between padding bits and 2 or 3 consecutive data bits is avoided even with an overall deviation of up to +- (data bit / 4) - 1.

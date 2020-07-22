@@ -19,9 +19,6 @@ ___|__________|________|___________|______/\/\/\__| IO PIN
 ```
 It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above to reduce externally induced interference. The longer is the length of the cable and the higher is the amount of induced interference, the lower should be the resistance of the pull-down resistor. Pins can be optionally protected against overload adding a current limiting resistor to each connected pin. The resistor value can be obtained solving the following equation `R = (operating voltage / pin max current drain)`, for example to obtain the current limiting resistor value for an Arduino Uno simply substitute its characteristics: `R = (5v / 0.030A) = 166.66Ω`.
 
-![PJDL frame seen in the oscilloscope](images/PJDL-frame-oscilloscope.jpg)
-The picture above shows how a short PJDL frame looks like when observed with an oscilloscope.
-
 ### Compatibility
 | MCU              | Clock | Supported pins   |
 | ---------------- |------ | ---------------- |

@@ -40,10 +40,10 @@ It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above 
 
 | Mode | Speed | Range | Supported MCUs   |
 | ---- | ----- |------ | ---------------- |
-| `1`  | 1.95kB/s | 2000m | ATtiny84/84A/85, ATmega88/168/328/328PB/16u4/32u4/2560/1284P, SAMD, STM32F1, MK20DX256, ESP8266, ESP32 |  
+| `1`  | 1.97kB/s | 2000m | ATtiny84/84A/85, ATmega88/168/328/328PB/16u4/32u4/2560/1284P, SAMD, STM32F1, MK20DX256, ESP8266, ESP32 |  
 | `2`  | 2.21kB/s | 1600m | ATtiny84/84A/85, ATmega88/168/328/328PB/16u4/32u4/2560, STM32F1 |
-| `3`  | 2.94kB/s | 1200m | ATtiny84/84A/85, ATmega88/168/328, STM32F1 |
-| `4`  | 3.40kB/s |  800m | ATtiny84/84A/85, ATmega88/168/328, STM32F1 |
+| `3`  | 3.10kB/s | 1200m | ATtiny84/84A/85, ATmega88/168/328, STM32F1 |
+| `4`  | 3.34kB/s |  800m | ATtiny84/84A/85, ATmega88/168/328, STM32F1 |
 
 When including and using the `SoftwareBitBang` strategy you have the complete access to the microcontroller. This happens because `SoftwareBitBang` runs a completely software-defined implementation, transforming a painful walk in a nice flight.
 
@@ -88,7 +88,7 @@ PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl
 
 ### Known issues
 - A 1-5 MΩ pull down resistor could be necessary to reduce interference, see [Mitigate interference](https://github.com/gioblu/PJON/wiki/Mitigate-interference).
-- When using more than one instance of `SoftwareBitBang` in the same sketch always use pins connected to a different port group to avoid cross-talk.  
+- When using more than one instance of `SoftwareBitBang` in the same sketch use pins part of different port groups to avoid cross-talk.  
 - During the execution of other tasks or delays a certain amount of packets could be potentially lost because transmitted out of the polling time of the receiver device. Thanks to the PJON packet handler after some retries the packet is received but a certain amount of bandwidth is wasted. If this situation occurs, try to reduce as much as possible the duration of other tasks and or use a longer polling time using `receive` and passing the requested amount of microseconds: `bus.receive(1000); // Poll for 1 millisecond`.
 - `SoftwareBitBang` strategy can have compatibility issues with codebases that are using interrupts, reliability or bandwidth loss can occur because of the interruptions made by third party software.
 

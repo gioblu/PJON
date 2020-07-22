@@ -19,6 +19,9 @@ ___|__________|________|___________|______/\/\/\__| IO PIN
 ```
 It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above to reduce externally induced interference. The longer is the length of the cable and the higher is the amount of induced interference, the lower should be the resistance of the pull-down resistor. Pins can be optionally protected against overload adding a current limiting resistor to each connected pin. The resistor value can be obtained solving the following equation `R = (operating voltage / pin max current drain)`, for example to obtain the current limiting resistor value for an Arduino Uno simply substitute its characteristics: `R = (5v / 0.030A) = 166.66Ω`.
 
+![PJDL frame seen in the oscilloscope](images/PJDL-frame-oscilloscope.jpg)
+The picture above shows how a short PJDL frame looks like when observed with an oscilloscope.
+
 ### Compatibility
 | MCU              | Clock | Supported pins   |
 | ---------------- |------ | ---------------- |
@@ -93,4 +96,4 @@ PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl
 - `SoftwareBitBang` strategy can have compatibility issues with codebases that are using interrupts, reliability or bandwidth loss can occur because of the interruptions made by third party software.
 
 ### Safety warning
-In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. When a [SoftwareBitBang](/src/strategies/SoftwareBitBang) bus is installed each pin must be protected with a current limiting resistor as described above. If a common ground or power supply line is used its cable size and length must be carefully selected taking in consideration the overall application's power supply requirements and selected components' maximum rating.
+In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. If devices are connected to AC power you are exposed to a high chance of being electrocuted if hardware is not installed carefully and properly. If you are not experienced enough ask the support of a skilled technician and consider that many countries prohibit uncertified installations. When a [SoftwareBitBang](/src/strategies/SoftwareBitBang) bus is installed [interference mitigation](https://github.com/gioblu/PJON/wiki/Mitigate-interference) and [protective circuitry](https://github.com/gioblu/PJON/wiki/Protective-circuitry) guidelines must be followed. If a common ground or power supply line is used its cable size and length must be carefully selected taking in consideration the overall application's power supply requirements and selected components' maximum rating. The PJDL protocol and its reference implementation [SoftwareBitBang](/src/strategies/SoftwareBitBang/README.md) are experimental, use them at your own risk.

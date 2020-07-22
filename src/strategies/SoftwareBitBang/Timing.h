@@ -173,10 +173,17 @@
   #if SWBB_MODE == 1
   /* Added by github user 240974a                 - 09/03/2016
      Added full support to MODE 1 (80 and 160MHz) - 12/06/2018 */
-    #if (F_CPU == 80000000L) || (F_CPU == 160000000L)
+    #if (F_CPU == 80000000L)
       /* Working on pin: D1 or GPIO 5 */
       #define SWBB_BIT_WIDTH  43.5
       #define SWBB_BIT_SPACER 109.5
+      #define SWBB_ACCEPTANCE  52
+      #define SWBB_READ_DELAY  -6
+    #endif
+    #if (F_CPU == 160000000L)
+      /* Working on pin: D1 or GPIO 5 */
+      #define SWBB_BIT_WIDTH  44
+      #define SWBB_BIT_SPACER 110
       #define SWBB_ACCEPTANCE  52
       #define SWBB_READ_DELAY  -6
     #endif
@@ -189,7 +196,7 @@
       /* Added full support to MODE 1 - 28/06/2018
          Working on pin: 12 and 25 */
       #define SWBB_BIT_WIDTH   44
-      #define SWBB_BIT_SPACER 112
+      #define SWBB_BIT_SPACER 110
       #define SWBB_ACCEPTANCE  56
       #define SWBB_READ_DELAY  -2
     #endif
@@ -215,10 +222,10 @@
 #if defined(__STM32F1__)
   #if SWBB_MODE == 1
     #if F_CPU == 72000000L
-      #define SWBB_BIT_WIDTH   43
-      #define SWBB_BIT_SPACER 115
-      #define SWBB_ACCEPTANCE  60
-      #define SWBB_READ_DELAY 3
+      #define SWBB_BIT_WIDTH   43.5
+      #define SWBB_BIT_SPACER 109.5
+      #define SWBB_ACCEPTANCE  50
+      #define SWBB_READ_DELAY  -6
     #endif
   #endif
   #if SWBB_MODE == 2

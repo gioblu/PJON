@@ -1,6 +1,6 @@
 ## PacketSeparationTest
 
-This table was filled running the [NetworkAnalysis](../../../../examples/ARDUINO/Local/SoftwareBitBang/PacketSeparationTest) example for 10 seconds and averaging the obtained series of results.
+This table was filled running the [PacketSeparationTest](../../../../examples/ARDUINO/Local/SoftwareBitBang/PacketSeparationTest) example for 10 seconds and averaging the obtained series of results.
 
 | TX                  |PIN | RX               |PIN | RESULT                                              |
 |---------------------|----|------------------|----|-----------------------------------------------------|

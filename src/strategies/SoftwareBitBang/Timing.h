@@ -225,7 +225,7 @@
       #define SWBB_BIT_WIDTH   43.5
       #define SWBB_BIT_SPACER 109.5
       #define SWBB_ACCEPTANCE  50
-      #define SWBB_READ_DELAY  -6
+      #define SWBB_READ_DELAY  -8
     #endif
   #endif
   #if SWBB_MODE == 2

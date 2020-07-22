@@ -2,12 +2,14 @@
 /* PJON SoftwareBitBang strategy Transmission Timing table
    Copyright 2010-2020, Giovanni Blu Mitolo All rights reserved.
 
-   Often timing in two different architectures do not match. Code execution
+   Often timing in two different machines do not match, code execution
    time can variate and time measurements can be not perfectly equal.
-   Arduino Duemilanove/UNO/Nano durations are used as master.
-   Consider that master durations defined below are shorter than specified
-   in the PJDL-specification-v2.1 to accomodate the input-output pin change
-   duration (4 microseconds) and effectively produce the specified durations.
+   Consider that durations defined below may differ from what is specified in
+   PJDL v5.0. This is done to accomodate machine's inner workings and
+   effectively produce the specified timing.
+
+   Arduino Duemilanove/UNO/Nano is used as timing master, or the machine used
+   to test all new supported MCUs.
 
    Benchmarks can be executed using NetworkAnalysis and SpeedTest examples.
 
@@ -29,8 +31,8 @@
     #if F_CPU == 16000000L
       /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
       #define SWBB_BIT_WIDTH   40
-      #define SWBB_BIT_SPACER 112
-      #define SWBB_ACCEPTANCE  56
+      #define SWBB_BIT_SPACER 106
+      #define SWBB_ACCEPTANCE  53
       #define SWBB_READ_DELAY   4
     #endif
   #endif
@@ -47,9 +49,9 @@
     #if F_CPU == 16000000L
       /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
       #define SWBB_BIT_WIDTH   24
-      #define SWBB_BIT_SPACER  84 
-      #define SWBB_ACCEPTANCE  30 
-      #define SWBB_READ_DELAY   8 
+      #define SWBB_BIT_SPACER  84
+      #define SWBB_ACCEPTANCE  30
+      #define SWBB_READ_DELAY   8
     #endif
   #endif
   #if SWBB_MODE == 4
@@ -58,7 +60,7 @@
       #define SWBB_BIT_WIDTH   22
       #define SWBB_BIT_SPACER  56
       #define SWBB_ACCEPTANCE  30
-      #define SWBB_READ_DELAY   9
+      #define SWBB_READ_DELAY   7
     #endif
   #endif
 #endif
@@ -89,8 +91,10 @@
 /* ATmega16/32U4 - Arduino Leonardo/Micro --------------------------------- */
 #if defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__)
   #if SWBB_MODE == 1
-    /* Working on pin: 2, 4, 8, 12
-       Fallback to default timing */
+    /* Working on pin: 2, 4, 8, 12 */
+    #define SWBB_BIT_WIDTH   40
+    #define SWBB_BIT_SPACER 106
+    #define SWBB_ACCEPTANCE  53
     #define SWBB_READ_DELAY   8
   #endif
   #if SWBB_MODE == 2
@@ -105,8 +109,8 @@
   #if SWBB_MODE == 1
     /* Working on pin: 3, 4, 7, 8, 9, 10, 12 */
     #define SWBB_BIT_WIDTH   38
-    #define SWBB_BIT_SPACER 110
-    #define SWBB_ACCEPTANCE  62
+    #define SWBB_BIT_SPACER 104
+    #define SWBB_ACCEPTANCE  53
     #define SWBB_READ_DELAY  11
   #endif
   #if SWBB_MODE == 2
@@ -155,20 +159,12 @@
 #if defined(ARDUINO_SAMD_ZERO)
   #if SWBB_MODE == 1
   /* Added by Esben Soeltoft - 03/09/2016
-     Updated by Giovanni Blu Mitolo - 31/05/2019
+     Updated by Giovanni Blu Mitolo - 21/07/2020
      Working on pin: D0, D1, D3, A0, A1 */
-    #define SWBB_BIT_WIDTH   43
-    #define SWBB_BIT_SPACER 115
-    #define SWBB_ACCEPTANCE  40
+    #define SWBB_BIT_WIDTH   43.5
+    #define SWBB_BIT_SPACER 109.5
+    #define SWBB_ACCEPTANCE  45
     #define SWBB_READ_DELAY  -4
-  #endif
-  #if SWBB_MODE == 3
-  /* Added by Esben Soeltoft - 09/03/2016
-     Speed: 48000Bd or 6.00kB/s */
-    #define SWBB_BIT_WIDTH   12
-    #define SWBB_BIT_SPACER  36
-    #define SWBB_ACCEPTANCE  12
-    #define SWBB_READ_DELAY   1
   #endif
 #endif
 
@@ -177,11 +173,18 @@
   #if SWBB_MODE == 1
   /* Added by github user 240974a                 - 09/03/2016
      Added full support to MODE 1 (80 and 160MHz) - 12/06/2018 */
-    #if (F_CPU == 80000000L) || (F_CPU == 160000000L)
+    #if (F_CPU == 80000000L)
       /* Working on pin: D1 or GPIO 5 */
-      #define SWBB_BIT_WIDTH   44
-      #define SWBB_BIT_SPACER 112
-      #define SWBB_ACCEPTANCE  56
+      #define SWBB_BIT_WIDTH  43.5
+      #define SWBB_BIT_SPACER 109.5
+      #define SWBB_ACCEPTANCE  52
+      #define SWBB_READ_DELAY  -6
+    #endif
+    #if (F_CPU == 160000000L)
+      /* Working on pin: D1 or GPIO 5 */
+      #define SWBB_BIT_WIDTH  44
+      #define SWBB_BIT_SPACER 110
+      #define SWBB_ACCEPTANCE  52
       #define SWBB_READ_DELAY  -6
     #endif
   #endif
@@ -193,7 +196,7 @@
       /* Added full support to MODE 1 - 28/06/2018
          Working on pin: 12 and 25 */
       #define SWBB_BIT_WIDTH   44
-      #define SWBB_BIT_SPACER 112
+      #define SWBB_BIT_SPACER 110
       #define SWBB_ACCEPTANCE  56
       #define SWBB_READ_DELAY  -2
     #endif
@@ -213,15 +216,16 @@
 #endif
 
 /* STM32F1 ---------------------------------------------------------------- */
-/* Mod by @jcallano on 09-jul-2020 see dumps and pics folder for info*/
-// tested on PB15, PB14, PB13, PB12, PB11, PB10, PB9, PB8, PB7, PB6, PB4, PB3, PA15, PA10. 5v tolerant pins on bluepill.
+/* Added by jcallano - 09-07-2020
+   Working on pin: PB15, PB14, PB13, PB12, PB11, PB10, PB9, PB8, PB7, PB6, PB4,
+   PB3, PA15, PA10. 5v tolerant pins on bluepill */
 #if defined(__STM32F1__)
   #if SWBB_MODE == 1
     #if F_CPU == 72000000L
-      #define SWBB_BIT_WIDTH   43
-      #define SWBB_BIT_SPACER 115
-      #define SWBB_ACCEPTANCE  60
-      #define SWBB_READ_DELAY 3
+      #define SWBB_BIT_WIDTH   43.5
+      #define SWBB_BIT_SPACER 109.5
+      #define SWBB_ACCEPTANCE  50
+      #define SWBB_READ_DELAY  -8
     #endif
   #endif
   #if SWBB_MODE == 2
@@ -264,6 +268,9 @@
   #ifndef SWBB_READ_DELAY
     #define SWBB_READ_DELAY   4
   #endif
+  #ifndef SWBB_LATENCY
+    #define SWBB_LATENCY     13
+  #endif
 #endif
 #if SWBB_MODE == 2
   #ifndef SWBB_BIT_WIDTH
@@ -277,6 +284,9 @@
   #endif
   #ifndef SWBB_READ_DELAY
     #define SWBB_READ_DELAY   4
+  #endif
+  #ifndef SWBB_LATENCY
+    #define SWBB_LATENCY     10
   #endif
 #endif
 #if SWBB_MODE == 3
@@ -292,6 +302,9 @@
   #ifndef SWBB_READ_DELAY
     #define SWBB_READ_DELAY   8
   #endif
+  #ifndef SWBB_LATENCY
+    #define SWBB_LATENCY      8
+  #endif
 #endif
 #if SWBB_MODE == 4
   #ifndef SWBB_BIT_WIDTH
@@ -306,15 +319,18 @@
   #ifndef SWBB_READ_DELAY
     #define SWBB_READ_DELAY   9
   #endif
+  #ifndef SWBB_LATENCY
+    #define SWBB_LATENCY      5
+  #endif
 #endif
 
-/* Synchronous acknowledgement response timeout. (1.5 milliseconds default).
-   If (latency + CRC computation) > SWBB_RESPONSE_TIMEOUT synchronous
-   acknowledgement reliability could be affected or disrupted higher
-   SWBB_RESPONSE_TIMEOUT if necessary. */
+/* Synchronous acknowledgement response offset.
+   If (latency + CRC computation) > (SWBB_RESPONSE_OFFSET * length)
+   synchronous acknowledgement reliability could be affected or disrupted
+   set a higher SWBB_RESPONSE_OFFSET if necessary. */
 
-#ifndef SWBB_RESPONSE_TIMEOUT
-  #define SWBB_RESPONSE_TIMEOUT 1500
+#ifndef SWBB_RESPONSE_OFFSET
+  #define SWBB_RESPONSE_OFFSET 20
 #endif
 
 /* Maximum initial delay in milliseconds: */

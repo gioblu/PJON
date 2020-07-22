@@ -14,7 +14,6 @@
 #include <PJONSoftwareBitBang.h>
 
 float test;
-float mistakes;
 int busy;
 int fail;
 
@@ -44,8 +43,6 @@ void loop() {
     unsigned int response = bus.send_packet(44, content, 20);
     if(response == PJON_ACK)
       test++;
-    if(response == PJON_NAK)
-      mistakes++;
     if(response == PJON_BUSY)
       busy++;
     if(response == PJON_FAIL)
@@ -65,21 +62,18 @@ void loop() {
   Serial.println("B/s");
   Serial.print("Packets sent: ");
   Serial.println((unsigned int)test);
-  Serial.print("Mistakes (error found with CRC): ");
-  Serial.println((unsigned int)mistakes);
   Serial.print("Fail (no acknowledge from receiver): ");
   Serial.println(fail);
   Serial.print("Busy (Channel is busy or affected by interference): ");
   Serial.println(busy);
-  Serial.print("Accuracy: ");
-  Serial.print(100 - (100 / (test / mistakes)));
+  Serial.print("Delivery success rate: ");
+  Serial.print(100 - (100 / (test / fail)));
   Serial.println(" %");
   Serial.println("---------------------");
   // Avoid Serial interference during test flushing
   Serial.flush();
 
   test = 0;
-  mistakes = 0;
   busy = 0;
   fail = 0;
 };

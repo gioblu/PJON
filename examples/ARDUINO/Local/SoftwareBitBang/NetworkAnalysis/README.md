@@ -21,10 +21,10 @@ The test result can be evaluated thanks to the following terms:
 * `Mistakes` or how many errors detected with CRC
 * `Fail` or number of transmission failures occurred in the test window
 * `Busy` or how many times the channel is found busy
-* `Accuracy` or ratio between correct packets and packets that contain mistakes
+* `Delivery success rate` or ratio between packets sent successfully and transmission failures
 
 The result can be interpreted as follows:
-- Many `Fail` and or `Mistakes` may mean that the maximum communication range between devices has been reached
-- Many `Busy` and or `Mistakes` and or low `Bandwidth` may mean that interference is present, see [mitigate interference](https://github.com/gioblu/PJON/wiki/Mitigate-interference)
-- Many `Fail` and or `Mistakes` and or low `Bandwidth` may indicate a bad timing configuration, if you are porting a new MCU/architecture to [SoftwareBitBang](/src/strategies/SoftwareBitBang) consider that a different timing configuration may be required because of system discrepancies. Try tweaking `SWBB_BIT_WIDTH`, `SWBB_BIT_SPACER`, `SWBB_READ_DELAY` and `SWBB_ACCEPTANCE` in [src/strategies/SoftwareBitBang/Timing.h](/src/strategies/SoftwareBitBang/Timing.h)
+- If the success rate is low that may mean that the maximum range between devices has been reached
+- If the channel is found many times `busy` and or the bandwidth is low, that may mean that interference is present, see [mitigate interference](https://github.com/gioblu/PJON/wiki/Mitigate-interference)
+- A low success rate and or low bandwidth may indicate a bad timing configuration, if you are porting a new MCU/architecture to [SoftwareBitBang](/src/strategies/SoftwareBitBang) consider that a different timing configuration may be required because of system discrepancies. Try tweaking `SWBB_BIT_WIDTH`, `SWBB_BIT_SPACER`, `SWBB_READ_DELAY` and `SWBB_ACCEPTANCE` in [src/strategies/SoftwareBitBang/Timing.h](/src/strategies/SoftwareBitBang/Timing.h)
 - Low performance also after painstaking timing tweaks may indicate that the new MCU/architecture may not be fast enough to run SoftwareBitBang at the mode you are working with, try using a faster clock or optimize digital I/O perfomance or choosing a slower mode.

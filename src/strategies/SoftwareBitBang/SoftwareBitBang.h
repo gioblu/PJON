@@ -2,7 +2,7 @@
 /* SoftwareBitBang
    1 or 2 wires software-defined asynchronous serial data link layer
    used as a Strategy by PJON (included in version v3.0)
-   Compliant with PJDL (Padded Jittering Data Link) specification v4.1
+   Compliant with PJDL (Padded Jittering Data Link) specification v5.0
    ___________________________________________________________________________
 
     Copyright 2010-2020 Giovanni Blu Mitolo gioscarab@gmail.com
@@ -145,20 +145,17 @@ class SoftwareBitBang {
     uint16_t receive_response() {
       if(_output_pin != _input_pin && _output_pin != SWBB_NOT_ASSIGNED)
         PJON_IO_WRITE(_output_pin, LOW);
-      uint16_t response = SWBB_FAIL;
+      uint16_t response;
       uint32_t time = PJON_MICROS();
-      while(
-        response == SWBB_FAIL &&
-        (uint32_t)(PJON_MICROS() - SWBB_RESPONSE_TIMEOUT) <= time
-      ) {
+      while((uint32_t)(PJON_MICROS() - time) < _timeout) {
         PJON_IO_WRITE(_input_pin, LOW);
         if(sync()) response = receive_byte();
         if(response == SWBB_FAIL) {
           PJON_IO_MODE(_output_pin, OUTPUT);
           PJON_IO_WRITE(_output_pin, HIGH);
-          PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH / 4);
+          PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH / 2);
           PJON_IO_PULL_DOWN(_output_pin);
-        }
+        } else return response;
       }
       return response;
     };
@@ -229,7 +226,7 @@ class SoftwareBitBang {
       );
       time = PJON_MICROS();
       while( // If high Wait for low
-        ((uint32_t)(PJON_MICROS() - time) < (SWBB_BIT_WIDTH / 4)) &&
+        ((uint32_t)(PJON_MICROS() - time) < (SWBB_BIT_WIDTH / 2)) &&
         PJON_IO_READ(_input_pin)
       );
       PJON_IO_MODE(_output_pin, OUTPUT);
@@ -253,6 +250,7 @@ class SoftwareBitBang {
     Send a frame: */
 
     void send_frame(uint8_t *data, uint16_t length) {
+      _timeout = (length * SWBB_RESPONSE_OFFSET) + SWBB_LATENCY;
       PJON_IO_MODE(_output_pin, OUTPUT);
       pulse(3); // Send frame initializer
       for(uint16_t b = 0; b < length; b++)
@@ -333,6 +331,7 @@ class SoftwareBitBang {
     };
 
   private:
-    uint8_t _input_pin;
-    uint8_t _output_pin;
+    uint16_t _timeout;
+    uint8_t  _input_pin;
+    uint8_t  _output_pin;
 };

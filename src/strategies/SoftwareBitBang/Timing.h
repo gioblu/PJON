@@ -33,7 +33,7 @@
       #define SWBB_BIT_WIDTH   40
       #define SWBB_BIT_SPACER 106
       #define SWBB_ACCEPTANCE  53
-      #define SWBB_READ_DELAY   4
+      #define SWBB_READ_DELAY   3
     #endif
   #endif
   #if SWBB_MODE == 2

@@ -109,6 +109,11 @@ class ThroughSerial {
       return TS_RECEIVE_TIME;
     };
 
+    /* Function called at the end of a frame reception: */
+
+    void frame_end(bool ack) {
+      (void)ack; // Avoid unused parameter warning
+    };
 
     /* Handle a collision: */
 

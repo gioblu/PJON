@@ -39,6 +39,10 @@ bool can_start()
 Returns `true` if the medium is free for use and `false` if the medium is busy.
 
 ```cpp
+void frame_end(bool ack)
+```
+It is called when the frame reception ends and it receives a boolean that signals if the acknowledgment is requested or not.
+```cpp
 void handle_collision()
 ```
 Handles a collision.

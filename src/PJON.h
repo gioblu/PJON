@@ -81,7 +81,6 @@ class PJON {
     uint8_t data[PJON_PACKET_MAX_LENGTH];
     PJON_Packet_Info last_packet_info;
     PJON_Packet packets[PJON_MAX_PACKETS];
-    uint8_t random_seed = A0;
     PJON_Endpoint tx;
 
     #if(PJON_INCLUDE_PACKET_ID)
@@ -141,7 +140,7 @@ class PJON {
     /* Begin function to be called after initialization: */
 
     void begin() {
-      PJON_RANDOM_SEED(PJON_ANALOG_READ(random_seed) + tx.id);
+      PJON_RANDOM_SEED(PJON_ANALOG_READ(_random_seed) + tx.id);
       strategy.begin(tx.id);
       #if(PJON_INCLUDE_PACKET_ID)
         _packet_id_seed = PJON_RANDOM(65535) + tx.id;
@@ -790,7 +789,7 @@ class PJON {
     /* Set the analog pin used as a seed for random generation: */
 
     void set_random_seed(uint8_t seed) {
-      random_seed = seed;
+      _random_seed = seed;
     };
 
     /* Pass as a parameter a receiver function you previously defined in your
@@ -921,6 +920,7 @@ class PJON {
     PJON_Error    _error;
     bool          _mode;
     uint16_t      _packet_id_seed = 0;
+    uint8_t       _random_seed = A0;
     PJON_Receiver _receiver;
     uint8_t       _recursion = 0;
     bool          _router = false;

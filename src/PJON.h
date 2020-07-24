@@ -305,9 +305,8 @@ class PJON {
               !PJON_INCLUDE_PORT && (data[1] & PJON_PORT_BIT)
             ) || (
               (!PJON_INCLUDE_MAC && mac) || (mac && !(data[1] & PJON_CRC_BIT))
-            )
+            ) || (drop && !mac)
           ) return PJON_BUSY;
-          if(drop && !mac) return PJON_BUSY;
           extended_length = data[i] & PJON_EXT_LEN_BIT;
           overhead = packet_overhead(data[i]);
         }

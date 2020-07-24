@@ -49,7 +49,7 @@
     #if F_CPU == 16000000L
       /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
       #define SWBB_BIT_WIDTH   24
-      #define SWBB_BIT_SPACER  84
+      #define SWBB_BIT_SPACER  66
       #define SWBB_ACCEPTANCE  30
       #define SWBB_READ_DELAY   8
     #endif

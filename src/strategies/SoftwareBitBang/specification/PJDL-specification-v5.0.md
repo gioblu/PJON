@@ -16,6 +16,7 @@
 ## PJDL v5.0
 ```
 Invented by Giovanni Blu Mitolo with the support
+of Fred Larsen, Julio Aguirre and Gerhard Sittig
 Publication date: 10/04/2010 Latest revision: 24/07/2020
 Related implementation: /src/strategies/SoftwareBitBang/
 Compatible versions: PJON v13.0 and following
@@ -111,7 +112,7 @@ Transmission                                       Response
 |      ||      ||      |                           |  6  |
 |______||______||______|                           |_____|
 ```  
-The receiver must drive the bus high as soon as the last byte of the frame is received and must continue to keep it high until the higher protocol layer has verified the frame's consistency. When that has occurred the receiver must transmit a low data bit, and, in order to avoid false positives in case of collision, must transmit its response prepended with an additional synchronization pad. If the higher protocol layer detects an error the receiver must drive the bus low.
+The receiver must drive the bus high as soon as the last byte of the frame is received and must continue to keep it high until it has verified the frame's consistency. When that has occurred the receiver must transmit a low data bit, and, in order to avoid false positives in case of collision, must transmit its response prepended with an additional synchronization pad. If an error is detected the receiver must drive the bus low.
 ```cpp  
 Transmission     Latency   Receiver keeps busy       Response
  ______  ______     x2    ____________________   ____ _____  

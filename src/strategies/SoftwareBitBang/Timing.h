@@ -58,7 +58,7 @@
     #if F_CPU == 16000000L
       /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
       #define SWBB_BIT_WIDTH   22
-      #define SWBB_BIT_SPACER  56
+      #define SWBB_BIT_SPACER  61
       #define SWBB_ACCEPTANCE  30
       #define SWBB_READ_DELAY   7
     #endif
@@ -95,7 +95,7 @@
     #define SWBB_BIT_WIDTH   40
     #define SWBB_BIT_SPACER 106
     #define SWBB_ACCEPTANCE  53
-    #define SWBB_READ_DELAY   8
+    #define SWBB_READ_DELAY   6
   #endif
   #if SWBB_MODE == 2
     /* Working on pin: 2, 4, 8, 12
@@ -271,6 +271,9 @@
   #ifndef SWBB_LATENCY
     #define SWBB_LATENCY     13
   #endif
+  #ifndef SWBB_DEVIATION
+    #define SWBB_DEVIATION   10
+  #endif
 #endif
 #if SWBB_MODE == 2
   #ifndef SWBB_BIT_WIDTH
@@ -287,6 +290,9 @@
   #endif
   #ifndef SWBB_LATENCY
     #define SWBB_LATENCY     10
+  #endif
+  #ifndef SWBB_DEVIATION
+    #define SWBB_DEVIATION    9
   #endif
 #endif
 #if SWBB_MODE == 3
@@ -305,6 +311,9 @@
   #ifndef SWBB_LATENCY
     #define SWBB_LATENCY      8
   #endif
+  #ifndef SWBB_DEVIATION
+    #define SWBB_DEVIATION    7
+  #endif
 #endif
 #if SWBB_MODE == 4
   #ifndef SWBB_BIT_WIDTH
@@ -321,6 +330,9 @@
   #endif
   #ifndef SWBB_LATENCY
     #define SWBB_LATENCY      5
+  #endif
+  #ifndef SWBB_DEVIATION
+    #define SWBB_DEVIATION    7
   #endif
 #endif
 

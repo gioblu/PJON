@@ -34,10 +34,10 @@
 #define SWBB_NOT_ASSIGNED 255
 
 /* Transmission speed modes (see Timing.h)
-  MODE   1: 1.95kB/s - 15625Bd
+  MODE   1: 1.97kB/s - 15808Bd
   MODE   2: 2.21kB/s - 17696Bd
-  MODE   3: 2.94kB/s - 23529Bd
-  MODE   4: 3.40kB/s - 27210Bd */
+  MODE   3: 3.10kB/s - 24844Bd
+  MODE   4: 3.34kB/s - 26755Bd */
 #include "Timing.h"
 
 // Recommended receive time for this strategy, in microseconds

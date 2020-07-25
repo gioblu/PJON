@@ -224,8 +224,8 @@
     #if F_CPU == 72000000L
       #define SWBB_BIT_WIDTH   43.5
       #define SWBB_BIT_SPACER 109.5
-      #define SWBB_ACCEPTANCE  50
-      #define SWBB_READ_DELAY  -8
+      #define SWBB_ACCEPTANCE  75
+      #define SWBB_READ_DELAY  -6
     #endif
   #endif
   #if SWBB_MODE == 2

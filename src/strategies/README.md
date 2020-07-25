@@ -93,6 +93,7 @@ class YourStrategyName {
     uint32_t back_off(uint8_t attempts) { };
     bool     begin(uint8_t did) { };
     bool     can_start() { };
+    void     frame_end(bool ack) { };
     uint8_t  get_max_attempts() { };
     uint16_t get_receive_time() { };
     uint16_t receive_frame(uint8_t *data, uint16_t max_length) { };

@@ -29,7 +29,7 @@ Released into the public domain
 29/12/2018 3.0 - Medium access control info, mode 4
 03/07/2019 4.0 - Response initializer
 10/03/2020 4.1 - Maximum range experimentally determined
-17/07/2020 5.0 - Bus is kept busy by the receiver, deviation added
+17/07/2020 5.0 - Response timeout, deviation added
 ```
 PJDL (Padded Jittering Data Link) is an asynchronous serial data link for low-data-rate applications that supports both master-slave and multi-master communication over a common conductive medium. PJDL can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin.
 
@@ -61,9 +61,9 @@ The proposed communication modes are the result of years of testing and optimiza
 
 The following table specifies the maximum acceptable deviation of each bit type:
 
-| Max data bit octet deviation | Max padding bit deviation | Max keep busy bit deviation |
+| Max data bit octet deviation | Max sync. pad deviation   | Max keep busy bit deviation |
 | ---------------------------- | ------------------------- | --------------------------- |
-| +- (data bit / 4) - 1        | +- (data bit / 4) - 1     | +- keep busy bit / 2        |
+| +- (data bit / 4) - 1        | +- (data bit / 4) - 1     | + 10µs                      |
 
 ### Medium access control
 PJDL specifies a variation of the carrier-sense, non-persistent random multiple access method (non-persistent CSMA). Devices can detect an ongoing transmission for this reason collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss or by the transmitter if an active collision avoidance procedure is implemented.

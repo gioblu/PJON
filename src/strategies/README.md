@@ -39,10 +39,6 @@ bool can_start()
 Returns `true` if the medium is free for use and `false` if the medium is busy.
 
 ```cpp
-void frame_end(bool ack)
-```
-It is called when the frame reception ends and it receives a boolean that signals if the acknowledgment is requested or not.
-```cpp
 void handle_collision()
 ```
 Handles a collision.
@@ -93,7 +89,6 @@ class YourStrategyName {
     uint32_t back_off(uint8_t attempts) { };
     bool     begin(uint8_t did) { };
     bool     can_start() { };
-    void     frame_end(bool ack) { };
     uint8_t  get_max_attempts() { };
     uint16_t get_receive_time() { };
     uint16_t receive_frame(uint8_t *data, uint16_t max_length) { };

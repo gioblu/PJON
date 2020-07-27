@@ -341,29 +341,22 @@ class PJON {
         }
       }
 
-      bool nak = false, ack =
-        (data[1] & PJON_ACK_REQ_BIT) && (data[0] != PJON_BROADCAST) &&
-        (_mode != PJON_SIMPLEX) && !_router
-      ;
-
-      strategy.frame_end(ack);
-
       if(
         PJON_crc8::compute(data, 3 + extended_length) !=
         data[3 + extended_length]
-      ) nak = true;
+      ) return PJON_NAK;
 
       if(data[1] & PJON_CRC_BIT) {
         if(
           !PJON_crc32::compare(
             PJON_crc32::compute(data, length - 4), data + (length - 4)
           )
-        ) nak = true;
+        ) return PJON_NAK;
       } else if(PJON_crc8::compute(data, length - 1) != data[length - 1])
-        nak = true;
+        return PJON_NAK;
 
       #if(PJON_INCLUDE_MAC)
-        if(!nak && mac && (length > 15) && !_router)
+        if(mac && (length > 15) && !_router)
           if(!PJONTools::id_equality(data + (overhead - 16), tx.mac, 6))
             if(!
               PJONTools::id_equality(
@@ -373,8 +366,9 @@ class PJON {
             ) return PJON_BUSY;
       #endif
 
-      if(ack) strategy.send_response((nak) ? PJON_NAK : PJON_ACK);
-      if(nak) return PJON_NAK;
+      if(data[1] & PJON_ACK_REQ_BIT && data[0] != PJON_BROADCAST)
+        if((_mode != PJON_SIMPLEX) && !_router)
+          strategy.send_response(PJON_ACK);
 
       parse(data, last_packet_info);
 

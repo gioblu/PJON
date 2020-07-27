@@ -191,13 +191,6 @@ class SoftwareBitBang {
       return 1;
     };
 
-    /* Function called at the end of a frame reception: */
-
-    void frame_end(bool ack) {
-      if(!ack) return;
-      PJON_IO_MODE(_output_pin, OUTPUT);
-      PJON_IO_WRITE(_output_pin, HIGH);
-    };
 
     /* Every byte is prepended with a synchronization pad made by 2
        padding bits. The first is a longer than standard logic 1 followed

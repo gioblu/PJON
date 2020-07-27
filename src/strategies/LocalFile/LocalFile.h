@@ -225,10 +225,6 @@ class LocalFile {
       return openContentFile();
     };
 
-    void frame_end(bool ack) {
-      (void)ack; // Avoid unused parameter warning
-    };
-
     void handle_collision() {
       PJON_DELAY(10);
     };

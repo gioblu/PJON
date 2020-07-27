@@ -52,18 +52,18 @@ It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above 
 ### Communication modes
 The proposed communication modes are the result of years of testing and optimization and have been selected to be easily supported by limited microcontrollers:
 
-| Mode | Bandwidth          | Range | Pad bit | Data bit | Latency |
-| ---- | ------------------ | ----- | ------- | -------- | ------- |
-| 1    | 1.97kB/s - 15808Bd | 2000m | 110µs   | 44µs     | 13µs    |
-| 2    | 2.21kB/s - 17696Bd | 1600m | 92µs    | 40µs     | 10µs    |
-| 3    | 3.10kB/s - 24844Bd | 1200m | 70µs    | 28µs     | 8µs     |
-| 4    | 3.34kB/s - 26755Bd |  800m | 65µs    | 26µs     | 5µs     |
+| Mode | Bandwidth          | Range | Pad bit | Data bit | Keep busy bit | Latency | Timeout |
+| ---- | ------------------ | ----- | ------- | -------- | ------------- | ------- | ------- |
+| 1    | 1.97kB/s - 15808Bd | 2000m | 110µs   | 44µs     | 11µs          | 13µs    | 20µs/B  |
+| 2    | 2.21kB/s - 17696Bd | 1600m | 92µs    | 40µs     | 10µs          | 10µs    | 20µs/B  |
+| 3    | 3.10kB/s - 24844Bd | 1200m | 70µs    | 28µs     | 7µs           | 8µs     | 20µs/B  |
+| 4    | 3.34kB/s - 26755Bd |  800m | 65µs    | 26µs     | 6.5µs         | 5µs     | 20µs/B  |
 
 The following table specifies the maximum acceptable deviation of each bit type:
 
-| Max data bit octet deviation | Max padding bit deviation |
-| ---------------------------- | ------------------------- |
-| +- (data bit / 4) - 1        | +- (data bit / 4) - 1     |
+| Max data bit octet deviation | Max padding bit deviation | Max keep busy bit deviation |
+| ---------------------------- | ------------------------- | --------------------------- |
+| +- (data bit / 4) - 1        | +- (data bit / 4) - 1     | +- keep busy bit / 2        |
 
 ### Medium access control
 PJDL specifies a variation of the carrier-sense, non-persistent random multiple access method (non-persistent CSMA). Devices can detect an ongoing transmission for this reason collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss or by the transmitter if an active collision avoidance procedure is implemented.
@@ -76,7 +76,7 @@ The reception technique is based on 3 steps:
 2. Synchronize with its falling edge
 3. Ensure it is followed by a low data bit
 
-If so reception starts, if not, interference, synchronization loss or simply absence of communication is detected. The high padding bit is 2.5 times longer than data bits because with this ratio ambiguity between padding bits and 2 or 3 consecutive data bits is avoided even with an overall deviation of up to +- (data bit / 4) - 1.
+If so reception starts, if not, interference, synchronization loss or simply absence of communication is detected. The high padding bit is 2.5 times longer than data bits because with this ratio ambiguity between padding bits and 2 or 3 consecutive data bits is avoided even with an overall deviation of up to +- (data bit / 4) - 1. The receiver must accept a synchronization pad also if it is prepended by a 0 of up to (data bit / 4) - 1 microseconds.
 
 ```cpp  
  ___________ ___________________________
@@ -86,7 +86,7 @@ If so reception starts, if not, interference, synchronization loss or simply abs
 |   1   | 0 | 1 | 0 0 | 1 | 0 | 1 1 | 0 |
 |_______|___|___|_____|___|___|_____|___|
 ```
-The synchronization pad adds overhead although it includes synchronization along with the data and eliminates the need of a dedicated clock line. The presence of the synchronization pad between each byte also ensures that a frame composed of a series of bytes with decimal value 0 can be transmitted safely without risk of collision.   
+The synchronization pad adds overhead although it includes synchronization along with the data and eliminates the need of a dedicated clock line. The presence of the synchronization pad between each byte also ensures that a frame composed of a series of bytes with decimal value 0 can be transmitted safely without risk of collision.
 
 ### Frame transmission
 Before a frame transmission the communication medium's state is analysed, if high communication is detected and collision is avoided, if low for a duration of one byte plus a small random time, frame transmission starts with an initializer composed by 3 consecutive synchronization pads followed by data bytes. The synchronization pad is used for both byte and frame initialization to reduce the implementation complexity.  
@@ -105,19 +105,20 @@ When a frame is received a low performance microcontroller with an inaccurate cl
 ### Synchronous response
 A frame transmission can be optionally followed by a synchronous response sent by its recipient. Between frame transmission and a synchronous response there is a variable time which duration is influenced by latency.
 ```cpp  
-Transmission                                       Response
+Transmission end                                   Response
  ______  ______  ______                             _____
 | BYTE || BYTE || BYTE | CRC COMPUTATION / LATENCY | ACK |
 |------||------||------|---------------------------|-----|
 |      ||      ||      |                           |  6  |
 |______||______||______|                           |_____|
 ```  
-The receiver must drive the bus high as soon as the last byte of the frame is received and must continue to keep it high until it has verified the frame's consistency. When that has occurred the receiver must transmit a low data bit, and, in order to avoid false positives in case of collision, must transmit its response prepended with an additional synchronization pad. If an error is detected the receiver must drive the bus low.
+In order to avoid other devices to detect the medium free for use and disrupt an ongoing exchange, the sender cyclically transmits a high 1/4 data bit and consequently attempts to receive a response for up to twice the maximum expected latency. The receiver must synchronize to the falling edge of the last high bit and, in order to avoid false positives in case of collision, must transmit its response prepended with an additional synchronization pad. If the response is not transmitted or not received the transmitter continues to keep busy the medium up to the response timeout.
 ```cpp  
-Transmission     Latency   Receiver keeps busy       Response
- ______  ______     x2    ____________________   ____ _____  
-| BYTE || BYTE |         |                    | |SYNC| ACK |
-|------||------|         |                    | |----|-----|
-|      ||      |         |                    | |    |  6  |
-|______||______|_________|                    |_|____|_____|
+Transmission end               Keep busy            Response
+ ______  ______  ______   _   _   _   _   _   _ ____ _____  
+| BYTE || BYTE || BYTE | | | | | | | | | | | | |SYNC| ACK |
+|------||------||------| | | | | | | | | | | | |----|-----|
+|      ||      ||      | | | | | | | | | | | | |    |  6  |
+|______||______||______|_| |_| |_| |_| |_| |_| |____|_____|
 ```
+The response timeout is determined multiplying 20µs by the length of the frame and then adding the maximum expected latency.

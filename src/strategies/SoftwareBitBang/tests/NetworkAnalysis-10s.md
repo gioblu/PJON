@@ -15,7 +15,7 @@ This table was filled running the [NetworkAnalysis](../../../../examples/ARDUINO
 | 1    | UNO/Nano       | 12  | ESP32 40MHz    | 25  |           |           |              |
 | 1    | UNO/Nano       | 12  | ESP32 80MHz    | 25  |           |           |              |
 | 1    | UNO/Nano       | 12  | SAMD21         | D0  | 1770kB/s  | 59        | 100%         |
-| 1    | UNO/Nano       | 12  | Blue pill      | PB9 |           |           |              |
+| 1    | UNO/Nano       | 12  | Blue pill      | PB9 | 1770kB/s  | 59        | 100%         |
 | 1    | Leonardo/Micro | 12  | UNO/Nano       | 12  |           |           |              |
 | 1    | Leonardo/Micro | 12  | Leonardo/Micro | 12  |           |           |              |
 | 1    | Leonardo/Micro | 12  | Mega           | 12  |           |           |              |
@@ -43,7 +43,7 @@ This table was filled running the [NetworkAnalysis](../../../../examples/ARDUINO
 | 1    | ESP32 40MHz    | 12  | UNO/Nano       | 12  |           |           |              |
 | 1    | ESP32 40MHz    | 12  | Leonardo/Micro | 12  |           |           |              |
 | 1    | ESP32 80MHz    | 12  | Leonardo/Micro | 12  |           |           |              |
-| 1    | ESP32          | 12  | Blue pill      | PB9 |           |           |              |
+| 1    | ESP32          | 12  | Blue pill      | PB9 | 1800kB/s  | 60        | 100%         |
 | 1    | SAMD21         | D0  | Mega           | 12  |           |           |              |
 | 1    | SAMD21         | D0  | Leonardo/Micro | 12  |           |           |              |
 | 1    | SAMD21         | D0  | UNO/Nano       | 12  |           |           |              |
@@ -51,10 +51,10 @@ This table was filled running the [NetworkAnalysis](../../../../examples/ARDUINO
 | 1    | SAMD21         | D0  | ESP32 80MHz    | 12  |           |           |              |
 | 1    | SAMD21         | D0  | ESP32 40MHz    | 25  |           |           |              |
 | 1    | SAMD21         | D0  | ESP32 80MHz    | 25  |           |           |              |
-| 1    | SAMD21         | D0  | Blue pill      | PB9 |           |           |              |
-| 1    | Blue pill      | PB9 | Blue pill      | PB9 |           |           |              |
-| 1    | Blue pill      | PB9 | UNO/Nano       | 12  |           |           |              |
-| 1    | Blue pill      | PB9 | SAMD           | 12  |           |           |              |
-| 1    | Blue pill      | PB9 | ESP8266 80MHz  | D1  |           |           |              |
-| 1    | Blue pill      | PB9 | ESP8266 160MHz | D1  |           |           |              |
-| 1    | Blue pill      | PB9 | ESP32          | 12  |           |           |              |
+| 1    | SAMD21         | D0  | Blue pill      | PB9 | 1860kB/s  | 61        | 100%         |
+| 1    | Blue pill      | PB9 | Blue pill      | PB9 | 1830kB/s  | 61        | 100%         |
+| 1    | Blue pill      | PB9 | UNO/Nano       | 12  | 1800kB/s  | 60        | 100%         |
+| 1    | Blue pill      | PB9 | SAMD           | 12  | 1830kB/s  | 61        | 100%         |
+| 1    | Blue pill      | PB9 | ESP8266 80MHz  | D1  | 1788kB/s  | 60        | 99.33%       |
+| 1    | Blue pill      | PB9 | ESP8266 160MHz | D1  | 1800kB/s  | 60        | 100%         |
+| 1    | Blue pill      | PB9 | ESP32          | 12  | 1830kB/s  | 61        | 100%         |

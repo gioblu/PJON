@@ -17,20 +17,21 @@ This table was filled running the [NetworkAnalysis](../../../../examples/ARDUINO
 | 1    | UNO/Nano       | 12  | SAMD21         | D0  | 1770kB/s  | 59        | 100%         |
 | 1    | UNO/Nano       | 12  | Blue pill      | PB9 | 1770kB/s  | 59        | 100%         |
 | 1    | Leonardo/Micro | 12  | UNO/Nano       | 12  | 1740kB/s  | 58        | 100%         |
-| 1    | Leonardo/Micro | 12  | Leonardo/Micro | 12  |           |           |              |
+| 1    | Leonardo/Micro | 12  | Leonardo/Micro | 12  | 1740kB/s  | 58        | 99.92%       |
 | 1    | Leonardo/Micro | 12  | Mega           | 12  | 1740kB/s  | 58        | 100%         |
-| 1    | Leonardo/Micro | 12  | ESP32          | 12  |           |           |              |
-| 1    | Leonardo/Micro | 12  | SAMD21         | D0  |           |           |              |
+| 1    | Leonardo/Micro | 12  | ESP32 40MHz    | 12  | 1590kB/s  | 53        | 88.68%       |
+| 1    | Leonardo/Micro | 12  | ESP32 80MHz    | 12  | 1590kB/s  | 53        | 88.68%       |
+| 1    | Leonardo/Micro | 12  | SAMD21         | D0  | 1770kB/s  | 59        | 100%         |
 | 1    | Mega           | 12  | UNO/Nano       | 12  | 1740kB/s  | 58        | 100%         |
 | 1    | Mega           | 12  | Leonardo/Micro | 12  | 1740kB/s  | 58        | 100%         |
-| 1    | Mega           | 12  | ESP8266 80MHz  | D1  |           |           |              |
-| 1    | Mega           | 12  | ESP8266 160MHz | D1  |           |           |              |
+| 1    | Mega           | 12  | ESP8266 80MHz  | D1  | 1770kB/s  | 59        | 99.9%        |
+| 1    | Mega           | 12  | ESP8266 160MHz | D1  | 1770kB/s  | 59        | 99.9%        |
 | 1    | Mega           | 12  | ESP32 40MHz    | 12  | 1710kB/s  | 57        | 96.49%       |
 | 1    | Mega           | 12  | ESP32 80MHz    | 12  | 1710kB/s  | 57        | 96.49%       |
 | 1    | Mega           | 12  | ESP32 40MHz    | 25  | 1710kB/s  | 57        | 96.49%       |
 | 1    | Mega           | 12  | ESP32 80MHz    | 25  | 1710kB/s  | 57        | 96.49%       |
 | 1    | Mega           | 12  | SAMD21         | D0  | 1770kB/s  | 59        | 100%         |
-| 1    | Mega           | 12  | SAMD21         | D1  |           |           |              |
+| 1    | Mega           | 12  | SAMD21         | D1  | 1770kB/s  | 59        | 100%         |
 | 1    | ESP8266 80MHz  | D1  | UNO/Nano       | 12  |           |           |              |
 | 1    | ESP8266 160MHz | D1  | UNO/Nano       | 12  |           |           |              |
 | 1    | ESP8266 80MHz  | D1  | Leonardo/Micro | 12  |           |           |              |
@@ -69,3 +70,14 @@ This table was filled running the [NetworkAnalysis](../../../../examples/ARDUINO
 | 2    | UNO/Nano       | 12  | ESP8266 80MHz  | D1  | 1969kB/s  | 66        | 98.93%       |
 | 2    | ESP8266 80MHz  | D1  | UNO/Nano       | 12  | 1980kB/s  | 66        | 100%         |
 | 2    | ESP8266 160MHz | D1  | UNO/Nano       | 12  | 2010kB/s  | 67        | 100%         |
+| 3    | Blue pill      | PB9 | Blue pill      | PB9 | 2850kB/s  | 95        | 100%         |
+| 3    | Blue pill      | PB9 | UNO/Nano       | 12  | 2760kB/s  | 92        | 100%         |
+| 3    | UNO/Nano       | 12  | Blue pill      | PB9 | 2730kB/s  | 91        | 100%         |
+| 3    | Blue pill      | PB9 | SAMD           | 12  | 2820kB/s  | 94        | 100%         |
+| 3    | SAMD21         | D0  | Blue pill      | PB9 | 2781kB/s  | 93        | 99.78%       |
+| 3    | Blue pill      | PB9 | ESP8266 80MHz  | D1  | 2649kB/s  | 95        | 93%          |
+| 3    | Blue pill      | PB9 | ESP8266 160MHz | D1  | 2803kB/s  | 95        | 98.36%       |
+| 3    | ESP8266 80MHz  | D1  | Blue pill      | PB9 | 2802kB/s  | 94        | 99.36%       |
+| 3    | ESP8266 160MHz | D1  | Blue pill      | PB9 | 2880kB/s  | 96        | 100%         |
+| 3    | ESP8266 80MHz  | D1  | UNO/Nano       | 12  | 2673kB/s  | 90        | 99%          |
+| 3    | ESP8266 160MHz | D1  | UNO/Nano       | 12  | 2788kB/s  | 93        | 99.94%       |

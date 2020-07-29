@@ -230,18 +230,18 @@
   #endif
   #if SWBB_MODE == 2
     #if F_CPU == 72000000L
-      #define SWBB_BIT_WIDTH   39
-      #define SWBB_BIT_SPACER  91
-      #define SWBB_ACCEPTANCE  47
-      #define SWBB_READ_DELAY  3
+      #define SWBB_BIT_WIDTH   39.5
+      #define SWBB_BIT_SPACER  91.5
+      #define SWBB_ACCEPTANCE  53
+      #define SWBB_READ_DELAY  -8
     #endif
   #endif
   #if SWBB_MODE == 3
     #if F_CPU == 72000000L
-      #define SWBB_BIT_WIDTH   27
-      #define SWBB_BIT_SPACER  87
-      #define SWBB_ACCEPTANCE  45
-      #define SWBB_READ_DELAY  2
+      #define SWBB_BIT_WIDTH   27.5
+      #define SWBB_BIT_SPACER  69.5
+      #define SWBB_ACCEPTANCE  33
+      #define SWBB_READ_DELAY  -5
     #endif
   #endif
   #if SWBB_MODE == 4

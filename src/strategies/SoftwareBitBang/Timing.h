@@ -13,10 +13,10 @@
 
    Benchmarks can be executed using NetworkAnalysis and SpeedTest examples.
 
-   MODE   1: 1.95kB/s - 15625Bd
+   MODE   1: 1.97kB/s - 15808Bd
    MODE   2: 2.21kB/s - 17696Bd
-   MODE   3: 2.97kB/s - 23529Bd
-   MODE   4: 3.40kB/s - 27210Bd
+   MODE   3: 3.10kB/s - 24844Bd
+   MODE   4: 3.34kB/s - 26755Bd
 
    Use the same pin number on all connected devices to achieve maximum
    timing efficiency, not all different pin combinations work nominally
@@ -49,7 +49,7 @@
     #if F_CPU == 16000000L
       /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
       #define SWBB_BIT_WIDTH   24
-      #define SWBB_BIT_SPACER  84
+      #define SWBB_BIT_SPACER  66
       #define SWBB_ACCEPTANCE  30
       #define SWBB_READ_DELAY   8
     #endif
@@ -175,14 +175,14 @@
      Added full support to MODE 1 (80 and 160MHz) - 12/06/2018 */
     #if (F_CPU == 80000000L)
       /* Working on pin: D1 or GPIO 5 */
-      #define SWBB_BIT_WIDTH  43.5
+      #define SWBB_BIT_WIDTH   43.5
       #define SWBB_BIT_SPACER 109.5
       #define SWBB_ACCEPTANCE  52
       #define SWBB_READ_DELAY  -6
     #endif
     #if (F_CPU == 160000000L)
       /* Working on pin: D1 or GPIO 5 */
-      #define SWBB_BIT_WIDTH  44
+      #define SWBB_BIT_WIDTH   44
       #define SWBB_BIT_SPACER 110
       #define SWBB_ACCEPTANCE  52
       #define SWBB_READ_DELAY  -6
@@ -224,8 +224,8 @@
     #if F_CPU == 72000000L
       #define SWBB_BIT_WIDTH   43.5
       #define SWBB_BIT_SPACER 109.5
-      #define SWBB_ACCEPTANCE  50
-      #define SWBB_READ_DELAY  -8
+      #define SWBB_ACCEPTANCE  75
+      #define SWBB_READ_DELAY  -6
     #endif
   #endif
   #if SWBB_MODE == 2

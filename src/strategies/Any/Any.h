@@ -50,14 +50,7 @@ public:
 
     /* Check if the channel is free for transmission */
 
-    bool can_start() { return s->can_start(); }
-
-
-    /* Function called at the end of a frame reception: */
-
-    void frame_end(bool ack) {
-      (void)ack; // Avoid unused parameter warning
-    };
+    bool can_start() { return s->can_start(); };
 
 
     /* Returns the maximum number of attempts for each transmission: */

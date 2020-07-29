@@ -81,7 +81,6 @@ class PJON {
     uint8_t data[PJON_PACKET_MAX_LENGTH];
     PJON_Packet_Info last_packet_info;
     PJON_Packet packets[PJON_MAX_PACKETS];
-    uint8_t random_seed = A0;
     PJON_Endpoint tx;
 
     #if(PJON_INCLUDE_PACKET_ID)
@@ -141,7 +140,7 @@ class PJON {
     /* Begin function to be called after initialization: */
 
     void begin() {
-      PJON_RANDOM_SEED(PJON_ANALOG_READ(random_seed) + tx.id);
+      PJON_RANDOM_SEED(PJON_ANALOG_READ(_random_seed) + tx.id);
       strategy.begin(tx.id);
       #if(PJON_INCLUDE_PACKET_ID)
         _packet_id_seed = PJON_RANDOM(65535) + tx.id;
@@ -306,9 +305,8 @@ class PJON {
               !PJON_INCLUDE_PORT && (data[1] & PJON_PORT_BIT)
             ) || (
               (!PJON_INCLUDE_MAC && mac) || (mac && !(data[1] & PJON_CRC_BIT))
-            )
+            ) || (drop && !mac)
           ) return PJON_BUSY;
-          if(drop && !mac) return PJON_BUSY;
           extended_length = data[i] & PJON_EXT_LEN_BIT;
           overhead = packet_overhead(data[i]);
         }
@@ -343,29 +341,22 @@ class PJON {
         }
       }
 
-      bool nak = false, ack =
-        (data[1] & PJON_ACK_REQ_BIT) && (data[0] != PJON_BROADCAST) &&
-        (_mode != PJON_SIMPLEX) && !_router
-      ;
-
-      strategy.frame_end(ack);
-
       if(
         PJON_crc8::compute(data, 3 + extended_length) !=
         data[3 + extended_length]
-      ) nak = true;
+      ) return PJON_NAK;
 
       if(data[1] & PJON_CRC_BIT) {
         if(
           !PJON_crc32::compare(
             PJON_crc32::compute(data, length - 4), data + (length - 4)
           )
-        ) nak = true;
+        ) return PJON_NAK;
       } else if(PJON_crc8::compute(data, length - 1) != data[length - 1])
-        nak = true;
+        return PJON_NAK;
 
       #if(PJON_INCLUDE_MAC)
-        if(!nak && mac && (length > 15) && !_router)
+        if(mac && (length > 15) && !_router)
           if(!PJONTools::id_equality(data + (overhead - 16), tx.mac, 6))
             if(!
               PJONTools::id_equality(
@@ -375,8 +366,9 @@ class PJON {
             ) return PJON_BUSY;
       #endif
 
-      if(ack) strategy.send_response((nak) ? PJON_NAK : PJON_ACK);
-      if(nak) return PJON_NAK;
+      if(data[1] & PJON_ACK_REQ_BIT && data[0] != PJON_BROADCAST)
+        if((_mode != PJON_SIMPLEX) && !_router)
+          strategy.send_response(PJON_ACK);
 
       parse(data, last_packet_info);
 
@@ -571,12 +563,7 @@ class PJON {
         !(payload[1] & PJON_ACK_REQ_BIT) ||
         _mode == PJON_SIMPLEX
       ) return PJON_ACK;
-      uint16_t response = strategy.receive_response();
-      if(
-        response == PJON_ACK ||
-        response == PJON_FAIL
-      ) return response;
-      else return PJON_BUSY;
+      return (strategy.receive_response() == PJON_ACK) ? PJON_ACK : PJON_FAIL;
     };
 
     /* Compose and transmit a packet passing its info as parameters: */
@@ -795,7 +782,7 @@ class PJON {
     /* Set the analog pin used as a seed for random generation: */
 
     void set_random_seed(uint8_t seed) {
-      random_seed = seed;
+      _random_seed = seed;
     };
 
     /* Pass as a parameter a receiver function you previously defined in your
@@ -926,6 +913,7 @@ class PJON {
     PJON_Error    _error;
     bool          _mode;
     uint16_t      _packet_id_seed = 0;
+    uint8_t       _random_seed = A0;
     PJON_Receiver _receiver;
     uint8_t       _recursion = 0;
     bool          _router = false;

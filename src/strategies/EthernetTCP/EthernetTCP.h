@@ -96,14 +96,7 @@ class EthernetTCP {
     bool can_start() {
       return link.device_id() != 0;
     };
-
-
-    /* Function called at the end of a frame reception: */
-
-    void frame_end(bool ack) {
-      (void)ack; // Avoid unused parameter warning
-    };
-
+    
 
     /* Returns the maximum number of attempts for each transmission: */
 

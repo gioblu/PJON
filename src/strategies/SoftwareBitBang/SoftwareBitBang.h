@@ -28,16 +28,14 @@
 
 // Used to signal communication failure
 #define SWBB_FAIL       65535
-// Used to signal acknowledgment
-#define SWBB_ACK            6
 // Used for pin handling
 #define SWBB_NOT_ASSIGNED 255
 
 /* Transmission speed modes (see Timing.h)
-  MODE   1: 1.95kB/s - 15625Bd
+  MODE   1: 1.97kB/s - 15808Bd
   MODE   2: 2.21kB/s - 17696Bd
-  MODE   3: 2.94kB/s - 23529Bd
-  MODE   4: 3.40kB/s - 27210Bd */
+  MODE   3: 3.10kB/s - 24844Bd
+  MODE   4: 3.34kB/s - 26755Bd */
 #include "Timing.h"
 
 // Recommended receive time for this strategy, in microseconds
@@ -144,27 +142,19 @@ class SoftwareBitBang {
        bit and transmits PJON_ACK */
 
     uint16_t receive_response() {
+      if(_output_pin != _input_pin && _output_pin != SWBB_NOT_ASSIGNED)
+        PJON_IO_WRITE(_output_pin, LOW);
       uint16_t response = SWBB_FAIL;
       uint32_t time = PJON_MICROS();
-      PJON_IO_PULL_DOWN(_input_pin);
-      while( // Wait for the receiver's high to arrive
-        ((uint32_t)(PJON_MICROS() - time) < (SWBB_LATENCY * 2)) &&
-        !PJON_IO_READ(_input_pin)
-      );
-      time = PJON_MICROS();
-      while( // Wait for low
-        ((uint32_t)(PJON_MICROS() - time) < _timeout) &&
-        PJON_IO_READ(_input_pin)
-      );
-      if((uint32_t)(PJON_MICROS() - time) < _timeout) {
-        time = PJON_MICROS();
-        while( // Wait for incoming sync
-          (
-            (uint32_t)(PJON_MICROS() - time) <
-            (SWBB_BIT_WIDTH + SWBB_DEVIATION)
-          ) && !PJON_IO_READ(_input_pin)
-        );
+      while((uint32_t)(PJON_MICROS() - time) < _timeout) {
+        PJON_IO_WRITE(_input_pin, LOW);
         if(sync()) response = receive_byte();
+        if(response == SWBB_FAIL) {
+          PJON_IO_MODE(_output_pin, OUTPUT);
+          PJON_IO_WRITE(_output_pin, HIGH);
+          PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH / 4);
+          PJON_IO_PULL_DOWN(_output_pin);
+        } else return response;
       }
       return response;
     };
@@ -191,13 +181,6 @@ class SoftwareBitBang {
       return 1;
     };
 
-    /* Function called at the end of a frame reception: */
-
-    void frame_end(bool ack) {
-      if(!ack) return;
-      PJON_IO_MODE(_output_pin, OUTPUT);
-      PJON_IO_WRITE(_output_pin, HIGH);
-    };
 
     /* Every byte is prepended with a synchronization pad made by 2
        padding bits. The first is a longer than standard logic 1 followed
@@ -234,13 +217,21 @@ class SoftwareBitBang {
        incoming bit and transmits its response */
 
     void send_response(uint8_t response) {
-      PJON_IO_WRITE(_output_pin, LOW);
-      PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH);
-      if(response == SWBB_ACK) {
-        pulse(1);
-        send_byte(response);
-        PJON_IO_PULL_DOWN(_output_pin);
-      }
+      PJON_IO_PULL_DOWN(_input_pin);
+      uint32_t time = PJON_MICROS();
+      while( // If initially low Wait for the next high
+        ((uint32_t)(PJON_MICROS() - time) < SWBB_BIT_WIDTH) &&
+        !PJON_IO_READ(_input_pin)
+      );
+      time = PJON_MICROS();
+      while( // If high Wait for low
+        ((uint32_t)(PJON_MICROS() - time) < (SWBB_BIT_WIDTH / 4)) &&
+        PJON_IO_READ(_input_pin)
+      );
+      PJON_IO_MODE(_output_pin, OUTPUT);
+      pulse(1);
+      send_byte(response);
+      PJON_IO_PULL_DOWN(_output_pin);
     };
 
 

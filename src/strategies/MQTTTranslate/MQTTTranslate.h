@@ -343,13 +343,6 @@ public:
     bool can_start() { return mqttclient.connect(); };
 
 
-    /* Function called at the end of a frame reception: */
-
-    void frame_end(bool ack) {
-      (void)ack; // Avoid unused parameter warning
-    };
-    
-
     /* Returns the maximum number of attempts for each transmission: */
 
     static uint8_t get_max_attempts() { return 0; };

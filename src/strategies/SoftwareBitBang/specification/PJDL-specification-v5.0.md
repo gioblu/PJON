@@ -61,9 +61,12 @@ The proposed communication modes are the result of years of testing and optimiza
 
 The following table specifies the maximum acceptable deviation of each bit type:
 
-| Max data bit octet deviation | Max sync. pad deviation   | Max keep busy bit deviation |
-| ---------------------------- | ------------------------- | --------------------------- |
-| +- (data bit / 4) - 1        | +- (data bit / 4) - 1     | + 10µs                      |
+| Mode | Max data bit octet deviation | Max sync. pad deviation   | Max keep busy bit deviation |
+| ---- | ---------------------------- | ------------------------- | --------------------------- |
+| 1    | +- (data bit / 4) - 1        | +- (data bit / 4) - 1     | -5µs +10µs                  |
+| 2    | +- (data bit / 4) - 1        | +- (data bit / 4) - 1     | -5µs +10µs                  |
+| 3    | +- (data bit / 4) - 1        | +- (data bit / 4) - 1     | -3µs +10µs                  |
+| 4    | +- (data bit / 4) - 1        | +- (data bit / 4) - 1     | -3µs +10µs                  |
 
 ### Medium access control
 PJDL specifies a variation of the carrier-sense, non-persistent random multiple access method (non-persistent CSMA). Devices can detect an ongoing transmission for this reason collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss or by the transmitter if an active collision avoidance procedure is implemented.

@@ -80,7 +80,7 @@ If so reception starts, if not, interference, synchronization loss or simply abs
 
 ```cpp  
  ___________ ___________________________
-| SYNC-PAD  | DATA                      |
+| SYNC PAD  | DATA                      |
 |_______    |___       ___     _____    |
 |       |   |   |     |   |   |     |   |
 |   1   | 0 | 1 | 0 0 | 1 | 0 | 1 1 | 0 |
@@ -89,10 +89,10 @@ If so reception starts, if not, interference, synchronization loss or simply abs
 The synchronization pad adds overhead although it includes synchronization along with the data and eliminates the need of a dedicated clock line. The presence of the synchronization pad between each byte also ensures that a frame composed of a series of bytes with decimal value 0 can be transmitted safely without risk of collision.
 
 ### Frame transmission
-Before a frame transmission the communication medium's state is analysed, if high communication is detected and collision is avoided, if low for a duration of one byte plus the latency and a small random time, frame transmission starts with an initializer composed by 3 consecutive synchronization pads followed by data bytes. The synchronization pad is used for both byte and frame initialization to reduce the implementation complexity.  
+Before a frame transmission the communication medium's state is analysed, if high communication is detected and collision is avoided, if low for a duration of one byte plus the latency and a small random time, frame transmission starts with an initializer composed by 3 consecutive synchronization pads followed by data bytes. The synchronization pad is used for both byte and frame initialization to reduce the implementation complexity. PJDL frames do not have an intrinsic length limit.
 ```cpp  
  ________ _________________ __________________________________
-|ANALYSIS|   FRAME INIT    | DATA 1-65535 bytes               |
+|ANALYSIS|   FRAME INIT    | DATA BYTES                       |
 |________|_____ _____ _____|________________ _________________|
 |        |Sync |Sync |Sync |Sync | Byte     |Sync | Byte      |
 |        |___  |___  |___  |___  |     __   |___  |      _   _|
@@ -114,7 +114,7 @@ Transmission end                                   Response
 ```  
 In order to avoid other devices to detect the medium free for use and disrupt an ongoing exchange, the sender cyclically transmits a high 1/4 data bit and consequently attempts to receive a response for up to twice the maximum expected latency. The receiver must synchronize to the falling edge of the last high bit and, in order to avoid false positives in case of collision, must transmit its response prepended with an additional synchronization pad. If the response is not transmitted or not received the transmitter continues to keep busy the medium up to the response timeout.
 ```cpp  
-Transmission end               Keep busy            Response
+Transmission end            Bus is kept busy        Response
  ______  ______  ______   _   _   _   _   _   _ ____ _____  
 | BYTE || BYTE || BYTE | | | | | | | | | | | | |SYNC| ACK |
 |------||------||------| | | | | | | | | | | | |----|-----|

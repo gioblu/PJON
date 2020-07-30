@@ -271,9 +271,6 @@
   #ifndef SWBB_LATENCY
     #define SWBB_LATENCY     13
   #endif
-  #ifndef SWBB_DEVIATION
-    #define SWBB_DEVIATION   10
-  #endif
 #endif
 #if SWBB_MODE == 2
   #ifndef SWBB_BIT_WIDTH
@@ -290,9 +287,6 @@
   #endif
   #ifndef SWBB_LATENCY
     #define SWBB_LATENCY     10
-  #endif
-  #ifndef SWBB_DEVIATION
-    #define SWBB_DEVIATION    9
   #endif
 #endif
 #if SWBB_MODE == 3
@@ -311,9 +305,6 @@
   #ifndef SWBB_LATENCY
     #define SWBB_LATENCY      8
   #endif
-  #ifndef SWBB_DEVIATION
-    #define SWBB_DEVIATION    7
-  #endif
 #endif
 #if SWBB_MODE == 4
   #ifndef SWBB_BIT_WIDTH
@@ -330,9 +321,6 @@
   #endif
   #ifndef SWBB_LATENCY
     #define SWBB_LATENCY      5
-  #endif
-  #ifndef SWBB_DEVIATION
-    #define SWBB_DEVIATION    7
   #endif
 #endif
 

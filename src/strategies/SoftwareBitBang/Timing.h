@@ -166,6 +166,14 @@
     #define SWBB_ACCEPTANCE  45
     #define SWBB_READ_DELAY  -4
   #endif
+  /* Added by Giovanni Blu Mitolo 30/07/2020
+     Tested on pin: D0 */
+  #if SWBB_MODE == 2
+    #define SWBB_BIT_WIDTH   39.5
+    #define SWBB_BIT_SPACER  91.5
+    #define SWBB_ACCEPTANCE  45
+    #define SWBB_READ_DELAY  -2
+  #endif
 #endif
 
 /* NodeMCU, generic ESP8266 ----------------------------------------------- */

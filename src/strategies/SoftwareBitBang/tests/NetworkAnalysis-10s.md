@@ -1,6 +1,8 @@
 ## NetworkAnalysis
 This table was filled running the [NetworkAnalysis](../../../../examples/ARDUINO/Local/SoftwareBitBang/NetworkAnalysis) example for 10 seconds and averaging the obtained series of results.
 
+### Mode 1
+
 | MODE | TX             | PIN | RX             | PIN | Bandwidth | Packets/s | Success rate |
 |------|----------------|-----|----------------|-----|-----------|-----------|--------------|
 | 1    | UNO/Nano       | 12  | UNO/Nano       | 12  | 1740kB/s  | 58        | 100%         |
@@ -58,10 +60,17 @@ This table was filled running the [NetworkAnalysis](../../../../examples/ARDUINO
 | 1    | Blue pill      | PB9 | SAMD           | 12  | 1830kB/s  | 61        | 100%         |
 | 1    | Blue pill      | PB9 | ESP8266 80MHz  | D1  | 1788kB/s  | 60        | 99.33%       |
 | 1    | Blue pill      | PB9 | ESP8266 160MHz | D1  | 1800kB/s  | 60        | 100%         |
+
+### Mode 2
+
+| MODE | TX             | PIN | RX             | PIN | Bandwidth | Packets/s | Success rate |
+|------|----------------|-----|----------------|-----|-----------|-----------|--------------|
 | 2    | Blue pill      | PB9 | Blue pill      | PB9 | 2040kB/s  | 68        | 100%         |
 | 2    | Blue pill      | PB9 | UNO/Nano       | 12  | 2010kB/s  | 67        | 100%         |
-| 2    | Blue pill      | PB9 | SAMD           | 12  | 2040kB/s  | 68        | 100%         |
+| 2    | Blue pill      | PB9 | SAMD           |     |           |           |              |
 | 2    | UNO/Nano       | 12  | Blue pill      | PB9 | 1980kB/s  | 66        | 100%         |
+| 2    | UNO/Nano       | 12  | SAMD21         | D0  | 1980kB/s  | 66        | 100%         |
+| 2    | SAMD21         | D0  | UNO/Nano       | 12  | 1950kB/s  | 65        | 100%         |
 | 2    | SAMD21         | D0  | Blue pill      | PB9 | 2010kB/s  | 67        | 100%         |
 | 2    | ESP32          | 12  | Blue pill      | PB9 | 2070kB/s  | 69        | 100%         |
 | 2    | Blue pill      | PB9 | ESP8266 80MHz  | D1  | 2019kB/s  | 68        | 99.77%       |
@@ -70,6 +79,11 @@ This table was filled running the [NetworkAnalysis](../../../../examples/ARDUINO
 | 2    | UNO/Nano       | 12  | ESP8266 80MHz  | D1  | 1969kB/s  | 66        | 98.93%       |
 | 2    | ESP8266 80MHz  | D1  | UNO/Nano       | 12  | 1980kB/s  | 66        | 100%         |
 | 2    | ESP8266 160MHz | D1  | UNO/Nano       | 12  | 2010kB/s  | 67        | 100%         |
+
+### Mode 3
+
+| MODE | TX             | PIN | RX             | PIN | Bandwidth | Packets/s | Success rate |
+|------|----------------|-----|----------------|-----|-----------|-----------|--------------|
 | 3    | Blue pill      | PB9 | Blue pill      | PB9 | 2850kB/s  | 95        | 100%         |
 | 3    | Blue pill      | PB9 | UNO/Nano       | 12  | 2760kB/s  | 92        | 100%         |
 | 3    | UNO/Nano       | 12  | Blue pill      | PB9 | 2730kB/s  | 91        | 100%         |

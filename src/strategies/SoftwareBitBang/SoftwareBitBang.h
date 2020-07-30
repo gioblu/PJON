@@ -69,6 +69,7 @@ class SoftwareBitBang {
 
     bool can_start() {
       PJON_IO_MODE(_input_pin, INPUT);
+      // Look for ongoing transmission for 1 padding bit + 9 data bits
       PJON_DELAY_MICROSECONDS(SWBB_BIT_SPACER / 2);
       if(PJON_IO_READ(_input_pin)) return false;
       PJON_DELAY_MICROSECONDS((SWBB_BIT_SPACER / 2));
@@ -80,6 +81,10 @@ class SoftwareBitBang {
         PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH);
       }
       if(PJON_IO_READ(_input_pin)) return false;
+      // Delay for the maximum expected latency and then check again
+      PJON_DELAY_MICROSECONDS(SWBB_LATENCY);
+      if(PJON_IO_READ(_input_pin)) return false;
+      // Delay for a small random time and then check again
       PJON_DELAY_MICROSECONDS(PJON_RANDOM(SWBB_COLLISION_DELAY));
       if(PJON_IO_READ(_input_pin)) return false;
       return true;
@@ -173,8 +178,7 @@ class SoftwareBitBang {
           (uint32_t)(PJON_MICROS() - time) <
           (((SWBB_BIT_WIDTH * 3) + (SWBB_BIT_SPACER * 3)) - SWBB_ACCEPTANCE)
         ) return SWBB_FAIL;
-      }
-      // Receive incoming bytes
+      } // Receive one byte
       result = receive_byte();
       if(result == SWBB_FAIL) return SWBB_FAIL;
       *data = result;
@@ -227,7 +231,7 @@ class SoftwareBitBang {
       while( // If high Wait for low
         ((uint32_t)(PJON_MICROS() - time) < (SWBB_BIT_WIDTH / 4)) &&
         PJON_IO_READ(_input_pin)
-      );
+      ); // Transmit response prepended with a synchronization pad
       PJON_IO_MODE(_output_pin, OUTPUT);
       pulse(1);
       send_byte(response);
@@ -253,7 +257,7 @@ class SoftwareBitBang {
       PJON_IO_MODE(_output_pin, OUTPUT);
       pulse(3); // Send frame initializer
       for(uint16_t b = 0; b < length; b++)
-        send_byte(data[b]); // Send data
+        send_byte(data[b]); // Send each byte
       PJON_IO_PULL_DOWN(_output_pin);
     };
 

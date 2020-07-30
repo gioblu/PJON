@@ -76,7 +76,7 @@ The reception technique is based on 3 steps:
 2. Synchronize with its falling edge
 3. Ensure it is followed by a low data bit
 
-If so reception starts, if not, interference, synchronization loss or simply absence of communication is detected. The high padding bit is 2.5 times longer than data bits because with this ratio ambiguity between padding bits and 2 or 3 consecutive data bits is avoided even with an overall deviation of up to +- (data bit / 4) - 1. The receiver must accept a synchronization pad also if it is prepended by a 0 of up to (data bit / 4) - 1 microseconds.
+If so reception starts, if not, interference, synchronization loss or simply absence of communication is detected. The high padding bit is 2.5 times longer than data bits because with this ratio ambiguity between padding bits and 2 or 3 consecutive data bits is avoided even with an overall deviation of up to +- (data bit / 4) - 1. A synchronization pad is acceptable if prepended by a 0 of up to (data bit / 4) - 1.
 
 ```cpp  
  ___________ ___________________________
@@ -89,7 +89,7 @@ If so reception starts, if not, interference, synchronization loss or simply abs
 The synchronization pad adds overhead although it includes synchronization along with the data and eliminates the need of a dedicated clock line. The presence of the synchronization pad between each byte also ensures that a frame composed of a series of bytes with decimal value 0 can be transmitted safely without risk of collision.
 
 ### Frame transmission
-Before a frame transmission the communication medium's state is analysed, if high communication is detected and collision is avoided, if low for a duration of one byte plus a small random time, frame transmission starts with an initializer composed by 3 consecutive synchronization pads followed by data bytes. The synchronization pad is used for both byte and frame initialization to reduce the implementation complexity.  
+Before a frame transmission the communication medium's state is analysed, if high communication is detected and collision is avoided, if low for a duration of one byte plus the latency and a small random time, frame transmission starts with an initializer composed by 3 consecutive synchronization pads followed by data bytes. The synchronization pad is used for both byte and frame initialization to reduce the implementation complexity.  
 ```cpp  
  ________ _________________ __________________________________
 |ANALYSIS|   FRAME INIT    | DATA 1-65535 bytes               |

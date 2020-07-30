@@ -71,7 +71,7 @@
     #if F_CPU == 16000000L
       /* Working on pin: 10 */
       #define SWBB_BIT_WIDTH   37
-      #define SWBB_BIT_SPACER 110
+      #define SWBB_BIT_SPACER 104
       #define SWBB_ACCEPTANCE  56
       #define SWBB_READ_DELAY   4
     #endif

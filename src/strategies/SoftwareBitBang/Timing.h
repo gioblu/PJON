@@ -268,13 +268,13 @@
     #define SWBB_BIT_WIDTH   40
   #endif
   #ifndef SWBB_BIT_SPACER
-    #define SWBB_BIT_SPACER 112
+    #define SWBB_BIT_SPACER 106
   #endif
   #ifndef SWBB_ACCEPTANCE
-    #define SWBB_ACCEPTANCE  56
+    #define SWBB_ACCEPTANCE  53
   #endif
   #ifndef SWBB_READ_DELAY
-    #define SWBB_READ_DELAY   4
+    #define SWBB_READ_DELAY   3
   #endif
   #ifndef SWBB_LATENCY
     #define SWBB_LATENCY     13
@@ -302,10 +302,10 @@
     #define SWBB_BIT_WIDTH   24
   #endif
   #ifndef SWBB_BIT_SPACER
-    #define SWBB_BIT_SPACER  80
+    #define SWBB_BIT_SPACER  66
   #endif
   #ifndef SWBB_ACCEPTANCE
-    #define SWBB_ACCEPTANCE  40
+    #define SWBB_ACCEPTANCE  30
   #endif
   #ifndef SWBB_READ_DELAY
     #define SWBB_READ_DELAY   8
@@ -319,13 +319,13 @@
     #define SWBB_BIT_WIDTH   22
   #endif
   #ifndef SWBB_BIT_SPACER
-    #define SWBB_BIT_SPACER  56
+    #define SWBB_BIT_SPACER  61
   #endif
   #ifndef SWBB_ACCEPTANCE
     #define SWBB_ACCEPTANCE  30
   #endif
   #ifndef SWBB_READ_DELAY
-    #define SWBB_READ_DELAY   9
+    #define SWBB_READ_DELAY   7
   #endif
   #ifndef SWBB_LATENCY
     #define SWBB_LATENCY      5

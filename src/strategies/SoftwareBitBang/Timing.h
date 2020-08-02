@@ -71,7 +71,7 @@
     #if F_CPU == 16000000L
       /* Working on pin: 10 */
       #define SWBB_BIT_WIDTH   37
-      #define SWBB_BIT_SPACER 110
+      #define SWBB_BIT_SPACER 104
       #define SWBB_ACCEPTANCE  56
       #define SWBB_READ_DELAY   4
     #endif
@@ -166,6 +166,14 @@
     #define SWBB_ACCEPTANCE  45
     #define SWBB_READ_DELAY  -4
   #endif
+  /* Added by Giovanni Blu Mitolo 30/07/2020
+     Tested on pin: D0 */
+  #if SWBB_MODE == 2
+    #define SWBB_BIT_WIDTH   39.5
+    #define SWBB_BIT_SPACER  91.5
+    #define SWBB_ACCEPTANCE  45
+    #define SWBB_READ_DELAY  -2
+  #endif
 #endif
 
 /* NodeMCU, generic ESP8266 ----------------------------------------------- */
@@ -230,18 +238,18 @@
   #endif
   #if SWBB_MODE == 2
     #if F_CPU == 72000000L
-      #define SWBB_BIT_WIDTH   39
-      #define SWBB_BIT_SPACER  91
-      #define SWBB_ACCEPTANCE  47
-      #define SWBB_READ_DELAY  3
+      #define SWBB_BIT_WIDTH   39.5
+      #define SWBB_BIT_SPACER  91.5
+      #define SWBB_ACCEPTANCE  53
+      #define SWBB_READ_DELAY  -8
     #endif
   #endif
   #if SWBB_MODE == 3
     #if F_CPU == 72000000L
-      #define SWBB_BIT_WIDTH   27
-      #define SWBB_BIT_SPACER  87
-      #define SWBB_ACCEPTANCE  45
-      #define SWBB_READ_DELAY  2
+      #define SWBB_BIT_WIDTH   27.5
+      #define SWBB_BIT_SPACER  69.5
+      #define SWBB_ACCEPTANCE  33
+      #define SWBB_READ_DELAY  -5
     #endif
   #endif
   #if SWBB_MODE == 4
@@ -260,19 +268,16 @@
     #define SWBB_BIT_WIDTH   40
   #endif
   #ifndef SWBB_BIT_SPACER
-    #define SWBB_BIT_SPACER 112
+    #define SWBB_BIT_SPACER 106
   #endif
   #ifndef SWBB_ACCEPTANCE
-    #define SWBB_ACCEPTANCE  56
+    #define SWBB_ACCEPTANCE  53
   #endif
   #ifndef SWBB_READ_DELAY
-    #define SWBB_READ_DELAY   4
+    #define SWBB_READ_DELAY   3
   #endif
   #ifndef SWBB_LATENCY
     #define SWBB_LATENCY     13
-  #endif
-  #ifndef SWBB_DEVIATION
-    #define SWBB_DEVIATION   10
   #endif
 #endif
 #if SWBB_MODE == 2
@@ -291,19 +296,16 @@
   #ifndef SWBB_LATENCY
     #define SWBB_LATENCY     10
   #endif
-  #ifndef SWBB_DEVIATION
-    #define SWBB_DEVIATION    9
-  #endif
 #endif
 #if SWBB_MODE == 3
   #ifndef SWBB_BIT_WIDTH
     #define SWBB_BIT_WIDTH   24
   #endif
   #ifndef SWBB_BIT_SPACER
-    #define SWBB_BIT_SPACER  80
+    #define SWBB_BIT_SPACER  66
   #endif
   #ifndef SWBB_ACCEPTANCE
-    #define SWBB_ACCEPTANCE  40
+    #define SWBB_ACCEPTANCE  30
   #endif
   #ifndef SWBB_READ_DELAY
     #define SWBB_READ_DELAY   8
@@ -311,28 +313,22 @@
   #ifndef SWBB_LATENCY
     #define SWBB_LATENCY      8
   #endif
-  #ifndef SWBB_DEVIATION
-    #define SWBB_DEVIATION    7
-  #endif
 #endif
 #if SWBB_MODE == 4
   #ifndef SWBB_BIT_WIDTH
     #define SWBB_BIT_WIDTH   22
   #endif
   #ifndef SWBB_BIT_SPACER
-    #define SWBB_BIT_SPACER  56
+    #define SWBB_BIT_SPACER  61
   #endif
   #ifndef SWBB_ACCEPTANCE
     #define SWBB_ACCEPTANCE  30
   #endif
   #ifndef SWBB_READ_DELAY
-    #define SWBB_READ_DELAY   9
+    #define SWBB_READ_DELAY   7
   #endif
   #ifndef SWBB_LATENCY
     #define SWBB_LATENCY      5
-  #endif
-  #ifndef SWBB_DEVIATION
-    #define SWBB_DEVIATION    7
   #endif
 #endif
 

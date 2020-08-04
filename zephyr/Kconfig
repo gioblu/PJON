@@ -4,8 +4,7 @@ menuconfig PJON
 	  Enable the PJON protocol
 
 if PJON
-choice
-	prompt "PJON strategy"
+menu "PJON strategy"
 
 config PJON_STRATEGY_DUALUDP
     select NETWORKING
@@ -16,9 +15,9 @@ config PJON_STRATEGY_DUALUDP
 
 
 config PJON_STRATEGY_THROUGHSERIAL
-	bool "PJON strategy	Through	Serial"
 	select RING_BUFFER
-endchoice
+	bool "PJON strategy	Through	Serial"
+endmenu
 
 config PJON_DEVICE_ID
 	int	"PJON Device ID"

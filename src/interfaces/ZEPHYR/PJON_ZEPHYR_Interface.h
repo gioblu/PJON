@@ -1,9 +1,12 @@
 #if defined(ZEPHYR)
 
+#define OUTPUT GPIO_OUTPUT
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <drivers/gpio.h>
 #include <drivers/uart.h>
 #include <sys/ring_buffer.h>
 #include <logging/log.h>
@@ -39,11 +42,25 @@ static void uart_irq_callback(struct device *dev)
     }
 }
 
+static struct device* pin_dev = NULL;
 
 static int serial_put_char(struct device* dev, uint8_t byte)
 {
     uart_poll_out(dev,byte);
     return 1;
+}
+
+static void digitalWrite(int pin, bool state)
+{
+    gpio_pin_set(pin_dev, pin, state);
+
+}
+static void pinMode(int pin, int mode)
+{
+    pin_dev = device_get_binding(DT_LABEL(DT_NODELABEL(dir)));
+
+    gpio_pin_configure(pin_dev, pin, mode);
+
 }
 
 // deal with randomness
@@ -108,11 +125,11 @@ static int serial_put_char(struct device* dev, uint8_t byte)
 // feature of the rs485 transceiver
 
 #ifndef PJON_IO_WRITE
-#define PJON_IO_WRITE(P, C)
+#define PJON_IO_WRITE digitalWrite
 #endif
 
 #ifndef PJON_IO_MODE
-#define PJON_IO_MODE(P, C)
+#define PJON_IO_MODE pinMode
 #endif
 
 #ifndef LOW

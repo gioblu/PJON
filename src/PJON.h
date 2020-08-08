@@ -563,8 +563,7 @@ class PJON {
         !(payload[1] & PJON_ACK_REQ_BIT) ||
         _mode == PJON_SIMPLEX
       ) return PJON_ACK;
-      //return (strategy.receive_response() == PJON_ACK) ? PJON_ACK : PJON_FAIL;
-      return PJON_ACK;
+      return (strategy.receive_response() == PJON_ACK) ? PJON_ACK : PJON_FAIL;
     };
 
     /* Compose and transmit a packet passing its info as parameters: */

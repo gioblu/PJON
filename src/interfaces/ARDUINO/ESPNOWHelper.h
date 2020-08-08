@@ -52,13 +52,20 @@ enum {
 static uint8_t last_mac[ESP_NOW_ETH_ALEN];
 static PacketQueue packetQueue;
 volatile bool sendingDone = true;
+volatile uint32_t sendCount = 0;
+volatile uint32_t recCalled = 0;
+volatile uint32_t failCount = 0;
 
 static void espnow_send_cb(const uint8_t *mac_addr, uint8_t status) {
+	sendCount++;
+	if (status != 0)
+		failCount++;
 	// The only thing we do in the send callback is unblock the other thread which blocks after posting data to the MAC
 	sendingDone = true; 
 };
 
 static void espnow_recv_cb(const uint8_t *mac_addr, const uint8_t *data, int len) {
+	recCalled++;
 	espnow_packet_t* packet = new espnow_packet_t();
 
 	memcpy(packet->mac_addr, mac_addr, ESP_NOW_ETH_ALEN);
@@ -68,6 +75,7 @@ static void espnow_recv_cb(const uint8_t *mac_addr, const uint8_t *data, int len
 	packet->data_len = len;
 
 	if (!packetQueue.push(packet)) { // queue is full - drop the packet
+		failCount++;
 		free(packet->data);
 		delete packet;
 	}
@@ -188,11 +196,14 @@ public:
 	};
 
 	void send_frame(uint8_t *data, uint16_t length, uint8_t dest_mac[ESP_NOW_ETH_ALEN]) {
-		if (!sendingDone)
+		if (!sendingDone) {
+			failCount++;
 			return; // we are still sending the previous frame - discard this one
+		}
 
 		uint8_t packet[ESPNOW_MAX_PACKET];
 		if (length + 4 > ESPNOW_MAX_PACKET) {
+			failCount++;
 			return;
 		}
 
@@ -212,6 +223,9 @@ public:
 				//delay(1);
 				yield(); 
 			} while(!sendingDone);
+		}
+		else {
+			failCount++;
 		}
   };
 

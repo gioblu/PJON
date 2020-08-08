@@ -13,7 +13,7 @@
     #define ESP_NOW_ETH_ALEN 6
 #endif
 
-#define ESPNOW_QUEUE_SIZE 200
+#define ESPNOW_QUEUE_SIZE 6
 
 typedef struct
 {

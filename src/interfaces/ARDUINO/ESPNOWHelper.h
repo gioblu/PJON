@@ -4,10 +4,6 @@
 	#error "ESP8266 or ESP32 constant is not defined."
 #endif
 
-#include <stdlib.h>
-#include <time.h>
-#include <string.h>
-#include <assert.h>
 #include "PacketQueue.h"
 
 #if defined(ESP8266)
@@ -16,12 +12,14 @@
 	#include <ESP8266WiFi.h>
 #elif defined(ESP32)
 	#include <esp_now.h>
+	#include <nvs_flash.h>
+	#include <esp_wifi.h>
 #endif
 
 #if defined(CONFIG_STATION_MODE) // ESPNOW can work in both station and softap mode. It is configured in menuconfig.
 	#if defined(ESP8266)
 		#define ESPNOW_WIFI_MODE WIFI_STA
-        #define ESPNOW_WIFI_ROLE ESP_NOW_ROLE_CONTROLLER
+		#define ESPNOW_WIFI_ROLE ESP_NOW_ROLE_CONTROLLER
 	#elif defined(ESP32)
 		#define ESPNOW_WIFI_MODE WIFI_MODE_STA
 		#define ESPNOW_WIFI_IF ESP_IF_WIFI_STA
@@ -30,7 +28,7 @@
 #else
 	#if defined(ESP8266)
 		#define ESPNOW_WIFI_MODE WIFI_AP
-        #define ESPNOW_WIFI_ROLE ESP_NOW_ROLE_COMBO
+		#define ESPNOW_WIFI_ROLE ESP_NOW_ROLE_COMBO
 	#elif defined(ESP32)
 		#define ESPNOW_WIFI_MODE WIFI_MODE_AP
 		#define ESPNOW_WIFI_IF ESP_IF_WIFI_AP
@@ -120,7 +118,7 @@ public:
 		memcpy(_esp_pmk, espnow_pmk, 16);
 
 		#ifdef ESP8266
-            WiFi.mode(ESPNOW_WIFI_MODE);
+			WiFi.mode(ESPNOW_WIFI_MODE);
 			wifi_set_channel(_channel);
 			esp_now_init();
 			esp_now_set_self_role(ESPNOW_WIFI_ROLE);
@@ -130,19 +128,19 @@ public:
 			tcpip_adapter_init();
 			wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
 			esp_wifi_init(&cfg);
-            //esp_wifi_set_country(&wifi_country);
+			//esp_wifi_set_country(&wifi_country);
 			esp_wifi_set_storage(WIFI_STORAGE_RAM);
 			esp_wifi_set_mode(ESPNOW_WIFI_MODE);
 
-            // These two steps are required BEFORE the channel can be set
+			// These two steps are required BEFORE the channel can be set
 			esp_wifi_start();
 			esp_wifi_set_promiscuous(true);
 
 			esp_wifi_set_channel(_channel, WIFI_SECOND_CHAN_NONE);
-			esp_now_init());
+			esp_now_init();
 			esp_now_register_send_cb(reinterpret_cast<esp_now_send_cb_t>(espnow_send_cb));
 			esp_now_register_recv_cb(reinterpret_cast<esp_now_recv_cb_t>(espnow_recv_cb));
-			ESP_ERROR_CHECK(esp_now_set_pmk(_esp_pmk);
+			ESP_ERROR_CHECK(esp_now_set_pmk(_esp_pmk));
 		#endif
 
 		add_peer(espnow_broadcast_mac); // Add broadcast peer information to peer list

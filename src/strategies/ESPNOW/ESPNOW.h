@@ -76,7 +76,9 @@ class ESPNOW {
         PJONTools::parse_header(message, packet_info);
         uint8_t sender_id = packet_info.tx.id;
         if(sender_id == 0) {
-          //ESP_LOGE("ESPNOW", "AutoRegister parsing failed");
+          #if defined(ESP32)  
+            ESP_LOGE("ESPNOW", "AutoRegister parsing failed");
+          #endif
           return; // If parsing fails, it will be 0
         }
 
@@ -87,19 +89,23 @@ class ESPNOW {
         // See if PJON id is already registered, add if not
         int16_t pos = find_remote_node(sender_id);
         if(pos == -1) {
-          //ESP_LOGI("ESPNOW", "Autoregister new sender %d",sender_id);
+          #if defined(ESP32)
+            ESP_LOGI("ESPNOW", "Autoregister new sender %d",sender_id);
+          #endif
           add_node(sender_id, sender_mac);
         }
         else if(memcmp(_remote_mac[pos], sender_mac, ESP_NOW_ETH_ALEN) != 0) {
           // Update mac of existing node
-          /*ESP_LOGI(
-            "ESPNOW",
-            "Update sender mac %d %d:%d:%d",
-            sender_id,
-            sender_mac[1],
-            sender_mac[2],
-            sender_mac[3]
-          );*/
+          #if defined(ESP32)
+            ESP_LOGI(
+                "ESPNOW",
+                "Update sender mac %d %d:%d:%d",
+                sender_id,
+                sender_mac[1],
+                sender_mac[2],
+                sender_mac[3]
+            );
+          #endif
           memcpy(_remote_mac[pos], sender_mac, ESP_NOW_ETH_ALEN);
         }
       }

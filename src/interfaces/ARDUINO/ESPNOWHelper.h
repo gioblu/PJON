@@ -36,8 +36,7 @@
 	#endif
 #endif
 
-#define ESPNOW_PACKET_HEADER_LENGTH 2
-#define ESPNOW_PACKET_FOOTER_LENGTH 2
+
 
 
 static uint8_t espnow_broadcast_mac[ESP_NOW_MAC_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
@@ -60,22 +59,12 @@ static void espnow_send_cb(const uint8_t *mac_addr, uint8_t status) {
 };
 
 static void espnow_recv_cb(const uint8_t *mac_addr, const uint8_t *data, int len) {
-	espnow_packet_t* packet = new espnow_packet_t();
-
-	memcpy(packet->mac_addr, mac_addr, ESP_NOW_MAC_LENGTH);
-
-	packet->data = (uint8_t *)malloc(len);
-	memcpy(packet->data, data, len);
-	packet->data_len = len;
-
-	if (!packetQueue.push(packet)) { // queue is full - drop the packet
-		free(packet->data);
-		delete packet;
-	}
+    // Add the packet to the incoming queue.
+    // no error checking, if queue is full just ignore the packet.
+	packetQueue.push(mac_addr, data, len);
 };
 
 class ENHelper {
-	uint8_t _magic_header[4];
 	uint8_t _channel = 14;
 	uint8_t _esp_pmk[16];
 
@@ -151,47 +140,7 @@ public:
 	};
 
 	uint16_t receive_frame(uint8_t *data, uint16_t max_length) {
-		espnow_packet_t* packet = packetQueue.pop(); // see if there's any received data waiting
-		if (packet == NULL)
-			return PJON_FAIL;
-
-		if (packet->data_len < 4) { // The packet is too small
-			Serial.println("too small");
-			free(packet->data);
-			delete(packet);
-			return PJON_FAIL;
-		}
-
-		uint8_t len = packet->data_len - 4;
-
-		if(
-			(packet->data[0] ^ len) != _magic_header[0] ||
-			(packet->data[1] ^ len) != _magic_header[1] ||
-			(packet->data[packet->data_len - 2] ^ len) != _magic_header[2] ||
-			(packet->data[packet->data_len - 1] ^ len) != _magic_header[3]
-		) {
-			Serial.println("Magic mismatch");
-			free(packet->data);
-			delete(packet);
-			return PJON_FAIL;
-		}
-
-		//Serial.print("H"); Serial.println(packet->data[2]);
-
-		if (len > max_length) {
-			free(packet->data);
-			delete(packet);
-			return PJON_FAIL;
-		}
-
-		memcpy(last_mac, packet->mac_addr, ESP_NOW_MAC_LENGTH);  // Update last received mac
-
-		memcpy(data, packet->data + 2, len);
-
-		free(packet->data);
-		delete(packet);
-
-		return len;
+		return packetQueue.pop(last_mac, data, max_length);
 	};
 
 	void send_frame(uint8_t *data, uint16_t length, uint8_t dest_mac[ESP_NOW_MAC_LENGTH]) {
@@ -208,11 +157,11 @@ public:
 		uint8_t packet[PJON_PACKET_MAX_LENGTH + ESPNOW_PACKET_HEADER_LENGTH + ESPNOW_PACKET_FOOTER_LENGTH];
 
 		uint8_t len = length;
-		packet[0] = _magic_header[0] ^ len;
-		packet[1] = _magic_header[1] ^ len;
+		packet[0] = ESP_NOW_MAGIC_HEADER[0] ^ len;
+		packet[1] = ESP_NOW_MAGIC_HEADER[1] ^ len;
 		memcpy(packet + ESPNOW_PACKET_HEADER_LENGTH, data, len);
-		packet[len + 2] = _magic_header[2] ^ len;
-		packet[len + 3] = _magic_header[3] ^ len;
+		packet[len + 2] = ESP_NOW_MAGIC_HEADER[2] ^ len;
+		packet[len + 3] = ESP_NOW_MAGIC_HEADER[3] ^ len;
 
 		ATOMIC()
 		{
@@ -231,10 +180,6 @@ public:
 
 	void send_frame(uint8_t *data, uint16_t length) { // Broadcast
 		send_frame(data, length, espnow_broadcast_mac);
-	};
-
-	void set_magic_header(uint8_t *magic_header) {
-		memcpy(_magic_header, magic_header, 4);
 	};
 
 	void get_sender(uint8_t *ip) {

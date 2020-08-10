@@ -36,7 +36,7 @@
   #define EN_RECEIVE_TIME 0
 #endif
 
-#define EN_MAGIC_HEADER (uint8_t*)"\xEE\xFE\x0E\xEF"
+
 
 class ESPNOW {
     bool _espnow_initialised = false;
@@ -54,7 +54,6 @@ class ESPNOW {
 
     bool check_en() {
       if(!_espnow_initialised) {
-        en.set_magic_header(EN_MAGIC_HEADER);
         if(en.begin(_channel,(uint8_t*)_espnow_pmk))
           _espnow_initialised = true;
       }

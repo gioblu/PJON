@@ -8,29 +8,29 @@
 #endif
 
 #include <SimplyAtomic.h> // https://github.com/wizard97/SimplyAtomic
+#include "PJONDefines.h"
 
-#ifndef ESP_NOW_ETH_ALEN
-    #define ESP_NOW_ETH_ALEN 6
+#ifndef ESP_NOW_MAC_LENGTH
+    #define ESP_NOW_MAC_LENGTH 6
 #endif
-
-#define ESPNOW_QUEUE_SIZE 6
 
 typedef struct
 {
-    uint8_t mac_addr[ESP_NOW_ETH_ALEN];
+    uint8_t mac_addr[ESP_NOW_MAC_LENGTH];
     uint8_t *data;
     int data_len;
 } espnow_packet_t;
 
 /**
- * A queue of incoming packets of max capacity ESPNOW_QUEUE_SIZE.
+ * A queue of incoming packets of max capacity PJON_MAX_PACKETS.
  * The queue should be atomic (not tested).
  * This was done to remove a dependency on FreeRTOS - replacement of xQueueHandle (and related functions).
  */
 class PacketQueue
 {
     private:
-        espnow_packet_t* queue[ESPNOW_QUEUE_SIZE + 1];
+        // 1 extra capacity is necessary to distinguisch between the queue being full and empty
+        espnow_packet_t* queue[PJON_MAX_PACKETS + 1];
         volatile uint8_t firstElement = 0;
         volatile uint8_t firstSpace = 0;
         
@@ -54,7 +54,7 @@ bool PacketQueue::push(espnow_packet_t* packet)
 
     ATOMIC()
     {
-        int firstSpacePlus1 = (firstSpace + 1) % ESPNOW_QUEUE_SIZE;
+        int firstSpacePlus1 = (firstSpace + 1) % (PJON_MAX_PACKETS + 1);
         isFull = firstSpacePlus1 == firstElement;
         if (!isFull)
         {
@@ -77,7 +77,7 @@ espnow_packet_t* PacketQueue::pop() {
         ATOMIC()
         {
             packet = queue[firstElement];
-            firstElement = (firstElement + 1) % ESPNOW_QUEUE_SIZE;
+            firstElement = (firstElement + 1) % (PJON_MAX_PACKETS + 1);
         }
 
         return packet;

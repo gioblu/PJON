@@ -5,6 +5,7 @@
 #endif
 
 #include "PacketQueue.h"
+#include "PJONDefines.h"
 
 #if defined(ESP8266)
 	#include <c_types.h>
@@ -35,11 +36,11 @@
 	#endif
 #endif
 
-#define ESPNOW_MAX_PACKET 250
+#define ESPNOW_PACKET_HEADER_LENGTH 2
+#define ESPNOW_PACKET_FOOTER_LENGTH 2
 
 
-static uint8_t espnow_broadcast_mac[ESP_NOW_ETH_ALEN] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-#define IS_BROADCAST_ADDR(addr) (memcmp(addr, espnow_broadcast_mac, ESP_NOW_ETH_ALEN) == 0)
+static uint8_t espnow_broadcast_mac[ESP_NOW_MAC_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
 
 
@@ -49,7 +50,7 @@ enum {
   ESPNOW_DATA_MAX,
 };
 
-static uint8_t last_mac[ESP_NOW_ETH_ALEN];
+static uint8_t last_mac[ESP_NOW_MAC_LENGTH];
 static PacketQueue packetQueue;
 volatile bool sendingDone = true;
 
@@ -61,7 +62,7 @@ static void espnow_send_cb(const uint8_t *mac_addr, uint8_t status) {
 static void espnow_recv_cb(const uint8_t *mac_addr, const uint8_t *data, int len) {
 	espnow_packet_t* packet = new espnow_packet_t();
 
-	memcpy(packet->mac_addr, mac_addr, ESP_NOW_ETH_ALEN);
+	memcpy(packet->mac_addr, mac_addr, ESP_NOW_MAC_LENGTH);
 
 	packet->data = (uint8_t *)malloc(len);
 	memcpy(packet->data, data, len);
@@ -79,11 +80,11 @@ class ENHelper {
 	uint8_t _esp_pmk[16];
 
 public:
-	void add_node_mac(uint8_t mac_addr[ESP_NOW_ETH_ALEN]) {
+	void add_node_mac(uint8_t mac_addr[ESP_NOW_MAC_LENGTH]) {
 		add_peer(mac_addr);
 	};
 
-	void add_peer(uint8_t mac_addr[ESP_NOW_ETH_ALEN]) {
+	void add_peer(uint8_t mac_addr[ESP_NOW_MAC_LENGTH]) {
 		if(esp_now_is_peer_exist(mac_addr))
 			return;
 
@@ -96,9 +97,10 @@ public:
 			memset(peer, 0, sizeof(esp_now_peer_info_t));
 			peer->channel = _channel;
 			peer->ifidx = ESPNOW_WIFI_IF;
-			if(IS_BROADCAST_ADDR(mac_addr))
-				peer->encrypt = false; // else { peer->encrypt = true; memcpy(peer->lmk, _esp_pmk, 16); }
-			memcpy(peer->peer_addr, mac_addr, ESP_NOW_ETH_ALEN);
+			if( (memcmp(mac_addr, espnow_broadcast_mac, ESP_NOW_MAC_LENGTH) == 0))
+				peer->encrypt = false;
+            // else { peer->encrypt = true; memcpy(peer->lmk, _esp_pmk, 16); }
+			memcpy(peer->peer_addr, mac_addr, ESP_NOW_MAC_LENGTH);
 			esp_now_add_peer(peer);
 			free(peer);
 		#endif
@@ -182,7 +184,7 @@ public:
 			return PJON_FAIL;
 		}
 
-		memcpy(last_mac, packet->mac_addr, ESP_NOW_ETH_ALEN);  // Update last received mac
+		memcpy(last_mac, packet->mac_addr, ESP_NOW_MAC_LENGTH);  // Update last received mac
 
 		memcpy(data, packet->data + 2, len);
 
@@ -192,20 +194,23 @@ public:
 		return len;
 	};
 
-	void send_frame(uint8_t *data, uint16_t length, uint8_t dest_mac[ESP_NOW_ETH_ALEN]) {
+	void send_frame(uint8_t *data, uint16_t length, uint8_t dest_mac[ESP_NOW_MAC_LENGTH]) {
 		if (!sendingDone) {
-			return; // we are still sending the previous frame - discard this one
-		}
-
-		uint8_t packet[ESPNOW_MAX_PACKET];
-		if (length + 4 > ESPNOW_MAX_PACKET) {
+             // we are still sending the previous frame - discard this one
 			return;
 		}
+
+        if (length > PJON_PACKET_MAX_LENGTH) {
+            // the data is too long
+			return;
+		}
+
+		uint8_t packet[PJON_PACKET_MAX_LENGTH + ESPNOW_PACKET_HEADER_LENGTH + ESPNOW_PACKET_FOOTER_LENGTH];
 
 		uint8_t len = length;
 		packet[0] = _magic_header[0] ^ len;
 		packet[1] = _magic_header[1] ^ len;
-		memcpy(packet + 2, data, len);
+		memcpy(packet + ESPNOW_PACKET_HEADER_LENGTH, data, len);
 		packet[len + 2] = _magic_header[2] ^ len;
 		packet[len + 3] = _magic_header[3] ^ len;
 
@@ -213,9 +218,8 @@ public:
 		{
 			sendingDone = false;
 		}
-		if(esp_now_send(dest_mac, packet, len + 4) == 0) {
-			do { // do nothing, wait for interrupt to be called
-				//delay(1);
+		if(esp_now_send(dest_mac, packet, len + ESPNOW_PACKET_HEADER_LENGTH + ESPNOW_PACKET_FOOTER_LENGTH) == 0) {
+			do { // wait for sending finished interrupt to be called
 				yield(); 
 			} while(!sendingDone);
 		}
@@ -234,6 +238,6 @@ public:
 	};
 
 	void get_sender(uint8_t *ip) {
-		memcpy(ip, last_mac, ESP_NOW_ETH_ALEN);
+		memcpy(ip, last_mac, ESP_NOW_MAC_LENGTH);
 	};
 };

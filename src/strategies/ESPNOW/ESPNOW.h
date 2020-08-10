@@ -48,7 +48,7 @@ class ESPNOW {
     // Remote nodes
     uint8_t  _remote_node_count = 0;
     uint8_t  _remote_id[EN_MAX_REMOTE_NODES];
-    uint8_t  _remote_mac[EN_MAX_REMOTE_NODES][ESP_NOW_ETH_ALEN];
+    uint8_t  _remote_mac[EN_MAX_REMOTE_NODES][ESP_NOW_MAC_LENGTH];
 
     ENHelper en;
 
@@ -83,7 +83,7 @@ class ESPNOW {
         }
 
         // Then get the mac address of the sender
-        uint8_t sender_mac[ESP_NOW_ETH_ALEN];
+        uint8_t sender_mac[ESP_NOW_MAC_LENGTH];
         en.get_sender(sender_mac);
 
         // See if PJON id is already registered, add if not
@@ -94,7 +94,7 @@ class ESPNOW {
           #endif
           add_node(sender_id, sender_mac);
         }
-        else if(memcmp(_remote_mac[pos], sender_mac, ESP_NOW_ETH_ALEN) != 0) {
+        else if(memcmp(_remote_mac[pos], sender_mac, ESP_NOW_MAC_LENGTH) != 0) {
           // Update mac of existing node
           #if defined(ESP32)
             ESP_LOGI(
@@ -106,7 +106,7 @@ class ESPNOW {
                 sender_mac[3]
             );
           #endif
-          memcpy(_remote_mac[pos], sender_mac, ESP_NOW_ETH_ALEN);
+          memcpy(_remote_mac[pos], sender_mac, ESP_NOW_MAC_LENGTH);
         }
       }
     };
@@ -129,7 +129,7 @@ public:
     ) {
       if(_remote_node_count == EN_MAX_REMOTE_NODES) return -1;
       _remote_id[_remote_node_count] = remote_id;
-      memcpy(_remote_mac[_remote_node_count], remote_mac, ESP_NOW_ETH_ALEN);
+      memcpy(_remote_mac[_remote_node_count], remote_mac, ESP_NOW_MAC_LENGTH);
       en.add_node_mac(remote_mac);
       _remote_node_count++;
       return _remote_node_count - 1;

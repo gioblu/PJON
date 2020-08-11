@@ -163,13 +163,15 @@ public:
 		packet[len + 2] = ESP_NOW_MAGIC_HEADER[2] ^ len;
 		packet[len + 3] = ESP_NOW_MAGIC_HEADER[3] ^ len;
 
-		ATOMIC()
-		{
-			sendingDone = false;
-		}
+        noInterrupts();
+        {
+		    sendingDone = false;
+        }
+        interrupts();
+
 		if(esp_now_send(dest_mac, packet, len + ESPNOW_PACKET_HEADER_LENGTH + ESPNOW_PACKET_FOOTER_LENGTH) == 0) {
 			do { // wait for sending finished interrupt to be called
-				yield(); 
+				yield();
 			} while(!sendingDone);
 		}
   };

@@ -7,7 +7,7 @@
 	#include <esp_now.h>
 #endif
 
-#include <SimplyAtomic.h> // https://github.com/wizard97/SimplyAtomic
+#include <Arduino.h>
 #include "PJONDefines.h"
 
 #define ESP_NOW_MAC_LENGTH 6
@@ -93,7 +93,7 @@ bool PacketQueue::push(const uint8_t *mac_addr, const uint8_t *data, int len)
 {   
 	bool isFull;
 
-	ATOMIC()
+	noInterrupts();
 	{
 		int firstSpacePlus1 = (firstSpace + 1) % (PJON_MAX_PACKETS + 1);
 		isFull = firstSpacePlus1 == firstElement;
@@ -103,6 +103,7 @@ bool PacketQueue::push(const uint8_t *mac_addr, const uint8_t *data, int len)
 			firstSpace = firstSpacePlus1;
 		}
 	}
+    interrupts();
 
 	return !isFull;
 }
@@ -115,11 +116,12 @@ uint16_t PacketQueue::pop(uint8_t *out_mac_address, uint8_t *out_data, uint16_t 
 	{
 		uint16_t length;
 
-		ATOMIC()
+		noInterrupts();
 		{
 			length = queue[firstElement].checkAndGet(out_mac_address, out_data, max_length);
 			firstElement = (firstElement + 1) % (PJON_MAX_PACKETS + 1);
 		}
+        interrupts();
 
 		return length;
 	}

@@ -15,8 +15,8 @@
 
 ## PJDL v5.0
 ```
-Invented by Giovanni Blu Mitolo with the support
-of Fred Larsen, Julio Aguirre and Gerhard Sittig
+Invented by Giovanni Blu Mitolo with the support of
+Fred Larsen, Julio Aguirre, Gerhard Sittig and Jack Anderson
 Publication date: 10/04/2010 Latest revision: 24/07/2020
 Related implementation: /src/strategies/SoftwareBitBang/
 Compatible versions: PJON v13.0 and following

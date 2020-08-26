@@ -64,6 +64,11 @@ static void pinMode(int pin, int mode)
 
 }
 
+static void serial_flush(struct device* dev)
+{
+    k_usleep(10);
+}
+
 // deal with randomness
 
 #ifndef PJON_RANDOM
@@ -119,7 +124,7 @@ static void pinMode(int pin, int mode)
 #endif
 
 #ifndef PJON_SERIAL_FLUSH
-#define PJON_SERIAL_FLUSH(S)
+#define PJON_SERIAL_FLUSH(S) serial_flush(S)
 #endif
 
 // io pin handling (for setting the rs485 txe pin) is not needed since we use the auto-direction

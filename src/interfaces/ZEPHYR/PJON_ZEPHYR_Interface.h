@@ -10,6 +10,7 @@
 #include <drivers/uart.h>
 #include <sys/ring_buffer.h>
 #include <logging/log.h>
+#include <devicetree.h>
 
 RING_BUF_DECLARE(ringbuffer_pjon, CONFIG_PJON_MTU);
 static uint8_t tmp_buffer[40];
@@ -57,7 +58,7 @@ static void digitalWrite(int pin, bool state)
 }
 static void pinMode(int pin, int mode)
 {
-    pin_dev = device_get_binding(DT_LABEL(DT_NODELABEL(dir)));
+    pin_dev = device_get_binding(DT_GPIO_LABEL(DT_ALIAS(pjon_txe_pin), gpios));
 
     gpio_pin_configure(pin_dev, pin, mode);
 

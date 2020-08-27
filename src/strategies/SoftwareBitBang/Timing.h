@@ -30,7 +30,7 @@
   #if SWBB_MODE == 1
     #if F_CPU == 16000000L
       /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
-      #define SWBB_BIT_WIDTH   40
+      #define SWBB_BIT_WIDTH   39
       #define SWBB_BIT_SPACER 106
       #define SWBB_ACCEPTANCE  53
       #define SWBB_READ_DELAY   3
@@ -108,7 +108,7 @@
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
   #if SWBB_MODE == 1
     /* Working on pin: 3, 4, 7, 8, 9, 10, 12 */
-    #define SWBB_BIT_WIDTH   38
+    #define SWBB_BIT_WIDTH   37
     #define SWBB_BIT_SPACER 104
     #define SWBB_ACCEPTANCE  53
     #define SWBB_READ_DELAY  11
@@ -265,7 +265,7 @@
 /* Avoid error if any previous defined ------------------------------------ */
 #if SWBB_MODE == 1
   #ifndef SWBB_BIT_WIDTH
-    #define SWBB_BIT_WIDTH   40
+    #define SWBB_BIT_WIDTH   39
   #endif
   #ifndef SWBB_BIT_SPACER
     #define SWBB_BIT_SPACER 106

@@ -92,8 +92,8 @@
 #if defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__)
   #if SWBB_MODE == 1
     /* Working on pin: 2, 4, 8, 12 */
-    #define SWBB_BIT_WIDTH   40
-    #define SWBB_BIT_SPACER 106
+    #define SWBB_BIT_WIDTH   39
+    #define SWBB_BIT_SPACER 102
     #define SWBB_ACCEPTANCE  53
     #define SWBB_READ_DELAY   6
   #endif
@@ -161,10 +161,10 @@
   /* Added by Esben Soeltoft - 03/09/2016
      Updated by Giovanni Blu Mitolo - 21/07/2020
      Working on pin: D0, D1, D3, A0, A1 */
-    #define SWBB_BIT_WIDTH   43.5
+    #define SWBB_BIT_WIDTH   42
     #define SWBB_BIT_SPACER 109.5
     #define SWBB_ACCEPTANCE  45
-    #define SWBB_READ_DELAY  -4
+    #define SWBB_READ_DELAY  -2.5
   #endif
   /* Added by Giovanni Blu Mitolo 30/07/2020
      Tested on pin: D0 */

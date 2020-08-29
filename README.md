@@ -50,6 +50,7 @@ Researchers are active in many universities worldwide using PJON in different en
 - [Definition and Application of PJON-PLC for sensor networks](https://repositorio.unican.es/xmlui/bitstream/handle/10902/14012/408952.pdf?sequence=1) by Jorge Gómez Segurola, Ingeniería de Tecnologías de
 Telecomunicación - [Universidad de Cantabria](https://web.unican.es/) (ES)
 - [Biomimetic electronics](http://c.harl.ie/biomimetic.html) by Charlie Williams with scientific input from researchers Vítor Martins dos Santos, Diana Machado de Sousa and Sabine Vreeburg - Artist in Residency at [Wageningen University](https://www.wur.nl/en.htm) (NL)
+- [LANC Video Camera Control](http://jda.tel/pdf/lanc_video_camera_control.pdf) by [Jack Anderson](https://github.com/jdaandersj) - Department of Computer Science [Loughborough University](https://www.lboro.ac.uk/departments/compsci/) (UK)
 
 ### Contribute
 Feel free to send a pull request sharing something you have made that could help, if you want to support this project you can also try to solve an [issue](https://github.com/gioblu/PJON/issues). Thanks to support, expertise, kindness and talent of the following contributors, the protocol's documentation, specification and implementation have been strongly tested, enhanced and verified:

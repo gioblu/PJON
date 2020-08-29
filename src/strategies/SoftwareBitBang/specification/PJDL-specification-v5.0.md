@@ -15,8 +15,8 @@
 
 ## PJDL v5.0
 ```
-Invented by Giovanni Blu Mitolo with the support
-of Fred Larsen, Julio Aguirre and Gerhard Sittig
+Invented by Giovanni Blu Mitolo with the support of
+Fred Larsen, Julio Aguirre, Gerhard Sittig and Jack Anderson
 Publication date: 10/04/2010 Latest revision: 24/07/2020
 Related implementation: /src/strategies/SoftwareBitBang/
 Compatible versions: PJON v13.0 and following
@@ -61,7 +61,7 @@ The proposed communication modes are the result of years of testing and optimiza
 
 The following table specifies the maximum acceptable deviation of each bit type:
 
-| Mode | Max data bit octet deviation | Max sync. pad deviation   | Max keep busy bit deviation |
+| Mode | Max data bit nonet deviation | Max padding bit deviation | Max keep busy bit deviation |
 | ---- | ---------------------------- | ------------------------- | --------------------------- |
 | 1    | +- (data bit / 4) - 1        | +- (data bit / 4) - 1     | -5µs +10µs                  |
 | 2    | +- (data bit / 4) - 1        | +- (data bit / 4) - 1     | -5µs +10µs                  |

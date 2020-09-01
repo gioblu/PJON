@@ -16,12 +16,14 @@ config PJON_STRATEGY_DUALUDP
 
 config PJON_STRATEGY_THROUGHSERIAL
 	select RING_BUFFER
+	select SERIAL
+	select UART_INTERRUPT_DRIVEN
 	bool "PJON strategy	Through	Serial"
 endmenu
 
 config PJON_DEVICE_ID
 	int	"PJON Device ID"
-	default	255
+	default	0
 	help
 	  PJON Device ID
 

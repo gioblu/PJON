@@ -7,18 +7,18 @@ This table was filled running the [NetworkAnalysis](../../../../examples/ARDUINO
 |------|----------------|-----|----------------|-----|-----------|-----------|--------------|-------------------|
 | 1 #  | UNO/Nano       | 12  | UNO/Nano       | 12  | 1770kB/s  | 59        | 100%         | yes               |
 | 1 #  | UNO/Nano       | 11  | UNO/Nano       | 11  | 1740kB/s  | 58        | 100%         | yes               |
-| 1 #  | UNO/Nano       | 10  | UNO/Nano       | 10  | 1710kB/s  | 57        | 100%         | no                |
+| 1    | UNO/Nano       | 10  | UNO/Nano       | 10  | 1710kB/s  | 57        | 100%         | no                |
 | 1 #  | UNO/Nano       | 12  | Leonardo/Micro | 12  | 1770kB/s  | 59        | 100%         | yes               |
 | 1 #  | UNO/Nano       | 12  | Mega           | 12  | 1770kB/s  | 59        | 100%         | yes               |
-| 1    | UNO/Nano       | 12  | ESP8266 160MHz | D1  | 1770kB/s  | 59        | 100%         | yes               |
-| 1    | UNO/Nano       | 12  | ESP8266 80MHz  | D1  | 1770kB/s  | 59        | 100%         | yes               |
-| 1    | UNO/Nano       | 12  | ESP32 40MHz    | 12  | 1770kB/s  | 59        | 100%         | yes               |
-| 1    | UNO/Nano       | 12  | ESP32 80MHz    | 12  | 1770kB/s  | 59        | 100%         | yes               |
-| 1    | UNO/Nano       | 12  | ESP32 40MHz    | 25  | 1770kB/s  | 59        | 100%         | yes               |
-| 1    | UNO/Nano       | 12  | ESP32 80MHz    | 25  | 1770kB/s  | 59        | 100%         | yes               |
+| 1 #  | UNO/Nano       | 12  | ESP8266 160MHz | D1  | 1785kB/s  | 59-60     | 99.66%       | yes               |
+| 1 #  | UNO/Nano       | 12  | ESP8266 80MHz  | D1  | 1785kB/s  | 59-60     | 99.66%       | yes               |
+| 1 #  | UNO/Nano       | 12  | ESP32 40MHz    | 12  | 1800kB/s  | 60        | 100%         | yes               |
+| 1 #  | UNO/Nano       | 12  | ESP32 80MHz    | 12  | 1800kB/s  | 60        | 100%         | yes               |
+| 1 #  | UNO/Nano       | 12  | ESP32 40MHz    | 25  | 1800kB/s  | 60        | 100%         | yes               |
+| 1 #  | UNO/Nano       | 12  | ESP32 80MHz    | 25  | 1800kB/s  | 60        | 100%         | yes               |
 | 1 #  | UNO/Nano       | 12  | SAMD21         | D0  | 1800kB/s  | 60        | 100%         | yes               |
 | 1    | UNO/Nano       | 12  | Blue pill      | PB9 | 1770kB/s  | 59        | 100%         | yes               |
-| 1 #  | Leonardo/Micro | 12  | UNO/Nano       | 12  | 1770kB/s  | 59        | 100%         | no                |
+| 1    | Leonardo/Micro | 12  | UNO/Nano       | 12  | 1770kB/s  | 59        | 100%         | no                |
 | 1    | Leonardo/Micro | 12  | Leonardo/Micro | 12  | 1740kB/s  | 58        | 99.998%      | no                |
 | 1    | Leonardo/Micro | 12  | Mega           | 12  | 1740kB/s  | 58        | 100%         | no                |
 | 1    | Leonardo/Micro | 12  | ESP32 40MHz    | 12  | 1590kB/s  | 53        | 88.68%       | no                |
@@ -26,30 +26,32 @@ This table was filled running the [NetworkAnalysis](../../../../examples/ARDUINO
 | 1    | Leonardo/Micro | 12  | SAMD21         | D0  | 1770kB/s  | 59        | 100%         | no                |
 | 1 #  | Mega           | 12  | UNO/Nano       | 12  | 1770kB/s  | 59        | 100%         | yes               |
 | 1    | Mega           | 12  | Leonardo/Micro | 12  | 1740kB/s  | 58        | 100%         | yes               |
-| 1    | Mega           | 12  | ESP8266 80MHz  | D1  | 1770kB/s  | 59        | 99.9%        | yes               |
-| 1    | Mega           | 12  | ESP8266 160MHz | D1  | 1770kB/s  | 59        | 99.9%        | yes               |
-| 1    | Mega           | 12  | ESP32 40MHz    | 12  | 1710kB/s  | 57        | 96.49%       | yes               |
-| 1    | Mega           | 12  | ESP32 80MHz    | 12  | 1710kB/s  | 57        | 96.49%       | yes               |
+| 1 #  | Mega           | 12  | ESP8266 80MHz  | D1  | 1797kB/s  | 59-60     | 99.9%        | yes               |
+| 1 #  | Mega           | 12  | ESP8266 160MHz | D1  | 1797kB/s  | 59-60     | 99.9%        | yes               |
+| 1 #  | Mega           | 12  | ESP32 40MHz    | 12  | 1710kB/s  | 57-60     | 96.49%       | yes               |
+| 1 #  | Mega           | 12  | ESP32 80MHz    | 12  | 1710kB/s  | 57-60     | 96.49%       | yes               |
 | 1    | Mega           | 12  | ESP32 40MHz    | 25  | 1710kB/s  | 57        | 96.49%       | yes               |
 | 1    | Mega           | 12  | ESP32 80MHz    | 25  | 1710kB/s  | 57        | 96.49%       | yes               |
 | 1    | Mega           | 12  | SAMD21         | D0  | 1770kB/s  | 59        | 100%         | yes               |
 | 1    | Mega           | 12  | SAMD21         | D1  | 1770kB/s  | 59        | 100%         | yes               |
-| 1    | ESP8266 80MHz  | D1  | UNO/Nano       | 12  | 1770kB/s  | 59        | 100%         |                   |
-| 1    | ESP8266 160MHz | D1  | UNO/Nano       | 12  | 1770kB/s  | 59        | 100%         |                   |
+| 1 #  | ESP8266 80MHz  | D1  | UNO/Nano       | 12  | 1800kB/s  | 60        | 100%         | yes               |
+| 1 #  | ESP8266 160MHz | D1  | UNO/Nano       | 12  | 1800kB/s  | 60        | 100%         | yes               |
 | 1    | ESP8266 80MHz  | D1  | Leonardo/Micro | 12  | 1770kB/s  | 59        | 100%         |                   |
 | 1    | ESP8266 160MHz | D1  | Leonardo/Micro | 12  | 1770kB/s  | 59        | 100%         |                   |
-| 1    | ESP8266 80MHz  | D1  | Mega           | 12  | 1770kB/s  | 59        | 100%         |                   |
-| 1    | ESP8266 160MHz | D1  | Mega           | 12  | 1770kB/s  | 59        | 100%         |                   |
+| 1 #  | ESP8266 80MHz  | D1  | Mega           | 12  | 1800kB/s  | 60        | 100%         | yes               |
+| 1 #  | ESP8266 160MHz | D1  | Mega           | 12  | 1800kB/s  | 60        | 100%         | yes               |
 | 1    | ESP8266 80MHz  | D1  | Blue pill      | PB9 |           |           |              |                   |
 | 1    | ESP8266 160MHz | D1  | Blue pill      | PB9 |           |           |              |                   |
-| 1    | ESP32 80MHz    | 12  | UNO/Nano       | 12  | 1770kB/s  | 59        | 100%         |                   |
-| 1    | ESP32 40MHz    | 12  | UNO/Nano       | 12  | 1770kB/s  | 59        | 100%         |                   |
+| 1 #  | ESP32 80MHz    | 12  | UNO/Nano       | 12  | 1800kB/s  | 60        | 100%         | yes               |
+| 1 #  | ESP32 40MHz    | 12  | UNO/Nano       | 12  | 1800kB/s  | 60        | 100%         | yes               |
+| 1 #  | ESP32 40MHz    | 12  | Mega           | 12  | 1800kB/s  | 60        | 100%         | yes               |
+| 1 #  | ESP32 80MHz    | 12  | Mega           | 12  | 1800kB/s  | 60        | 100%         | yes               |
 | 1    | ESP32 40MHz    | 12  | Leonardo/Micro | 12  | 1770kB/s  | 59        | 100%         |                   |
 | 1    | ESP32 80MHz    | 12  | Leonardo/Micro | 12  | 1770kB/s  | 59        | 100%         |                   |
 | 1    | ESP32          | 12  | Blue pill      | PB9 | 1800kB/s  | 60        | 100%         |                   |
-| 1 #  | SAMD21         | D0  | Mega           | 12  | 1770kB/s  | 59        | 100%         | yes               |
+| 1 #  | SAMD21         | D0  | Mega           | 12  | 1800kB/s  | 60        | 100%         | yes               |
 | 1    | SAMD21         | D0  | Leonardo/Micro | 12  | 1710kB/s  | 57        | 100%         | yes               |
-| 1 #  | SAMD21         | D0  | UNO/Nano       | 12  | 1800kB/s  | 60        | 100%         | yes               |
+| 1    | SAMD21         | D0  | UNO/Nano       | 12  | 1800kB/s  | 60        | 100%         | yes               |
 | 1    | SAMD21         | D0  | ESP32 40MHz    | 12  | 1800kB/s  | 60        | 100%         | yes               |
 | 1    | SAMD21         | D0  | ESP32 80MHz    | 12  | 1800kB/s  | 60        | 100%         | yes               |
 | 1    | SAMD21         | D0  | ESP32 40MHz    | 25  | 1800kB/s  | 60        | 100%         | yes               |

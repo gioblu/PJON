@@ -59,7 +59,6 @@ Before including the library it is possible to configure `SoftwareBitBang` using
 | Constant                | Purpose                             | Supported value                            |
 | ----------------------- |------------------------------------ | ------------------------------------------ |
 | `SWBB_MODE`             | Data transmission mode              | 1, 2, 3, 4                                 |
-| `SWBB_RESPONSE_TIMEOUT` | Maximum response time-out           | Duration in microseconds (1500 by default) |
 | `SWBB_BACK_OFF_DEGREE`  | Maximum back-off exponential degree | Numeric value (4 by default)               |
 | `SWBB_MAX_ATTEMPTS`     | Maximum transmission attempts       | Numeric value (20 by default)              |
 

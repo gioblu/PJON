@@ -129,5 +129,5 @@ void pinMode(int pin, int mode)
 
 void serial_flush(struct device* dev)
 {
-    k_usleep(10);
+    k_usleep(1000);
 }

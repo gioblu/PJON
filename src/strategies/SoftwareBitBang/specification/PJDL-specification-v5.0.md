@@ -29,7 +29,7 @@ Released into the public domain
 29/12/2018 3.0 - Medium access control info, mode 4
 03/07/2019 4.0 - Response initializer
 10/03/2020 4.1 - Maximum range experimentally determined
-17/07/2020 5.0 - Response timeout, deviation added
+17/07/2020 5.0 - Response timeout, tolerance added
 ```
 PJDL (Padded Jittering Data Link) is an asynchronous serial data link for low-data-rate applications that supports both master-slave and multi-master communication over a common conductive medium. PJDL can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin.
 
@@ -59,14 +59,16 @@ The proposed communication modes are the result of years of testing and optimiza
 | 3    | 3.10kB/s - 24844Bd | 1200m | 70µs    | 28µs     | 7µs           | 8µs     | 20µs/B  |
 | 4    | 3.34kB/s - 26755Bd |  800m | 65µs    | 26µs     | 6.5µs         | 5µs     | 20µs/B  |
 
-The following table specifies the maximum acceptable deviation of each bit type:
+The following table specifies the exclusive acceptable tolerance of each bit type:
 
-| Mode | Max data bit nonet deviation | Max padding bit deviation | Max keep busy bit deviation |
-| ---- | ---------------------------- | ------------------------- | --------------------------- |
-| 1    | +- (data bit / 4) - 1        | +- (data bit / 4) - 1     | -5µs +10µs                  |
-| 2    | +- (data bit / 4) - 1        | +- (data bit / 4) - 1     | -5µs +10µs                  |
-| 3    | +- (data bit / 4) - 1        | +- (data bit / 4) - 1     | -3µs +10µs                  |
-| 4    | +- (data bit / 4) - 1        | +- (data bit / 4) - 1     | -3µs +10µs                  |
+| Mode | Data bit nonet tolerance | Padding bit tolerance | Max keep busy bit tolerance  |
+| ---- | -------------------------| --------------------- | ---------------------------- |
+| 1    | -5us +17us               | -5us +17us            | -5µs +10µs                   |
+| 2    | -4us +16us               | -4us +16us            | -5µs +10µs                   |
+| 3    | -3us +11us               | -3us +11us            | -3µs +10µs                   |
+| 4    | -3us +10us               | -3us +10us            | -3µs +10µs                   |
+
+Positive tolerance is higher to accept bit-banged signals that are generally longer than expected.
 
 ### Medium access control
 PJDL specifies a variation of the carrier-sense, non-persistent random multiple access method (non-persistent CSMA). Devices can detect an ongoing transmission for this reason collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss or by the transmitter if an active collision avoidance procedure is implemented.
@@ -79,7 +81,7 @@ The reception technique is based on 3 steps:
 2. Synchronize with its falling edge
 3. Ensure it is followed by a low data bit
 
-If so reception starts, if not, interference, synchronization loss or simply absence of communication is detected. The high padding bit is 2.5 times longer than data bits because with this ratio ambiguity between padding bits and 2 or 3 consecutive data bits is avoided even with an overall deviation of up to +- (data bit / 4) - 1. A synchronization pad is acceptable if prepended by a 0 of up to (data bit / 4) - 1.
+If so reception starts, if not, interference, synchronization loss or simply absence of communication is detected. While receiving a sequence of bytes a synchronization pad is acceptable even if prepended by a 0 of up to (data bit / 4) - 1.
 
 ```cpp  
  ___________ ___________________________

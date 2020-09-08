@@ -30,10 +30,10 @@
   #if SWBB_MODE == 1
     #if F_CPU == 16000000L
       /* Working on pin: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1 */
-      #define SWBB_BIT_WIDTH   39
-      #define SWBB_BIT_SPACER 106
-      #define SWBB_ACCEPTANCE  53
-      #define SWBB_READ_DELAY   2
+      #define SWBB_BIT_WIDTH   40
+      #define SWBB_BIT_SPACER 112
+      #define SWBB_ACCEPTANCE  56
+      #define SWBB_READ_DELAY   4
     #endif
   #endif
   #if SWBB_MODE == 2
@@ -71,7 +71,7 @@
     #if F_CPU == 16000000L
       /* Working on pin: 10 */
       #define SWBB_BIT_WIDTH   37
-      #define SWBB_BIT_SPACER 104
+      #define SWBB_BIT_SPACER 110
       #define SWBB_ACCEPTANCE  56
       #define SWBB_READ_DELAY   4
     #endif
@@ -91,15 +91,19 @@
 /* ATmega16/32U4 - Arduino Leonardo/Micro --------------------------------- */
 #if defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__)
   #if SWBB_MODE == 1
-    /* Working on pin: 2, 4, 8, 12 */
-    #define SWBB_BIT_WIDTH   39
-    #define SWBB_BIT_SPACER 102
-    #define SWBB_ACCEPTANCE  53
-    #define SWBB_READ_DELAY   6
+    /* Working on pin: 2, 4, 8, 12
+       Fallback to default timing */
+    #define SWBB_BIT_WIDTH   40
+    #define SWBB_BIT_SPACER 112
+    #define SWBB_ACCEPTANCE  56
+    #define SWBB_READ_DELAY   8
   #endif
   #if SWBB_MODE == 2
     /* Working on pin: 2, 4, 8, 12
        Fallback to default timing */
+    #define SWBB_BIT_WIDTH   36
+    #define SWBB_BIT_SPACER  88
+    #define SWBB_ACCEPTANCE  56
     #define SWBB_READ_DELAY  12
   #endif
 #endif
@@ -108,9 +112,9 @@
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
   #if SWBB_MODE == 1
     /* Working on pin: 3, 4, 7, 8, 9, 10, 12 */
-    #define SWBB_BIT_WIDTH   37
-    #define SWBB_BIT_SPACER 104
-    #define SWBB_ACCEPTANCE  53
+    #define SWBB_BIT_WIDTH   38
+    #define SWBB_BIT_SPACER 110
+    #define SWBB_ACCEPTANCE  62
     #define SWBB_READ_DELAY  11
   #endif
   #if SWBB_MODE == 2
@@ -128,12 +132,20 @@
     #if F_CPU == 16000000L
       /* Working on pin: 1, 2
          Fallback to default */
+      #define SWBB_BIT_WIDTH   40
+      #define SWBB_BIT_SPACER 112
+      #define SWBB_ACCEPTANCE  56
+      #define SWBB_READ_DELAY   4
     #endif
   #endif
   #if SWBB_MODE == 2
     #if F_CPU == 16000000L
       /* Working on pin: 1, 2
          Fallback to default */
+      #define SWBB_BIT_WIDTH   36
+      #define SWBB_BIT_SPACER  88
+      #define SWBB_ACCEPTANCE  56
+      #define SWBB_READ_DELAY   4
     #endif
   #endif
 #endif
@@ -145,12 +157,20 @@
     #if F_CPU == 16000000L
       /* Working on pin: 0, 1, 2, 3, 4
          Fallback to default */
+      #define SWBB_BIT_WIDTH   40
+      #define SWBB_BIT_SPACER 112
+      #define SWBB_ACCEPTANCE  56
+      #define SWBB_READ_DELAY   4
     #endif
   #endif
   #if SWBB_MODE == 2
     #if F_CPU == 16000000L
       /* Working on pin: 0, 1, 2, 3, 4
          Fallback to default */
+      #define SWBB_BIT_WIDTH   36
+      #define SWBB_BIT_SPACER  88
+      #define SWBB_ACCEPTANCE  56
+      #define SWBB_READ_DELAY   4
     #endif
   #endif
 #endif
@@ -159,20 +179,12 @@
 #if defined(ARDUINO_SAMD_ZERO)
   #if SWBB_MODE == 1
   /* Added by Esben Soeltoft - 03/09/2016
-     Updated by Giovanni Blu Mitolo - 21/07/2020
+     Updated by Giovanni Blu Mitolo - 31/05/2019
      Working on pin: D0, D1, D3, A0, A1 */
-    #define SWBB_BIT_WIDTH   42
-    #define SWBB_BIT_SPACER 109.5
-    #define SWBB_ACCEPTANCE  45
-    #define SWBB_READ_DELAY  -2.5
-  #endif
-  /* Added by Giovanni Blu Mitolo 30/07/2020
-     Tested on pin: D0 */
-  #if SWBB_MODE == 2
-    #define SWBB_BIT_WIDTH   39.5
-    #define SWBB_BIT_SPACER  91.5
-    #define SWBB_ACCEPTANCE  45
-    #define SWBB_READ_DELAY  -2
+    #define SWBB_BIT_WIDTH   43
+    #define SWBB_BIT_SPACER 115
+    #define SWBB_ACCEPTANCE  40
+    #define SWBB_READ_DELAY  -4
   #endif
 #endif
 
@@ -181,19 +193,12 @@
   #if SWBB_MODE == 1
   /* Added by github user 240974a                 - 09/03/2016
      Added full support to MODE 1 (80 and 160MHz) - 12/06/2018 */
-    #if (F_CPU == 80000000L)
+    #if (F_CPU == 80000000L) || (F_CPU == 160000000L)
       /* Working on pin: D1 or GPIO 5 */
-      #define SWBB_BIT_WIDTH   42.5
-      #define SWBB_BIT_SPACER 108.5
-      #define SWBB_ACCEPTANCE  52
-      #define SWBB_READ_DELAY  -3.5
-    #endif
-    #if (F_CPU == 160000000L)
-      /* Working on pin: D1 or GPIO 5 */
-      #define SWBB_BIT_WIDTH   43
-      #define SWBB_BIT_SPACER 109
-      #define SWBB_ACCEPTANCE  52
-      #define SWBB_READ_DELAY  -7
+      #define SWBB_BIT_WIDTH   44
+      #define SWBB_BIT_SPACER 112
+      #define SWBB_ACCEPTANCE  56
+      #define SWBB_READ_DELAY  -6
     #endif
   #endif
 #endif
@@ -203,10 +208,10 @@
   #if SWBB_MODE == 1
       /* Added full support to MODE 1 - 28/06/2018
          Working on pin: 12 and 25 */
-      #define SWBB_BIT_WIDTH   43
-      #define SWBB_BIT_SPACER 110
+      #define SWBB_BIT_WIDTH   44
+      #define SWBB_BIT_SPACER 112
       #define SWBB_ACCEPTANCE  56
-      #define SWBB_READ_DELAY  -3
+      #define SWBB_READ_DELAY  -2
     #endif
 #endif
 
@@ -223,25 +228,25 @@
   #endif
 #endif
 
+
 /* STM32F1 ---------------------------------------------------------------- */
-/* Added by jcallano - 09-07-2020
-   Working on pin: PB15, PB14, PB13, PB12, PB11, PB10, PB9, PB8, PB7, PB6, PB4,
-   PB3, PA15, PA10. 5v tolerant pins on bluepill */
+/* Mod by @jcallano on 09-jul-2020 only tested on PB9 pin. */
+
 #if defined(__STM32F1__)
   #if SWBB_MODE == 1
     #if F_CPU == 72000000L
-      #define SWBB_BIT_WIDTH   43.5
-      #define SWBB_BIT_SPACER 109.5
-      #define SWBB_ACCEPTANCE  75
-      #define SWBB_READ_DELAY  -6
+      #define SWBB_BIT_WIDTH   43
+      #define SWBB_BIT_SPACER 115
+      #define SWBB_ACCEPTANCE  60
+      #define SWBB_READ_DELAY 3
     #endif
   #endif
   #if SWBB_MODE == 2
     #if F_CPU == 72000000L
-      #define SWBB_BIT_WIDTH   39.5
-      #define SWBB_BIT_SPACER  91.5
-      #define SWBB_ACCEPTANCE  53
-      #define SWBB_READ_DELAY  -8
+      #define SWBB_BIT_WIDTH   39
+      #define SWBB_BIT_SPACER  91
+      #define SWBB_ACCEPTANCE  47
+      #define SWBB_READ_DELAY  3
     #endif
   #endif
   #if SWBB_MODE == 3
@@ -265,16 +270,16 @@
 /* Avoid error if any previous defined ------------------------------------ */
 #if SWBB_MODE == 1
   #ifndef SWBB_BIT_WIDTH
-    #define SWBB_BIT_WIDTH   39
+    #define SWBB_BIT_WIDTH   40
   #endif
   #ifndef SWBB_BIT_SPACER
-    #define SWBB_BIT_SPACER 106
+    #define SWBB_BIT_SPACER 112
   #endif
   #ifndef SWBB_ACCEPTANCE
-    #define SWBB_ACCEPTANCE  53
+    #define SWBB_ACCEPTANCE  56
   #endif
   #ifndef SWBB_READ_DELAY
-    #define SWBB_READ_DELAY   3
+    #define SWBB_READ_DELAY   4
   #endif
   #ifndef SWBB_LATENCY
     #define SWBB_LATENCY     13

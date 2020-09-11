@@ -63,8 +63,9 @@ void print_ringbuffer()
 
 void serial_close(const char* dt_label)
 {
-    LOG_INF("close");
-    // free((ringbuffers.at(dt_label))->buf.buf8);
+    struct ring_buf * r = _get_ring_buf(device_get_binding(dt_label));
+    free(r->buf.buf8);
+    free(r);
 }
 
 int serial_get_char(struct device* dev)

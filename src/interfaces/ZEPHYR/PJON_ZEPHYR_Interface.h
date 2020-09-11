@@ -1,6 +1,6 @@
 #pragma once
 
-#if defined(ZEPHYR)
+#if defined(__ZEPHYR__)
 
 #define OUTPUT GPIO_OUTPUT
 

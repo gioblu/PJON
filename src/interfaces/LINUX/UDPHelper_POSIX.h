@@ -19,7 +19,7 @@
 #include <posix/arpa/inet.h>
 #endif
 
-#ifdef ZEPHYR
+#ifdef __ZEPHYR__
 #include <fcntl.h>
 #define	INADDR_BROADCAST ((u32_t) 0xffffffff)
 #endif
@@ -75,7 +75,7 @@ public:
     read_timeout.tv_sec = 0;
     read_timeout.tv_usec = 1000;
     #endif
-#ifdef ZEPHYR
+#ifdef __ZEPHYR__
     fcntl(_fd, F_SETFL, O_NONBLOCK);
 #else
     setsockopt(_fd, SOL_SOCKET, SO_RCVTIMEO, (char *)&read_timeout, sizeof read_timeout);
@@ -98,7 +98,7 @@ public:
     _remote_receiver_addr.sin_port = htons(_port);
     _remote_receiver_addr.sin_addr.s_addr = INADDR_BROADCAST;
 
-#ifndef ZEPHYR
+#ifndef __ZEPHYR__
     // Allow broadcasts
     int broadcast=1;
     if (setsockopt(_fd,SOL_SOCKET,SO_BROADCAST,(const char*)&broadcast,sizeof(broadcast))==-1) {

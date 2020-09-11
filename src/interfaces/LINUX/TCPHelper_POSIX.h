@@ -102,14 +102,14 @@ public:
     struct timeval read_timeout;
     read_timeout.tv_sec = 0;
     read_timeout.tv_usec = 2000000;
-#ifndef ZEPHYR
+#ifndef __ZEPHYR__
     setsockopt(_fd, SOL_SOCKET, SO_RCVTIMEO, (char*)&read_timeout, sizeof read_timeout);
     setsockopt(_fd, SOL_SOCKET, SO_SNDTIMEO, (char*)&read_timeout, sizeof read_timeout);
 #endif
 
     bool connected = ::connect(_fd, (struct sockaddr *) &_remote_addr,sizeof(_remote_addr)) == 0;
     if (connected) {
-#ifndef ZEPHYR
+#ifndef __ZEPHYR__
       // Shorten timeouts for reading and writing
       struct timeval read_timeout;
       read_timeout.tv_sec = 0;
@@ -193,7 +193,7 @@ public:
 #endif
 
     // Set timeouts for reading and writing
-#ifndef ZEPHYR
+#ifndef __ZEPHYR__
     struct timeval read_timeout;
     read_timeout.tv_sec = 0;
     read_timeout.tv_usec = 1000;
@@ -238,7 +238,7 @@ public:
 
   int write(const uint8_t *buffer, int size) {
     if (_fd == -1) return -1;
-#if defined(_WIN32) || defined(ZEPHYR)
+#if defined(_WIN32) || defined(__ZEPHYR__)
     int w = ::send(_fd, (char*)buffer, size, 0);
 #else
     int w = ::send(_fd, (char*)buffer, size, MSG_NOSIGNAL);
@@ -303,7 +303,7 @@ public:
     memset(&_remote_sender_addr, 0, len);
     int connected_fd = _fd == -1 ? -1 : ::accept(_fd, (struct sockaddr *) &_remote_sender_addr, &len);
     if (connected_fd != -1) {
-#ifndef ZEPHYR
+#ifndef __ZEPHYR__
       // Shorten timeout for reading and writing
       struct timeval read_timeout;
       read_timeout.tv_sec = 0;

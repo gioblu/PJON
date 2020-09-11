@@ -46,18 +46,11 @@ struct device* serial_open(const char* dt_label)
 
     auto ret = ringbuffers.insert(std::make_pair(uart, r));
 
-    LOG_INF("Size: %d", ringbuffers.size());
-
     if (ret.second != true) {
         uart = nullptr;
     }
 
-    LOG_INF("UART: %p", uart);
     return uart;
-}
-void print_ringbuffer()
-{
-    LOG_INF("Ringbuffer: %p, size: %d",&ringbuffers, ringbuffers.size());
 }
 
 void serial_close(const char* dt_label)

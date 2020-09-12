@@ -129,7 +129,9 @@
   #include "../../interfaces/ARDUINO/TCPHelper_ARDUINO.h"
 #else
   #include "../../interfaces/LINUX/TCPHelper_POSIX.h"
-  const char *F(const char *s) { return s; }
+  #ifndef F
+  #define F(x) (x)
+  #endif
 #define Serial DummyPrint
   struct DummyPrint {
     static void print(const char *s) { printf("%s", s); }

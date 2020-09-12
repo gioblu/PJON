@@ -43,6 +43,13 @@
   #define SWBB_RECEIVE_TIME 1000
 #endif
 
+// The width of the initial spacer of a packet, can be increased from
+// 1 to for example 3 to allow more "blind time" in modules not being
+// able to call receive continuously.
+#ifndef SWBB_INITIAL_SPACER_MULTIPLIER
+  #define SWBB_INITIAL_SPACER_MULTIPLIER 1
+#endif
+
 class SoftwareBitBang {
   public:
     /* Returns the delay related to the attempts passed as parameter: */
@@ -172,7 +179,7 @@ class SoftwareBitBang {
       if(max_length == PJON_PACKET_MAX_LENGTH) {
         uint32_t time = PJON_MICROS();
         // Look for a frame initializer
-        if(!sync() || !sync() || !sync()) return SWBB_FAIL;
+        if(!sync_first() || !sync() || !sync()) return SWBB_FAIL;
         // Check its timing consistency
         if(
           (uint32_t)(PJON_MICROS() - time) <
@@ -279,14 +286,14 @@ class SoftwareBitBang {
     not, interference, synchronization loss or simply absence of
     communication is detected at byte level: */
 
-    bool sync() {
+    bool sync(uint32_t spacer) {
       PJON_IO_PULL_DOWN(_input_pin);
       if((_output_pin != _input_pin) && (_output_pin != SWBB_NOT_ASSIGNED))
         PJON_IO_PULL_DOWN(_output_pin);
       uint32_t time = PJON_MICROS();
       while(
         PJON_IO_READ(_input_pin) &&
-        ((uint32_t)(PJON_MICROS() - time) <= SWBB_BIT_SPACER)
+        ((uint32_t)(PJON_MICROS() - time) <= spacer)
       );
       time = PJON_MICROS() - time;
       if(time < SWBB_ACCEPTANCE)
@@ -301,9 +308,30 @@ class SoftwareBitBang {
       return false;
     };
 
+    bool sync() {
+      return sync(SWBB_BIT_SPACER);
+    }
+
+    bool sync_first() {
+      // Allow a wider packet start sampling interval for devices
+      // that do other tasks and cannot sample very fast.
+      return sync(SWBB_BIT_SPACER * SWBB_INITIAL_SPACER_MULTIPLIER);
+    };
+
     /* Emit synchronization pulse: */
 
     void pulse(uint8_t n) {
+      #if SWBB_INITIAL_SPACER_MULTIPLIER != 1
+      if (n == 3) {
+        // Extra long first pad of packet initializer, to tolerate devices 
+        // that have other tasks and cannot sample continuously.
+        PJON_IO_WRITE(_output_pin, HIGH);
+        PJON_DELAY_MICROSECONDS(SWBB_BIT_SPACER * SWBB_INITIAL_SPACER_MULTIPLIER);
+        PJON_IO_WRITE(_output_pin, LOW);
+        PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH);
+        n--;
+      }
+      #endif
       while(n--) {
         PJON_IO_WRITE(_output_pin, HIGH);
         PJON_DELAY_MICROSECONDS(SWBB_BIT_SPACER);

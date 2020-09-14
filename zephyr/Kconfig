@@ -22,21 +22,21 @@ menuconfig PJON_STRATEGY_THROUGHSERIAL
 
 if PJON_STRATEGY_THROUGHSERIAL
 
-config INITIAL_DELAY
+config TS_INITIAL_DELAY
 	int "INITIAL DELAY"
 	default 1000
 	help
 	  Maximum 1 second random initial delay
 
 
-config COLLISION_DELAY
+config TS_COLLISION_DELAY
 	int "COLLISION DELAY"
 	default 32
 	help
 	  Maximum 32 microseconds random delay in case of collision
 
 
-config RESONSE_TIME_OUT
+config TS_RESONSE_TIME_OUT
 	int "RESONSE TIME OUT"
 	default 10000
 	help
@@ -46,7 +46,7 @@ config RESONSE_TIME_OUT
 	  Higher if necessary.
 
 
-config TIME_IN
+config TS_TIME_IN
 	int "TIME IN"
 	default 100032
 	help
@@ -54,7 +54,7 @@ config TIME_IN
 	  (Avoid disrupting synchronous acknowledgement exchange)
 
 
-config BYTE_TIME_OUT
+config TS_BYTE_TIME_OUT
 	int "BYTE TIME OUT"
 	default 50000
 	help
@@ -63,28 +63,28 @@ config BYTE_TIME_OUT
 	  Always set TS_BYTE_TIME_OUT > (byte transmission time + latency)
 
 
-config MAX_ATTEMTS
+config TS_MAX_ATTEMTS
 	int "MAX ATTEMTS"
 	default 20
 	help
 	Maximum transmission attempts
 
 
-config BACK_OFF_DEGREE
+config TS_BACK_OFF_DEGREE
 	int "BACK OFF DEGREE"
 	default 4
 	help
 	  Back-off exponential degree
 
 
-config RS485_DELAY
+config TS_RS485_DELAY
 	int "RS485 DELAY"
 	default 1
 	help
 	  Delay before enabling and disabling RS485 DE and or RE pin
 
 
-config FLUSH_OFFSET
+config TS_FLUSH_OFFSET
 	int "FLUSH OFFSET"
 	default 152
 	help

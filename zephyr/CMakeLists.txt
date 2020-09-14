@@ -1,8 +1,32 @@
 if(CONFIG_PJON)
+zephyr_interface_library_named(PJON)
+zephyr_library()
 
-zephyr_include_directories(../src)
+zephyr_compile_definitions_ifdef(CONFIG_PJON_MAX_PACKETS PJON_MAX_PACKETS=CONFIG_PJON_MAX_PACKETS)
+zephyr_compile_definitions_ifdef(CONFIG_PJON_PACKET_MAX_LENGTH PJON_PACKET_MAX_LENGTH=CONFIG_PJON_PACKET_MAX_LENGTH)
+
+target_include_directories(PJON INTERFACE ../src)
+
+
 
 if(CONFIG_PJON_STRATEGY_THROUGHSERIAL)
-zephyr_sources(../src/interfaces/ZEPHYR/PJON_ZEPHYR_Interface.cpp)
+target_compile_definitions(PJON INTERFACE
+PJON_INCLUDE_TS
+TS_INITIAL_DELAY=CONFIG_TS_INITIAL_DELAY
+TS_COLLISION_DELAY=CONFIG_TS_COLLISION_DELAY
+TS_RESONSE_TIME_OUT=CONFIG_TS_RESONSE_TIME_OUT
+TS_TIME_IN=CONFIG_TS_TIME_IN
+TS_BYTE_TIME_OUT=CONFIG_TS_BYTE_TIME_OUT
+TS_MAX_ATTEMTS=CONFIG_TS_MAX_ATTEMTS
+TS_BACK_OFF_DEGREE=CONFIG_TS_BACK_OFF_DEGREE
+TS_RS485_DELAY=CONFIG_TS_RS485_DELAY
+TS_FLUSH_OFFSET=CONFIG_TS_FLUSH_OFFSET)
+
+zephyr_library_sources(../src/interfaces/ZEPHYR/PJON_ZEPHYR_Interface.cpp)
+
+zephyr_library_link_libraries(PJON)
 endif()
+
+
+target_link_libraries(PJON INTERFACE zephyr_interface)
 endif()

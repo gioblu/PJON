@@ -6,12 +6,60 @@ menuconfig PJON
 if PJON
 menu "PJON strategy"
 
-config PJON_STRATEGY_DUALUDP
+menuconfig PJON_STRATEGY_DUALUDP
     select NETWORKING
 	select NET_IPV4
 	select NET_UDP
 	select NET_SOCKETS
 	bool "PJON strategy	DualUDP"
+
+if PJON_STRATEGY_DUALUDP
+
+
+
+config DUDP_RESPONSE_TIMEOUT
+    int "DUDP_RESPONSE_TIMEOUT"
+    default 50000
+    help
+      Timeout waiting for an ACK. This can be increased if the latency is high
+
+
+config DUDP_MINIMUM_SEND_INTERVAL_MS
+    int "DUDP_MINIMUM_SEND_INTERVAL_MS"
+    default 8
+    help
+      Minimum time interval in ms between send attempts. Some devices go into
+      contention if sending too fast. This can be overridden in an interface
+      for a device type, or in user sketches.
+
+config DUDP_BACKOFF
+    int "DUDP_BACKOFF"
+    default 5
+    help
+      Backoff function that can be overridden depending on network and devices
+
+
+config DUDP_MAX_RETRIES
+    int "DUDP_MAX_RETRIES"
+    default 10
+    help
+      Max number of retries
+
+
+config DUDP_MAX_REMOTE_NODES
+    int "DUDP_MAX_REMOTE_NODES"
+    default 10
+    help
+      The size of the node table
+
+
+config DUDP_MAX_FAILURES
+    int "DUDP_MAX_FAILURES"
+    default 10
+    help
+      Remove automatically registered nodes after this number of send failures
+
+endif
 
 
 menuconfig PJON_STRATEGY_THROUGHSERIAL

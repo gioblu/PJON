@@ -14,11 +14,83 @@ config PJON_STRATEGY_DUALUDP
 	bool "PJON strategy	DualUDP"
 
 
-config PJON_STRATEGY_THROUGHSERIAL
+menuconfig PJON_STRATEGY_THROUGHSERIAL
 	select RING_BUFFER
 	select SERIAL
 	select UART_INTERRUPT_DRIVEN
 	bool "PJON strategy	Through	Serial"
+
+if PJON_STRATEGY_THROUGHSERIAL
+
+config INITIAL_DELAY
+	int "INITIAL DELAY"
+	default 1000
+	help
+	  Maximum 1 second random initial delay
+
+
+config COLLISION_DELAY
+	int "COLLISION DELAY"
+	default 32
+	help
+	  Maximum 32 microseconds random delay in case of collision
+
+
+config RESONSE_TIME_OUT
+	int "RESONSE TIME OUT"
+	default 10000
+	help
+	  Set 10 milliseconds as the maximum timeframe between transmission and
+	  synchronous acknowledgement response. This value is strictly related to the
+	  maximum time needed by receiver to receive, compute and transmit a response.
+	  Higher if necessary.
+
+
+config TIME_IN
+	int "TIME IN"
+	default 100032
+	help
+	  Minum timeframe with channel free for use before transmission.
+	  (Avoid disrupting synchronous acknowledgement exchange)
+
+
+config BYTE_TIME_OUT
+	int "BYTE TIME OUT"
+	default 50000
+	help
+	  Set 50 milliseconds as the maximum timeframe for byte reception.
+	  This value depends on the latency, baud rate and computation time.
+	  Always set TS_BYTE_TIME_OUT > (byte transmission time + latency)
+
+
+config MAX_ATTEMTS
+	int "MAX ATTEMTS"
+	default 20
+	help
+	Maximum transmission attempts
+
+
+config BACK_OFF_DEGREE
+	int "BACK OFF DEGREE"
+	default 4
+	help
+	  Back-off exponential degree
+
+
+config RS485_DELAY
+	int "RS485 DELAY"
+	default 1
+	help
+	  Delay before enabling and disabling RS485 DE and or RE pin
+
+
+config FLUSH_OFFSET
+	int "FLUSH OFFSET"
+	default 152
+	help
+	  Force blocking sending hack (adds a delay for each character sent).
+endif
+
 endmenu
 
 config PJON_DEVICE_ID
@@ -32,4 +104,47 @@ config PJON_MTU
 	default	1400
 	help
 	  Maximum size of SMP frames send and receive over PJON	DualUDP, in	bytes.
+
+config PJON_MAX_PACKETS
+	int "PJON MAX PACKETS"
+	default 5
+    help
+	  Packet buffer length, if full PJON_PACKETS_BUFFER_FULL error is thrown.
+	  The packet buffer is preallocated, so its length strongly affects
+	  memory consumption
+
+config PJON_PACKET_MAX_LENGTH
+    int "MAX PACKET LENGTH"
+    default 50
+    help
+	  Max packet length, higher if necessary.
+	  The max packet length defines the length of packets pre-allocated buffers
+	  so it strongly affects memory consumption.
+
+config PJON_INCLUDE_ASYNC_ACK
+    bool "INCLUDE ASYNC ACK"
+    default false
+    help
+	  If set to false async ack feature is not included saving memory
+	  (it saves around 1kB of memory)
+
+config PJON_INCLUDE_PACKET_ID
+    bool "INCLUDE PACKET ID"
+    default false
+    help
+	  If set to false packet id feature is not included saving memory
+	  (it saves around 1kB of memory)
+
+config PJON_MAX_RECENT_PACKET_IDS
+    int "MAX RECENT PACKET IDS"
+    default 10
+    help
+	  Maximum packet ids record kept in memory (to avoid duplicated exchanges)
+
+config APP_LINK_WITH_PJON
+	bool "Link 'app' with PJON"
+	default y
+	help
+	  Add PJON configuration to the 'app'
+
 endif

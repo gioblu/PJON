@@ -13,10 +13,10 @@
 #include <sys/time.h>
 #include <string.h>
 #include <unistd.h>
-#include <posix/netdb.h>
-#include <posix/sys/socket.h>
-#include <posix/netinet/in.h>
-#include <posix/arpa/inet.h>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #endif
 
 #ifdef __ZEPHYR__

@@ -1,5 +1,5 @@
 [manifest]
-path = application
+path = Transmitter
 
 [zephyr]
 base = zephyr

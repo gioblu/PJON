@@ -11,10 +11,10 @@ to install it.
 To build the *Receiver* or the *Transmitter* type the following commands in the shell:
 
 ```
-#> cd Transmitter
 #> west update
 #> source zephyr/zephyr-env.sh
-#> west build -b nucleo_f429zi application
-#> west flash
+#> west build -b nucleo_f429zi Transmitter -d build_transmitter
+#> west build -b nucleo_f429zi Receiver -d build_receiver
+#> west flash -d [build_receiver|build_transmitter]
 ```
 

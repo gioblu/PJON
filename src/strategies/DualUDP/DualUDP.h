@@ -356,7 +356,7 @@ public:
           udp.send_frame(data, length, _remote_ip[pos], _remote_port[pos]);
           _send_attempts[pos]++;
         }
-        _last_out_time = millis();
+        _last_out_time = PJON_MILLIS();
       }
     };
 

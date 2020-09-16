@@ -32,13 +32,6 @@ config DUDP_MINIMUM_SEND_INTERVAL_MS
       contention if sending too fast. This can be overridden in an interface
       for a device type, or in user sketches.
 
-config DUDP_BACKOFF
-    int "DUDP_BACKOFF"
-    default 5
-    help
-      Backoff function that can be overridden depending on network and devices
-
-
 config DUDP_MAX_RETRIES
     int "DUDP_MAX_RETRIES"
     default 10

@@ -19,6 +19,11 @@ void digitalWrite(int pin, bool state);
 void pinMode(int pin, int mode);
 void serial_flush(struct device* dev);
 
+#if defined CONFIG_PJON_STRATEGY_THROUGHSERIAL
+#ifndef PJON_ZEPHYR_SEPARATE_DEFINITION
+#include "PJON_ZEPHYR_Interface.inl"
+#endif
+#endif
 // deal with randomness
 
 #ifndef PJON_RANDOM

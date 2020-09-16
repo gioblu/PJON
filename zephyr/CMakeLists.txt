@@ -1,6 +1,5 @@
 if(CONFIG_PJON)
 zephyr_interface_library_named(PJON)
-zephyr_library()
 
 zephyr_compile_definitions_ifdef(CONFIG_PJON_MAX_PACKETS PJON_MAX_PACKETS=CONFIG_PJON_MAX_PACKETS)
 zephyr_compile_definitions_ifdef(CONFIG_PJON_PACKET_MAX_LENGTH PJON_PACKET_MAX_LENGTH=CONFIG_PJON_PACKET_MAX_LENGTH)
@@ -21,10 +20,6 @@ TS_MAX_ATTEMTS=CONFIG_TS_MAX_ATTEMTS
 TS_BACK_OFF_DEGREE=CONFIG_TS_BACK_OFF_DEGREE
 TS_RS485_DELAY=CONFIG_TS_RS485_DELAY
 TS_FLUSH_OFFSET=CONFIG_TS_FLUSH_OFFSET)
-
-zephyr_library_sources(../src/interfaces/ZEPHYR/PJON_ZEPHYR_Interface.cpp)
-
-zephyr_library_link_libraries(PJON)
 endif()
 
 if(CONFIG_PJON_STRATEGY_DUALUDP)
@@ -40,5 +35,4 @@ DUDP_MAX_FAILURES=CONFIG_DUDP_MAX_FAILURES)
 endif()
 
 
-target_link_libraries(PJON INTERFACE zephyr_interface)
 endif()

@@ -1,3 +1,10 @@
+#ifndef ZEPHYR
+    #define ZEPHYR
+#endif
+#ifndef PJON_ZEPHYR_SEPARATE_DEFINITION
+    #define PJON_ZEPHYR_SEPARATE_DEFINITION
+#endif
+
 #include "PJON_ZEPHYR_Interface.h"
 #include <sys/ring_buffer.h>
 
@@ -11,9 +18,6 @@
 #include <string>
 
 static struct device* pin_dev = NULL;
-
-#include "logging/log.h"
-LOG_MODULE_REGISTER(PJON_SMP, LOG_LEVEL_INF);
 
 static std::map<struct device*, struct ring_buf*> ringbuffers;
 
@@ -110,6 +114,7 @@ void digitalWrite(int pin, bool state)
 {
     gpio_pin_set(pin_dev, pin, state);
 }
+
 void pinMode(int pin, int mode)
 {
     pin_dev = device_get_binding(DT_GPIO_LABEL(DT_ALIAS(pjon_txe_pin), gpios));

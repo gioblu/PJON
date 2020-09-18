@@ -49,6 +49,10 @@
 #ifndef SWBB_INITIAL_SPACER_MULTIPLIER
   #define SWBB_INITIAL_SPACER_MULTIPLIER 1
 #endif
+// An upper limit to the inital spacer multiplier
+#ifndef SWBB_MAX_INITIAL_SPACER_MULTIPLIER
+  #define SWBB_MAX_INITIAL_SPACER_MULTIPLIER 100
+#endif
 
 class SoftwareBitBang {
   public:
@@ -315,7 +319,7 @@ class SoftwareBitBang {
     bool sync_first() {
       // Allow a wider packet start sampling interval for devices
       // that do other tasks and cannot sample very fast.
-      return sync(SWBB_BIT_SPACER * SWBB_INITIAL_SPACER_MULTIPLIER);
+      return sync(SWBB_BIT_SPACER * SWBB_MAX_INITIAL_SPACER_MULTIPLIER);
     };
 
     /* Emit synchronization pulse: */

@@ -30,21 +30,25 @@
   #define TS_INITIAL_DELAY      1000
 #endif
 
-/* Maximum 32 microseconds random delay in case of collision */
+/* Maximum 64 microseconds random delay in case of collision */
 #ifndef TS_COLLISION_DELAY
   #define TS_COLLISION_DELAY      64
 #endif
 
-/* Set 40 milliseconds as the maximum timeframe between transmission and
+/* Set 45 milliseconds as the maximum timeframe between transmission and
    synchronous acknowledgement response. Its  optimal configuration is
    strictly related to the maximum time needed by receiver to receive, compute
-   and transmit back a response. */
+   and transmit back a response. Set TS_RESPONSE_TIME_OUT to 0 and do not use
+   the acknowledgement feature if the system operates in master-slave mode and
+   or applies the request-response scheme. */
 #ifndef TS_RESPONSE_TIME_OUT
-  #define TS_RESPONSE_TIME_OUT 40000
+  #define TS_RESPONSE_TIME_OUT 45000
 #endif
 
-/* Minum duration of channel free for use before transmission.
-   (Avoid disrupting synchronous acknowledgement exchange) */
+/* Minum duration of channel free for use before transmission, used to avoid
+   disrupting an ongoing acknowledgement exchange. Set TS_TIME_IN to 0 and do
+   not use the acknowledgement feature if the system operates in master-slave
+   mode and or applies the request-response scheme. */
 #ifndef TS_TIME_IN
   #define TS_TIME_IN  TS_RESPONSE_TIME_OUT + TS_COLLISION_DELAY
 #endif
@@ -57,14 +61,13 @@
   #define TS_READ_INTERVAL       100
 #endif
 
-/* Byte reception timeout */
+/* Byte reception timeout (Default 1 second) */
 #ifndef TS_BYTE_TIME_OUT
   #define TS_BYTE_TIME_OUT   1000000
 #endif
 
 /* Response length (the response is composed by the last TS_RESPONSE_LENGTH
-   bytes of the packet received). By default should be relatively safe if
-   used in master-slave mode. Setting TS_RESPONSE_LENGTH < 4 when using
+   bytes of the packet received). Setting TS_RESPONSE_LENGTH < 4 when using
    ThroughSerial in multi-master mode reduces reliability and leads to higher
    chances of detecting a false positive. */
 #ifndef TS_RESPONSE_LENGTH

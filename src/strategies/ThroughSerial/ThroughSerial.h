@@ -96,6 +96,14 @@ class ThroughSerial {
     };
 
 
+    /* Function called when a frame reception fails */
+
+    int16_t fail() {
+      state = TS_WAITING;
+      return (int16_t)TS_FAIL;
+    }
+
+
     /* Returns the maximum number of attempts for each transmission: */
 
     static uint8_t get_max_attempts() {
@@ -187,18 +195,14 @@ class ThroughSerial {
         case TS_RECEIVING: {
           while(PJON_SERIAL_AVAILABLE(serial)) {
             int16_t value = receive_byte();
-            if(value == -1) return TS_FAIL;
-            if(value == TS_START) {
-              state = TS_WAITING;
-              return TS_FAIL;
-            }
+            if((value == TS_START) || (value == -1)) return fail();
             if(value == TS_ESC) {
               if(!PJON_SERIAL_AVAILABLE(serial)) {
                 state = TS_WAITING_ESCAPE;
                 return TS_FAIL;
               } else {
                 value = receive_byte();
-                if(value == -1) return TS_FAIL;
+                if(value == -1) return fail();
                 value = value ^ TS_ESC;
                 if(
                   (value != TS_START) &&
@@ -236,7 +240,7 @@ class ThroughSerial {
         case TS_WAITING_ESCAPE: {
           if(PJON_SERIAL_AVAILABLE(serial)) {
             int16_t value = receive_byte();
-            if(value == -1) return TS_FAIL;
+            if(value == -1) return fail();
             value = value ^ TS_ESC;
             if(
               (value != TS_START) &&
@@ -256,7 +260,7 @@ class ThroughSerial {
         case TS_WAITING_END: {
           if(PJON_SERIAL_AVAILABLE(serial)) {
             int16_t value = receive_byte();
-            if(value == -1) return TS_FAIL;
+            if(value == -1) return fail();
             if(value == TS_END) {
               state = TS_DONE;
               return TS_FAIL;

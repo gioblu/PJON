@@ -3,7 +3,7 @@
    Copyright 2010-2020, Giovanni Blu Mitolo All rights reserved.
 
    Often timing in two different machines do not match, code execution
-   time can variate and time measurements can be not perfectly equal.
+   time can variate and time measurements are not perfectly equal.
    Consider that durations defined below may differ from what is specified in
    PJDL v5.0. This is done to accomodate machine's inner workings and
    effectively produce the specified timing.
@@ -230,7 +230,8 @@
 
 
 /* STM32F1 ---------------------------------------------------------------- */
-/* Mod by @jcallano on 09-jul-2020 only tested on PB9 pin. */
+/* @jcallano 09-jul-2020 tested with pin PB15, PB14, PB13, PB12, PB11, PB10,
+   PB9, PB8, PB7, PB6, PB4, PB3, PA15, PA10. 5v tolerant pins on bluepill */
 
 #if defined(__STM32F1__)
   #if SWBB_MODE == 1

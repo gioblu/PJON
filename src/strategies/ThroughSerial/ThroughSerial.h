@@ -98,9 +98,9 @@ class ThroughSerial {
 
     /* Function called when a frame reception fails */
 
-    int16_t fail() {
-      state = TS_WAITING;
-      return (int16_t)TS_FAIL;
+    uint16_t fail(TS_state_t s) {
+      state = s;
+      return (uint16_t)TS_FAIL;
     }
 
 
@@ -116,7 +116,8 @@ class ThroughSerial {
     static uint16_t get_receive_time() {
       return TS_RECEIVE_TIME;
     };
-    
+
+
     /* Handle a collision: */
 
     void handle_collision() {
@@ -174,10 +175,7 @@ class ThroughSerial {
           (state == TS_WAITING_ESCAPE)
         ) &&
         ((uint32_t)(PJON_MICROS() - _last_reception_time) > TS_BYTE_TIME_OUT)
-      ) {
-        state = TS_WAITING;
-        return TS_FAIL;
-      }
+      ) return fail(TS_WAITING);
 
       switch(state) {
         case TS_WAITING: {
@@ -185,9 +183,8 @@ class ThroughSerial {
             int16_t value = receive_byte();
             if(value == -1) return TS_FAIL;
             if(value == TS_START) {
-              state = TS_RECEIVING;
               position = 0;
-              return TS_FAIL;
+              return fail(TS_RECEIVING);
             }
           };
           break;
@@ -195,43 +192,29 @@ class ThroughSerial {
         case TS_RECEIVING: {
           while(PJON_SERIAL_AVAILABLE(serial)) {
             int16_t value = receive_byte();
-            if((value == TS_START) || (value == -1)) return fail();
+            if((value == TS_START) || (value == -1)) return fail(TS_WAITING);
             if(value == TS_ESC) {
-              if(!PJON_SERIAL_AVAILABLE(serial)) {
-                state = TS_WAITING_ESCAPE;
-                return TS_FAIL;
-              } else {
+              if(!PJON_SERIAL_AVAILABLE(serial))
+                return fail(TS_WAITING_ESCAPE);
+              else {
                 value = receive_byte();
-                if(value == -1) return fail();
+                if(value == -1) return fail(TS_WAITING);
                 value = value ^ TS_ESC;
                 if(
                   (value != TS_START) &&
                   (value != TS_ESC) &&
                   (value != TS_END)
-                ) {
-                  state = TS_WAITING;
-                  return TS_FAIL;
-                }
+                ) return fail(TS_WAITING);
                 buffer[position++] = (uint8_t)value;
                 continue;
               }
             }
-
-            if(max_length == 1) {
-              state = TS_WAITING_END;
-              return TS_FAIL;
-            }
-
-            if(position + 1 >= PJON_PACKET_MAX_LENGTH) {
-              state = TS_WAITING;
-              return TS_FAIL;
-            }
-
-            if(value == TS_END) {
-              state = TS_DONE;
-              return TS_FAIL;
-            }
-
+            if(max_length == 1)
+              return fail(TS_WAITING_END);
+            if(position + 1 >= PJON_PACKET_MAX_LENGTH)
+              return fail(TS_WAITING);
+            if(value == TS_END)
+              return fail(TS_DONE);
             buffer[position++] = (uint8_t)value;
           }
           return TS_FAIL;
@@ -240,19 +223,15 @@ class ThroughSerial {
         case TS_WAITING_ESCAPE: {
           if(PJON_SERIAL_AVAILABLE(serial)) {
             int16_t value = receive_byte();
-            if(value == -1) return fail();
+            if(value == -1) return fail(TS_WAITING);
             value = value ^ TS_ESC;
             if(
               (value != TS_START) &&
               (value != TS_ESC) &&
               (value != TS_END)
-            ) {
-              state = TS_WAITING;
-              return TS_FAIL;
-            }
+            ) return fail(TS_WAITING);
             buffer[position++] = (uint8_t)value;
-            state = TS_RECEIVING;
-            return TS_FAIL;
+            return fail(TS_RECEIVING);
           }
           break;
         }
@@ -260,14 +239,9 @@ class ThroughSerial {
         case TS_WAITING_END: {
           if(PJON_SERIAL_AVAILABLE(serial)) {
             int16_t value = receive_byte();
-            if(value == -1) return fail();
-            if(value == TS_END) {
-              state = TS_DONE;
-              return TS_FAIL;
-            } else {
-              state = TS_WAITING;
-              return TS_FAIL;
-            }
+            if(value == -1) return fail(TS_WAITING);
+            if(value == TS_END) return fail(TS_DONE);
+            else return fail(TS_WAITING);
           }
           break;
         }

@@ -5,13 +5,6 @@
 // #define SWBB_MODE 3 // 2.94kB/s - 23529Bd
 // #define SWBB_MODE 4 // 3.40kB/s - 27210Bd
 
-/*  Response timeout (1500 microseconds default).
-    If the acknowledgement fails SWBB_RESPONSE_TIMEOUT may be too short
-    specially if long packets are sent or if devices are far from each other */
-
-//#define SWBB_RESPONSE_TIMEOUT 1500
-
-
 #include <PJONSoftwareBitBang.h>
 
 float test;

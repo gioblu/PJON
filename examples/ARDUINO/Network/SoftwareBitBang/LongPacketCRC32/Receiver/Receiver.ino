@@ -2,13 +2,6 @@
 #define PJON_PACKET_MAX_LENGTH 325 // Make the buffer big enough
 #define PJON_MAX_PACKETS         2 // Reduce number of packets not to empty memory
 
-/* Response timeout duration duration (1500 microseconds default).
-   SWBB_RESPONSE_TIMEOUT duration must be long enough for the receiver to have the
-   time to compute the CRC and to respond with a synchronous acknowledgement.
-   Below SWBB_RESPONSE_TIMEOUT is set to 4 milliseconds to give enough time to
-   the receiver to compute CRC32 of a 300 bytes string. */
-#define SWBB_RESPONSE_TIMEOUT 4000
-
 #include <PJONSoftwareBitBang.h>
 
 float test;

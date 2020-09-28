@@ -338,6 +338,26 @@
   #endif
 #endif
 
+
+/* The width of the preamble of a frame (by default set to 1 x SWBB_BIT_SPACER)
+   Maximum allowed value is 100 or a preamble 100 x SWBB_BIT_SPACER
+   This feature avoids retransmissions, in order to avoid devices loosing
+   frames while executing tasks a preamble can be transmitted to signal the
+   start of a frame. The preamble can be used when devices need to execute
+   long tasks. */
+
+#ifndef SWBB_PREAMBLE
+  #define SWBB_PREAMBLE 1
+#endif
+
+/* The maximum width of the preamble (by default set to 1 x SWBB_BIT_SPACER)
+   Maximum allowed value is 100 or a preamble 100 x SWBB_BIT_SPACER
+   To have full interoperability set SWBB_MAX_PREAMBLE = 100 */
+
+#ifndef SWBB_MAX_PREAMBLE
+  #define SWBB_MAX_PREAMBLE 100
+#endif
+
 /* Synchronous acknowledgement response offset.
    If (latency + CRC computation) > (SWBB_RESPONSE_OFFSET * length)
    synchronous acknowledgement reliability could be affected or disrupted

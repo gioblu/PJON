@@ -29,7 +29,7 @@ Released into the public domain
 29/12/2018 3.0 - Medium access control info, mode 4
 03/07/2019 4.0 - Response initializer
 10/03/2020 4.1 - Maximum range experimentally determined
-17/07/2020 5.0 - Response timeout, tolerance added
+17/07/2020 5.0 - Timeout, tolerance and preamble added
 ```
 PJDL (Padded Jittering Data Link) is an asynchronous serial data link for low-data-rate applications that supports both master-slave and multi-master communication over a common conductive medium. PJDL can be easily implemented on limited microcontrollers with low clock accuracy and can operate directly using a single input-output pin.
 
@@ -52,23 +52,23 @@ It is suggested to add 8kΩ-5MΩ pull-down resistor as shown in the graph above 
 ### Communication modes
 The proposed communication modes are the result of years of testing and optimization and have been selected to be easily supported by limited microcontrollers:
 
-| Mode | Bandwidth          | Range | Pad bit | Data bit | Keep busy bit | Latency | Timeout |
-| ---- | ------------------ | ----- | ------- | -------- | ------------- | ------- | ------- |
-| 1    | 1.97kB/s - 15808Bd | 2000m | 110µs   | 44µs     | 11µs          | 13µs    | 20µs/B  |
-| 2    | 2.21kB/s - 17696Bd | 1600m | 92µs    | 40µs     | 10µs          | 10µs    | 20µs/B  |
-| 3    | 3.10kB/s - 24844Bd | 1200m | 70µs    | 28µs     | 7µs           | 8µs     | 20µs/B  |
-| 4    | 3.34kB/s - 26755Bd |  800m | 65µs    | 26µs     | 6.5µs         | 5µs     | 20µs/B  |
+| Mode | Bandwidth          | Range | Preamble bit | Pad bit | Data bit | Keep busy bit | Latency | Timeout |
+| ---- | ------------------ | ----- | ------------ | ------- | -------- | ------------- | ------- | ------- |
+| 1    | 1.97kB/s - 15808Bd | 2000m | 11000µs      | 110µs   | 44µs     | 11µs          | 13µs    | 20µs/B  |
+| 2    | 2.21kB/s - 17696Bd | 1600m | 9200µs       | 92µs    | 40µs     | 10µs          | 10µs    | 20µs/B  |
+| 3    | 3.10kB/s - 24844Bd | 1200m | 7000µs       | 70µs    | 28µs     | 7µs           | 8µs     | 20µs/B  |
+| 4    | 3.34kB/s - 26755Bd |  800m | 6500µs       | 65µs    | 26µs     | 6.5µs         | 5µs     | 20µs/B  |
 
 The following table specifies the exclusive acceptable tolerance of each bit type:
 
-| Mode | Data bit nonet tolerance | Padding bit tolerance | Max keep busy bit tolerance  |
-| ---- | -------------------------| --------------------- | ---------------------------- |
-| 1    | -5us +17us               | -5us +17us            | -5µs +10µs                   |
-| 2    | -4us +16us               | -4us +16us            | -5µs +10µs                   |
-| 3    | -3us +11us               | -3us +11us            | -3µs +10µs                   |
-| 4    | -3us +10us               | -3us +10us            | -3µs +10µs                   |
+| Mode | Preamble bit   | Padding bit | Data bit nonet | Keep busy bit |
+| ---- | -------------- | ----------- | -------------- | ------------- |
+| 1    | -11000us +0us  | -5us +17us  | -5us +17us     | -5µs +10µs    |
+| 2    | -9200us +0us   | -4us +16us  | -4us +16us     | -5µs +10µs    |
+| 3    | -7000us +0us   | -3us +11us  | -3us +11us     | -3µs +10µs    |
+| 4    | -6500us +0us   | -3us +10us  | -3us +10us     | -3µs +10µs    |
 
-Positive tolerance is higher to accept bit-banged signals that are generally longer than expected.
+Padding bit, data bit and keep busy bit have higher positive tolerance to accept bit-banged signals that are generally longer than expected.
 
 ### Medium access control
 PJDL specifies a variation of the carrier-sense, non-persistent random multiple access method (non-persistent CSMA). Devices can detect an ongoing transmission for this reason collisions can only occur in multi-master mode when 2 or more devices start to transmit at the same time. When a collision occurs it can be detected by the receiver because of synchronization loss or by the transmitter if an active collision avoidance procedure is implemented.
@@ -81,7 +81,7 @@ The reception technique is based on 3 steps:
 2. Synchronize with its falling edge
 3. Ensure it is followed by a low data bit
 
-If so reception starts, if not, interference, synchronization loss or simply absence of communication is detected. While receiving a sequence of bytes a synchronization pad is acceptable even if prepended by a 0 of up to (data bit / 4) - 1.
+If so reception starts, if not, interference, synchronization loss or simply absence of communication is detected. While receiving a sequence of bytes a synchronization pad is acceptable even if prepended by a 0 of up to the maximum positive data bit nonet tolerance.
 
 ```cpp  
  ___________ ___________________________
@@ -94,18 +94,18 @@ If so reception starts, if not, interference, synchronization loss or simply abs
 The synchronization pad adds overhead although it includes synchronization along with the data and eliminates the need of a dedicated clock line. The presence of the synchronization pad between each byte also ensures that a frame composed of a series of bytes with decimal value 0 can be transmitted safely without risk of collision.
 
 ### Frame transmission
-Before a frame transmission the communication medium's state is analysed, if high communication is detected and collision is avoided, if low for a duration of one byte plus the latency and a small random time, frame transmission starts with an initializer composed by 3 consecutive synchronization pads followed by data bytes. The synchronization pad is used for both byte and frame initialization to reduce the implementation complexity. PJDL frames do not have an intrinsic length limit.
+Before a frame transmission the communication medium's state is analysed, if high communication is detected and collision is avoided, if low for a duration of one byte plus the latency and a small random time, frame transmission starts with a frame preamble and a frame initializer composed by 3 consecutive synchronization pads followed by data bytes. The synchronization pad is used for both byte and frame initialization to reduce the implementation complexity. PJDL frames do not have an intrinsic length limit.
 ```cpp  
- ________ _________________ __________________________________
-|ANALYSIS|   FRAME INIT    | DATA BYTES                       |
-|________|_____ _____ _____|________________ _________________|
-|        |Sync |Sync |Sync |Sync | Byte     |Sync | Byte      |
-|        |___  |___  |___  |___  |     __   |___  |      _   _|
-|        |   | |   | |   | |   | |    |  |  |   | |     | | | |
-|00000000| 1 |0| 1 |0| 1 |0| 1 |0|0000|11|00| 1 |0|00000|1|0|1|
-|________|___|_|___|_|___|_|___|_|____|__|__|___|_|_____|_|_|_|
+ ________ __________ _________________ ________________
+|ANALYSIS| PREAMBLE |   FRAME INIT    | DATA BYTES     |
+|________|__________|_____ _____ _____|________________|
+|        |          |Sync |Sync |Sync |Sync | Byte     |
+|        |__________|___  |___  |___  |___  |     __   |
+|        |          |   | |   | |   | |   | |    |  |  |
+|00000000|    1     | 1 |0| 1 |0| 1 |0| 1 |0|0000|11|00|
+|________|__________|___|_|___|_|___|_|___|_|____|__|__|
 ```
-When a frame is received a low performance microcontroller with an inaccurate clock can correctly synchronize with transmitter during the frame initializer and consequently each byte is received. On receiver's side a frame reception starts if 3 synchronization pads are detected. Frame initialization is 100% reliable, false positives can only occur because of externally induced interference.
+When a frame is received a low performance microcontroller with an inaccurate clock can correctly identify a preamble, synchronize with transmitter during the frame initializer and consequently each byte is received. Frame initialization is 100% reliable, false positives can only occur because of externally induced interference. If the implementation applies polling, the preamble can be used to reduce the chances of transmission failure when the receiver's polling frequency is too low to detect incoming frames. The preamble's maximum length is 100 times the length of a padding bit.
 
 ### Synchronous response
 A frame transmission can be optionally followed by a synchronous response sent by its recipient. Between frame transmission and a synchronous response there is a variable time which duration is influenced by latency.

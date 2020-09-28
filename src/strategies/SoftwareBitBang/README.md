@@ -56,11 +56,13 @@ The picture above shows a [PJDL](/src/strategies/SoftwareBitBang/specification/P
 ### Configuration
 Before including the library it is possible to configure `SoftwareBitBang` using predefined constants:
 
-| Constant                | Purpose                             | Supported value                            |
-| ----------------------- |------------------------------------ | ------------------------------------------ |
-| `SWBB_MODE`             | Data transmission mode              | 1, 2, 3, 4                                 |
-| `SWBB_BACK_OFF_DEGREE`  | Maximum back-off exponential degree | Numeric value (4 by default)               |
-| `SWBB_MAX_ATTEMPTS`     | Maximum transmission attempts       | Numeric value (20 by default)              |
+| Constant                | Purpose                              | Supported value                            |
+| ----------------------- |------------------------------------- | ------------------------------------------ |
+| `SWBB_MODE`             | Data transmission mode               | 1, 2, 3, 4                                 |
+| `SWBB_BACK_OFF_DEGREE`  | Maximum back-off exponential degree  | Numeric value (4 by default)               |
+| `SWBB_MAX_ATTEMPTS`     | Maximum transmission attempts        | Numeric value (20 by default)              |
+| `SWBB_PREAMBLE`         | Length of the frame preamble         | Numeric value (1 by default) max 100       |
+| `SWBB_MAX_PREAMBLE`     | Maximum length of the frame preamble | Numeric value (1 by default) max 100       |
 
 `SoftwareBitBang` supports the use of input and output pins because separated signals may be required if additional circuitry is used for amplification or noise filtering. It also works if pins are directly connected as a simple point-to-point null-modem or cross-over serial link.
 

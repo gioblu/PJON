@@ -306,8 +306,6 @@ class SoftwareBitBang {
     }
 
     bool sync_preamble() {
-      // Allow a wider packet start sampling interval for devices
-      // that do other tasks and cannot sample very fast.
       return sync(SWBB_BIT_SPACER * SWBB_MAX_PREAMBLE);
     };
 
@@ -316,8 +314,7 @@ class SoftwareBitBang {
     void pulse(uint8_t n) {
       #if SWBB_PREAMBLE != 1
       if (n == 3) {
-        // Extra long first pad of packet initializer, to tolerate devices
-        // that have other tasks and cannot sample continuously.
+        // Transmit preamble
         PJON_IO_WRITE(_output_pin, HIGH);
         PJON_DELAY_MICROSECONDS(SWBB_BIT_SPACER * SWBB_PREAMBLE);
         PJON_IO_WRITE(_output_pin, LOW);

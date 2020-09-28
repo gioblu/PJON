@@ -1,7 +1,7 @@
 
 ![PJON](http://www.gioblu.com/PJON/PJON-github-header-tiny.png)
 ## PJON 12.1
-PJON® (Padded Jittering Operative Network) is an arduino-compatible, multi-master, multi-media network protocol. It proposes a new Open Standard, it is designed as a framework and implements a totally software-defined network protocol stack that can be easily cross-compiled on many MCUs and architectures like ATtiny, ATmega, SAMD, ESP8266, ESP32, STM32, Teensy, Raspberry Pi, Linux, Windows x86, Apple and Android. PJON operates on a wide range of media and protocols like PJDL, PJDLR, PJDLS, Serial, RS485, USB, ASK/FSK, LoRa, UDP, TCP, MQTT and ESPNOW.
+PJON® (Padded Jittering Operative Network) is an arduino-compatible, multi-master, multi-media network protocol. It proposes a new Open Standard, it is designed as a framework and implements a totally software-defined network protocol stack that can be easily cross-compiled on many MCUs and architectures like ATtiny, ATmega, SAMD, ESP8266, ESP32, STM32, Teensy, Raspberry Pi, Linux, Windows x86, Apple and Android. PJON operates on a wide range of media and protocols like PJDL, PJDLR, PJDLS, Serial, RS485, USB, ASK/FSK, LoRa, UDP, TCP, MQTT and ESPNOW. For more information visit the [documentation](documentation/README.md), the [specification](specification/PJON-protocol-specification-v4.0.md) or the [wiki](https://github.com/gioblu/PJON/wiki).
 
 [![Get PJON bus id](https://img.shields.io/badge/get-PJON%20bus%20id-lightgrey.svg)](http://www.pjon.org/get-bus-id.php)
 [![Join the chat at https://gitter.im/gioblu/PJON](https://badges.gitter.im/gioblu/PJON.svg)](https://gitter.im/gioblu/PJON?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -23,23 +23,6 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 - Optional inclusion of MAC addresses
 - Optional acknowledgement
 - Error handling
-
-### Specifications
-- [PJON v4.0](specification/PJON-protocol-specification-v4.0.md)
-- [PJDL v5.0](src/strategies/SoftwareBitBang/specification/PJDL-specification-v5.0.md)
-- [PJDLR v3.0](src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md)
-- [PJDLS v2.0](src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md)
-- [TSDL v3.0](src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md)
-
-### Documentation
-- [Addressing](/documentation/addressing.md)
-- [Configuration](/documentation/configuration.md)
-- [Data reception](/documentation/data-reception.md)
-- [Data structures](/documentation/data-structures.md)
-- [Data transmission](/documentation/data-transmission.md)
-- [Error handling](/documentation/error-handling.md)
-- [Routing](/documentation/routing.md)
-- [IO setup](/documentation/io-setup.md)
 
 ### Publications
 - [PJON protocol handbook](https://www.pjon-technologies.com/collections/frontpage/products/pjon-protocol-hand-book) by Giovanni Blu Mitolo - Distributed by [PJON Technologies srl](https://www.pjon-technologies.com)

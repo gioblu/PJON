@@ -339,7 +339,7 @@
 #endif
 
 
-/* The width of the preamble of a frame (by default set to 1 x SWBB_BIT_SPACER)
+/* Frame preamble length (by default set to 1 x SWBB_BIT_SPACER)
    Maximum allowed value is 100 or a preamble of 100 x SWBB_BIT_SPACER
    When devices execute other tasks frames may be lost unheard. The preamble
    can be used to avoid transmission failure. To avoid retransmissions the
@@ -349,7 +349,7 @@
   #define SWBB_PREAMBLE 1
 #endif
 
-/* The maximum width of the preamble (by default set to 1 x SWBB_BIT_SPACER)
+/* Maximum frame preamble length (by default set to 1 x SWBB_BIT_SPACER)
    Maximum allowed value is 100 or a preamble of 100 x SWBB_BIT_SPACER
    To have full interoperability set SWBB_MAX_PREAMBLE = 100 */
 

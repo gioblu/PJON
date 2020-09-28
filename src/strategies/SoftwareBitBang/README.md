@@ -61,8 +61,8 @@ Before including the library it is possible to configure `SoftwareBitBang` using
 | `SWBB_MODE`             | Data transmission mode               | 1, 2, 3, 4                                 |
 | `SWBB_BACK_OFF_DEGREE`  | Maximum back-off exponential degree  | Numeric value (4 by default)               |
 | `SWBB_MAX_ATTEMPTS`     | Maximum transmission attempts        | Numeric value (20 by default)              |
-| `SWBB_PREAMBLE`         | Length of the frame preamble         | Numeric value (1 by default) max 100       |
-| `SWBB_MAX_PREAMBLE`     | Maximum length of the frame preamble | Numeric value (1 by default) max 100       |
+| `SWBB_PREAMBLE`         | Preamble Length                      | Numeric value (1 by default), max 100      |
+| `SWBB_MAX_PREAMBLE`     | Maximum preamble length              | Numeric value (1 by default), max 100      |
 
 `SoftwareBitBang` supports the use of input and output pins because separated signals may be required if additional circuitry is used for amplification or noise filtering. It also works if pins are directly connected as a simple point-to-point null-modem or cross-over serial link.
 
@@ -90,7 +90,7 @@ PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl
 ### Known issues
 - A 1-5 MΩ pull down resistor could be necessary to reduce interference, see [Mitigate interference](https://github.com/gioblu/PJON/wiki/Mitigate-interference).
 - When using more than one instance of `SoftwareBitBang` in the same sketch use pins part of different port groups to avoid cross-talk.  
-- During the execution of other tasks or delays a certain amount of packets could be potentially lost because transmitted out of the polling time of the receiver device. Thanks to the PJON packet handler after some retries the packet is received but a certain amount of bandwidth is wasted. If this situation occurs, try to reduce as much as possible the duration of other tasks and or use a longer polling time using `receive` and passing the requested amount of microseconds: `bus.receive(1000); // Poll for 1 millisecond`.
+- During the execution of other tasks or delays a certain amount of packets could be potentially lost because transmitted out of the polling time of the receiver device. Thanks to the PJON packet handler after some retries the packet is received but a certain amount of bandwidth is wasted. If this situation occurs try to reduce the duration of other tasks and use a frame preamble setting `SWBB_MAX_PREAMBLE` and `SWBB_PREAMBLE` to a value between 1 and 100. The optimal preamble length is the maximum interval between each `bus.receive()` call divided by `SWBB_BIT_SPACER`
 - `SoftwareBitBang` strategy can have compatibility issues with codebases that are using interrupts, reliability or bandwidth loss can occur because of the interruptions made by third party software.
 
 ### Safety warning

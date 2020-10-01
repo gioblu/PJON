@@ -43,17 +43,6 @@
   #define SWBB_RECEIVE_TIME 1000
 #endif
 
-// The width of the initial spacer of a packet, can be increased from
-// 1 to for example 3 to allow more "blind time" in modules not being
-// able to call receive continuously.
-#ifndef SWBB_INITIAL_SPACER_MULTIPLIER
-  #define SWBB_INITIAL_SPACER_MULTIPLIER 1
-#endif
-// An upper limit to the inital spacer multiplier
-#ifndef SWBB_MAX_INITIAL_SPACER_MULTIPLIER
-  #define SWBB_MAX_INITIAL_SPACER_MULTIPLIER 100
-#endif
-
 class SoftwareBitBang {
   public:
     /* Returns the delay related to the attempts passed as parameter: */
@@ -183,7 +172,7 @@ class SoftwareBitBang {
       if(max_length == PJON_PACKET_MAX_LENGTH) {
         uint32_t time = PJON_MICROS();
         // Look for a frame initializer
-        if(!sync_first() || !sync() || !sync()) return SWBB_FAIL;
+        if(!sync_preamble() || !sync() || !sync()) return SWBB_FAIL;
         // Check its timing consistency
         if(
           (uint32_t)(PJON_MICROS() - time) <
@@ -316,21 +305,18 @@ class SoftwareBitBang {
       return sync(SWBB_BIT_SPACER);
     }
 
-    bool sync_first() {
-      // Allow a wider packet start sampling interval for devices
-      // that do other tasks and cannot sample very fast.
-      return sync(SWBB_BIT_SPACER * SWBB_MAX_INITIAL_SPACER_MULTIPLIER);
+    bool sync_preamble() {
+      return sync(SWBB_BIT_SPACER * SWBB_MAX_PREAMBLE);
     };
 
     /* Emit synchronization pulse: */
 
     void pulse(uint8_t n) {
-      #if SWBB_INITIAL_SPACER_MULTIPLIER != 1
+      #if SWBB_PREAMBLE != 1
       if (n == 3) {
-        // Extra long first pad of packet initializer, to tolerate devices 
-        // that have other tasks and cannot sample continuously.
+        // Transmit preamble
         PJON_IO_WRITE(_output_pin, HIGH);
-        PJON_DELAY_MICROSECONDS(SWBB_BIT_SPACER * SWBB_INITIAL_SPACER_MULTIPLIER);
+        PJON_DELAY_MICROSECONDS(SWBB_BIT_SPACER * SWBB_PREAMBLE);
         PJON_IO_WRITE(_output_pin, LOW);
         PJON_DELAY_MICROSECONDS(SWBB_BIT_WIDTH);
         n--;

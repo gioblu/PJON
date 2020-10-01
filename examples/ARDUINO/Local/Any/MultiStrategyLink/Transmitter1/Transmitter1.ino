@@ -5,14 +5,6 @@
 // #define SWBB_MODE 3 // 2.94kB/s - 23529Bd
 // #define SWBB_MODE 4 // 3.40kB/s - 27210Bd
 
-/*  Acknowledge Latency maximum duration (1000 microseconds default).
-    Can be necessary to higher SWBB_RESPONSE_TIMEOUT to leave enough time to
-    receiver to compute the CRC and to respond with a synchronous acknowledgement
-    SWBB_RESPONSE_TIMEOUT can be reduced to higher communication speed if
-    devices are near and able to compute CRC fast enough. */
-
-//#define SWBB_RESPONSE_TIMEOUT 1000
-
 #include <PJONAny.h>
 
 

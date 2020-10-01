@@ -56,11 +56,13 @@ The picture above shows a [PJDL](/src/strategies/SoftwareBitBang/specification/P
 ### Configuration
 Before including the library it is possible to configure `SoftwareBitBang` using predefined constants:
 
-| Constant                | Purpose                             | Supported value                            |
-| ----------------------- |------------------------------------ | ------------------------------------------ |
-| `SWBB_MODE`             | Data transmission mode              | 1, 2, 3, 4                                 |
-| `SWBB_BACK_OFF_DEGREE`  | Maximum back-off exponential degree | Numeric value (4 by default)               |
-| `SWBB_MAX_ATTEMPTS`     | Maximum transmission attempts       | Numeric value (20 by default)              |
+| Constant                | Purpose                              | Supported value                            |
+| ----------------------- |------------------------------------- | ------------------------------------------ |
+| `SWBB_MODE`             | Data transmission mode               | 1, 2, 3, 4                                 |
+| `SWBB_BACK_OFF_DEGREE`  | Maximum back-off exponential degree  | Numeric value (4 by default)               |
+| `SWBB_MAX_ATTEMPTS`     | Maximum transmission attempts        | Numeric value (20 by default)              |
+| `SWBB_PREAMBLE`         | Preamble Length                      | Numeric value (1 by default), max 100      |
+| `SWBB_MAX_PREAMBLE`     | Maximum preamble length              | Numeric value (1 by default), max 100      |
 
 `SoftwareBitBang` supports the use of input and output pins because separated signals may be required if additional circuitry is used for amplification or noise filtering. It also works if pins are directly connected as a simple point-to-point null-modem or cross-over serial link.
 
@@ -88,8 +90,8 @@ PJON application example made by the user [Michael Teeuw](http://michaelteeuw.nl
 ### Known issues
 - A 1-5 MΩ pull down resistor could be necessary to reduce interference, see [Mitigate interference](https://github.com/gioblu/PJON/wiki/Mitigate-interference).
 - When using more than one instance of `SoftwareBitBang` in the same sketch use pins part of different port groups to avoid cross-talk.  
-- During the execution of other tasks or delays a certain amount of packets could be potentially lost because transmitted out of the polling time of the receiver device. Thanks to the PJON packet handler after some retries the packet is received but a certain amount of bandwidth is wasted. If this situation occurs, try to reduce as much as possible the duration of other tasks and or use a longer polling time using `receive` and passing the requested amount of microseconds: `bus.receive(1000); // Poll for 1 millisecond`.
+- During the execution of other tasks or delays a certain amount of packets could be potentially lost because transmitted out of the polling time of the receiver device. Thanks to the PJON packet handler after some retries the packet is received but a certain amount of bandwidth is wasted. If this situation occurs try to reduce the duration of other tasks and use a frame preamble setting `SWBB_MAX_PREAMBLE` and `SWBB_PREAMBLE` to a value between 1 and 100. The optimal preamble length is the maximum interval between each `bus.receive()` call divided by `SWBB_BIT_SPACER`
 - `SoftwareBitBang` strategy can have compatibility issues with codebases that are using interrupts, reliability or bandwidth loss can occur because of the interruptions made by third party software.
 
 ### Safety warning
-In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. If devices are connected to AC power you are exposed to a high chance of being electrocuted if hardware is not installed carefully and properly. If you are not experienced enough ask the support of a skilled technician and consider that many countries prohibit uncertified installations. When a [SoftwareBitBang](/src/strategies/SoftwareBitBang) bus is installed [interference mitigation](https://github.com/gioblu/PJON/wiki/Mitigate-interference) and [protective circuitry](https://github.com/gioblu/PJON/wiki/Protective-circuitry) guidelines must be followed. If a common ground or power supply line is used its cable size and length must be carefully selected taking in consideration the overall application's power supply requirements and selected components' maximum rating. The PJDL protocol and its reference implementation [SoftwareBitBang](/src/strategies/SoftwareBitBang/README.md) are experimental, use them at your own risk.
+In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. If devices are connected to AC power you are exposed to a high chance of being electrocuted if hardware is not installed carefully and properly. If you are not experienced enough ask the support of a skilled technician and consider that many countries prohibit uncertified installations. When a [SoftwareBitBang](/src/strategies/SoftwareBitBang) bus is installed [interference mitigation](https://github.com/gioblu/PJON/wiki/Mitigate-interference) and [protective circuitry](https://github.com/gioblu/PJON/wiki/Protective-circuitry) guidelines must be followed. If a common ground or power supply line is used its cable size and length must be carefully selected taking in consideration the overall application's power supply requirements and selected components' maximum rating. PJDL and its reference implementation [SoftwareBitBang](/src/strategies/SoftwareBitBang/README.md) are experimental, use them at your own risk.

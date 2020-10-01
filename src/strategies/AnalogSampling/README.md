@@ -4,9 +4,9 @@
 |--------|-----------|--------------------|
 | Light pulses over air or optic-fibre | 1 or 2 | `#include <PJONAnalogSampling.h>`|
 
-`AnalogSampling` strategy or data link complies with [PJDLS v2.0](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md), it is designed to communicate data wirelessly using light impulses and its sampling technique is based on analog readings. This strategy is able to use a single LED for both photo-emission and photo-reception phases providing with wireless half-duplex connectivity between devices with a range of up to 5 meters. Most appliances have at least a useless energy consuming LED on board, right?
+The `AnalogSampling` strategy is a software implementation of [PJDLS](/src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md), it is designed to communicate data wirelessly using light impulses and its sampling technique is based on analog readings. This strategy is able to use a single LED for both photo-emission and photo-reception phases providing with wireless half-duplex connectivity between devices with a range of up to 5 meters. Most appliances have at least a useless energy consuming LED on board, right? Thanks to this strategy that can be used for communication.
 
-`AnalogSampling` can also be used with separate emitter and receiver pins enabling cheap long range wireless communication using standard photo-diodes, light-emitting diodes or laser diodes. The proposed circuit, technique and codebase were originally implemented in the far 2011, see the first [video documented experiment](https://www.youtube.com/watch?v=-Ul2j6ixbmE). Take a look at the [video introduction](https://www.youtube.com/watch?v=1BeGYMjg-DI) for a brief showcase of its features.
+`AnalogSampling` can also be used with separate emitter and receiver pins enabling cheap long range wireless or optic-fibre communication using standard photo-diodes, light-emitting diodes or laser diodes. The proposed circuit, technique and codebase were originally implemented in 2011, see the first [video documented experiment](https://www.youtube.com/watch?v=-Ul2j6ixbmE). Take a look at the [video introduction](https://www.youtube.com/watch?v=1BeGYMjg-DI) for a brief showcase of its features.
 
 ### Compatibility
 | MCU              | Clock | Supported pins   | Supported modes |

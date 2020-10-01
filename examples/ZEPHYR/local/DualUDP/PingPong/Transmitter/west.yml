@@ -1,0 +1,33 @@
+manifest:
+    defaults:
+        remote: zephyr-upstream
+
+    remotes:
+        - name: zephyr-upstream
+          url-base: https://github.com/zephyrproject-rtos
+
+    projects:
+        - name: zephyr
+          path: zephyr
+          west-commands: scripts/west-commands.yml
+          remote: zephyr-upstream
+          revision: v2.3.0
+
+        # anything beyond this line is meant to define zephyr modules that use the default remote.
+        # please have a look into the zephyr/west.yml for available modules
+        - name: cmsis
+          path: modules/hal/cmsis
+          revision: 542b2296e6d515b265e25c6b7208e8fea3014f90
+
+        - name: tinycrypt
+          path: modules/crypto/tinycrypt
+          revision: 3e9a49d2672ec01435ffbf0d788db6d95ef28de0
+
+        - name: hal_stm32
+          revision: d1bc80d021f4ebc31f6e8b36f14b738cc26c7b03
+          path: modules/hal/stm32
+
+        - name: pjon
+          url: git@github.com:Cimex97/PJON.git
+          revision: feature/zephyr_support
+          path: modules/pjon

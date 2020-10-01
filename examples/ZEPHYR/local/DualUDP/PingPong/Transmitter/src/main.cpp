@@ -27,9 +27,9 @@
 #define FLAGS	0
 #endif
 
-#include "PJON.h"
+#include "PJONDualUDP.h"
 
-PJON<DualUDP> bus(CONFIG_PJON_DEVICE_ID);
+PJONDualUDP bus(CONFIG_PJON_DEVICE_ID);
 
 static int cnt = 0;
 static struct net_mgmt_event_callback mgmt_cb;

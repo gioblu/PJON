@@ -28,6 +28,6 @@ manifest:
           path: modules/hal/stm32
 
         - name: pjon
-          url: git@github.com:Cimex97/PJON.git
+          url: git@github.com:gioblu/PJON.git
           revision: feature/zephyr_support
           path: modules/pjon

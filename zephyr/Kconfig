@@ -130,6 +130,13 @@ config TS_FLUSH_OFFSET
 	default 152
 	help
 	  Force blocking sending hack (adds a delay for each character sent).
+
+config TS_READ_INTERVAL
+	int "READ INTERVAL"
+	default 100
+	help
+	  Interval between each serial read call.
+
 endif
 
 endmenu
@@ -162,25 +169,32 @@ config PJON_PACKET_MAX_LENGTH
 	  The max packet length defines the length of packets pre-allocated buffers
 	  so it strongly affects memory consumption.
 
-config PJON_INCLUDE_ASYNC_ACK
-    bool "INCLUDE ASYNC ACK"
-    default false
-    help
-	  If set to false async ack feature is not included saving memory
-	  (it saves around 1kB of memory)
-
 config PJON_INCLUDE_PACKET_ID
     bool "INCLUDE PACKET ID"
     default false
     help
-	  If set to false packet id feature is not included saving memory
-	  (it saves around 1kB of memory)
+	  If set to false packet id feature is not included and 300B of program
+	  memory plus 80B of RAM are spared.
 
 config PJON_MAX_RECENT_PACKET_IDS
     int "MAX RECENT PACKET IDS"
     default 10
     help
 	  Maximum packet ids record kept in memory (to avoid duplicated exchanges)
+
+config PJON_INCLUDE_PORT
+    bool "INCLUDE PORT"
+    default false
+    help
+	  If set to false port feature is not included and 100B of program memory
+	  plus 2B of RAM are spared.
+
+config PJON_INCLUDE_MAC
+    bool "INCLUDE MAC"
+    default false
+    help
+	  If set to false port feature is not included and 200B of program memory
+	  plus 20B of RAM are spared.
 
 config APP_LINK_WITH_PJON
 	bool "Link 'app' with PJON"

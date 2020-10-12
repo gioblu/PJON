@@ -1,20 +1,20 @@
 /* Route packets between a local bus and a network bus in both directions,
    using a switch that supports NAT (network address translation).
-   
-   A device on the local bus can send to a device on a network bus by 
+
+   A device on the local bus can send to a device on a network bus by
    specifying the bus id. If the switch has configured a public bus id
    (a NAT bus id) for this local bus, the remote devices can also reply.
    __________                 ________                 __________
   | LOCAL    |         Pin 7 | NAT    | Pin 12        | NETWORK  |
   | DEVICE   |_______________| SWITCH |_______________| DEVICE   |
-  |__________|  Local bus    |________|  Bus 0.0.0.2  |__________| 
+  |__________|  Local bus    |________|  Bus 0.0.0.2  |__________|
                (NAT 0.0.0.1)
 */
 
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 
 // PJON object for a local bus
-PJON<SoftwareBitBang> bus(44);
+PJONSoftwareBitBang bus(44);
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);

@@ -15,12 +15,12 @@
 //#define ETCP_SINGLE_SOCKET_WITH_ACK
 
 #include <PJONEthernetTCP.h>
+#include <PJONSoftwareBitBang.h>
 
 const uint8_t DEVICE_ID = 45;
 // SWBB Device ID for this device and the RemoteWorker
 
-
-PJON<SoftwareBitBang> busA(DEVICE_ID);
+PJONSoftwareBitBang busA(DEVICE_ID);
 PJONEthernetTCP busB(1);
 
 // Ethernet configuration for this device

@@ -1,6 +1,6 @@
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 
-PJON<SoftwareBitBang> bus(100);
+PJONSoftwareBitBang bus(100);
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   if((char)payload[0] == 'B') {

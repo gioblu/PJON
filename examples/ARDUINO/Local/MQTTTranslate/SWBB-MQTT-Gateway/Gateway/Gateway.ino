@@ -3,6 +3,7 @@
 
 #define PJON_MAX_PACKETS 2
 #include <PJONMQTTTranslate.h>
+#include <PJONSoftwareBitBang.h>
 
 // Ethernet configuration for this device
 byte mac[] = {0xDA, 0xCA, 0x7E, 0xEF, 0xFE, 0x5D};
@@ -10,7 +11,7 @@ uint8_t broker_ip[] = { 192, 168, 1, 71 };
 
 
 #define PJON_GATEWAY_ID 254
-PJON<SoftwareBitBang> bus(PJON_GATEWAY_ID);
+PJONSoftwareBitBang bus(PJON_GATEWAY_ID);
 PJONMQTTTranslate mqtt;
 
 uint32_t cnt_to_mqtt = 0, cnt_from_mqtt = 0;

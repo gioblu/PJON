@@ -1,6 +1,6 @@
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 
-PJON<SoftwareBitBang> bus(200);
+PJONSoftwareBitBang bus(200);
 
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   /* Make use of the payload before sending something, the buffer where payload points to is

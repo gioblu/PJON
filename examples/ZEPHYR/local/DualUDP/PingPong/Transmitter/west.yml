@@ -29,5 +29,5 @@ manifest:
 
         - name: pjon
           url: git@github.com:gioblu/PJON.git
-          revision: feature/zephyr_support
+          revision: master
           path: modules/pjon

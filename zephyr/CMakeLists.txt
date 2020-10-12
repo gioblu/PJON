@@ -3,6 +3,8 @@ zephyr_interface_library_named(PJON)
 
 zephyr_compile_definitions_ifdef(CONFIG_PJON_MAX_PACKETS PJON_MAX_PACKETS=CONFIG_PJON_MAX_PACKETS)
 zephyr_compile_definitions_ifdef(CONFIG_PJON_PACKET_MAX_LENGTH PJON_PACKET_MAX_LENGTH=CONFIG_PJON_PACKET_MAX_LENGTH)
+zephyr_compile_definitions_ifdef(CONFIG_PJON_INCLUDE_PORT PJON_INCLUDE_PORT)
+zephyr_compile_definitions_ifdef(CONFIG_PJON_INCLUDE_MAC PJON_INCLUDE_MAC)
 
 target_include_directories(PJON INTERFACE ../src)
 

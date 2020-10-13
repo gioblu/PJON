@@ -24,9 +24,7 @@ bool router = false;
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   const char *msg = (const char *)payload;
   // Forward to MQTT topic pjon/device45/output if from device 45
-  mqtt.send_from_id(packet_info.tx.id, PJONTools::localhost(),
-    packet_info.rx.id, PJONTools::localhost(),
-    payload, length, packet_info.header, packet_info.id, packet_info.port);
+  mqtt.forward(packet_info, payload, length);
   cnt_to_mqtt++;
 };
 

@@ -120,7 +120,7 @@ The instance can be configured to include a 16 bits [packet identifier](/specifi
   // If packet duplication occurs, higher PJON_MAX_RECENT_PACKET_IDS
   #define PJON_MAX_RECENT_PACKET_IDS 10  // By default 10
 
-  #include <PJON.h>
+  #include <PJONSoftwareBitBang.h>
 ```
 Use `set_packet_id` to enable the packet identification:
 ```cpp  
@@ -133,7 +133,7 @@ The instance can be configured to include a [network service identifier](/specif
 ```cpp  
   // Include the port id feature
   #define PJON_INCLUDE_PORT
-  #include <PJON.h>
+  #include <PJONSoftwareBitBang.h>
 ```
 Use `include_port` to enable the network service identification:
 ```cpp
@@ -147,11 +147,11 @@ The instance can be configured to include the [hardware identification](/specifi
 ```cpp  
   // Include the port id feature
   #define PJON_INCLUDE_MAC
-  #include <PJON.h>
+  #include <PJONSoftwareBitBang.h>
 
   // Device's MAC address
   uint8_t mac[6] = {0, 0, 0, 0, 0, 0};
-  PJON<SoftwareBitBang> bus(mac);
+  PJONSoftwareBitBang bus(mac);
 ```
 Use `include_mac` to enable the network service identification by default:
 ```cpp  

@@ -18,7 +18,7 @@ Many LEDARs can be connected to the same [SoftwareBitBang](/src/strategies/Softw
 
 Its detection method is based on two interesting characteristics of LEDs:
 - If hit by light, LEDs produce a tiny amount of electricity, thanks to the photo-electric effect
-- LEDs used as detectors are generally more sensitive to the frequency they emit if used as emitters, making a couple of identical LEDs generally used for lighting, in two extremely efficient wireless transceivers that can be used for reflectometry or also for wireless communication using the [AnalogSampling](/src/strategies/AnalogSampling/README.md) strategy
+- LEDs used as detectors are generally more sensitive to the frequency they emit if used as emitters, so a couple of identical LEDs generally used for lighting can be used successfully as wireless transceivers for reflectometry or optical wireless communication using the [AnalogSampling](/src/strategies/AnalogSampling/README.md) strategy
 
 Its sampling method is based on two different samples:
 - Background noise or ambient light sample `B`
@@ -79,6 +79,6 @@ The case is made by two elements and it has been printed using a customized Prus
 
 Once crafted, ATtiny85 has to be flashed with the [LEDAR](software/LEDAR/LEDAR.ino) sketch using an ISP programmer, see [ATtiny85 interfacing](https://github.com/gioblu/PJON/wiki/ATtiny-interfacing)
 
-LEDAR has been engineered with the strong feeling that, in the future, "smart houses" will not necessarily host a multitude of inefficient and convoluted embedded real-time operative systems, in whatever "thing", consuming a lot of power running Ethernet over WiFi and exposing vulnerabilities also out of the physical boundaries of houses. Otherwise, more probably, will host many dedicated microcontrollers connected to a wired, common, open-source, lightweight and less power consuming communication bus, unhackable without direct physical access to its wiring.
+LEDAR has been engineered with the strong feeling that, in the future, "smart houses" will not necessarily host a multitude of inefficient embedded real-time operative systems in whatever "thing" while exposing vulnerabilities out of the physical boundaries of houses. Otherwise, more probably, will host many simple, less power-hungy microcontrollers, connected to a wired communication bus, unhackable without direct physical access to its wiring.
 
 LEDAR should be considered as a general "guideline" on how PJON compatible devices can be published and shared with other PJON users through the [devices](../../README.md) directory. Feel free to make a pull request proposing a new device you have engineered.   

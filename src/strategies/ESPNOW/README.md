@@ -4,7 +4,7 @@
 |--------|-----------|--------------------|
 | ESPNOW over WiFi   | NA    | `#include <PJONESPNOW.h>` |
 
-With the `ESPNOW` PJON strategy, up to 10 ESP32 devices can use PJON to communicate with each other over
+With the `ESPNOW` PJON strategy, up to 10 ESP32 or ESP8266 devices can use PJON to communicate with each other over
 the [Espressif ESPNOW protocol](https://www.espressif.com/en/products/software/esp-now/overview) (peer-to-peer 802.11).
 
 PJON over ESPNOW has the following benefits:
@@ -37,6 +37,13 @@ void setup() {
   bus.strategy.set_pmk(pmk);
 }
 ```
+
+You can also choose between Access Point and Station mode. To switch to Station mode, define CONFIG_STATION_MODE before
+including PJONESPNOW.h.
+```cpp
+    #define CONFIG_STATION_MODE
+    #include <PJONESPNOW.h>
+``` 
 
 The ESPNOW strategy will send a broadcast message if the device_id is not already registered. Once a response is received (assuming auto-registration is enabled) the device automatically adds the node id and mac in its table. Sender auto-registration is enabled by default and can be disabled using the following setter:
 

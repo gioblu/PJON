@@ -37,11 +37,11 @@ void delayMicroseconds(uint32_t delay_value) {
     tv.tv_sec = 0;
     tv.tv_usec = delay_value;
   }
-  else{ 
-    tv.tv_sec = floor(delay_value / 1000000); 
+  else{
+    tv.tv_sec = floor(delay_value / 1000000);
     tv.tv_usec = delay_value - tv.tv_sec * 1000000;
   }
- 
+
   select(0, NULL, NULL, NULL, &tv);
 };
 
@@ -92,7 +92,7 @@ int serialOpen(const char *device, const int baud) {
   r = ioctl(fd, TIOCMSET, &state);
   if(r) return -1;
 
-  usleep(10000);	// Sleep for 10 milliseconds
+  delayMicroseconds(10000);	// Sleep for 10 milliseconds
   return fd;
 };
 

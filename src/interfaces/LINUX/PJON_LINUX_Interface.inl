@@ -32,15 +32,17 @@ uint32_t millis() {
 };
 
 void delayMicroseconds(uint32_t delay_value) {
-  auto begin_ts = std::chrono::high_resolution_clock::now();
-  while(true) {
-    auto elapsed_usec =
-    std::chrono::duration_cast<std::chrono::microseconds>(
-      std::chrono::high_resolution_clock::now() - begin_ts
-    ).count();
-    if(elapsed_usec >= delay_value) break;
-    std::this_thread::sleep_for(std::chrono::microseconds(50));
+  struct timeval tv;
+  if (delay_value < 1000000){
+    tv.tv_sec = 0;
+    tv.tv_usec = delay_value;
   }
+  else{ 
+    tv.tv_sec = floor(delay_value / 1000000); 
+    tv.tv_usec = delay_value - tv.tv_sec * 1000000;
+  }
+ 
+  select(0, NULL, NULL, NULL, &tv);
 };
 
 void delay(uint32_t delay_value_ms) {

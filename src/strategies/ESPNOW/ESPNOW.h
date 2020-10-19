@@ -64,7 +64,7 @@ class ESPNOW {
     int16_t find_remote_node(uint8_t id, uint8_t* mac) {
       for(uint8_t i = 0; i < _remote_node_count; i++)
         if(
-          ((_remote_id[i] == id) && (id != 255)) ||
+          ((_remote_id[i] == id) && (id != PJON_NOT_ASSIGNED)) ||
           (memcmp(_remote_mac, mac, ESP_NOW_ETH_ALEN) == 0)
         ) return i;
       return -1;

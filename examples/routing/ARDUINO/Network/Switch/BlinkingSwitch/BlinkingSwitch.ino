@@ -10,6 +10,7 @@
    */
 
 #include <PJONInteractiveRouter.h>
+#include <PJONSoftwareBitBang.h>
 
 PJONInteractiveRouter2<SoftwareBitBang, SoftwareBitBang> router;
 

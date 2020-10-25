@@ -1,12 +1,14 @@
 /* Similar to the Switch but with a blinking RGB led indicating each packet
    that is forwarded with blue and green for each direction respectively,
-   plus errors in red. 
-   
+   plus errors in red.
+
    This demonstrates how the PJONInteractiveRouter class supports user hooks
    for error handling and to catch every packet being forwarded. */
 
 #define PJON_MAX_PACKETS 3
 #include <PJONInteractiveRouter.h>
+#include <PJONSoftwareBitBang.h>
+#include <PJONDualUDP.h>
 
 // Ethernet configuration for this device, MAC must be unique!
 byte mac[] = {0xDE, 0x34, 0x4E, 0xEF, 0xFE, 0xE1};

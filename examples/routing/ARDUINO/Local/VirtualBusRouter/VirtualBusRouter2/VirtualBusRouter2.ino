@@ -1,7 +1,9 @@
 #include <PJONVirtualBusRouter.h>
+#include <PJONSoftwareBitBang.h>
+#include <PJONOverSampling.h>
 
 /* This sketch is routing between two local buses to form one larger local bus,
-   just like the VirtualBusRouter example, but it uses the class 
+   just like the VirtualBusRouter example, but it uses the class
    PJONVirtualBusRouter2 which is specialized to using two buses to provide
    a simpler declaration.
 

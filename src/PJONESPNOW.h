@@ -1,8 +1,11 @@
 
 #pragma once
 
+/* ESPNOW strategy actively uses the PJON's MAC address feature for this reason
+   it must be included. */
+
 #ifndef PJON_INCLUDE_MAC
-  #error ESPNOW strategy requires the MAC feature, define PJON_INCLUDE_MAC.
+  #define PJON_INCLUDE_MAC
 #endif
 
 #include "PJON.h"

@@ -13,9 +13,10 @@ static wifi_country_t wifi_country = {
 
 #include "Arduino.h"
 
+// Include PJON's MAC feature (required for ESPNOW operation)
+#define PJON_INCLUDE_MAC
 
 #include <PJONESPNOW.h>
-
 
 PJONESPNOW bus(44);
 

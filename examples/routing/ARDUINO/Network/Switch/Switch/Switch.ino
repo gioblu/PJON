@@ -1,4 +1,5 @@
 #include <PJONSwitch.h>
+#include <PJONSoftwareBitBang.h>
 
 /* Route packets between a collection of buses with the same
    or different strategies or media.

@@ -13,9 +13,7 @@ static wifi_country_t wifi_country = {
 
 #include "Arduino.h"
 
-
 #include <PJONESPNOW.h>
-
 
 PJONESPNOW bus(44);
 

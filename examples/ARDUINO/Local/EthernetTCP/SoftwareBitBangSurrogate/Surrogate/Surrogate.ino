@@ -15,12 +15,12 @@
 //#define ETCP_SINGLE_SOCKET_WITH_ACK
 
 #include <PJONEthernetTCP.h>
+#include <PJONSoftwareBitBang.h>
 
 const uint8_t DEVICE_ID = 45;
 // SWBB Device ID for this device and the RemoteWorker
 
-
-PJON<SoftwareBitBang> busA(DEVICE_ID);
+PJONSoftwareBitBang busA(DEVICE_ID);
 PJONEthernetTCP busB(1);
 
 // Ethernet configuration for this device
@@ -55,32 +55,16 @@ void setup() {
 
 void receiver_functionA(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   // Forward packet to RemoteWorker on bus B, preserving the original sender id
-  busB.send_from_id(
-    packet_info.tx.id,
-    packet_info.tx.bus_id,
-    DEVICE_ID,
-    PJONTools::localhost(),
-    (uint8_t *)payload,
-    length,
-    packet_info.header,
-    packet_info.id,
-    packet_info.port
-  );
-}
+  PJON_Packet_Info p = packet_info;
+  p.rx.id = DEVICE_ID;
+  busB.forward(p, (uint8_t *)payload, length);
+};
 
 void receiver_functionB(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   // All packets sent by the RemoteWorker is delivered to this device, when in the
   // single_initiate_direction listening mode.
   // Forward packet to specified target device on bus A
-  busA.send_packet_blocking(
-    packet_info.rx.id,
-    packet_info.rx.bus_id,
-    (uint8_t *)payload,
-    length,
-    packet_info.header,
-    packet_info.id,
-    packet_info.port
-  );
+  busA.send_packet_blocking(packet_info, (uint8_t *)payload, length);
 }
 
 void loop() {

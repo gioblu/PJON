@@ -13,12 +13,11 @@
 // pjon/device42/output/temperature as would have been the case with
 // the MIRROR_TRANSLATE mode.
 
-#include <PJONMQTTTranslate.h>
+#include <PJONSoftwareBitBang.h>
 
 #define PJON_GATEWAY_ID 254
 
-
-PJON<SoftwareBitBang> bus(42);
+PJONSoftwareBitBang bus(42);
 
 float temperature = 20.0;        // "Measurement"
 float temperature_target = 20.0; // "Target"
@@ -31,7 +30,8 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
     strncpy(buf, (const char *)payload, len);
     buf[len -1] = 0;
     Serial.print("Received from broker: "); Serial.println(buf);
-    if (strncmp("temperature=", buf, 12)==0) temperature_target = atof(&buf[12]);
+    if(strncmp("temperature=", buf, 12) == 0)
+      temperature_target = atof(&buf[12]);
   }
 }
 

@@ -22,12 +22,9 @@
 // Set the USB COM port used
 #define COM_PORT "COM9"
 
-// Include only ThroughSerial
-
-
-// Include PJON library
+// Include PJON library with ThroughSerial
 #include <PJONThroughSerial.h>
-
+// Instantiate PJON over ThroughSerial
 PJONThroughSerial bus(45);
 
 // The function called when data is received

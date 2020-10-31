@@ -3,6 +3,7 @@
 
 #define PJON_MAX_PACKETS 2
 #include <PJONMQTTTranslate.h>
+#include <PJONSoftwareBitBang.h>
 
 // Ethernet configuration for this device
 byte mac[] = {0xDA, 0xCA, 0x7E, 0xEF, 0xFE, 0x5D};
@@ -10,7 +11,7 @@ uint8_t broker_ip[] = { 192, 168, 1, 71 };
 
 
 #define PJON_GATEWAY_ID 254
-PJON<SoftwareBitBang> bus(PJON_GATEWAY_ID);
+PJONSoftwareBitBang bus(PJON_GATEWAY_ID);
 PJONMQTTTranslate mqtt;
 
 uint32_t cnt_to_mqtt = 0, cnt_from_mqtt = 0;
@@ -23,9 +24,7 @@ bool router = false;
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   const char *msg = (const char *)payload;
   // Forward to MQTT topic pjon/device45/output if from device 45
-  mqtt.send_from_id(packet_info.tx.id, PJONTools::localhost(),
-    packet_info.rx.id, PJONTools::localhost(),
-    payload, length, packet_info.header, packet_info.id, packet_info.port);
+  mqtt.forward(packet_info, payload, length);
   cnt_to_mqtt++;
 };
 

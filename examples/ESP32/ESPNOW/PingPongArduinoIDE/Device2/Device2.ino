@@ -14,7 +14,6 @@ static wifi_country_t wifi_country = {
   policy: WIFI_COUNTRY_POLICY_MANUAL
 };
 
-
 #include <PJONESPNOW.h>
 
 PJONESPNOW bus(45);

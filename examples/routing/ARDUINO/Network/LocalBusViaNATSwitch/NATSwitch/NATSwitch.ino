@@ -1,15 +1,16 @@
 /* Route packets between a local bus and a network bus in both directions,
    using a switch that supports NAT (network address translation).
-   
+
    The first bus is a local bus, but we still specify a bus id for it.
-   This will be the "public" bus id for the local bus, allowing it to 
+   This will be the "public" bus id for the local bus, allowing it to
    be reached from the network bus through NAT (network address translation).
    __________                 ________                 __________
   | LOCAL    |         Pin 7 | NAT    | Pin 12        | NETWORK  |
   | DEVICE   |_______________| SWITCH |_______________| DEVICE   |
   |__________|  Local bus    |________|  Bus 0.0.0.2  |__________| */
 
-#include <PJONSwitch.h>  
+#include <PJONSwitch.h>
+#include <PJONSoftwareBitBang.h>
 
 PJONSwitch2<SoftwareBitBang, SoftwareBitBang> router;
 

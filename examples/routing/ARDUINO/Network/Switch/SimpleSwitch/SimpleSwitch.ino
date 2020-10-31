@@ -1,4 +1,5 @@
 #include <PJONSwitch.h>
+#include <PJONSoftwareBitBang.h>
 
 /* Route packets between a collection of buses with the same
    or different strategies or media.
@@ -10,8 +11,8 @@
   | DEVICE 1 |_______________| SWITCH |_______________| DEVICE 2 |
   |__________|  Bus 0.0.0.1  |________|  Bus 0.0.0.2  |__________| */
 
-PJON<SoftwareBitBang> bus1((const uint8_t[4]){0, 0, 0, 1}, PJON_NOT_ASSIGNED), 
-                      bus2((const uint8_t[4]){0, 0, 0, 2}, PJON_NOT_ASSIGNED);
+PJONSoftwareBitBang bus1((const uint8_t[4]){0, 0, 0, 1}, PJON_NOT_ASSIGNED),
+                    bus2((const uint8_t[4]){0, 0, 0, 2}, PJON_NOT_ASSIGNED);
 
 PJONSimpleSwitch<SoftwareBitBang> router(bus1, bus2);
 

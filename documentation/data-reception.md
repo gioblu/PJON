@@ -31,7 +31,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 
 Register the `receiver_function` as the receiver callback:
 ```cpp
-PJON<SoftwareBitBang> bus;
+PJONSoftwareBitBang bus;
 bus.set_receiver(receiver_function);
 ```
 

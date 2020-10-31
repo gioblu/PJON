@@ -1,12 +1,14 @@
-/* Tunnel packets through another medium using one switch on each end. 
+/* Tunnel packets through another medium using one switch on each end.
 /  For example, two SoftwareBitBang buses that are far from each other
 /  can be joined transparently through a LAN/WAN using the DualUDP strategy
-/  or the EthernetTCP strategy. 
+/  or the EthernetTCP strategy.
 /  In this case, use a non-default UDP port to isolate the "tunnel" from
 /  potential other DualUDP communication on the same network. */
 
 #define PJON_MAX_PACKETS 3
 #include <PJONVirtualBusRouter.h>
+#include <PJONSoftwareBitBang.h>
+#include <PJONDualUDP.h>
 
 // Ethernet configuration for this device, MAC must be unique!
 byte mac[] = {0xEE, 0x79, 0x4E, 0xEF, 0xFE, 0x6D};

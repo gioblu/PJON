@@ -6,14 +6,14 @@
   | DEVICE 1 |_______________| SWITCH |_______________| DEVICE 2 |
   |__________|  Bus 0.0.0.1  |________|  Bus 0.0.0.2  |__________| */
 
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 
 // Bus id definition
 uint8_t bus_id[] = {0, 0, 0, 1};
 uint8_t remote_bus_id[] = {0, 0, 0, 2};
 
 // PJON object
-PJON<SoftwareBitBang> bus(bus_id, 44);
+PJONSoftwareBitBang bus(bus_id, 44);
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);

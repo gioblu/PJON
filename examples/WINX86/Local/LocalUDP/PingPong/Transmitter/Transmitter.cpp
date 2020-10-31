@@ -1,7 +1,7 @@
 
-#include <PJON.h>
+#include <PJONLocalUDP.h>
 
-PJON<LocalUDP> bus(45);
+PJONLocalUDP bus(45);
 
 uint32_t count = 0;
 

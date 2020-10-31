@@ -1,23 +1,23 @@
 /* Route packets between a local bus and a network bus in both directions,
    using a switch that supports NAT (network address translation).
-   
-   The local bus is assigned a public address 0.0.0.1 in the switch, and that 
+
+   The local bus is assigned a public address 0.0.0.1 in the switch, and that
    bus id can be used to reach devices within the local bus.
    __________                 ________                 __________
   | LOCAL    |         Pin 7 | NAT    | Pin 12        | NETWORK  |
   | DEVICE   |_______________| SWITCH |_______________| DEVICE   |
-  |__________|  Local bus    |________|  Bus 0.0.0.2  |__________| 
+  |__________|  Local bus    |________|  Bus 0.0.0.2  |__________|
                (NAT 0.0.0.1)
 */
 
-#include <PJON.h>
+#include <PJONSoftwareBitBang.h>
 
 // Bus id definition
 uint8_t bus_id[] = {0, 0, 0, 2};
 uint8_t remote_bus_id[] = {0, 0, 0, 1};
 
 // PJON object for a network bus
-PJON<SoftwareBitBang> bus(bus_id, 45);
+PJONSoftwareBitBang bus(bus_id, 45);
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);

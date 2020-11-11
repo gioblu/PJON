@@ -59,15 +59,14 @@ static void espnow_send_cb(const uint8_t *mac_addr, uint8_t status) {
 };
 
 static void espnow_recv_cb(const uint8_t *mac_addr, const uint8_t *data, int len) {
-	// Add the packet to the incoming queue.
-	// no error checking, if queue is full just ignore the packet.
+    // Add the packet to the incoming queue.
+    // no error checking, if queue is full just ignore the packet.
 	packetQueue.push(mac_addr, data, len);
 };
 
 class ENHelper {
 	uint8_t _channel = 14;
 	uint8_t _esp_pmk[16];
-	boolean _enable_encryption = false;
 
 public:
 	void add_node_mac(uint8_t mac_addr[ESP_NOW_MAC_LENGTH]) {
@@ -78,33 +77,25 @@ public:
 		if(esp_now_is_peer_exist(mac_addr))
 			return;
 
-		bool isBroadcast = memcmp(mac_addr, espnow_broadcast_mac, ESP_NOW_MAC_LENGTH) == 0;
+		#if defined(ESP8266) // TODO: Fix encryption! ESP_NOW_ROLE_SLAVE doesn't seem to matter. From the doc: The peer's Role does not affect any function, but only stores the Role information for the application layer.
+			esp_now_add_peer(mac_addr, ESP_NOW_ROLE_SLAVE,_channel, NULL, 0); 
 
-		#if defined(ESP8266)
-			if (_enable_encryption && !isBroadcast)
-				esp_now_add_peer(mac_addr, ESP_NOW_ROLE_SLAVE,_channel, _esp_pmk, 16); 
-			else
-				esp_now_add_peer(mac_addr, ESP_NOW_ROLE_SLAVE,_channel, NULL, 0); 
+		#elif defined(ESP32) // TODO: Why malloc a local variable? Add broadcast peer information to peer list.
+			esp_now_peer_info_t *peer = (esp_now_peer_info_t *)malloc(sizeof(esp_now_peer_info_t));
 
-		#elif defined(ESP32)
-			esp_now_peer_info_t peer;
-
-			memset(&peer, 0, sizeof(esp_now_peer_info_t));
-			peer.channel = _channel;
-			peer.ifidx = ESPNOW_WIFI_IF;
-			if (_enable_encryption && !isBroadcast) {
-				peer.encrypt = true;
-				memcpy(peer.lmk, _esp_pmk, 16);
-			}
-			else {
-				peer.encrypt = false;
-			}
-			memcpy(peer.peer_addr, mac_addr, ESP_NOW_MAC_LENGTH);
-			esp_now_add_peer(&peer);
+			memset(peer, 0, sizeof(esp_now_peer_info_t));
+			peer->channel = _channel;
+			peer->ifidx = ESPNOW_WIFI_IF;
+			if( (memcmp(mac_addr, espnow_broadcast_mac, ESP_NOW_MAC_LENGTH) == 0))
+				peer->encrypt = false;
+            // else { peer->encrypt = true; memcpy(peer->lmk, _esp_pmk, 16); }
+			memcpy(peer->peer_addr, mac_addr, ESP_NOW_MAC_LENGTH);
+			esp_now_add_peer(peer);
+			free(peer);
 		#endif
 	};
 
-	bool begin(uint8_t channel, boolean enable_encryption, uint8_t *espnow_pmk) {
+	bool begin(uint8_t channel, uint8_t *espnow_pmk) {
 		 #if defined(ESP32) // TODO: Is this necessary?
 			esp_err_t ret = nvs_flash_init();
 			if(ret == ESP_ERR_NVS_NO_FREE_PAGES) {
@@ -115,8 +106,6 @@ public:
 		#endif
 
 		_channel = channel;
-		
-		_enable_encryption = enable_encryption;
 		memcpy(_esp_pmk, espnow_pmk, 16);
 
 		#ifdef ESP8266
@@ -126,8 +115,6 @@ public:
 			esp_now_set_self_role(ESPNOW_WIFI_ROLE);
 			esp_now_register_send_cb(reinterpret_cast<esp_now_send_cb_t>(espnow_send_cb));
 			esp_now_register_recv_cb(reinterpret_cast<esp_now_recv_cb_t>(espnow_recv_cb));
-			if (_enable_encryption)
-				esp_now_set_kok(_esp_pmk, 16);
 		#else
 			tcpip_adapter_init();
 			wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
@@ -144,8 +131,7 @@ public:
 			esp_now_init();
 			esp_now_register_send_cb(reinterpret_cast<esp_now_send_cb_t>(espnow_send_cb));
 			esp_now_register_recv_cb(reinterpret_cast<esp_now_recv_cb_t>(espnow_recv_cb));
-			if (_enable_encryption)
-				ESP_ERROR_CHECK(esp_now_set_pmk(_esp_pmk));
+			ESP_ERROR_CHECK(esp_now_set_pmk(_esp_pmk));
 		#endif
 
 		add_peer(espnow_broadcast_mac); // Add broadcast peer information to peer list
@@ -159,12 +145,12 @@ public:
 
 	void send_frame(uint8_t *data, uint16_t length, uint8_t dest_mac[ESP_NOW_MAC_LENGTH]) {
 		if (!sendingDone) {
-			 // we are still sending the previous frame - discard this one
+             // we are still sending the previous frame - discard this one
 			return;
 		}
 
-		if (length > PJON_PACKET_MAX_LENGTH) {
-			// the data is too long
+        if (length > PJON_PACKET_MAX_LENGTH) {
+            // the data is too long
 			return;
 		}
 
@@ -177,11 +163,11 @@ public:
 		packet[len + 2] = ESP_NOW_MAGIC_HEADER[2] ^ len;
 		packet[len + 3] = ESP_NOW_MAGIC_HEADER[3] ^ len;
 
-		noInterrupts();
-		{
-			sendingDone = false;
-		}
-		interrupts();
+        noInterrupts();
+        {
+		    sendingDone = false;
+        }
+        interrupts();
 
 		if(esp_now_send(dest_mac, packet, len + ESPNOW_PACKET_HEADER_LENGTH + ESPNOW_PACKET_FOOTER_LENGTH) == 0) {
 			do { // wait for sending finished interrupt to be called

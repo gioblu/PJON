@@ -55,7 +55,7 @@ class EspNowPacket
 			memcpy(out_mac_address, mac_address, ESP_NOW_MAC_LENGTH);
 			memcpy(out_data, data + ESPNOW_PACKET_HEADER_LENGTH, len);
 
-			return len;
+            return len;
 		}
 };
 
@@ -103,7 +103,7 @@ bool PacketQueue::push(const uint8_t *mac_addr, const uint8_t *data, int len)
 			firstSpace = firstSpacePlus1;
 		}
 	}
-	interrupts();
+    interrupts();
 
 	return !isFull;
 }
@@ -121,7 +121,7 @@ uint16_t PacketQueue::pop(uint8_t *out_mac_address, uint8_t *out_data, uint16_t 
 			length = queue[firstElement].checkAndGet(out_mac_address, out_data, max_length);
 			firstElement = (firstElement + 1) % (PJON_MAX_PACKETS + 1);
 		}
-		interrupts();
+        interrupts();
 
 		return length;
 	}

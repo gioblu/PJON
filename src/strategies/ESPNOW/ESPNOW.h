@@ -42,8 +42,8 @@ class ESPNOW {
     bool _espnow_initialised = false;
     bool _auto_registration = true;
     uint8_t _channel = 14;
-    bool _enable_encryption = false;
-    uint8_t _espnow_pmk[17];
+    char _espnow_pmk[17] =
+      "\xdd\xdb\xdd\x44\x34\xd5\x6a\x0b\x7e\x9f\x4e\x27\xd6\x5b\xa2\x81";
 
     // Remote nodes
     uint8_t  _remote_node_count = 0;
@@ -54,7 +54,7 @@ class ESPNOW {
 
     bool check_en() {
       if(!_espnow_initialised) {
-        if(en.begin(_channel, _enable_encryption, _espnow_pmk))
+        if(en.begin(_channel,(uint8_t*)_espnow_pmk))
           _espnow_initialised = true;
       }
       return _espnow_initialised;
@@ -69,7 +69,7 @@ class ESPNOW {
 
     void autoregister_sender(const uint8_t *message, uint16_t length) {
       // Add the last sender to the node table
-      if(_auto_registration && length > 4) {
+      if(_auto_registration && length>4) {
         // First get PJON sender id from incoming packet
         PJON_Packet_Info packet_info;
         PJONTools::parse_header(message, packet_info);
@@ -112,8 +112,7 @@ class ESPNOW {
 
 public:
 
-    void enable_encryption(char *espnow_pmk) {
-      _enable_encryption = true;
+    void set_pmk(char *espnow_pmk) {
       memcpy(_espnow_pmk, espnow_pmk, 16);
     }
 

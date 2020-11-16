@@ -109,8 +109,19 @@ public:
 		memcpy(_esp_pmk, espnow_pmk, 16);
 
 		#ifdef ESP8266
-			WiFi.mode(ESPNOW_WIFI_MODE);
-			wifi_set_channel(_channel);
+			WiFi.persistent(false);
+
+			if (ESPNOW_WIFI_MODE == WIFI_AP) {
+				WiFi.mode(WIFI_AP);
+				WiFi.softAP("ESPNOW", nullptr, _channel);
+				WiFi.softAPdisconnect(false);
+			}
+			else {
+				WiFi.mode(WIFI_STA);
+				WiFi.begin("ESPNOW", nullptr, _channel);
+				WiFi.disconnect(false);
+			}
+
 			esp_now_init();
 			esp_now_set_self_role(ESPNOW_WIFI_ROLE);
 			esp_now_register_send_cb(reinterpret_cast<esp_now_send_cb_t>(espnow_send_cb));

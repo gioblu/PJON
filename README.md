@@ -25,7 +25,9 @@ PJON is used in thousands of devices and its community has spread worldwide beca
 - Error handling
 
 ### Publications
-- [PJON protocol handbook](https://www.pjon-technologies.com/collections/frontpage/products/pjon-protocol-hand-book) by Giovanni Blu Mitolo - Distributed by [PJON Technologies srl](https://www.pjon-technologies.com)
+- [PJON protocol handbook 13.0](https://www.pjon-technologies.com/collections/frontpage/products/the-pjon-protocol-handbook-v13) by Giovanni Blu Mitolo - Distributed by [PJON Technologies srl](https://www.pjon-technologies.com)
+- [PJON 13.0 big box](https://www.pjon-technologies.com/collections/frontpage/products/pjon-13-0-big-box) by Giovanni Blu Mitolo - Distributed by [PJON Technologies srl](https://www.pjon-technologies.com)
+- [PJON protocol handbook 12.0](https://www.pjon-technologies.com/collections/frontpage/products/pjon-protocol-hand-book) by Giovanni Blu Mitolo - Distributed by [PJON Technologies srl](https://www.pjon-technologies.com)
 - [PJON 12.0 big box](https://www.pjon-technologies.com/collections/frontpage/products/pjon-protocol-12-0-big-box) by Giovanni Blu Mitolo - Distributed by [PJON Technologies srl](https://www.pjon-technologies.com)
 
 ### Academic studies

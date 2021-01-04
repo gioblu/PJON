@@ -126,7 +126,7 @@ class MQTTTranslate {
     bool last_send_success = false;
     
     uint16_t incoming_packet_size = 0;
-// TODO: Eliminate extra buffer -- is the on in the MqttClient not enough?    
+// TODO: Eliminate extra buffer -- is the one in the MqttClient not enough?    
     uint8_t packet_buffer[MQTTT_BUFFER_SIZE];
     PJON_Packet_Info _packet_info; // Used for parsing incoming and outgoing packets
 
@@ -159,6 +159,17 @@ class MQTTTranslate {
       return false;
     }
     #endif
+
+    static PJON_Packet_Info fill_info(uint8_t sender_id, const uint8_t sender_bus_id[4], 
+                                      uint8_t receiver_id, const uint8_t receiver_bus_id[4], uint8_t header) {
+      PJON_Packet_Info info;
+      info.tx.id = sender_id;
+      PJONTools::copy_id(info.tx.bus_id, sender_bus_id, 4);
+      info.rx.id = receiver_id;
+      PJONTools::copy_id(info.rx.bus_id, receiver_bus_id, 4);
+      info.header = header;
+      return info;
+    }
 
     static void static_receiver(const char *topic, const uint8_t *payload, uint16_t len, void *callback_object) {
       if (callback_object) ((MQTTTranslate*)callback_object)->receiver(topic, payload, len);
@@ -212,8 +223,8 @@ class MQTTTranslate {
       // Package the data message into a PJON packet
       uint8_t h = header;
       if (sender_id != 0) header |= PJON_TX_INFO_BIT;
-      incoming_packet_size = PJONTools::compose_packet(sender_id, bus_id, receiver_id,
-        bus_id, packet_buffer, payload, len, h);
+      PJON_Packet_Info info = fill_info(sender_id, bus_id, receiver_id, bus_id, h);
+      incoming_packet_size = PJONTools::compose_packet(info, packet_buffer, payload, len);
       #endif
       #if (MQTTT_MODE == MQTTT_MODE_MIRROR_TRANSLATE || MQTTT_MODE == MQTTT_MODE_MIRROR_DIRECT)
         uint8_t receiver_id = my_id;
@@ -246,16 +257,16 @@ class MQTTTranslate {
           value[l] = 0; // Null terminate
           String s = key; s += "="; s += value;
           // Package the key=value into a PJON packet
-          incoming_packet_size = PJONTools::compose_packet(receiver_id, bus_id, receiver_id,
-            bus_id, packet_buffer, s.c_str(), s.length()+1, header);
+          PJON_Packet_Info info = fill_info(receiver_id, bus_id, receiver_id, bus_id, header);
+          incoming_packet_size = PJONTools::compose_packet(info, packet_buffer, s.c_str(), s.length()+1);
         }
       }
       return;
       #endif
       #if (MQTTT_MODE == MQTTT_MODE_MIRROR_DIRECT)
       // Package the payload as it is, into a PJON packet
-      incoming_packet_size = PJONTools::compose_packet(receiver_id, bus_id, receiver_id,
-        bus_id, packet_buffer, payload, len, header);
+      PJON_Packet_Info info = fill_info(receiver_id, bus_id, receiver_id, bus_id, header);
+      incoming_packet_size = PJONTools::compose_packet(info, packet_buffer, payload, len);
       #endif
     }
 
@@ -454,6 +465,7 @@ public:
       #if (MQTTT_MODE == MQTTT_MODE_BUS_JSON)
       // Must assume that payload is text, unless UUencoding/base64encoding
       // {"to": to_id, "from": from id, "data": "payload"}
+      uint8_t payload_len = length - overhead;
       p = (char *) packet_buffer;
       if (6+3+8+3+9+payload_len+2 >= MQTTT_BUFFER_SIZE) return;
       strcpy(p, "{\"to\":"); p += 6;
@@ -461,7 +473,6 @@ public:
       strcpy(p, ",\"from\":"); p+= 8;
       p += mqttclient.uint8toa(_packet_info.tx.id, p);
       strcpy(p, ",\"data\":\""); p+= 9;
-      uint8_t payload_len = length - overhead;
       strncpy(p, (const char*)&data[overhead - crc_size], payload_len); p[payload_len] = 0;
       p += strlen(p);
       strcpy(p, "\"}"); p += 2;

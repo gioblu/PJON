@@ -233,5 +233,12 @@ int LockFileSection(const int iFileNo,       // the fileno
 #undef W_OK
 #undef R_OK
 #undef X_OK
+#undef access
+#undef lseek
+#undef locking
+#undef open
+#undef write
+#undef read
+#undef close
 #endif
 

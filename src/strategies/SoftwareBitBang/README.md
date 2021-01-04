@@ -51,7 +51,14 @@ Communication over a single wire enables quick and creative experimentation. The
 
 ![PJDL communication over 2000m twisted pair](images/PJDL-2000m-mode4-twistedpair-8.2k-pulldown-60-series.png)
 
-The picture above shows a [PJDL](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v5.0.md) frame transmitted over a 800m twisted pair using mode `4` (test done by [Jack Anderson](https://github.com/jdaandersj)). Although bits are substantially deformed the exchange occurs nominally and performance is not affected.
+The picture above shows a [PJDL](/src/strategies/SoftwareBitBang/specification/PJDL-specification-v5.0.md) frame transmitted over a 800m twisted pair using mode `4`. Although bits are substantially deformed the exchange occurs nominally and performance is not affected. This experiment was done and published by [Jack Anderson](https://github.com/jdaandersj) in [LANC Video Camera Control](http://jda.tel/pdf/lanc_video_camera_control.pdf) - Department of Computer Science [Loughborough University](https://www.lboro.ac.uk/departments/compsci/) (UK).
+
+### PJDL vs. 1-Wire
+
+| Protocol | Communication speed | Range     | Communication mode     |
+| -------- | ------------------- | --------- | ---------------------- |
+| PJDL     | 1.97-3.34kB/s       | 800-2000m | Simplex or half-duplex |
+| 1-Wire   | 2.03kB/s            | 300m      | Half-duplex            |
 
 ### Configuration
 Before including the library it is possible to configure `SoftwareBitBang` using predefined constants:

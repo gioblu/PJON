@@ -55,10 +55,10 @@ The picture above shows a [PJDL](/src/strategies/SoftwareBitBang/specification/P
 
 ### PJDL vs. 1-Wire
 
-| Protocol | Communication speed | Range     | Communication mode     |
-| -------- | ------------------- | --------- | ---------------------- |
-| PJDL     | 1.97-3.34kB/s       | 800-2000m | Simplex or half-duplex |
-| 1-Wire   | 2.03kB/s            | 300m      | Half-duplex            |
+| Protocol | Communication speed | Range     | Communication mode     | Bus Control                |
+| -------- | ------------------- | --------- | ---------------------- | -------------------------- |
+| PJDL     | 1.97-3.34kB/s       | 800-2000m | Simplex or half-duplex | Multi-controller           |
+| 1-Wire   | 2.03kB/s            | 300m      | Half-duplex            | Controller-peripheral only |
 
 ### Configuration
 Before including the library it is possible to configure `SoftwareBitBang` using predefined constants:

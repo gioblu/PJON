@@ -27,12 +27,17 @@ The `begin` method must be called before starting communication, the lack of thi
 ```
 
 ### `send_packet`
+
+| Buffered | Blocking | Attempts |
+| -------- | -------- | -------- |
+| No       | Yes      | 1        |
+
 The simplest way to send data is to use `send_packet`, this method composes the packet and tries to send it once. Consider that if the bus is busy or interference is present the transmission may not be attempted. The method returns the result of its operation. The first parameter is the device id of the recipient of type `uint8_t`, the second is the payload of type `const void *` and the third is the length of type `uint16_t`. This call implies a single attempt and has no guarantee of success, but logs the result of the attempted transmission:
 ```cpp
 // Send to device id 10 the string "Hi!"
 bus.send_packet(10, "Hi!", 3);
 ```
-The payload length is boring to be added in each call but is there to prevent buffer overflow. If sending arbitrary values `NULL` terminator strategy based on `strlen` is not safe to detect the end of a string. The `send` method can receive other 3 optional parameters, the header of type `uint8_t`, a packet id of type `uint16_t` (pass 0 if you want to avoid the packet id inclusion) and a port of type `uint16_t`. In the example below a packet containing the payload "Hello" is sent to device id 10 using the actual instance's header configuration, without including the packet id and including the port `8002`.
+ The `send_packet` method can receive 3 optional parameters, the header of type `uint8_t`, a packet id of type `uint16_t` (pass 0 if you want to avoid the packet id inclusion) and a port of type `uint16_t`. In the example below a packet containing the payload "Hello" is sent to device id 10 using the actual instance's header configuration, without including the packet id and including the port `8002`.
 ```cpp
 // All optional parameters available
 bus.send_packet(
@@ -62,7 +67,7 @@ bus.send_packet(1, &record, sizeof(record));
 - `PJON_BUSY` (666) if bus is busy
 - `PJON_FAIL` (65535) if transmission failed
 
-The `send_packet` result, of type `uint16_t`, can be used to determine if the transmission occurred successfully or not:
+The `send_packet` return value, of type `uint16_t`, can be used to determine if the transmission occurred successfully or not:
 ```cpp
 uint16_t result = bus.send_packet(10, "All is ok?!", 11);
 
@@ -85,13 +90,18 @@ bus.send_packet(info, "Ciao!", 5);
 ```
 
 ### `send_packet_blocking`
+
+| Buffered | Blocking | Attempts                      |
+| -------- | -------- | ----------------------------- |
+| No       | Yes      | `strategy.get_max_attempts()` |
+
 Use `send_packet_blocking` if it is necessary to try until the packet is effectively received by the recipient or a maximum amount of retries is reached. Consider that the method may block the operation of the program for up to 4 seconds in case of transmission failure.
 
 ```cpp
 // Send to device id 10 the string "Hi!"
 bus.send_packet_blocking(10, "Hi!", 3);
 ```
-The `send_packet_blocking` method can receive other 4 optional parameters, the header of type `uint8_t`, a packet id of type `uint16_t` (pass 0 if you want to avoid the packet id inclusion), a port of type `uint16_t` and a timeout of type `uint32_t`. In the example below a packet containing the payload "Hello" is sent to device id 10 using the actual instance's header configuration, without including the packet id, including the port `8002` and passing a maximum timeout of 1 second:
+The `send_packet_blocking` method can receive 4 optional parameters, the header of type `uint8_t`, a packet id of type `uint16_t` (pass 0 if you want to avoid the packet id inclusion), a port of type `uint16_t` and a timeout of type `uint32_t`. In the example below a packet containing the payload "Hello" is sent to device id 10 using the actual instance's header configuration, without including the packet id, including the port `8002` and passing a maximum timeout of 1 second:
 ```cpp
 // All optional parameters available
 bus.send_packet_blocking(
@@ -121,7 +131,7 @@ bus.send_packet_blocking(1, &record, sizeof(record));
 - `PJON_BUSY` (666) if bus is busy
 - `PJON_FAIL` (65535) if transmission failed
 
-The `send_packet_blocking` result, of type `uint16_t`, can be used to determine if the transmission occurred successfully or not:
+The `send_packet_blocking` return value, of type `uint16_t`, can be used to determine if the transmission occurred successfully or not:
 ```cpp
 uint16_t result = bus.send_packet_blocking(10, "All is ok?!", 11);
 
@@ -140,7 +150,11 @@ bus.send_packet_blocking(info, "Ciao!", 5);
 
 ### `send`
 
-When using the `send` method, PJON operates using its internal buffer, although a little more memory is required. The first thing to do and never forget is to call the `update` method once per loop cycle:
+| Buffered | Blocking | Attempts                      |
+| -------- | -------- | ----------------------------- |
+| Yes      | No       | `strategy.get_max_attempts()` |
+
+When using the `send` method, PJON operates using its internal buffer, although a little more memory is required, this call is non-blocking and automatically handles back-off. The first thing to do and never forget is to call the `update` method once per loop cycle:
 ```cpp  
   bus.update();
 ```
@@ -193,7 +207,12 @@ bus.send(info, "Ciao!", 5);
 ```
 
 ### `send_repeatedly`
-The `send_repeatedly` method can be used when it is required to schedule a repeated sending with a given interval. The first parameter is the device id of the recipient of type `uint8_t` then follows the payload of type `const void *`, its length of type `uint16_t` and the interval of type `uint32_t`:
+
+| Buffered | Blocking | Attempts                      |
+| -------- | -------- | ----------------------------- |
+| Yes      | No       | `strategy.get_max_attempts()` |
+
+The `send_repeatedly` method can be used when it is required to schedule a repeated transmission. The first parameter is the device id of the recipient of type `uint8_t` then follows the payload of type `const void *`, its length of type `uint16_t` and the interval of type `uint32_t`:
 ```cpp
 // Local sending example
 uint16_t one_second_test =
@@ -242,6 +261,11 @@ bus.send_repeatedly(info, "Ciao!", 5, 1000000); // Send "Ciao!" every second
 ```
 
 ### `reply`
+
+| Buffered | Blocking | Attempts                      |
+| -------- | -------- | ----------------------------- |
+| Yes      | No       | `strategy.get_max_attempts()` |
+
 The `reply` method can be called within the [receiver function](/documentation/data-reception.md#data-reception) to reply to a packet received previously:
 ```cpp
 bus.reply("All fine!", 9);
@@ -264,6 +288,11 @@ bus.reply(&record, sizeof(record));
 ```
 
 ### `reply_blocking`
+
+| Buffered | Blocking | Attempts                      |
+| -------- | -------- | ----------------------------- |
+| No       | Yes      | `strategy.get_max_attempts()` |
+
 The `reply_blocking` method can be called within the [receiver function](/documentation/data-reception.md#data-reception) to reply to a packet received previously:
 ```cpp
 bus.reply_blocking("All fine!", 9);

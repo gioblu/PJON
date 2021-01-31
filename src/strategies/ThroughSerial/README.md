@@ -1,8 +1,8 @@
 ## ThroughSerial
 
-| Medium | Communication mode | Pins used | Inclusion |
-|--------|--------------------|-----------|-----------|
-| wires  | master-slave, multi-master | 2 | `#include <PJONThroughSerial.h>`|
+| Medium | Pins used | Inclusion |
+|--------|-----------|--------------------|
+| Wires | 2     | `#include <PJONThroughSerial.h>`|
 
 With `ThroughSerial` strategy, PJON can run through a software or hardware Serial port working out of the box with many Arduino compatible serial transceivers, like RS485 or radio modules like HC-12 (HCMODU0054). It complies with [TSDL v3.0](/src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md).  
 

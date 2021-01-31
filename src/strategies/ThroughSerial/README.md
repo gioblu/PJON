@@ -1,26 +1,24 @@
 ## ThroughSerial
 
-| Medium | Pins used | Inclusion |
-|--------|-----------|--------------------|
-| Wires | 2     | `#include <PJONThroughSerial.h>`|
+| Medium | Communication mode | Pins used | Inclusion |
+|--------|--------------------|-----------|-----------|
+| wires  | master-slave, multi-master | 2 | `#include <PJONThroughSerial.h>`|
 
 With `ThroughSerial` strategy, PJON can run through a software or hardware Serial port working out of the box with many Arduino compatible serial transceivers, like RS485 or radio modules like HC-12 (HCMODU0054). It complies with [TSDL v3.0](/src/strategies/ThroughSerial/specification/TSDL-specification-v3.0.md).  
 
 This strategy is based upon the obsolete blocking implementation although reception is now asynchronous and completely non-blocking. It is not required to call `bus.receive()` with any delay, just call it frequently to see if there are any packets that have been received.
 
 ### Why PJON over Serial?
-Serial communication is fast and reliable but it is often useless without all the features PJON contains. `ThroughAsyncSerial` has been developed to enable PJON communication through a serial data link. Adding PJON on top of Serial it is possible to leverage of the PJON protocol layer features like acknowledge, addressing, multiplexing, packet handling, 8 or 32-bit CRC and traffic control.  
+Serial communication is fast and reliable but it is often useless without all the features PJON contains. `ThroughSerial` has been developed to enable PJON communication through a serial data link. Adding PJON on top of Serial it is possible to leverage of the PJON protocol layer features like acknowledge, addressing, multiplexing, packet handling, 8 or 32-bit CRC and traffic control.  
 
-`ThroughSerial` has been developed primarily to be used in master-slave mode. `ThroughSerial` in multi-master mode, being unable to detect or avoid collisions, operates using the slotted ALOHA medium access method. Of all contention based random multiple access methods, slotted ALOHA, which maximum data throughput is only 36.8% of the available bandwidth, is one of the least efficient and should not be applied in networks where many devices often need to arbitrarily transmit data.
-
-`ThroughSerial` performs well if used with ESP8266 and ESP32 where blocking procedures can strongly degrade functionality. The reception phase is entirely non-blocking. Sending and acknowledgement however are still blocking.
+`ThroughSerial` implements a variation of CSMA (Carrier Sense Multiple Access). It is able to avoid collision with an ongoing frame transmission but cannot detect or avoid same-time collisions. The reception phase is entirely non-blocking although sending and acknowledgement are still blocking.
 
 ### Configuration
 Before including the library it is possible to configure `ThroughSerial` using predefined constants:
 
 | Constant                | Purpose                             | Supported value                            |
 | ----------------------- |------------------------------------ | ------------------------------------------ |
-| `TS_READ_INTERVAL`      | minimum interval between receptions | Duration in microseconds (100 by default)  |
+| `TS_READ_INTERVAL`      | Minimum interval between receptions | Duration in microseconds (100 by default)  |
 | `TS_BYTE_TIME_OUT`      | Maximum byte reception time-out     | Duration in microseconds (1000000 by default) |
 | `TS_RESPONSE_TIME_OUT`  | Maximum response time-out           | Duration in microseconds (45000 by default) |
 | `TS_BACK_OFF_DEGREE`    | Maximum back-off exponential degree | Numeric value (4 by default)               |

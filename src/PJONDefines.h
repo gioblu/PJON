@@ -76,6 +76,11 @@ limitations under the License. */
   #define PJON_NOT_ASSIGNED         255
 #endif
 
+/* Device id used by master */
+#ifndef PJON_MASTER_ID
+  #define PJON_MASTER_ID            254
+#endif
+
 /* Internal constants: */
 #define PJON_FAIL                 65535
 #define PJON_TO_BE_SENT              74

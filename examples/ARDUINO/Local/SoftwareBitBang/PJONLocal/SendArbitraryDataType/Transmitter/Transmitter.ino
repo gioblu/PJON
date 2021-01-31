@@ -2,7 +2,7 @@
    This sketch contains the transmitter side. */
 
 #include <PJONLocal.h> // Include PJONLocal
-#include <SoftwareBitBang.h> // Include only SoftwareBitBang
+#include <strategies/SoftwareBitBang/SoftwareBitBang.h> // Include only SoftwareBitBang
 
 /* Create PJONLocal object:
    Class name <Strategy name> instance name ( device id ) */

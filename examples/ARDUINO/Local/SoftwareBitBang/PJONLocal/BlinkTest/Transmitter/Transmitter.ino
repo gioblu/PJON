@@ -2,7 +2,7 @@
 #define PJON_PACKET_MAX_LENGTH 10 // Set maximum packet length
 
 #include <PJONLocal.h> // Include PJONLocal
-#include <SoftwareBitBang.h> // Include only SoftwareBitBang
+#include <strategies/SoftwareBitBang/SoftwareBitBang.h> // Include only SoftwareBitBang
 
 /* Create PJONLocal object:
    Class name <Strategy name> instance name ( device id ) */

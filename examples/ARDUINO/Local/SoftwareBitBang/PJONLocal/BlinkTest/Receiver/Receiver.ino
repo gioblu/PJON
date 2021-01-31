@@ -3,7 +3,7 @@
 #define PJON_PACKET_MAX_LENGTH 10
 
 #include <PJONLocal.h> // Include PJONLocal
-#include <SoftwareBitBang.h> // Include only SoftwareBitBang
+#include <strategies/SoftwareBitBang/SoftwareBitBang.h> // Include only SoftwareBitBang
 
 PJONLocal<SoftwareBitBang> bus(44);
 

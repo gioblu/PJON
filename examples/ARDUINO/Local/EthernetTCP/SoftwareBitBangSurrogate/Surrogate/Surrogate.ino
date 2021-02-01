@@ -70,7 +70,7 @@ void receiver_functionB(uint8_t *payload, uint16_t length, const PJON_Packet_Inf
 void loop() {
   busA.receive(1000);
   busB.update();
-  busB.receive(1000);
+  busB.receive();
   busA.update();
 
   // Show the number of sockets created after startup

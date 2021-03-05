@@ -65,6 +65,13 @@ The table below lists the strategies available:
 
 Before using `ThroughLoRa` be sure to have [arduino-LoRa](https://github.com/sandeepmistry/arduino-LoRa) library available. Before using `ESPNOW` be sure to have installed the required tools as described [here](/src/strategies/ESPNOW/README.md). Before using `MQTTTranslate` be sure to have the [ReconnectingMqttClient](https://github.com/fredilarsen/ReconnectingMqttClient) library available.
 
+### Random seed
+When `begin` is called an analog pin is used to sample the seed for the random generator. By default PJON uses pin `A0` to sample the seed, if you need to use another pin call `set_random_seed` as shown below:
+```cpp
+  bus.set_random_seed(A1); // A1 is used to sample the seed
+  bus.begin();             // Seed sampling occurs
+```
+
 ### Network mode
 The network mode can be changed with `set_shared_network` during runtime, for example moving from [local](/specification/PJON-protocol-specification-v4.0.md#local-mode) to [shared](https://github.com/gioblu/PJON/blob/master/specification/PJON-protocol-specification-v4.0.md#shared-mode) mode:
 ```cpp  
@@ -72,7 +79,7 @@ The network mode can be changed with `set_shared_network` during runtime, for ex
 ```
 
 ### Communication mode
-The communication mode can be configured using the `set_communication_mode` passing `PJON_SIMPLEX` for simplex or mono-directional mode or `PJON_HALF_DUPLEX` for half-duplex or bidirectional mode:
+The communication mode can be configured using `set_communication_mode` passing `PJON_SIMPLEX` for simplex or mono-directional mode or `PJON_HALF_DUPLEX` for half-duplex or bidirectional mode:
 ```cpp  
   // Run in mono-directional PJON_SIMPLEX mode
   bus.set_communication_mode(PJON_SIMPLEX);

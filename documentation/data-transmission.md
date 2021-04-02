@@ -313,3 +313,45 @@ record.v2 = analogRead(A2);
 // Reply with the record struct
 bus.reply_blocking(&record, sizeof(record));
 ```
+
+### `forward`
+
+| Buffered | Blocking | Attempts                      |
+| -------- | -------- | ----------------------------- |
+| Yes      | No       | `strategy.get_max_attempts()` |
+
+The `forward` method can retransmit a packet received previously to another device using its original sender's identification. It is useful to implement switching or routing features:
+```cpp
+void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &info) {
+  bus.forward(info, payload, length);
+  // Forward each packet is received
+};
+```
+
+Consider that `forward` dispatches a packet in the buffer like `send` or `send_repeatedly`. To use the return value of `forward` just save it in a variable of type `uint16_t`:
+```cpp
+uint16_t packet = bus.forward(info, payload, length);
+if(packet == PJON_FAIL) Serial.print("Something went wrong");
+```
+The `forward` method accepts any type of data like `send` or `send_repeatedly`.
+
+### `forward_blocking`
+
+| Buffered | Blocking | Attempts                      |
+| -------- | -------- | ----------------------------- |
+| No       | Yes      | `strategy.get_max_attempts()` |
+
+The `forward_blocking` method can retransmit a packet received previously to another device using its original sender's identification. It is useful to implement switching or routing features:
+```cpp
+void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &info) {
+  bus.forward_blocking(info, payload, length);
+  // Forward each packet is received
+};
+```
+
+Consider that `forward_blocking` is a blocking procedure that in case of failure can last a considerable amount of time. The `forward_blocking` result, of type `uint16_t`, can be used to determine if the transmission occurred successfully or not:
+```cpp
+uint16_t result = bus.forward_blocking(info, payload, length);
+if(result == PJON_ACK) Serial.println("Responded successfully!");
+```
+The `forward_blocking` method accepts any type of data like `send` or `send_repeatedly`.

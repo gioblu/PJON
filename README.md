@@ -1,5 +1,3 @@
-
-![PJON](http://www.gioblu.com/PJON/PJON-github-header-tiny.png)
 ## PJON 13.0
 PJON® (Padded Jittering Operative Network) is an experimental, arduino-compatible, multi-master, multi-media network protocol. It proposes a new Open Standard, it is designed as a framework and implements a totally software-defined network protocol stack that can be easily cross-compiled on many microcontrollers and real-time operative systems like ATtiny, ATmega, SAMD, ESP8266, ESP32, STM32, Teensy, Raspberry Pi, Zephyr, Linux, Windows x86, Apple and Android. PJON operates on a wide range of media, data links and existing protocols like PJDL, PJDLR, PJDLS, Serial, RS485, USB, ASK/FSK, LoRa, UDP, TCP, MQTT and ESPNOW. For more information visit the [documentation](documentation/README.md), the [specification](specification/PJON-protocol-specification-v4.0.md) or the [wiki](https://github.com/gioblu/PJON/wiki).
 
@@ -24,12 +22,6 @@ PJON® (Padded Jittering Operative Network) is an experimental, arduino-compatib
 - Optional acknowledgement
 - Error handling
 
-### Publications
-- [PJON protocol handbook 13.0](https://www.pjon-technologies.com/collections/frontpage/products/the-pjon-protocol-handbook-v13) by Giovanni Blu Mitolo - Distributed by [PJON Technologies srl](https://www.pjon-technologies.com)
-- [PJON 13.0 big box](https://www.pjon-technologies.com/collections/frontpage/products/pjon-13-0-big-box) by Giovanni Blu Mitolo - Distributed by [PJON Technologies srl](https://www.pjon-technologies.com)
-- [PJON protocol handbook 12.0](https://www.pjon-technologies.com/collections/frontpage/products/pjon-protocol-hand-book) by Giovanni Blu Mitolo - Distributed by [PJON Technologies srl](https://www.pjon-technologies.com)
-- [PJON 12.0 big box](https://www.pjon-technologies.com/collections/frontpage/products/pjon-protocol-12-0-big-box) by Giovanni Blu Mitolo - Distributed by [PJON Technologies srl](https://www.pjon-technologies.com)
-
 ### Academic studies
 Researchers are active in many universities worldwide using PJON in different environments. The following list contains all the known published academic studies about PJON:
 - [Definition and Application of PJON-PLC for sensor networks](https://repositorio.unican.es/xmlui/bitstream/handle/10902/14012/408952.pdf?sequence=1) by Jorge Gómez Segurola, Ingeniería de Tecnologías de
@@ -48,6 +40,7 @@ Feel free to send a pull request sharing something you have made that could help
 - [PJON-piper](https://github.com/Girgitt/PJON-piper) - command line wrapper by Zbigniew Zasieczny
 - [PJON-python](https://github.com/Girgitt/PJON-python) - python interface by Zbigniew Zasieczny
 - [PJON-gRPC](https://github.com/Halytskyi/PJON-gRPC) - gRPC server-client by Oleh Halytskyi
+- [PjonHL](https://github.com/rainerschoe/PjonHL) - PjonHL is a highlevel wrapper around PJON
 
 ### License
 All the software included in this project is experimental and it is distributed "AS IS" without any warranty, use it at your own risk. [Licensed](https://github.com/gioblu/PJON/blob/master/LICENSE.md) under the Apache License, Version 2.0. PJON® and its brand are registered trademarks, property of [PJON Technologies srl](https://www.pjon-technologies.com/)

@@ -395,12 +395,6 @@ struct PJONTools {
 
   static void parse_header(const uint8_t *packet, PJON_Packet_Info &info) {
     uint8_t index = 0;
-
-    // replace passed in info with a fresh instance
-    // (initializing all values to their defaults)
-    // This is important, as we conditionally parse some info fields (e.g. Port)
-    // Those would then be left uninitialized or in an old state corresponding to
-    // the previous packet:
     info = PJON_Packet_Info{};
 
     info.rx.id = packet[index++];

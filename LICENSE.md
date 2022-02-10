@@ -1,6 +1,6 @@
 All the software included in this project is experimental and it is distributed "AS IS" without any warranty, use it at your own risk.
 
-Giovanni Blu Mitolo (gioscarab@gmail.com) Copyright 2010-2021
+Giovanni Blu Mitolo (gioscarab@gmail.com) Copyright 2010-2022
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 

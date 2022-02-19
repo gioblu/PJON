@@ -97,26 +97,26 @@ limitations under the License. */
    1 - Shared  network */
 #define PJON_MODE_BIT        0B00000001
 /* 0 - No info inclusion
-   1 - Local:  Sender device id included
-       Shared: Sender device id + Sender bus id */
+   1 - Local:  Sender device id included (+8 bits)
+       Shared: Sender device id + bus id (+40 bits) */
 #define PJON_TX_INFO_BIT     0B00000010
 /* 0 - Synchronous acknowledgement disabled
    1 - Synchronous acknowledgement enabled */
 #define PJON_ACK_REQ_BIT     0B00000100
 /* 0 - MAC address inclusion disabled
-   1 - MAC address inclusion enabled (2x 48 bits) */
+   1 - MAC address inclusion enabled (+96 bits) */
 #define PJON_MAC_BIT         0B00001000
-/* 0 - No port id contained
-   1 - Port id contained (2 bytes integer) */
+/* 0 - Port id not included
+   1 - Port id included (+16 bits) */
 #define PJON_PORT_BIT        0B00010000
-/* 0 - CRC8 (1 byte) included at the end of the packet
-   1 - CRC32 (4 bytes) included at the end of the packet */
+/* 0 - CRC8 (8 bits) included
+   1 - CRC32 (32 bits) included */
 #define PJON_CRC_BIT         0B00100000
-/* 0 - 1 byte long (max 255 bytes)
-   1 - 2 bytes long (max 65535 bytes) */
+/* 0 - 8 bits length (max packet length 255 bytes)
+   1 - 16 bits length (max packet length 65535 bytes) */
 #define PJON_EXT_LEN_BIT     0B01000000
-/* 0 - Packet id not present
-   1 - Packet id present */
+/* 0 - Packet id not included
+   1 - Packet id included (+16 bits) */
 #define PJON_PACKET_ID_BIT   0B10000000
 
 /* Errors: */

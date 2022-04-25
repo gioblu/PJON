@@ -116,12 +116,11 @@ public:
     memset(peer, 0, sizeof(esp_now_peer_info_t));
     peer->channel = _channel;
     peer->ifidx = ESPNOW_WIFI_IF;
-    if(IS_BROADCAST_ADDR(mac_addr))
-      peer->encrypt = false;
-    // else {
-    //   peer->encrypt = true;
-    //   memcpy(peer->lmk, _esp_pmk, 16);
-    // }
+    if(IS_BROADCAST_ADDR(mac_addr)) peer->encrypt = false;
+    else {
+      peer->encrypt = true;
+      memcpy(peer->lmk, _esp_pmk, 16);
+    }
     memcpy(peer->peer_addr, mac_addr, ESP_NOW_ETH_ALEN);
     ESP_ERROR_CHECK(esp_now_add_peer(peer));
     free(peer);

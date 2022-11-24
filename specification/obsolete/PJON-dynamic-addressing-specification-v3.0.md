@@ -36,7 +36,7 @@ _______|________________|___________| BUS ID 0.0.0.1 |
 | 0.0.8.1.1   |  | 0.0.8.121.1 |
 |_____________|  |_____________|
 ```
-Regardless of the master or the network addresses used by the network layer, slaves remain uniquely identified by their own device address. In an isolated scenario device addresses can be generated and assigned as required. If the application is connected to a shared medium where collisions with other systems may occur, it is strongly suggested to request a unique device address here: [https://www.pjon.org/get-device-address.php](https://www.pjon.org/get-device-address.php).
+Regardless of the master or the network addresses used by the network layer, slaves remain uniquely identified by their own device address. In an isolated scenario device addresses can be generated and assigned as required. If the application is connected to a shared medium where collisions with other systems may occur.
 
 #### Procedure
 All communication used to request and assign ids is transmitted using CRC32 on the `PJON_DYNAMIC_ADDRESSING_PORT` port (decimal 1). Masters routinely broadcast a `PJON_ID_DISCOVERY` (decimal 200) advertisement to let slaves be aware of their presence.  

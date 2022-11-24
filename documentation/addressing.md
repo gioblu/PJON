@@ -52,7 +52,7 @@ The device identifier of an object can be read after instantiation using `device
 
 ### Shared mode
 
-if the medium used is private and not accessible from the outside world (wired network in home, business, industry) bus ids can be used arbitrarily without any risk of collision; if instead the network uses a shared medium, for example on unlicensed radio frequencies with [ThroughLoRa](/src/strategies/ThroughLoRa), it is strongly suggested to request a unique PJON bus id [here](http://www.pjon.org/get-bus-id.php) to avoid collisions.
+if the medium used is private and not accessible from the outside world (wired network in home, business, industry) bus ids can be used arbitrarily without any risk of collision; if instead the network uses a shared medium, for example on unlicensed radio frequencies with [ThroughLoRa](/src/strategies/ThroughLoRa).
 
 Instantiation in shared mode:
 ```cpp

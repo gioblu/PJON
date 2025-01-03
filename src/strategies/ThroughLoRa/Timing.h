@@ -35,6 +35,12 @@
   #define TL_RESPONSE_TIME_OUT 100000
 #endif
 
+/* Set an optional delay (in ms) before responding if the receiver is particularly
+   slow at swapping between transmit and receive modes. */
+#ifndef TL_RESPONSE_DELAY
+  #define TL_RESPONSE_DELAY 0
+#endif
+
 /* Maximum transmission attempts (re-transmission not supported) */
 #ifndef TL_MAX_ATTEMPTS
   #define TL_MAX_ATTEMPTS           5

@@ -13,6 +13,7 @@ This strategy is a wrapper around  [Arduino LoRa library](https://github.com/san
 - ATmega2560 16MHz (Arduino Mega)
 - ATmega16u4/32u4 16MHz (Arduino Leonardo)
 - STM32F103 ([Blue Pill](http://wiki.stm32duino.com/index.php?title=Blue_Pill))
+- ESP32-based boards
 
 ### Getting started
 1. Pass the `ThroughLora` type as PJON template parameter to instantiate a PJON object ready to communicate through this Strategy.
@@ -36,6 +37,9 @@ bus.strategy.setFrequency(868100000UL); //initialize 868 MHZ module
 | [HopeRF](http://www.hoperf.com/)      | [RFM95W](http://www.hoperf.com/rf_transceiver/lora/RFM95W.html) / [RFM96W](http://www.hoperf.com/rf_transceiver/lora/RFM96W.html) / [RFM98W](http://www.hoperf.com/rf_transceiver/lora/RFM98W.html) |
 | [Modtronix](http://modtronix.com/)    | [inAir4](http://modtronix.com/inair4.html) / [inAir9](http://modtronix.com/inair9.html) / [inAir9B](http://modtronix.com/inair9b.html) |
 | [Adafruit](https://www.adafruit.com/) | [Adafruit Feather 32u4 LoRa Radio (RFM9x)](https://learn.adafruit.com/adafruit-feather-32u4-radio-with-lora-radio-module/overview) |
+| [Ai-Thinker](https://en.ai-thinker.com/index.html) | Ra01 / [Ra02](https://en.ai-thinker.com/pro_view-57.html) (SX1278 based)
+
+See the [Arduino LoRa readme](https://github.com/sandeepmistry/arduino-LoRa) for a more complete list of modules.
 
 ### Hardware connection
 | General Wiring | Arduino |
@@ -51,11 +55,12 @@ bus.strategy.setFrequency(868100000UL); //initialize 868 MHZ module
 
 - `NSS`, `NRESET`, and `DIO0` pins can be changed by using `PJON.strategy.setPins(ss, reset, dio0)`.
 - `DIO0` pin is optional, it is only needed for receive callback mode. If `DIO0` pin is used, it **must** be interrupt capable via [`attachInterrupt(...)`](https://www.arduino.cc/en/Reference/AttachInterrupt).
+- Some boards support custom pins for `SCK`, `MISO` and `MOSI` (ESP32 series for example). These can be set using `SPI.begin(sck, miso, mosi)` before calling `PJON.strategy.setFrequency(frequency)`.
 
 ### Usage Example
 Here are listed basic examples of a transmitter and receiver code. After you include the necessary code to initialize the Lora module you can use the normal PJON functions to handle data communication.
 
-Keep in mind that to use the LoRa startegy you must download the [Arduino LoRa library](https://github.com/sandeepmistry/arduino-LoRa).
+Keep in mind that to use the LoRa strategy you must download the [Arduino LoRa library](https://github.com/sandeepmistry/arduino-LoRa).
 
 More examples can be found in https://github.com/gioblu/PJON/tree/master/examples/ARDUINO/Local/ThroughLoRa
 
@@ -217,5 +222,22 @@ byte b = bus.strategy.getRandom();
 ```
 Generate a random byte, based on the Wideband RSSI measurement.
 
+### Acknowledgement
+Acknowledgement allows the sendor to request that the receiver acknowledge reception of a message so that multiple transmission attempts can be made if required. Limits on the allowed transmission duty cycle in various parts of the world, power budgets, message importance and network throughput may affect whether acknowledgement is required for some or all messages. Acknowledgement can be enabled or disabled for the sender using:
+```cpp
+bus.set_acknowledge(true/false);
+```
+Depending on the speed of the hardware on either end and the bandwidth and spreading factor configured, it may be necessary to increase the time the sender will wait for an acknowledgement before timing out. This can be set by defining `TL_RESPONSE_TIME_OUT` prior to including the header file.
+```cpp
+#define TL_RESPONSE_TIME_OUT 500000 // Timeout in us. Default is 100000
+#include <PJONThroughLora.h>
+```
+
+In some edge cases the sender may be significantly slower than the receiver at switching between transmit and receive modes. This could result in the receiver sending a response before the sender has a chance to listen for it. A delay can be added between receiving a packet and acknowledging it by defining `TL_RESPONSE_DELAY` prior to including the header file. Keep this as short as possible.
+```cpp
+#define TL_RESPONSE_DELAY 30 // Time delay between receiving a packet and sending a response in ms. Default is 0.
+#define TL_RESPONSE_TIME_OUT 500000 // Timeout in us. Default is 100000
+#include <PJONThroughLora.h>
+```
 ### Safety warning
 In all cases, when installing or maintaining a PJON network, extreme care must be taken to avoid any danger. Before any practical test or hardware purchase for a wireless [ThroughLoRa](/src/strategies/ThroughLoRa) radio setup, compliance with government requirements and regulations must be ensured.

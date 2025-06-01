@@ -10,6 +10,7 @@
   List of supported MCUs:
   - ATmega8/88/168/328/1280/1284P/2560 (Duemilanove, Uno, Nano, Mini, Pro, Mega)
   - ATmega16U4/32U4 (Leonardo, Micro)
+  - ATmega4809 (Nano every, Uno WiFi Rev 2)
   - ATtiny44/84/44A/84A Added by Wilfried Klaas
   - ATtiny45/85 (Trinket, Digispark)
   - SAMD21G18A (Arduino Zero) Added by Esben Soeltoft 03/09/2016
@@ -177,6 +178,25 @@ inform the reader of their definition as macros in the global scope.
   #endif
 #endif
 
+// --- Arduino Uno WiFi Rev 2, Nano Every ---
+#if defined(__AVR_ATmega4809__)
+  #define PJON_IO_PIN_TO_PORT_REG(P) \
+    (((P) == 2 || (P) == 7 ) ? &VPORTA.OUT : ((P) == 5 || (P) == 9 || (P) == 10) ? &VPORTB.OUT : \
+    ((P) == 4) ? &VPORTC.OUT : (((P) >= 14 && (P) <= 17) || (P) == 20 || (P) == 21) ? &VPORTD.OUT : \
+    ((P) == 8 || (P) == 11 || (P) == 12 || (P) == 13) ? &VPORTE.OUT : &VPORTF.OUT)
+  #define PJON_IO_PIN_TO_DDR_REG(P) \
+    (((P) == 2 || (P) == 7 ) ? &VPORTA.DIR : ((P) == 5 || (P) == 9 || (P) == 10) ? &VPORTB.DIR : \
+    ((P) == 4) ? &VPORTC.DIR : (((P) >= 14 && (P) <= 17) || (P) == 20 || (P) == 21) ? &VPORTD.DIR : \
+    ((P) == 8 || (P) == 11 || (P) == 12 || (P) == 13) ? &VPORTE.DIR : &VPORTF.DIR)
+  #define PJON_IO_PIN_TO_PIN_REG(P) \
+    (((P) == 2 || (P) == 7 ) ? &VPORTA.IN : ((P) == 5 || (P) == 9 || (P) == 10) ? &VPORTB.IN : \
+    ((P) == 4) ? &VPORTC.IN : (((P) >= 14 && (P) <= 17) || (P) == 20 || (P) == 21) ? &VPORTD.IN : \
+    ((P) == 8 || (P) == 11 || (P) == 12 || (P) == 13) ? &VPORTE.IN : &VPORTF.IN)
+  #define PJON_IO_PIN_TO_BIT(P) \
+    (((P) == 2 || (P) == 9 || (P) == 11 || (P) == 17) ? 0 : ((P) == 7 || (P) == 10 || (P) == 12 || (P) == 16) ? 1 : \
+    ((P) == 5 || (P) == 13 || (P) == 15 || (P) == 18) ? 2 : ((P) == 9 || (P) == 14 || (P) == 19) ? 3 : \
+    ((P) == 6 || (P) == 20) ? 4 : ((P) == 3 || (P) == 21) ? 5 :  6 )
+#endif
 /* SAMD21G18A - Arduino Zero ---------------------------------------------- */
 
 #if defined(__SAMD21G18A__) || defined(ARDUINO_SAM_ZERO)  // Arduino Zero pins

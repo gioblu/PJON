@@ -161,12 +161,10 @@ HEADER BITMAP
 8. `PACKET ID` bit informs if the packet contains (value 1) or not (value 0) a 16 bits [packet id](/specification/PJON-protocol-specification-v4.0.md#packet-identification)
 
 Unacceptable header configuration states for standard transmission:
-* `----1-0-` or `ACK MODE` bit high, and `TX INFO` bit low (requires transmitter info)
 * `-10-----` or `EXT. LENGTH` bit high and `CRC` bit low (forced CRC32 for length > 15)
 
 Unacceptable header configuration states for a broadcast transmission:
 * `-----1--` or `ACK` bit high (acknowledgement not supported if broadcasting)
-* `----1---` or `ACK MODE` bit high (acknowledgement not supported if broadcasting)
 
 `-` symbol means irrelevant bit value
 

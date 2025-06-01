@@ -235,7 +235,7 @@ Depending on the speed of the hardware on either end and the bandwidth and sprea
 
 In some edge cases the sender may be significantly slower than the receiver at switching between transmit and receive modes. This could result in the receiver sending a response before the sender has a chance to listen for it. A delay can be added between receiving a packet and acknowledging it by defining `TL_RESPONSE_DELAY` prior to including the header file. Keep this as short as possible.
 ```cpp
-#define TL_RESPONSE_DELAY 30 // Time delay between receiving a packet and sending a response in ms. Default is 0.
+#define TL_RESPONSE_DELAY 30 // Delay between receiving a packet and sending a response in ms. (default 0)
 #define TL_RESPONSE_TIME_OUT 500000 // Timeout in us. Default is 100000
 #include <PJONThroughLora.h>
 ```

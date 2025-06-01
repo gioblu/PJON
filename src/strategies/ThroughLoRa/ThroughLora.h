@@ -188,9 +188,9 @@ class ThroughLora {
     void send_response(uint8_t response) {
       if(response == PJON_ACK) {
         start_tx();
-#if TL_RESPONSE_DELAY != 0
-        PJON_DELAY(TL_RESPONSE_DELAY);
-#endif
+        #if TL_RESPONSE_DELAY != 0
+        PJON_DELAY(TL_RESPONSE_DELAY);    
+        #endif
         for(uint8_t i = 0; i < TL_RESPONSE_LENGTH; i++)
           send_byte(_response[i]);
         end_tx();

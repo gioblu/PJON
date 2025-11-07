@@ -118,7 +118,7 @@ public:
       read_timeout.tv_usec = 2000000;
       setsockopt(_fd, SOL_SOCKET, SO_SNDTIMEO, (char*)&read_timeout, sizeof read_timeout);
 #endif
-      // Disable Nagles algorith because we are sending small packets and waiting for reply
+      // Disable Nagles algorithm because we are sending small packets and waiting for reply
       set_nodelay(true);
     }
     return connected;
@@ -201,7 +201,7 @@ public:
     read_timeout.tv_usec = 2000000;
     setsockopt(_fd, SOL_SOCKET, SO_SNDTIMEO, (char*)&read_timeout, sizeof read_timeout);
 #endif
-    // Disable Nagles algorith because we are sending small packets and waiting for reply
+    // Disable Nagles algorithm because we are sending small packets and waiting for reply
     set_nodelay(true);
 
     return 1;
@@ -312,7 +312,7 @@ public:
       read_timeout.tv_usec = 2000000;
       setsockopt(connected_fd, SOL_SOCKET, SO_SNDTIMEO, (char*)&read_timeout, sizeof read_timeout);
 #endif
-      // Disable Nagles algorith because we are sending small packets and waiting for reply
+      // Disable Nagles algorithm because we are sending small packets and waiting for reply
       int flag = 1;
       setsockopt(connected_fd, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof flag);
     }

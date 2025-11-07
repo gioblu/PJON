@@ -22,7 +22,7 @@
 PJON uses predefined constants, setters and getters to support features and constraints configuration.  
 
 ### Buffers configuration
-Before including the library it is possible to define the length of its buffers defining the `PJON_MAX_PACKETS` and `PJON_PACKET_MAX_LENGTH` constants:
+Before including the library, it is possible to define the length of its buffers by defining the `PJON_MAX_PACKETS` and `PJON_PACKET_MAX_LENGTH` constants:
 ```cpp  
   #define PJON_MAX_PACKETS 1
   #define PJON_PACKET_MAX_LENGTH 20
@@ -36,7 +36,7 @@ Strategies are classes that abstract the physical transmission of data. `PJON` u
   #include <PJONSoftwareBitBang.h>
   PJONSoftwareBitBang bus;
 ```
-In the example above the PJON object is instantiated using the [SoftwareBitBang](/src/strategies/SoftwareBitBang/README.md) strategy. It is possible to instantiate more than one PJON object using different strategies in the same program:
+In the example above, the PJON object is instantiated using the [SoftwareBitBang](/src/strategies/SoftwareBitBang/README.md) strategy. It is possible to instantiate more than one PJON object using different strategies in the same program:
 ```cpp
 #include <PJONSoftwareBitBang.h>
 #include <PJONEthernetTCP.h>

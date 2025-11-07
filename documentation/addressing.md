@@ -24,7 +24,7 @@ PJON objects can operate in local or shared mode. The PJON protocol v4.0 in [loc
 
 ### Local mode
 
-The simples way to instantiate PJON in local mode is the following:
+The simplest way to instantiate PJON in local mode is as follows:
 ```cpp  
   PJONSoftwareBitBang bus;
 ```
@@ -52,7 +52,7 @@ The device identifier of an object can be read after instantiation using `device
 
 ### Shared mode
 
-if the medium used is private and not accessible from the outside world (wired network in home, business, industry) bus ids can be used arbitrarily without any risk of collision; if instead the network uses a shared medium, for example on unlicensed radio frequencies with [ThroughLoRa](/src/strategies/ThroughLoRa).
+if the medium used is private and not accessible from the outside world (wired network in home, business, industry), bus ids can be used arbitrarily without any risk of collision; if instead the network uses a shared medium, for example on unlicensed radio frequencies with [ThroughLoRa](/src/strategies/ThroughLoRa).
 
 Instantiation in shared mode:
 ```cpp
@@ -68,7 +68,7 @@ Use `get_bus_id` to get a pointer to the bus id used by the instance:
   memcpy(bus_id, bus.get_bus_id(bus_id), 4); // Copy bus id in bus_id
 ```
 
-The bus id can set after initialisation using `set_bus_id`:
+The bus id can be set after initialisation using `set_bus_id`:
 ```cpp  
   uint8_t bus_id[4] = {0, 0, 0, 1};
   bus.set_bus_id(bus_id); // Set bus id
@@ -87,7 +87,7 @@ uint8_t mac[6] = {1, 2, 3, 4, 5, 6};
 PJONSoftwareBitBang bus(mac);
 // Local mode, device id PJON_NOT_ASSIGNED
 ```
-This instantiation sets the MAC address, the device id set to `PJON_NOT_ASSIGNED` or 255 but can be changed afterwards as required. Packets containing a recipient's MAC address that is not equal to the one configured are discarded. PJON can operate in both local and shared mode while including MAC addresses. The feature can be disabled using `includ_mac`:
+This instantiation sets the MAC address, the device id set to `PJON_NOT_ASSIGNED` or 255 but can be changed afterwards as required. Packets containing a recipient's MAC address that is not equal to the one configured are discarded. PJON can operate in both local and shared mode while including MAC addresses. The feature can be disabled using `include_mac`:
 
 ```cpp
 bus.include_mac(false);
@@ -100,7 +100,7 @@ Use `get_mac` to get a pointer to the mac address used by the instance:
   memcpy(mac, bus.get_mac(mac), 6); // Copy mac in variable
 ```
 
-The mac address can set after initialisation using `set_mac`:
+The mac address can be set after initialisation using `set_mac`:
 ```cpp  
   uint8_t mac[6] = {0, 0, 0, 0, 0, 1};
   bus.set_mac(mac); // Set mac

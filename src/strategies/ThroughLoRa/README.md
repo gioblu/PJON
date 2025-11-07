@@ -223,7 +223,7 @@ byte b = bus.strategy.getRandom();
 Generate a random byte, based on the Wideband RSSI measurement.
 
 ### Acknowledgement
-Acknowledgement allows the sendor to request that the receiver acknowledge reception of a message so that multiple transmission attempts can be made if required. Limits on the allowed transmission duty cycle in various parts of the world, power budgets, message importance and network throughput may affect whether acknowledgement is required for some or all messages. Acknowledgement can be enabled or disabled for the sender using:
+Acknowledgement allows the sender to request that the receiver acknowledge reception of a message so that multiple transmission attempts can be made if required. Limits on the allowed transmission duty cycle in various parts of the world, power budgets, message importance and network throughput may affect whether acknowledgement is required for some or all messages. Acknowledgement can be enabled or disabled for the sender using:
 ```cpp
 bus.set_acknowledge(true/false);
 ```

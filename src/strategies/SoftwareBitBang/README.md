@@ -85,7 +85,7 @@ void setup() {
   bus.strategy.set_pins(11, 12);
 }
 ```
-After the PJON object is defined with its strategy it is possible to set the communication pin accessing to the strategy present in the PJON instance. All the other necessary information is present in the general [Documentation](/documentation).
+After the PJON object is defined with its strategy, it is possible to set the communication pin by accessing the strategy present in the PJON instance. All the other necessary information is present in the general [Documentation](/documentation).
 
 ### Why not interrupts?
 In the Arduino environment the use of libraries is really extensive and often the end user is not able to go over collisions. Very often a library is using hardware resources of the microcontroller, colliding with other libraries. This happens because in general Arduino boards have limited hardware resources. Software-defined bit-banging, is a stable and reliable solution that leads to "more predictable" results than interrupt driven procedures coexisting on limited microcontrollers without the developer and the end user knowing about it.

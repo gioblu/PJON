@@ -77,8 +77,8 @@ config TS_COLLISION_DELAY
 	  Maximum 32 microseconds random delay in case of collision
 
 
-config TS_RESONSE_TIME_OUT
-	int "RESONSE TIME OUT"
+config TS_RESPONSE_TIME_OUT
+	int "RESPONSE TIME OUT"
 	default 10000
 	help
 	  Set 10 milliseconds as the maximum timeframe between transmission and
@@ -104,8 +104,8 @@ config TS_BYTE_TIME_OUT
 	  Always set TS_BYTE_TIME_OUT > (byte transmission time + latency)
 
 
-config TS_MAX_ATTEMTS
-	int "MAX ATTEMTS"
+config TS_MAX_ATTEMPTS
+	int "MAX ATTEMPTS"
 	default 20
 	help
 	Maximum transmission attempts

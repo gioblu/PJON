@@ -17,7 +17,7 @@ PJON (Padded Jittering Operative Network) is an experimental, Arduino-compatible
 - Cross-compilation support with the [interfaces](src/interfaces) system calls abstraction.
 - Multi-media support with the [strategies](src/strategies) data link layer abstraction.
 - Modular packet format that includes only the fields used (overhead 5–35 bytes).
-- Hot-swap support—no need for a system reset or shutdown when replacing or adding devices.
+- Hot-swap support, no need for a system reset or shutdown when replacing or adding devices.
 - Flexible local (device ID) and shared (bus ID) network identification.
 - Safe error detection using modern CRC8 and CRC32 polynomials.
 - Optional inclusion of MAC addresses.

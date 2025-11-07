@@ -1,32 +1,35 @@
 ## PJON 13.1
-PJON (Padded Jittering Operative Network) is an experimental, arduino-compatible, multi-master, multi-media, software-defined network protocol that can be easily cross-compiled on many microcontrollers and real-time operative systems like ATtiny, ATmega, SAMD, ESP8266, ESP32, STM32, Teensy, Raspberry Pi, Zephyr, Linux, Windows x86, Apple and Android. PJON operates on a wide range of media, data links and existing protocols like PJDL, PJDLR, PJDLS, Serial, RS485, USB, ASK/FSK, LoRa, UDP, TCP, MQTT and ESPNOW. For more information visit the [documentation](documentation/README.md), the [specification](specification/PJON-protocol-specification-v4.0.md) or the [wiki](https://github.com/gioblu/PJON/wiki).
+
+PJON (Padded Jittering Operative Network) is an experimental, Arduino-compatible, multi-master, multi-media, software-defined network protocol that can be easily cross-compiled for many microcontrollers and real-time operating systems such as ATtiny, ATmega, SAMD, ESP8266, ESP32, STM32, Teensy, Raspberry Pi, Zephyr, Linux, Windows x86, Apple, and Android. PJON operates over a wide range of media, data links, and existing protocols like PJDL, PJDLR, PJDLS, Serial, RS485, USB, ASK/FSK, LoRa, UDP, TCP, MQTT, and ESPNOW. For more information, visit the [documentation](documentation/README.md), the [specification](specification/PJON-protocol-specification-v4.0.md), or the [wiki](https://github.com/gioblu/PJON/wiki).
 
 [![Join the chat at https://gitter.im/gioblu/PJON](https://badges.gitter.im/gioblu/PJON.svg)](https://gitter.im/gioblu/PJON?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ### Why PJON?
-- **New technology**: [PJON](specification/PJON-protocol-specification-v4.0.md) is an experimental network protocol stack crafted in 10 years of research and experimentation. It was originally developed as an open-source alternative to i2c and 1-Wire but during development its scope and features have been extended to cover use cases where IP is generally applied. PJON has been engineered to have a variable footprint (4.2-8.2 kB program memory) and overhead (5-35 bytes per packet) depending on its configuration.
-- **Multi-media support**: PJON operates upon a wide range of protocols like TCP, UDP, MQTT, ESPNOW, USB, Serial, RS485 and LoRa. The PJON network protocol stack specifies and implements also [PJDL](src/strategies/SoftwareBitBang/specification/PJDL-specification-v5.0.md) that operates over a single wire of up to 2000m shared by up to 255 devices, [PJDLR](src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) that operates with many ASK/FSK/OOK radio modules, and also [PJDLS](src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) that operates wirelessly with light pulses using off-the-shelf LEDs and laser diodes.
-- **Increased reliability**: Many protocols massively applied worldwide expose dangerous vulnerabilities, have weak error detection algorithms and are not resilient to interference. PJON is based on years of analysis and study not to make the same mistakes present in most alternatives and provide with a simpler and more efficient solution.
-- **High flexibility**: PJON is totally software-defined and it is designed to be easily extensible. it builds out-of-the-box in all supported devices and operates transparently on top of any supported protocol or medium.
-- **Low cost**: With no additional hardware needed to operate, minimal network wiring requirements and direct pin-to-pin or LED-to-LED communication, PJON is extremely energy efficient, cheap to be implemented and maintained. This experimental reference implementation is kept updated thanks to the strong commitment of its growing community.
+- **New technology**: [PJON](specification/PJON-protocol-specification-v4.0.md) is an experimental network protocol stack crafted through 10 years of research and experimentation. It was originally developed as an open-source alternative to i2c and 1-Wire, but during development, its scope and features were extended to cover use cases where IP is generally applied. PJON has been engineered to have a variable footprint (4.2–8.2 kB program memory) and overhead (5–35 bytes per packet) depending on its configuration.
+- **Multi-media support**: PJON operates over a wide range of protocols including TCP, UDP, MQTT, ESPNOW, USB, Serial, RS485, and LoRa. The PJON network protocol stack also specifies and implements:
+  - [PJDL](src/strategies/SoftwareBitBang/specification/PJDL-specification-v5.0.md) that operates over a single wire of up to 2000m shared by up to 255 devices.
+  - [PJDLR](src/strategies/OverSampling/specification/PJDLR-specification-v3.0.md) that operates with many ASK/FSK/OOK radio modules.
+  - [PJDLS](src/strategies/AnalogSampling/specification/PJDLS-specification-v2.0.md) that operates wirelessly with light pulses using off-the-shelf LEDs and laser diodes.
+- **Increased reliability**: Many widely applied protocols expose significant vulnerabilities, have weak error detection algorithms, and are not resilient to interference. PJON is based on years of analysis and study to avoid the mistakes present in most alternatives and provides a simpler and more efficient solution.
+- **High flexibility**: PJON is fully software-defined and designed to be easily extensible. It builds out-of-the-box on all supported devices and operates transparently on top of any supported protocol or medium.
+- **Low cost**: With no additional hardware needed to operate, minimal network wiring requirements, and direct pin-to-pin or LED-to-LED communication, PJON is extremely energy-efficient, inexpensive to implement, and maintain. This experimental reference implementation is kept up to date thanks to the strong commitment of its growing community.
 
 ### Features
-- Cross-compilation support with the [interfaces](src/interfaces) system calls abstraction
-- Multi-media support with the [strategies](src/strategies) data link layer abstraction
-- Modular packet format that includes only the field used (overhead 5-35 bytes)
-- Hot-swap support, no need of system reset or shut down when replacing or adding devices
-- Flexible local (device id) and shared (bus id) network identification
-- Safe error detection done with modern CRC8 and CRC32 polynomials
-- Optional inclusion of MAC addresses
-- Optional acknowledgement
-- Error handling
+- Cross-compilation support with the [interfaces](src/interfaces) system calls abstraction.
+- Multi-media support with the [strategies](src/strategies) data link layer abstraction.
+- Modular packet format that includes only the fields used (overhead 5–35 bytes).
+- Hot-swap support—no need for a system reset or shutdown when replacing or adding devices.
+- Flexible local (device ID) and shared (bus ID) network identification.
+- Safe error detection using modern CRC8 and CRC32 polynomials.
+- Optional inclusion of MAC addresses.
+- Optional acknowledgement.
+- Error handling.
 
 ### Academic studies
-Researchers are active in many universities worldwide using PJON in different environments. The following list contains all the known published academic studies about PJON:
-- [Definition and Application of PJON-PLC for sensor networks](https://repositorio.unican.es/xmlui/bitstream/handle/10902/14012/408952.pdf?sequence=1) by Jorge Gómez Segurola, Ingeniería de Tecnologías de
-Telecomunicación - [Universidad de Cantabria](https://web.unican.es/) (ES)
-- [Biomimetic electronics](https://charliewilliams.org/portfolio/biomimetic/) by Charlie Williams with scientific input from researchers Vítor Martins dos Santos, Diana Machado de Sousa and Sabine Vreeburg - Artist in Residency at [Wageningen University](https://www.wur.nl/en.htm) (NL)
-- [LANC Video Camera Control](http://jda.tel/pdf/lanc_video_camera_control.pdf) by [Jack Anderson](https://github.com/jdaandersj) - Department of Computer Science [Loughborough University](https://www.lboro.ac.uk/departments/compsci/) (UK)
+Researchers are active in many universities worldwide using PJON in different environments. The following list contains known published academic studies about PJON:
+- [Definition and Application of PJON-PLC for sensor networks](https://repositorio.unican.es/xmlui/bitstream/handle/10902/14012/408952.pdf?sequence=1) by Jorge Gómez Segurola, Ingeniería de Tecnologías de Telecomunicación - [Universidad de Cantabria](https://web.unican.es/) (ES).
+- [Biomimetic electronics](https://charliewilliams.org/portfolio/biomimetic/) by Charlie Williams with scientific input from researchers Vítor Martins dos Santos, Diana Machado de Sousa, and Sabine Vreeburg - Artist in Residency at [Wageningen University](https://www.wur.nl/en.htm) (NL).
+- [LANC Video Camera Control](http://jda.tel/pdf/lanc_video_camera_control.pdf) by [Jack Anderson](https://github.com/jdaandersj) - Department of Computer Science [Loughborough University](https://www.lboro.ac.uk/departments/compsci/) (UK).
 
 ### Contribute
 Feel free to send a pull request sharing something you have made that could help, if you want to support this project you can also try to solve an [issue](https://github.com/gioblu/PJON/issues). Thanks to support, expertise, kindness and talent of the following contributors, the protocol's documentation, specification and implementation have been strongly tested, enhanced and verified:

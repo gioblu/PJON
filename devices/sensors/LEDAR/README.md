@@ -79,6 +79,6 @@ The case is made by two elements and it has been printed using a customized Prus
 
 Once crafted, ATtiny85 has to be flashed with the [LEDAR](software/LEDAR/LEDAR.ino) sketch using an ISP programmer, see [ATtiny85 interfacing](https://github.com/gioblu/PJON/wiki/ATtiny-interfacing)
 
-LEDAR has been engineered with the strong feeling that, in the future, "smart houses" will not necessarily host a multitude of inefficient embedded real-time operative systems in whatever "thing" while exposing vulnerabilities out of the physical boundaries of houses. Otherwise, more probably, will host many simple, less power-hungy microcontrollers, connected to a wired communication bus, unhackable without direct physical access to its wiring.
+LEDAR has been engineered with the strong feeling that, in the future, "smart houses" will not necessarily host a multitude of inefficient embedded real-time operating systems in whatever "thing" while exposing vulnerabilities out of the physical boundaries of houses. Otherwise, more probably, will host many simple, less power-hungy microcontrollers, connected to a wired communication bus, unhackable without direct physical access to its wiring.
 
 LEDAR should be considered as a general "guideline" on how PJON compatible devices can be published and shared with other PJON users through the [devices](../../README.md) directory. Feel free to make a pull request proposing a new device you have engineered.   

@@ -1,4 +1,4 @@
-<img src="https://github.com/gioblu/PJON/blob/master/trademark/assets/PJON-color-125x125.png" alt="PJON" width="50" height="50">
+<img src="https://github.com/gioblu/PJON/blob/master/trademark/assets/PJON-color-50x50.png" alt="PJON">
 
 ## PJON 13.1
 

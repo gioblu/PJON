@@ -1,3 +1,5 @@
+<img src="https://github.com/gioblu/PJON/blob/master/trademark/assets/PJON-color-125x125.png" alt="PJON" width="50" height="50">
+
 ## PJON 13.1
 
 PJON (Padded Jittering Operative Network) is an experimental, Arduino-compatible, multi-master, multi-media, software-defined network protocol that can be easily cross-compiled for many microcontrollers and real-time operating systems such as ATtiny, ATmega, SAMD, ESP8266, ESP32, STM32, Teensy, Raspberry Pi, Zephyr, Linux, Windows x86, Apple, and Android. PJON operates over a wide range of media, data links, and existing protocols like PJDL, PJDLR, PJDLS, Serial, RS485, USB, ASK/FSK, LoRa, UDP, TCP, MQTT, and ESPNOW. For more information, visit the [documentation](documentation/README.md), the [specification](specification/PJON-protocol-specification-v4.0.md), or the [wiki](https://github.com/gioblu/PJON/wiki).
@@ -15,7 +17,7 @@ PJON (Padded Jittering Operative Network) is an experimental, Arduino-compatible
 - Cross-compilation support with the [interfaces](src/interfaces) system calls abstraction.
 - Multi-media support with the [strategies](src/strategies) data link layer abstraction.
 - Modular packet format that includes only the fields used (overhead 5–35 bytes).
-- Hot-swap support—no need for a system reset or shutdown when replacing or adding devices.
+- Hot-swap support, no need for a system reset or shutdown when replacing or adding devices.
 - Flexible local (device ID) and shared (bus ID) network identification.
 - Safe error detection using modern CRC8 and CRC32 polynomials.
 - Optional inclusion of MAC addresses.

@@ -5,7 +5,7 @@
    Compliant with PJDL (Padded Jittering Data Link) specification v5.0
    ___________________________________________________________________________
 
-    Copyright 2010-2022 Giovanni Blu Mitolo gioscarab@gmail.com
+    Copyright 2010-2025 Giovanni Blu Mitolo gioscarab@gmail.com
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

@@ -4,7 +4,7 @@
 Milan, Italy - 02/10/2016
 The PJON® dynamic addressing specification is an invention
 and intellectual property of Giovanni Blu Mitolo
-Copyright 2010-2022 All rights reserved
+Copyright 2010-2025 All rights reserved
 
 Related work: https://github.com/gioblu/PJON/
 Compliant implementation versions: PJON 5.2 and following

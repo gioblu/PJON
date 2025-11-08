@@ -3,7 +3,7 @@
 /*
 Milan, Italy - 19/08/2015
 The PJON® protocol specification is an invention and intellectual property
-of Giovanni Blu Mitolo - Copyright 2010-2022 All rights reserved
+of Giovanni Blu Mitolo - Copyright 2010-2025 All rights reserved
 
 Related work: https://github.com/gioblu/PJON/
 Compliant implementation versions: PJON 3.0-beta-3.0

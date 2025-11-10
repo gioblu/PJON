@@ -205,7 +205,7 @@ Medium access              Transmission                Response
 ```
 The acknowledgement ensures reliable delivery only when a packet transmission occurs directly without the intermediation of routers or switches. When a packet needs to traverse a network the acknowledegment is transmitted by the nearest intermediary therefore it ensures only best-effort delivery.     
 
-The medium access, collision resolution, transmission and acknowledgement procedures are specified by the underlying layer, which also supplies the timing required for retransmissions.
+The medium access, collision resolution, transmission and acknowledgement procedures are specified by the underlying layer, which also supplies the timing required for retransmissions and the maximum number of attempts.
 
 #### Local mode
 Depending on header's `MODE` bit packets can contain basic or extended support to identification. Local mode required by header's `MODE` bit low supports connectivity for up to 254 devices. In the graph below is represented the simplest local mode packet format sending `@` (decimal 64) to device `12`:

@@ -233,7 +233,7 @@
 /* @jcallano 09-jul-2020 tested with pin PB15, PB14, PB13, PB12, PB11, PB10,
    PB9, PB8, PB7, PB6, PB4, PB3, PA15, PA10. 5v tolerant pins on bluepill */
 
-#if defined(__STM32F1__)
+#if defined(__STM32F1__) || (defined(ARDUINO_ARCH_STM32) && defined(STM32F1xx))
   #if SWBB_MODE == 1
     #if F_CPU == 72000000L
       #define SWBB_BIT_WIDTH   43

@@ -34,7 +34,7 @@
   #include <Arduino.h>
   #include "PJON_IO.h"
 
-  #ifdef __STM32F1__
+  #if defined(__STM32F1__) || (defined(ARDUINO_ARCH_STM32) && defined(STM32F1xx))
     #ifndef A0
       #define A0 0
     #endif
@@ -74,7 +74,7 @@
 
   /* Random --------------------------------------------------------------- */
 
-  #ifdef __STM32F1__
+  #if defined(__STM32F1__) || (defined(ARDUINO_ARCH_STM32) && defined(STM32F1xx))
     #ifndef PJON_RANDOM
       #define PJON_RANDOM(R) random(R ? R : R + 1)
     #endif
